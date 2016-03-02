@@ -1,0 +1,34 @@
+﻿.x-icon-accept {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-error {
+    background-image: url("../themes/icons/error.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-loading {
+    background-image: url("../themes/icons/loading.gif") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-edit {
+    background-image: url("../themes/icons/edit.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-delete {
+    background-image: url("../themes/icons/delete.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-password {
+    background-image: url("../themes/icons/password.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-detail {
+    background-image: url("../themes/icons/detail.png") !important;
+    background-repeat: no-repeat;
+}

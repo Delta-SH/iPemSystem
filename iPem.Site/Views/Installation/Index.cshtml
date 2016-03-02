@@ -1,0 +1,599 @@
+﻿@{
+    Layout = null;
+    var result = iPem.Site.Infrastructure.EngineContext.Current.Resolve<iPem.Data.Installation.IDbInstaller>().CheckPermissions();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 安装向导</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    @Styles.Render("~/bundles/bootstrap/css")
+    @Styles.Render("~/bundles/steps/css")
+    @Styles.Render("~/bundles/icheck/css")
+    @Styles.Render("~/bundles/install/css")
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="navbar-brand" alt="Logo"></a>
+            <h3 class="text-muted">&nbsp;|&nbsp;<span class="label label-primary">安装向导</span></h3>
+        </div>
+
+        <div id="alert" class="alert alert-danger alert-dismissible" role="alert" hidden>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="words">
+            </span>
+        </div>
+
+        @if(result == null) {
+            <div class="panel panel-default" style="border:none; box-shadow:none;">
+                <div class="panel-body" style="padding:0; margin:0;">
+                    @using(Html.BeginForm("Index", "Installation", FormMethod.Post, new { name = "insform", id = "insform" })) {
+                        @Html.AntiForgeryToken()
+                        <div id="wizard-panel">
+                            <h1>欢迎界面</h1>
+                            <section id="welcome-panel">
+                                <div class="row">
+                                    <div class="col-md-12 welcome">
+                                        <h3>欢迎使用智能监控管理系统</h3>
+                                        <p>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智能监控管理系统(iPEMS)是中达电通股份有限公司新一代的全新智能动力环境监控系统管理平台。该平台可以管理、监控多个Lsc客户端，实现了多区域设备的集中管控。通过该系统可向管理者提供：对前端设备的实时遥测、遥信、遥控及遥调，对重要数据、告警的统计、对比分析和归类整理，为设备建设及维护提供客观、科学的依据。根据需要还可以纳入门禁、图像监控、消防等安防系统，扩展整合不同行业的管理平台及接口。
+                                        </p>
+                                        <p>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;此向导将指导您完成对动力环境监控中心系统的配置。要完成此向导，您必须了解一些关于系统配置的相关信息（例如：<abbr title="程序连接数据库时所需用到的数据库配置信息">"连接字符串"</abbr>、<abbr title="所需管理Lsc的相关配置信息">"Lsc客户端信息"</abbr>等）。如果有必要，请联系您的ISP。如果您正在安装在本地机器或服务器上，您可能需要从您的系统管理员处得到一些信息。
+                                        </p>
+                                        <p class="text-danger">
+                                            重要提示：在您开始任何操作之前，请首先备份数据。
+                                        </p>
+                                        <p class="icheck-radio-list">
+                                            <input id="install_rb" type="radio" name="welcome_iCheck" checked tabindex="1" value="0" />
+                                            <label for="install_rb">安装系统</label>
+                                            <br />
+                                            <input id="update_rb" type="radio" name="welcome_iCheck" tabindex="2" value="1" />
+                                            <label for="update_rb">升级系统</label>
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                            <h1>数据存储</h1>
+                            <section id="database-panel">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">基础数据库<small>（存储动环系统相关的配置信息）</small></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">服务器地址</span>
+                                                    <input id="masterServerName" name="masterServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库端口</span>
+                                                    <input id="masterPort" name="masterPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库账户</span>
+                                                    <input id="masterUid" name="masterUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库密码</span>
+                                                    <input id="masterPwd" name="masterPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="icheck-radio-group">
+                                                    <div class="radio-title">
+                                                        <input id="masterCreateNew" type="radio" tabindex="1" name="Master" checked value="0" />
+                                                        <label for="masterCreateNew">创建全新数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="masterNewDatabaseName" name="masterNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库目录</span>
+                                                        <input id="masterNewDatabasePath" name="masterNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="radio-title">
+                                                        <input id="masterUseExisting" type="radio" tabindex="2" name="Master" value="1" />
+                                                        <label for="masterUseExisting">使用现有数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="masterExistingDatabaseName" name="masterExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div>
+                                                        <input id="masterDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="masterDontCheckDatabase">不检查数据库是否存在</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">历史数据库<small>（存储动环系统相关的历史数据）</small></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">服务器地址</span>
+                                                    <input id="hisServerName" name="hisServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库端口</span>
+                                                    <input id="hisPort" name="hisPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库账户</span>
+                                                    <input id="hisUid" name="hisUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库密码</span>
+                                                    <input id="hisPwd" name="hisPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="icheck-radio-group">
+                                                    <div class="radio-title">
+                                                        <input id="hisCreateNew" type="radio" tabindex="1" name="History" checked value="0" />
+                                                        <label for="hisCreateNew">创建全新数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="hisNewDatabaseName" name="hisNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库目录</span>
+                                                        <input id="hisNewDatabasePath" name="hisNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="radio-title">
+                                                        <input id="hisUseExisting" type="radio" tabindex="2" name="History" value="1" />
+                                                        <label for="hisUseExisting">使用现有数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="hisExistingDatabaseName" name="hisExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div>
+                                                        <input id="hisDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="hisDontCheckDatabase">不检查数据库是否存在</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">资管数据库<small>（存储固定资产相关信息）</small></h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">服务器地址</span>
+                                                    <input id="resServerName" name="resServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库端口</span>
+                                                    <input id="resPort" name="resPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库账户</span>
+                                                    <input id="resUid" name="resUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">数据库密码</span>
+                                                    <input id="resPwd" name="resPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="icheck-radio-group">
+                                                    <div class="radio-title">
+                                                        <input id="resCreateNew" type="radio" tabindex="1" name="Resource" checked value="0" />
+                                                        <label for="resCreateNew">创建全新数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="resNewDatabaseName" name="resNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库目录</span>
+                                                        <input id="resNewDatabasePath" name="resNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div class="radio-title">
+                                                        <input id="resUseExisting" type="radio" tabindex="2" name="Resource" value="1" />
+                                                        <label for="resUseExisting">使用现有数据库</label>
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">数据库名称</span>
+                                                        <input id="resExistingDatabaseName" name="resExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                    </div>
+                                                    <div class="error-tips"></div>
+                                                    <div>
+                                                        <input id="resDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="resDontCheckDatabase">不检查数据库是否存在</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h1>系统账户</h1>
+                            <section id="account-panel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">默认角色<small>（初始化系统默认角色，该角色具有系统最高权限）</small></h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">角色名称</span>
+                                                    <input id="sysRoleName" name="sysRoleName" type="text" class="form-control" placeholder="系统默认的角色名称" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">角色代码</span>
+                                                    <input id="sysRoleCode" name="sysRoleCode" type="text" class="form-control" placeholder="系统默认的角色编码" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">备注信息</span>
+                                                    <input id="sysRoleComment" name="sysRoleComment" type="text" class="form-control" placeholder="角色的备注信息" />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="panel panel-primary">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">默认账户<small>（初始化系统默认账户，该账户权限隶属于默认角色）</small></h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">登录名称</span>
+                                                    <input id="sysUserName" name="sysUserName" type="text" class="form-control" placeholder="系统默认的登录名称" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">登录密码</span>
+                                                    <input id="sysUserPwd" name="sysUserPwd" type="password" class="form-control" placeholder="系统默认的登录密码" required />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">备注信息</span>
+                                                    <input id="sysUserComment" name="sysUserComment" type="text" class="form-control" placeholder="账户的备注信息" />
+                                                </div>
+                                                <div class="error-tips"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h1>安装确认</h1>
+                            <section id="confirm-panel">
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>安装方式</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            本次安装向导将指导用户<code id="cf-wc-01">???</code>，并对系统参数进行配置。
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>基础数据库</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            服务器地址：<code id="cf-cs-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库端口：<code id="cf-cs-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据库账户：<code id="cf-cs-03"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库密码：<code id="cf-cs-04"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据源类型：<code id="cf-cs-05"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库名称：<code id="cf-cs-06"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            数据库目录：<code id="cf-cs-07"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>历史数据库</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            服务器地址：<code id="cf-hs-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库端口：<code id="cf-hs-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据库账户：<code id="cf-hs-03"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库密码：<code id="cf-hs-04"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据源类型：<code id="cf-hs-05"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库名称：<code id="cf-hs-06"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            数据库目录：<code id="cf-hs-07"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>资管数据库</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            服务器地址：<code id="cf-rs-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库端口：<code id="cf-rs-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据库账户：<code id="cf-rs-03"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库密码：<code id="cf-rs-04"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据源类型：<code id="cf-rs-05"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库名称：<code id="cf-rs-06"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            数据库目录：<code id="cf-rs-07"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>默认角色</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            角色名称：<code id="cf-rl-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            角色代码：<code id="cf-rl-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            备注信息：<code id="cf-rl-03"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>默认账户</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            登录名称：<code id="cf-ue-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            登录密码：<code id="cf-ue-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            备注信息：<code id="cf-ue-03"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <h1>完成安装</h1>
+                            <section id="finish-panel">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="install-status" class="table table-bordered table-striped">
+                                            <colgroup>
+                                                <col class="col-xs-1">
+                                                <col class="col-xs-7">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>执行状态</th>
+                                                    <th>安装描述</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>安装并配置基础数据库</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>安装并配置历史数据库</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>安装并配置资管数据库</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>配置系统默认角色及权限</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>配置系统默认账户并关联相关角色</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <span class="label label-default">
+                                                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
+                                                        </span>
+                                                    </th>
+                                                    <td>完成配置</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="success-panel" class="row" hidden>
+                                    <div class="col-md-12">
+                                        <h3>恭喜您，系统已经配置成功</h3>
+                                        <p>
+                                            一旦您完成以上步骤，系统已经全部配置完成。如果您还有其他问题，请与我们的客服人员联系，谢谢。
+                                        </p>
+                                        <p>
+                                            如果您需要关于如何使用智能监控管理系统的信息，请参见《<a href="/Help" target="_blank">系统使用手册</a>》。
+                                        </p>
+                                        <p>
+                                            您可以通过点击以下按钮进入智能监控管理系统，感谢您的使用。
+                                        </p>
+                                        <p>
+                                            <input type="submit" name="go-home" value="登录系统" class="btn btn-lg btn-success" role="button" />
+                                        </p>
+                                    </div>
+                                </div>
+                                <div id="failure-panel" class="row" hidden>
+                                    <div class="col-md-12">
+                                        <h3>系统安装失败</h3>
+                                        <p>
+                                            请仔细检查您配置的系统参数是否正确！如果您有其他问题，请与我们的客服人员联系，谢谢。
+                                        </p>
+                                        <p>
+                                            如果您需要关于如何安装智能监控管理系统的信息，请参见《<a href="/Help" target="_blank">系统安装手册</a>》。
+                                        </p>
+                                        <p>
+                                            您可以通过点击以下按钮重新配置系统，感谢您的使用。
+                                        </p>
+                                        <p>
+                                            <a class="btn btn-lg btn-danger" href="~/Installation" target="_self" role="button">重新配置</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    }
+                </div>
+            </div>
+        } else {
+            <div id="permission-panel" class="jumbotron">
+                <h3>系统权限警告</h3>
+                <p>
+                    <strong>警告:</strong> <kbd>@System.Security.Principal.WindowsIdentity.GetCurrent().Name</kbd> 账户对以下目录、文件没有完全控制权限，请配置这些权限。
+                </p>
+                @{
+                        var results = result.Split(new char[] { ';' });
+                        foreach(var item in results) {
+                            <p>
+                                <ins>
+                                    @item
+                                </ins>
+                            </p>
+                        }
+                }
+                <p>
+                    如果您需要关于如何配置系统权限的信息，请参见《<a href="/Help" target="_blank">系统权限配置说明</a>》。
+                </p>
+                <p>
+                    您可以通过点击以下按钮测试权限是否配置成功，感谢您的使用。
+                </p>
+                <p>
+                    <a class="btn btn-lg btn-danger" href="~/Installation" target="_self" role="button">测试权限</a>
+                </p>
+            </div>
+        }
+
+        <div class="footer">
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Copyright</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Requirements</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Version</p>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/validation")
+    @Scripts.Render("~/bundles/cookie")
+    @Scripts.Render("~/bundles/steps")
+    @Scripts.Render("~/bundles/icheck")
+    @Scripts.Render("~/bundles/install")
+</body>
+</html>

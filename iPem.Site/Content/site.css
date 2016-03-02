@@ -1,0 +1,224 @@
+﻿body {
+    font: 13px/15px 'Microsoft Yahei', Arial,'宋体b8b\4f53', Sans-Serif;
+}
+
+a, a:hover, a:active, a:visited, a:link {
+    color: black;
+    outline: 0 none;
+    text-decoration: none;
+}
+
+.header {
+    width: 100%;
+    height: 51px;
+    background-color: #f8f8f8;
+}
+
+.header .brand 
+{
+    float: left;
+    background-image: url("themes/images/brand.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 266px;
+    height: 50px;
+}
+
+.header .top-nav {
+    float: right;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.top-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.icon-nav li {
+    float: left;
+    margin-right: 3px;
+    position: relative;
+}
+
+.icon-nav li > a {
+    position: relative;
+    color: #157fcc;
+    display: block;
+    font-size: 1.35em;
+    padding: 20px 20px 13px 20px;
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+}
+
+.icon-nav li > a:hover {
+    background-color: #eee;
+}
+
+.icon-nav li > .current {
+    background-color: #fff;
+    border-top: 3px solid #157fcc;
+    padding: 17px 20px 13px 20px;
+}
+
+.icon-nav li > .current:hover {
+    background-color: #fff;
+}
+
+.icon-nav > li > a .label {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    padding: 0 3px;
+    position: absolute;
+    right: 15px;
+    top: 8px;
+
+    color:#fff;
+    border-radius: 0;
+    text-shadow: none;
+    background: #e63a3a none repeat scroll 0 0;
+}
+
+.icon-nav > li img {
+    border: 0 none;
+    vertical-align: middle;
+    margin-left: 10px;
+    width: 28px;
+    height: 28px;
+}
+
+.icon-nav > li .ucenter {
+    font-size: 1.05em;
+    padding: 13px 10px 10px 10px;
+}
+
+.icon-nav li > .ucurrent {
+    background-color: #fff;
+    border-top: 3px solid #157fcc;
+    padding: 10px 10px 10px 10px;
+}
+
+.icon-nav li > .ucurrent:hover {
+    background-color: #fff;
+}
+
+#about-window {
+    display:none;
+}
+
+#about-content {
+    width: 100%; 
+    height: auto;
+}
+
+.clearfix {
+    display: block;
+}
+
+div.title-bar {
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 6px;
+    position: relative;
+}
+
+div.title-bar h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight:bold;
+}
+
+div.title-bar div.desc {
+    display: inline;
+    white-space: nowrap;
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+div.title-bar a.help {
+    display: inline-block;
+    height: 20px;
+    margin-left: 5px;
+    padding-right: 14px;
+    text-decoration: none;
+    background-image: url("themes/icons/title-help.png");
+    background-repeat: no-repeat;
+    background-position: 0 3px;
+}
+
+div.help-tip{
+    zoom: 1;
+    position: relative;
+    margin-bottom: 6px;
+}
+
+div.help-tip div.tip-arrow {
+    height: 5px;
+    width: 9px;
+    left: 10px;
+    top: -5px;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-image: url("themes/icons/tip-arrow.png");
+}
+
+div.help-tip div.help-tip-content {
+    background-color: #feffe5;
+    padding: 10px;
+    border: 1px solid #ebd482;
+}
+
+div.help-tip div.help-tip-content p.label {
+    color: #926908;
+    font-weight: bold;
+}
+
+div.help-tip div.help-tip-content p.text {
+    color: #b79442;
+}
+
+div.help-tip div.help-tip-content p {
+    padding: 0;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.l {
+    float: left;
+}
+
+.r {
+    float: right;
+}
+
+@media screen and (max-width: 768px) {
+    .header .top-nav {
+        margin-right: 0;
+    }
+
+    .icon-nav li {
+        margin-right: 2px;
+    }
+
+    .icon-nav li > a {
+        padding: 20px 10px 13px 10px;
+    }
+
+    .icon-nav > li > a .label {
+        right: 5px;
+        top: 8px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .icon-nav li {
+        margin-right: 1px;
+    }
+
+    .header .brand {
+        display: none;
+    }
+}

@@ -1,0 +1,146 @@
+﻿body {
+    font-size: 1.25em;
+    font-family: 'Microsoft Yahei', Arial, '宋体b8b\4f53', Sans-Serif;
+    color: #535353;
+    padding-top:60px;
+}
+
+ul.nav-pills{
+	width: 200px;
+}
+
+ul.nav-pills.affix{
+    top: 60px;
+}
+
+.section {
+    padding-top: 60px;
+    margin-top: -60px;
+}
+
+.page-header {
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+}
+
+#statement {
+    margin-top: 20px;
+    margin-bottom: 50px;
+    line-height: 30px;
+}
+
+#statement h4 {
+    font-size: 1.25em;
+    font-weight: 600;
+    line-height: 30px;
+}
+
+#contact {
+    margin-top: 20px;
+    margin-bottom: 50px;
+    line-height: 30px;
+}
+
+#contact h4 {
+    font-size: 1.25em;
+    font-weight: 600;
+    line-height: 30px;
+}
+
+#about {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 25px;
+}
+
+.footer {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #999;
+    background-color: #1e1b29;
+}
+.footer p {
+        margin: 0 0 5px;
+}
+.footer p:last-child {
+        margin-bottom: 0;
+}
+
+.bs-callout {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #eee;
+    border-image: none;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px 1px 1px 5px;
+    margin: 0 0 10px;
+    padding: 20px;
+}
+.bs-callout h4 {
+    margin:5px auto;
+}
+.bs-callout > div, .bs-callout > ol, .bs-callout > ul {
+    font-size: 14px;
+    line-height: 1.75;
+    margin-bottom: 1em;
+}
+.bs-callout .row {
+    margin-bottom:5px;
+}
+.bs-callout div:last-child {
+    margin-bottom: 0;
+}
+.bs-callout code {
+    border-radius: 3px;
+}
+.bs-callout + .bs-callout {
+    margin-top: -5px;
+}
+.bs-callout-danger {
+    border-left-color: #ce4844;
+}
+.bs-callout-danger h4 {
+    font-size: 1.25em;
+    color: #ce4844;
+}
+.bs-callout-danger kbd {
+    background-color: #ce4844;
+}
+.bs-callout-warning {
+    border-left-color: #aa6708;
+}
+.bs-callout-warning h4 {
+    font-size: 1.25em;
+    color: #aa6708;
+}
+.bs-callout-warning kbd {
+    background-color: #aa6708;
+}
+.bs-callout-info {
+    border-left-color: #1b809e;
+}
+.bs-callout-info h4 {
+    font-size: 1.25em;
+    color: #1b809e;
+}
+.bs-callout-info kbd {
+    background-color: #1b809e;
+}
+
+@media screen and (max-width: 992px) {
+    ul.nav-pills{
+	    width: 150px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    ul.nav-pills{
+	    width: 100px;
+    }
+}

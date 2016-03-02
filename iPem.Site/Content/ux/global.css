@@ -1,0 +1,57 @@
+﻿.x-panel-body-default {
+    border: 1px solid #c0c0c0;
+    border-top: none;
+}
+
+.x-grid-body {
+    border-top: 1px solid #c0c0c0;
+}
+
+.x-panel-header-default .x-panel-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-btn-default-toolbar-small .x-btn-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-window-header-default .x-window-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-tab-default .x-tab-glyph {
+    opacity: 0.8;
+}
+
+.x-menu-item-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-border-layout-ct {
+    background-color: #fff;
+}
+
+.x-cell-icon {
+    margin:0 5px;
+}
+
+.x-danger-panel .x-tool-img {
+    background-color: #df3e3e;
+}
+
+.x-danger-panel .x-panel-header-default {
+    line-height: 18px;
+    opacity: 0.8;
+
+    background-color: #df3e3e;
+    background-image: none;
+    border: 1px solid #df3e3e;
+}
+
+.x-border-body-panel {
+    border: 1px solid #c0c0c0;
+}

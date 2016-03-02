@@ -1,0 +1,220 @@
+﻿@font-face {
+	font-family: 'introduction';
+    font-weight: normal;
+	font-style: normal;
+	src:url('../fonts/introduction.eot');
+	src:url('../fonts/introduction.eot?mebsek#iefix') format('embedded-opentype'),
+		url('../fonts/introduction.ttf?mebsek') format('truetype'),
+		url('../fonts/introduction.woff?mebsek') format('woff'),
+		url('../fonts/introduction.svg?mebsek#icomoon') format('svg');
+}
+
+body {
+    font-size: 1.25em;
+    font-family: 'Microsoft Yahei', Arial,'宋体b8b\4f53', Sans-Serif;
+    color: #535353;
+    background-color:#f9f9f9;
+}
+
+.header {
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+}
+
+.header .brand {
+    background-image: url("../images/logo.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 400px;
+    height: 60px;
+    margin-top: 20px;
+}
+
+.center {
+    width: 100%;
+    height: 401px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-top: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+    background-image: url("../images/banner.png");
+    background-repeat: no-repeat;
+    background-position: center top;
+}
+
+.login {
+    float:right;
+    margin-top: 20px;
+    width: 300px;
+    height: auto;
+    border: none;
+    overflow: hidden;
+}
+
+.introduction {
+    width:100%;
+    padding: 50px 0;
+}
+
+.introduction .container {
+    text-align: center;
+}
+
+.introduction-list ul::after, .introduction-list ul::before {
+    content: "";
+    display: table;
+    line-height: 0;
+    clear: both;
+}
+
+.introduction-list ul {
+    margin:0 auto;
+}
+
+.introduction-list li {
+    text-align: left;
+    padding-left: 0;
+    padding-right: 5px;
+}
+
+.introduction-list li:last-child {
+    padding-right: 0;
+}
+
+.introduction-list .li-hover {
+    color: #337ab7;
+}
+
+.icon {
+    font-family: 'introduction';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+    float: left;
+    margin-right: 5px;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-1 {
+	font-size: 2.7em;
+}
+.icon-1:before {
+	content: "\e900";
+}
+
+.icon-2 {
+	font-size:3em;
+}
+.icon-2:before {
+	content: "\e903";
+}
+
+.icon-3 {
+	font-size:3em;
+}
+.icon-3:before {
+	content: "\e902";
+}
+
+.icon-4 {
+	font-size:2.7em;
+}
+.icon-4:before {
+	content: "\e901";
+}
+
+.introduction-list .words {
+   float: left;
+}
+
+.introduction-list .words h3 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+}
+
+.introduction-list .words p {
+    font-size: 1em;
+    color: #999;
+    margin: 0;
+}
+
+.footer {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: #999;
+    background-color: #1e1b29;
+}
+
+.footer p {
+     margin: 0 0 5px;
+}
+
+.footer p:last-child {
+     margin-bottom: 0;
+}
+
+.error-tips
+{
+    color:#A94442;
+    font-size:12px;
+    height:20px;
+    line-height:20px;
+    padding-left:40px;
+    overflow:hidden;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.captcha
+{
+    margin-left:5px;
+    float:left;
+    width:95px;
+    height:33px;
+    cursor:pointer;
+}
+
+@media screen and (min-width: 768px) {
+    .icon {
+        margin-right: 5px;
+    }
+
+    .introduction-list li {
+        padding-right: 20px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .icon {
+        margin-right: 10px;
+    }
+
+    .introduction-list li {
+        padding-right: 80px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .icon {
+        margin-right: 15px;
+    }
+
+    .introduction-list li {
+        padding-right: 120px;
+    }
+}

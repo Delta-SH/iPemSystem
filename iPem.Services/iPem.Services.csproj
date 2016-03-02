@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BB5412E0-6F9B-45DC-A6EE-53349978FD97}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>iPem.Services</RootNamespace>
+    <AssemblyName>iPem.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\CacheKeys.cs" />
+    <Compile Include="Master\AreaService.cs" />
+    <Compile Include="Master\AreasInRoleService.cs" />
+    <Compile Include="Master\DeviceService.cs" />
+    <Compile Include="Master\IAreaService.cs" />
+    <Compile Include="Master\IAreasInRoleService.cs" />
+    <Compile Include="Master\IDeviceService.cs" />
+    <Compile Include="Master\IMenuService.cs" />
+    <Compile Include="Master\IMenusInRoleService.cs" />
+    <Compile Include="Master\INoticeService.cs" />
+    <Compile Include="Master\INoticeInUserService.cs" />
+    <Compile Include="Master\IOperateInRoleService.cs" />
+    <Compile Include="Master\IPointService.cs" />
+    <Compile Include="Master\IProtocolService.cs" />
+    <Compile Include="Master\IRoleService.cs" />
+    <Compile Include="Master\IRoomService.cs" />
+    <Compile Include="Master\IStationService.cs" />
+    <Compile Include="Master\IUserService.cs" />
+    <Compile Include="Master\IWebLogger.cs" />
+    <Compile Include="Master\MenuService.cs" />
+    <Compile Include="Master\MenusInRoleService.cs" />
+    <Compile Include="Master\NoticeService.cs" />
+    <Compile Include="Master\NoticeInUserService.cs" />
+    <Compile Include="Master\OperateInRoleService.cs" />
+    <Compile Include="Master\PointService.cs" />
+    <Compile Include="Master\ProtocolService.cs" />
+    <Compile Include="Master\RoleService.cs" />
+    <Compile Include="Master\RoomService.cs" />
+    <Compile Include="Master\StationService.cs" />
+    <Compile Include="Master\UserService.cs" />
+    <Compile Include="Master\WebLogger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource\AreaService.cs" />
+    <Compile Include="Resource\DepartmentService.cs" />
+    <Compile Include="Resource\DeviceService.cs" />
+    <Compile Include="Resource\EmployeeService.cs" />
+    <Compile Include="Resource\IAreaService.cs" />
+    <Compile Include="Resource\IDepartmentService.cs" />
+    <Compile Include="Resource\IDeviceService.cs" />
+    <Compile Include="Resource\IEmployeeService.cs" />
+    <Compile Include="Resource\IRoomService.cs" />
+    <Compile Include="Resource\IStationService.cs" />
+    <Compile Include="Resource\RoomService.cs" />
+    <Compile Include="Resource\StationService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="History\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">
+      <Project>{65343199-3a33-4d3a-a9e9-e82857350e7e}</Project>
+      <Name>iPem.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\iPem.Data\iPem.Data.csproj">
+      <Project>{1e554760-f4cf-4f93-9989-055371db2cfe}</Project>
+      <Name>iPem.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

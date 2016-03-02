@@ -1,0 +1,202 @@
+﻿/* Space out content a bit */
+body {
+    font-size: 1.35em;
+    font-family: 'Microsoft Yahei', Arial, '宋体b8b\4f53', Sans-Serif;
+    padding-top: 10px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.footer {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+.navbar-brand {
+    background-image: url('images/logo.png');
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    width: 116px;
+    height: 50px;
+    line-height: 50px;
+    float: left;
+}
+        
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 50px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.welcome h3 {
+    text-align:center;
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+#success-panel h3 {
+    text-align:center;
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+#success-panel p:last-child {
+    text-align:center;
+    margin:0 auto;
+    margin-top: 50px;
+}
+
+#failure-panel h3 {
+    text-align:center;
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+#failure-panel p:last-child {
+    text-align:center;
+    margin:0 auto;
+    margin-top: 50px;
+}
+
+#permission-panel h3 {
+    text-align:center;
+    margin-top:0;
+    margin-bottom:20px;
+}
+
+#permission-panel p:last-child {
+    text-align:center;
+    margin:0 auto;
+    margin-top: 40px;
+    margin-bottom:0;
+}
+
+.jumbotron p {
+    font-size: 1.2em;
+    font-weight: 100;
+    margin-bottom: 15px;
+}
+
+/* Custom page footer */
+.footer 
+{
+  text-align: center;
+  padding-top: 20px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+.icheck-radio-list {
+    margin-top:20px;
+    width:120px;
+}
+
+.icheck-radio-group label
+{
+    font-size:14px;
+    font-weight:normal;
+    padding-left:5px;
+}
+
+.radio-title
+{
+    border-bottom: 1px solid #e5e5e5; 
+    margin-bottom:15px;
+}
+
+.error-tips
+{
+    color:#A94442;
+    font-size:12px;
+    height:20px;
+    line-height:20px;
+    padding-left:100px;
+}
+
+.wizard-panel section div:first-child{
+    margin-top:0;
+}
+
+.wizard-panel section div:last-child{
+    margin-bottom:0;
+}
+
+.bs-callout {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #fff;
+    border-image: none;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px 1px 1px 5px;
+    margin: 20px 0;
+    padding: 20px;
+    background-color:#fff;
+}
+.bs-callout h4 {
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+.bs-callout > div, .bs-callout > ol, .bs-callout > ul {
+    font-size: 14px;
+    line-height: 1.75;
+    margin-bottom: 1em;
+}
+.bs-callout .row {
+    margin-bottom:5px;
+}
+.bs-callout div:last-child {
+    margin-bottom: 0;
+}
+.bs-callout code {
+    border-radius: 3px;
+}
+.bs-callout + .bs-callout {
+    margin-top: -5px;
+}
+.bs-callout-danger {
+    border-left-color: #ce4844;
+}
+.bs-callout-danger h4 {
+    color: #ce4844;
+}
+.bs-callout-warning {
+    border-left-color: #aa6708;
+}
+.bs-callout-warning h4 {
+    color: #aa6708;
+}
+.bs-callout-info {
+    border-left-color: #1b809e;
+}
+.bs-callout-info h4 {
+    color: #1b809e;
+}
+
+.table-striped > tbody > tr {    
+    background-color: #f9f9f9;
+}
+
+@media screen and (min-width: 992px) {
+   .container {
+    max-width: 992px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+   .container {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+}

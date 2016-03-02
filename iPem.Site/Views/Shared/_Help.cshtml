@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 帮助中心</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+        <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+        @Styles.Render("~/bundles/bootstrap/css")
+        @Styles.Render("~/bundles/help/css")
+        @RenderSection("head", required: false)
+    </head>
+    <body data-spy="scroll" data-target="#left-nav">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="javascript:void(0);"><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> 帮助中心 400-820-9595</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul id="guid-link" class="nav navbar-nav navbar-right">
+                        <li class="@(ViewBag.active == 0 ? "active" : "")"><a href="/Help" target="_self">新手指南</a></li>
+                        <li class="@(ViewBag.active == 1 ? "active" : "")"><a href="/Help/FAQ" target="_self">常见问题</a></li>
+                        <li class="@(ViewBag.active == 2 ? "active" : "")"><a href="/Help/Contact" target="_self">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+        <div class="footer">
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Copyright</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Requirements</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Version</p>
+        </div>
+
+        <!-- Placed at the end of the document so the pages load faster -->
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/help")
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

@@ -1,0 +1,19 @@
+﻿<div id="defaut-title-bar">
+    <div class="title-bar clearfix">
+        <h1 class="l">系统主页</h1>
+        <div class="desc l"></div>
+        <a id="help-btn" title="点击可查看详细帮助" class="help l" href="javascript:void(0);">&nbsp;</a>
+    </div>
+    <div id="help-tip" class="help-tip" style=" display:none;">
+        <div id="tip-arrow" class="tip-arrow"></div>
+        <div class="help-tip-content">
+            <div class="tip-content">
+                <p class="label">功能说明：</p>
+                <p class="text">通过对数据的深度分析、挖掘，提供内容丰富的系统关键指标。助您了解当前系统的整体情况。</p>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="@Url.Content("~/Scripts/home.js")" type="text/javascript"></script>
+}

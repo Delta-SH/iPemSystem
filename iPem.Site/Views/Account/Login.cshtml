@@ -1,0 +1,136 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 登录</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    <link href="@Url.Content("~/Content/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/css/account.login.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="brand">
+            </div>
+        </div>
+    </div>
+    <div class="center">
+        <div class="container">
+            <div class="panel panel-primary login">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span style="padding-left:8px;">登录系统</span>
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    @using(Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "login-form" })) {
+                        @Html.AntiForgeryToken()
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                            <input id="uid" name="uid" type="text" class="form-control" placeholder="请输入用户名" value="@(ViewBag.UId != null ? ViewBag.Uid : "")" required />
+                        </div>
+                        <div class="error-tips"></div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                            <input id="pwd" name="pwd" type="password" class="form-control" placeholder="请输入密码" required />
+                        </div>
+                        <div class="error-tips"></div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-barcode"></span></span>
+                            <input id="captcha" name="captcha" type="text" maxlength="5" class="form-control" placeholder="请输入验证码" style="width:55%;" required />
+                            <img class="captcha" src="/Account/GetCaptcha" alt="点击换一张" title="点击换一张" />
+                        </div>
+                        <div class="error-tips"></div>
+                        <button class="btn btn-primary btn-block" type="submit">登录</button>
+                        var validationSummary = Html.ValidationSummary(true);
+                        if(!MvcHtmlString.IsNullOrEmpty(validationSummary)) {
+                            <div id="alert" class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;margin-top:5px;padding:10px 30px 10px 10px;">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                @validationSummary
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="introduction">
+        <div class="container">
+            <div class="introduction-list">
+                <ul class="list-unstyled list-inline">
+                    <li>
+                        <i class="icon icon-1"></i>
+                        <div class="words">
+                            <h3>智能数据采集</h3>
+                            <p>
+                                智能高效数据采集
+                                <br />
+                                安全传输、高效处理
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="icon icon-2"></i>
+                        <div class="words">
+                            <h3>实时告警监控</h3>
+                            <p>
+                                实时监控设备告警
+                                <br />
+                                多方式通知、及时处理
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="icon icon-3"></i>
+                        <div class="words">
+                            <h3>深度数据挖掘</h3>
+                            <p>
+                                精确分析深度挖掘
+                                <br />
+                                全方位、多维度报表呈现
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="icon icon-4"></i>
+                        <div class="words">
+                            <h3>三方数据共享</h3>
+                            <p>
+                                全面丰富数据接口
+                                <br />
+                                随用随取、安全简便
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="container">
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Copyright</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Requirements</p>
+            <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Version</p>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="@Url.Content("~/Scripts/jquery-1.11.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap-3.3.5.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validation-1.14.0/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validation-1.14.0/additional-methods.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validation-1.14.0/localization/messages_zh.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/account.login.min.js")" type="text/javascript"></script>
+</body>
+</html>

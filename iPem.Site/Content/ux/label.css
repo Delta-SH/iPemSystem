@@ -1,0 +1,16 @@
+﻿.x-label {
+    height : 16px;
+}
+
+.x-label-value {
+    vertical-align : middle;
+}
+
+.x-label-icon {
+    border: 0 none !important;
+    height: 16px;
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+    width: 16px;
+}
