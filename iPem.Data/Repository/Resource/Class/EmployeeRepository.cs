@@ -117,7 +117,7 @@ namespace iPem.Data.Repository.Resource {
             return entity;
         }
 
-        public IList<Employee> GetEntities() {
+        public List<Employee> GetEntities() {
             var entities = new List<Employee>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Employee_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
@@ -160,7 +160,7 @@ namespace iPem.Data.Repository.Resource {
             return entities;
         }
 
-        public IList<Employee> GetEntitiesByDept(string id) {
+        public List<Employee> GetEntitiesByDept(string id) {
             SqlParameter[] parms = { new SqlParameter("@DeptId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 

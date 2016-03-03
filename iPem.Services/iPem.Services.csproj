@@ -73,12 +73,16 @@
     <Compile Include="Master\WebLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\AreaService.cs" />
+    <Compile Include="Resource\BrandService.cs" />
     <Compile Include="Resource\DepartmentService.cs" />
     <Compile Include="Resource\DeviceService.cs" />
+    <Compile Include="Resource\DeviceStatusService.cs" />
     <Compile Include="Resource\EmployeeService.cs" />
     <Compile Include="Resource\IAreaService.cs" />
+    <Compile Include="Resource\IBrandService.cs" />
     <Compile Include="Resource\IDepartmentService.cs" />
     <Compile Include="Resource\IDeviceService.cs" />
+    <Compile Include="Resource\IDeviceStatusService.cs" />
     <Compile Include="Resource\IEmployeeService.cs" />
     <Compile Include="Resource\IRoomService.cs" />
     <Compile Include="Resource\IStationService.cs" />

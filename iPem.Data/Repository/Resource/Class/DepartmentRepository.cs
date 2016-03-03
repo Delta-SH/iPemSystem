@@ -71,7 +71,7 @@ namespace iPem.Data.Repository.Resource {
             return entity;
         }
 
-        public IList<Department> GetEntities() {
+        public List<Department> GetEntities() {
             var entities = new List<Department>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Department_Repository_GetEntities, null)) {
                 while(rdr.Read()) {

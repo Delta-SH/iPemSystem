@@ -2,10 +2,10 @@
 
 namespace iPem.Core.Domain.Resource {
     /// <summary>
-    /// Represents a device type
+    /// Represents a logic type
     /// </summary>
     [Serializable]
-    public partial class DeviceType : BaseEntity {
+    public partial class LogicType {
         /// <summary>
         /// Gets or sets the identifier
         /// </summary>
@@ -15,10 +15,5 @@ namespace iPem.Core.Domain.Resource {
         /// Gets or sets the name
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the comment
-        /// </summary>
-        public string Comment { get; set; }
     }
 }

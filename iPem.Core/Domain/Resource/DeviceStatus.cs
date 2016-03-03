@@ -1,6 +1,10 @@
 ﻿using System;
 
 namespace iPem.Core.Domain.Resource {
+    /// <summary>
+    /// Represents a device status
+    /// </summary>
+    [Serializable]
     public partial class DeviceStatus : BaseEntity {
         /// <summary>
         /// Gets or sets the identifier

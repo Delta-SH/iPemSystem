@@ -34,6 +34,12 @@ namespace iPem.Services.Common {
         public const string Rs_RoomsRepository = "ipems:global:rs-room@repository";
         public const string Rs_DevicesInParentPattern = "ipems:global:rs-device@{0}@repository";
         public const string Rs_DevicesRepository = "ipems:global:rs-device@repository";
+        public const string Rs_BrandsRepository = "ipems:global:rs-brand@repository";
+        public const string Rs_DeviceStatusRepository = "ipems:global:rs-device-status@repository";
+        public const string Rs_DeviceTypeRepository = "ipems:global:rs-device-type@repository";
+        public const string Rs_DutiesRepository = "ipems:global:rs-duty@repository";
+        public const string Rs_EnumMethodsRepository = "ipems:global:rs-enum-methods@repository";
+        public const string Rs_LogicTypesRepository = "ipems:global:rs-logic-type@repository";
     }
 
     /// <summary>

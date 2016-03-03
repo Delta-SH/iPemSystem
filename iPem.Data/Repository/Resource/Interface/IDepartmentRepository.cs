@@ -11,6 +11,6 @@ namespace iPem.Data.Repository.Resource {
 
         Department GetEntityByCode(string code);
 
-        IList<Department> GetEntities();
+        List<Department> GetEntities();
     }
 }

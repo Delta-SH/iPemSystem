@@ -77,15 +77,27 @@
     <Compile Include="Repository\Master\UserRepository.cs" />
     <Compile Include="Repository\Master\WebEventRepository.cs" />
     <Compile Include="Repository\Resource\AreaRepository.cs" />
+    <Compile Include="Repository\Resource\BrandRepository.cs" />
     <Compile Include="Repository\Resource\DepartmentRepository.cs" />
     <Compile Include="Repository\Resource\DeviceRepository.cs" />
+    <Compile Include="Repository\Resource\DeviceStatusRepository.cs" />
+    <Compile Include="Repository\Resource\DeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\DutyRepository.cs" />
     <Compile Include="Repository\Resource\EmployeeRepository.cs" />
+    <Compile Include="Repository\Resource\EnumMethodsRepository.cs" />
     <Compile Include="Repository\Resource\IAreaRepository.cs" />
+    <Compile Include="Repository\Resource\IBrandRepository.cs" />
     <Compile Include="Repository\Resource\IDepartmentRepository.cs" />
     <Compile Include="Repository\Resource\IDeviceRepository.cs" />
+    <Compile Include="Repository\Resource\IDeviceStatusRepository.cs" />
+    <Compile Include="Repository\Resource\IDeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\IDutyRepository.cs" />
     <Compile Include="Repository\Resource\IEmployeeRepository.cs" />
+    <Compile Include="Repository\Resource\IEnumMethodsRepository.cs" />
+    <Compile Include="Repository\Resource\ILogicTypeRepository.cs" />
     <Compile Include="Repository\Resource\IRoomRepository.cs" />
     <Compile Include="Repository\Resource\IStationRepository.cs" />
+    <Compile Include="Repository\Resource\LogicTypeRepository.cs" />
     <Compile Include="Repository\Resource\RoomRepository.cs" />
     <Compile Include="Repository\Resource\StationRepository.cs" />
   </ItemGroup>

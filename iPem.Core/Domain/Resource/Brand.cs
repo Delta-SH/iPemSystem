@@ -1,6 +1,10 @@
 ﻿using System;
 
 namespace iPem.Core.Domain.Resource {
+    /// <summary>
+    /// Represents a brand
+    /// </summary>
+    [Serializable]
     public partial class Brand : BaseEntity {
         /// <summary>
         /// Gets or sets the identifier

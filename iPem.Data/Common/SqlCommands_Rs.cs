@@ -37,5 +37,29 @@ namespace iPem.Data.Common {
         public const string Sql_Device_Repository_GetEntity = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device] WHERE [Id]=@Id;";
         public const string Sql_Device_Repository_GetEntitiesByParent = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device] WHERE [RoomId]=@ParentId;";
         public const string Sql_Device_Repository_GetEntities = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device];";
+
+        //brand repository
+        public const string Sql_Brand_Repository_GetEntity = @"SELECT [Id],[Name],[ProductorId],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Brand] WHERE [Id] = @Id;";
+        public const string Sql_Brand_Repository_GetEntities = @"SELECT [Id],[Name],[ProductorId],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Brand] ORDER BY [Name];";
+
+        //device status repository
+        public const string Sql_DeviceStatus_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceStatus] WHERE [Id] = @Id;";
+        public const string Sql_DeviceStatus_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceStatus] ORDER BY [Id];";
+
+        //device type repository
+        public const string Sql_DeviceType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceType] WHERE [Id] = @Id;";
+        public const string Sql_DeviceType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceType] ORDER BY [Id];";
+
+        //duty repository
+        public const string Sql_Duty_Repository_GetEntity = @"SELECT [Id],[Name],[Level],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Duty] WHERE [Id] = @Id;";
+        public const string Sql_Duty_Repository_GetEntities = @"SELECT [Id],[Name],[Level],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Duty] ORDER BY [Id];";
+
+        //enum methods repository
+        public const string Sql_EnumMethods_Repository_GetEntity = @"SELECT [Id],[MethNo],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_EnumMethods] WHERE [Id] = @Id;";
+        public const string Sql_EnumMethods_Repository_GetEntities = @"SELECT [Id],[MethNo],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_EnumMethods] ORDER BY [Id];";
+
+        //logic type repository
+        public const string Sql_LogicType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
+        public const string Sql_LogicType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_LogicType] ORDER BY [Id];";
     }
 }

@@ -126,8 +126,11 @@
     <Compile Include="Domain\Resource\Department.cs" />
     <Compile Include="Domain\Resource\DeviceStatus.cs" />
     <Compile Include="Domain\Resource\DeviceType.cs" />
+    <Compile Include="Domain\Resource\Duty.cs" />
     <Compile Include="Domain\Resource\Employee.cs" />
     <Compile Include="Domain\Resource\Device.cs" />
+    <Compile Include="Domain\Resource\EnumMethods.cs" />
+    <Compile Include="Domain\Resource\LogicType.cs" />
     <Compile Include="Domain\Resource\Room.cs" />
     <Compile Include="Domain\Resource\Station.cs" />
     <Compile Include="Enum\EnmOrganization.cs" />

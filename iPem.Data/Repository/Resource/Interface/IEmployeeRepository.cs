@@ -11,8 +11,8 @@ namespace iPem.Data.Repository.Resource {
 
         Employee GetEntityByNo(string no);
 
-        IList<Employee> GetEntities();
+        List<Employee> GetEntities();
 
-        IList<Employee> GetEntitiesByDept(string id);
+        List<Employee> GetEntitiesByDept(string id);
     }
 }
