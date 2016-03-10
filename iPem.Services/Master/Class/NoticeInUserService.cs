@@ -75,7 +75,7 @@ namespace iPem.Services.Master {
         /// Add the notices
         /// </summary>
         /// <param name="notices">notices</param>
-        public virtual void AddNoticesInUsers(IList<NoticeInUser> notices) {
+        public virtual void AddNoticesInUsers(List<NoticeInUser> notices) {
             if(notices == null)
                 throw new ArgumentNullException("notice");
 
@@ -97,7 +97,7 @@ namespace iPem.Services.Master {
         /// Update the notices
         /// </summary>
         /// <param name="notices">notices</param>
-        public virtual void UpdateNoticesInUsers(IList<NoticeInUser> notices) {
+        public virtual void UpdateNoticesInUsers(List<NoticeInUser> notices) {
             if(notices == null)
                 throw new ArgumentNullException("notices");
 
@@ -119,7 +119,7 @@ namespace iPem.Services.Master {
         /// Marks a notice as deleted 
         /// </summary>
         /// <param name="notice">notice</param>
-        public virtual void DeleteNoticesInUsers(IList<NoticeInUser> notices) {
+        public virtual void DeleteNoticesInUsers(List<NoticeInUser> notices) {
             if(notices == null)
                 throw new ArgumentNullException("notices");
 
@@ -127,5 +127,6 @@ namespace iPem.Services.Master {
         }
 
         #endregion
+
     }
 }

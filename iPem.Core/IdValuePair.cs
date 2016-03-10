@@ -18,14 +18,14 @@ namespace iPem.Core {
         /// <param name="id">Id</param>
         /// <param name="value">Value</param>
         public IdValuePair(T1 id, T2 value) {
-            ID = id;
-            Value = value;
+            this.Id = id;
+            this.Value = value;
         }
 
         /// <summary>
         /// ID
         /// </summary>
-        public T1 ID { get; set; }
+        public T1 Id { get; set; }
 
         /// <summary>
         /// Value

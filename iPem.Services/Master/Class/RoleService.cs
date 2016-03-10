@@ -13,6 +13,7 @@ namespace iPem.Services.Master {
     /// Role service
     /// </summary>
     public partial class RoleService : IRoleService {
+
         #region Fields
 
         private readonly IRoleRepository _roleRepository;
@@ -70,12 +71,12 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>Role collection</returns>
         public virtual IPagedList<Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
-            IList<Role> roles = null;
+            List<Role> roles = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Cs_RolesRepository)) {
-                roles = _cacheManager.Get<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository);
+                roles = _cacheManager.Get<List<Role>>(GlobalCacheKeys.Cs_RolesRepository);
             } else {
                 roles = _roleRepository.GetEntities();
-                _cacheManager.Set<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
+                _cacheManager.Set<List<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
             }
 
             return new PagedList<Role>(roles, pageIndex, pageSize);
@@ -89,15 +90,15 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>Role collection</returns>
         public virtual IPagedList<Role> GetAllRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue) {
-            IList<Role> roles = null;
+            List<Role> roles = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Cs_RolesRepository)) {
-                roles = _cacheManager.Get<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository);
+                roles = _cacheManager.Get<List<Role>>(GlobalCacheKeys.Cs_RolesRepository);
             } else {
                 roles = _roleRepository.GetEntities();
-                _cacheManager.Set<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
+                _cacheManager.Set<List<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
             }
 
-            var result = id.Equals(Role.SuperId) ? roles.AsQueryable() : roles.AsQueryable().Where(r => r.Id.Equals(id));
+            var result = id.Equals(Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
             return new PagedList<Role>(result, pageIndex, pageSize);
         }
 
@@ -109,15 +110,15 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>Role collection</returns>
         public virtual IPagedList<Role> GetAllRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue) {
-            IList<Role> roles = null;
+            List<Role> roles = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Cs_RolesRepository)) {
-                roles = _cacheManager.Get<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository);
+                roles = _cacheManager.Get<List<Role>>(GlobalCacheKeys.Cs_RolesRepository);
             } else {
                 roles = _roleRepository.GetEntities();
-                _cacheManager.Set<IList<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
+                _cacheManager.Set<List<Role>>(GlobalCacheKeys.Cs_RolesRepository, roles);
             }
 
-            var result = roles.AsQueryable().Where(r => CommonHelper.ConditionContain(r.Name, names));
+            var result = roles.FindAll(r => CommonHelper.ConditionContain(r.Name, names));
             return new PagedList<Role>(result, pageIndex, pageSize);
         }
 
@@ -179,5 +180,6 @@ namespace iPem.Services.Master {
         }
 
         #endregion
+
     }
 }

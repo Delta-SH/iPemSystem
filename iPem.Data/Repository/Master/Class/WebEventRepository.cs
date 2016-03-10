@@ -29,7 +29,7 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public virtual IList<WebEvent> GetEntities(DateTime startTime, DateTime endTime) {
+        public virtual List<WebEvent> GetEntities(DateTime startTime, DateTime endTime) {
             SqlParameter[] parms = { new SqlParameter("@StartTime", SqlDbType.DateTime),
                                      new SqlParameter("@EndTime", SqlDbType.DateTime) };
 
@@ -56,7 +56,7 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public virtual IList<WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null) {
+        public virtual List<WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null) {
             var query = @"SELECT [Id],[Level],[Type],[ShortMessage],[FullMessage],[IpAddress],[PageUrl],[ReferrerUrl],[UserId],[CreatedTime] FROM [dbo].[H_WebEvents]";
 
             var conditions = new List<String>();
@@ -111,7 +111,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<WebEvent>() { entity });
         }
 
-        public virtual void Insert(IList<WebEvent> entities) {
+        public virtual void Insert(List<WebEvent> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Level", SqlDbType.Int),
                                      new SqlParameter("@Type", SqlDbType.Int),
@@ -154,7 +154,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<WebEvent>() { entity });
         }
 
-        public virtual void Delete(IList<WebEvent> entities) {
+        public virtual void Delete(List<WebEvent> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

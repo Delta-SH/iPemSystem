@@ -44,7 +44,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<AreasInRole> { entity });
         }
 
-        public virtual void Insert(IList<AreasInRole> entities) {
+        public virtual void Insert(List<AreasInRole> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@AreaId", SqlDbType.VarChar,100) };
 
@@ -71,7 +71,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<Guid> { role });
         }
 
-        public virtual void Delete(IList<Guid> roles) {
+        public virtual void Delete(List<Guid> roles) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {

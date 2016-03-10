@@ -48,8 +48,7 @@ namespace iPem.Services.Resource {
                 _cacheManager.Set<List<Area>>(GlobalCacheKeys.Rs_AreasRepository, areas);
             }
 
-            var result = new PagedList<Area>(areas, pageIndex, pageSize);
-            return result;
+            return new PagedList<Area>(areas, pageIndex, pageSize);
         }
 
         #endregion

@@ -51,14 +51,14 @@ namespace iPem.Services.Resource {
             return result;
         }
 
-        public IPagedList<Station> GetStationsInParent(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Rs_StationsInParentPattern, parent);
+        public IPagedList<Station> GetChildrenInStation(string parent, bool include = true, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var key = string.Format(GlobalCacheKeys.Rs_ChildrenInStationPattern, parent, include, deep);
 
             List<Station> stations = null;
             if(_cacheManager.IsSet(key)) {
                 stations = _cacheManager.Get<List<Station>>(key);
             } else {
-                stations = _stationRepository.GetEntitiesInParent(parent);
+                stations = _stationRepository.GetChildrenEntities(parent, include, deep);
                 _cacheManager.Set<List<Station>>(key, stations);
             }
 

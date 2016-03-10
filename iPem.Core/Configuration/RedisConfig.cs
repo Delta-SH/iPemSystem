@@ -46,7 +46,7 @@ namespace iPem.Core.Configuration {
             set { this["MaxReadPoolSize"] = value; }
         }
 
-        [ConfigurationProperty("LocalCacheTime", DefaultValue = 60L, IsRequired = false)]
+        [ConfigurationProperty("LocalCacheTime", DefaultValue = 300L, IsRequired = false)]
         [LongValidator(MinValue = 1L, MaxValue = 2592000L, ExcludeRange = false)]
         public Int64 LocalCacheTime {
             get { return (Int64)this["LocalCacheTime"]; }

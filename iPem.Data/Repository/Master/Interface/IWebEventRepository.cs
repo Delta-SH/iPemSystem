@@ -8,17 +8,17 @@ namespace iPem.Data.Repository.Master {
     /// Event repository interface
     /// </summary>
     public partial interface IWebEventRepository {
-        IList<WebEvent> GetEntities(DateTime startTime, DateTime endTime);
+        List<WebEvent> GetEntities(DateTime startTime, DateTime endTime);
 
-        IList<WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null);
+        List<WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null);
 
         void Insert(WebEvent entity);
 
-        void Insert(IList<WebEvent> entities);
+        void Insert(List<WebEvent> entities);
 
         void Delete(WebEvent entity);
 
-        void Delete(IList<WebEvent> entities);
+        void Delete(List<WebEvent> entities);
 
         void Clear(DateTime? startTime = null, DateTime? endTime = null);
     }

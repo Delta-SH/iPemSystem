@@ -7,22 +7,6 @@ namespace iPem.Core {
     [Serializable]
     public partial class iPemStore {
 
-        #region Fields
-
-        private TimeSpan _cachedInterval;
-
-        #endregion
-
-        #region Ctor
-
-        public iPemStore() {
-            this._cachedInterval = TimeSpan.FromSeconds(300);
-        }
-
-        #endregion
-
-        #region Properties
-
         /// <summary>
         /// Gets or sets the application identifier
         /// </summary>
@@ -41,7 +25,7 @@ namespace iPem.Core {
         /// Gets or sets the application version
         /// </summary>
         public string Version {
-            get { return "V1.0.0 Build151001"; }
+            get { return "V1.0.0 Build160301"; }
         }
 
         /// <summary>
@@ -86,16 +70,6 @@ namespace iPem.Core {
         /// Gets or sets the application port
         /// </summary>
         public int Port { get; set; }
-
-        /// <summary>
-        /// Gets or sets the application cached interval
-        /// </summary>
-        public TimeSpan CachedInterval {
-            get { return this._cachedInterval; }
-            set { this._cachedInterval = value; }
-        }
-
-        #endregion
 
     }
 }

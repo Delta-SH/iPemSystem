@@ -35,6 +35,10 @@
     background-color: #fff;
 }
 
+.x-grid-locked .x-grid-inner-locked {
+    border-color: #c0c0c0;
+}
+
 .x-cell-icon {
     margin:0 5px;
 }

@@ -14,14 +14,14 @@ namespace iPem.Services.Master {
 
         void AddNoticeInUser(NoticeInUser notice);
 
-        void AddNoticesInUsers(IList<NoticeInUser> notices);
+        void AddNoticesInUsers(List<NoticeInUser> notices);
 
         void UpdateNoticeInUser(NoticeInUser notice);
 
-        void UpdateNoticesInUsers(IList<NoticeInUser> notices);
+        void UpdateNoticesInUsers(List<NoticeInUser> notices);
 
         void DeleteNoticesInUser(NoticeInUser notice);
 
-        void DeleteNoticesInUsers(IList<NoticeInUser> notices);
+        void DeleteNoticesInUsers(List<NoticeInUser> notices);
     }
 }

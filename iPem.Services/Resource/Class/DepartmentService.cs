@@ -11,6 +11,7 @@ namespace iPem.Services.Resource {
     /// Department service
     /// </summary>
     public partial class DepartmentService : IDepartmentService {
+
         #region Fields
 
         private readonly IDepartmentRepository _departmentRepository;
@@ -43,18 +44,18 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Department> GetAllDepartments(int pageIndex = 0, int pageSize = int.MaxValue) {
-            IList<Department> departments = null;
+            List<Department> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_DepartmentRepository)) {
-                departments = _cacheManager.Get<IList<Department>>(GlobalCacheKeys.Rs_DepartmentRepository);
+                result = _cacheManager.Get<List<Department>>(GlobalCacheKeys.Rs_DepartmentRepository);
             } else {
-                departments = _departmentRepository.GetEntities();
-                _cacheManager.Set<IList<Department>>(GlobalCacheKeys.Rs_DepartmentRepository, departments);
+                result = _departmentRepository.GetEntities();
+                _cacheManager.Set<List<Department>>(GlobalCacheKeys.Rs_DepartmentRepository, result);
             }
 
-            var result = new PagedList<Department>(departments, pageIndex, pageSize);
-            return result;
+            return new PagedList<Department>(result, pageIndex, pageSize);
         }
 
         #endregion
+
     }
 }

@@ -11,7 +11,7 @@ namespace iPem.Data.Repository.Resource {
 
         List<Station> GetEntitiesInArea(string area);
 
-        List<Station> GetEntitiesInParent(string parent);
+        List<Station> GetChildrenEntities(string parent, bool include, bool deep);
 
         List<Station> GetEntities();
     }

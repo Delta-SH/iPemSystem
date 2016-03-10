@@ -165,7 +165,7 @@ namespace iPem.Site.Controllers {
 
                     var store = new Store {
                         Id = Guid.NewGuid(),
-                        ExpireUtc = now.Add(EngineContext.Current.AppStore.CachedInterval),
+                        ExpireUtc = now.Add(CachedIntervals.AppStoreIntervals),
                         CreatedUtc = now
                     };
 
@@ -299,7 +299,7 @@ namespace iPem.Site.Controllers {
                 if(role == null)
                     throw new iPemException("未找到数据对象");
 
-                var menus = _menuService.GetAllMenus(role.Id, 0, int.MaxValue);
+                var menus = _menuService.GetMenus(role.Id, 0, int.MaxValue);
                 var areas = _areaInRoleService.GetAreasInRole(role.Id);
                 var operate = _operateInRoleService.GetOperateInRole(role.Id);
                 data.data.id = role.Id.ToString();
@@ -328,7 +328,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var menus = _menuService.GetAllMenus(_workContext.CurrentRole.Id, 0, int.MaxValue).ToList();
+                var menus = _menuService.GetMenus(_workContext.CurrentRole.Id, 0, int.MaxValue).ToList();
                 if(menus.Count > 0) {
                     var _menus = menus.FindAll(m => m.LastId == 0).OrderBy(m => m.Index).ToList();
                     if(_menus.Count > 0) {
@@ -604,7 +604,7 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<RoleModel>(models, "角色信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.CurrentEmployee != null ? _workContext.CurrentEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<RoleModel>(models, "角色信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -628,7 +628,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
 
                 IList<UserModel> models = null;
                 if(_cacheManager.IsSet(key)) {
@@ -760,7 +760,7 @@ namespace iPem.Site.Controllers {
             try {
                 var user = _workContext.CurrentUser;
                 var role = _workContext.CurrentRole;
-                var employee = _workContext.CurrentEmployee;
+                var employee = _workContext.AssociatedEmployee;
 
                 data.data.id = user.Id.ToString();
                 data.data.uid = user.Uid;
@@ -824,7 +824,7 @@ namespace iPem.Site.Controllers {
 
                     _userService.InsertUser(newUser);
                     _webLogger.Information(EnmEventType.Operating, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                    var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                     if(_cacheManager.IsSet(key))
                         _cacheManager.Remove(key);
 
@@ -845,7 +845,7 @@ namespace iPem.Site.Controllers {
 
                     _userService.UpdateUser(existedUser);
                     _webLogger.Information(EnmEventType.Operating, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                    var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                     if(_cacheManager.IsSet(key))
                         _cacheManager.Remove(key);
 
@@ -875,7 +875,7 @@ namespace iPem.Site.Controllers {
 
                 _userService.DeleteUser(existedUser);
                 _webLogger.Information(EnmEventType.Operating, string.Format("删除用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                 if(_cacheManager.IsSet(key))
                     _cacheManager.Remove(key);
 
@@ -902,7 +902,7 @@ namespace iPem.Site.Controllers {
 
                 _userService.ForcePassword(existedUser, password);
                 _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                 if(_cacheManager.IsSet(key))
                     _cacheManager.Remove(key);
 
@@ -949,7 +949,7 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadUsers(string[] rids, string[] names) {
             try {
-                var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
 
                 IList<UserModel> models = null;
                 if(_cacheManager.IsSet(key)) {
@@ -1004,7 +1004,7 @@ namespace iPem.Site.Controllers {
                 for(var i = 0; i < models.Count; i++)
                     models[i].index = i + 1;
 
-                using(var ms = _excelManager.Export<UserModel>(models.ToList(), "用户信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.CurrentEmployee != null ? _workContext.CurrentEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<UserModel>(models.ToList(), "用户信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -1103,7 +1103,7 @@ namespace iPem.Site.Controllers {
             try {
                 if("user".Equals(result.action)){
                     if("query".Equals(result.method)) {
-                        var key = Common.GetCachedKey(UserCacheKeys.UsersResultPattern, _workContext);
+                        var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                         if(_cacheManager.IsSet(key))
                             _cacheManager.Remove(key);
                     } else throw new ArgumentException("参数无效 method");
@@ -1303,7 +1303,7 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<EventModel>(models, "日志信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.CurrentEmployee != null ? _workContext.CurrentEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<EventModel>(models, "日志信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {

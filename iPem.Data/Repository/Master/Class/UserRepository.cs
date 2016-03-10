@@ -91,7 +91,7 @@ namespace iPem.Data.Repository.Master {
             return entity;
         }
 
-        public virtual IList<User> GetEntities() {
+        public virtual List<User> GetEntities() {
             var entities = new List<User>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_User_Repository_GetEntities1, null)) {
                 while (rdr.Read()) {
@@ -119,7 +119,7 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public virtual IList<User> GetEntities(Guid id) {
+        public virtual List<User> GetEntities(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
@@ -154,7 +154,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<User>() { entity });
         }
 
-        public virtual void Insert(IList<User> entities) {
+        public virtual void Insert(List<User> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Uid", SqlDbType.VarChar,100),
@@ -209,7 +209,7 @@ namespace iPem.Data.Repository.Master {
             Update(new List<User>() { entity });
         }
 
-        public virtual void Update(IList<User> entities) {
+        public virtual void Update(List<User> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Uid", SqlDbType.VarChar,100),
@@ -256,7 +256,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<User>() { entity });
         }
 
-        public virtual void Delete(IList<User> entities) {
+        public virtual void Delete(List<User> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

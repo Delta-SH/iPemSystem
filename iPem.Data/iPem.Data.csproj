@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\SqlCommands_Hs.cs" />
     <Compile Include="Common\SqlCommands_Cs.cs" />
     <Compile Include="Common\SqlCommands_Rs.cs" />
     <Compile Include="Common\SqlHelper.cs" />
@@ -46,60 +47,76 @@
     <Compile Include="Installation\DbInstaller.cs" />
     <Compile Include="Installation\IDbInstaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\Master\AreaRepository.cs" />
-    <Compile Include="Repository\Master\AreasInRoleRepository.cs" />
-    <Compile Include="Repository\Master\DeviceRepository.cs" />
-    <Compile Include="Repository\Master\IAreaRepository.cs" />
-    <Compile Include="Repository\Master\IAreasInRoleRepository.cs" />
-    <Compile Include="Repository\Master\IDeviceRepository.cs" />
-    <Compile Include="Repository\Master\IMenuRepository.cs" />
-    <Compile Include="Repository\Master\IMenusInRoleRepository.cs" />
-    <Compile Include="Repository\Master\INoticeRepository.cs" />
-    <Compile Include="Repository\Master\INoticeInUserRepository.cs" />
-    <Compile Include="Repository\Master\IOperateInRoleRepository.cs" />
-    <Compile Include="Repository\Master\IPointRepository.cs" />
-    <Compile Include="Repository\Master\IProtocolRepository.cs" />
-    <Compile Include="Repository\Master\IRoleRepository.cs" />
-    <Compile Include="Repository\Master\IRoomRepository.cs" />
-    <Compile Include="Repository\Master\IStationRepository.cs" />
-    <Compile Include="Repository\Master\IUserRepository.cs" />
-    <Compile Include="Repository\Master\IWebEventRepository.cs" />
-    <Compile Include="Repository\Master\MenuRepository.cs" />
-    <Compile Include="Repository\Master\MenusInRoleRepository.cs" />
-    <Compile Include="Repository\Master\NoticeRepository.cs" />
-    <Compile Include="Repository\Master\NoticeInUserRepository.cs" />
-    <Compile Include="Repository\Master\OperateInRoleRepository.cs" />
-    <Compile Include="Repository\Master\PointRepository.cs" />
-    <Compile Include="Repository\Master\ProtocolRepository.cs" />
-    <Compile Include="Repository\Master\RoleRepository.cs" />
-    <Compile Include="Repository\Master\RoomRepository.cs" />
-    <Compile Include="Repository\Master\StationRepository.cs" />
-    <Compile Include="Repository\Master\UserRepository.cs" />
-    <Compile Include="Repository\Master\WebEventRepository.cs" />
-    <Compile Include="Repository\Resource\AreaRepository.cs" />
-    <Compile Include="Repository\Resource\BrandRepository.cs" />
-    <Compile Include="Repository\Resource\DepartmentRepository.cs" />
-    <Compile Include="Repository\Resource\DeviceRepository.cs" />
-    <Compile Include="Repository\Resource\DeviceStatusRepository.cs" />
-    <Compile Include="Repository\Resource\DeviceTypeRepository.cs" />
-    <Compile Include="Repository\Resource\DutyRepository.cs" />
-    <Compile Include="Repository\Resource\EmployeeRepository.cs" />
-    <Compile Include="Repository\Resource\EnumMethodsRepository.cs" />
-    <Compile Include="Repository\Resource\IAreaRepository.cs" />
-    <Compile Include="Repository\Resource\IBrandRepository.cs" />
-    <Compile Include="Repository\Resource\IDepartmentRepository.cs" />
-    <Compile Include="Repository\Resource\IDeviceRepository.cs" />
-    <Compile Include="Repository\Resource\IDeviceStatusRepository.cs" />
-    <Compile Include="Repository\Resource\IDeviceTypeRepository.cs" />
-    <Compile Include="Repository\Resource\IDutyRepository.cs" />
-    <Compile Include="Repository\Resource\IEmployeeRepository.cs" />
-    <Compile Include="Repository\Resource\IEnumMethodsRepository.cs" />
-    <Compile Include="Repository\Resource\ILogicTypeRepository.cs" />
-    <Compile Include="Repository\Resource\IRoomRepository.cs" />
-    <Compile Include="Repository\Resource\IStationRepository.cs" />
-    <Compile Include="Repository\Resource\LogicTypeRepository.cs" />
-    <Compile Include="Repository\Resource\RoomRepository.cs" />
-    <Compile Include="Repository\Resource\StationRepository.cs" />
+    <Compile Include="Repository\History\Class\ActAlmRepository.cs" />
+    <Compile Include="Repository\History\Interface\IActAlmRepository.cs" />
+    <Compile Include="Repository\Master\Class\AreaRepository.cs" />
+    <Compile Include="Repository\Master\Class\AreasInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Class\DeviceRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IAreaRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IAreasInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IDeviceRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IMenuRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IMenusInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Interface\INoticeRepository.cs" />
+    <Compile Include="Repository\Master\Interface\INoticeInUserRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IOperateInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IPointRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IProtocolRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IRoleRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IRoomRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IStationRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IUserRepository.cs" />
+    <Compile Include="Repository\Master\Interface\IWebEventRepository.cs" />
+    <Compile Include="Repository\Master\Class\MenuRepository.cs" />
+    <Compile Include="Repository\Master\Class\MenusInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Class\NoticeRepository.cs" />
+    <Compile Include="Repository\Master\Class\NoticeInUserRepository.cs" />
+    <Compile Include="Repository\Master\Class\OperateInRoleRepository.cs" />
+    <Compile Include="Repository\Master\Class\PointRepository.cs" />
+    <Compile Include="Repository\Master\Class\ProtocolRepository.cs" />
+    <Compile Include="Repository\Master\Class\RoleRepository.cs" />
+    <Compile Include="Repository\Master\Class\RoomRepository.cs" />
+    <Compile Include="Repository\Master\Class\StationRepository.cs" />
+    <Compile Include="Repository\Master\Class\UserRepository.cs" />
+    <Compile Include="Repository\Master\Class\WebEventRepository.cs" />
+    <Compile Include="Repository\Resource\Class\AreaRepository.cs" />
+    <Compile Include="Repository\Resource\Class\BrandRepository.cs" />
+    <Compile Include="Repository\Resource\Class\DepartmentRepository.cs" />
+    <Compile Include="Repository\Resource\Class\DeviceRepository.cs" />
+    <Compile Include="Repository\Resource\Class\DeviceStatusRepository.cs" />
+    <Compile Include="Repository\Resource\Class\DeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\DutyRepository.cs" />
+    <Compile Include="Repository\Resource\Class\EmployeeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\EnumMethodsRepository.cs" />
+    <Compile Include="Repository\Resource\Class\ProductorRepository.cs" />
+    <Compile Include="Repository\Resource\Class\RoomTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\StationTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\SubCompanyRepository.cs" />
+    <Compile Include="Repository\Resource\Class\SubDeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\SupplierRepository.cs" />
+    <Compile Include="Repository\Resource\Class\UnitRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IAreaRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IBrandRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IDepartmentRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IDeviceRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IDeviceStatusRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IDeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IDutyRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IEmployeeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IEnumMethodsRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\ILogicTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IProductorRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IRoomRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IRoomTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IStationRepository.cs" />
+    <Compile Include="Repository\Resource\Class\LogicTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Class\RoomRepository.cs" />
+    <Compile Include="Repository\Resource\Class\StationRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IStationTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\ISubCompanyRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\ISubDeviceTypeRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\ISupplierRepository.cs" />
+    <Compile Include="Repository\Resource\Interface\IUnitRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">
@@ -107,9 +124,7 @@
       <Name>iPem.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repository\History\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>

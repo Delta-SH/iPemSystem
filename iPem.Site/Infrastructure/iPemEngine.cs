@@ -8,6 +8,8 @@ using iPem.Core.NPOI;
 using iPem.Data.Installation;
 using MsData = iPem.Data.Repository.Master;
 using MsSrv = iPem.Services.Master;
+using HsData = iPem.Data.Repository.History;
+using HsSrv = iPem.Services.History;
 using RsData = iPem.Data.Repository.Resource;
 using RsSrv = iPem.Services.Resource;
 using System;
@@ -15,6 +17,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+
 
 namespace iPem.Site.Infrastructure {
     /// <summary>
@@ -114,6 +117,16 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<MsSrv.ProtocolService>().As<MsSrv.IProtocolService>().InstancePerLifetimeScope();
             }
 
+            if(dbManager.IsValid(EnmDatabaseType.History)) {
+                var connectionString = dbManager.CurrentConnetions[EnmDatabaseType.History];
+
+                //register repository
+                builder.Register<HsData.IActAlmRepository>(c => new HsData.ActAlmRepository(connectionString)).InstancePerLifetimeScope();
+
+                //register service
+                builder.RegisterType<HsSrv.ActAlmService>().As<HsSrv.IActAlmService>().InstancePerLifetimeScope();
+            }
+
             if(dbManager.IsValid(EnmDatabaseType.Resource)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDatabaseType.Resource];
 
@@ -124,6 +137,19 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<RsData.IStationRepository>(c => new RsData.StationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IRoomRepository>(c => new RsData.RoomRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IDeviceRepository>(c => new RsData.DeviceRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IBrandRepository>(c => new RsData.BrandRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IDeviceStatusRepository>(c => new RsData.DeviceStatusRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IDeviceTypeRepository>(c => new RsData.DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IDutyRepository>(c => new RsData.DutyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IEnumMethodsRepository>(c => new RsData.EnumMethodsRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.ILogicTypeRepository>(c => new RsData.LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IProductorRepository>(c => new RsData.ProductorRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IRoomTypeRepository>(c => new RsData.RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IStationTypeRepository>(c => new RsData.StationTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.ISubCompanyRepository>(c => new RsData.SubCompanyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.ISubDeviceTypeRepository>(c => new RsData.SubDeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.ISupplierRepository>(c => new RsData.SupplierRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IUnitRepository>(c => new RsData.UnitRepository(connectionString)).InstancePerLifetimeScope();
                                 
                 //register service
                 builder.RegisterType<RsSrv.EmployeeService>().As<RsSrv.IEmployeeService>().InstancePerLifetimeScope();
@@ -132,6 +158,19 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RsSrv.StationService>().As<RsSrv.IStationService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.RoomService>().As<RsSrv.IRoomService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.DeviceService>().As<RsSrv.IDeviceService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.BrandService>().As<RsSrv.IBrandService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.DeviceStatusService>().As<RsSrv.IDeviceStatusService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.DeviceTypeService>().As<RsSrv.IDeviceTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.DutyService>().As<RsSrv.IDutyService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.EnumMethodsService>().As<RsSrv.IEnumMethodsService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.LogicTypeService>().As<RsSrv.ILogicTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.ProductorService>().As<RsSrv.IProductorService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.RoomTypeService>().As<RsSrv.IRoomTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.StationTypeService>().As<RsSrv.IStationTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.SubCompanyService>().As<RsSrv.ISubCompanyService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.SubDeviceTypeService>().As<RsSrv.ISubDeviceTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.SupplierService>().As<RsSrv.ISupplierService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.UnitService>().As<RsSrv.IUnitService>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);

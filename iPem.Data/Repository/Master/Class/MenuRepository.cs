@@ -47,7 +47,7 @@ namespace iPem.Data.Repository.Master {
             return entity;
         }
 
-        public virtual IList<Menu> GetEntities() {
+        public virtual List<Menu> GetEntities() {
             var entities = new List<Menu>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Menu_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
@@ -70,7 +70,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<Menu>() { entity });
         }
 
-        public virtual void Insert(IList<Menu> entities) {
+        public virtual void Insert(List<Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Icon", SqlDbType.VarChar,512),
@@ -107,7 +107,7 @@ namespace iPem.Data.Repository.Master {
             Update(new List<Menu>() { entity });
         }
 
-        public virtual void Update(IList<Menu> entities) {
+        public virtual void Update(List<Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Icon", SqlDbType.VarChar,512),
@@ -144,7 +144,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<Menu>() { entity });
         }
 
-        public virtual void Delete(IList<Menu> entities) {
+        public virtual void Delete(List<Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

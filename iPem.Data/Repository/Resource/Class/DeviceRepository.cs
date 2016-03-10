@@ -43,10 +43,10 @@ namespace iPem.Data.Repository.Resource {
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullInt32Handler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullInt32Handler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullInt32Handler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullInt32Handler(rdr["SubCompId"]);
+                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
+                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
+                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
+                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -64,7 +64,7 @@ namespace iPem.Data.Repository.Resource {
         }
 
         public List<Device> GetEntities(string parent) {
-            SqlParameter[] parms = { new SqlParameter("@ParentId", SqlDbType.VarChar, 100) };
+            SqlParameter[] parms = { new SqlParameter("@Parent", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
 
             var entities = new List<Device>();
@@ -79,10 +79,10 @@ namespace iPem.Data.Repository.Resource {
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullInt32Handler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullInt32Handler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullInt32Handler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullInt32Handler(rdr["SubCompId"]);
+                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
+                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
+                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
+                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -113,10 +113,10 @@ namespace iPem.Data.Repository.Resource {
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullInt32Handler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullInt32Handler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullInt32Handler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullInt32Handler(rdr["SubCompId"]);
+                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
+                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
+                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
+                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);

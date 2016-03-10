@@ -12,7 +12,7 @@ namespace iPem.Core.Caching {
         /// <summary>
         /// CacheTime Interval
         /// </summary>
-        private const long _cacheTime = 60;
+        private static TimeSpan _cacheTime = TimeSpan.FromSeconds(300);
 
         protected Cache Cache {
             get {
@@ -45,8 +45,8 @@ namespace iPem.Core.Caching {
         /// <param name="key">key</param>
         /// <param name="data">Data</param>
         /// <param name="cacheTime">Cache time</param>
-        public virtual void Set<T>(string key, T data, long cacheTime) {
-            Cache.Insert(key, data, null, Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(cacheTime), CacheItemPriority.Default, null);
+        public virtual void Set<T>(string key, T data, TimeSpan cacheTime) {
+            Cache.Insert(key, data, null, Cache.NoAbsoluteExpiration, cacheTime, CacheItemPriority.Default, null);
         }
 
         /// <summary>

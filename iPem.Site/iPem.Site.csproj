@@ -157,6 +157,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ComponentController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -172,8 +173,11 @@
     <Compile Include="Infrastructure\Icons.cs" />
     <Compile Include="Infrastructure\iPemEngine.cs" />
     <Compile Include="Infrastructure\iPemWorkContext.cs" />
+    <Compile Include="Models\ActAlmModel.cs" />
+    <Compile Include="Models\ActAlmStore.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
+    <Compile Include="Models\ChartModel.cs" />
     <Compile Include="Models\ComboItem.cs" />
     <Compile Include="Models\CustomAttribute.cs" />
     <Compile Include="Models\EventModel.cs" />
@@ -275,6 +279,11 @@
     <Content Include="Scripts\account.users.js" />
     <Content Include="Scripts\bootstrap-3.3.5.js" />
     <Content Include="Scripts\bootstrap-3.3.5.min.js" />
+    <Content Include="Scripts\components\AlarmLevelComponent.js" />
+    <Content Include="Scripts\components\DeviceTypeComponent.js" />
+    <Content Include="Scripts\components\LogicTypeComponent.js" />
+    <Content Include="Scripts\components\RoomTypeComponent.js" />
+    <Content Include="Scripts\components\StationTypeComponent.js" />
     <Content Include="Scripts\ext-4.2.1.883\bootstrap.js" />
     <Content Include="Scripts\ext-4.2.1.883\ext-all-debug-w-comments.js" />
     <Content Include="Scripts\ext-4.2.1.883\ext-all-debug.js" />

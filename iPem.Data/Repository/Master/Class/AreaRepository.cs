@@ -27,7 +27,7 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public virtual IList<Area> GetEntities(Guid role) {
+        public virtual List<Area> GetEntities(Guid role) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(role);
 
@@ -44,7 +44,7 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public virtual IList<Area> GetEntities() {
+        public virtual List<Area> GetEntities() {
             var entities = new List<Area>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Area_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
@@ -62,7 +62,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<Area> { entity });
         }
 
-        public virtual void Insert(IList<Area> entities) {
+        public virtual void Insert(List<Area> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Comment", SqlDbType.VarChar,512),
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
@@ -89,7 +89,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<Area> { entity });
         }
 
-        public virtual void Delete(IList<Area> entities) {
+        public virtual void Delete(List<Area> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

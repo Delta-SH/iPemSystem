@@ -76,6 +76,14 @@ namespace iPem.Site {
             bundles.Add(new StyleBundle("~/bundles/global/css").Include(
                 "~/Content/site.css"));
 
+            //component
+            bundles.Add(new ScriptBundle("~/bundles/components").Include(
+                "~/Scripts/components/StationTypeComponent.js",
+                "~/Scripts/components/RoomTypeComponent.js",
+                "~/Scripts/components/DeviceTypeComponent.js",
+                "~/Scripts/components/AlarmLevelComponent.js",
+                "~/Scripts/components/LogicTypeComponent.js"));
+
             //help
             bundles.Add(new ScriptBundle("~/bundles/help").Include(
                 "~/Scripts/help.js"));

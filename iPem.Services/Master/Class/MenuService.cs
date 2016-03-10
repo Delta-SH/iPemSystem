@@ -11,6 +11,7 @@ namespace iPem.Services.Master {
     /// Menu service
     /// </summary>
     public partial class MenuService : IMenuService {
+
         #region Fields
 
         private readonly IMenuRepository _menuRepository;
@@ -49,19 +50,39 @@ namespace iPem.Services.Master {
         /// <summary>
         /// Gets all menus
         /// </summary>
-        /// <param name="roleId">role id</param>
         /// <param name="pageIndex">Page index</param>
         /// <param name="pageSize">Page size</param>
         /// <returns>menu collection</returns>
-        public IPagedList<Menu> GetAllMenus(Guid roleId, int pageIndex, int pageSize) {
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, roleId);
-
-            IList<Menu> menus = null;
-            if(_cacheManager.IsSet(key)) {
-                menus = _cacheManager.Get<IList<Menu>>(key);
+        public IPagedList<Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue) {
+            List<Menu> menus = null;
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_MenusRepository)) {
+                menus = _cacheManager.Get<List<Menu>>(GlobalCacheKeys.Cs_MenusRepository);
             } else {
-                menus = roleId.Equals(Role.SuperId) ? _menuRepository.GetEntities() : _menusInRoleRepository.GetEntity(roleId).Menus;
-                _cacheManager.Set<IList<Menu>>(key, menus);
+                menus = _menuRepository.GetEntities();
+                _cacheManager.Set<List<Menu>>(GlobalCacheKeys.Cs_MenusRepository, menus);
+            }
+
+            return new PagedList<Menu>(menus, pageIndex, pageSize);
+        }
+
+        /// <summary>
+        /// Gets all menus in the role
+        /// </summary>
+        /// <param name="role">the role identifier</param>
+        /// <param name="pageIndex">Page index</param>
+        /// <param name="pageSize">Page size</param>
+        /// <returns>menu collection</returns>
+        public IPagedList<Menu> GetMenus(Guid role, int pageIndex = 0, int pageSize = int.MaxValue) {
+            if(role.Equals(Role.SuperId))
+                return this.GetAllMenus(pageIndex, pageSize);
+
+            List<Menu> menus = null;
+            var key = string.Format(GlobalCacheKeys.Rl_MenusResultPattern, role);
+            if(_cacheManager.IsSet(key)) {
+                menus = _cacheManager.Get<List<Menu>>(key);
+            } else {
+                menus = _menusInRoleRepository.GetEntity(role).Menus;
+                _cacheManager.Set<List<Menu>>(key, menus);
             }
 
             return new PagedList<Menu>(menus, pageIndex, pageSize);
@@ -75,8 +96,8 @@ namespace iPem.Services.Master {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, Role.SuperId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_MenusRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_MenusRepository);
 
             _menuRepository.Insert(menu);
         }
@@ -89,8 +110,8 @@ namespace iPem.Services.Master {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, Role.SuperId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_MenusRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_MenusRepository);
 
             _menuRepository.Update(menu);
         }
@@ -103,11 +124,13 @@ namespace iPem.Services.Master {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, Role.SuperId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_MenusRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_MenusRepository);
 
             _menuRepository.Delete(menu);
         }
+
         #endregion
+
     }
 }

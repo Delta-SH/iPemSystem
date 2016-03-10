@@ -27,7 +27,7 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public List<Room> GetEntities() {
+        public virtual List<Room> GetEntities() {
             var entities = new List<Room>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Room_Repository_GetEntities, null)) {
                 while(rdr.Read()) {

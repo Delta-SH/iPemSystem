@@ -70,7 +70,7 @@ namespace iPem.Data.Repository.Resource {
         }
 
         public List<Room> GetEntities(string parent) {
-            SqlParameter[] parms = { new SqlParameter("@ParentId", SqlDbType.VarChar, 100) };
+            SqlParameter[] parms = { new SqlParameter("@Parent", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
 
             var entities = new List<Room>();

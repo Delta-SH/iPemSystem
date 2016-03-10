@@ -6,6 +6,7 @@ using iPem.Data.Repository.Master;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Master {
     public partial class PointService : IPointService {
@@ -33,62 +34,61 @@ namespace iPem.Services.Master {
 
         #region Methods
 
-        public IPagedList<Point> GetPointsByType(EnmNode nodeType, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_PointsInTypePattern, (int)nodeType);
-
-            List<Point> points = null;
-            if(_cacheManager.IsSet(key)) {
-                points = _cacheManager.Get<List<Point>>(key);
-            } else {
-                points = _pointRepository.GetEntities(nodeType);
-                _cacheManager.Set<List<Point>>(key, points);
+        public IPagedList<Point> GetPointsByType(int[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = new List<Point>();
+            foreach(var type in types) {
+                var key = string.Format(GlobalCacheKeys.Cs_PointsInTypePattern, type);
+                if(_cacheManager.IsSet(key)) {
+                    result.AddRange(_cacheManager.Get<List<Point>>(key));
+                } else {
+                    var points = _pointRepository.GetEntitiesByType(type);
+                    _cacheManager.Set<List<Point>>(key, points);
+                    result.AddRange(points);
+                }
             }
 
-            var result = new PagedList<Point>(points, pageIndex, pageSize);
-            return result;
+            return new PagedList<Point>(result, pageIndex, pageSize);
         }
 
         public IPagedList<Point> GetPointsByProtcol(int protcol, int pageIndex = 0, int pageSize = int.MaxValue) {
             var key = string.Format(GlobalCacheKeys.Cs_PointsInProtcolPattern, protcol);
 
-            List<Point> points = null;
+            List<Point> result = null;
             if(_cacheManager.IsSet(key)) {
-                points = _cacheManager.Get<List<Point>>(key);
+                result = _cacheManager.Get<List<Point>>(key);
             } else {
-                points = _pointRepository.GetEntities(protcol);
-                _cacheManager.Set<List<Point>>(key, points);
+                result = _pointRepository.GetEntitiesByProtcol(protcol);
+                _cacheManager.Set<List<Point>>(key, result);
             }
 
-            var result = new PagedList<Point>(points, pageIndex, pageSize);
-            return result;
+            return new PagedList<Point>(result, pageIndex, pageSize);
         }
 
-        public IPagedList<Point> GetPoints(int protcol, EnmNode nodeType, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_PointsInProtcolAndTypePattern, protcol, (int)nodeType);
+        public IPagedList<Point> GetPoints(int protcol, int[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var key = string.Format(GlobalCacheKeys.Cs_PointsInProtcolPattern, protcol);
 
-            List<Point> points = null;
+            List<Point> result = null;
             if(_cacheManager.IsSet(key)) {
-                points = _cacheManager.Get<List<Point>>(key);
+                result = _cacheManager.Get<List<Point>>(key);
             } else {
-                points = _pointRepository.GetEntities(protcol, nodeType);
-                _cacheManager.Set<List<Point>>(key, points);
+                result = _pointRepository.GetEntitiesByProtcol(protcol);
+                _cacheManager.Set<List<Point>>(key, result);
             }
 
-            var result = new PagedList<Point>(points, pageIndex, pageSize);
-            return result;
+            result = result.FindAll(p => types.Contains((int)p.Type));
+            return new PagedList<Point>(result, pageIndex, pageSize);
         }
 
         public IPagedList<Point> GetPoints(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Point> points = null;
+            List<Point> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Cs_PointsRepository)) {
-                points = _cacheManager.Get<List<Point>>(GlobalCacheKeys.Cs_PointsRepository);
+                result = _cacheManager.Get<List<Point>>(GlobalCacheKeys.Cs_PointsRepository);
             } else {
-                points = _pointRepository.GetEntities();
-                _cacheManager.Set<List<Point>>(GlobalCacheKeys.Cs_PointsRepository, points);
+                result = _pointRepository.GetEntities();
+                _cacheManager.Set<List<Point>>(GlobalCacheKeys.Cs_PointsRepository, result);
             }
 
-            var result = new PagedList<Point>(points, pageIndex, pageSize);
-            return result;
+            return new PagedList<Point>(result, pageIndex, pageSize);
         }
 
         #endregion

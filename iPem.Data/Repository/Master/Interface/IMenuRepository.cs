@@ -9,18 +9,18 @@ namespace iPem.Data.Repository.Master {
     public partial interface IMenuRepository {
         Menu GetEntity(int id);
 
-        IList<Menu> GetEntities();
+        List<Menu> GetEntities();
 
         void Insert(Menu entity);
 
-        void Insert(IList<Menu> entities);
+        void Insert(List<Menu> entities);
 
         void Update(Menu entity);
 
-        void Update(IList<Menu> entities);
+        void Update(List<Menu> entities);
 
         void Delete(Menu entity);
 
-        void Delete(IList<Menu> entities);
+        void Delete(List<Menu> entities);
     }
 }

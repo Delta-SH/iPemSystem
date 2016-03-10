@@ -110,6 +110,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AreaAttributes.cs" />
+    <Compile Include="Domain\History\ActAlm.cs" />
     <Compile Include="Domain\Master\Device.cs" />
     <Compile Include="Domain\Master\Point.cs" />
     <Compile Include="Domain\Master\Protocol.cs" />
@@ -131,8 +133,15 @@
     <Compile Include="Domain\Resource\Device.cs" />
     <Compile Include="Domain\Resource\EnumMethods.cs" />
     <Compile Include="Domain\Resource\LogicType.cs" />
+    <Compile Include="Domain\Resource\Productor.cs" />
     <Compile Include="Domain\Resource\Room.cs" />
+    <Compile Include="Domain\Resource\RoomType.cs" />
     <Compile Include="Domain\Resource\Station.cs" />
+    <Compile Include="Domain\Resource\StationType.cs" />
+    <Compile Include="Domain\Resource\SubCompany.cs" />
+    <Compile Include="Domain\Resource\SubDeviceType.cs" />
+    <Compile Include="Domain\Resource\Supplier.cs" />
+    <Compile Include="Domain\Resource\Unit.cs" />
     <Compile Include="Enum\EnmOrganization.cs" />
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="iPemStore.cs" />
@@ -170,6 +179,7 @@
     <Compile Include="NPOI\ExcelConverter.cs" />
     <Compile Include="NPOI\ExcelManager.cs" />
     <Compile Include="NPOI\IExcelManager.cs" />
+    <Compile Include="StationAttributes.cs" />
     <Compile Include="Task\ITask.cs" />
     <Compile Include="IWebHelper.cs" />
     <Compile Include="PagedList.cs" />
@@ -182,9 +192,7 @@
     <Compile Include="WriteLockDisposable.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\History\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

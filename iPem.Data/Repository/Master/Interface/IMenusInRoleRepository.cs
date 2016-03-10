@@ -11,10 +11,10 @@ namespace iPem.Data.Repository.Master {
 
         void Insert(MenusInRole entity);
 
-        void Insert(IList<MenusInRole> entities);
+        void Insert(List<MenusInRole> entities);
 
         void Delete(Guid role);
 
-        void Delete(IList<Guid> roles);
+        void Delete(List<Guid> roles);
     }
 }

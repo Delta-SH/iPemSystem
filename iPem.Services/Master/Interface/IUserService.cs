@@ -14,9 +14,7 @@ namespace iPem.Services.Master {
 
         IPagedList<User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        IPagedList<User> GetUsers(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        IPagedList<User> GetUsersInRole(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<User> GetUsers(Guid roleId, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
 
         void InsertUser(User user);
 

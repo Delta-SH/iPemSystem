@@ -15,6 +15,6 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         /// Gets or sets the menus in role
         /// </summary>
-        public IList<Menu> Menus { get; set; }
+        public List<Menu> Menus { get; set; }
     }
 }

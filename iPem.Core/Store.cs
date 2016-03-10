@@ -1,6 +1,7 @@
 ﻿using iPem.Core.Domain.Master;
 using iPem.Core.Domain.Resource;
 using System;
+using System.Collections.Generic;
 
 namespace iPem.Core {
     /// <summary>

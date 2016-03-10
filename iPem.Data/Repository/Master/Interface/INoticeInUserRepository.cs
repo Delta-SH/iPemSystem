@@ -7,20 +7,20 @@ namespace iPem.Data.Repository.Master {
     /// Notice in users repository interface
     /// </summary>
     public partial interface INoticeInUserRepository {
-        IList<NoticeInUser> GetEntities();
+        List<NoticeInUser> GetEntities();
 
-        IList<NoticeInUser> GetEntities(Guid uid);
+        List<NoticeInUser> GetEntities(Guid uid);
 
         void Insert(NoticeInUser entity);
 
-        void Insert(IList<NoticeInUser> entities);
+        void Insert(List<NoticeInUser> entities);
 
         void Update(NoticeInUser entity);
 
-        void Update(IList<NoticeInUser> entities);
+        void Update(List<NoticeInUser> entities);
 
         void Delete(NoticeInUser entity);
 
-        void Delete(IList<NoticeInUser> entities);
+        void Delete(List<NoticeInUser> entities);
     }
 }

@@ -10,6 +10,7 @@ namespace iPem.Services.Master {
     /// Web logger
     /// </summary>
     public partial class WebLogger : IWebLogger {
+
         #region Fields
 
         private readonly IWebEventRepository _webEventRepository;
@@ -28,6 +29,7 @@ namespace iPem.Services.Master {
         #endregion
 
         #region Methods
+
         public virtual bool IsEnabled(EnmEventLevel level) {
             switch(level) {
                 case EnmEventLevel.Debug:
@@ -39,26 +41,22 @@ namespace iPem.Services.Master {
 
         public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime);
-            var logs = new PagedList<WebEvent>(query, pageIndex, pageSize);
-            return logs;
+            return new PagedList<WebEvent>(query, pageIndex, pageSize);
         }
 
         public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, levels);
-            var logs = new PagedList<WebEvent>(query, pageIndex, pageSize);
-            return logs;
+            return new PagedList<WebEvent>(query, pageIndex, pageSize);
         }
 
         public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, null, types);
-            var logs = new PagedList<WebEvent>(query, pageIndex, pageSize);
-            return logs;
+            return new PagedList<WebEvent>(query, pageIndex, pageSize);
         }
 
         public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, levels, types);
-            var logs = new PagedList<WebEvent>(query, pageIndex, pageSize);
-            return logs;
+            return new PagedList<WebEvent>(query, pageIndex, pageSize);
         }
 
         public virtual void Insert(WebEvent log) {
@@ -68,7 +66,7 @@ namespace iPem.Services.Master {
             _webEventRepository.Insert(log);
         }
 
-        public virtual void Insert(IList<WebEvent> logs) {
+        public virtual void Insert(List<WebEvent> logs) {
             if (logs == null)
                 throw new ArgumentNullException("logs");
 
@@ -82,7 +80,7 @@ namespace iPem.Services.Master {
             _webEventRepository.Delete(log);
         }
 
-        public virtual void Delete(IList<WebEvent> logs) {
+        public virtual void Delete(List<WebEvent> logs) {
             if (logs == null)
                 throw new ArgumentNullException("logs");
 
@@ -98,5 +96,6 @@ namespace iPem.Services.Master {
         }
 
         #endregion
+
     }
 }

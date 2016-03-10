@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Security;
 using iPem.Core;
 using iPem.Core.Enum;
+using System.Collections.Generic;
+using iPem.Core.Domain.Resource;
 
 namespace iPem.Site.Infrastructure {
     public class Common {
@@ -143,7 +145,7 @@ namespace iPem.Site.Infrastructure {
                 case EnmEventLevel.Fatal:
                     return "致命";
                 default:
-                    return "";
+                    return "未定义";
             }
         }
 
@@ -173,6 +175,21 @@ namespace iPem.Site.Infrastructure {
                     return "告警确认";
                 default:
                     return "其他";
+            }
+        }
+
+        public static string GetAlarmLevelDisplayName(EnmAlarmLevel level) {
+            switch(level) {
+                case EnmAlarmLevel.Level1:
+                    return "一级告警";
+                case EnmAlarmLevel.Level2:
+                    return "二级告警";
+                case EnmAlarmLevel.Level3:
+                    return "三级告警";
+                case EnmAlarmLevel.Level4:
+                    return "四级告警";
+                default:
+                    return "未定义";
             }
         }
     }

@@ -21,7 +21,7 @@ namespace iPem.Core.Caching {
         /// <summary>
         /// CacheTime Interval
         /// </summary>
-        private static long _cacheTime = 60;
+        private static TimeSpan _cacheTime = TimeSpan.FromSeconds(300);
 
         /// <summary>
         /// Create ClientManager
@@ -31,7 +31,7 @@ namespace iPem.Core.Caching {
             if(config != null) {
                 var writeServers = config.WriteServerList.Split(new char[] { ',' });
                 var readServers = config.ReadServerList.Split(new char[] { ',' });
-                    _cacheTime = config.LocalCacheTime;
+                    _cacheTime = TimeSpan.FromSeconds(config.LocalCacheTime);
 
                 _objectSerializer = new ObjectSerializer();
                 _clientManager = new PooledRedisClientManager(writeServers, readServers, new RedisClientManagerConfig { MaxWritePoolSize = config.MaxWritePoolSize, MaxReadPoolSize = config.MaxReadPoolSize, AutoStart = config.AutoStart });
@@ -79,10 +79,10 @@ namespace iPem.Core.Caching {
         /// <param name="key">key</param>
         /// <param name="data">Data</param>
         /// <param name="cacheTime">Cache time</param>
-        public virtual void Set<T>(string key, T data, long cacheTime) {
+        public virtual void Set<T>(string key, T data, TimeSpan cacheTime) {
             using(var client = Cache) {
                 //client.Set<byte[]>(key, _objectSerializer.Serialize(data), TimeSpan.FromSeconds(cacheTime)); 
-                client.Set<T>(key, data, TimeSpan.FromSeconds(cacheTime));
+                client.Set<T>(key, data, cacheTime);
             }
         }
 

@@ -28,9 +28,14 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public List<Point> GetEntities(EnmNode nodeType) {
+        /// <summary>
+        /// Gets entities from the repository by the specific types
+        /// </summary>
+        /// <param name="type">the point type array</param>
+        /// <returns>the point list</returns>
+        public List<Point> GetEntitiesByType(int type) {
             SqlParameter[] parms = { new SqlParameter("@Type", SqlDbType.Int) };
-            parms[0].Value = (int)nodeType;
+            parms[0].Value = type;
 
             var entities = new List<Point>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Point_Repository_GetEntitiesByType, parms)) {
@@ -64,7 +69,12 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public List<Point> GetEntities(int protcol) {
+        /// <summary>
+        /// Gets entities from the repository by the specific protcol
+        /// </summary>
+        /// <param name="protcol">the protcol</param>
+        /// <returns>the point list</returns>
+        public List<Point> GetEntitiesByProtcol(int protcol) {
             SqlParameter[] parms = { new SqlParameter("@ProtcolId", SqlDbType.Int) };
 
             parms[0].Value = protcol;
@@ -101,45 +111,10 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public List<Point> GetEntities(int protcol, EnmNode nodeType) {
-            SqlParameter[] parms = { new SqlParameter("@ProtcolId", SqlDbType.Int),
-                                     new SqlParameter("@Type", SqlDbType.Int) };
-
-            parms[0].Value = protcol;
-            parms[1].Value = (int)nodeType;
-
-            var entities = new List<Point>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Point_Repository_GetEntitiesByProtcolAndType, parms)) {
-                while(rdr.Read()) {
-                    var entity = new Point();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
-                    entity.StaTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["StaTypeId"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["LogicTypeId"]);
-                    entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
-                    entity.AlarmTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmTimeDesc"]);
-                    entity.NormalTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalTimeDesc"]);
-                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
-                    entity.TriggerType = SqlTypeConverter.DBNullStringHandler(rdr["TriggerType"]);
-                    entity.Interpret = SqlTypeConverter.DBNullStringHandler(rdr["Interpret"]);
-                    entity.AlarmLimit = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmLimit"]);
-                    entity.AlarmReturnDiff = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmReturnDiff"]);
-                    entity.AlarmRecoveryDelay = SqlTypeConverter.DBNullInt32Handler(rdr["AlarmRecoveryDelay"]);
-                    entity.AlarmDelay = SqlTypeConverter.DBNullInt32Handler(rdr["AlarmDelay"]);
-                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
-                    entity.AbsoluteThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["AbsoluteThreshold"]);
-                    entity.PerThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["PerThreshold"]);
-                    entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Desc = SqlTypeConverter.DBNullStringHandler(rdr["Desc"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
+        /// <summary>
+        /// Gets all entities from the repository
+        /// </summary>
+        /// <returns>the point list</returns>
         public List<Point> GetEntities() {
             var entities = new List<Point>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Point_Repository_GetEntities, null)) {

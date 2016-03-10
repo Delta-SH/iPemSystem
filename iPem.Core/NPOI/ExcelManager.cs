@@ -37,7 +37,7 @@ namespace iPem.Core.NPOI {
                 if(prop.IsDefined(typeof(ExcelBooleanNameAttribute), true)) {
                     if(prop.PropertyType == typeof(Boolean)) {
                         var boolean = (ExcelBooleanNameAttribute)prop.GetCustomAttributes(typeof(ExcelBooleanNameAttribute), true)[0];
-                        boolAttributes.Add(new IdValuePair<PropertyInfo, ExcelBooleanNameAttribute> { ID = prop, Value = boolean });
+                        boolAttributes.Add(new IdValuePair<PropertyInfo, ExcelBooleanNameAttribute> { Id = prop, Value = boolean });
                     }
                 }
 
@@ -90,7 +90,7 @@ namespace iPem.Core.NPOI {
 
                 for(int g = 0; g < dataAttributes.Count; g++) {
                     var cell = row.CreateCell(g);
-                    var prop = dataAttributes[g].ID;
+                    var prop = dataAttributes[g].Id;
                     var name = prop.Name;
                     var type = prop.PropertyType;
                     var value = prop.GetValue(data[k]);
@@ -110,7 +110,7 @@ namespace iPem.Core.NPOI {
                     } else if(type == typeof(Boolean)) {
                         cell.CellStyle = converter.GetCellStyle(background);
 
-                        var boolAttribute = boolAttributes.Find(b => b.ID.Equals(prop));
+                        var boolAttribute = boolAttributes.Find(b => b.Id.Equals(prop));
                         if(boolAttribute != null)
                             cell.SetCellValue(new XSSFRichTextString((Boolean)value ? boolAttribute.Value.True : boolAttribute.Value.False));
                         else

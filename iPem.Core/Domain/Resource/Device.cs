@@ -49,22 +49,22 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the product identifier
         /// </summary>
-        public int ProdId { get; set; }
+        public string ProdId { get; set; }
 
         /// <summary>
         /// Gets or sets the brand identifier
         /// </summary>
-        public int BrandId { get; set; }
+        public string BrandId { get; set; }
 
         /// <summary>
         /// Gets or sets the supplier identifier
         /// </summary>
-        public int SuppId { get; set; }
+        public string SuppId { get; set; }
 
         /// <summary>
         /// Gets or sets the sub company identifier
         /// </summary>
-        public int? SubCompId { get; set; }
+        public string SubCompId { get; set; }
 
         /// <summary>
         /// Gets or sets the start time

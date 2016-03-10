@@ -271,6 +271,12 @@ Ext.define("Ext.locale.zh_CN.grid.header.Container", {
     columnsText: "列"
 });
 
+Ext.define("Ext.locale.zh_CN.grid.Lockable", {
+    override: "Ext.grid.Lockable",
+    lockText: "锁定列",
+    unlockText: "解除锁定"
+});
+
 Ext.define("Ext.locale.zh_CN.grid.PropertyColumnModel", {
     override: "Ext.grid.PropertyColumnModel",
     nameText: "名称",

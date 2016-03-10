@@ -53,7 +53,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<MenusInRole> { entity });
         }
 
-        public virtual void Insert(IList<MenusInRole> entities) {
+        public virtual void Insert(List<MenusInRole> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@MenuId", SqlDbType.Int) };
 
@@ -80,7 +80,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<Guid> { role });
         }
 
-        public virtual void Delete(IList<Guid> roles) {
+        public virtual void Delete(List<Guid> roles) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {

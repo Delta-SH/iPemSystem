@@ -13,6 +13,7 @@ namespace iPem.Services.Master {
     /// User service
     /// </summary>
     public partial class UserService : IUserService {
+
         #region Fields
 
         private readonly IUserRepository _userRepository;
@@ -63,50 +64,38 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>user collection</returns>
         public virtual IPagedList<User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_UsersInRolePattern, Role.SuperId);
-
-            IList<User> users = null;
-            if(_cacheManager.IsSet(key)) {
-                users = _cacheManager.Get<IList<User>>(key);
+            List<User> result = null;
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_UsersRepository)) {
+                result = _cacheManager.Get<List<User>>(GlobalCacheKeys.Cs_UsersRepository);
             } else {
-                users = _userRepository.GetEntities();
-                _cacheManager.Set<IList<User>>(key, users);
+                result = _userRepository.GetEntities();
+                _cacheManager.Set<List<User>>(GlobalCacheKeys.Cs_UsersRepository, result);
             }
 
-            return new PagedList<User>(users, pageIndex, pageSize);
+            return new PagedList<User>(result, pageIndex, pageSize);
         }
 
         /// <summary>
         /// Gets all users
         /// </summary>
-        /// <param name="roleId">Role id</param>
+        /// <param name="role">Role id</param>
         /// <param name="pageIndex">Page index</param>
         /// <param name="pageSize">Page size</param>
         /// <returns>user collection</returns>
-        public virtual IPagedList<User> GetUsers(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_UsersInRolePattern, roleId);
+        public virtual IPagedList<User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
+            if(deep && role.Equals(Role.SuperId))
+                return this.GetUsers(pageIndex, pageSize);
 
-            IList<User> users = null;
+            List<User> result = null;
+            var key = string.Format(GlobalCacheKeys.Rl_UsersResultPattern, role);
             if(_cacheManager.IsSet(key)) {
-                users = _cacheManager.Get<IList<User>>(key);
+                result = _cacheManager.Get<List<User>>(key);
             } else {
-                users = roleId.Equals(Role.SuperId) ? _userRepository.GetEntities() : _userRepository.GetEntities(roleId);
-                _cacheManager.Set<IList<User>>(key, users);
+                result = _userRepository.GetEntities(role);
+                _cacheManager.Set<List<User>>(key, result);
             }
 
-            return new PagedList<User>(users, pageIndex, pageSize);
-        }
-
-        /// <summary>
-        /// Gets all users
-        /// </summary>
-        /// <param name="roleId">Role id</param>
-        /// <param name="pageIndex">Page index</param>
-        /// <param name="pageSize">Page size</param>
-        /// <returns>user collection</returns>
-        public virtual IPagedList<User> GetUsersInRole(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var users = _userRepository.GetEntities(roleId);
-            return new PagedList<User>(users, pageIndex, pageSize);
+            return new PagedList<User>(result, pageIndex, pageSize);
         }
 
         /// <summary>
@@ -117,8 +106,13 @@ namespace iPem.Services.Master {
             if (user == null)
                 throw new ArgumentNullException("user");
 
-            var key = string.Format(GlobalCacheKeys.Cs_UsersInRolePattern, ".+"); 
-            _cacheManager.RemoveByPattern(key);
+            //var key = string.Format(GlobalCacheKeys.Cs_UsersRepository, ".+"); 
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_UsersRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_UsersRepository);
+
+            var key = string.Format(GlobalCacheKeys.Rl_UsersResultPattern, user.RoleId);
+            if(_cacheManager.IsSet(key))
+                _cacheManager.Remove(key);
 
             user.PasswordFormat = _passwordFormat;
             user.PasswordSalt = _userRepository.GenerateSalt();
@@ -134,8 +128,12 @@ namespace iPem.Services.Master {
             if(user == null)
                 throw new ArgumentNullException("user");
 
-            var key = string.Format(GlobalCacheKeys.Cs_UsersInRolePattern, ".+");
-            _cacheManager.RemoveByPattern(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_UsersRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_UsersRepository);
+
+            var key = string.Format(GlobalCacheKeys.Rl_UsersResultPattern, user.RoleId);
+            if(_cacheManager.IsSet(key))
+                _cacheManager.Remove(key);
 
             _userRepository.Update(user);
         }
@@ -148,8 +146,12 @@ namespace iPem.Services.Master {
             if(user == null)
                 throw new ArgumentNullException("user");
 
-            var key = string.Format(GlobalCacheKeys.Cs_UsersInRolePattern, ".+");
-            _cacheManager.RemoveByPattern(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_UsersRepository))
+                _cacheManager.Remove(GlobalCacheKeys.Cs_UsersRepository);
+
+            var key = string.Format(GlobalCacheKeys.Rl_UsersResultPattern, user.RoleId);
+            if(_cacheManager.IsSet(key))
+                _cacheManager.Remove(key);
 
             _userRepository.Delete(user);
         }
@@ -221,5 +223,6 @@ namespace iPem.Services.Master {
         }
 
         #endregion
+
     }
 }

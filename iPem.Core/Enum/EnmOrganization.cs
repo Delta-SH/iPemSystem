@@ -10,10 +10,10 @@ namespace iPem.Core.Enum {
     /// </summary>
     public enum EnmOrganization {
         Area,
-        Sta,
+        Station,
         Room,
         FSU,
-        Dev,
+        Device,
         Node
     }
 

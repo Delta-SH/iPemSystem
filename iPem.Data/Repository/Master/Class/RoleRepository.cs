@@ -76,7 +76,7 @@ namespace iPem.Data.Repository.Master {
             return entity;
         }
 
-        public virtual IList<Role> GetEntities() {
+        public virtual List<Role> GetEntities() {
             var entities = new List<Role>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_Role_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
@@ -95,7 +95,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<Role>() { entity });
         }
 
-        public virtual void Insert(IList<Role> entities) {
+        public virtual void Insert(List<Role> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Comment", SqlDbType.VarChar,512),
@@ -124,7 +124,7 @@ namespace iPem.Data.Repository.Master {
             Update(new List<Role>() { entity });
         }
 
-        public virtual void Update(IList<Role> entities) {
+        public virtual void Update(List<Role> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Comment", SqlDbType.VarChar,512),
@@ -153,7 +153,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<Role>() { entity });
         }
 
-        public virtual void Delete(IList<Role> entities) {
+        public virtual void Delete(List<Role> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

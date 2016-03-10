@@ -9,22 +9,22 @@ namespace iPem.Data.Repository.Master {
     public partial interface INoticeRepository {
         Notice GetEntity(Guid id);
 
-        IList<Notice> GetEntities();
+        List<Notice> GetEntities();
 
-        IList<Notice> GetEntities(Guid uid);
+        List<Notice> GetEntities(Guid uid);
 
         int GetUnreadCount(Guid uid);
 
         void Insert(Notice entity);
 
-        void Insert(IList<Notice> entities);
+        void Insert(List<Notice> entities);
 
         void Update(Notice entity);
 
-        void Update(IList<Notice> entities);
+        void Update(List<Notice> entities);
 
         void Delete(Notice entity);
 
-        void Delete(IList<Notice> entities);
+        void Delete(List<Notice> entities);
     }
 }

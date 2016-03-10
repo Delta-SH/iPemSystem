@@ -38,20 +38,47 @@ namespace iPem.Services.Master {
         }
 
         public void AddAreasInRole(AreasInRole areas) {
-            if(areas == null)
-                throw new ArgumentException("areas");
+            if(areas == null) throw new ArgumentException("areas");
 
-            var key = string.Format(GlobalCacheKeys.Cs_AreasInRolePattern, areas.RoleId);
-            if(_cacheManager.IsSet(key)) 
-                _cacheManager.Remove(key);
+            var key = string.Format(GlobalCacheKeys.Rl_AreasResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_StationsResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_RoomsResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_DevicesResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_AreaAttributesResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_StationAttributesResultPattern, areas.RoleId);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _areaInRoleRepository.Insert(areas);
         }
 
         public void DeleteAreasInRole(Guid id) {
-            var key = string.Format(GlobalCacheKeys.Cs_AreasInRolePattern, id);
-            if(_cacheManager.IsSet(key)) 
-                _cacheManager.Remove(key);
+            var key = string.Format(GlobalCacheKeys.Rl_AreasResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_StationsResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_RoomsResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_DevicesResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_AreaAttributesResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+
+            key = string.Format(GlobalCacheKeys.Rl_StationAttributesResultPattern, id);
+            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _areaInRoleRepository.Delete(id);
         }

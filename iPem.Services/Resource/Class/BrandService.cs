@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Brand> GetAllBrands(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Brand> brands = null;
+            List<Brand> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_BrandsRepository)) {
-                brands = _cacheManager.Get<List<Brand>>(GlobalCacheKeys.Rs_BrandsRepository);
+                result = _cacheManager.Get<List<Brand>>(GlobalCacheKeys.Rs_BrandsRepository);
             } else {
-                brands = _brandRepository.GetEntities();
-                _cacheManager.Set<List<Brand>>(GlobalCacheKeys.Rs_BrandsRepository, brands);
+                result = _brandRepository.GetEntities();
+                _cacheManager.Set<List<Brand>>(GlobalCacheKeys.Rs_BrandsRepository, result);
             }
 
-            var result = new PagedList<Brand>(brands, pageIndex, pageSize);
-            return result;
+            return new PagedList<Brand>(result, pageIndex, pageSize);
         }
 
         #endregion

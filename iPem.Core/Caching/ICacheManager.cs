@@ -26,7 +26,7 @@ namespace iPem.Core.Caching {
         /// <param name="key">key</param>
         /// <param name="data">Data</param>
         /// <param name="cacheTime">Cache time</param>
-        void Set<T>(string key, T data, long cacheTime);
+        void Set<T>(string key, T data, TimeSpan cacheTime);
 
         /// <summary>
         /// Gets a value indicating whether the value associated with the specified key is cached

@@ -9,7 +9,9 @@ namespace iPem.Services.Master {
     public partial interface IMenuService {
         Menu GetMenu(int id);
 
-        IPagedList<Menu> GetAllMenus(Guid roleId, int pageIndex, int pageSize);
+        IPagedList<Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        IPagedList<Menu> GetMenus(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
 
         void InsertMenu(Menu menu);
 

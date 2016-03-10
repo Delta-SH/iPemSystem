@@ -45,15 +45,17 @@ namespace iPem.Services.Master {
             if(menus == null)
                 throw new ArgumentException("menus");
 
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, menus.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            var key = string.Format(GlobalCacheKeys.Rl_MenusResultPattern, menus.RoleId);
+            if(_cacheManager.IsSet(key)) 
+                _cacheManager.Remove(key);
 
             _menusInRoleRepository.Insert(menus);
         }
 
         public void DeleteMenusInRole(Guid id) {
-            var key = string.Format(GlobalCacheKeys.Cs_MenusInRolePattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            var key = string.Format(GlobalCacheKeys.Rl_MenusResultPattern, id);
+            if(_cacheManager.IsSet(key)) 
+                _cacheManager.Remove(key);
 
             _menusInRoleRepository.Delete(id);
         }

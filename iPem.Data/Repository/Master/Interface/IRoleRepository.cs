@@ -13,18 +13,18 @@ namespace iPem.Data.Repository.Master {
 
         Role GetEntityByUid(Guid uid);
 
-        IList<Role> GetEntities();
+        List<Role> GetEntities();
 
         void Insert(Role entity);
 
-        void Insert(IList<Role> entities);
+        void Insert(List<Role> entities);
 
         void Update(Role entity);
 
-        void Update(IList<Role> entities);
+        void Update(List<Role> entities);
 
         void Delete(Role entity);
 
-        void Delete(IList<Role> entities);
+        void Delete(List<Role> entities);
     }
 }

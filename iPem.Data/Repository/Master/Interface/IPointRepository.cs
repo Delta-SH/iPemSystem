@@ -8,12 +8,26 @@ namespace iPem.Data.Repository.Master {
     /// Point repository interface
     /// </summary>
     public partial interface IPointRepository {
-        List<Point> GetEntities(EnmNode nodeType);
 
-        List<Point> GetEntities(int protcol);
+        /// <summary>
+        /// Gets entities from the repository by the specific types
+        /// </summary>
+        /// <param name="type">the point type array</param>
+        /// <returns>the point list</returns>
+        List<Point> GetEntitiesByType(int type);
 
-        List<Point> GetEntities(int protcol, EnmNode nodeType);
+        /// <summary>
+        /// Gets entities from the repository by the specific protcol
+        /// </summary>
+        /// <param name="protcol">the protcol</param>
+        /// <returns>the point list</returns>
+        List<Point> GetEntitiesByProtcol(int protcol);
 
+        /// <summary>
+        /// Gets all entities from the repository
+        /// </summary>
+        /// <returns>the point list</returns>
         List<Point> GetEntities();
+
     }
 }

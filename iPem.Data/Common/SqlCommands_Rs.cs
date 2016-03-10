@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace iPem.Data.Common {
     /// <summary>
@@ -24,18 +23,46 @@ namespace iPem.Data.Common {
 
         //station repository
         public const string Sql_Station_Repository_GetEntity = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [Id]=@Id;";
-        public const string Sql_Station_Repository_GetEntitiesInArea = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [AreaId]=@AreaId;";
-        public const string Sql_Station_Repository_GetEntitiesInParent = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [ParentId]=@ParentId;";
         public const string Sql_Station_Repository_GetEntities = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station];";
+        public const string Sql_Station_Repository_GetEntitiesInArea = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [AreaId]=@AreaId;";
+        public const string Sql_Station_Repository_GetChildrenEntities = @"
+        IF(@Deep = 1 AND @Include = 1)
+        BEGIN
+	        ;WITH T_Station AS
+	        (
+		        SELECT * FROM [dbo].[S_Station] WHERE [Id] = @Parent
+		        UNION ALL
+		        SELECT ST.* FROM [dbo].[S_Station] ST INNER JOIN T_Station TS ON ST.[ParentId] = TS.[Id]
+	        )
+	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM T_Station;
+        END
+        ELSE IF(@Deep = 1 AND @Include = 0)
+        BEGIN
+	        ;WITH T_Station AS
+	        (
+		        SELECT * FROM [dbo].[S_Station] WHERE [ParentId] = @Parent
+		        UNION ALL
+		        SELECT ST.* FROM [dbo].[S_Station] ST INNER JOIN T_Station TS ON ST.[ParentId] = TS.[Id]
+	        )
+	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM T_Station;
+        END
+        ELSE IF(@Deep = 0 AND @Include = 1)
+        BEGIN
+	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [Id] = @Parent OR [ParentId] = @Parent;
+        END
+        ELSE IF(@Deep = 0 AND @Include = 0)
+        BEGIN
+	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [ParentId] = @Parent;
+        END";
 
         //room repository
         public const string Sql_Room_Repository_GetEntity = @"SELECT [Id],[Name],[RoomTypeId],[PropertyId],[Address],[Floor],[Length],[Width],[Heigth],[FloorLoad],[LineHeigth],[Square],[EffeSquare],[FireFighEuip],[Owner],[QueryPhone],[PowerSubMain],[TranSubMain],[EnviSubMain],[FireSubMain],[AirSubMain],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[StationId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Room] WHERE [Id]=@Id;";
-        public const string Sql_Room_Repository_GetEntitiesByParent = @"SELECT [Id],[Name],[RoomTypeId],[PropertyId],[Address],[Floor],[Length],[Width],[Heigth],[FloorLoad],[LineHeigth],[Square],[EffeSquare],[FireFighEuip],[Owner],[QueryPhone],[PowerSubMain],[TranSubMain],[EnviSubMain],[FireSubMain],[AirSubMain],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[StationId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Room] WHERE [StationId]=@ParentId;";
+        public const string Sql_Room_Repository_GetEntitiesByParent = @"SELECT [Id],[Name],[RoomTypeId],[PropertyId],[Address],[Floor],[Length],[Width],[Heigth],[FloorLoad],[LineHeigth],[Square],[EffeSquare],[FireFighEuip],[Owner],[QueryPhone],[PowerSubMain],[TranSubMain],[EnviSubMain],[FireSubMain],[AirSubMain],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[StationId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Room] WHERE [StationId]=@Parent;";
         public const string Sql_Room_Repository_GetEntities = @"SELECT [Id],[Name],[RoomTypeId],[PropertyId],[Address],[Floor],[Length],[Width],[Heigth],[FloorLoad],[LineHeigth],[Square],[EffeSquare],[FireFighEuip],[Owner],[QueryPhone],[PowerSubMain],[TranSubMain],[EnviSubMain],[FireSubMain],[AirSubMain],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[StationId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Room];";
 
         //device repository
         public const string Sql_Device_Repository_GetEntity = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device] WHERE [Id]=@Id;";
-        public const string Sql_Device_Repository_GetEntitiesByParent = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device] WHERE [RoomId]=@ParentId;";
+        public const string Sql_Device_Repository_GetEntitiesByParent = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device] WHERE [RoomId]=@Parent;";
         public const string Sql_Device_Repository_GetEntities = @"SELECT [Id],[Name],[Code],[DeviceTypeId],[SubDeviceTypeId],[SysName],[SysCode],[Model],[ProdId],[BrandId],[SuppId],[SubCompId],[StartTime],[ScrapTime],[StatusId],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[RoomId],[Desc] AS [Comment],[Enabled] FROM [dbo].[D_Device];";
 
         //brand repository
@@ -59,7 +86,35 @@ namespace iPem.Data.Common {
         public const string Sql_EnumMethods_Repository_GetEntities = @"SELECT [Id],[MethNo],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_EnumMethods] ORDER BY [Id];";
 
         //logic type repository
-        public const string Sql_LogicType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
-        public const string Sql_LogicType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_LogicType] ORDER BY [Id];";
+        public const string Sql_LogicType_Repository_GetEntity = @"SELECT [Id],[Name] FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
+        public const string Sql_LogicType_Repository_GetEntities = @"SELECT [Id],[Name] FROM [dbo].[C_LogicType] ORDER BY [Id];";
+
+        //productor repository
+        public const string Sql_Productor_Repository_GetEntity = @"SELECT [Id],[Name],[EngName],[Phone],[Fax],[Address],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Productor] WHERE [Id]=@Id;";
+        public const string Sql_Productor_Repository_GetEntities = @"SELECT [Id],[Name],[EngName],[Phone],[Fax],[Address],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Productor] ORDER BY [Name];";
+
+        //room type repository
+        public const string Sql_RoomType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_RoomType] WHERE [Id]=@Id;";
+        public const string Sql_RoomType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_RoomType] ORDER BY [Id];";
+
+        //station type repository
+        public const string Sql_StationType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_StationType] WHERE [Id]=@Id;";
+        public const string Sql_StationType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_StationType] ORDER BY [Id];";
+
+        //sub company repository
+        public const string Sql_SubCompany_Repository_GetEntity = @"SELECT [Id],[Name],[linkMan] AS [Contact],[Phone],[Fax],[Address],[Level],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_SubCompany] WHERE [Id]=@Id;";
+        public const string Sql_SubCompany_Repository_GetEntities = @"SELECT [Id],[Name],[linkMan] AS [Contact],[Phone],[Fax],[Address],[Level],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_SubCompany] ORDER BY [Name];";
+
+        //sub device type repository
+        public const string Sql_SubDeviceType_Repository_GetEntity = @"SELECT [Id],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_SubDeviceType] WHERE [Id]=@Id;";
+        public const string Sql_SubDeviceType_Repository_GetEntities = @"SELECT [Id],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_SubDeviceType] ORDER BY [Id];";
+
+        //supplier repository
+        public const string Sql_Supplier_Repository_GetEntity = @"SELECT [Id],[Name],[linkMan] AS [Contact],[Phone],[Fax],[Address],[Level],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Supplier] WHERE [Id]=@Id;";
+        public const string Sql_Supplier_Repository_GetEntities = @"SELECT [Id],[Name],[linkMan] AS [Contact],[Phone],[Fax],[Address],[Level],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Supplier] ORDER BY [Name];";
+
+        //unit repository
+        public const string Sql_Unit_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Unit] WHERE [Id]=@Id;";
+        public const string Sql_Unit_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Unit] ORDER BY [Id];";
     }
 }

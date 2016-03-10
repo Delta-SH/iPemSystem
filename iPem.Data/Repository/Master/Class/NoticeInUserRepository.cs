@@ -27,7 +27,7 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public virtual IList<NoticeInUser> GetEntities() {
+        public virtual List<NoticeInUser> GetEntities() {
             var entities = new List<NoticeInUser>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_NoticesInUsers_Repository_GetEntities1, null)) {
                 while(rdr.Read()) {
@@ -42,7 +42,7 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public virtual IList<NoticeInUser> GetEntities(Guid uid) {
+        public virtual List<NoticeInUser> GetEntities(Guid uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
 
@@ -64,7 +64,7 @@ namespace iPem.Data.Repository.Master {
             Insert(new List<NoticeInUser>() { entity });
         }
 
-        public virtual void Insert(IList<NoticeInUser> entities) {
+        public virtual void Insert(List<NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Readed", SqlDbType.Bit),
@@ -93,7 +93,7 @@ namespace iPem.Data.Repository.Master {
             Update(new List<NoticeInUser>() { entity });
         }
 
-        public virtual void Update(IList<NoticeInUser> entities) {
+        public virtual void Update(List<NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Readed", SqlDbType.Bit),
@@ -122,7 +122,7 @@ namespace iPem.Data.Repository.Master {
             Delete(new List<NoticeInUser>() { entity });
         }
 
-        public virtual void Delete(IList<NoticeInUser> entities) {
+        public virtual void Delete(List<NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100) };
 

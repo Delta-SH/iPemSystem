@@ -5,6 +5,7 @@ using iPem.Data.Repository.Master;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Master {
     /// <summary>
@@ -43,14 +44,14 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>area collection</returns>
         public IPagedList<Area> GetAreasInRole(Guid role, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_AreasInRolePattern, role);
-
-            IList<Area> areas = null;
-            if(_cacheManager.IsSet(key)) {
-                areas = _cacheManager.Get<IList<Area>>(key);
+            List<Area> areas = null;
+            if(Role.SuperId.Equals(role)) {
+                if(!_cacheManager.IsSet(GlobalCacheKeys.Cs_AreasRepository))
+                    return this.GetAllAreas(pageIndex, pageSize);
+                else
+                    areas = _cacheManager.Get<List<Area>>(GlobalCacheKeys.Cs_AreasRepository);
             } else {
-                areas = Role.SuperId.Equals(role) ? _areaRepository.GetEntities() : _areaRepository.GetEntities(role);
-                _cacheManager.Set<IList<Area>>(key, areas);
+                areas = _areaRepository.GetEntities(role);
             }
 
             return new PagedList<Area>(areas, pageIndex, pageSize);
@@ -63,12 +64,12 @@ namespace iPem.Services.Master {
         /// <param name="pageSize">Page size</param>
         /// <returns>area collection</returns>
         public IPagedList<Area> GetAllAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
-            IList<Area> areas = null;
+            List<Area> areas = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Cs_AreasRepository)) {
-                areas = _cacheManager.Get<IList<Area>>(GlobalCacheKeys.Cs_AreasRepository);
+                areas = _cacheManager.Get<List<Area>>(GlobalCacheKeys.Cs_AreasRepository);
             } else {
                 areas = _areaRepository.GetEntities();
-                _cacheManager.Set<IList<Area>>(GlobalCacheKeys.Cs_AreasRepository, areas);
+                _cacheManager.Set<List<Area>>(GlobalCacheKeys.Cs_AreasRepository, areas);
             }
 
             return new PagedList<Area>(areas, pageIndex, pageSize);

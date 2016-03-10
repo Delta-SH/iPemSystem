@@ -14,21 +14,21 @@ namespace iPem.Data.Repository.Master {
 
         User GetEntity(string name);
 
-        IList<User> GetEntities();
+        List<User> GetEntities();
 
-        IList<User> GetEntities(Guid id);
+        List<User> GetEntities(Guid id);
 
         void Insert(User entity);
 
-        void Insert(IList<User> entities);
+        void Insert(List<User> entities);
 
         void Update(User entity);
 
-        void Update(IList<User> entities);
+        void Update(List<User> entities);
 
         void Delete(User entity);
 
-        void Delete(IList<User> entities);
+        void Delete(List<User> entities);
 
         void SetLastLoginDate(Guid id, DateTime lastDate);
 

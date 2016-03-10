@@ -23,7 +23,7 @@ namespace iPem.Services.Master {
 
         void Delete(WebEvent log);
 
-        void Delete(IList<WebEvent> logs);
+        void Delete(List<WebEvent> logs);
 
         void Clear();
 
