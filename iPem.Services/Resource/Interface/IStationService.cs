@@ -12,8 +12,6 @@ namespace iPem.Services.Resource {
 
         IPagedList<Station> GetStationsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        IPagedList<Station> GetChildrenInStation(string parent, bool include = true, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
-
         IPagedList<Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

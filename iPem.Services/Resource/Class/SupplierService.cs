@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Supplier> GetAllSuppliers(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Supplier> suppliers = null;
+            List<Supplier> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_SuppliersRepository)) {
-                suppliers = _cacheManager.Get<List<Supplier>>(GlobalCacheKeys.Rs_SuppliersRepository);
+                result = _cacheManager.Get<List<Supplier>>(GlobalCacheKeys.Rs_SuppliersRepository);
             } else {
-                suppliers = _supplierRepository.GetEntities();
-                _cacheManager.Set<List<Supplier>>(GlobalCacheKeys.Rs_SuppliersRepository, suppliers);
+                result = _supplierRepository.GetEntities();
+                _cacheManager.Set<List<Supplier>>(GlobalCacheKeys.Rs_SuppliersRepository, result);
             }
 
-            var result = new PagedList<Supplier>(suppliers, pageIndex, pageSize);
-            return result;
+            return new PagedList<Supplier>(result, pageIndex, pageSize);
         }
 
         #endregion

@@ -99,55 +99,12 @@ namespace iPem.Data.Repository.Resource {
             return entities;
         }
 
-        public List<Station> GetEntitiesInArea(string area) {
+        public List<Station> GetEntitiesInParent(string parent) {
             SqlParameter[] parms = { new SqlParameter("@AreaId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(area);
-
-            var entities = new List<Station>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Station_Repository_GetEntitiesInArea, parms)) {
-                while(rdr.Read()) {
-                    var entity = new Station();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.StaTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["StaTypeId"]);
-                    entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
-                    entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
-                    entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
-                    entity.CityElecLoadTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["CityElecLoadTypeID"]);
-                    entity.CityElecCap = SqlTypeConverter.DBNullStringHandler(rdr["CityElecCap"]);
-                    entity.CityElecLoad = SqlTypeConverter.DBNullStringHandler(rdr["CityElecLoad"]);
-                    entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.LineRadiusSize = SqlTypeConverter.DBNullStringHandler(rdr["LineRadiusSize"]);
-                    entity.LineLength = SqlTypeConverter.DBNullStringHandler(rdr["LineLength"]);
-                    entity.SuppPowerTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SuppPowerTypeID"]);
-                    entity.TranInfo = SqlTypeConverter.DBNullStringHandler(rdr["TranInfo"]);
-                    entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
-                    entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
-                    entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<Station> GetChildrenEntities(string parent, bool include, bool deep) {
-            SqlParameter[] parms = { new SqlParameter("@Parent", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@Include", SqlDbType.Bit),
-                                     new SqlParameter("@Deep", SqlDbType.Bit) };
-
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
-            parms[1].Value = include;
-            parms[2].Value = deep;
 
             var entities = new List<Station>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Station_Repository_GetChildrenEntities, parms)) {
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Station_Repository_GetEntitiesInParent, parms)) {
                 while(rdr.Read()) {
                     var entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);

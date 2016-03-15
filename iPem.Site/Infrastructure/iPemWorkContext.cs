@@ -218,7 +218,7 @@ namespace iPem.Site.Infrastructure {
                                           join ms in msAreas on rs.AreaId equals ms.Id 
                                           select rs).ToList();
 
-                _cacheManager.Set<List<RsDomain.Area>>(key, _cachedAssociatedAreas);
+                _cacheManager.Set<List<RsDomain.Area>>(key, _cachedAssociatedAreas, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedAreas;
             }
         }
@@ -239,7 +239,7 @@ namespace iPem.Site.Infrastructure {
                                              join ms in msStations on rs.Id equals ms.Id
                                              select rs).ToList();
 
-                _cacheManager.Set<List<RsDomain.Station>>(key, _cachedAssociatedStations);
+                _cacheManager.Set<List<RsDomain.Station>>(key, _cachedAssociatedStations, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedStations;
             }
         }
@@ -260,7 +260,7 @@ namespace iPem.Site.Infrastructure {
                                           join ms in msRooms on rs.Id equals ms.Id
                                           select rs).ToList();
 
-                _cacheManager.Set<List<RsDomain.Room>>(key, _cachedAssociatedRooms);
+                _cacheManager.Set<List<RsDomain.Room>>(key, _cachedAssociatedRooms, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedRooms;
             }
         }
@@ -281,7 +281,7 @@ namespace iPem.Site.Infrastructure {
                                             join ms in msDevices on rs.Id equals ms.Id
                                             select rs).ToList();
 
-                _cacheManager.Set<List<RsDomain.Device>>(key, _cachedAssociatedDevices);
+                _cacheManager.Set<List<RsDomain.Device>>(key, _cachedAssociatedDevices, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedDevices;
             }
         }
@@ -300,7 +300,7 @@ namespace iPem.Site.Infrastructure {
                     _cachedAssociatedAreaAttributes[entity.AreaId] = new AreaAttributes(this.AssociatedAreas, entity);
                 }
 
-                _cacheManager.Set<Dictionary<string, AreaAttributes>>(key, _cachedAssociatedAreaAttributes);
+                _cacheManager.Set<Dictionary<string, AreaAttributes>>(key, _cachedAssociatedAreaAttributes, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedAreaAttributes;
             }
         }
@@ -319,7 +319,7 @@ namespace iPem.Site.Infrastructure {
                     _cachedAssociatedStationAttributes[entity.Id] = new StationAttributes(this.AssociatedStations, entity);
                 }
 
-                _cacheManager.Set<Dictionary<string, StationAttributes>>(key, _cachedAssociatedStationAttributes);
+                _cacheManager.Set<Dictionary<string, StationAttributes>>(key, _cachedAssociatedStationAttributes, CachedIntervals.AppRoleIntervals);
                 return _cachedAssociatedStationAttributes;
             }
         }

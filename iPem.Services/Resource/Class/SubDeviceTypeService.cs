@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<SubDeviceType> GetAllSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<SubDeviceType> subDeviceTypes = null;
+            List<SubDeviceType> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_SubDeviceTypesRepository)) {
-                subDeviceTypes = _cacheManager.Get<List<SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository);
+                result = _cacheManager.Get<List<SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository);
             } else {
-                subDeviceTypes = _subDeviceTypeRepository.GetEntities();
-                _cacheManager.Set<List<SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository, subDeviceTypes);
+                result = _subDeviceTypeRepository.GetEntities();
+                _cacheManager.Set<List<SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository, result);
             }
 
-            var result = new PagedList<SubDeviceType>(subDeviceTypes, pageIndex, pageSize);
-            return result;
+            return new PagedList<SubDeviceType>(result, pageIndex, pageSize);
         }
 
         #endregion

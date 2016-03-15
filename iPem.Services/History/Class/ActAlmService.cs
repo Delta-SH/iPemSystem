@@ -40,6 +40,11 @@ namespace iPem.Services.History {
             return new PagedList<ActAlm>(result, pageIndex, pageSize);
         }
 
+        public IPagedList<ActAlm> GetActAlmsByTime(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = _actRepository.GetEntities(start, end);
+            return new PagedList<ActAlm>(result, pageIndex, pageSize);
+        }
+
         public IPagedList<ActAlm> GetAllActAlms(int pageIndex = 0, int pageSize = int.MaxValue) {
             var result = _actRepository.GetEntities();
             return new PagedList<ActAlm>(result, pageIndex, pageSize);

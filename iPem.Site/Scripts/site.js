@@ -172,6 +172,30 @@ window.$$iPems.Organization = {
     Node: 5
 };
 
+/*Alarm Level*/
+window.$$iPems.AlmLevel = {
+    Level1: 1,
+    Level2: 2,
+    Level3: 3,
+    Level4: 4
+};
+
+/*Alarm Level*/
+window.$$iPems.GetAlmLevelCls = function (value) {
+    switch (value) {
+        case $$iPems.AlmLevel.Level1:
+            return 'alm-level1';
+        case $$iPems.AlmLevel.Level2:
+            return 'alm-level2';
+        case $$iPems.AlmLevel.Level3:
+            return 'alm-level3';
+        case $$iPems.AlmLevel.Level4:
+            return 'alm-level4';
+        default:
+            return '';
+    }
+};
+
 /*global delimiter*/
 window.$$iPems.Delimiter = ';';
 
@@ -260,12 +284,45 @@ window.$$iPems.Tasks = {
                             $$iPems.Tasks.noticeTask.fireOnStart = false;
                             $$iPems.Tasks.noticeTask.restart();
                         }
-                    } 
+                    }
                 }
             });
         },
         fireOnStart: true,
         interval: 10000,
+        repeat: 1
+    }),
+    actAlmNoticeTask: Ext.util.TaskManager.newTask({
+        run: function () {
+            Ext.Ajax.request({
+                url: '../Home/GetActAlmCount',
+                preventWindow: true,
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success) {
+                        var count = data.data,
+                            tips = Ext.get('actAlmCount');
+
+                        if (!Ext.isEmpty(tips)) {
+                            tips.setHTML(count > 99 ? '99+' : count);
+                            tips.setDisplayed(count > 0);
+
+                            //restart
+                            $$iPems.Tasks.actAlmNoticeTask.fireOnStart = false;
+                            $$iPems.Tasks.actAlmNoticeTask.restart();
+                        }
+                    }
+                }
+            });
+        },
+        fireOnStart: true,
+        interval: 10000,
+        repeat: 1
+    }), 
+    actAlmTask: Ext.util.TaskManager.newTask({
+        run: Ext.emptyFn,
+        fireOnStart: true,
+        interval: 15000,
         repeat: 1
     })
 };
@@ -276,6 +333,7 @@ Ext.onReady(function () {
 
     //start tasks
     $$iPems.Tasks.noticeTask.start();
+    $$iPems.Tasks.actAlmNoticeTask.start();
 
     /*home page*/
     var _titlebar = Ext.create('Ext.panel.Panel', {

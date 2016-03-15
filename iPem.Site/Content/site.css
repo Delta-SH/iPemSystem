@@ -194,6 +194,19 @@ div.help-tip div.help-tip-content p {
     float: right;
 }
 
+.alm-level1 .x-level-cell { 
+    background-color : #ff0000;
+}
+.alm-level2 .x-level-cell { 
+    background-color : #ffa500; 
+}
+.alm-level3 .x-level-cell { 
+    background-color : #ffff00; 
+}
+.alm-level4 .x-level-cell { 
+    background-color : #87ceeb; 
+}
+
 @media screen and (max-width: 768px) {
     .header .top-nav {
         margin-right: 0;

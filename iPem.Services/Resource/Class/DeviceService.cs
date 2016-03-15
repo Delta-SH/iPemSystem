@@ -37,31 +37,20 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Device> GetDevicesByParent(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Rs_DevicesInParentPattern, parent);
-
-            List<Device> devices = null;
-            if(_cacheManager.IsSet(key)) {
-                devices = _cacheManager.Get<List<Device>>(key);
-            } else {
-                devices = _deviceRepository.GetEntities(parent);
-                _cacheManager.Set<List<Device>>(key, devices);
-            }
-
-            var result = new PagedList<Device>(devices, pageIndex, pageSize);
-            return result;
+            var result = _deviceRepository.GetEntities(parent);
+            return new PagedList<Device>(result, pageIndex, pageSize);
         }
 
         public IPagedList<Device> GetAllDevices(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Device> devices = null;
+            List<Device> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_DevicesRepository)) {
-                devices = _cacheManager.Get<List<Device>>(GlobalCacheKeys.Rs_DevicesRepository);
+                result = _cacheManager.Get<List<Device>>(GlobalCacheKeys.Rs_DevicesRepository);
             } else {
-                devices = _deviceRepository.GetEntities();
-                _cacheManager.Set<List<Device>>(GlobalCacheKeys.Rs_DevicesRepository, devices);
+                result = _deviceRepository.GetEntities();
+                _cacheManager.Set<List<Device>>(GlobalCacheKeys.Rs_DevicesRepository, result);
             }
 
-            var result = new PagedList<Device>(devices, pageIndex, pageSize);
-            return result;
+            return new PagedList<Device>(result, pageIndex, pageSize);
         }
 
         #endregion

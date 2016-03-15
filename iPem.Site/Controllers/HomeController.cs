@@ -1,15 +1,12 @@
 ﻿using iPem.Core;
+using iPem.Core.Caching;
 using iPem.Core.Enum;
+using iPem.Core.NPOI;
+using iPem.Services.Common;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
 using iPem.Site.Extensions;
-using HsDomain = iPem.Core.Domain.History;
-using HsSrv = iPem.Services.History;
-using MsDomain = iPem.Core.Domain.Master;
-using MsSrv = iPem.Services.Master;
 using Newtonsoft.Json;
-using RsDomain = iPem.Core.Domain.Resource;
-using RsSrv = iPem.Services.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +14,12 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Collections;
-using iPem.Services.Common;
-using iPem.Core.NPOI;
-using iPem.Core.Caching;
+using HsDomain = iPem.Core.Domain.History;
+using HsSrv = iPem.Services.History;
+using MsDomain = iPem.Core.Domain.Master;
+using MsSrv = iPem.Services.Master;
+using RsDomain = iPem.Core.Domain.Resource;
+using RsSrv = iPem.Services.Resource;
 
 namespace iPem.Site.Controllers {
     [Authorize]
@@ -86,6 +86,8 @@ namespace iPem.Site.Controllers {
         public ActionResult ActiveAlarm() {
             ViewBag.BarIndex = 2;
             ViewBag.MenuVisible = false;
+            _workContext.Store.ActAlmNoticeTime = DateTime.Now;
+
             return View();
         }
 
@@ -567,9 +569,42 @@ namespace iPem.Site.Controllers {
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [AjaxAuthorize]
+        public JsonResult GetActAlmCount() {
+            var data = new AjaxDataModel<int> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = 0
+            };
+
+            try {
+                var actAlms = _hsActAlmService.GetActAlmsByTime(_workContext.Store.ActAlmNoticeTime, DateTime.Now);
+                if(actAlms.TotalCount > 0) {
+                    var matchs = new Dictionary<string, string>();
+                    foreach(var dev in _workContext.AssociatedDevices) {
+                        matchs[dev.Id] = dev.Name;
+                    }
+
+                    var count = actAlms.Count(m => matchs.ContainsKey(m.DeviceId));
+                    if(count > 0) {
+                        data.message = "200 Ok";
+                        data.total = count;
+                        data.data = count;
+                    }
+                }
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActAlarms(int start, int limit, string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname) {
+        public JsonResult RequestActAlarms(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project, int start, int limit) {
             var data = new AjaxDataModel<List<ActAlmModel>> {
                 success = true,
                 message = "无数据",
@@ -578,27 +613,31 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname);
+                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
-                    var result = models.Skip(start).Take(limit);
-                    foreach(var model in result) {
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
-                            id = model.alarm.Id,
-                            level = Common.GetAlarmLevelDisplayName(model.alarm.AlmLevel),
-                            start = CommonHelper.DateTimeConverter(model.alarm.StartTime),
-                            area = string.Join(",", this.GetParentsInArea(model.area).Select(a => a.Name)),
-                            station = string.Join(",", this.GetParentsInStation(model.station).Select(a => a.Name)),
-                            room = model.room.Name,
-                            devType = model.devicetype.Name,
-                            device = model.device.Name,
-                            logic = model.logic.Name,
-                            point = model.point.Name,
-                            comment = model.alarm.AlmDesc,
-                            value = string.Format("{0:F2} {1}", model.alarm.StartValue, model.alarm.ValueUnit),
-                            frequency = model.alarm.Frequency
+                            id = models[i].alarm.Id,
+                            level = Common.GetAlarmLevelDisplayName(models[i].alarm.AlmLevel),
+                            levelValue = (int)models[i].alarm.AlmLevel,
+                            start = CommonHelper.DateTimeConverter(models[i].alarm.StartTime),
+                            area = string.Join(",", this.GetParentsInArea(models[i].area).Select(a => a.Name)),
+                            station = string.Join(",", this.GetParentsInStation(models[i].station).Select(a => a.Name)),
+                            room = models[i].room.Name,
+                            devType = models[i].devicetype.Name,
+                            device = models[i].device.Name,
+                            logic = models[i].logic.Name,
+                            point = models[i].point.Name,
+                            comment = models[i].alarm.AlmDesc,
+                            value = string.Format("{0:F2} {1}", models[i].alarm.StartValue, models[i].alarm.ValueUnit),
+                            frequency = models[i].alarm.Frequency
                         });
                     }
                 }
@@ -613,24 +652,283 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActChart1(int start, int limit, string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname) {
-            return null;
+        public JsonResult RequestActChart1(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+            var data = new AjaxDataModel<List<ChartModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ChartModel>()
+            };
+
+            try {
+                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
+                if(models != null && models.Count > 0) {
+                    var groups = models.GroupBy(m => m.alarm.AlmLevel).OrderBy(g=>g.Key);
+                    foreach(var group in groups) {
+                        data.data.Add(new ChartModel {
+                            name = Common.GetAlarmLevelDisplayName(group.Key),
+                            value = group.Count(),
+                            comment = ""
+                        });
+                    }
+
+                    data.message = "200 Ok";
+                    data.total = data.data.Count;
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
         }
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActChart2(int start, int limit, string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname) {
-            return null;
+        public JsonResult RequestActChart2(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+            var data = new AjaxDataModel<List<ChartModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ChartModel>()
+            };
+
+            try {
+                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
+                if(models != null && models.Count > 0) {
+                    var groups = models.GroupBy(m => new { m.devicetype.Id, m.devicetype.Name }).OrderBy(g=>g.Key.Id);
+                    foreach(var group in groups) {
+                        data.data.Add(new ChartModel {
+                            name = group.Key.Name,
+                            value = group.Count(),
+                            comment = ""
+                        });
+                    }
+
+                    data.message = "200 Ok";
+                    data.total = data.data.Count;
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
         }
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActChart3(int start, int limit, string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname) {
-            return null;
+        public JsonResult RequestActChart3(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+            var data = new AjaxDataModel<List<ChartModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ChartModel>()
+            };
+
+            try {
+                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
+                if(models != null && models.Count > 0) {
+                    var type = Enum.IsDefined(typeof(EnmOrganization), nodetype) ? (EnmOrganization)nodetype : EnmOrganization.Area;
+                    if(type == EnmOrganization.Area && nodeid == "root") {
+                        #region root
+                        var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
+                        var roots = new List<RsDomain.Area>();
+                        foreach(var area in _workContext.AssociatedAreas) {
+                            if(!dict.ContainsKey(area.ParentId))
+                                roots.Add(area);
+                        }
+
+                        foreach(var root in roots) {
+                            var matchs = new Dictionary<string, string>();
+                                matchs.Add(root.AreaId, root.Name);
+
+                            if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
+                                var current = _workContext.AssociatedAreaAttributes[root.AreaId];
+                                if(current.HasChildren) {
+                                    foreach(var child in current.Children) {
+                                        matchs[child.AreaId] = child.Name;
+                                    }
+                                }
+                            }
+
+                            var count = models.Count(m => matchs.ContainsKey(m.area.AreaId));
+                            if(count > 0)
+                                data.data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Area) {
+                        #region area
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
+                            var currentRoot = _workContext.AssociatedAreaAttributes[nodeid];
+                            if(currentRoot.HasChildren) {
+                                foreach(var rc in currentRoot.FirstChildren) {
+                                    var matchs = new Dictionary<string, string>();
+                                        matchs.Add(rc.AreaId, rc.Name);
+
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(rc.AreaId)) {
+                                        var current = _workContext.AssociatedAreaAttributes[rc.AreaId];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.AreaId] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.area.AreaId));
+                                    if(count > 0)
+                                        data.data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
+                                }
+                            } else {
+                                var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == nodeid);
+                                var dict = stations.ToDictionary(k => k.Id, v => v.Name);
+                                var roots = new List<RsDomain.Station>();
+                                foreach(var sta in stations) {
+                                    if(!dict.ContainsKey(sta.ParentId))
+                                        roots.Add(sta);
+                                }
+
+                                foreach(var root in roots) {
+                                    var matchs = new Dictionary<string, string>();
+                                        matchs.Add(root.Id, root.Name);
+
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
+                                        var current = _workContext.AssociatedStationAttributes[root.Id];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.Id] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.station.Id));
+                                    if(count > 0)
+                                        data.data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
+                                }
+                            }
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Station) {
+                        #region station
+                        if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
+                            var currentRoot = _workContext.AssociatedStationAttributes[nodeid];
+                            if(currentRoot.HasChildren) {
+                                foreach(var rc in currentRoot.FirstChildren) {
+                                    var matchs = new Dictionary<string, string>();
+                                        matchs.Add(rc.Id, rc.Name);
+
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(rc.Id)) {
+                                        var current = _workContext.AssociatedStationAttributes[rc.Id];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.Id] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.station.Id));
+                                    if(count > 0)
+                                        data.data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
+                                }
+                            } else {
+                                var rooms = _workContext.AssociatedRooms.FindAll(s => s.StationId == nodeid);
+                                var matchs = rooms.ToDictionary(k => k.Id, v => v.Name);
+                                foreach(var room in rooms) {
+                                    var count = models.Count(m => matchs.ContainsKey(m.room.Id));
+                                    if(count > 0)
+                                        data.data.Add(new ChartModel { name = room.Name, value = count, comment = "" });
+                                }
+                            }
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Room) {
+                        #region room
+                        var devices = _workContext.AssociatedDevices.FindAll(d => d.RoomId == nodeid);
+                        var matchs = devices.ToDictionary(k => k.Id, v => v.Name);
+                        foreach(var device in devices) {
+                            var count = models.Count(m => matchs.ContainsKey(m.device.Id));
+                            if(count > 0)
+                                data.data.Add(new ChartModel { name = device.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Device) {
+                        #region device
+                        var current = _workContext.AssociatedDevices.Find(d => d.Id == nodeid);
+                        if(current != null) {
+                            var count = models.Count(m => m.device.Id == current.Id);
+                            if(count > 0)
+                                data.data.Add(new ChartModel { name = current.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
         }
 
-        private List<ActAlmStore> GetActAlmStore(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname) {
-            var key = Common.GetCachedKey(UserCacheKeys.U_ActAlmResultPattern, _workContext);
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadActAlms(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+            try {
+                var models = new List<ActAlmModel>();
+                var cached = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
+                if(cached != null && cached.Count > 0) {
+                    for(int i = 0; i < cached.Count; i++) {
+                        models.Add(new ActAlmModel {
+                            id = cached[i].alarm.Id,
+                            level = Common.GetAlarmLevelDisplayName(cached[i].alarm.AlmLevel),
+                            levelValue = (int)cached[i].alarm.AlmLevel,
+                            start = CommonHelper.DateTimeConverter(cached[i].alarm.StartTime),
+                            area = string.Join(",", this.GetParentsInArea(cached[i].area).Select(a => a.Name)),
+                            station = string.Join(",", this.GetParentsInStation(cached[i].station).Select(a => a.Name)),
+                            room = cached[i].room.Name,
+                            devType = cached[i].devicetype.Name,
+                            device = cached[i].device.Name,
+                            logic = cached[i].logic.Name,
+                            point = cached[i].point.Name,
+                            comment = cached[i].alarm.AlmDesc,
+                            value = string.Format("{0:F2} {1}", cached[i].alarm.StartValue, cached[i].alarm.ValueUnit),
+                            frequency = cached[i].alarm.Frequency,
+                            background = Common.GetAlarmLevelDisplayColor(cached[i].alarm.AlmLevel)
+                        });
+                    }
+                }
+
+                using(var ms = _excelManager.Export<ActAlmModel>(models, "实时告警列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestRefreshActAlm() {
+            try {
+                var key = Common.GetCachedKey(UserCacheKeys.U_ActAlmStorePattern, _workContext);
+                if(_cacheManager.IsSet(key))
+                    _cacheManager.Remove(key);
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "Ok" }, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 告警确认、工程告警等筛选还未做。。。。
+        /// </summary>
+        private List<ActAlmStore> GetActAlmStore(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+            var key = Common.GetCachedKey(UserCacheKeys.U_ActAlmStorePattern, _workContext);
 
             if(_cacheManager.IsSet(key))
                 return _cacheManager.Get<List<ActAlmStore>>(key);
@@ -715,7 +1013,20 @@ namespace iPem.Site.Controllers {
                     currentPoints = currentPoints.FindAll(p => CommonHelper.ConditionContain(p.Name, names));
             }
 
-            var currentAlarms = (almlevel != null && almlevel.Length > 0) ? _hsActAlmService.GetActAlmsByLevels(almlevel) : _hsActAlmService.GetAllActAlms();
+            var currentAlarms = ((almlevel != null && almlevel.Length > 0) ? _hsActAlmService.GetActAlmsByLevels(almlevel) : _hsActAlmService.GetAllActAlms()).ToList();
+            //if(!string.IsNullOrWhiteSpace(confirm)) {
+            //    if(confirm.Equals("confirm", StringComparison.CurrentCultureIgnoreCase))
+            //        currentAlarms = currentAlarms.FindAll(a => a.AlmFlag == 1);
+            //    if(confirm.Equals("unconfirm", StringComparison.CurrentCultureIgnoreCase))
+            //        currentAlarms = currentAlarms.FindAll(a => a.AlmFlag == 0);
+            //}
+
+            //if(!string.IsNullOrWhiteSpace(project)) {
+            //    if(project.Equals("project", StringComparison.CurrentCultureIgnoreCase))
+            //        currentAlarms = currentAlarms.FindAll(a => a.AlmFlag == 1);
+            //    if(project.Equals("unproject", StringComparison.CurrentCultureIgnoreCase))
+            //        currentAlarms = currentAlarms.FindAll(a => a.AlmFlag == 0);
+            //}
 
             var currentDevTypes = _rsDeviceTypeService.GetAllDeviceTypes();
 
@@ -729,6 +1040,7 @@ namespace iPem.Site.Controllers {
                           join room in currentRooms on device.RoomId equals room.Id
                           join station in currentStations on room.StationId equals station.Id
                           join area in currentAreas on station.AreaId equals area.AreaId
+                          orderby alarm.StartTime descending
                           select new ActAlmStore {
                               alarm = alarm,
                               point = point,
@@ -740,7 +1052,7 @@ namespace iPem.Site.Controllers {
                               area = area
                           }).ToList();
 
-            _cacheManager.Set<List<ActAlmStore>>(key, models, CachedIntervals.ActAlmIntervals);
+            _cacheManager.Set<List<ActAlmStore>>(key, models, CachedIntervals.ActStoreIntervals);
             return models;
         }
 

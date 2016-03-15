@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<LogicType> GetAllLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<LogicType> logicTypes = null;
+            List<LogicType> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_LogicTypesRepository)) {
-                logicTypes = _cacheManager.Get<List<LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository);
+                result = _cacheManager.Get<List<LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository);
             } else {
-                logicTypes = _logicTypeRepository.GetEntities();
-                _cacheManager.Set<List<LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository, logicTypes);
+                result = _logicTypeRepository.GetEntities();
+                _cacheManager.Set<List<LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository, result);
             }
 
-            var result = new PagedList<LogicType>(logicTypes, pageIndex, pageSize);
-            return result;
+            return new PagedList<LogicType>(result, pageIndex, pageSize);
         }
 
         #endregion

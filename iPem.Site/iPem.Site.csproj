@@ -173,6 +173,7 @@
     <Compile Include="Infrastructure\Icons.cs" />
     <Compile Include="Infrastructure\iPemEngine.cs" />
     <Compile Include="Infrastructure\iPemWorkContext.cs" />
+    <Compile Include="Infrastructure\JsonNetResult.cs" />
     <Compile Include="Models\ActAlmModel.cs" />
     <Compile Include="Models\ActAlmStore.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />

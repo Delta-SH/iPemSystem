@@ -247,5 +247,16 @@ namespace iPem.Data.Common {
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmAlarmLevel), v) ? (EnmAlarmLevel)v : EnmAlarmLevel.Level1;
         }
+
+        /// <summary>
+        /// DBNull Flag Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static EnmAlarmFlag DBNullEnmFlagHandler(object val) {
+            if(val == DBNull.Value) { return EnmAlarmFlag.Begin; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmAlarmFlag), v) ? (EnmAlarmFlag)v : EnmAlarmFlag.Begin;
+        }
     }
 }

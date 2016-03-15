@@ -37,18 +37,8 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Room> GetRoomsByParent(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Rs_RoomsInParentPattern, parent);
-
-            List<Room> rooms = null;
-            if(_cacheManager.IsSet(key)) {
-                rooms = _cacheManager.Get<List<Room>>(key);
-            } else {
-                rooms = _roomRepository.GetEntities(parent);
-                _cacheManager.Set<List<Room>>(key, rooms);
-            }
-
-            var result = new PagedList<Room>(rooms, pageIndex, pageSize);
-            return result;
+            var result = _roomRepository.GetEntities(parent);
+            return new PagedList<Room>(result, pageIndex, pageSize);
         }
 
         public IPagedList<Room> GetAllRooms(int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -60,8 +50,7 @@ namespace iPem.Services.Resource {
                 _cacheManager.Set<List<Room>>(GlobalCacheKeys.Rs_RoomsRepository, rooms);
             }
 
-            var result = new PagedList<Room>(rooms, pageIndex, pageSize);
-            return result;
+            return new PagedList<Room>(rooms, pageIndex, pageSize);
         }
 
         #endregion

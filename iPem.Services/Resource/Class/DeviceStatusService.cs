@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<DeviceStatus> GetAllDeviceStatus(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<DeviceStatus> status = null;
+            List<DeviceStatus> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_DeviceStatusRepository)) {
-                status = _cacheManager.Get<List<DeviceStatus>>(GlobalCacheKeys.Rs_DeviceStatusRepository);
+                result = _cacheManager.Get<List<DeviceStatus>>(GlobalCacheKeys.Rs_DeviceStatusRepository);
             } else {
-                status = _deviceStatusRepository.GetEntities();
-                _cacheManager.Set<List<DeviceStatus>>(GlobalCacheKeys.Rs_DeviceStatusRepository, status);
+                result = _deviceStatusRepository.GetEntities();
+                _cacheManager.Set<List<DeviceStatus>>(GlobalCacheKeys.Rs_DeviceStatusRepository, result);
             }
 
-            var result = new PagedList<DeviceStatus>(status, pageIndex, pageSize);
-            return result;
+            return new PagedList<DeviceStatus>(result, pageIndex, pageSize);
         }
 
         #endregion

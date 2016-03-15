@@ -24,36 +24,7 @@ namespace iPem.Data.Common {
         //station repository
         public const string Sql_Station_Repository_GetEntity = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [Id]=@Id;";
         public const string Sql_Station_Repository_GetEntities = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station];";
-        public const string Sql_Station_Repository_GetEntitiesInArea = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [AreaId]=@AreaId;";
-        public const string Sql_Station_Repository_GetChildrenEntities = @"
-        IF(@Deep = 1 AND @Include = 1)
-        BEGIN
-	        ;WITH T_Station AS
-	        (
-		        SELECT * FROM [dbo].[S_Station] WHERE [Id] = @Parent
-		        UNION ALL
-		        SELECT ST.* FROM [dbo].[S_Station] ST INNER JOIN T_Station TS ON ST.[ParentId] = TS.[Id]
-	        )
-	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM T_Station;
-        END
-        ELSE IF(@Deep = 1 AND @Include = 0)
-        BEGIN
-	        ;WITH T_Station AS
-	        (
-		        SELECT * FROM [dbo].[S_Station] WHERE [ParentId] = @Parent
-		        UNION ALL
-		        SELECT ST.* FROM [dbo].[S_Station] ST INNER JOIN T_Station TS ON ST.[ParentId] = TS.[Id]
-	        )
-	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM T_Station;
-        END
-        ELSE IF(@Deep = 0 AND @Include = 1)
-        BEGIN
-	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [Id] = @Parent OR [ParentId] = @Parent;
-        END
-        ELSE IF(@Deep = 0 AND @Include = 0)
-        BEGIN
-	        SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [ParentId] = @Parent;
-        END";
+        public const string Sql_Station_Repository_GetEntitiesInParent = @"SELECT [Id],[Name],[StaTypeId],[Longitude],[Latitude],[Altitude],[CityElecLoadTypeId],[CityElecCap],[CityElecLoad],[Contact],[LineRadiusSize],[LineLength],[SuppPowerTypeId],[TranInfo],[TranContNo],[TranPhone],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[ParentId],[AreaId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Station] WHERE [AreaId]=@AreaId;";
 
         //room repository
         public const string Sql_Room_Repository_GetEntity = @"SELECT [Id],[Name],[RoomTypeId],[PropertyId],[Address],[Floor],[Length],[Width],[Heigth],[FloorLoad],[LineHeigth],[Square],[EffeSquare],[FireFighEuip],[Owner],[QueryPhone],[PowerSubMain],[TranSubMain],[EnviSubMain],[FireSubMain],[AirSubMain],[Contact],[CreateMan] AS [Creator],[CreateTime] AS [CreatedTime],[ModifyMan] AS [Modifier],[ModifyTime] AS [ModifiedTime],[StationId],[Desc] AS [Comment],[Enabled] FROM [dbo].[S_Room] WHERE [Id]=@Id;";

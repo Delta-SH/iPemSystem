@@ -192,5 +192,20 @@ namespace iPem.Site.Infrastructure {
                     return "未定义";
             }
         }
+
+        public static Color GetAlarmLevelDisplayColor(EnmAlarmLevel level) {
+            switch(level) {
+                case EnmAlarmLevel.Level1:
+                    return Color.Red;
+                case EnmAlarmLevel.Level2:
+                    return Color.Orange;
+                case EnmAlarmLevel.Level3:
+                    return Color.Yellow;
+                case EnmAlarmLevel.Level4:
+                    return Color.SkyBlue;
+                default:
+                    return Color.White;
+            }
+        }
     }
 }

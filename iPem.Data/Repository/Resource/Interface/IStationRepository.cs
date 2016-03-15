@@ -9,9 +9,7 @@ namespace iPem.Data.Repository.Resource {
     public partial interface IStationRepository {
         Station GetEntity(string id);
 
-        List<Station> GetEntitiesInArea(string area);
-
-        List<Station> GetChildrenEntities(string parent, bool include, bool deep);
+        List<Station> GetEntitiesInParent(string parent);
 
         List<Station> GetEntities();
     }

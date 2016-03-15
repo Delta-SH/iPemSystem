@@ -24,6 +24,7 @@ namespace iPem.Data.Common {
 
         SELECT [Id],[DeviceCode],[DeviceId],[PointId],[AlmFlag],[AlmLevel],[Frequency],[AlmDesc],[NormalDesc],[StartTime],[EndTime],[StartValue],[EndValue],[ValueUnit],[EndType] 
         FROM [dbo].[A_Act] AT INNER JOIN @SplitTable ST ON AT.[AlmLevel] = ST.[Data] ORDER BY [StartTime] DESC;";
+        public const string Sql_ActAlm_Repository_GetEntitiesByTime = @"SELECT [Id],[DeviceCode],[DeviceId],[PointId],[AlmFlag],[AlmLevel],[Frequency],[AlmDesc],[NormalDesc],[StartTime],[EndTime],[StartValue],[EndValue],[ValueUnit],[EndType] FROM [dbo].[A_Act] WHERE [StartTime] > @Start AND [StartTime] <= @End ORDER BY [StartTime] DESC;";
         public const string Sql_ActAlm_Repository_GetEntities = @"SELECT [Id],[DeviceCode],[DeviceId],[PointId],[AlmFlag],[AlmLevel],[Frequency],[AlmDesc],[NormalDesc],[StartTime],[EndTime],[StartValue],[EndValue],[ValueUnit],[EndType] FROM [dbo].[A_Act] ORDER BY [StartTime] DESC;";
     }
 }

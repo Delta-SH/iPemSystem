@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<EnumMethods> GetAllEnumMethods(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<EnumMethods> methods = null;
+            List<EnumMethods> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_EnumMethodsRepository)) {
-                methods = _cacheManager.Get<List<EnumMethods>>(GlobalCacheKeys.Rs_EnumMethodsRepository);
+                result = _cacheManager.Get<List<EnumMethods>>(GlobalCacheKeys.Rs_EnumMethodsRepository);
             } else {
-                methods = _enumMethodsRepository.GetEntities();
-                _cacheManager.Set<List<EnumMethods>>(GlobalCacheKeys.Rs_EnumMethodsRepository, methods);
+                result = _enumMethodsRepository.GetEntities();
+                _cacheManager.Set<List<EnumMethods>>(GlobalCacheKeys.Rs_EnumMethodsRepository, result);
             }
 
-            var result = new PagedList<EnumMethods>(methods, pageIndex, pageSize);
-            return result;
+            return new PagedList<EnumMethods>(result, pageIndex, pageSize);
         }
 
         #endregion

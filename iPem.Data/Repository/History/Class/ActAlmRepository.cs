@@ -45,7 +45,7 @@ namespace iPem.Data.Repository.History {
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullInt32Handler(rdr["AlmFlag"]);
+                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
                     entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
@@ -82,7 +82,45 @@ namespace iPem.Data.Repository.History {
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullInt32Handler(rdr["AlmFlag"]);
+                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
+                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
+                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
+                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
+                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
+                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
+                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
+                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
+                    entity.EndType = SqlTypeConverter.DBNullInt32Handler(rdr["EndType"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        /// <summary>
+        /// Gets entities from the repository by the specific datetime
+        /// </summary>
+        /// <param name="start">the start datetime</param>
+        /// <param name="end">the end datetime</param>
+        /// <returns>active alarm list</returns>
+        public List<ActAlm> GetEntities(DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<ActAlm>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Hs.Sql_ActAlm_Repository_GetEntitiesByTime, parms)) {
+                while(rdr.Read()) {
+                    var entity = new ActAlm();
+                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
                     entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
@@ -112,7 +150,7 @@ namespace iPem.Data.Repository.History {
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullInt32Handler(rdr["AlmFlag"]);
+                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
                     entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);

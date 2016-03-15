@@ -30,6 +30,11 @@ namespace iPem.Core {
         public Employee Employee { get; set; }
 
         /// <summary>
+        /// Gets or sets the active alarm notice datetime
+        /// </summary>
+        public DateTime ActAlmNoticeTime { get; set; }
+
+        /// <summary>
         /// Gets or sets the expire utc time
         /// </summary>
         public DateTime ExpireUtc { get; set; }

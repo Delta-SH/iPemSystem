@@ -14,6 +14,6 @@ namespace iPem.Services.Resource {
 
         IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        IPagedList<Employee> GetDeptEmployees(string id, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Employee> GetEmployeesInDepartment(string dept, int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

@@ -1,5 +1,8 @@
 ﻿using iPem.Core.NPOI;
+using Newtonsoft.Json;
 using System;
+using System.Drawing;
+using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
@@ -9,6 +12,9 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("告警级别")]
         public string level { get; set; }
+
+        [ExcelIgnore]
+        public int levelValue { get; set; }
 
         [ExcelDisplayName("告警时间")]
         public string start { get; set; }
@@ -42,5 +48,9 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("触发频次")]
         public int frequency { get; set; }
+
+        [ScriptIgnore]
+        [ExcelBackground]
+        public Color background { get; set; }
     }
 }

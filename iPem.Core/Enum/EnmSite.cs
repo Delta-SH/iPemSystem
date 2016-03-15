@@ -26,4 +26,12 @@
         Level3,
         Level4
     }
+
+    /// <summary>
+    /// Represents the alarm flag enumeration
+    /// </summary>
+    public enum EnmAlarmFlag {
+        Begin,
+        End
+    }
 }

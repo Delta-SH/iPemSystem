@@ -6,11 +6,7 @@ using iPem.Services.Common;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
-using MsDomain = iPem.Core.Domain.Master;
-using MsSrv = iPem.Services.Master;
 using Newtonsoft.Json;
-using RsDomain = iPem.Core.Domain.Resource;
-using RsSrv = iPem.Services.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +14,10 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using MsDomain = iPem.Core.Domain.Master;
+using MsSrv = iPem.Services.Master;
+using RsDomain = iPem.Core.Domain.Resource;
+using RsSrv = iPem.Services.Resource;
 
 namespace iPem.Site.Controllers {
     public class AccountController : Controller {
@@ -165,6 +165,7 @@ namespace iPem.Site.Controllers {
 
                     var store = new Store {
                         Id = Guid.NewGuid(),
+                        ActAlmNoticeTime = now,
                         ExpireUtc = now.Add(CachedIntervals.AppStoreIntervals),
                         CreatedUtc = now
                     };
@@ -319,7 +320,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public ContentResult GetMenusInRole() {
+        public JsonNetResult GetMenusInRole() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -328,7 +329,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var menus = _menuService.GetMenus(_workContext.CurrentRole.Id, 0, int.MaxValue).ToList();
+                var menus = _menuService.GetMenus(_workContext.CurrentRole.Id).ToList();
                 if(menus.Count > 0) {
                     var _menus = menus.FindAll(m => m.LastId == 0).OrderBy(m => m.Index).ToList();
                     if(_menus.Count > 0) {
@@ -355,7 +356,10 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return Content(JsonConvert.SerializeObject(data, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }), "application/json");
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
         }
 
         private void MenusRecursion(List<MsDomain.Menu> menus, int pid, TreeModel node) {
@@ -381,7 +385,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public ContentResult GetAreasInRole() {
+        public JsonNetResult GetAreasInRole() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -423,7 +427,10 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return Content(JsonConvert.SerializeObject(data, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }), "application/json");
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
         }
 
         private void AreasRecursion(List<RsDomain.Area> areas, string pid, TreeModel node) {
@@ -450,7 +457,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public ContentResult GetOperateInRole() {
+        public JsonNetResult GetOperateInRole() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -480,7 +487,10 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return Content(JsonConvert.SerializeObject(data, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }), "application/json");
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
         }
 
         [HttpPost]
@@ -568,7 +578,7 @@ namespace iPem.Site.Controllers {
                 if(existedRole == null)
                     throw new iPemException("角色不存在，删除失败");
 
-                var usersInRole = _userService.GetUsers(existedRole.Id, 0, 5);
+                var usersInRole = _userService.GetUsers(existedRole.Id, false, 0, 5);
                 if(usersInRole.TotalCount > 0)
                     throw new iPemException("存在隶属该角色的用户，禁止删除");
 
@@ -630,9 +640,9 @@ namespace iPem.Site.Controllers {
             try {
                 var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
 
-                IList<UserModel> models = null;
+                List<UserModel> models = null;
                 if(_cacheManager.IsSet(key)) {
-                    models = _cacheManager.Get<IList<UserModel>>(key);
+                    models = _cacheManager.Get<List<UserModel>>(key);
                 } else {
                     var users = _userService.GetUsers(_workContext.CurrentRole.Id).ToList();
 
@@ -673,7 +683,7 @@ namespace iPem.Site.Controllers {
                                   }).ToList();
 
                         if(models.Count > 0)
-                            _cacheManager.Set<IList<UserModel>>(key, models);
+                            _cacheManager.Set<List<UserModel>>(key, models, CachedIntervals.AppResultIntervals);
                     }
                 }
 
@@ -1101,17 +1111,26 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if("user".Equals(result.action)){
+                if("user".Equals(result.action)) {
                     if("query".Equals(result.method)) {
                         var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
                         if(_cacheManager.IsSet(key))
                             _cacheManager.Remove(key);
-                    } else throw new ArgumentException("参数无效 method");
-                } else throw new ArgumentException("参数无效 action");
+                    } else
+                        throw new ArgumentException("参数无效 method");
+                } else if("role".Equals(result.action)) {
+                    if("query".Equals(result.method)) {
+                        var key = Common.GetCachedKey(UserCacheKeys.U_RolesResultPattern, _workContext);
+                        if(_cacheManager.IsSet(key))
+                            _cacheManager.Remove(key);
+                    } else
+                        throw new ArgumentException("参数无效 method");
+                } else
+                    throw new ArgumentException("参数无效 action");
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
                 result.type = "exception";
-		        result.message = exc.Message;
+                result.message = exc.Message;
             }
 
             return Json(result);

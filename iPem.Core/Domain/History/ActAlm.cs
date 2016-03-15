@@ -30,7 +30,7 @@ namespace iPem.Core.Domain.History {
         /// <summary>
         /// Gets or sets the alarm flag
         /// </summary>
-        public int AlmFlag { get; set; }
+        public EnmAlarmFlag AlmFlag { get; set; }
 
         /// <summary>
         /// Gets or sets the alarm level

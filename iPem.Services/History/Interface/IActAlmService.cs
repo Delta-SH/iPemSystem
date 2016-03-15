@@ -9,6 +9,8 @@ namespace iPem.Services.History {
 
         IPagedList<ActAlm> GetActAlmsByLevels(int[] levels, int pageIndex = 0, int pageSize = int.MaxValue);
 
+        IPagedList<ActAlm> GetActAlmsByTime(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
         IPagedList<ActAlm> GetAllActAlms(int pageIndex = 0, int pageSize = int.MaxValue);
 
     }

@@ -37,16 +37,15 @@ namespace iPem.Services.Resource {
         }
 
         public IPagedList<Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Unit> units = null;
+            List<Unit> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_UnitsRepository)) {
-                units = _cacheManager.Get<List<Unit>>(GlobalCacheKeys.Rs_UnitsRepository);
+                result = _cacheManager.Get<List<Unit>>(GlobalCacheKeys.Rs_UnitsRepository);
             } else {
-                units = _unitRepository.GetEntities();
-                _cacheManager.Set<List<Unit>>(GlobalCacheKeys.Rs_UnitsRepository, units);
+                result = _unitRepository.GetEntities();
+                _cacheManager.Set<List<Unit>>(GlobalCacheKeys.Rs_UnitsRepository, result);
             }
 
-            var result = new PagedList<Unit>(units, pageIndex, pageSize);
-            return result;
+            return new PagedList<Unit>(result, pageIndex, pageSize);
         }
 
         #endregion

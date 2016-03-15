@@ -39,44 +39,27 @@ namespace iPem.Services.Resource {
         public IPagedList<Station> GetStationsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue) {
             var key = string.Format(GlobalCacheKeys.Rs_StationsInAreaPattern, area);
 
-            List<Station> stations = null;
+            List<Station> result = null;
             if(_cacheManager.IsSet(key)) {
-                stations = _cacheManager.Get<List<Station>>(key);
+                result = _cacheManager.Get<List<Station>>(key);
             } else {
-                stations = _stationRepository.GetEntitiesInArea(area);
-                _cacheManager.Set<List<Station>>(key, stations);
+                result = _stationRepository.GetEntitiesInParent(area);
+                _cacheManager.Set<List<Station>>(key, result);
             }
 
-            var result = new PagedList<Station>(stations, pageIndex, pageSize);
-            return result;
-        }
-
-        public IPagedList<Station> GetChildrenInStation(string parent, bool include = true, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Rs_ChildrenInStationPattern, parent, include, deep);
-
-            List<Station> stations = null;
-            if(_cacheManager.IsSet(key)) {
-                stations = _cacheManager.Get<List<Station>>(key);
-            } else {
-                stations = _stationRepository.GetChildrenEntities(parent, include, deep);
-                _cacheManager.Set<List<Station>>(key, stations);
-            }
-
-            var result = new PagedList<Station>(stations, pageIndex, pageSize);
-            return result;
+            return new PagedList<Station>(result, pageIndex, pageSize);
         }
 
         public IPagedList<Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue) {
-            List<Station> stations = null;
+            List<Station> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_StationsRepository)) {
-                stations = _cacheManager.Get<List<Station>>(GlobalCacheKeys.Rs_StationsRepository);
+                result = _cacheManager.Get<List<Station>>(GlobalCacheKeys.Rs_StationsRepository);
             } else {
-                stations = _stationRepository.GetEntities();
-                _cacheManager.Set<List<Station>>(GlobalCacheKeys.Rs_StationsRepository, stations);
+                result = _stationRepository.GetEntities();
+                _cacheManager.Set<List<Station>>(GlobalCacheKeys.Rs_StationsRepository, result);
             }
 
-            var result = new PagedList<Station>(stations, pageIndex, pageSize);
-            return result;
+            return new PagedList<Station>(result, pageIndex, pageSize);
         }
 
         #endregion

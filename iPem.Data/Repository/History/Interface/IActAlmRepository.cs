@@ -20,6 +20,14 @@ namespace iPem.Data.Repository.History {
         List<ActAlm> GetEntities(int[] levels);
 
         /// <summary>
+        /// Gets entities from the repository by the specific datetime
+        /// </summary>
+        /// <param name="start">the start datetime</param>
+        /// <param name="end">the end datetime</param>
+        /// <returns>active alarm list</returns>
+        List<ActAlm> GetEntities(DateTime start, DateTime end);
+
+        /// <summary>
         /// Gets all entities from the repository
         /// </summary>
         /// <returns>active alarm list</returns>
