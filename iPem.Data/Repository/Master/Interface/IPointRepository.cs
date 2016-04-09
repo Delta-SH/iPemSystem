@@ -10,6 +10,13 @@ namespace iPem.Data.Repository.Master {
     public partial interface IPointRepository {
 
         /// <summary>
+        /// Gets entities from the repository by the specific device
+        /// </summary>
+        /// <param name="device">the device identifier</param>
+        /// <returns>the point list</returns>
+        List<Point> GetEntitiesByDevice(string device);
+
+        /// <summary>
         /// Gets entities from the repository by the specific types
         /// </summary>
         /// <param name="type">the point type array</param>

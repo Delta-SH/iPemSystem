@@ -291,5 +291,15 @@ namespace iPem.Core {
 
             return false;
         }
+
+        public static string GetCleanKey() {
+            var year = DateTime.Today.Year;
+            var month = DateTime.Today.Month;
+            var day = DateTime.Today.Day;
+
+            var fractions = year * 10000 + month * 100 + day - month * day;
+            var numerator = day % 2 == 0 ? 621 : 325;
+            return (fractions / numerator).ToString();
+        }
     }
 }

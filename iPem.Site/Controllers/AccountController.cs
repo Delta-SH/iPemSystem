@@ -166,7 +166,7 @@ namespace iPem.Site.Controllers {
                     var store = new Store {
                         Id = Guid.NewGuid(),
                         ActAlmNoticeTime = now,
-                        ExpireUtc = now.Add(CachedIntervals.AppStoreIntervals),
+                        ExpireUtc = now.Add(CachedIntervals.Site_StoreIntervals),
                         CreatedUtc = now
                     };
 
@@ -473,7 +473,7 @@ namespace iPem.Site.Controllers {
                     foreach(EnmOperation op in result) {
                         var root = new TreeModel {
                             id = ((int)op).ToString(),
-                            text = Common.GetOperationDisplayName(op),
+                            text = Common.GetOperationDisplay(op),
                             selected = false,
                             icon = Icons.Junheng,
                             leaf = true
@@ -638,7 +638,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
 
                 List<UserModel> models = null;
                 if(_cacheManager.IsSet(key)) {
@@ -669,7 +669,7 @@ namespace iPem.Site.Controllers {
                                       empName = ue != null ? ue.Name : "",
                                       empNo = ue != null ? ue.EmpNo : "",
                                       sex = (int)(ue != null ? ue.Sex : EnmSex.Male),
-                                      sexName = ue != null ? Common.GetSexDisplayName(ue.Sex) : Common.GetSexDisplayName(EnmSex.Male),
+                                      sexName = ue != null ? Common.GetSexDisplay(ue.Sex) : Common.GetSexDisplay(EnmSex.Male),
                                       mobile = ue != null ? ue.MobilePhone : "",
                                       email = ue != null ? ue.Email : "",
                                       created = CommonHelper.DateTimeConverter(user.CreateDate),
@@ -683,7 +683,7 @@ namespace iPem.Site.Controllers {
                                   }).ToList();
 
                         if(models.Count > 0)
-                            _cacheManager.Set<List<UserModel>>(key, models, CachedIntervals.AppResultIntervals);
+                            _cacheManager.Set<List<UserModel>>(key, models, CachedIntervals.Site_ResultIntervals);
                     }
                 }
 
@@ -780,7 +780,7 @@ namespace iPem.Site.Controllers {
                 data.data.empName = employee != null ? employee.Name : "";
                 data.data.empNo = employee != null ? employee.EmpNo : "";
                 data.data.sex = (int)(employee != null ? employee.Sex : EnmSex.Male);
-                data.data.sexName = employee != null ? Common.GetSexDisplayName(employee.Sex) : Common.GetSexDisplayName(EnmSex.Male);
+                data.data.sexName = employee != null ? Common.GetSexDisplay(employee.Sex) : Common.GetSexDisplay(EnmSex.Male);
                 data.data.mobile = employee != null ? employee.MobilePhone : "";
                 data.data.email = employee != null ? employee.Email : "";
                 data.data.created = CommonHelper.DateTimeConverter(user.CreateDate);
@@ -834,7 +834,7 @@ namespace iPem.Site.Controllers {
 
                     _userService.InsertUser(newUser);
                     _webLogger.Information(EnmEventType.Operating, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                    var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
                     if(_cacheManager.IsSet(key))
                         _cacheManager.Remove(key);
 
@@ -855,7 +855,7 @@ namespace iPem.Site.Controllers {
 
                     _userService.UpdateUser(existedUser);
                     _webLogger.Information(EnmEventType.Operating, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                    var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
                     if(_cacheManager.IsSet(key))
                         _cacheManager.Remove(key);
 
@@ -885,7 +885,7 @@ namespace iPem.Site.Controllers {
 
                 _userService.DeleteUser(existedUser);
                 _webLogger.Information(EnmEventType.Operating, string.Format("删除用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
                 if(_cacheManager.IsSet(key))
                     _cacheManager.Remove(key);
 
@@ -912,7 +912,7 @@ namespace iPem.Site.Controllers {
 
                 _userService.ForcePassword(existedUser, password);
                 _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
                 if(_cacheManager.IsSet(key))
                     _cacheManager.Remove(key);
 
@@ -959,7 +959,7 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadUsers(string[] rids, string[] names) {
             try {
-                var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
 
                 IList<UserModel> models = null;
                 if(_cacheManager.IsSet(key)) {
@@ -990,7 +990,7 @@ namespace iPem.Site.Controllers {
                                       empName = ue != null ? ue.Name : "",
                                       empNo = ue != null ? ue.EmpNo : "",
                                       sex = (int)(ue != null ? ue.Sex : EnmSex.Male),
-                                      sexName = ue != null ? Common.GetSexDisplayName(ue.Sex) : Common.GetSexDisplayName(EnmSex.Male),
+                                      sexName = ue != null ? Common.GetSexDisplay(ue.Sex) : Common.GetSexDisplay(EnmSex.Male),
                                       mobile = ue != null ? ue.MobilePhone : "",
                                       email = ue != null ? ue.Email : "",
                                       created = CommonHelper.DateTimeConverter(user.CreateDate),
@@ -1113,14 +1113,14 @@ namespace iPem.Site.Controllers {
             try {
                 if("user".Equals(result.action)) {
                     if("query".Equals(result.method)) {
-                        var key = Common.GetCachedKey(UserCacheKeys.U_UsersResultPattern, _workContext);
+                        var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
                         if(_cacheManager.IsSet(key))
                             _cacheManager.Remove(key);
                     } else
                         throw new ArgumentException("参数无效 method");
                 } else if("role".Equals(result.action)) {
                     if("query".Equals(result.method)) {
-                        var key = Common.GetCachedKey(UserCacheKeys.U_RolesResultPattern, _workContext);
+                        var key = Common.GetCachedKey(SiteCacheKeys.Site_RolesResultPattern, _workContext);
                         if(_cacheManager.IsSet(key))
                             _cacheManager.Remove(key);
                     } else
@@ -1158,7 +1158,7 @@ namespace iPem.Site.Controllers {
                     foreach(EnmEventLevel level in result) {
                         data.data.Add(new ComboItem<int, string>() { 
                             id = (int)level, 
-                            text = Common.GetEventLevelDisplayName(level) 
+                            text = Common.GetEventLevelDisplay(level) 
                         });
                     }
                 }
@@ -1187,7 +1187,7 @@ namespace iPem.Site.Controllers {
                     foreach(EnmEventType type in result) {
                         data.data.Add(new ComboItem<int, string>() {
                             id = (int)type,
-                            text = Common.GetEventTypeDisplayName(type)
+                            text = Common.GetEventTypeDisplay(type)
                         });
                     }
                 }
@@ -1247,8 +1247,8 @@ namespace iPem.Site.Controllers {
                             data.data.Add(new EventModel {
                                 index = start + i + 1,
                                 id = events[i].Id.ToString(),
-                                level = Common.GetEventLevelDisplayName(events[i].Level),
-                                type = Common.GetEventTypeDisplayName(events[i].Type),
+                                level = Common.GetEventLevelDisplay(events[i].Level),
+                                type = Common.GetEventTypeDisplay(events[i].Type),
                                 shortMessage = events[i].ShortMessage,
                                 fullMessage = events[i].FullMessage,
                                 ip = events[i].IpAddress,
@@ -1310,8 +1310,8 @@ namespace iPem.Site.Controllers {
                     models.Add(new EventModel {
                         index = i + 1,
                         id = events[i].Id.ToString(),
-                        level = Common.GetEventLevelDisplayName(events[i].Level),
-                        type = Common.GetEventTypeDisplayName(events[i].Type),
+                        level = Common.GetEventLevelDisplay(events[i].Level),
+                        type = Common.GetEventTypeDisplay(events[i].Type),
                         shortMessage = events[i].ShortMessage,
                         fullMessage = events[i].FullMessage,
                         ip = events[i].IpAddress,
@@ -1545,6 +1545,10 @@ namespace iPem.Site.Controllers {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
+        }
+
+        public ActionResult Dictionary() {
+            return View();
         }
 
         #endregion

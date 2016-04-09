@@ -72,6 +72,9 @@ namespace iPem.Site {
 
             if(!dbManager.DatabaseIsInstalled())
                 return;
+
+            if(!dbManager.DatabaseIsInstalled())
+                return;
         }
 
         protected void Application_EndRequest(object sender, EventArgs e) {

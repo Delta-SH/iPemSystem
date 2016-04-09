@@ -87,5 +87,9 @@ namespace iPem.Data.Common {
         //unit repository
         public const string Sql_Unit_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Unit] WHERE [Id]=@Id;";
         public const string Sql_Unit_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Unit] ORDER BY [Id];";
+
+        //user repository
+        public const string Sql_User_Repository_GetEntity = @"SELECT [Id],[Uid],[Pwd],[PwdFormat],[PwdSalt],[OpLevel],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark],[EmpId],[Enabled] FROM [dbo].[U_User] WHERE [Id]=@Id;";
+        public const string Sql_User_Repository_GetEntities = @"SELECT [Id],[Uid],[Pwd],[PwdFormat],[PwdSalt],[OpLevel],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark],[EmpId],[Enabled] FROM [dbo].[U_User] ORDER BY [Uid];";
     }
 }

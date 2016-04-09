@@ -57,20 +57,25 @@ namespace iPem.Site.Extensions {
                 return;
 
             if(logger.IsEnabled(level)) {
-                var fullMessage = exception == null ? string.Empty : exception.ToString();
-                var log = new WebEvent {
-                    Id = Guid.NewGuid(),
-                    Level = level,
-                    Type = type,
-                    ShortMessage = message,
-                    FullMessage = fullMessage,
-                    IpAddress = ip,
-                    PageUrl = url,
-                    ReferrerUrl = referrer,
-                    UserId = uid,
-                    CreatedTime = DateTime.Now
-                };
-                logger.Insert(log);
+                try {
+                    var fullMessage = exception == null ? string.Empty : exception.ToString();
+                    var log = new WebEvent {
+                        Id = Guid.NewGuid(),
+                        Level = level,
+                        Type = type,
+                        ShortMessage = message,
+                        FullMessage = fullMessage,
+                        IpAddress = ip,
+                        PageUrl = url,
+                        ReferrerUrl = referrer,
+                        UserId = uid,
+                        CreatedTime = DateTime.Now
+                    };
+
+                    logger.Insert(log);
+                } catch(Exception ex) {
+                    Console.Write(ex.Message);
+                }
             }
         }
     }

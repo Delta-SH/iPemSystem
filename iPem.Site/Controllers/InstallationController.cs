@@ -352,6 +352,161 @@ namespace iPem.Site.Controllers {
             return Json(result);
         }
 
+        public ActionResult DbConfiguration() {
+            if(!_dbManager.DatabaseIsInstalled())
+                return RedirectToAction("Index");
+
+            ViewData["master"] = _dbManager.CurrentDbSets[EnmDatabaseType.Master];
+            ViewData["history"] = _dbManager.CurrentDbSets[EnmDatabaseType.History];
+            ViewData["resource"] = _dbManager.CurrentDbSets[EnmDatabaseType.Resource];
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult SaveCs(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Install.SaveCs error."
+            };
+
+            try {
+                if(entity == null)
+                    throw new ArgumentException("参数无效 entity");
+
+                entity.Id = Guid.NewGuid();
+                entity.Provider = EnmDbProvider.SqlServer;
+                entity.Type = EnmDatabaseType.Master;
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+
+                result.success = true;
+                result.code = 200;
+                result.message = "数据保存成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult SaveHs(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Install.SaveHs error."
+            };
+
+            try {
+                if(entity == null)
+                    throw new ArgumentException("参数无效 entity");
+
+                entity.Id = Guid.NewGuid();
+                entity.Provider = EnmDbProvider.SqlServer;
+                entity.Type = EnmDatabaseType.History;
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+
+                result.success = true;
+                result.code = 200;
+                result.message = "数据保存成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult SaveRs(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Install.SaveRs error."
+            };
+
+            try {
+                if(entity == null)
+                    throw new ArgumentException("参数无效 entity");
+
+                entity.Id = Guid.NewGuid();
+                entity.Provider = EnmDbProvider.SqlServer;
+                entity.Type = EnmDatabaseType.Resource;
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+
+                result.success = true;
+                result.code = 200;
+                result.message = "数据保存成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult DbClean(string password) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Install.DbClean error."
+            };
+
+            try {
+                if(string.IsNullOrWhiteSpace(password))
+                    throw new ArgumentException("确认密码验证失败，请与管理员联系。");
+
+                if(CommonHelper.GetCleanKey() != password)
+                    throw new ArgumentException("确认密码验证失败，请与管理员联系。");
+
+                _dataProvider.CleanEntites();
+                _dbManager.Clean();
+                result.success = true;
+                result.code = 200;
+                result.message = "删除成功，页面将在<span id='leftseconds'>5</span>秒后跳转到安装向导。";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult DbTest(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Install.DbTest error."
+            };
+
+            try {
+                if(entity == null)
+                    throw new ArgumentException("参数无效 entity");
+
+                SqlHelper.TestConnection(false, entity.IP, entity.Port, entity.Name, entity.UId, entity.Pwd);
+                result.success = true;
+                result.code = 200;
+                result.message = "数据库连接成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
         #endregion
 
     }

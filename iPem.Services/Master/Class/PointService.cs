@@ -34,6 +34,11 @@ namespace iPem.Services.Master {
 
         #region Methods
 
+        public IPagedList<Point> GetPointsByDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = _pointRepository.GetEntitiesByDevice(device);
+            return new PagedList<Point>(result, pageIndex, pageSize);
+        }
+
         public IPagedList<Point> GetPointsByType(int[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
             var result = new List<Point>();
             foreach(var type in types) {
@@ -64,18 +69,8 @@ namespace iPem.Services.Master {
             return new PagedList<Point>(result, pageIndex, pageSize);
         }
 
-        public IPagedList<Point> GetPoints(int protcol, int[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_PointsInProtcolPattern, protcol);
-
-            List<Point> result = null;
-            if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<Point>>(key);
-            } else {
-                result = _pointRepository.GetEntitiesByProtcol(protcol);
-                _cacheManager.Set<List<Point>>(key, result);
-            }
-
-            result = result.FindAll(p => types.Contains((int)p.Type));
+        public IPagedList<Point> GetPoints(string device, int[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = _pointRepository.GetEntitiesByDevice(device).FindAll(p => types.Contains((int)p.Type));
             return new PagedList<Point>(result, pageIndex, pageSize);
         }
 

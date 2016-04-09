@@ -92,7 +92,7 @@ namespace iPem.Services.Master {
                 result = _cacheManager.Get<List<User>>(key);
             } else {
                 result = _userRepository.GetEntities(role);
-                _cacheManager.Set<List<User>>(key, result, CachedIntervals.AppRoleIntervals);
+                _cacheManager.Set<List<User>>(key, result, CachedIntervals.Global_RoleIntervals);
             }
 
             return new PagedList<User>(result, pageIndex, pageSize);

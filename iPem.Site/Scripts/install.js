@@ -1139,6 +1139,7 @@
                     ipv4: true
                 },
                 masterPort: {
+                    required: true,
                     digits: true,
                     max: 65535,
                     min: 1

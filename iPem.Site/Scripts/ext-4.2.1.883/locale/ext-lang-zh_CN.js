@@ -277,6 +277,12 @@ Ext.define("Ext.locale.zh_CN.grid.Lockable", {
     unlockText: "解除锁定"
 });
 
+Ext.define("Ext.locale.zh_CN.grid.Grouping", {
+    override: "Ext.grid.feature.Grouping",
+    groupByText: "按此列分组",
+    showGroupsText: "显示分组"
+});
+
 Ext.define("Ext.locale.zh_CN.grid.PropertyColumnModel", {
     override: "Ext.grid.PropertyColumnModel",
     nameText: "名称",

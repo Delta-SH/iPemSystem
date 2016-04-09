@@ -208,19 +208,20 @@ var saveWnd = Ext.create('Ext.window.Window', {
       { xtype: 'tbfill' },
       {
           xtype: 'button', text: $$iPems.lang.Save, handler: function (el, e) {
-              Ext.getCmp('saveResult').setTextWithIcon('', '');
+              var form = Ext.getCmp('saveForm').getForm(),
+                  result = Ext.getCmp('saveResult');
 
-              var form = Ext.getCmp('saveForm').getForm();
+              result.setTextWithIcon('', '');
               if (form.isValid()) {
                   var menus = Ext.getCmp('treeMenus').getChecked();
                   if (menus.length === 0) {
-                      Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.Role.MenuError, 'x-icon-error');
+                      result.setTextWithIcon($$iPems.lang.Role.MenuError, 'x-icon-error');
                       return false;
                   }
 
                   var areas = Ext.getCmp('areaMenus').getChecked();
                   if (menus.length === 0) {
-                      Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.Role.AreaError, 'x-icon-error');
+                      result.setTextWithIcon($$iPems.lang.Role.AreaError, 'x-icon-error');
                       return false;
                   }
 
@@ -241,8 +242,9 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       operateIds.push(m.data.id);
                   });
 
-                  Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                  result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
                   form.submit({
+                      submitEmptyText: false,
                       clientValidation: true,
                       preventWindow: true,
                       url: '../Account/SaveRole',
@@ -253,7 +255,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                           action: saveWnd.opaction
                       },
                       success: function (form, action) {
-                          Ext.getCmp('saveResult').setTextWithIcon(action.result.message, 'x-icon-accept');
+                          result.setTextWithIcon(action.result.message, 'x-icon-accept');
                           if (saveWnd.opaction == $$iPems.Action.Add)
                               currentStore.loadPage(1);
                           else
@@ -264,15 +266,21 @@ var saveWnd = Ext.create('Ext.window.Window', {
                           if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
                               message = action.result.message;
 
-                          Ext.getCmp('saveResult').setTextWithIcon(message, 'x-icon-error');
+                          result.setTextWithIcon(message, 'x-icon-error');
                       }
                   });
               } else {
-                  Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
               }
           }
       },
-      { xtype: 'button', text: $$iPems.lang.Close, handler: function (el, e) { saveWnd.hide(); } }
+      {
+          xtype: 'button',
+          text: $$iPems.lang.Close,
+          handler: function (el, e) {
+              saveWnd.close();
+          }
+      }
     ]
 });
 

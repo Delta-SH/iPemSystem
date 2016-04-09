@@ -39,7 +39,7 @@ namespace iPem.Core {
         /// Gets or sets the copyright
         /// </summary>
         public string Copyright {
-            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2015"; }
+            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2016"; }
         }
 
         /// <summary>

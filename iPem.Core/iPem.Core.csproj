@@ -110,10 +110,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AreaAttributes.cs" />
     <Compile Include="Domain\History\ActAlm.cs" />
     <Compile Include="Domain\Master\Device.cs" />
     <Compile Include="Domain\Master\Point.cs" />
+    <Compile Include="Domain\Master\Project.cs" />
     <Compile Include="Domain\Master\Protocol.cs" />
     <Compile Include="Domain\Master\Room.cs" />
     <Compile Include="Domain\Master\Area.cs" />
@@ -123,6 +123,7 @@
     <Compile Include="Domain\Master\NoticesInUsers.cs" />
     <Compile Include="Domain\Master\OperateInRole.cs" />
     <Compile Include="Domain\Master\Station.cs" />
+    <Compile Include="Domain\Master\UserProfile.cs" />
     <Compile Include="Domain\Resource\Area.cs" />
     <Compile Include="Domain\Resource\Brand.cs" />
     <Compile Include="Domain\Resource\Department.cs" />
@@ -142,7 +143,7 @@
     <Compile Include="Domain\Resource\SubDeviceType.cs" />
     <Compile Include="Domain\Resource\Supplier.cs" />
     <Compile Include="Domain\Resource\Unit.cs" />
-    <Compile Include="Enum\EnmOrganization.cs" />
+    <Compile Include="Domain\Resource\User.cs" />
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />
@@ -171,21 +172,17 @@
     <Compile Include="Enum\EnmDatabase.cs" />
     <Compile Include="Enum\EnmEvent.cs" />
     <Compile Include="IdValuePair.cs" />
-    <Compile Include="IEngine.cs" />
     <Compile Include="IPagedList.cs" />
     <Compile Include="iPemException.cs" />
-    <Compile Include="IWorkContext.cs" />
     <Compile Include="NPOI\ExcelAttributes.cs" />
     <Compile Include="NPOI\ExcelConverter.cs" />
     <Compile Include="NPOI\ExcelManager.cs" />
     <Compile Include="NPOI\IExcelManager.cs" />
-    <Compile Include="StationAttributes.cs" />
     <Compile Include="Task\ITask.cs" />
     <Compile Include="IWebHelper.cs" />
     <Compile Include="PagedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Singleton.cs" />
-    <Compile Include="Store.cs" />
     <Compile Include="Task\TaskManager.cs" />
     <Compile Include="Task\TaskThread.cs" />
     <Compile Include="WebHelper.cs" />

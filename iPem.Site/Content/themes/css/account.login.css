@@ -16,19 +16,36 @@ body {
     background-color:#f9f9f9;
 }
 
+a, a:active, a:visited, a:link {
+    color: #999;
+    outline: 0 none;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #337ab7;
+}
+
 .header {
     width: 100%;
-    height: 80px;
-    line-height: 80px;
 }
 
 .header .brand {
     background-image: url("../images/logo.png");
     background-repeat: no-repeat;
     background-position: 0 0;
-    width: 400px;
-    height: 60px;
-    margin-top: 20px;
+    width: 365px;
+    height: 45px;
+    margin: 13px auto 12px auto;
+    float: left;
+}
+
+.header .help-brand {
+    width: 300px;
+    line-height: 70px;
+    text-align: center;
+    font-size: 1.25em;
+    float: right;
 }
 
 .center {
@@ -44,7 +61,7 @@ body {
 }
 
 .login {
-    float:right;
+    float: right;
     margin-top: 20px;
     width: 300px;
     height: auto;

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using iPem.Core;
+using System;
 using System.Collections.Generic;
 
-namespace iPem.Core {
+namespace iPem.Site.Infrastructure {
     /// <summary>
     /// Classes implementing this interface can serve as a portal for the 
     /// various services composing the engine. Edit functionality, modules

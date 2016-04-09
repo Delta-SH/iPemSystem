@@ -147,7 +147,7 @@
 
 						baseForm.submit({
 						    clientValidation: true,
-						    submitEmptyText: true,
+						    submitEmptyText: false,
 							preventWindow: true,
 							url: '../Account/SaveNotice',
 							params: {
@@ -286,7 +286,7 @@
 			menuText: $$iPems.lang.Operate,
 			text: $$iPems.lang.Operate,
 			items: [{
-				iconCls: 'x-cell-icon x-icon-edit',
+			    iconCls: 'x-cell-icon x-icon-edit',
 				handler: function (grid, rowIndex, colIndex) {
 					editCellClick(grid, rowIndex, colIndex);
 				}

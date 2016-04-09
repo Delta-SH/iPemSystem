@@ -132,7 +132,7 @@ namespace iPem.Data.Common {
         }
 
         /// <summary>
-        /// DBNull Guid Handler
+        /// DBNull Guid Checker
         /// </summary>
         /// <param name="val">val</param>
         public static object DBNullGuidChecker(Guid val) {
@@ -147,6 +147,15 @@ namespace iPem.Data.Common {
         public static byte[] DBNullBytesHandler(object val) {
             if(val == DBNull.Value) { return null; }
             return (byte[])val;
+        }
+
+        /// <summary>
+        /// DBNull Bytes Checker
+        /// </summary>
+        /// <param name="val">val</param>
+        public static object DBNullBytesChecker(object val) {
+            if(val == null) { return DBNull.Value; }
+            return val;
         }
 
         /// <summary>
@@ -230,11 +239,11 @@ namespace iPem.Data.Common {
         /// DBNull Node Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmNode DBNullEnmNodeHandler(object val) {
-            if(val == DBNull.Value) { return EnmNode.AI; }
+        public static EnmPoint DBNullEnmNodeHandler(object val) {
+            if(val == DBNull.Value) { return EnmPoint.AI; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmNode), v) ? (EnmNode)v : EnmNode.AI;
+            return Enum.IsDefined(typeof(EnmPoint), v) ? (EnmPoint)v : EnmPoint.AI;
         }
 
         /// <summary>

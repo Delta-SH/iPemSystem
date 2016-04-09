@@ -13,6 +13,11 @@ namespace iPem.Core.Data {
         void Initializer();
 
         /// <summary>
+        /// Clean database
+        /// </summary>
+        void Clean();
+
+        /// <summary>
         /// A value indicating whether all databases has been installed
         /// </summary>
         bool DatabaseIsInstalled();

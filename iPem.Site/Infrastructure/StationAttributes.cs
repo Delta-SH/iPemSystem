@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace iPem.Core {
+namespace iPem.Site.Infrastructure {
     public class StationAttributes {
         public StationAttributes(List<Station> source, Station current) {
             this.Current = current;

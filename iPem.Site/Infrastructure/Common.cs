@@ -125,14 +125,14 @@ namespace iPem.Site.Infrastructure {
             return string.Format(pattern, workContext.Identifier);
         }
 
-        public static string GetSexDisplayName(EnmSex sex) {
+        public static string GetSexDisplay(EnmSex sex) {
             if(sex == EnmSex.Female)
                 return "女";
             else
                 return "男";
         }
 
-        public static string GetEventLevelDisplayName(EnmEventLevel level) {
+        public static string GetEventLevelDisplay(EnmEventLevel level) {
             switch(level) {
                 case EnmEventLevel.Debug:
                     return "调试";
@@ -149,7 +149,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetEventTypeDisplayName(EnmEventType type) {
+        public static string GetEventTypeDisplay(EnmEventType type) {
             switch(type) {
                 case EnmEventType.Exception:
                     return "异常";
@@ -165,12 +165,12 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetOperationDisplayName(EnmOperation op) {
+        public static string GetOperationDisplay(EnmOperation op) {
             switch(op) {
                 case EnmOperation.Control:
-                    return "测点遥控";
+                    return "信号遥控";
                 case EnmOperation.Adjust:
-                    return "测点遥调";
+                    return "信号遥调";
                 case EnmOperation.Confirm:
                     return "告警确认";
                 default:
@@ -178,7 +178,43 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetAlarmLevelDisplayName(EnmAlarmLevel level) {
+        public static string GetPointTypeDisplay(EnmPoint type) {
+            switch(type) {
+                case EnmPoint.AI:
+                    return "遥测";
+                case EnmPoint.AO:
+                    return "遥调";
+                case EnmPoint.DI:
+                    return "遥信";
+                case EnmPoint.DO:
+                    return "遥控";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetPointStatusDisplay(EnmPointStatus status) {
+            switch(status) {
+                case EnmPointStatus.Normal:
+                    return "正常数据";
+                case EnmPointStatus.Level1:
+                    return "一级告警";
+                case EnmPointStatus.Level2:
+                    return "二级告警";
+                case EnmPointStatus.Level3:
+                    return "三级告警";
+                case EnmPointStatus.Level4:
+                    return "四级告警";
+                case EnmPointStatus.Opevent:
+                    return "操作事件";
+                case EnmPointStatus.Invalid:
+                    return "无效数据";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetAlarmLevelDisplay(EnmAlarmLevel level) {
             switch(level) {
                 case EnmAlarmLevel.Level1:
                     return "一级告警";
@@ -193,7 +229,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static Color GetAlarmLevelDisplayColor(EnmAlarmLevel level) {
+        public static Color GetAlarmLevelColor(EnmAlarmLevel level) {
             switch(level) {
                 case EnmAlarmLevel.Level1:
                     return Color.Red;

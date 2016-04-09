@@ -133,7 +133,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(EnmAlarmLevel level in Enum.GetValues(typeof(EnmAlarmLevel))) {
-                    data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplayName(level) });
+                    data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplay(level) });
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -158,6 +158,27 @@ namespace iPem.Site.Controllers {
                     data.message = "200 Ok";
                     data.total = models.TotalCount;
                     data.data.AddRange(models.Select(d => new ComboItem<int, string> { id = d.Id, text = d.Name }));
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetPointTypes(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach(EnmPoint type in Enum.GetValues(typeof(EnmPoint))) {
+                    data.data.Add(new ComboItem<int, string>() { id = (int)type, text = Common.GetPointTypeDisplay(type) });
                 }
             } catch(Exception exc) {
                 data.success = false;

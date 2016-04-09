@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Delta GreenTech(China)")]
 [assembly: AssemblyProduct("iPems")]
-[assembly: AssemblyCopyright("Copyright © Delta GreenTech(China) 2014-2015")]
+[assembly: AssemblyCopyright("Copyright © Delta GreenTech(China) 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

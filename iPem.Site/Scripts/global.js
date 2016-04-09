@@ -3,9 +3,78 @@ Ext.setGlyphFontFamily('ipems-icon-font');
 
 /*ajax timeout*/
 Ext.Ajax.timeout = 300000;
-Ext.override(Ext.form.Basic, { timeout: Ext.Ajax.timeout / 1000 });
-Ext.override(Ext.data.proxy.Server, { timeout: Ext.Ajax.timeout });
 Ext.override(Ext.data.Connection, { timeout: Ext.Ajax.timeout });
+Ext.override(Ext.data.JsonP, { timeout: Ext.Ajax.timeout });
+Ext.override(Ext.form.Basic, {
+    timeout: Ext.Ajax.timeout / 1000,
+    afterAction: function (action, success) {
+        this.callParent(arguments);
+
+        //prevent the failed window
+        var prevent = action.preventWindow || false;
+        if (prevent !== true && !success) {
+            var message = '';
+            if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+                message = action.result.message;
+
+            $$iPems.ShowFailure(action.response, message);
+        }
+    },
+    getValues: function (asString, dirtyOnly, includeEmptyText, useDataValues) {
+        var values = {},
+            fields = this.getFields().items,
+            f,
+            fLen = fields.length,
+            isArray = Ext.isArray,
+            field, data, val, bucket, name;
+
+        for (f = 0; f < fLen; f++) {
+            field = fields[f];
+
+            if (!dirtyOnly || field.isDirty()) {
+                data = field[useDataValues ? 'getModelData' : 'getSubmitData'](includeEmptyText);
+
+                if (Ext.isObject(data)) {
+                    for (name in data) {
+                        if (data.hasOwnProperty(name)) {
+                            val = data[name];
+
+                            //dont submit empty values when includeEmptyText is false.
+                            if (!includeEmptyText && val === '') {
+                                continue;
+                            }
+
+                            if (includeEmptyText && val === '') {
+                                val = field.emptyText || '';
+                            }
+
+                            if (values.hasOwnProperty(name)) {
+                                bucket = values[name];
+
+                                if (!isArray(bucket)) {
+                                    bucket = values[name] = [bucket];
+                                }
+
+                                if (isArray(val)) {
+                                    values[name] = bucket.concat(val);
+                                } else {
+                                    bucket.push(val);
+                                }
+                            } else {
+                                values[name] = val;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (asString) {
+            values = Ext.Object.toQueryString(values);
+        }
+        return values;
+    }
+});
 
 /*global ajax exception handler*/
 Ext.override(Ext.Ajax, { unauthorizedCode: 400 });
@@ -29,51 +98,46 @@ Ext.Ajax.on('requestexception', function (conn, response, options) {
         }
     }
 
-    if (!Ext.isEmpty(options.preventWindow) && options.preventWindow)
-        return;
-
-    $$iPems.ShowFailure(response, response.responseText);
+    //prevent the failed window
+    var prevent = options.preventWindow || false;
+    if (prevent !== true) {
+        $$iPems.ShowFailure(response, response.responseText);
+    }
 });
-
 Ext.direct.Manager.on('exception', function (event) {
     if (!Ext.isEmpty(event) && !Ext.isEmpty(event.message))
         Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: event.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
 });
 
-Ext.override(Ext.data.proxy.Server, {
-    constructor: function (config) {
-        this.callOverridden([config]);
-        this.addListener('exception', function (proxy, response, operation) {
-            var message = '';
-            var data = Ext.decode(response.responseText, true);
-            if (!Ext.isEmpty(data) && !Ext.isEmpty(data.message))
-                message = data.message;
-
-            $$iPems.ShowFailure(response, message);
-        });
-    }
-});
-
-Ext.override(Ext.form.Basic, {
-    afterAction: function (action, success) {
-        this.callParent(arguments);
-
-        if (!Ext.isEmpty(action.preventWindow) && action.preventWindow)
-            return;
-
-        if (!success) {
-            var message = '';
-            if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
-                message = action.result.message;
-
-            $$iPems.ShowFailure(action.response, message);
-        }
-    }
-});
-
 /*global datetime formart*/
 Ext.override(Ext.form.field.Date, {
     format: 'Y-m-d'
+});
+
+/*override line highlight*/
+Ext.override(Ext.chart.series.Line, {
+    highlightItem: function () {
+        var me = this,
+            line = me.line;
+
+        Ext.chart.series.Line.superclass.highlightItem.apply(this, arguments);
+        if (line && !me.highlighted && me.highlightLine !== false) { // added the third condition 
+            if (!('__strokeWidth' in line)) {
+                line.__strokeWidth = parseFloat(line.attr['stroke-width']) || 0;
+            }
+            if (line.__anim) {
+                line.__anim.paused = true;
+            }
+
+            line.__anim = new Ext.fx.Anim({
+                target: line,
+                to: {
+                    'stroke-width': line.__strokeWidth + 3
+                }
+            });
+            me.highlighted = true;
+        }
+    }
 });
 
 /*show failure window*/
@@ -85,6 +149,12 @@ window.$$iPems.ShowFailure = function (response, errorMsg) {
 
     if (Ext.isEmpty(errorMsg))
         errorMsg = response.responseText;
+
+    //prevent the failed window when redirect to an new page.
+    if (response.status === 0
+        && Ext.isEmpty(response.statusText)
+        && Ext.isEmpty(errorMsg))
+        return false;
 
     win = new Ext.window.Window({
         modal: true,
@@ -155,6 +225,14 @@ window.$$iPems.ShowFailure = function (response, errorMsg) {
     win.show();
 }
 
+Ext.override(Ext.panel.Header, {
+    initComponent: function () {
+        this.callParent(arguments);
+        this.insert(0, this.iconCmp);
+        this.insert(1, this.titleCmp);
+    }
+});
+
 /*ajax action*/
 window.$$iPems.Action = {
     Add: 0,
@@ -165,11 +243,51 @@ window.$$iPems.Action = {
 /*organization*/
 window.$$iPems.Organization = {
     Area: 0,
-    Sta: 1,
+    Station: 1,
     Room: 2,
-    FSU: 3,
-    Dev: 4,
-    Node: 5
+    Device: 3,
+    Point: 4
+};
+
+/*Point Type*/
+window.$$iPems.Point = {
+    DI: 0,
+    AI: 1,
+    AO: 2,
+    DO: 3
+};
+
+/*Point Status*/
+window.$$iPems.PointStatus = {
+    Normal: 0,
+    Level1: 1,
+    Level2: 2,
+    Level3: 3,
+    Level4: 4,
+    Opevent: 5,
+    Invalid: 6
+};
+
+/*Status Css Class*/
+window.$$iPems.GetPointStatusCls = function (value) {
+    switch (value) {
+        case $$iPems.PointStatus.Normal:
+            return 'point-status-normal';
+        case $$iPems.PointStatus.Level1:
+            return 'point-status-level1';
+        case $$iPems.PointStatus.Level2:
+            return 'point-status-level2';
+        case $$iPems.PointStatus.Level3:
+            return 'point-status-level3';
+        case $$iPems.PointStatus.Level4:
+            return 'point-status-level4';
+        case $$iPems.PointStatus.Opevent:
+            return 'point-status-opevent';
+        case $$iPems.PointStatus.Invalid:
+            return 'point-status-invalid';
+        default:
+            return '';
+    }
 };
 
 /*Alarm Level*/
@@ -180,9 +298,9 @@ window.$$iPems.AlmLevel = {
     Level4: 4
 };
 
-/*Alarm Level*/
+/*Alarm Css Class*/
 window.$$iPems.GetAlmLevelCls = function (value) {
-    switch (value) {
+    switch(value) {
         case $$iPems.AlmLevel.Level1:
             return 'alm-level1';
         case $$iPems.AlmLevel.Level2:
@@ -224,7 +342,7 @@ window.$$iPems.download = function (config) {
 
 /*clone paging toolbar*/
 window.$$iPems.clonePagingToolbar = function (store) {
-    return new Ext.PagingToolbar({
+    return Ext.create('Ext.PagingToolbar', {
         store: store,
         displayInfo: true,
         items: ['-',
@@ -318,139 +436,17 @@ window.$$iPems.Tasks = {
         fireOnStart: true,
         interval: 10000,
         repeat: 1
-    }), 
+    }),
     actAlmTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 15000,
+        interval: 10000,
+        repeat: 1
+    }),
+    actPointTask: Ext.util.TaskManager.newTask({
+        run: Ext.emptyFn,
+        fireOnStart: true,
+        interval: 10000,
         repeat: 1
     })
 };
-
-/*master page*/
-Ext.onReady(function () {
-    Ext.tip.QuickTipManager.init();
-
-    //start tasks
-    $$iPems.Tasks.noticeTask.start();
-    $$iPems.Tasks.actAlmNoticeTask.start();
-
-    /*home page*/
-    var _titlebar = Ext.create('Ext.panel.Panel', {
-        border: false,
-        contentEl: 'title-bar'
-    });
-
-    var _pagebody = Ext.create('Ext.panel.Panel', {
-        border: false,
-        contentEl: 'page-body-content'
-    });
-
-    var _north = Ext.create('Ext.panel.Panel', {
-        region: 'north',
-        border: false,
-        items: [_titlebar, _pagebody]
-    });
-
-    var viewport = Ext.create('Ext.container.Viewport', {
-        id: 'main-viewport',
-        layout: 'border',
-        items: [
-                {
-                    id: 'top-nav-panel-fw',
-                    region: 'north',
-                    contentEl: 'top-nav-panel',
-                    height: 51,
-                    border: false
-                },
-                {
-                    id: 'left-nav-panel-fw',
-                    region: 'west',
-                    title: $$iPems.lang.Site.TreeTitle,
-                    xtype: 'treepanel',
-                    glyph: 0xf011,
-                    width: 220,
-                    collapsible: true,
-                    collapsed: false,
-                    autoScroll: true,
-                    useArrows: false,
-                    rootVisible: true,
-                    hidden: !$$iPems.menuVisible,
-                    margins: '5 0 5 5',
-                    contentEl: 'left-nav-panel',
-                    bodyCls: 'left-nav',
-                    store: new Ext.data.TreeStore({
-                        autoLoad: false,
-                        root: {
-                            id: -10078,
-                            text: $$iPems.lang.Site.TreeRoot,
-                            href: '/Home',
-                            icon: $$iPems.icons.Home,
-                            root: true
-                        },
-                        proxy: {
-                            type: 'ajax',
-                            url: '../Home/GetNavMenus',
-                            reader: {
-                                type: 'json',
-                                successProperty: 'success',
-                                messageProperty: 'message',
-                                totalProperty: 'total',
-                                root: 'data'
-                            }
-                        }
-                    }),
-                    listeners: {
-                        render: function (el) {
-                            el.getStore().load();
-                        },
-                        load: function (el, node, records, successful) {
-                            if (successful) {
-                                var me = this,
-                                    record = el.getNodeById($$iPems.menuId);
-
-                                if (!Ext.isEmpty(record)) {
-                                    me.selectPath(record.getPath());
-                                } else {
-                                    me.getRootNode().expand(false);
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    id: 'center-content-panel-fw',
-                    region: 'center',
-                    layout: 'border',
-                    contentEl: 'center-content-panel',
-                    border: false,
-                    items: [_north],
-                    autoScroll: true,
-                    padding: 5
-                }
-        ]
-    });
-
-    /*title tip*/
-    var help = Ext.get('help-btn');
-    if (!Ext.isEmpty(help)) {
-        help.on('click', function (el, e) {
-            var arrow = Ext.get('tip-arrow');
-            if (Ext.isEmpty(arrow)) {
-                return false;
-            }
-
-            var tip = Ext.get('help-tip');
-            if (Ext.isEmpty(tip)) {
-                return false;
-            }
-
-            tip.setDisplayed(!tip.isVisible());
-            arrow.anchorTo(help, 'tc-bc', [-2, 1]);
-            viewport.doLayout();
-        });
-    }
-
-    /*show page content*/
-    Ext.getBody().setDisplayed(true);
-});

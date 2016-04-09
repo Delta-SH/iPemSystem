@@ -16,7 +16,7 @@
         autoLoad: true,
         pageSize: 1024,
         fields: [
-            { name: 'id', type: 'string' },
+            { name: 'id', type: 'int' },
             { name: 'text', type: 'string' },
             { name: 'comment', type: 'string' }
         ],
@@ -52,7 +52,7 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
         autoLoad: true,
         pageSize: 1024,
         fields: [
-            { name: 'id', type: 'string' },
+            { name: 'id', type: 'int' },
             { name: 'text', type: 'string' },
             { name: 'comment', type: 'string' }
         ],

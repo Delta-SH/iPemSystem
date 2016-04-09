@@ -8,7 +8,7 @@ namespace iPem.Site.Models {
     [Serializable]
     public class ActAlmModel {
         [ExcelDisplayName("序号")]
-        public int id { get; set; }
+        public string id { get; set; }
 
         [ExcelDisplayName("告警级别")]
         public string level { get; set; }

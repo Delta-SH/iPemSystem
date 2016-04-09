@@ -39,6 +39,7 @@
     DeviceType: '设备类型',
     AlarmLevel: '告警级别',
     LogicType: '逻辑分类',
+    PointType: '信号类型',
     PointName: '信号名称',
     OtherOption: '其他选项',
     ShowConfirm: '已确认告警',
@@ -46,6 +47,13 @@
     ShowProject: '工程告警',
     ShowUnProject: '非工程告警',
     ConfirmAlarm: '告警确认',
+    PointRss: '信号订阅',
+    Rss: '订阅',
+    RssTips: '请尽量精确订阅条件，避免因数据过多导致网页响应迟缓，影响其他操作。',
+    DI: '遥信',
+    AI: '遥测',
+    AO: '遥调',
+    DO: '遥控',
     Site: {
         TreeTitle: '我的菜单',
         TreeRoot: '系统主页',
@@ -135,8 +143,8 @@
         EndTime: '结束日期',
     },
     ActiveAlarm: {
-        PieTotal: '告警总量: ',
-        PieRate: '告警占比: ',
+        PieTotal: '告警总量',
+        PieRate: '告警占比',
         DevList: '告警设备列表',
         AlarmCondition: '告警筛选条件',
         AlarmRate: '告警分类占比',
@@ -154,5 +162,34 @@
         AlarmComment: '告警描述',
         AlarmValue: '触发值',
         AlarmFrequency: '触发频次'
+    },
+    ActivePoint: {
+        ControlWindow: '信号遥控参数',
+        ControlOption0: '常开控制(0)',
+        ControlOption1: '常闭控制(1)',
+        ControlOption2: '脉冲控制(2)',
+        Control: '遥控',
+        AdjustWindow: '信号遥调参数',
+        AdjustOption: '模拟量输出值',
+        Adjust: '遥调',
+        PointOrganization: '信号设备列表',
+        DashboardChart: '信号实时图表',
+        DashboardGrid: '信号实时测值',
+        GroupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
+        Columns: {
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            DevName: '设备名称',
+            Logic: '逻辑分类',
+            Id: '信号ID',
+            Name: '信号名称',
+            TypeDisplay: '信号类型',
+            ValueDisplay: '信号测值',
+            StatusDisplay: '信号状态',
+            Control: '遥控',
+            Adjust: '遥调'
+        }
     }
 };

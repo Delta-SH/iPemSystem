@@ -238,9 +238,9 @@ namespace iPem.Data.Common {
         /// <param name="userName">The user ID to be used when connecting to SQL Server</param>
         /// <param name="password">The password for the SQL Server account</param>
         /// <returns>Returns true if an attempt to open the database by using the connection succeeds.</returns>
-        public static void TestConnection(bool trustedConnection, string serverName, int databasePort, string databaseName, string userName, string password) {
-            var connectionString = CreateConnectionString(trustedConnection, serverName, databasePort, databaseName, userName, password, 10);
-            TestConnection(connectionString);
+        public static void TestConnection(bool trustedConnection, string serverName, int databasePort, string databaseName, string userName, string password, int timeout = 5) {
+            var connectionString = CreateConnectionString(trustedConnection, serverName, databasePort, databaseName, userName, password, timeout);
+            TestConnection(connectionString, timeout);
         }
 
         /// <summary>
@@ -252,6 +252,7 @@ namespace iPem.Data.Common {
         public static void TestConnection(string connectionString, int timeout = 5) {
             var alive = true;
             var success = false;
+            var error = string.Empty;
 
             var conn = new SqlConnection(connectionString);
             var thread = new System.Threading.Thread(() => {
@@ -259,7 +260,9 @@ namespace iPem.Data.Common {
                     conn.Open();
                     conn.Close();
                     if(alive) { success = true; }
-                } catch { } finally {
+                } catch(Exception err) {
+                    error = err.Message;
+                } finally {
                     if(conn.State == ConnectionState.Open) {
                         conn.Close();
                         conn.Dispose();
@@ -273,13 +276,13 @@ namespace iPem.Data.Common {
             var ts = TimeSpan.FromSeconds(timeout);
             while(sw.Elapsed < ts) {
                 thread.Join(TimeSpan.FromMilliseconds(100));
-                if(success) { break; }
+                if(success || !string.IsNullOrWhiteSpace(error)) { break; }
             }
             sw.Stop();
 
             if(!success) {
                 alive = false;
-                throw new Exception(String.Format("Database connected failed.({0})", conn.DataSource));
+                throw new Exception(string.IsNullOrWhiteSpace(error) ? "超时时间已到，无法连接到数据库。" : error);
             }
         }
 

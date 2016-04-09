@@ -158,24 +158,34 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ComponentController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Extensions\LoggerExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Extensions\AjaxAuthorizeAttribute.cs" />
+    <Compile Include="Infrastructure\AreaAttributes.cs" />
     <Compile Include="Infrastructure\Common.cs" />
+    <Compile Include="Infrastructure\DeviceAttributes.cs" />
     <Compile Include="Infrastructure\EngineContext.cs" />
     <Compile Include="Infrastructure\Icons.cs" />
+    <Compile Include="Infrastructure\IEngine.cs" />
     <Compile Include="Infrastructure\iPemEngine.cs" />
     <Compile Include="Infrastructure\iPemWorkContext.cs" />
-    <Compile Include="Infrastructure\JsonNetResult.cs" />
+    <Compile Include="Infrastructure\IWorkContext.cs" />
+    <Compile Include="Extensions\JsonNetResult.cs" />
+    <Compile Include="Infrastructure\PointAttributes.cs" />
+    <Compile Include="Infrastructure\StationAttributes.cs" />
+    <Compile Include="Infrastructure\Store.cs" />
     <Compile Include="Models\ActAlmModel.cs" />
     <Compile Include="Models\ActAlmStore.cs" />
+    <Compile Include="Models\ActPointModel.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\ChartModel.cs" />
@@ -188,6 +198,8 @@
     <Compile Include="Models\Installation\RoleModel.cs" />
     <Compile Include="Models\Installation\UserModel.cs" />
     <Compile Include="Models\NoticeModel.cs" />
+    <Compile Include="Models\PointRss.cs" />
+    <Compile Include="Models\ProfileValues.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -203,6 +215,11 @@
     <Content Include="Content\bootstrap-3.3.5\css\bootstrap.css" />
     <Content Include="Content\bootstrap-3.3.5\css\bootstrap.min.css" />
     <Content Include="Content\bootstrap-3.3.5\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\install\dbconfiguration.css" />
+    <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
+    <Content Include="Content\themes\images\cfg.png" />
+    <Content Include="Content\themes\images\map.png" />
+    <Content Include="Content\themes\css\configuration.map.iframe.css" />
     <Content Include="Content\install\images\error.png" />
     <Content Include="Content\install\images\loading.gif" />
     <Content Include="Content\install\images\logo.png" />
@@ -214,8 +231,10 @@
     <Content Include="Content\themes\fonts\introduction.svg" />
     <Content Include="Content\themes\icons\device.png" />
     <Content Include="Content\themes\icons\exit.png" />
+    <Content Include="Content\themes\icons\tips.png" />
     <Content Include="Content\themes\icons\junheng.png" />
     <Content Include="Content\themes\icons\print.png" />
+    <Content Include="Content\themes\icons\control.png" />
     <Content Include="Content\themes\icons\remove.png" />
     <Content Include="Content\themes\icons\room.png" />
     <Content Include="Content\ux\fonts\topbar.svg" />
@@ -273,6 +292,7 @@
     <Content Include="Resources\install\upgrade\update_hs_database.sql" />
     <Content Include="Resources\install\upgrade\update_rs_data.sql" />
     <Content Include="Resources\install\upgrade\update_rs_database.sql" />
+    <Content Include="Scripts\account.dictionary.js" />
     <Content Include="Scripts\account.events.js" />
     <Content Include="Scripts\account.login.js" />
     <Content Include="Scripts\account.login.min.js" />
@@ -283,8 +303,14 @@
     <Content Include="Scripts\components\AlarmLevelComponent.js" />
     <Content Include="Scripts\components\DeviceTypeComponent.js" />
     <Content Include="Scripts\components\LogicTypeComponent.js" />
+    <Content Include="Scripts\components\PointComponent.js" />
     <Content Include="Scripts\components\RoomTypeComponent.js" />
     <Content Include="Scripts\components\StationTypeComponent.js" />
+    <Content Include="Scripts\configuration.cfg.iframe.js" />
+    <Content Include="Scripts\configuration.cfg.js" />
+    <Content Include="Scripts\configuration.map.iframe.js" />
+    <Content Include="Scripts\configuration.map.js" />
+    <Content Include="Scripts\dbconfiguration.js" />
     <Content Include="Scripts\ext-4.2.1.883\bootstrap.js" />
     <Content Include="Scripts\ext-4.2.1.883\ext-all-debug-w-comments.js" />
     <Content Include="Scripts\ext-4.2.1.883\ext-all-debug.js" />
@@ -3295,6 +3321,7 @@
     <Content Include="Scripts\ext-4.2.1.883\resources\themes\images\gray\window\icon-info.gif" />
     <Content Include="Scripts\ext-4.2.1.883\resources\themes\images\gray\window\icon-question.gif" />
     <Content Include="Scripts\ext-4.2.1.883\resources\themes\images\gray\window\icon-warning.gif" />
+    <Content Include="Scripts\global.js" />
     <Content Include="Scripts\help.js" />
     <Content Include="Scripts\home.active.data.js" />
     <Content Include="Scripts\home.js" />
@@ -3423,7 +3450,7 @@
     <Content Include="Scripts\jquery.steps-1.1.0.js" />
     <Content Include="Scripts\jquery.steps-1.1.0.min.js" />
     <Content Include="Global.asax" />
-    <Content Include="Content\site.css" />
+    <Content Include="Content\global.css" />
     <Content Include="Content\bootstrap-3.3.5\css\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap-3.3.5\css\bootstrap.css.map" />
     <Content Include="Content\bootstrap-3.3.5\fonts\glyphicons-halflings-regular.eot" />
@@ -3591,8 +3618,11 @@
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\bg.jpg" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\datepicker.css" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\img.gif" />
-    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\project.apt.js" />
+    <Content Include="Scripts\project.cfg.js" />
+    <Content Include="Scripts\template.js" />
     <Content Include="Scripts\ux\DateTimePicker.js" />
+    <Content Include="Scripts\ux\IFrame.js" />
     <Content Include="Scripts\ux\Label.js" />
     <Content Include="Scripts\ux\MultiCombo.js" />
     <Content Include="Scripts\ux\TreePicker.js" />
@@ -3627,6 +3657,14 @@
     <Content Include="Views\Home\ActiveData.cshtml" />
     <Content Include="Views\Home\ActiveAlarm.cshtml" />
     <Content Include="Views\Account\Notice.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\Configuration\Map.cshtml" />
+    <Content Include="Views\Configuration\CfgIFrame.cshtml" />
+    <Content Include="Views\Configuration\MapIFrame.cshtml" />
+    <Content Include="Views\Account\Dictionary.cshtml" />
+    <Content Include="Views\Project\Index.cshtml" />
+    <Content Include="Views\Project\Appointment.cshtml" />
+    <Content Include="Views\Installation\DbConfiguration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

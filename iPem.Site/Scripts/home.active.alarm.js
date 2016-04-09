@@ -32,9 +32,10 @@
         tree.selectPath(path, field, separator, callback || Ext.emptyFn);
     };
 
-    var refresh = function (pagingtoolbar) {
+    var refresh = function (pagingtoolbar, layout) {
         Ext.Ajax.request({
-            url: '../Home/RequestRefreshActAlm',
+            url: '../Home/RequestRemoveActAlmCache',
+            mask: new Ext.LoadMask(layout || Ext.getCmp('alarm-dashboard'), { msg: $$iPems.lang.AjaxHandling }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -46,9 +47,10 @@
         });
     };
 
-    var change = function (node, pagingtoolbar) {
+    var change = function (node, pagingtoolbar, layout) {
         Ext.Ajax.request({
-            url: '../Home/RequestRefreshActAlm',
+            url: '../Home/RequestRemoveActAlmCache',
+            mask: new Ext.LoadMask(layout || Ext.getCmp('currentLayout'), { msg: $$iPems.lang.AjaxHandling }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -77,9 +79,10 @@
         });
     };
 
-    var filter = function (pagingtoolbar) {
+    var filter = function (pagingtoolbar, layout) {
         Ext.Ajax.request({
-            url: '../Home/RequestRefreshActAlm',
+            url: '../Home/RequestRemoveActAlmCache',
+            mask: new Ext.LoadMask(layout || Ext.getCmp('alarm-dashboard'), { msg: $$iPems.lang.AjaxHandling }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -143,18 +146,24 @@
             },
             tips: {
                 trackMouse: true,
-                width: 120,
-                height: 50,
+                minWidth: 120,
+                minHeight: 60,
                 renderer: function (storeItem, item) {
                     var total = 0;
                     chartPie1.store.each(function (rec) {
                         total += rec.get('value');
                     });
-                    this.setTitle(
-                        $$iPems.lang.ActiveAlarm.PieTotal + total + '<br/>'
-                        + storeItem.get('name') + ': ' + storeItem.get('value') + '<br/>'
-                        + $$iPems.lang.ActiveAlarm.PieRate + Math.round(storeItem.get('value') / total * 100) + '%'
-                        );
+
+                    //this.setTitle('');
+                    this.update(
+                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
+                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        total,
+                        storeItem.get('name'),
+                        storeItem.get('value'),
+                        $$iPems.lang.ActiveAlarm.PieRate,
+                        (storeItem.get('value') / total * 100).toFixed(2))
+                    );
                 }
             }
         }],
@@ -220,18 +229,24 @@
             },
             tips: {
                 trackMouse: true,
-                width: 120,
-                height: 50,
+                minWidth: 120,
+                minHeight: 60,
                 renderer: function (storeItem, item) {
                     var total = 0;
                     chartPie2.store.each(function (rec) {
                         total += rec.get('value');
                     });
-                    this.setTitle(
-                        $$iPems.lang.ActiveAlarm.PieTotal + total + '<br/>'
-                        + storeItem.get('name') + ': ' + storeItem.get('value') + '<br/>'
-                        + $$iPems.lang.ActiveAlarm.PieRate + Math.round(storeItem.get('value') / total * 100) + '%'
-                        );
+                    
+                    //this.setTitle('');
+                    this.update(
+                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
+                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        total,
+                        storeItem.get('name'),
+                        storeItem.get('value'),
+                        $$iPems.lang.ActiveAlarm.PieRate,
+                        (storeItem.get('value') / total * 100).toFixed(2))
+                    );
                 }
             }
         }],
@@ -297,18 +312,24 @@
             },
             tips: {
                 trackMouse: true,
-                width: 120,
-                height: 50,
+                minWidth: 120,
+                minHeight: 60,
                 renderer: function (storeItem, item) {
                     var total = 0;
                     chartPie3.store.each(function (rec) {
                         total += rec.get('value');
                     });
-                    this.setTitle(
-                        $$iPems.lang.ActiveAlarm.PieTotal + total + '<br/>'
-                        + storeItem.get('name') + ': ' + storeItem.get('value') + '<br/>'
-                        + $$iPems.lang.ActiveAlarm.PieRate + Math.round(storeItem.get('value') / total * 100) + '%'
-                        );
+                    
+                    //this.setTitle('');
+                    this.update(
+                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
+                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        total,
+                        storeItem.get('name'),
+                        storeItem.get('value'),
+                        $$iPems.lang.ActiveAlarm.PieRate,
+                        (storeItem.get('value') / total * 100).toFixed(2))
+                    );
                 }
             }
         }],
@@ -399,6 +420,7 @@
 
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
+            id: 'currentLayout',
             region: 'center',
             layout: 'border',
             border: false,
@@ -465,9 +487,9 @@
                     }
                 }),
                 listeners:{
-                    itemclick: function (me, record, item, index, event) {
+                    select: function (me, record, item, index) {
                         currentNode = record;
-                        change(currentNode, currentPagingToolbar);
+                        change(currentNode, currentPagingToolbar, currentLayout);
                     }
                 },
                 tbar: [
@@ -639,11 +661,15 @@
                                         {
                                             text: $$iPems.lang.ConfirmAlarm,
                                             glyph: 0xf035,
+                                            hidden: !$$iPems.ConfirmOperation,
                                             handler: function (me, event) {
-
+                                                ///未实现！！！！
                                             }
                                         },
-                                        '-',
+                                        {
+                                            xtype: 'menuseparator',
+                                            hidden: !$$iPems.ConfirmOperation
+                                        },
                                         {
                                             text: $$iPems.lang.Import,
                                             glyph: 0xf010,

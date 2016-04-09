@@ -1,14 +1,15 @@
-﻿using iPem.Core.Domain.Master;
-using iPem.Core.Domain.Resource;
+﻿using MsDomain = iPem.Core.Domain.Master;
+using RsDomain = iPem.Core.Domain.Resource;
+using iPem.Site.Models;
 using System;
 using System.Collections.Generic;
 
-namespace iPem.Core {
+namespace iPem.Site.Infrastructure {
     /// <summary>
     /// Represents a store
     /// </summary>
     [Serializable]
-    public partial class Store : BaseEntity {
+    public partial class Store {
         /// <summary>
         /// Gets or sets the identifier
         /// </summary>
@@ -17,17 +18,22 @@ namespace iPem.Core {
         /// <summary>
         /// Gets or sets the current role
         /// </summary>
-        public Role Role { get; set; }
+        public MsDomain.Role Role { get; set; }
 
         /// <summary>
         /// Gets or sets the current user
         /// </summary>
-        public User User { get; set; }
+        public MsDomain.User User { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current user profile
+        /// </summary>
+        public ProfileValues Profile { get; set; }
 
         /// <summary>
         /// Gets or sets the current employee
         /// </summary>
-        public Employee Employee { get; set; }
+        public RsDomain.Employee Employee { get; set; }
 
         /// <summary>
         /// Gets or sets the active alarm notice datetime

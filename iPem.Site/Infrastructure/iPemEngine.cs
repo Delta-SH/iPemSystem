@@ -86,6 +86,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<MsData.IWebEventRepository>(c => new MsData.WebEventRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IRoleRepository>(c => new MsData.RoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IUserRepository>(c => new MsData.UserRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.IProfileRepository>(c => new MsData.ProfileRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IMenuRepository>(c => new MsData.MenuRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IMenusInRoleRepository>(c => new MsData.MenusInRoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.INoticeRepository>(c => new MsData.NoticeRepository(connectionString)).InstancePerLifetimeScope();
@@ -98,11 +99,13 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<MsData.IDeviceRepository>(c => new MsData.DeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IPointRepository>(c => new MsData.PointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IProtocolRepository>(c => new MsData.ProtocolRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.IPointsInProtcolRepository>(c => new MsData.PointsInProtcolRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<MsSrv.WebLogger>().As<MsSrv.IWebLogger>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.RoleService>().As<MsSrv.IRoleService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.UserService>().As<MsSrv.IUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.ProfileService>().As<MsSrv.IProfileService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.MenuService>().As<MsSrv.IMenuService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.MenusInRoleService>().As<MsSrv.IMenusInRoleService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.NoticeService>().As<MsSrv.INoticeService>().InstancePerLifetimeScope();
@@ -115,6 +118,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<MsSrv.DeviceService>().As<MsSrv.IDeviceService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.PointService>().As<MsSrv.IPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.ProtocolService>().As<MsSrv.IProtocolService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.PointsInProtcolService>().As<MsSrv.IPointsInProtcolService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDatabaseType.History)) {
@@ -150,6 +154,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<RsData.ISubDeviceTypeRepository>(c => new RsData.SubDeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.ISupplierRepository>(c => new RsData.SupplierRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IUnitRepository>(c => new RsData.UnitRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IUserRepository>(c => new RsData.UserRepository(connectionString)).InstancePerLifetimeScope();
                                 
                 //register service
                 builder.RegisterType<RsSrv.EmployeeService>().As<RsSrv.IEmployeeService>().InstancePerLifetimeScope();
@@ -171,6 +176,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RsSrv.SubDeviceTypeService>().As<RsSrv.ISubDeviceTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.SupplierService>().As<RsSrv.ISupplierService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.UnitService>().As<RsSrv.IUnitService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.UserService>().As<RsSrv.IUserService>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);

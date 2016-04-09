@@ -276,14 +276,15 @@ var saveWnd = Ext.create('Ext.window.Window', {
           xtype: 'button',
           text: $$iPems.lang.Save,
           handler: function (el, e) {
-              Ext.getCmp('saveResult').setTextWithIcon('', '');
-
               var form = Ext.getCmp('saveForm'),
-                  baseForm = form.getForm();
+                  baseForm = form.getForm(),
+                  result = Ext.getCmp('saveResult');
 
+              result.setTextWithIcon('', '');
               if (baseForm.isValid()) {
-                  Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                  result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
                   baseForm.submit({
+                      submitEmptyText: false,
                       clientValidation: true,
                       preventWindow: true,
                       url: '../Account/SaveUser',
@@ -291,7 +292,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                           action: saveWnd.opaction
                       },
                       success: function (form, action) {
-                          Ext.getCmp('saveResult').setTextWithIcon(action.result.message, 'x-icon-accept');
+                          result.setTextWithIcon(action.result.message, 'x-icon-accept');
                           if (saveWnd.opaction == $$iPems.Action.Add)
                               currentStore.loadPage(1);
                           else
@@ -302,18 +303,18 @@ var saveWnd = Ext.create('Ext.window.Window', {
                           if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
                               message = action.result.message;
 
-                          Ext.getCmp('saveResult').setTextWithIcon(message, 'x-icon-error');
+                          result.setTextWithIcon(message, 'x-icon-error');
                       }
                   });
               } else {
-                  Ext.getCmp('saveResult').setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
               }
           }
       }, {
           xtype: 'button',
           text: $$iPems.lang.Close,
           handler: function (el, e) {
-              saveWnd.hide();
+              saveWnd.close();
           }
       }
     ]
@@ -384,18 +385,19 @@ var resetWnd = Ext.create('Ext.window.Window', {
           xtype: 'button',
           text: $$iPems.lang.Reset,
           handler: function (el, e) {
-              Ext.getCmp('resetResult').setTextWithIcon('', '');
-
               var form = Ext.getCmp('resetForm'),
                   baseForm = form.getForm(),
-                  id = form.getComponent('id').getValue();
+                  id = form.getComponent('id').getValue(),
+                  result = Ext.getCmp('resetResult');
 
+              result.setTextWithIcon('', '');
               if (baseForm.isValid() && !Ext.isEmpty(id)) {
                   Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmReset, function (buttonId, text) {
                       if (buttonId === 'yes') {
-                          Ext.getCmp('resetResult').setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                          result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
                           var password = form.getComponent('password').getValue();
                           baseForm.submit({
+                              submitEmptyText: false,
                               clientValidation: true,
                               preventWindow: true,
                               url: '../Account/ResetPassword',
@@ -404,20 +406,20 @@ var resetWnd = Ext.create('Ext.window.Window', {
                                   password: password
                               },
                               success: function (form, action) {
-                                  Ext.getCmp('resetResult').setTextWithIcon(action.result.message, 'x-icon-accept');
+                                  result.setTextWithIcon(action.result.message, 'x-icon-accept');
                               },
                               failure: function (form, action) {
                                   var message = 'undefined error.';
                                   if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
                                       message = action.result.message;
 
-                                  Ext.getCmp('resetResult').setTextWithIcon(message, 'x-icon-error');
+                                  result.setTextWithIcon(message, 'x-icon-error');
                               }
                           });
                       }
                   });
               } else {
-                  Ext.getCmp('resetResult').setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
               }
           }
       },
@@ -425,7 +427,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
           xtype: 'button',
           text: $$iPems.lang.Close,
           handler: function (el, e) {
-              resetWnd.hide();
+              resetWnd.close();
           }
       }
     ]

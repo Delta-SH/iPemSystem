@@ -8,8 +8,17 @@
     background-repeat: no-repeat;
 }
 
+.x-icon-hidden {
+    display:none;
+}
+
 .x-icon-loading {
     background-image: url("../themes/icons/loading.gif") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tips {
+    background-image: url("../themes/icons/tips.png") !important;
     background-repeat: no-repeat;
 }
 
@@ -30,5 +39,15 @@
 
 .x-icon-detail {
     background-image: url("../themes/icons/detail.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-control {
+    background-image: url("../themes/icons/control.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-setting {
+    background-image: url("../themes/icons/junheng.png") !important;
     background-repeat: no-repeat;
 }

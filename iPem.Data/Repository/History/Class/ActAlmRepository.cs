@@ -41,7 +41,7 @@ namespace iPem.Data.Repository.History {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Hs.Sql_ActAlm_Repository_GetEntitiesByDevice, parms)) {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
@@ -78,7 +78,7 @@ namespace iPem.Data.Repository.History {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Hs.Sql_ActAlm_Repository_GetEntitiesByLevel, parms)) {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
@@ -116,7 +116,7 @@ namespace iPem.Data.Repository.History {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Hs.Sql_ActAlm_Repository_GetEntitiesByTime, parms)) {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
@@ -146,7 +146,7 @@ namespace iPem.Data.Repository.History {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Hs.Sql_ActAlm_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.DeviceCode = SqlTypeConverter.DBNullStringHandler(rdr["DeviceCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);

@@ -46,6 +46,8 @@
     <Compile Include="Master\Class\AreaService.cs" />
     <Compile Include="Master\Class\AreasInRoleService.cs" />
     <Compile Include="Master\Class\DeviceService.cs" />
+    <Compile Include="Master\Class\PointsInProtcolService.cs" />
+    <Compile Include="Master\Class\ProfileService.cs" />
     <Compile Include="Master\Interface\IAreaService.cs" />
     <Compile Include="Master\Interface\IAreasInRoleService.cs" />
     <Compile Include="Master\Interface\IDeviceService.cs" />
@@ -55,6 +57,8 @@
     <Compile Include="Master\Interface\INoticeInUserService.cs" />
     <Compile Include="Master\Interface\IOperateInRoleService.cs" />
     <Compile Include="Master\Interface\IPointService.cs" />
+    <Compile Include="Master\Interface\IPointsInProtcolService.cs" />
+    <Compile Include="Master\Interface\IProfileService.cs" />
     <Compile Include="Master\Interface\IProtocolService.cs" />
     <Compile Include="Master\Interface\IRoleService.cs" />
     <Compile Include="Master\Interface\IRoomService.cs" />
@@ -91,6 +95,7 @@
     <Compile Include="Resource\Class\SubDeviceTypeService.cs" />
     <Compile Include="Resource\Class\SupplierService.cs" />
     <Compile Include="Resource\Class\UnitService.cs" />
+    <Compile Include="Resource\Class\UserService.cs" />
     <Compile Include="Resource\Interface\IAreaService.cs" />
     <Compile Include="Resource\Interface\IBrandService.cs" />
     <Compile Include="Resource\Interface\IDepartmentService.cs" />
@@ -112,6 +117,7 @@
     <Compile Include="Resource\Interface\ISubDeviceTypeService.cs" />
     <Compile Include="Resource\Interface\ISupplierService.cs" />
     <Compile Include="Resource\Interface\IUnitService.cs" />
+    <Compile Include="Resource\Interface\IUserService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

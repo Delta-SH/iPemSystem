@@ -97,7 +97,7 @@
                 <div id="tip-arrow" class="tip-arrow"></div>
                 <div class="help-tip-content">
                     <div class="tip-content">
-                        <p class="label">功能说明：</p>
+                        @*<p class="label">功能说明：</p>*@
                         <p class="text">@(CurrentMenu.Comment != null ? CurrentMenu.Comment : "")</p>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
             window.$$iPems = {};
 
         window.$$iPems.menuId = '@(CurrentMenu != null ? CurrentMenu.Id : -1)';
-        window.$$iPems.menuVisible = '@((ViewBag.MenuVisible ?? true) ? "visible" : "hidden" )' === 'visible';
+        window.$$iPems.menuVisible = @((ViewBag.MenuVisible ?? true) ? 1 : 0 ) === 1;
     </script>
 
     <!-- Placed at the end of the document so the pages load faster -->

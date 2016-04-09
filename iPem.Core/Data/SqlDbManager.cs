@@ -99,6 +99,11 @@ namespace iPem.Core.Data {
             }
         }
 
+        public virtual void Clean() {
+            this.CurrentDbSets.Clear();
+            this.CurrentConnetions.Clear();
+        }
+
         public virtual bool DatabaseIsInstalled() {
             if(!IsValid(EnmDatabaseType.Master))
                 return false;

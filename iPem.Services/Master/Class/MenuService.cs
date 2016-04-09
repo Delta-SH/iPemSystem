@@ -82,7 +82,7 @@ namespace iPem.Services.Master {
                 menus = _cacheManager.Get<List<Menu>>(key);
             } else {
                 menus = _menusInRoleRepository.GetEntity(role).Menus;
-                _cacheManager.Set<List<Menu>>(key, menus, CachedIntervals.AppRoleIntervals);
+                _cacheManager.Set<List<Menu>>(key, menus, CachedIntervals.Global_RoleIntervals);
             }
 
             return new PagedList<Menu>(menus, pageIndex, pageSize);

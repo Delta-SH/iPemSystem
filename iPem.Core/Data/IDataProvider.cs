@@ -21,5 +21,10 @@ namespace iPem.Core.Data {
         /// Delete database entities.
         /// </summary>
         void DelEntites(IList<DbEntity> entities);
+
+        /// <summary>
+        /// Clean database entities.
+        /// </summary>
+        void CleanEntites();
     }
 }

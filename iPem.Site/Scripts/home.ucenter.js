@@ -196,19 +196,20 @@
                     text: $$iPems.lang.UCenter.SavePassword,
                     scale: 'medium',
                     handler: function () {
-                        Ext.getCmp('changeResult').setTextWithIcon('', '');
-
                         var form = Ext.getCmp('changeForm'),
                             baseForm = form.getForm(),
-                            id = form.getComponent('id').getValue();
+                            id = form.getComponent('id').getValue(),
+                            result = Ext.getCmp('changeResult');
 
+                        result.setTextWithIcon('', '');
                         if (baseForm.isValid() && !Ext.isEmpty(id)) {
                             Ext.Msg.confirm(window.$$iPems.lang.ConfirmWndTitle, window.$$iPems.lang.ConfirmChangePassword, function (buttonId, text) {
                                 if (buttonId === 'yes') {
-                                    Ext.getCmp('changeResult').setTextWithIcon(window.$$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                    result.setTextWithIcon(window.$$iPems.lang.AjaxHandling, 'x-icon-loading');
                                     var origin = form.getComponent('origin').getValue();
                                     var password = form.getComponent('password').getValue();
                                     baseForm.submit({
+                                        submitEmptyText: false,
                                         clientValidation: true,
                                         preventWindow: true,
                                         url: '../Account/ChangePassword',
@@ -218,20 +219,20 @@
                                             password: password
                                         },
                                         success: function (form, action) {
-                                            Ext.getCmp('changeResult').setTextWithIcon(action.result.message, 'x-icon-accept');
+                                            result.setTextWithIcon(action.result.message, 'x-icon-accept');
                                         },
                                         failure: function (form, action) {
                                             var message = 'undefined error.';
                                             if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
                                                 message = action.result.message;
 
-                                            Ext.getCmp('changeResult').setTextWithIcon(message, 'x-icon-error');
+                                            result.setTextWithIcon(message, 'x-icon-error');
                                         }
                                     });
                                 }
                             });
                         } else {
-                            Ext.getCmp('changeResult').setTextWithIcon(window.$$iPems.lang.FormError, 'x-icon-error');
+                            result.setTextWithIcon(window.$$iPems.lang.FormError, 'x-icon-error');
                         }
                     }
                 },

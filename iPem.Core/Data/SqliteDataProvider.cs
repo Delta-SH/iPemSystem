@@ -145,6 +145,19 @@ namespace iPem.Core.Data {
             }
         }
 
+        /// <summary>
+        /// Clean database entities.
+        /// </summary>
+        public virtual void CleanEntites() {
+            using(var conn = new SQLiteConnection(dataConnectionString)) {
+                conn.Open();
+                using(var command = new SQLiteCommand(SQLiteText.Registry_Clean_Entities, conn)) {
+                    command.Parameters.Clear();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
     }
@@ -175,5 +188,8 @@ namespace iPem.Core.Data {
 
         public const string Registry_Del_Entities = @"
         DELETE FROM [DbEntities] WHERE [Type] = @Type;";
+
+        public const string Registry_Clean_Entities = @"
+        DELETE FROM [DbEntities];";
     }
 }

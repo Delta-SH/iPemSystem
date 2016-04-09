@@ -54,7 +54,8 @@ namespace iPem.Site {
                 "~/Scripts/ux/Label.js",
                 "~/Scripts/ux/MultiCombo.js",
                 "~/Scripts/ux/TreePicker.js",
-                "~/Scripts/ux/DateTimePicker.js"));
+                "~/Scripts/ux/DateTimePicker.js",
+                "~/Scripts/ux/IFrame.js"));
             bundles.Add(new StyleBundle("~/bundles/ux/css").Include(
                 "~/Content/ux/global.css",
                 "~/Content/ux/font.css",
@@ -68,13 +69,20 @@ namespace iPem.Site {
             bundles.Add(new StyleBundle("~/bundles/install/css").Include(
                 "~/Content/install/style.css"));
 
+            //database configuration
+            bundles.Add(new ScriptBundle("~/bundles/install/dbconfiguration").Include(
+                "~/Scripts/dbconfiguration.js"));
+            bundles.Add(new StyleBundle("~/bundles/install/dbconfiguration/css").Include(
+                "~/Content/install/dbconfiguration.css"));
+
             //site
             bundles.Add(new ScriptBundle("~/bundles/global").Include(
                 "~/Scripts/lang.js",
                 "~/Scripts/icons.js",
-                "~/Scripts/site.js"));
+                "~/Scripts/global.js",
+                "~/Scripts/template.js"));
             bundles.Add(new StyleBundle("~/bundles/global/css").Include(
-                "~/Content/site.css"));
+                "~/Content/global.css"));
 
             //component
             bundles.Add(new ScriptBundle("~/bundles/components").Include(
@@ -82,7 +90,8 @@ namespace iPem.Site {
                 "~/Scripts/components/RoomTypeComponent.js",
                 "~/Scripts/components/DeviceTypeComponent.js",
                 "~/Scripts/components/AlarmLevelComponent.js",
-                "~/Scripts/components/LogicTypeComponent.js"));
+                "~/Scripts/components/LogicTypeComponent.js",
+                "~/Scripts/components/PointComponent.js"));
 
             //help
             bundles.Add(new ScriptBundle("~/bundles/help").Include(

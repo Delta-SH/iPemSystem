@@ -49,26 +49,34 @@ namespace iPem.Services.Common {
         public const string Rl_StationsResultPattern = "ipems:global:role-stations@{0}@result";
         public const string Rl_RoomsResultPattern = "ipems:global:role-rooms@{0}@result";
         public const string Rl_DevicesResultPattern = "ipems:global:role-devices@{0}@result";
+        public const string Rl_OperationsResultPattern = "ipems:global:role-operations@{0}@result";
         public const string Rl_AreaAttributesResultPattern = "ipems:global:role-area-attributes@{0}@result";
         public const string Rl_StationAttributesResultPattern = "ipems:global:role-station-attributes@{0}@result";
+        public const string Rl_DeviceAttributesResultPattern = "ipems:global:role-device-attributes@{0}@result";
+
+        //user result
+        public const string Ur_RssPointsResultPattern = "ipems:global:user-rss-points@{0}@result";
     }
 
     /// <summary>
-    /// User cache keys class
+    /// Site cache keys class
     /// </summary>
-    public static partial class UserCacheKeys {
-        public const string U_RolesResultPattern = "ipems:user:role@{0}@result";
-        public const string U_UsersResultPattern = "ipems:user:user@{0}@result";
-        public const string U_ActAlmStorePattern = "ipems:user:actalm@{0}@result";
+    public static partial class SiteCacheKeys {
+        public const string Site_RolesResultPattern = "ipems:site:role@{0}@result";
+        public const string Site_UsersResultPattern = "ipems:site:user@{0}@result";
+        public const string Site_ActAlmResultPattern = "ipems:site:actalm@{0}@result";
+        public const string Site_RssPointsResultPattern = "ipems:site:rss-points@{0}@result";
     }
 
     /// <summary>
     /// Cached interval class
     /// </summary>
     public static partial class CachedIntervals {
-        public static readonly TimeSpan AppStoreIntervals = TimeSpan.FromSeconds(300);
-        public static readonly TimeSpan AppResultIntervals = TimeSpan.FromSeconds(600);
-        public static readonly TimeSpan AppRoleIntervals = TimeSpan.FromSeconds(1200);
-        public static readonly TimeSpan ActStoreIntervals = TimeSpan.FromSeconds(15);
+        public static readonly TimeSpan Site_ActiveIntervals = TimeSpan.FromSeconds(10);
+        public static readonly TimeSpan Site_StoreIntervals = TimeSpan.FromSeconds(300);
+        public static readonly TimeSpan Site_ResultIntervals = TimeSpan.FromSeconds(600);
+
+        public static readonly TimeSpan Global_RoleIntervals = TimeSpan.FromSeconds(1200);
+        public static readonly TimeSpan Global_UserIntervals = TimeSpan.FromSeconds(1200);
     }
 }

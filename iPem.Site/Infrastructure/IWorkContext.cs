@@ -2,8 +2,12 @@
 using RsDomain = iPem.Core.Domain.Resource;
 using System;
 using System.Collections.Generic;
+using iPem.Site.Models;
+using iPem.Site.Extensions;
+using iPem.Core.Enum;
+using iPem.Core;
 
-namespace iPem.Core {
+namespace iPem.Site.Infrastructure {
     /// <summary>
     /// Work context
     /// </summary>
@@ -34,6 +38,11 @@ namespace iPem.Core {
         MsDomain.User CurrentUser { get; }
 
         /// <summary>
+        /// Gets or sets the current user profile
+        /// </summary>
+        ProfileValues CurrentProfile { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated employee
         /// </summary>
         RsDomain.Employee AssociatedEmployee { get; }
@@ -59,6 +68,11 @@ namespace iPem.Core {
         List<RsDomain.Device> AssociatedDevices { get; }
 
         /// <summary>
+        /// Gets or sets the associated operations
+        /// </summary>
+        Dictionary<EnmOperation, string> AssociatedOperations { get; }
+
+        /// <summary>
         /// Gets or sets the associated area attributes
         /// </summary>
         Dictionary<string, AreaAttributes> AssociatedAreaAttributes { get; }
@@ -67,5 +81,27 @@ namespace iPem.Core {
         /// Gets or sets the associated station attributes
         /// </summary>
         Dictionary<string, StationAttributes> AssociatedStationAttributes { get; }
+
+        /// <summary>
+        /// Gets or sets the associated device attributes
+        /// </summary>
+        Dictionary<string, DeviceAttributes> AssociatedDeviceAttributes { get; }
+
+        /// <summary>
+        /// Gets or sets the associated point attributes
+        /// </summary>
+        Dictionary<string, PointAttributes> AssociatedPointAttributes { get; }
+
+        /// <summary>
+        /// Gets or sets the associated rss points
+        /// </summary>
+        List<IdValuePair<DeviceAttributes, PointAttributes>> AssociatedRssPoints { get; }
+
+        /// <summary>
+        /// Gets the associated point attributes
+        /// </summary>
+        /// <param name="types">the point types array</param>
+        /// <returns>the associated point attributes</returns>
+        List<PointAttributes> GetAssociatedPointAttributes(int[] types);
     }
 }

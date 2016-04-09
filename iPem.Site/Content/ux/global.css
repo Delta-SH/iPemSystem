@@ -59,3 +59,21 @@
 .x-border-body-panel {
     border: 1px solid #c0c0c0;
 }
+
+.x-tip-default {
+  border-radius: 4px;
+  border: 0px solid rgb(51, 51, 51);
+  background-color: rgba(50, 50, 50, 0.5)
+}
+
+.x-tip-header-text-container-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default a {
+  color: rgb(255, 255, 255);
+}

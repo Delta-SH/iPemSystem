@@ -1,7 +1,4 @@
-﻿@{
-    Layout = null;
-}
-
+﻿@{ Layout = null; }
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,11 +12,19 @@
     <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
     <link href="@Url.Content("~/Content/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/themes/css/account.login.css")" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        if (window.location != top.location)
+            top.location.href = window.location.href;
+    </script>
 </head>
 <body>
     <div class="header">
         <div class="container">
-            <div class="brand">
+            <div class="brand"></div>
+            <div class="help-brand">
+                <a href="Help" target="_blank" title="帮助中心">
+                    <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> 帮助中心 400-820-9595
+                </a>
             </div>
         </div>
     </div>
@@ -50,9 +55,10 @@
                             <img class="captcha" src="/Account/GetCaptcha" alt="点击换一张" title="点击换一张" />
                         </div>
                         <div class="error-tips"></div>
-                        <button class="btn btn-primary btn-block" type="submit">登录</button>
+                        <button class="btn btn-success btn-block" type="submit">登录</button>
                         var validationSummary = Html.ValidationSummary(true);
                         if(!MvcHtmlString.IsNullOrEmpty(validationSummary)) {
+                            <a class="btn btn-default btn-block" role="button" href="Installation/DbConfiguration" target="_blank">数据库验证失败？</a>
                             <div id="alert" class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;margin-top:5px;padding:10px 30px 10px 10px;">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>

@@ -14,3 +14,8 @@
     vertical-align: middle;
     width: 16px;
 }
+
+.x-label-header {
+    color:#fff;
+    font-weight:bold;
+}

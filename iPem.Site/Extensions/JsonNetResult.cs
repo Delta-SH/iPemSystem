@@ -4,7 +4,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
-namespace iPem.Site.Infrastructure {
+namespace iPem.Site.Extensions {
     public class JsonNetResult : ActionResult {
 
         public Encoding ContentEncoding { get; set; }

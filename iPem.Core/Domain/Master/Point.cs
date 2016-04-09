@@ -20,7 +20,7 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         /// Gets or sets the type
         /// </summary>
-        public EnmNode Type { get; set; }
+        public EnmPoint Type { get; set; }
 
         /// <summary>
         /// Gets or sets the logic type

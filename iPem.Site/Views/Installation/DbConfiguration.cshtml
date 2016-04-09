@@ -1,0 +1,279 @@
+﻿@{ 
+    Layout = null;
+    var csModel = ViewData["master"] as iPem.Core.Data.DbEntity;
+    var hsModel = ViewData["history"] as iPem.Core.Data.DbEntity;
+    var rsModel = ViewData["resource"] as iPem.Core.Data.DbEntity;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 存储管理</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    @Styles.Render("~/bundles/bootstrap/css")
+    @Styles.Render("~/bundles/install/dbconfiguration/css")
+</head>
+<body data-spy="scroll" data-target="#left-nav">
+    <nav id="left-nav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="javascript:void(0);"><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> 存储管理</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="left-nav" class="col-xs-3">
+                <ul class="nav nav-pills nav-stacked" data-spy="affix">
+                    <li class="active"><a href="#section-1">基础数据库</a></li>
+                    <li><a href="#section-2">历史数据库</a></li>
+                    <li><a href="#section-3">资管数据库</a></li>
+                    <li><a href="#section-4">删除配置信息</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-9">
+                @using(Html.BeginForm("SaveCs", "Installation", FormMethod.Post, new { name = "csForm", id = "csForm" })) {
+                    @Html.AntiForgeryToken()
+                    <div id="section-1" class="section">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">基础数据库<small>（存储动环系统相关的配置信息）</small></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">服务器地址</span>
+                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(csModel.IP!=null?csModel.IP:string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库端口</span>
+                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(csModel.Port)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库账户</span>
+                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(csModel.UId != null ? csModel.UId : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库密码</span>
+                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(csModel.Pwd != null ? csModel.Pwd : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库名称</span>
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(csModel.Name != null ? csModel.Name : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <button id="testbtn" type="button" class="btn btn-primary">测试</button>
+                                <button id="savebtn" type="button" class="btn btn-success">保存</button>
+                                <div id="form-loading" class="alert alert-info" role="alert">
+                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                                    <span class="sr-only">Loading:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-error" class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-ok" class="alert alert-success" role="alert">
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Ok:</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @using(Html.BeginForm("SaveHs", "Installation", FormMethod.Post, new { name = "hsForm", id = "hsForm" })) {
+                    @Html.AntiForgeryToken()
+                    <div id="section-2" class="section">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">历史数据库<small>（存储动环系统相关的历史数据）</small></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">服务器地址</span>
+                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(hsModel.IP!=null?hsModel.IP:string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库端口</span>
+                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(hsModel.Port)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库账户</span>
+                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(hsModel.UId != null ? hsModel.UId : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库密码</span>
+                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(hsModel.Pwd != null ? hsModel.Pwd : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库名称</span>
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(hsModel.Name != null ? hsModel.Name : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <button id="testbtn" type="button" class="btn btn-primary">测试</button>
+                                <button id="savebtn" type="button" class="btn btn-success">保存</button>
+                                <div id="form-loading" class="alert alert-info" role="alert">
+                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                                    <span class="sr-only">Loading:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-error" class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-ok" class="alert alert-success" role="alert">
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Ok:</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @using(Html.BeginForm("SaveRs", "Installation", FormMethod.Post, new { name = "rsForm", id = "rsForm" })) {
+                    @Html.AntiForgeryToken()
+                    <div id="section-3" class="section">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">资管数据库<small>（存储固定资产相关信息）</small></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">服务器地址</span>
+                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(rsModel.IP!=null?rsModel.IP:string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库端口</span>
+                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(rsModel.Port)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库账户</span>
+                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(rsModel.UId != null ? rsModel.UId : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库密码</span>
+                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(rsModel.Pwd != null ? rsModel.Pwd : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库名称</span>
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(rsModel.Name != null ? rsModel.Name : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <button id="testbtn" type="button" class="btn btn-primary">测试</button>
+                                <button id="savebtn" type="button" class="btn btn-success">保存</button>
+                                <div id="form-loading" class="alert alert-info" role="alert">
+                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                                    <span class="sr-only">Loading:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-error" class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-ok" class="alert alert-success" role="alert">
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Ok:</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @using(Html.BeginForm("DbClean", "Installation", FormMethod.Post, new { name = "cleanForm", id = "cleanForm" })) {
+                    <div id="section-4" class="section">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">删除配置信息<small>（删除所有已保存的数据库配置信息）</small></h3>
+                            </div>
+                            <div class="panel-body">
+                                <p>本操作将清空所有已保存的数据库配置信息，并将页面重定向到安装向导。</p>
+                                <p>您必须按照安装向导的引导重新生成并初始化数据库，这将会导致数据库中的所有数据全部丢失，请务必先备份数据库。</p>
+                                <p><strong>此操作将影响所有使用该系统的用户，请谨慎选择！</strong></p>
+                                <button id="deletebtn" type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">删除配置信息</button>
+                                <div id="form-loading" class="alert alert-info" role="alert">
+                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                                    <span class="sr-only">Loading:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-error" class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-ok" class="alert alert-success" role="alert">
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Ok:</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-titile-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                @using(Html.BeginForm("DbClean", "Installation", FormMethod.Post, new { name = "confirmForm", id = "confirmForm" })) {
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="dialog-titile-label">您确认要删除吗？</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>本操作将清空所有已保存的数据库配置信息，并将页面重定向到安装向导。</p>
+                        <p>您必须按照安装向导的引导重新生成并初始化数据库，这将会导致数据库中的所有数据全部丢失，请务必先备份数据库。</p>
+                        <p><strong>此操作将影响所有使用该系统的用户，请谨慎选择！</strong></p>
+                        <div class="input-group">
+                            <span class="input-group-addon">确认密码</span>
+                            <input id="password" name="password" type="password" class="form-control" placeholder="此操作需要验证确认密码，如尚未获得，请与管理员联系。" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button id="cleanbtn" type="button" class="btn btn-danger">删除</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/validation")
+    @Scripts.Render("~/bundles/install/dbconfiguration")
+</body>
+</html>

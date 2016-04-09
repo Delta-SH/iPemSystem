@@ -28,11 +28,22 @@ namespace iPem.Data.Common {
         UPDATE [dbo].[U_UsersInRoles] SET [RoleId] = @RoleId WHERE [UserId] = @Id;";
         public const string Sql_User_Repository_Delete = @"
         DELETE FROM [dbo].[U_Users] WHERE [Id] = @Id;
-        DELETE FROM [dbo].[U_UsersInRoles] WHERE [UserId]=@Id;";
+        DELETE FROM [dbo].[U_UsersInRoles] WHERE [UserId]=@Id;
+        DELETE FROM [dbo].[U_Profile] WHERE [UserId]=@Id;";
         public const string Sql_User_Repository_ChangePwd = @"UPDATE [dbo].[U_Users] SET [Pwd] = @Password,[PwdFormat] = @PasswordFormat,[PwdSalt] = @PasswordSalt,[LastPwdChangedDate] = GETDATE() WHERE [Id] = @Id;";
         public const string Sql_User_Repository_Set_LastLoginDate = @"UPDATE [dbo].[U_Users] SET [LastLoginDate] = @LastLoginDate,[FailedPwdAttemptCount] = 0 WHERE [Id] = @Id;";
         public const string Sql_User_Repository_Set_FailedPasswordDate = @"UPDATE [dbo].[U_Users] SET [FailedPwdAttemptCount] = ISNULL([FailedPwdAttemptCount], 0) + 1,[FailedPwdDate] = @FailedPasswordDate WHERE [Id] = @Id;";
         public const string Sql_User_Repository_Set_LockedOut = @"UPDATE [dbo].[U_Users] SET [IsLockedOut] = @IsLockedOut,[LastLockoutDate] = @LastLockoutDate WHERE [Id] = @Id;";
+
+        //user profile repository
+        public const string Sql_Profile_Repository_GetEntity = @"SELECT [UserId],[ValuesJson],[ValuesBinary],[LastUpdatedDate] FROM [dbo].[U_Profile] WHERE [UserId] = @UserId;";
+        public const string Sql_Profile_Repository_Save = @"
+        UPDATE [dbo].[U_Profile] SET [ValuesJson] = @ValuesJson,[ValuesBinary] = @ValuesBinary,[LastUpdatedDate] = @LastUpdatedDate WHERE [UserId] = @UserId;
+        IF(@@ROWCOUNT = 0)
+        BEGIN
+	        INSERT INTO [dbo].[U_Profile]([UserId],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(@UserId,@ValuesJson,@ValuesBinary,@LastUpdatedDate);
+        END";
+        public const string Sql_Profile_Repository_Delete = @"DELETE FROM [dbo].[U_Profile] WHERE [UserId]=@UserId;";
         
         //web events repository
         public const string Sql_WebEvent_Repository_GetEntities = @"SELECT [Id],[Level],[Type],[ShortMessage],[FullMessage],[IpAddress],[PageUrl],[ReferrerUrl],[UserId],[CreatedTime] FROM [dbo].[H_WebEvents] WHERE [CreatedTime] BETWEEN @StartTime AND @EndTime ORDER BY [CreatedTime];";
@@ -101,14 +112,27 @@ namespace iPem.Data.Common {
         public const string Sql_Device_Repository_GetEntities = @"SELECT [Id],[Code],[ProtcolId],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
 
         //point repository
+        public const string Sql_Point_Repository_GetEntitiesByDevice = @"
+        SELECT P.[Id],P.[Name],P.[Type],P.[StaTypeId],P.[DeviceTypeId],P.[LogicTypeId],P.[Unit],P.[AlarmTimeDesc],P.[NormalTimeDesc],
+        P.[AlarmLevel],P.[TriggerType],P.[Interpret],P.[AlarmLimit],P.[AlarmReturnDiff],P.[AlarmRecoveryDelay],P.[AlarmDelay],
+        P.[SavedPeriod],P.[AbsoluteThreshold],P.[PerThreshold],P.[Comment],P.[Desc],P.[Enabled] FROM [dbo].[M_Device] DV 
+        INNER JOIN [dbo].[P_PointsInProtcol] PP ON DV.[ProtcolId] = PP.[ProtcolId] AND DV.[Id] = @DeviceId
+        INNER JOIN [dbo].[P_Point] P ON PP.[PointId] = P.[Id]
+        ORDER BY P.[Type],P.[Id]";
         public const string Sql_Point_Repository_GetEntitiesByType = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] WHERE [Type] = @Type ORDER BY [Id];";
-        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.Id = PP.PointId AND PP.ProtcolId = @ProtcolId;";
-        public const string Sql_Point_Repository_GetEntitiesByProtcolAndType = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] PO INNER JOIN [dbo].[P_PointsInProtcol] PP ON PO.Id = PP.PointId WHERE PO.[Type] = @Type AND PP.[ProtcolId] = @ProtcolId ORDER BY [Id];";
-        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point];";
+        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.[Id] = PP.[PointId] AND PP.[ProtcolId] = @ProtcolId ORDER BY [Type],[Id];";
+        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] ORDER BY [Type],[Id];";
 
-        //Protocol repository
+        //protocol repository
         public const string Sql_Protocol_Repository_GetEntitiesByDeviceType = @"SELECT [Id],[Name],[DeviceTypeId],[SubDevTypeId],[Desc] AS [Comment],[Enabled] FROM [dbo].[P_Protocol] WHERE [DeviceTypeId]=@DeviceTypeId;";
         public const string Sql_Protocol_Repository_GetEntitiesByDevAndSub = @"SELECT [Id],[Name],[DeviceTypeId],[SubDevTypeId],[Desc] AS [Comment],[Enabled] FROM [dbo].[P_Protocol] WHERE [DeviceTypeId]=@DeviceTypeId AND [SubDevTypeId]=@SubDevTypeId;";
         public const string Sql_Protocol_Repository_GetEntities = @"SELECT [Id],[Name],[DeviceTypeId],[SubDevTypeId],[Desc] AS [Comment],[Enabled] FROM [dbo].[P_Protocol];";
+
+        //points in protocol
+        public const string Sql_PointsInProtocol_Repository_GetEntities = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol];";
+        public const string Sql_PointsInProtocol_Repository_GetEntitiesByProtocol = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol] WHERE [ProtcolId] = @ProtcolId;";
+
+        //project repository
+        public const string Sql_Project_Repository_GetEntities = @"SELECT [Id],[Code],[ProtcolId],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
     }
 }
