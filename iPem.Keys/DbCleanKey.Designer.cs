@@ -68,7 +68,7 @@
             this.gviewport.Size = new System.Drawing.Size(264, 162);
             this.gviewport.TabIndex = 2;
             this.gviewport.TabStop = false;
-            this.gviewport.Text = "获取删除配置信息的确认密码";
+            this.gviewport.Text = "确认密码";
             // 
             // viewport
             // 

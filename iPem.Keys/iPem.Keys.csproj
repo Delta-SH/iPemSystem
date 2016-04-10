@@ -80,12 +80,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">
-      <Project>{65343199-3a33-4d3a-a9e9-e82857350e7e}</Project>
-      <Name>iPem.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Content Include="icons\lock.ico" />
