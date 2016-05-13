@@ -19,7 +19,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the productor identifier
         /// </summary>
-        public int ProductorId { get; set; }
+        public string ProductorId { get; set; }
 
         /// <summary>
         /// Gets or sets the comment

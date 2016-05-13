@@ -35,7 +35,7 @@ namespace iPem.Data.Repository.Resource {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_RoomType_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
                     entity = new RoomType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                 }
@@ -48,7 +48,7 @@ namespace iPem.Data.Repository.Resource {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_RoomType_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
                     var entity = new RoomType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entities.Add(entity);

@@ -18,7 +18,7 @@
 		model: 'NoticeModel',
 		proxy: {
 			type: 'ajax',
-			url: '../Account/GetNotices',
+			url: '/Account/GetNotices',
 			reader: {
 				type: 'json',
 				successProperty: 'success',
@@ -44,7 +44,7 @@
 		],
 		proxy: {
 			type: 'ajax',
-			url: '../Account/GetComboRoles',
+			url: '/Account/GetComboRoles',
 			reader: {
 				type: 'json',
 				successProperty: 'success',
@@ -89,7 +89,7 @@
 					itemId: 'title',
 					name: 'title',
 					xtype: 'textfield',
-					fieldLabel: $$iPems.lang.Notice.NTitle,
+					fieldLabel: $$iPems.lang.Notice.Window.Title,
 					maxLength: 256,
 				    enforceMaxLength:true,
 					allowBlank: false
@@ -100,11 +100,11 @@
 					xtype: 'textareafield',
 					autoScroll: true,
 					height:150,
-					fieldLabel: $$iPems.lang.Notice.Content,
+					fieldLabel: $$iPems.lang.Notice.Window.Content,
 					allowBlank: false
 				}, Ext.create('Ext.ux.MultiCombo', {
 					itemId: 'toRoles',
-					fieldLabel: $$iPems.lang.Notice.Role,
+					fieldLabel: $$iPems.lang.Notice.Window.Role,
 					valueField: 'id',
 					displayField: 'text',
 					delimiter: $$iPems.Delimiter,
@@ -119,8 +119,8 @@
 					itemId: 'enabled',
 					name: 'enabled',
 					xtype: 'checkboxfield',
-					fieldLabel: $$iPems.lang.Notice.Enabled,
-					boxLabel: $$iPems.lang.Notice.EnabledLabel,
+					fieldLabel: $$iPems.lang.Notice.Window.Enabled,
+					boxLabel: $$iPems.lang.Notice.Window.EnabledLabel,
 					inputValue: true,
 					checked: false
 				}
@@ -149,7 +149,7 @@
 						    clientValidation: true,
 						    submitEmptyText: false,
 							preventWindow: true,
-							url: '../Account/SaveNotice',
+							url: '/Account/SaveNotice',
 							params: {
 								action: saveWnd.opaction,
 								roles: roles
@@ -187,18 +187,17 @@
 		var record = grid.getStore().getAt(rowIndex);
 		if (Ext.isEmpty(record)) return false;
 
-		var form = saveWnd.getComponent('saveForm').getForm();
-		form.load({
-			url: '../Account/GetNotice',
+		var basic = saveWnd.getComponent('saveForm').getForm();
+		basic.load({
+			url: '/Account/GetNotice',
 			params: { id: record.raw.id, action: $$iPems.Action.Edit },
-			reset: true,
 			waitMsg: $$iPems.lang.AjaxHandling,
 			waitTitle: $$iPems.lang.SysTipTitle,
 			success: function (form, action) {
-				form.setValues(action.result.data);
+			    form.clearInvalid();
 
 				Ext.getCmp('saveResult').setTextWithIcon('', '');
-				saveWnd.setTitle($$iPems.lang.Notice.EditTitle);
+				saveWnd.setTitle($$iPems.lang.Notice.Window.EditTitle);
 				saveWnd.opaction = $$iPems.Action.Edit;
 				saveWnd.show();
 			}
@@ -212,7 +211,7 @@
 		Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
 			if (buttonId === 'yes') {
 				Ext.Ajax.request({
-					url: '../Account/DeleteNotice',
+					url: '/Account/DeleteNotice',
 					params: { id: record.raw.id },
 					mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
 					success: function (response, options) {
@@ -244,19 +243,19 @@
 			preserveScrollOnRefresh: true
 		},
 		columns: [{
-			text: $$iPems.lang.Notice.Index,
+		    text: $$iPems.lang.Notice.Columns.Index,
 			dataIndex: 'index',
 			width: 60,
 			align: 'left',
 			sortable: true
 		}, {
-			text: $$iPems.lang.Notice.NTitle,
+		    text: $$iPems.lang.Notice.Columns.Title,
 			dataIndex: 'title',
 			width: 150,
 			align: 'left',
 			sortable: true
 		}, {
-			text: $$iPems.lang.Notice.Content,
+		    text: $$iPems.lang.Notice.Columns.Content,
 			dataIndex: 'content',
 			flex: 1,
 			align: 'left',
@@ -266,13 +265,13 @@
 				return value;
 			}
 		}, {
-			text: $$iPems.lang.Notice.Created,
+		    text: $$iPems.lang.Notice.Columns.Created,
 			dataIndex: 'created',
 			width: 150,
 			align: 'center',
 			sortable: true
 		}, {
-			text: $$iPems.lang.Notice.Enabled,
+		    text: $$iPems.lang.Notice.Columns.Enabled,
 			dataIndex: 'enabled',
 			width: 80,
 			align: 'center',
@@ -300,20 +299,20 @@
 		tbar: Ext.create('Ext.toolbar.Toolbar', {
 			items: [{
 				xtype: 'button',
-				text: $$iPems.lang.Notice.AddTitle,
+				text: $$iPems.lang.Notice.ToolBar.Add,
 				glyph: 0xf001,
 				handler: function (el, e) {
-					var form = saveWnd.getComponent('saveForm').getForm();
-					form.load({
-						url: '../Account/GetNotice',
+					var basic = saveWnd.getComponent('saveForm').getForm();
+					basic.load({
+						url: '/Account/GetNotice',
 						params: { id: '', action: $$iPems.Action.Add },
-						reset: true,
 						waitMsg: $$iPems.lang.AjaxHandling,
 						waitTitle: $$iPems.lang.SysTipTitle,
 						success: function (form, action) {
-							form.setValues(action.result.data);
+						    form.clearInvalid();
+
 							Ext.getCmp('saveResult').setTextWithIcon('', '');
-							saveWnd.setTitle($$iPems.lang.Notice.AddTitle);
+							saveWnd.setTitle($$iPems.lang.Notice.Window.AddTitle);
 							saveWnd.opaction = $$iPems.Action.Add;
 							saveWnd.show();
 						}
@@ -322,7 +321,7 @@
 			}, '-', {
 				id: 'begin-datefield',
 				xtype: 'datefield',
-				fieldLabel: $$iPems.lang.Notice.BeginTime,
+				fieldLabel: $$iPems.lang.Notice.ToolBar.Begin,
 				labelWidth: 60,
 				width: 250,
 				value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -331,7 +330,7 @@
 			}, {
 				id: 'end-datefield',
 				xtype: 'datefield',
-				fieldLabel: $$iPems.lang.Notice.EndTime,
+				fieldLabel: $$iPems.lang.Notice.ToolBar.End,
 				labelWidth: 60,
 				width: 250,
 				value: new Date(),
@@ -349,7 +348,7 @@
 
 						currentStore.getProxy().extraParams.begin = begin;
 						currentStore.getProxy().extraParams.end = end;
-						currentPagingToolbar.doRefresh();
+						currentStore.loadPage(1);
 					}
 				}
 			}]

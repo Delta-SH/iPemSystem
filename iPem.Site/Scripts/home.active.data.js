@@ -37,7 +37,7 @@
         gauge = gauge || Ext.getCmp('chartGauge');
         line = line || Ext.getCmp('chartLine');
 
-        gauge.store.loadData([{ 'name': 'NoData', 'value': 0, 'comment': '' }]);
+        gauge.store.loadData([{ 'name': 'NoData', 'value': 0, 'comment': '' }], false);
         line.store.removeAll();
     };
 
@@ -54,7 +54,7 @@
 
     var change = function (node, pagingtoolbar, layout) {
         Ext.Ajax.request({
-            url: '../Home/RequestRemoveRssPointsCache',
+            url: '/Home/RequestRemoveRssPointsCache',
             mask: new Ext.LoadMask(layout || Ext.getCmp('currentLayout'), { msg: $$iPems.lang.AjaxHandling }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
@@ -211,7 +211,7 @@
         groupField: 'typeDisplay',
         proxy: {
             type: 'ajax',
-            url: '../Home/RequestActPoints',
+            url: '/Home/RequestActPoints',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -250,7 +250,7 @@
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     var pointRssWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.PointRss,
+        title: $$iPems.lang.ActivePoint.Window.RssTitle,
         height: 300,
         width: 600,
         glyph: 0xf041,
@@ -284,9 +284,24 @@
                             flex: 1,
                             layout: 'anchor',
                             items: [
-                                { id: 'station-type-multicombo', name:'stationtypes', xtype: 'station.type.multicombo' },
-                                { id: 'device-type-multicombo', name: 'devicetypes', xtype: 'device.type.multicombo' },
-                                { id: 'point-type-multicombo', name: 'pointtypes', xtype: 'point.type.multicombo' }
+                                {
+                                    id: 'station-type-multicombo',
+                                    name: 'stationtypes',
+                                    xtype: 'station.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'device-type-multicombo',
+                                    name: 'devicetypes',
+                                    xtype: 'device.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'point-type-multicombo',
+                                    name: 'pointtypes',
+                                    xtype: 'point.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                }
                             ]
                         },
                         {
@@ -294,9 +309,25 @@
                             flex: 1,
                             layout: 'anchor',
                             items: [
-                                { id: 'room-type-multicombo', name: 'roomtypes', xtype: 'room.type.multicombo' },
-                                { id: 'logic-type-multicombo', name: 'logictypes', xtype: 'logic.type.multicombo' },
-                                { id: 'point-name-textfield', name: 'pointnames', xtype: 'textfield', fieldLabel: $$iPems.lang.PointName, emptyText: $$iPems.lang.MultiConditionEmptyText }
+                                {
+                                    id: 'room-type-multicombo',
+                                    name: 'roomtypes',
+                                    xtype: 'room.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'logic-type-multicombo',
+                                    name: 'logictypes',
+                                    xtype: 'logic.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'point-name-textfield',
+                                    name: 'pointnames',
+                                    xtype: 'textfield',
+                                    fieldLabel: $$iPems.lang.ActivePoint.Window.PointName,
+                                    emptyText: $$iPems.lang.MultiConditionEmptyText
+                                }
                             ]
                         }
                     ]
@@ -304,7 +335,7 @@
             ]
         }, {
             xtype: 'iconlabel',
-            text:  $$iPems.lang.RssTips,
+            text:  $$iPems.lang.ActivePoint.Window.RssTips,
             margin: '15 15 15 15',
             iconCls: 'x-icon-tips'
         }],
@@ -313,7 +344,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.Rss,
+              text: $$iPems.lang.ActivePoint.Window.Rss,
               handler: function (el, e) {
                   Ext.getCmp('pointRssResult').setTextWithIcon('', '');
 
@@ -326,7 +357,7 @@
                           submitEmptyText: false,
                           clientValidation: true,
                           preventWindow: true,
-                          url: '../Home/SavePointRss',
+                          url: '/Home/SavePointRss',
                           success: function (form, action) {
                               Ext.getCmp('pointRssResult').setTextWithIcon(action.result.message, 'x-icon-accept');
                               currentStore.loadPage(1);
@@ -354,7 +385,7 @@
     });
 
     var controlWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActivePoint.ControlWindow,
+        title: $$iPems.lang.ActivePoint.Window.ControlTitle,
         height: 200,
         width: 320,
         glyph: 0xf040,
@@ -384,9 +415,9 @@
                     columns: 1,
                     vertical: true,
                     items: [
-                        { boxLabel: $$iPems.lang.ActivePoint.ControlOption0, name: 'ctrl', inputValue: 0, checked: true },
-                        { boxLabel: $$iPems.lang.ActivePoint.ControlOption1, name: 'ctrl', inputValue: 1 },
-                        { boxLabel: $$iPems.lang.ActivePoint.ControlOption2, name: 'ctrl', inputValue: 2 }
+                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption0, name: 'ctrl', inputValue: 0, checked: true },
+                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption1, name: 'ctrl', inputValue: 1 },
+                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption2, name: 'ctrl', inputValue: 2 }
                     ]
                 }]
         }],
@@ -395,7 +426,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.ActivePoint.Control,
+              text: $$iPems.lang.ActivePoint.Window.Control,
               handler: function (el, e) {
                   var form = controlWnd.getComponent('controlForm'),
                       baseForm = form.getForm(),
@@ -408,7 +439,7 @@
                           submitEmptyText: false,
                           clientValidation: true,
                           preventWindow: true,
-                          url: '../Home/ControlPoint',
+                          url: '/Home/ControlPoint',
                           success: function (form, action) {
                               result.setTextWithIcon(action.result.message, 'x-icon-accept');
                               //currentPagingToolbar.doRefresh();
@@ -440,7 +471,7 @@
     });
 
     var adjustWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActivePoint.AdjustWindow,
+        title: $$iPems.lang.ActivePoint.Window.AdjustTitle,
         height: 200,
         width: 320,
         glyph: 0xf028,
@@ -468,7 +499,7 @@
                     itemId: 'adjust',
                     xtype: 'numberfield',
                     name: 'adjust',
-                    fieldLabel: $$iPems.lang.ActivePoint.AdjustOption,
+                    fieldLabel: $$iPems.lang.ActivePoint.Window.AdjustOption,
                     value: 0,
                     width: 280,
                     allowOnlyWhitespace:false
@@ -479,7 +510,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.ActivePoint.Adjust,
+              text: $$iPems.lang.ActivePoint.Window.Adjust,
               handler: function (el, e) {
                   var form = adjustWnd.getComponent('adjustForm'),
                       baseForm = form.getForm(),
@@ -492,7 +523,7 @@
                           submitEmptyText: false,
                           clientValidation: true,
                           preventWindow: true,
-                          url: '../Home/AdjustPoint',
+                          url: '/Home/AdjustPoint',
                           success: function (form, action) {
                               result.setTextWithIcon(action.result.message, 'x-icon-accept');
                               //currentPagingToolbar.doRefresh();
@@ -534,7 +565,7 @@
                     id: 'point-organization',
                     region: 'west',
                     xtype: 'treepanel',
-                    title: $$iPems.lang.ActivePoint.PointOrganization,
+                    title: $$iPems.lang.ActivePoint.MenuNavTitle,
                     glyph: 0xf011,
                     width: 220,
                     split: true,
@@ -553,12 +584,15 @@
                             { key: 'type', value: $$iPems.Organization.Area }
                         ]
                     },
+                    viewConfig: {
+                        loadMask: true
+                    },
                     store: Ext.create('Ext.data.TreeStore', {
                         autoLoad: false,
                         nodeParam: 'node',
                         proxy: {
                             type: 'ajax',
-                            url: '../Home/GetOrganization',
+                            url: '/Home/GetOrganization',
                             extraParams: {
                                 id: '',
                                 type: -1
@@ -640,7 +674,7 @@
                                     search._filterIndex = index;
                                 } else {
                                     Ext.Ajax.request({
-                                        url: '../Home/SearchOrganization',
+                                        url: '/Home/SearchOrganization',
                                         params: { text: text },
                                         mask: new Ext.LoadMask({ target: tree, msg: $$iPems.lang.AjaxHandling }),
                                         success: function (response, options) {
@@ -705,10 +739,10 @@
                                         xtype: 'checkboxgroup',
                                         width: 240,
                                         items: [
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.DI, inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.AI, inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.AO, inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.DO, inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.DI, inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.AI, inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.AO, inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.DO, inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                         ],
                                         listeners: {
                                             change: function (me, newValue, oldValue) {
@@ -735,16 +769,16 @@
                                 },
                                 {
                                     type: 'gear',
-                                    tooltip: $$iPems.lang.PointRss,
+                                    tooltip: $$iPems.lang.ActivePoint.RssTips,
                                     handler: function (event, toolEl, panelHeader) {
-                                        var baseForm = Ext.getCmp('pointRssForm').getForm();
-                                        baseForm.load({
-                                            url: '../Home/GetPointRss',
-                                            reset: true,
+                                        var basic = Ext.getCmp('pointRssForm').getForm();
+                                        basic.load({
+                                            url: '/Home/GetPointRss',
                                             waitMsg: $$iPems.lang.AjaxHandling,
                                             waitTitle: $$iPems.lang.SysTipTitle,
                                             success: function (form, action) {
-                                                form.setValues(action.result.data);
+                                                form.clearInvalid();
+
                                                 Ext.getCmp('pointRssResult').setTextWithIcon('', '');
                                                 pointRssWnd.show();
                                             }

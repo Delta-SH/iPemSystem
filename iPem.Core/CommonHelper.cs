@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Security.Cryptography;
+using System.Speech.Synthesis;
 using System.Web;
 using System.Web.Hosting;
 
@@ -221,6 +223,18 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string DateTimeConverter(DateTime val) {
+            if(val == default(DateTime))
+                return string.Empty;
+
+            /*
+             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
+             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
+             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
+             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
+             */
+            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+                return string.Empty;
+
             return val.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
@@ -229,6 +243,18 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string DateConverter(DateTime val) {
+            if(val == default(DateTime))
+                return string.Empty;
+
+            /*
+             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
+             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
+             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
+             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
+             */
+            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+                return string.Empty;
+
             return val.ToString("yyyy-MM-dd");
         }
 
@@ -237,6 +263,18 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string TimeConverter(DateTime val) {
+            if(val == default(DateTime))
+                return string.Empty;
+
+            /*
+             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
+             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
+             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
+             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
+             */
+            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+                return string.Empty;
+
             return val.ToString("HH:mm:ss");
         }
 
@@ -263,18 +301,6 @@ namespace iPem.Core {
         }
 
         /// <summary>
-        /// condition spliter.
-        /// </summary>
-        /// <param name="conditions">condition</param>
-        /// <returns>conditions</returns>
-        public static string[] ConditionSplit(string conditions) {
-            if(string.IsNullOrWhiteSpace(conditions)) 
-                return new string[] { };
-
-            return conditions.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        /// <summary>
         /// whether contain target in source.
         /// </summary>
         /// <param name="target">target</param>
@@ -292,6 +318,10 @@ namespace iPem.Core {
             return false;
         }
 
+        /// <summary>
+        /// Create a confirm key
+        /// </summary>
+        /// <returns>a confirm key</returns>
         public static string GetCleanKey() {
             var year = DateTime.Today.Year;
             var month = DateTime.Today.Month;
@@ -300,6 +330,25 @@ namespace iPem.Core {
             var fractions = year * 10000 + month * 100 + day - month * day;
             var numerator = day % 2 == 0 ? 621 : 325;
             return (fractions / numerator).ToString();
+        }
+
+        public static byte[] ConvertTextToSpeech(string word) {
+            byte[] bytes = null;
+            var task = new Thread(() => {
+                try {
+                    using(var speaker = new SpeechSynthesizer()) {
+                        using(var stream = new MemoryStream()) {
+                            speaker.SetOutputToWaveStream(stream);
+                            speaker.Speak(word);
+                            bytes = stream.ToArray();
+                        }
+                    }
+                } catch { }
+            });
+
+            task.Start();
+            task.Join();
+            return bytes;
         }
     }
 }

@@ -7,6 +7,10 @@
     border-top: 1px solid #c0c0c0;
 }
 
+.x-docked-top-with-bottom {
+    border-bottom-width:1px !important
+}
+
 .x-panel-header-default .x-panel-header-glyph {
     line-height: 18px;
     opacity: 0.8;

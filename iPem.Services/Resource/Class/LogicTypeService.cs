@@ -32,7 +32,7 @@ namespace iPem.Services.Resource {
 
         #region Methods
 
-        public LogicType GetLogicType(int id) {
+        public LogicType GetLogicType(string id) {
             return _logicTypeRepository.GetEntity(id);
         }
 

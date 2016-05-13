@@ -37,7 +37,7 @@ namespace iPem.Data.Repository.Resource {
                     entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.RoomTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["RoomTypeId"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyID"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
@@ -57,10 +57,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.FireSubMain = SqlTypeConverter.DBNullStringHandler(rdr["FireSubMain"]);
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -79,7 +75,7 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.RoomTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["RoomTypeId"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyID"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
@@ -99,10 +95,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.FireSubMain = SqlTypeConverter.DBNullStringHandler(rdr["FireSubMain"]);
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -119,7 +111,7 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.RoomTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["RoomTypeId"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyID"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
@@ -139,10 +131,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.FireSubMain = SqlTypeConverter.DBNullStringHandler(rdr["FireSubMain"]);
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);

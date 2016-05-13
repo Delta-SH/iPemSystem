@@ -9,9 +9,9 @@ namespace iPem.Services.Master {
     /// </summary>
     public partial interface IProtocolService {
 
-        IPagedList<Protocol> GetProtocolsByDeviceType(int deviceType, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Protocol> GetProtocolsByDeviceType(string deviceType, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        IPagedList<Protocol> GetProtocols(int deviceType, int[] subDevType, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Protocol> GetProtocols(string deviceType, string[] subDevType, int pageIndex = 0, int pageSize = int.MaxValue);
 
         IPagedList<Protocol> GetAllProtocols(int pageIndex = 0, int pageSize = int.MaxValue);
 

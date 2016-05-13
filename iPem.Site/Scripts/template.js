@@ -36,7 +36,7 @@
                 {
                     id: 'left-nav-panel-fw',
                     region: 'west',
-                    title: $$iPems.lang.Site.TreeTitle,
+                    title: $$iPems.lang.Site.MenuNavTitle,
                     xtype: 'treepanel',
                     glyph: 0xf011,
                     width: 220,
@@ -54,14 +54,14 @@
                         autoLoad: false,
                         root: {
                             id: -10078,
-                            text: $$iPems.lang.Site.TreeRoot,
+                            text: $$iPems.lang.Site.MenuNavRoot,
                             href: '/Home',
                             icon: $$iPems.icons.Home,
                             root: true
                         },
                         proxy: {
                             type: 'ajax',
-                            url: '../Home/GetNavMenus',
+                            url: '/Home/GetNavMenus',
                             reader: {
                                 type: 'json',
                                 successProperty: 'success',
@@ -98,6 +98,22 @@
                     items: [_north],
                     autoScroll: true,
                     padding: $$iPems.menuVisible ? '5 5 5 0' : 5
+                }, {
+                    id: 'bottom-speech-panel-fw',
+                    region: 'south',
+                    height: 0,
+                    border: false,
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    items: [
+                        Ext.create('Ext.ux.IFrame', {
+                            flex: 1,
+                            loadMask: $$iPems.lang.AjaxHandling,
+                            src: '/Home/Speech'
+                        })
+                    ]
                 }
         ]
     });

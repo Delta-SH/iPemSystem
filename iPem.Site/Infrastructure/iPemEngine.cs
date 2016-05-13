@@ -100,6 +100,10 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<MsData.IPointRepository>(c => new MsData.PointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IProtocolRepository>(c => new MsData.ProtocolRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<MsData.IPointsInProtcolRepository>(c => new MsData.PointsInProtcolRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.IDictionaryRepository>(c => new MsData.DictionaryRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.IProjectRepository>(c => new MsData.ProjectRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.IAppointmentRepository>(c => new MsData.AppointmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<MsData.INodesInAppointmentRepository>(c => new MsData.NodesInAppointmentRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<MsSrv.WebLogger>().As<MsSrv.IWebLogger>().InstancePerLifetimeScope();
@@ -119,6 +123,10 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<MsSrv.PointService>().As<MsSrv.IPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.ProtocolService>().As<MsSrv.IProtocolService>().InstancePerLifetimeScope();
                 builder.RegisterType<MsSrv.PointsInProtcolService>().As<MsSrv.IPointsInProtcolService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.DictionaryService>().As<MsSrv.IDictionaryService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.ProjectsService>().As<MsSrv.IProjectService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.AppointmentService>().As<MsSrv.IAppointmentService>().InstancePerLifetimeScope();
+                builder.RegisterType<MsSrv.NodesInAppointmentService>().As<MsSrv.INodesInAppointmentService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDatabaseType.History)) {
@@ -142,7 +150,6 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<RsData.IRoomRepository>(c => new RsData.RoomRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IDeviceRepository>(c => new RsData.DeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IBrandRepository>(c => new RsData.BrandRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IDeviceStatusRepository>(c => new RsData.DeviceStatusRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IDeviceTypeRepository>(c => new RsData.DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IDutyRepository>(c => new RsData.DutyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IEnumMethodsRepository>(c => new RsData.EnumMethodsRepository(connectionString)).InstancePerLifetimeScope();
@@ -164,7 +171,6 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RsSrv.RoomService>().As<RsSrv.IRoomService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.DeviceService>().As<RsSrv.IDeviceService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.BrandService>().As<RsSrv.IBrandService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.DeviceStatusService>().As<RsSrv.IDeviceStatusService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.DeviceTypeService>().As<RsSrv.IDeviceTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.DutyService>().As<RsSrv.IDutyService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.EnumMethodsService>().As<RsSrv.IEnumMethodsService>().InstancePerLifetimeScope();

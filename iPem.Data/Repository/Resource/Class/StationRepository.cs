@@ -37,7 +37,7 @@ namespace iPem.Data.Repository.Resource {
                     entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.StaTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["StaTypeId"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -51,10 +51,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.TranInfo = SqlTypeConverter.DBNullStringHandler(rdr["TranInfo"]);
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -71,7 +67,7 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.StaTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["StaTypeId"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -85,10 +81,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.TranInfo = SqlTypeConverter.DBNullStringHandler(rdr["TranInfo"]);
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -109,7 +101,7 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.StaTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["StaTypeId"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -123,10 +115,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.TranInfo = SqlTypeConverter.DBNullStringHandler(rdr["TranInfo"]);
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);

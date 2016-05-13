@@ -27,8 +27,8 @@ namespace iPem.Site.Controllers {
         private readonly IExcelManager _excelManager;
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-
         private readonly MsSrv.IWebLogger _webLogger;
+        private readonly MsSrv.IDictionaryService _dictionaryService;
         private readonly MsSrv.IUserService _userService;
         private readonly MsSrv.IRoleService _roleService;
         private readonly MsSrv.IMenuService _menuService;
@@ -38,7 +38,6 @@ namespace iPem.Site.Controllers {
         private readonly MsSrv.IAreaService _msAreaService;
         private readonly MsSrv.IAreasInRoleService _areaInRoleService;
         private readonly MsSrv.IOperateInRoleService _operateInRoleService;
-
         private readonly RsSrv.IEmployeeService _employeeService;
         private readonly RsSrv.IDepartmentService _departmentService;
         private readonly RsSrv.IAreaService _rsAreaService;
@@ -54,6 +53,7 @@ namespace iPem.Site.Controllers {
             ICacheManager cacheManager,
             IWorkContext workContext,
             MsSrv.IWebLogger webLogger,
+            MsSrv.IDictionaryService dictionaryService,
             MsSrv.IUserService userService,
             MsSrv.IRoleService roleService,
             MsSrv.IMenuService menuService,
@@ -70,6 +70,7 @@ namespace iPem.Site.Controllers {
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
+            this._dictionaryService = dictionaryService;
             this._userService = userService;
             this._roleService = roleService;
             this._menuService = menuService;
@@ -236,6 +237,10 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        /**
+         *TODO:跳转权限判断
+         *在跳转时需要判断一下该角色下是否拥有这个菜单权限，每个Action跳转时都需要判断
+         */
         [Authorize]
         public ActionResult Roles() {
             return View();
@@ -251,7 +256,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var names = CommonHelper.ConditionSplit(condition);
+                var names = Common.SplitCondition(condition);
                 var roles = names.Length == 0 ?
                     _roleService.GetAllRoles(start / limit, limit) :
                     _roleService.GetAllRoles(names, start / limit, limit);
@@ -300,7 +305,7 @@ namespace iPem.Site.Controllers {
                 if(role == null)
                     throw new iPemException("未找到数据对象");
 
-                var menus = _menuService.GetMenus(role.Id, 0, int.MaxValue);
+                var menus = _menuService.GetMenus(role.Id);
                 var areas = _areaInRoleService.GetAreasInRole(role.Id);
                 var operate = _operateInRoleService.GetOperateInRole(role.Id);
                 data.data.id = role.Id.ToString();
@@ -329,9 +334,15 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var menus = _menuService.GetMenus(_workContext.CurrentRole.Id).ToList();
+                var menus = _workContext.AssociatedMenus;
                 if(menus.Count > 0) {
-                    var _menus = menus.FindAll(m => m.LastId == 0).OrderBy(m => m.Index).ToList();
+                    var roots = new List<MsDomain.Menu>();
+                    foreach(var menu in menus) {
+                        if(!menus.Any(m => m.Id == menu.LastId))
+                            roots.Add(menu);
+                    }
+
+                    var _menus = roots.OrderBy(m => m.Index).ToList();
                     if(_menus.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -598,7 +609,7 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadRoles(string condition) {
             try {
-                var names = CommonHelper.ConditionSplit(condition);
+                var names = Common.SplitCondition(condition);
                 var roles = names.Length == 0 ?
                     _roleService.GetAllRoles() :
                     _roleService.GetAllRoles(names);
@@ -1041,52 +1052,6 @@ namespace iPem.Site.Controllers {
                     for(var i = 0; i < result.Count; i++) {
                         data.data.Add(result[i]);
                     }
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false; data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [AjaxAuthorize]
-        public JsonResult GetEmployees() {
-            var data = new AjaxDataModel<List<TreeModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<TreeModel>()
-            };
-
-            try {
-                var employees = _employeeService.GetAllEmployees();
-                var departments = _departmentService.GetAllDepartments();
-
-                foreach(var dept in departments) {
-                    var _employees = employees.ToList().FindAll(d => d.DeptId.Equals(dept.Id));
-                    if(_employees.Count > 0) {
-                        var root = new TreeModel() {
-                            id = string.Format("department-{0}", dept.Id),
-                            text = dept.Name,
-                            icon = Icons.Department,
-                            expanded = false,
-                            leaf = false,
-                            data = _employees.Select(emp => new TreeModel {
-                                id = emp.Id,
-                                text = emp.Name,
-                                icon = Icons.Employee,
-                                leaf = true,
-                            }).ToList()
-                        };
-
-                        data.data.Add(root);
-                    }
-                }
-
-                if(data.data.Count > 0) {
-                    data.message = "200 Ok";
-                    data.total = data.data.Count;
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
@@ -1547,8 +1512,116 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        [Authorize]
         public ActionResult Dictionary() {
             return View();
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetWs() {
+            var data = new AjaxDataModel<WsValues> {
+                success = true,
+                message = "200 Ok",
+                total = 0,
+                data = new WsValues {
+                    ip = "",
+                    port = 8080,
+                    uid = "",
+                    pwd = "",
+                    data = "",
+                    order = ""
+                }
+            };
+
+            try {
+
+                var ws = _dictionaryService.GetDictionary((int)EnmDictionary.Ws);
+                if(ws != null && !string.IsNullOrWhiteSpace(ws.ValuesJson))
+                    data.data = JsonConvert.DeserializeObject<WsValues>(ws.ValuesJson);
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveWs(WsValues values) {
+            try {
+                if(values == null)
+                    throw new ArgumentException("参数无效 values");
+
+                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                    Id = (int)EnmDictionary.Ws,
+                    Name = Common.GetDictionaryDisplay(EnmDictionary.Ws),
+                    ValuesJson = JsonConvert.SerializeObject(values),
+                    ValuesBinary = null,
+                    LastUpdatedDate = DateTime.Now
+                });
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetTs() {
+            var data = new AjaxDataModel<TsValues> {
+                success = true,
+                message = "200 Ok",
+                total = 0,
+                data = new TsValues {
+                    basic = new int[] { },
+                    level = new int[] { },
+                    content = new int[] { },
+                    stationtypes = new string[] { },
+                    roomtypes = new string[] { },
+                    devicetypes = new string[] { },
+                    logictypes = new string[] { },
+                    pointtypes = new int[] { },
+                    pointnames = ""
+                }
+            };
+
+            try {
+
+                var ts = _dictionaryService.GetDictionary((int)EnmDictionary.Ts);
+                if(ts != null && !string.IsNullOrWhiteSpace(ts.ValuesJson))
+                    data.data = JsonConvert.DeserializeObject<TsValues>(ts.ValuesJson);
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveTs(TsValues values) {
+            try {
+                if(values == null)
+                    throw new ArgumentException("参数无效 values");
+
+                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                    Id = (int)EnmDictionary.Ts,
+                    Name = Common.GetDictionaryDisplay(EnmDictionary.Ts),
+                    ValuesJson = JsonConvert.SerializeObject(values),
+                    ValuesBinary = null,
+                    LastUpdatedDate = DateTime.Now
+                });
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
         }
 
         #endregion

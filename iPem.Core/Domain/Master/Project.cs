@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace iPem.Core.Domain.Master {
     /// <summary>
@@ -8,9 +7,9 @@ namespace iPem.Core.Domain.Master {
     [Serializable]
     public partial class Project : BaseEntity {
         /// <summary>
-        /// Gets or sets the identifier
+        /// Gets or sets the id
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name
@@ -18,12 +17,12 @@ namespace iPem.Core.Domain.Master {
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the start datetime
+        /// Gets or sets the startTime
         /// </summary>
         public DateTime StartTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the end datetime
+        /// Gets or sets the endTime
         /// </summary>
         public DateTime EndTime { get; set; }
 
@@ -33,7 +32,7 @@ namespace iPem.Core.Domain.Master {
         public string Responsible { get; set; }
 
         /// <summary>
-        /// Gets or sets the contact phone
+        /// Gets or sets the contactPhone
         /// </summary>
         public string ContactPhone { get; set; }
 
@@ -48,7 +47,7 @@ namespace iPem.Core.Domain.Master {
         public string Creator { get; set; }
 
         /// <summary>
-        /// Gets or sets the created datetime
+        /// Gets or sets the createdTime
         /// </summary>
         public DateTime CreatedTime { get; set; }
 
@@ -58,7 +57,7 @@ namespace iPem.Core.Domain.Master {
         public string Comment { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the entity has been enabled
+        /// Gets or sets the enabled
         /// </summary>
         public bool Enabled { get; set; }
     }

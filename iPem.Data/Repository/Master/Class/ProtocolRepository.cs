@@ -27,7 +27,7 @@ namespace iPem.Data.Repository.Master {
 
         #region Methods
 
-        public List<Protocol> GetEntities(int deviceType) {
+        public List<Protocol> GetEntities(string deviceType) {
             SqlParameter[] parms = { new SqlParameter("@DeviceTypeId", SqlDbType.Int) };
             parms[0].Value = deviceType;
 
@@ -37,8 +37,8 @@ namespace iPem.Data.Repository.Master {
                     var entity = new Protocol();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDevTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDevTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDevTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDevTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
@@ -47,7 +47,7 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
-        public List<Protocol> GetEntities(int deviceType, int subDevType) {
+        public List<Protocol> GetEntities(string deviceType, string subDevType) {
             SqlParameter[] parms = { new SqlParameter("@DeviceTypeId", SqlDbType.Int),
                                      new SqlParameter("@SubDevTypeId", SqlDbType.Int) };
 
@@ -60,8 +60,8 @@ namespace iPem.Data.Repository.Master {
                     var entity = new Protocol();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDevTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDevTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDevTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDevTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
@@ -77,8 +77,8 @@ namespace iPem.Data.Repository.Master {
                     var entity = new Protocol();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDevTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDevTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDevTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDevTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);

@@ -1,0 +1,46 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 语音播报</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    @Styles.Render("~/bundles/bootstrap/css")
+    @Styles.Render("~/bundles/speech/css")
+</head>
+<body role="document">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span> 语音播报</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="media-container" class="jumbotron">
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/speech")
+
+    <!-- Add event listener for windows media player -->
+    <script type="text/javascript" for="media-player" event="PlayStateChange(newState)">
+        if (1 === newState) $.playing = false;
+    </script>
+</body>
+</html>

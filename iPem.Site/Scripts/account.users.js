@@ -1,5 +1,5 @@
 ﻿Ext.ns('Ext.app');
-Ext.app.REMOTING_API = { url: '../Account/Router', type: 'remoting', actions: { user: [{ name: 'query', len: 0 }] } };
+Ext.app.REMOTING_API = { url: '/Account/Router', type: 'remoting', actions: { user: [{ name: 'query', len: 0 }] } };
 Ext.direct.Manager.addProvider(Ext.app.REMOTING_API);
 
 Ext.define('UserModel', {
@@ -36,7 +36,7 @@ var currentStore = Ext.create('Ext.data.Store', {
     model: 'UserModel',
     proxy: {
         type: 'ajax',
-        url: '../Account/GetUsers',
+        url: '/Account/GetUsers',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -58,7 +58,7 @@ var comboRoleStore = Ext.create('Ext.data.Store',{
     fields: [{ name: 'id', type: 'string' }, { name: 'text', type: 'string' }, { name: 'comment', type: 'string' }],
     proxy: {
         type: 'ajax',
-        url: '../Account/GetComboRoles',
+        url: '/Account/GetComboRoles',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -77,33 +77,13 @@ var comboRoleStore = Ext.create('Ext.data.Store',{
     }
 });
 
-var employeeStore = Ext.create('Ext.data.TreeStore', {
-    autoLoad: true,
-    root: {
-        id: -1,
-        text: 'Root',
-        root: true
-    },
-    proxy: {
-        type: 'ajax',
-        url: '../Account/GetEmployees',
-        reader: {
-            type: 'json',
-            successProperty: 'success',
-            messageProperty: 'message',
-            totalProperty: 'total',
-            root: 'data'
-        }
-    }
-});
-
 var multiComboRoleStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 1024,
     fields: [{ name: 'id', type: 'string' }, { name: 'text', type: 'string' }, { name: 'comment', type: 'string' }],
     proxy: {
         type: 'ajax',
-        url: '../Account/GetComboRoles',
+        url: '/Account/GetComboRoles',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -160,7 +140,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'id',
                                 name: 'id',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.User.ID,
+                                fieldLabel: $$iPems.lang.User.Window.ID,
                                 allowBlank: false,
                                 readOnly: true
                             },
@@ -168,7 +148,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'roleId',
                                 name: 'roleId',
                                 xtype: 'combobox',
-                                fieldLabel: $$iPems.lang.User.Role,
+                                fieldLabel: $$iPems.lang.User.Window.Role,
                                 displayField: 'text',
                                 valueField: 'id',
                                 typeAhead: true,
@@ -185,7 +165,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 name: 'password',
                                 xtype: 'textfield',
                                 inputType: 'password',
-                                fieldLabel: $$iPems.lang.User.Password,
+                                fieldLabel: $$iPems.lang.User.Window.Password,
                                 allowBlank: false,
                                 hidden: false
                             },
@@ -193,7 +173,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'limited',
                                 name: 'limited',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.User.Limited,
+                                fieldLabel: $$iPems.lang.User.Window.Limited,
                                 value: new Date(),
                                 editable: false,
                                 allowBlank: false
@@ -202,7 +182,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'comment',
                                 name: 'comment',
                                 xtype: 'textareafield',
-                                fieldLabel: $$iPems.lang.User.Comment,
+                                fieldLabel: $$iPems.lang.User.Window.Comment,
                                 height: 100,
                                 maxLength: 500
                             }
@@ -217,28 +197,23 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'uid',
                                     name: 'uid',
                                     xtype: 'textfield',
-                                    fieldLabel: $$iPems.lang.User.Name,
+                                    fieldLabel: $$iPems.lang.User.Window.Name,
                                     allowBlank: false,
                                     readOnly: false
                                 },
                                 {
                                     id: 'empId',
                                     name: 'empId',
-                                    xtype: 'treepicker',
-                                    fieldLabel: $$iPems.lang.User.EmpName,
-                                    allowBlank: false,
-                                    displayField: 'text',
-                                    value: '',
-                                    maxPickerHeight: 250,
-                                    selectFolders: false,
-                                    store: employeeStore
+                                    xtype: 'employee.treepanel',
+                                    fieldLabel: $$iPems.lang.User.Window.EmpName,
+                                    allowBlank: false
                                 },
                                 {
                                     id: 'confirmPassword',
                                     name: 'confirmPassword',
                                     xtype: 'textfield',
                                     inputType: 'password',
-                                    fieldLabel: $$iPems.lang.User.Confirm,
+                                    fieldLabel: $$iPems.lang.User.Window.Confirm,
                                     allowBlank: false,
                                     hidden: false,
                                     vtype: 'password',
@@ -249,8 +224,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'isLockedOut',
                                     name: 'isLockedOut',
                                     xtype: 'checkboxfield',
-                                    fieldLabel: $$iPems.lang.User.IsLockedOut,
-                                    boxLabel: $$iPems.lang.User.LockedOutLabel,
+                                    fieldLabel: $$iPems.lang.User.Window.IsLockedOut,
+                                    boxLabel: $$iPems.lang.User.Window.LockedOutLabel,
                                     inputValue: true,
                                     checked: false
                                 },
@@ -258,8 +233,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'enabled',
                                     name: 'enabled',
                                     xtype: 'checkboxfield',
-                                    fieldLabel: $$iPems.lang.User.Enabled,
-                                    boxLabel: $$iPems.lang.User.EnabledLabel,
+                                    fieldLabel: $$iPems.lang.User.Window.Enabled,
+                                    boxLabel: $$iPems.lang.User.Window.EnabledLabel,
                                     inputValue: true,
                                     checked: false
                                 }
@@ -287,7 +262,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       submitEmptyText: false,
                       clientValidation: true,
                       preventWindow: true,
-                      url: '../Account/SaveUser',
+                      url: '/Account/SaveUser',
                       params: {
                           action: saveWnd.opaction
                       },
@@ -321,7 +296,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 });
 
 var resetWnd = Ext.create('Ext.window.Window', {
-    title: $$iPems.lang.User.ResetPassword,
+    title: $$iPems.lang.User.Window.ResetPassword,
     glyph: 0xf022,
     height: 220,
     width: 400,
@@ -350,7 +325,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                 {
                     itemId: 'uid',
                     xtype: 'textfield',
-                    fieldLabel: $$iPems.lang.User.Name,
+                    fieldLabel: $$iPems.lang.User.Window.Name,
                     allowBlank: false,
                     readOnly: true
                 },
@@ -359,7 +334,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                     itemId: 'password',
                     xtype: 'textfield',
                     inputType: 'password',
-                    fieldLabel: $$iPems.lang.User.Password,
+                    fieldLabel: $$iPems.lang.User.Window.Password,
                     allowBlank: false,
                     hidden: false
                 },
@@ -368,7 +343,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                     itemId: 'confirmPassword',
                     xtype: 'textfield',
                     inputType: 'password',
-                    fieldLabel: $$iPems.lang.User.Confirm,
+                    fieldLabel: $$iPems.lang.User.Window.Confirm,
                     allowBlank: false,
                     hidden: false,
                     vtype: 'password',
@@ -392,7 +367,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (baseForm.isValid() && !Ext.isEmpty(id)) {
-                  Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmReset, function (buttonId, text) {
+                  Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.User.ConfirmReset, function (buttonId, text) {
                       if (buttonId === 'yes') {
                           result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
                           var password = form.getComponent('password').getValue();
@@ -400,7 +375,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                               submitEmptyText: false,
                               clientValidation: true,
                               preventWindow: true,
-                              url: '../Account/ResetPassword',
+                              url: '/Account/ResetPassword',
                               params: {
                                   id: id,
                                   password: password
@@ -437,15 +412,14 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
 
-    var form = Ext.getCmp('saveForm').getForm();
-    form.load({
-        url: '../Account/GetUser',
+    var basic = Ext.getCmp('saveForm').getForm();
+    basic.load({
+        url: '/Account/GetUser',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        reset: true,
         waitMsg: $$iPems.lang.AjaxHandling,
         waitTitle: $$iPems.lang.SysTipTitle,
         success: function (form, action) {
-            form.setValues(action.result.data);
+            form.clearInvalid();
 
             var uid = Ext.getCmp('uid'),
                 password = Ext.getCmp('password'),
@@ -459,7 +433,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.User.EditTitle);
+            saveWnd.setTitle($$iPems.lang.User.Window.EditTitle);
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -485,7 +459,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
-                url: '../Account/DeleteUser',
+                url: '/Account/DeleteUser',
                 params: { id: record.raw.id },
                 mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
                 success: function (response, options) {
@@ -517,98 +491,98 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.User.Index,
+        text: $$iPems.lang.User.Columns.Index,
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Name,
+        text: $$iPems.lang.User.Columns.Name,
         dataIndex: 'uid',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Role,
+        text: $$iPems.lang.User.Columns.Role,
         dataIndex: 'roleName',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.EmpName,
+        text: $$iPems.lang.User.Columns.EmpName,
         dataIndex: 'empName',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.EmpNo,
+        text: $$iPems.lang.User.Columns.EmpNo,
         dataIndex: 'empNo',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Sex,
+        text: $$iPems.lang.User.Columns.Sex,
         dataIndex: 'sexName',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Mobile,
+        text: $$iPems.lang.User.Columns.Mobile,
         dataIndex: 'mobile',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Email,
+        text: $$iPems.lang.User.Columns.Email,
         dataIndex: 'email',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Created,
+        text: $$iPems.lang.User.Columns.Created,
         dataIndex: 'created',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Limited,
+        text: $$iPems.lang.User.Columns.Limited,
         dataIndex: 'limited',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.LastLogined,
+        text: $$iPems.lang.User.Columns.LastLogined,
         dataIndex: 'lastLogined',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.LastPasswordChanged,
+        text: $$iPems.lang.User.Columns.LastPasswordChanged,
         dataIndex: 'lastPasswordChanged',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.IsLockedOut,
+        text: $$iPems.lang.User.Columns.IsLockedOut,
         dataIndex: 'isLockedOut',
         align: 'center',
         width: 100,
         sortable: true,
         renderer: function (value) { return value ? $$iPems.lang.StatusLocked : $$iPems.lang.StatusUnlocked; }
     }, {
-        text: $$iPems.lang.User.LastLockedout,
+        text: $$iPems.lang.User.Columns.LastLockedout,
         dataIndex: 'lastLockedout',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Comment,
+        text: $$iPems.lang.User.Columns.Comment,
         dataIndex: 'comment',
         align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Enabled,
+        text: $$iPems.lang.User.Columns.Enabled,
         dataIndex: 'enabled',
         width: 100,
         align: 'center',
@@ -641,18 +615,18 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
     tbar: Ext.create('Ext.toolbar.Toolbar', {
         items: [{
             xtype: 'button',
-            text: $$iPems.lang.User.AddTitle,
+            text: $$iPems.lang.User.ToolBar.Add,
             glyph: 0xf001,
             handler: function (el, e) {
-                var form = Ext.getCmp('saveForm').getForm();
-                form.load({
-                    url: '../Account/GetUser',
+                var basic = Ext.getCmp('saveForm').getForm();
+                basic.load({
+                    url: '/Account/GetUser',
                     params: { id: '', action: $$iPems.Action.Add },
-                    reset: true,
                     waitMsg: $$iPems.lang.AjaxHandling,
                     waitTitle: $$iPems.lang.SysTipTitle,
                     success: function (form, action) {
-                        form.setValues(action.result.data);
+                        form.clearInvalid();
+
                         var uid = Ext.getCmp('uid'),
                             password = Ext.getCmp('password'),
                             confirmPassword = Ext.getCmp('confirmPassword');
@@ -665,7 +639,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
 
                         Ext.getCmp('saveResult').setTextWithIcon('', '');
                         saveWnd.setGlyph(0xf001);
-                        saveWnd.setTitle($$iPems.lang.User.AddTitle);
+                        saveWnd.setTitle($$iPems.lang.User.Window.AddTitle);
                         saveWnd.opaction = $$iPems.Action.Add;
                         saveWnd.show();
                     }
@@ -678,7 +652,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             handler: function (el, e) {
                 var params = currentStore.getProxy().extraParams;
                 $$iPems.download({
-                    url: '../Account/DownloadUsers',
+                    url: '/Account/DownloadUsers',
                     params: {
                         rids: params.rids,
                         names: params.names
@@ -687,7 +661,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             }
         }, '-', Ext.create('Ext.ux.MultiCombo', {
             id: 'rids-multicombo',
-            fieldLabel: $$iPems.lang.Role.Name,
+            fieldLabel: $$iPems.lang.User.ToolBar.Role,
             valueField: 'id',
             displayField: 'text',
             delimiter: $$iPems.Delimiter,
@@ -702,7 +676,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         }), {
             id: 'names-textbox',
             xtype: 'textfield',
-            fieldLabel: $$iPems.lang.User.Name,
+            fieldLabel: $$iPems.lang.User.ToolBar.User,
             labelWidth: 60,
             width: 250,
             maxLength: 100,
@@ -725,7 +699,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
 
                         currentStore.getProxy().extraParams.rids = rids;
                         currentStore.getProxy().extraParams.names = names;
-                        currentPagingToolbar.doRefresh();
+                        currentStore.loadPage(1);
                     }
                 });
             }

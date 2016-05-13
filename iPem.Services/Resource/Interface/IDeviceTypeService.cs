@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace iPem.Services.Resource {
     public partial interface IDeviceTypeService {
 
-        DeviceType GetDeviceType(int id);
+        DeviceType GetDeviceType(string id);
 
         IPagedList<DeviceType> GetAllDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 

@@ -1,6 +1,7 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Domain.Resource;
+using iPem.Core.Enum;
 using iPem.Data.Repository.Resource;
 using iPem.Services.Common;
 using System;
@@ -32,8 +33,20 @@ namespace iPem.Services.Resource {
 
         #region Methods
 
-        public EnumMethods GetEnumMethods(string id) {
+        public EnumMethods GetEnumMethods(int id) {
             return _enumMethodsRepository.GetEntity(id);
+        }
+
+        public IPagedList<EnumMethods> GetEnumMethods(EnmMethodType type, string comment, int pageIndex = 0, int pageSize = int.MaxValue) {
+            List<EnumMethods> result = null;
+            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_EnumMethodsRepository)) {
+                var all = _cacheManager.Get<List<EnumMethods>>(GlobalCacheKeys.Rs_EnumMethodsRepository);
+                result = all.FindAll(m => m.TypeId == (int)type && m.Comment == comment);
+            } else {
+                result = _enumMethodsRepository.GetEntities(type, comment);
+            }
+
+            return new PagedList<EnumMethods>(result, pageIndex, pageSize);
         }
 
         public IPagedList<EnumMethods> GetAllEnumMethods(int pageIndex = 0, int pageSize = int.MaxValue) {

@@ -165,6 +165,8 @@
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Extensions\CustomViewEngine.cs" />
     <Compile Include="Extensions\LoggerExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -187,7 +189,11 @@
     <Compile Include="Models\ActAlmStore.cs" />
     <Compile Include="Models\ActPointModel.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />
+    <Compile Include="Models\AjaxChartModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
+    <Compile Include="Models\AppointmentDetailModel.cs" />
+    <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\Model400101.cs" />
     <Compile Include="Models\ChartModel.cs" />
     <Compile Include="Models\ComboItem.cs" />
     <Compile Include="Models\CustomAttribute.cs" />
@@ -200,9 +206,12 @@
     <Compile Include="Models\NoticeModel.cs" />
     <Compile Include="Models\PointRss.cs" />
     <Compile Include="Models\ProfileValues.cs" />
+    <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
+    <Compile Include="Models\TsValues.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\WsValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ClearCacheTask.cs" />
     <Compile Include="Tasks\KeepAliveTask.cs" />
@@ -217,6 +226,7 @@
     <Content Include="Content\bootstrap-3.3.5\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\install\dbconfiguration.css" />
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
+    <Content Include="Content\themes\css\home.speech.css" />
     <Content Include="Content\themes\images\cfg.png" />
     <Content Include="Content\themes\images\map.png" />
     <Content Include="Content\themes\css\configuration.map.iframe.css" />
@@ -301,10 +311,14 @@
     <Content Include="Scripts\bootstrap-3.3.5.js" />
     <Content Include="Scripts\bootstrap-3.3.5.min.js" />
     <Content Include="Scripts\components\AlarmLevelComponent.js" />
+    <Content Include="Scripts\components\AreaComponent.js" />
+    <Content Include="Scripts\components\AreaTypeComponent.js" />
     <Content Include="Scripts\components\DeviceTypeComponent.js" />
+    <Content Include="Scripts\components\EmployeeComponent.js" />
     <Content Include="Scripts\components\LogicTypeComponent.js" />
     <Content Include="Scripts\components\PointComponent.js" />
     <Content Include="Scripts\components\RoomTypeComponent.js" />
+    <Content Include="Scripts\components\StationComponent.js" />
     <Content Include="Scripts\components\StationTypeComponent.js" />
     <Content Include="Scripts\configuration.cfg.iframe.js" />
     <Content Include="Scripts\configuration.cfg.js" />
@@ -3326,6 +3340,7 @@
     <Content Include="Scripts\home.active.data.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\home.notice.js" />
+    <Content Include="Scripts\home.speech.js" />
     <Content Include="Scripts\home.ucenter.js" />
     <Content Include="Scripts\icheck-1.0.2.js" />
     <Content Include="Scripts\icheck-1.0.2.min.js" />
@@ -3618,14 +3633,29 @@
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\bg.jpg" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\datepicker.css" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\img.gif" />
-    <Content Include="Scripts\project.apt.js" />
-    <Content Include="Scripts\project.cfg.js" />
+    <Content Include="Scripts\project.appointment.js" />
+    <Content Include="Scripts\project.js" />
+    <Content Include="Scripts\report.base400103.js" />
+    <Content Include="Scripts\report.base400104.js" />
+    <Content Include="Scripts\report.base400102.js" />
+    <Content Include="Scripts\report.chart400304.js" />
+    <Content Include="Scripts\report.chart400303.js" />
+    <Content Include="Scripts\report.chart400302.js" />
+    <Content Include="Scripts\report.chart400301.js" />
+    <Content Include="Scripts\report.custom400401.js" />
+    <Content Include="Scripts\report.history400206.js" />
+    <Content Include="Scripts\report.history400205.js" />
+    <Content Include="Scripts\report.history400204.js" />
+    <Content Include="Scripts\report.history400203.js" />
+    <Content Include="Scripts\report.history400202.js" />
+    <Content Include="Scripts\report.history400201.js" />
     <Content Include="Scripts\template.js" />
     <Content Include="Scripts\ux\DateTimePicker.js" />
     <Content Include="Scripts\ux\IFrame.js" />
     <Content Include="Scripts\ux\Label.js" />
     <Content Include="Scripts\ux\MultiCombo.js" />
     <Content Include="Scripts\ux\TreePicker.js" />
+    <Content Include="Scripts\report.base400101.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -3662,9 +3692,25 @@
     <Content Include="Views\Configuration\CfgIFrame.cshtml" />
     <Content Include="Views\Configuration\MapIFrame.cshtml" />
     <Content Include="Views\Account\Dictionary.cshtml" />
+    <Content Include="Views\Installation\DbConfiguration.cshtml" />
+    <Content Include="Views\Report\base400101.cshtml" />
+    <Content Include="Views\Report\base400102.cshtml" />
+    <Content Include="Views\Report\base400104.cshtml" />
+    <Content Include="Views\Report\base400103.cshtml" />
+    <Content Include="Views\Report\history400201.cshtml" />
+    <Content Include="Views\Report\history400202.cshtml" />
+    <Content Include="Views\Report\history400206.cshtml" />
+    <Content Include="Views\Report\history400205.cshtml" />
+    <Content Include="Views\Report\history400204.cshtml" />
+    <Content Include="Views\Report\history400203.cshtml" />
+    <Content Include="Views\Report\chart400301.cshtml" />
+    <Content Include="Views\Report\chart400302.cshtml" />
+    <Content Include="Views\Report\chart400304.cshtml" />
+    <Content Include="Views\Report\chart400303.cshtml" />
+    <Content Include="Views\Report\custom400401.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
     <Content Include="Views\Project\Appointment.cshtml" />
-    <Content Include="Views\Installation\DbConfiguration.cshtml" />
+    <Content Include="Views\Home\Speech.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

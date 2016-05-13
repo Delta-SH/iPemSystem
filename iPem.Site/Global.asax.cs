@@ -36,6 +36,10 @@ namespace iPem.Site {
             };
             TaskManager.Instance.Initialize(scheduleTasks);
             TaskManager.Instance.Start();
+
+            //custom view engine
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new CustomViewEngine());
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e) {

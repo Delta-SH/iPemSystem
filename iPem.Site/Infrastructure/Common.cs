@@ -1,31 +1,25 @@
-﻿using System;
+﻿using iPem.Core;
+using iPem.Core.Domain.Resource;
+using iPem.Core.Enum;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Web;
 using System.Web.Security;
-using iPem.Core;
-using iPem.Core.Enum;
-using System.Collections.Generic;
-using iPem.Core.Domain.Resource;
 
 namespace iPem.Site.Infrastructure {
     public class Common {
-        /// <summary>
-        /// Captcha cookie id
-        /// </summary>
+        public static string GlobalSeparator {
+            get { return "┆"; }
+        }
+
         public static string CaptchaId {
             get { return "ipems.login.captcha"; }
         }
 
-        /// <summary>
-        /// Generating captcha image
-        /// </summary>
-        /// <param name="code">captcha code</param>
-        /// <param name="width">image width</param>
-        /// <param name="height">image width</param>
-        /// <returns>image bytes</returns>
         public static byte[] CreateCaptcha(string code, int width = 100, int height = 30) {
             if(string.IsNullOrWhiteSpace(code))
                 throw new ArgumentNullException("code");
@@ -102,10 +96,6 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        /// <summary>
-        /// Generating random code string.
-        /// </summary>
-        /// <param name="len">code length</param>
         public static string GenerateCode(int length) {
             var chars = "abcdefghjkmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWXYZ23456789".ToCharArray();
 
@@ -130,6 +120,21 @@ namespace iPem.Site.Infrastructure {
                 return "女";
             else
                 return "男";
+        }
+
+        public static string GetDictionaryDisplay(EnmDictionary dic) {
+            switch(dic) {
+                case EnmDictionary.Ws:
+                    return "数据通信";
+                case EnmDictionary.Ts:
+                    return "语音播报";
+                case EnmDictionary.Pue:
+                    return "能耗分类";
+                case EnmDictionary.Report:
+                    return "报表参数";
+                default:
+                    return "未定义";
+            }
         }
 
         public static string GetEventLevelDisplay(EnmEventLevel level) {
@@ -242,6 +247,27 @@ namespace iPem.Site.Infrastructure {
                 default:
                     return Color.White;
             }
+        }
+
+        public static string[] SplitCondition(string conditions) {
+            if(string.IsNullOrWhiteSpace(conditions))
+                return new string[] { };
+
+            return conditions.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string[] SplitKeys(string key) {
+            if(string.IsNullOrWhiteSpace(key))
+                return new string[] { };
+
+            return key.Split(new string[] { GlobalSeparator }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string JoinKeys(params object[] keys) {
+            if(keys == null || keys.Length == 0) 
+                return string.Empty;
+
+            return string.Join(GlobalSeparator, keys);
         }
     }
 }

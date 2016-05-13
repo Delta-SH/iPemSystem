@@ -8,7 +8,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         ///Gets or sets the identifier
         /// </summary>
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name
@@ -18,7 +18,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         ///Gets or sets type of the device
         /// </summary>
-        public int DeviceTypeId { get; set; }
+        public string DeviceTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the comment

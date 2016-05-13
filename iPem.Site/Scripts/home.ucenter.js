@@ -16,7 +16,7 @@
         cls: 'x-custom-panel',
         plain: true,
         loader: {
-            url: '../Account/GetCurrentUser',
+            url: '/Account/GetCurrentUser',
             autoLoad: false,
             loadMask: true,
             renderer: function (loader,response,request) {
@@ -69,31 +69,31 @@
                     {
                         xtype: 'displayfield',
                         itemId: 'uid',
-                        fieldLabel: $$iPems.lang.User.Name
+                        fieldLabel: $$iPems.lang.UCenter.Name
                     }, {
                         xtype: 'displayfield',
                         itemId: 'empName',
-                        fieldLabel: $$iPems.lang.User.EmpName
+                        fieldLabel: $$iPems.lang.UCenter.EmpName
                     }, {
                         xtype: 'displayfield',
                         itemId: 'sexName',
-                        fieldLabel: $$iPems.lang.User.Sex
+                        fieldLabel: $$iPems.lang.UCenter.Sex
                     }, {
                         xtype: 'displayfield',
                         itemId: 'email',
-                        fieldLabel: $$iPems.lang.User.Email
+                        fieldLabel: $$iPems.lang.UCenter.Email
                     }, {
                         xtype: 'displayfield',
                         itemId: 'limited',
-                        fieldLabel: $$iPems.lang.User.Limited
+                        fieldLabel: $$iPems.lang.UCenter.Limited
                     }, {
                         xtype: 'displayfield',
                         itemId: 'lastLockedout',
-                        fieldLabel: $$iPems.lang.User.LastLockedout
+                        fieldLabel: $$iPems.lang.UCenter.LastLockedout
                     }, {
                         xtype: 'displayfield',
                         itemId: 'comment',
-                        fieldLabel: $$iPems.lang.User.Comment
+                        fieldLabel: $$iPems.lang.UCenter.Comment
                     }
                 ]
             }, {
@@ -111,27 +111,27 @@
                     {
                         xtype: 'displayfield',
                         itemId: 'roleName',
-                        fieldLabel: $$iPems.lang.User.Role
+                        fieldLabel: $$iPems.lang.UCenter.Role
                     }, {
                         xtype: 'displayfield',
                         itemId: 'empNo',
-                        fieldLabel: $$iPems.lang.User.EmpNo
+                        fieldLabel: $$iPems.lang.UCenter.EmpNo
                     }, {
                         xtype: 'displayfield',
                         itemId: 'mobile',
-                        fieldLabel: $$iPems.lang.User.Mobile
+                        fieldLabel: $$iPems.lang.UCenter.Mobile
                     }, {
                         xtype: 'displayfield',
                         itemId: 'created',
-                        fieldLabel: $$iPems.lang.User.Created
+                        fieldLabel: $$iPems.lang.UCenter.Created
                     }, {
                         xtype: 'displayfield',
                         itemId: 'isLockedOut',
-                        fieldLabel: $$iPems.lang.User.IsLockedOut
+                        fieldLabel: $$iPems.lang.UCenter.IsLockedOut
                     }, {
                         xtype: 'displayfield',
                         itemId: 'lastPasswordChanged',
-                        fieldLabel: $$iPems.lang.User.LastPasswordChanged
+                        fieldLabel: $$iPems.lang.UCenter.LastPasswordChanged
                     },
                 ]
             }]
@@ -160,7 +160,7 @@
                         itemId: 'uid',
                         xtype: 'textfield',
                         readOnly: true,
-                        fieldLabel: $$iPems.lang.User.Name,
+                        fieldLabel: $$iPems.lang.UCenter.Name,
                         allowBlank: false
                     },
                     {
@@ -174,17 +174,17 @@
                         itemId: 'password',
                         xtype: 'textfield',
                         inputType: 'password',
-                        fieldLabel: $$iPems.lang.User.Password,
+                        fieldLabel: $$iPems.lang.UCenter.Password,
                         allowBlank: false
                     },
                     {
                         itemId: 'confirmPassword',
                         xtype: 'textfield',
                         inputType: 'password',
-                        fieldLabel: $$iPems.lang.User.Confirm,
+                        fieldLabel: $$iPems.lang.UCenter.Confirm,
                         allowBlank: false,
                         vtype: 'password',
-                        vtypeText: $$iPems.lang.User.ConfirmError,
+                        vtypeText: $$iPems.lang.UCenter.ConfirmError,
                         confirmTo: 'password'
                     }
                 ]
@@ -197,22 +197,22 @@
                     scale: 'medium',
                     handler: function () {
                         var form = Ext.getCmp('changeForm'),
-                            baseForm = form.getForm(),
+                            basic = form.getForm(),
                             id = form.getComponent('id').getValue(),
                             result = Ext.getCmp('changeResult');
 
                         result.setTextWithIcon('', '');
-                        if (baseForm.isValid() && !Ext.isEmpty(id)) {
-                            Ext.Msg.confirm(window.$$iPems.lang.ConfirmWndTitle, window.$$iPems.lang.ConfirmChangePassword, function (buttonId, text) {
+                        if (basic.isValid() && !Ext.isEmpty(id)) {
+                            Ext.Msg.confirm(window.$$iPems.lang.ConfirmWndTitle, window.$$iPems.lang.UCenter.ConfirmChangePassword, function (buttonId, text) {
                                 if (buttonId === 'yes') {
                                     result.setTextWithIcon(window.$$iPems.lang.AjaxHandling, 'x-icon-loading');
                                     var origin = form.getComponent('origin').getValue();
                                     var password = form.getComponent('password').getValue();
-                                    baseForm.submit({
+                                    basic.submit({
                                         submitEmptyText: false,
                                         clientValidation: true,
                                         preventWindow: true,
-                                        url: '../Account/ChangePassword',
+                                        url: '/Account/ChangePassword',
                                         params: {
                                             id: id,
                                             origin: origin,
@@ -236,7 +236,6 @@
                         }
                     }
                 },
-                { xtype: 'tbfill' },
                 { id: 'changeResult', xtype: 'iconlabel', text: '' }
             ]
         }]

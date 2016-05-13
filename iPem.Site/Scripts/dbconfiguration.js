@@ -278,7 +278,7 @@
             var form = $('#csForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/DbTest",
+                    url: "/Installation/DbTest",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -309,7 +309,7 @@
             var form = $('#csForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/SaveCs",
+                    url: "/Installation/SaveCs",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -340,7 +340,7 @@
             var form = $('#hsForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/DbTest",
+                    url: "/Installation/DbTest",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -371,7 +371,7 @@
             var form = $('#hsForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/SaveHs",
+                    url: "/Installation/SaveHs",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -402,7 +402,7 @@
             var form = $('#rsForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/DbTest",
+                    url: "/Installation/DbTest",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -433,7 +433,7 @@
             var form = $('#rsForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/SaveRs",
+                    url: "/Installation/SaveRs",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -478,7 +478,7 @@
 
             if (form.valid()) {
                 $.ajax({
-                    url: "../Installation/DbClean",
+                    url: "/Installation/DbClean",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {

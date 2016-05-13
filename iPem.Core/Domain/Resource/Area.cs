@@ -22,26 +22,6 @@ namespace iPem.Core.Domain.Resource {
         public int NodeLevel { get; set; }
 
         /// <summary>
-        /// Gets or sets the creator
-        /// </summary>
-        public string Creator { get; set; }
-
-        /// <summary>
-        /// Gets or sets the created time
-        /// </summary>
-        public DateTime CreatedTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modifier
-        /// </summary>
-        public string Modifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modified time
-        /// </summary>
-        public DateTime ModifiedTime { get; set; }
-
-        /// <summary>
         /// Gets or sets the area's parent identifer
         /// </summary>
         public string ParentId { get; set; }

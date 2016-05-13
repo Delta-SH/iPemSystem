@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Newtonsoft.Json;
-using iPem.Core;
+﻿using iPem.Core;
+using iPem.Core.Caching;
 using iPem.Core.Data;
 using iPem.Core.Domain.Master;
 using iPem.Core.Enum;
@@ -15,7 +10,12 @@ using iPem.Services.Master;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
 using iPem.Site.Models.Installation;
-using iPem.Core.Caching;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     public class InstallationController : Controller {

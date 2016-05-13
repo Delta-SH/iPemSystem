@@ -24,15 +24,15 @@ namespace iPem.Data.Repository.Resource {
 
         #region Methods
 
-        public LogicType GetEntity(int id) {
-            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
-            parms[0].Value = SqlTypeConverter.DBNullInt32Checker(id);
+        public LogicType GetEntity(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             LogicType entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
                     entity = new LogicType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                 }
             }
@@ -44,7 +44,7 @@ namespace iPem.Data.Repository.Resource {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
                     var entity = new LogicType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entities.Add(entity);
                 }

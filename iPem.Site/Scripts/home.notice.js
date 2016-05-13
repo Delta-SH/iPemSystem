@@ -18,7 +18,7 @@
         model: 'NoticeModel',
         proxy: {
             type: 'ajax',
-            url: '../Home/GetNotices',
+            url: '/Home/GetNotices',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -208,7 +208,7 @@
 
     var showNotice = function (record) {
         Ext.Ajax.request({
-            url: '../Home/SetNotices',
+            url: '/Home/SetNotices',
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,
@@ -238,7 +238,7 @@
 
     var statusNotice = function (notices,status) {
         Ext.Ajax.request({
-            url: '../Home/SetNotices',
+            url: '/Home/SetNotices',
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,

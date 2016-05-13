@@ -81,7 +81,7 @@ namespace iPem.Core.Caching {
         /// <param name="cacheTime">Cache time</param>
         public virtual void Set<T>(string key, T data, TimeSpan cacheTime) {
             using(var client = Cache) {
-                //client.Set<byte[]>(key, _objectSerializer.Serialize(data), TimeSpan.FromSeconds(cacheTime)); 
+                //client.Set<byte[]>(key, _objectSerializer.Serialize(data), cacheTime); 
                 client.Set<T>(key, data, cacheTime);
             }
         }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Resource {
     public partial interface ISubDeviceTypeRepository {
 
-        SubDeviceType GetEntity(int id);
+        SubDeviceType GetEntity(string id);
 
         List<SubDeviceType> GetEntities();
 

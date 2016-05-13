@@ -19,7 +19,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the type of the room
         /// </summary>
-        public int RoomTypeId { get; set; }
+        public string RoomTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the property identifier
@@ -115,26 +115,6 @@ namespace iPem.Core.Domain.Resource {
         /// Gets or sets the contact
         /// </summary>
         public string Contact { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creator
-        /// </summary>
-        public string Creator { get; set; }
-
-        /// <summary>
-        /// Gets or sets the created time
-        /// </summary>
-        public DateTime CreatedTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modifier
-        /// </summary>
-        public string Modifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modified time
-        /// </summary>
-        public DateTime? ModifiedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier of the station

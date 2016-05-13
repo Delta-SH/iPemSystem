@@ -24,12 +24,12 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the device type identifier
         /// </summary>
-        public int DeviceTypeId { get; set; }
+        public string DeviceTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the sub device type identifier
         /// </summary>
-        public int? SubDeviceTypeId { get; set; }
+        public string SubDeviceTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the system name
@@ -85,26 +85,6 @@ namespace iPem.Core.Domain.Resource {
         /// Gets or sets the contact
         /// </summary>
         public string Contact { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creator
-        /// </summary>
-        public string Creator { get; set; }
-
-        /// <summary>
-        /// Gets or sets the created time
-        /// </summary>
-        public DateTime? CreatedTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modifier
-        /// </summary>
-        public string Modifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modified time
-        /// </summary>
-        public DateTime? ModifiedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier of the room

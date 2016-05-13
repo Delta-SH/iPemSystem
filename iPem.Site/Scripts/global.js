@@ -340,6 +340,16 @@ window.$$iPems.download = function (config) {
     }, 100);
 };
 
+/*datetime parse funtion*/
+window.$$iPems.datetimeParse = function (date, format) {
+    return Ext.Date.parse(date, format || 'Y-m-d H:i:s', true);
+};
+
+/*date parse funtion*/
+window.$$iPems.dateParse = function (date, format) {
+    return Ext.Date.parse(date, format || 'Y-m-d', true);
+};
+
 /*clone paging toolbar*/
 window.$$iPems.clonePagingToolbar = function (store) {
     return Ext.create('Ext.PagingToolbar', {
@@ -386,7 +396,7 @@ window.$$iPems.Tasks = {
     noticeTask: Ext.util.TaskManager.newTask({
         run: function () {
             Ext.Ajax.request({
-                url: '../Home/GetNoticesCount',
+                url: '/Home/GetNoticesCount',
                 preventWindow: true,
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
@@ -407,13 +417,13 @@ window.$$iPems.Tasks = {
             });
         },
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actAlmNoticeTask: Ext.util.TaskManager.newTask({
         run: function () {
             Ext.Ajax.request({
-                url: '../Home/GetActAlmCount',
+                url: '/Home/GetActAlmCount',
                 preventWindow: true,
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
@@ -434,19 +444,19 @@ window.$$iPems.Tasks = {
             });
         },
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actAlmTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actPointTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     })
 };

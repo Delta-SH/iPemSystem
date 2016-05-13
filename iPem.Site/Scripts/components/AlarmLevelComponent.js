@@ -1,19 +1,21 @@
 ﻿Ext.define("Ext.ux.AlarmLevelMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "alarm.level.multicombo",
-    fieldLabel: $$iPems.lang.AlarmLevel,
+    fieldLabel: $$iPems.lang.Component.AlarmLevel,
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
     queryMode: 'local',
     triggerAction: 'all',
     selectionMode: 'all',
-    emptyText: $$iPems.lang.AllEmptyText,
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    initComponent: function () {
+        this.callParent(arguments);
+        this.store.load();
+    },
     store: Ext.create('Ext.data.Store', {
-        autoLoad: true,
         pageSize: 1024,
         fields: [
             { name: 'id', type: 'int' },
@@ -22,7 +24,7 @@
         ],
         proxy: {
             type: 'ajax',
-            url: '../Component/GetAlarmLevels',
+            url: '/Component/GetAlarmLevels',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -37,19 +39,21 @@
 Ext.define("Ext.ux.AlarmLevelComboBox", {
     extend: "Ext.form.ComboBox",
     xtype: "alarm.level.combo",
-    fieldLabel: $$iPems.lang.AlarmLevel,
+    fieldLabel: $$iPems.lang.Component.AlarmLevel,
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,
     queryMode: 'local',
     triggerAction: 'all',
-    emptyText: $$iPems.lang.AllEmptyText,
     selectOnFocus: true,
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    initComponent: function () {
+        this.callParent(arguments);
+        this.store.load();
+    },
     store: Ext.create('Ext.data.Store', {
-        autoLoad: true,
         pageSize: 1024,
         fields: [
             { name: 'id', type: 'int' },
@@ -58,7 +62,7 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
         ],
         proxy: {
             type: 'ajax',
-            url: '../Component/GetAlarmLevels',
+            url: '/Component/GetAlarmLevels',
             reader: {
                 type: 'json',
                 successProperty: 'success',

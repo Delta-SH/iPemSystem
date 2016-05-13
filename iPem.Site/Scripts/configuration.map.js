@@ -19,7 +19,7 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(hcontent);
-            iframe.load('../Configuration/MapIFrame');
+            iframe.load('/Configuration/MapIFrame');
         }
     });
 })();

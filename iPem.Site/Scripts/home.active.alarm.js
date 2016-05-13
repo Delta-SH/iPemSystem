@@ -1,6 +1,4 @@
 ﻿(function () {
-    var currentNode = null;
-
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
@@ -32,87 +30,50 @@
         tree.selectPath(path, field, separator, callback || Ext.emptyFn);
     };
 
-    var refresh = function (pagingtoolbar, layout) {
-        Ext.Ajax.request({
-            url: '../Home/RequestRemoveActAlmCache',
-            mask: new Ext.LoadMask(layout || Ext.getCmp('alarm-dashboard'), { msg: $$iPems.lang.AjaxHandling }),
-            success: function (response, options) {
-                var data = Ext.decode(response.responseText, true);
-                if (data.success) {
-                    pagingtoolbar.doRefresh();
-                } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                }
-            }
-        });
+    var change = function (node, pagingtoolbar) {
+        var me = pagingtoolbar.store, attributes = node.raw.attributes;
+        if (!Ext.isEmpty(attributes) && attributes.length > 0) {
+            var id = Ext.Array.findBy(attributes, function (item, index) {
+                return item.key === 'id';
+            });
+
+            if (!Ext.isEmpty(id))
+                me.proxy.extraParams.nodeid = id.value;
+
+            var type = Ext.Array.findBy(attributes, function (item, index) {
+                return item.key === 'type';
+            });
+
+            if (!Ext.isEmpty(type))
+                me.proxy.extraParams.nodetype = type.value;
+        }
+
+        me.loadPage(1);
     };
 
-    var change = function (node, pagingtoolbar, layout) {
-        Ext.Ajax.request({
-            url: '../Home/RequestRemoveActAlmCache',
-            mask: new Ext.LoadMask(layout || Ext.getCmp('currentLayout'), { msg: $$iPems.lang.AjaxHandling }),
-            success: function (response, options) {
-                var data = Ext.decode(response.responseText, true);
-                if (data.success) {
-                    var me = pagingtoolbar.store, attributes = node.raw.attributes;
-                    if (!Ext.isEmpty(attributes) && attributes.length > 0) {
-                        var id = Ext.Array.findBy(attributes, function (item, index) {
-                            return item.key === 'id';
-                        });
+    var filter = function (pagingtoolbar) {
+        var me = pagingtoolbar.store;
 
-                        if (!Ext.isEmpty(id))
-                            me.proxy.extraParams.nodeid = id.value;
+        me.proxy.extraParams.statype = Ext.getCmp('station-type-multicombo').getSelectedValues();
+        me.proxy.extraParams.roomtype = Ext.getCmp('room-type-multicombo').getSelectedValues();
+        me.proxy.extraParams.devtype = Ext.getCmp('device-type-multicombo').getSelectedValues();
+        me.proxy.extraParams.almlevel = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
+        me.proxy.extraParams.logictype = Ext.getCmp('logic-type-multicombo').getSelectedValues();
+        me.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
 
-                        var type = Ext.Array.findBy(attributes, function (item, index) {
-                            return item.key === 'type';
-                        });
+        me.proxy.extraParams.confirm = 'all';
+        if (Ext.getCmp('show-confirm-menu').checked)
+            me.proxy.extraParams.confirm = 'confirm';
+        if (Ext.getCmp('show-unconfirm-menu').checked)
+            me.proxy.extraParams.confirm = 'unconfirm';
 
-                        if (!Ext.isEmpty(type))
-                            me.proxy.extraParams.nodetype = type.value;
-                    }
+        me.proxy.extraParams.project = 'all';
+        if (Ext.getCmp('show-project-menu').checked)
+            me.proxy.extraParams.project = 'project';
+        if (Ext.getCmp('show-unproject-menu').checked)
+            me.proxy.extraParams.project = 'unproject';
 
-                    me.loadPage(1);
-                } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                }
-            }
-        });
-    };
-
-    var filter = function (pagingtoolbar, layout) {
-        Ext.Ajax.request({
-            url: '../Home/RequestRemoveActAlmCache',
-            mask: new Ext.LoadMask(layout || Ext.getCmp('alarm-dashboard'), { msg: $$iPems.lang.AjaxHandling }),
-            success: function (response, options) {
-                var data = Ext.decode(response.responseText, true);
-                if (data.success) {
-                    var me = pagingtoolbar.store;
-
-                    me.proxy.extraParams.statype = Ext.getCmp('station-type-multicombo').getSelectedValues();
-                    me.proxy.extraParams.roomtype = Ext.getCmp('room-type-multicombo').getSelectedValues();
-                    me.proxy.extraParams.devtype = Ext.getCmp('device-type-multicombo').getSelectedValues();
-                    me.proxy.extraParams.almlevel = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
-                    me.proxy.extraParams.logictype = Ext.getCmp('logic-type-multicombo').getSelectedValues();
-                    me.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
-
-                    me.proxy.extraParams.confirm = 'all';
-                    if (Ext.getCmp('show-confirm-menu').checked)
-                        me.proxy.extraParams.confirm = 'confirm';
-                    if (Ext.getCmp('show-unconfirm-menu').checked)
-                        me.proxy.extraParams.confirm = 'unconfirm';
-
-                    me.proxy.extraParams.project = 'all';
-                    if (Ext.getCmp('show-project-menu').checked)
-                        me.proxy.extraParams.project = 'project';
-                    if (Ext.getCmp('show-unproject-menu').checked)
-                        me.proxy.extraParams.project = 'unproject';
-
-                    me.loadPage(1);
-                } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                }
-            }
-        });
+        me.loadPage(1);
     };
 
     var chartPie1 = Ext.create('Ext.chart.Chart', {
@@ -157,11 +118,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.PieRate,
+                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -170,31 +131,7 @@
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
             fields: ['name', 'value', 'comment'],
-            proxy: {
-                type: 'ajax',
-                actionMethods: {
-                    create: 'POST',
-                    read: 'POST',
-                    update: 'POST',
-                    destroy: 'POST'
-                },
-                url: '../Home/RequestActChart1',
-                reader: {
-                    type: 'json',
-                    successProperty: 'success',
-                    messageProperty: 'message',
-                    totalProperty: 'total',
-                    root: 'data'
-                },
-                simpleSortMode: true
-            },
-            listeners: {
-                load: function (me, records, successful) {
-                    if (successful) {
-                        Ext.getCmp('chartPie2').store.load();
-                    }
-                }
-            }
+            data: [{ name: 'NoData', value: 1, comment: '' }]
         })
     });
 
@@ -240,11 +177,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.PieRate,
+                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -253,31 +190,7 @@
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
             fields: ['name', 'value', 'comment'],
-            proxy: {
-                type: 'ajax',
-                actionMethods: {
-                    create: 'POST',
-                    read: 'POST',
-                    update: 'POST',
-                    destroy: 'POST'
-                },
-                url: '../Home/RequestActChart2',
-                reader: {
-                    type: 'json',
-                    successProperty: 'success',
-                    messageProperty: 'message',
-                    totalProperty: 'total',
-                    root: 'data'
-                },
-                simpleSortMode: true
-            },
-            listeners: {
-                load: function (me, records, successful) {
-                    if (successful) {
-                        Ext.getCmp('chartPie3').store.load();
-                    }
-                }
-            }
+            data: [{ name: 'NoData', value: 1, comment: '' }]
         })
     });
 
@@ -323,11 +236,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.PieTotal,
+                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.PieRate,
+                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -336,32 +249,7 @@
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
             fields: ['name', 'value', 'comment'],
-            proxy: {
-                type: 'ajax',
-                actionMethods: {
-                    create: 'POST',
-                    read: 'POST',
-                    update: 'POST',
-                    destroy: 'POST'
-                },
-                url: '../Home/RequestActChart3',
-                reader: {
-                    type: 'json',
-                    successProperty: 'success',
-                    messageProperty: 'message',
-                    totalProperty: 'total',
-                    root: 'data'
-                },
-                simpleSortMode: true
-            },
-            listeners: {
-                load: function (me, records, successful) {
-                    if (successful) {
-                        $$iPems.Tasks.actAlmTask.fireOnStart = false;
-                        $$iPems.Tasks.actAlmTask.restart();
-                    }
-                }
-            }
+            data: [{ name: 'NoData', value: 1, comment: '' }]
         })
     });
 
@@ -377,7 +265,7 @@
                 update: 'POST',
                 destroy: 'POST'
             },
-            url: '../Home/RequestActAlarms',
+            url: '/Home/RequestActAlarms',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -402,15 +290,20 @@
         listeners: {
             load: function (me, records, successful) {
                 if (successful) {
-                    var chartStore1 = Ext.getCmp('chartPie1').store,
-                        chartStore2 = Ext.getCmp('chartPie2').store,
-                        chartStore3 = Ext.getCmp('chartPie3').store;
+                    var data = me.proxy.reader.jsonData;
+                    if (data && data.chart && Ext.isArray(data.chart)) {
+                        var charts = data.chart,
+                            chartStore1 = chartPie1.getStore(),
+                            chartStore2 = chartPie2.getStore(),
+                            chartStore3 = chartPie3.getStore();
 
-                    chartStore1.proxy.extraParams = me.proxy.extraParams;
-                    chartStore2.proxy.extraParams = me.proxy.extraParams;
-                    chartStore3.proxy.extraParams = me.proxy.extraParams;
+                        chartStore1.loadData(charts[0], false);
+                        chartStore2.loadData(charts[1], false);
+                        chartStore3.loadData(charts[2], false);
+                    }
 
-                    chartStore1.load();
+                    $$iPems.Tasks.actAlmTask.fireOnStart = false;
+                    $$iPems.Tasks.actAlmTask.restart();
                 }
             }
         }
@@ -428,7 +321,7 @@
                 id: 'alarm-organization',
                 region: 'west',
                 xtype: 'treepanel',
-                title: $$iPems.lang.ActiveAlarm.DevList,
+                title: $$iPems.lang.ActiveAlarm.MenuNavTitle,
                 glyph: 0xf011,
                 width: 220,
                 split: true,
@@ -447,12 +340,15 @@
                         { key: 'type', value: $$iPems.Organization.Area }
                     ]
                 },
+                viewConfig: {
+                    loadMask: true
+                },
                 store: Ext.create('Ext.data.TreeStore', {
                     autoLoad: false,
                     nodeParam: 'node',
                     proxy: {
                         type: 'ajax',
-                        url: '../Home/GetOrganization',
+                        url: '/Home/GetOrganization',
                         extraParams: {
                             id: '',
                             type: -1
@@ -488,8 +384,7 @@
                 }),
                 listeners:{
                     select: function (me, record, item, index) {
-                        currentNode = record;
-                        change(currentNode, currentPagingToolbar, currentLayout);
+                        change(record, currentPagingToolbar);
                     }
                 },
                 tbar: [
@@ -535,7 +430,7 @@
                                 search._filterIndex = index;
                             } else {
                                 Ext.Ajax.request({
-                                    url: '../Home/SearchOrganization',
+                                    url: '/Home/SearchOrganization',
                                     params: { text: text },
                                     mask: new Ext.LoadMask({ target: tree, msg: $$iPems.lang.AjaxHandling }),
                                     success: function (response, options) {
@@ -572,7 +467,7 @@
                 items: [{
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: $$iPems.lang.ActiveAlarm.AlarmRate,
+                    title: $$iPems.lang.ActiveAlarm.RateTitle,
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
@@ -586,7 +481,7 @@
                 }, {
                     xtype: 'panel',
                     glyph: 0xf029,
-                    title: $$iPems.lang.ActiveAlarm.AlarmDetail,
+                    title: $$iPems.lang.ActiveAlarm.DetailTitle,
                     collapsible: true,
                     collapseFirst: false,
                     layout: 'fit',
@@ -597,7 +492,7 @@
                             type: 'refresh',
                             tooltip: $$iPems.lang.Refresh,
                             handler: function (event, toolEl, panelHeader) {
-                                refresh(currentPagingToolbar);
+                                currentPagingToolbar.doRefresh();
                             }
                         }
                     ],
@@ -618,19 +513,67 @@
                             }
                         },
                         columns: [
-                            { text: $$iPems.lang.ActiveAlarm.AlarmLevel, dataIndex: 'level', align: 'center', locked: true, tdCls: 'x-level-cell' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmStart, dataIndex: 'start', align: 'center', width: 150, locked: true, tdCls: 'x-level-cell' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmId, dataIndex: 'id', width: 80, align: 'center' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmArea, dataIndex: 'area' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmStation, dataIndex: 'station' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmRoom, dataIndex: 'room' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmDevType, dataIndex: 'devType' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmDevice, dataIndex: 'device' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmLogic, dataIndex: 'logic' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmPoint, dataIndex: 'point' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmComment, dataIndex: 'comment' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmValue, dataIndex: 'value' },
-                            { text: $$iPems.lang.ActiveAlarm.AlarmFrequency, dataIndex: 'frequency' }
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Level,
+                                dataIndex: 'level',
+                                align: 'center',
+                                locked: true,
+                                tdCls: 'x-level-cell'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Start,
+                                dataIndex: 'start',
+                                align: 'center',
+                                width: 150,
+                                locked: true,
+                                tdCls: 'x-level-cell'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Id,
+                                dataIndex: 'id',
+                                width: 80,
+                                align: 'center'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Area,
+                                dataIndex: 'area'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Station,
+                                dataIndex: 'station'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Room,
+                                dataIndex: 'room'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.DevType,
+                                dataIndex: 'devType'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Device,
+                                dataIndex: 'device'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Logic,
+                                dataIndex: 'logic'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Point,
+                                dataIndex: 'point'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Comment,
+                                dataIndex: 'comment'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Value,
+                                dataIndex: 'value'
+                            },
+                            {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Frequency,
+                                dataIndex: 'frequency'
+                            }
                         ],
                         bbar: currentPagingToolbar,
                     }]
@@ -638,7 +581,7 @@
                 dockedItems: [{
                     xtype: 'panel',
                     glyph: 0xf034,
-                    title: $$iPems.lang.ActiveAlarm.AlarmCondition,
+                    title: $$iPems.lang.ActiveAlarm.ConditionTitle,
                     collapsible: true,
                     collapsed: false,
                     dock: 'top',
@@ -647,9 +590,21 @@
                             xtype: 'toolbar',
                             border: false,
                             items: [
-                                { id: 'station-type-multicombo', xtype: 'station.type.multicombo' },
-                                { id: 'room-type-multicombo', xtype: 'room.type.multicombo' },
-                                { id: 'device-type-multicombo', xtype: 'device.type.multicombo' },
+                                {
+                                    id: 'station-type-multicombo',
+                                    xtype: 'station.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'room-type-multicombo',
+                                    xtype: 'room.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'device-type-multicombo',
+                                    xtype: 'device.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
                                 {
                                     xtype: 'splitbutton',
                                     glyph: 0xf005,
@@ -659,7 +614,7 @@
                                     },
                                     menu: [
                                         {
-                                            text: $$iPems.lang.ConfirmAlarm,
+                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ConfirmAlarm,
                                             glyph: 0xf035,
                                             hidden: !$$iPems.ConfirmOperation,
                                             handler: function (me, event) {
@@ -675,7 +630,7 @@
                                             glyph: 0xf010,
                                             handler: function (me, event) {
                                                 $$iPems.download({
-                                                    url: '../Home/DownloadActAlms',
+                                                    url: '/Home/DownloadActAlms',
                                                     params: currentStore.proxy.extraParams
                                                 });
                                             }
@@ -688,18 +643,33 @@
                             xtype: 'toolbar',
                             border: false,
                             items: [
-                                { id: 'alarm-level-multicombo', xtype: 'alarm.level.multicombo' },
-                                { id: 'logic-type-multicombo', xtype: 'logic.type.multicombo' },
-                                { id: 'point-name-textfield', xtype: 'textfield', fieldLabel: $$iPems.lang.PointName, emptyText: $$iPems.lang.MultiConditionEmptyText, labelWidth: 60, width: 220 },
+                                {
+                                    id: 'alarm-level-multicombo',
+                                    xtype: 'alarm.level.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'logic-type-multicombo',
+                                    xtype: 'logic.type.multicombo',
+                                    emptyText: $$iPems.lang.AllEmptyText
+                                },
+                                {
+                                    id: 'point-name-textfield',
+                                    xtype: 'textfield',
+                                    fieldLabel: $$iPems.lang.ActiveAlarm.ToolBar.PointName,
+                                    emptyText: $$iPems.lang.MultiConditionEmptyText,
+                                    labelWidth: 60,
+                                    width: 220
+                                },
                                 {
                                     id: 'other-option-button',
                                     xtype: 'button',
-                                    text: $$iPems.lang.OtherOption,
+                                    text: $$iPems.lang.ActiveAlarm.ToolBar.OtherOption,
                                     menu: [
                                         {
                                             id: 'show-confirm-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ShowConfirm,
+                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowConfirm,
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -710,7 +680,7 @@
                                         {
                                             id: 'show-unconfirm-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ShowUnConfirm,
+                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowUnConfirm,
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -722,7 +692,7 @@
                                         {
                                             id: 'show-project-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ShowProject,
+                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowProject,
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -733,7 +703,7 @@
                                         {
                                             id: 'show-unproject-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ShowUnProject,
+                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowUnProject,
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {

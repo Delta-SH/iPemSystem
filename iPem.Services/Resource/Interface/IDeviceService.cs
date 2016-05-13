@@ -10,7 +10,7 @@ namespace iPem.Services.Resource {
     public partial interface IDeviceService {
         Device GetDevice(string id);
 
-        IPagedList<Device> GetDevicesByParent(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Device> GetDevices(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
 
         IPagedList<Device> GetAllDevices(int pageIndex = 0, int pageSize = int.MaxValue);
     }

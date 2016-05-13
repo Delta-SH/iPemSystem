@@ -25,17 +25,17 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         /// Gets or sets the logic type
         /// </summary>
-        public int LogicTypeId { get; set; }
+        public string LogicTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the device type
         /// </summary>
-        public int DeviceTypeId { get; set; }
+        public string DeviceTypeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the station type
+        /// Gets or sets the room type
         /// </summary>
-        public int StaTypeId { get; set; }
+        public string RoomTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the unit
@@ -60,7 +60,7 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         /// Gets or sets the trigger type
         /// </summary>
-        public string TriggerType { get; set; }
+        public int TriggerTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the interpret

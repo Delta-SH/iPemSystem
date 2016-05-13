@@ -30,9 +30,9 @@ namespace iPem.Services.Master {
 
         #region Methods
 
-        public IPagedList<IdValuePair<int, string>> GetAllPointsInProtcol(int pageIndex = 0, int pageSize = int.MaxValue) {
+        public IPagedList<IdValuePair<string, string>> GetAllPointsInProtcol(int pageIndex = 0, int pageSize = int.MaxValue) {
             var result = _pointsInProtcolRepository.GetEntities();
-            return new PagedList<IdValuePair<int, string>>(result, pageIndex, pageSize);
+            return new PagedList<IdValuePair<string, string>>(result, pageIndex, pageSize);
         }
 
         #endregion

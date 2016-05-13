@@ -34,7 +34,7 @@ namespace iPem.Data.Repository.Resource {
                     entity = new Brand();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.ProductorId = SqlTypeConverter.DBNullInt32Handler(rdr["ProductorId"]);
+                    entity.ProductorId = SqlTypeConverter.DBNullStringHandler(rdr["ProductorId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
@@ -50,7 +50,7 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new Brand();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.ProductorId = SqlTypeConverter.DBNullInt32Handler(rdr["ProductorId"]);
+                    entity.ProductorId = SqlTypeConverter.DBNullStringHandler(rdr["ProductorId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);

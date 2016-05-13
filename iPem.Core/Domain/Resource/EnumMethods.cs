@@ -9,12 +9,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the identifier
         /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the method number
-        /// </summary>
-        public int MethNo { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name
@@ -22,9 +17,14 @@ namespace iPem.Core.Domain.Resource {
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the type of the device
+        /// Gets or sets the type
         /// </summary>
-        public int DeviceTypeId { get; set; }
+        public int TypeId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// Gets or sets the comment

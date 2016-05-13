@@ -8,7 +8,7 @@ namespace iPem.Data.Repository.Resource {
     /// </summary>
     public partial interface ILogicTypeRepository {
 
-        LogicType GetEntity(int id);
+        LogicType GetEntity(string id);
 
         List<LogicType> GetEntities();
 

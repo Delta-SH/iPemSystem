@@ -16,7 +16,6 @@ namespace iPem.Services.Common {
         public const string Cs_PointsInTypePattern = "ipems:global:cs-points-type@{0}@repository";
         public const string Cs_PointsInProtcolPattern = "ipems:global:cs-points-protcol@{0}@repository";
         public const string Cs_PointsRepository = "ipems:global:cs-points@repository";
-        public const string Cs_ProtocolsInDevTypePattern = "ipems:global:cs-protocols-device-type@{0}@repository";
         public const string Cs_ProtocolsRepository = "ipems:global:cs-protocols@repository";
 
         //resource repository
@@ -24,11 +23,9 @@ namespace iPem.Services.Common {
         public const string Rs_BrandsRepository = "ipems:global:rs-brands@repository";
         public const string Rs_DepartmentRepository = "ipems:global:rs-departments@repository";
         public const string Rs_DevicesRepository = "ipems:global:rs-devices@repository";
-        public const string Rs_DeviceStatusRepository = "ipems:global:rs-device-status@repository";
         public const string Rs_DeviceTypeRepository = "ipems:global:rs-device-type@repository";
         public const string Rs_DutiesRepository = "ipems:global:rs-duties@repository";
         public const string Rs_EmployeesRepository = "ipems:global:rs-employees@repository";
-        public const string Rs_EmployeesInDepartmentPattern = "ipems:global:rs-employees-department@{0}@repository";
         public const string Rs_EnumMethodsRepository = "ipems:global:rs-enum-methods@repository";
         public const string Rs_LogicTypesRepository = "ipems:global:rs-logic-types@repository";
         public const string Rs_ProductorsRepository = "ipems:global:rs-productors@repository";
@@ -64,7 +61,6 @@ namespace iPem.Services.Common {
     public static partial class SiteCacheKeys {
         public const string Site_RolesResultPattern = "ipems:site:role@{0}@result";
         public const string Site_UsersResultPattern = "ipems:site:user@{0}@result";
-        public const string Site_ActAlmResultPattern = "ipems:site:actalm@{0}@result";
         public const string Site_RssPointsResultPattern = "ipems:site:rss-points@{0}@result";
     }
 
@@ -72,11 +68,10 @@ namespace iPem.Services.Common {
     /// Cached interval class
     /// </summary>
     public static partial class CachedIntervals {
-        public static readonly TimeSpan Site_ActiveIntervals = TimeSpan.FromSeconds(10);
         public static readonly TimeSpan Site_StoreIntervals = TimeSpan.FromSeconds(300);
         public static readonly TimeSpan Site_ResultIntervals = TimeSpan.FromSeconds(600);
 
-        public static readonly TimeSpan Global_RoleIntervals = TimeSpan.FromSeconds(1200);
-        public static readonly TimeSpan Global_UserIntervals = TimeSpan.FromSeconds(1200);
+        public static readonly TimeSpan Global_RoleIntervals = TimeSpan.FromSeconds(1800);
+        public static readonly TimeSpan Global_UserIntervals = TimeSpan.FromSeconds(1800);
     }
 }

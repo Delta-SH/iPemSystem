@@ -43,6 +43,18 @@ namespace iPem.Services.Resource {
             return _employeeRepository.GetEntityByNo(id);
         }
 
+        public IPagedList<Employee> GetEmployeesInDepartment(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
+            List<Employee> result = null;
+            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_EmployeesRepository)) {
+                var all = _cacheManager.Get<List<Employee>>(GlobalCacheKeys.Rs_EmployeesRepository);
+                result = all.FindAll(e => e.DeptId == dept);
+            } else {
+                result = _employeeRepository.GetEntities(dept);
+            }
+
+            return new PagedList<Employee>(result, pageIndex, pageSize);
+        }
+
         public IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
             List<Employee> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_EmployeesRepository)) {
@@ -50,20 +62,6 @@ namespace iPem.Services.Resource {
             } else {
                 result = _employeeRepository.GetEntities();
                 _cacheManager.Set<List<Employee>>(GlobalCacheKeys.Rs_EmployeesRepository, result);
-            }
-
-            return new PagedList<Employee>(result, pageIndex, pageSize);
-        }
-
-        public IPagedList<Employee> GetEmployeesInDepartment(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Rs_EmployeesInDepartmentPattern, dept);
-
-            List<Employee> result = null;
-            if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<Employee>>(key);
-            } else {
-                result = _employeeRepository.GetEntitiesByDept(dept);
-                _cacheManager.Set<List<Employee>>(key, result);
             }
 
             return new PagedList<Employee>(result, pageIndex, pageSize);

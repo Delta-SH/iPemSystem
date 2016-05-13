@@ -33,6 +33,7 @@ namespace iPem.Site.Infrastructure {
         private readonly MsSrv.IUserService _msUserService;
         private readonly MsSrv.IProfileService _msProfileService;
         private readonly MsSrv.IPointService _msPointService;
+        private readonly MsSrv.IMenuService _msMenuService;
         private readonly MsSrv.IOperateInRoleService _msOperateInRoleService;
         private readonly MsSrv.IPointsInProtcolService _msPointsInProtcolService;
         private readonly RsSrv.IAreaService _rsAreaService;
@@ -53,6 +54,7 @@ namespace iPem.Site.Infrastructure {
         private List<RsDomain.Station> _cachedAssociatedStations;
         private List<RsDomain.Room> _cachedAssociatedRooms;
         private List<RsDomain.Device> _cachedAssociatedDevices;
+        private List<MsDomain.Menu> _cachedAssociatedMenus;
         private Dictionary<EnmOperation, string> _cachedAssociatedOperations;
         private Dictionary<string, AreaAttributes> _cachedAssociatedAreaAttributes;
         private Dictionary<string, StationAttributes> _cachedAssociatedStationAttributes;
@@ -75,6 +77,7 @@ namespace iPem.Site.Infrastructure {
             MsSrv.IUserService msUserService,
             MsSrv.IProfileService msProfileService,
             MsSrv.IPointService msPointService,
+            MsSrv.IMenuService msMenuService,
             MsSrv.IOperateInRoleService msOperateInRoleService,
             MsSrv.IPointsInProtcolService msPointsInProtcolService,
             RsSrv.IAreaService rsAreaService,
@@ -94,6 +97,7 @@ namespace iPem.Site.Infrastructure {
             this._msUserService = msUserService;
             this._msProfileService = msProfileService;
             this._msPointService = msPointService;
+            this._msMenuService = msMenuService;
             this._msOperateInRoleService = msOperateInRoleService;
             this._msPointsInProtcolService = msPointsInProtcolService;
             this._rsAreaService = rsAreaService;
@@ -337,6 +341,16 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public List<MsDomain.Menu> AssociatedMenus {
+            get {
+                if(_cachedAssociatedMenus != null)
+                    return _cachedAssociatedMenus;
+
+                _cachedAssociatedMenus = _msMenuService.GetMenus(CurrentRole.Id).ToList();
+                return _cachedAssociatedMenus;
+            }
+        }
+
         public Dictionary<EnmOperation, string> AssociatedOperations {
             get {
                 if(_cachedAssociatedOperations != null)
@@ -455,12 +469,12 @@ namespace iPem.Site.Infrastructure {
                 if(_cacheManager.IsSet(key))
                     return _cacheManager.Get<List<IdValuePair<DeviceAttributes, PointAttributes>>>(key);
 
-                var stationtypes = CurrentProfile.PointRss.stationtypes ?? new int[] { };
-                var roomtypes = CurrentProfile.PointRss.roomtypes ?? new int[] { };
-                var devicetypes = CurrentProfile.PointRss.devicetypes ?? new int[] { };
-                var logictypes = CurrentProfile.PointRss.logictypes ?? new int[] { };
+                var stationtypes = CurrentProfile.PointRss.stationtypes ?? new string[] { };
+                var roomtypes = CurrentProfile.PointRss.roomtypes ?? new string[] { };
+                var devicetypes = CurrentProfile.PointRss.devicetypes ?? new string[] { };
+                var logictypes = CurrentProfile.PointRss.logictypes ?? new string[] { };
                 var pointtypes = CurrentProfile.PointRss.pointtypes ?? new int[] { };
-                var pointnames = CommonHelper.ConditionSplit(CurrentProfile.PointRss.pointnames);
+                var pointnames = Common.SplitCondition(CurrentProfile.PointRss.pointnames);
                 if(stationtypes.Length == 0
                     && roomtypes.Length == 0
                     && devicetypes.Length == 0

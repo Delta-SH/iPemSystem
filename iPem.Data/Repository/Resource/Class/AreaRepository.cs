@@ -39,10 +39,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.NodeLevel = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -59,10 +55,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.NodeLevel = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);

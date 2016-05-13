@@ -113,15 +113,15 @@ namespace iPem.Data.Common {
 
         //point repository
         public const string Sql_Point_Repository_GetEntitiesByDevice = @"
-        SELECT P.[Id],P.[Name],P.[Type],P.[StaTypeId],P.[DeviceTypeId],P.[LogicTypeId],P.[Unit],P.[AlarmTimeDesc],P.[NormalTimeDesc],
-        P.[AlarmLevel],P.[TriggerType],P.[Interpret],P.[AlarmLimit],P.[AlarmReturnDiff],P.[AlarmRecoveryDelay],P.[AlarmDelay],
+        SELECT P.[Id],P.[Name],P.[Type],P.[RoomTypeId],P.[DeviceTypeId],P.[LogicTypeId],P.[Unit],P.[AlarmTimeDesc],P.[NormalTimeDesc],
+        P.[AlarmLevel],P.[TriggerTypeId],P.[Interpret],P.[AlarmLimit],P.[AlarmReturnDiff],P.[AlarmRecoveryDelay],P.[AlarmDelay],
         P.[SavedPeriod],P.[AbsoluteThreshold],P.[PerThreshold],P.[Comment],P.[Desc],P.[Enabled] FROM [dbo].[M_Device] DV 
         INNER JOIN [dbo].[P_PointsInProtcol] PP ON DV.[ProtcolId] = PP.[ProtcolId] AND DV.[Id] = @DeviceId
         INNER JOIN [dbo].[P_Point] P ON PP.[PointId] = P.[Id]
         ORDER BY P.[Type],P.[Id]";
-        public const string Sql_Point_Repository_GetEntitiesByType = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] WHERE [Type] = @Type ORDER BY [Id];";
-        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.[Id] = PP.[PointId] AND PP.[ProtcolId] = @ProtcolId ORDER BY [Type],[Id];";
-        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[StaTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerType],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] ORDER BY [Type],[Id];";
+        public const string Sql_Point_Repository_GetEntitiesByType = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] WHERE [Type] = @Type ORDER BY [Id];";
+        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.[Id] = PP.[PointId] AND PP.[ProtcolId] = @ProtcolId ORDER BY [Type],[Id];";
+        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] ORDER BY [Type],[Id];";
 
         //protocol repository
         public const string Sql_Protocol_Repository_GetEntitiesByDeviceType = @"SELECT [Id],[Name],[DeviceTypeId],[SubDevTypeId],[Desc] AS [Comment],[Enabled] FROM [dbo].[P_Protocol] WHERE [DeviceTypeId]=@DeviceTypeId;";
@@ -132,7 +132,31 @@ namespace iPem.Data.Common {
         public const string Sql_PointsInProtocol_Repository_GetEntities = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol];";
         public const string Sql_PointsInProtocol_Repository_GetEntitiesByProtocol = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol] WHERE [ProtcolId] = @ProtcolId;";
 
+        //dictionary repository
+        public const string Sql_Dictionary_Repository_GetEntity = @"SELECT [Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate] FROM [dbo].[M_Dictionary] WHERE [Id]=@Id;";
+        public const string Sql_Dictionary_Repository_GetEntities = @"SELECT [Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate] FROM [dbo].[M_Dictionary];";
+        public const string Sql_Dictionary_Repository_UpdateEntities = @"UPDATE [dbo].[M_Dictionary] SET [Name] = @Name,[ValuesJson] = @ValuesJson,[ValuesBinary] = @ValuesBinary,[LastUpdatedDate] = @LastUpdatedDate WHERE [Id] = @Id;";
+
         //project repository
-        public const string Sql_Project_Repository_GetEntities = @"SELECT [Id],[Code],[ProtcolId],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
+        public const string Sql_Project_Repository_GetEntities = @"SELECT [Id],[Name],[StartTime],[EndTime],[Responsible],[ContactPhone],[Company],[Creator],[CreatedTime],[Comment],[Enabled] FROM [dbo].[M_Projects] ORDER BY [CreatedTime];";
+        public const string Sql_Project_Repository_GetEntitiesByDate = @"SELECT [Id],[Name],[StartTime],[EndTime],[Responsible],[ContactPhone],[Company],[CreatedTime],[Creator],[Comment],[Enabled] FROM [dbo].[M_Projects] WHERE [StartTime]>=@starttime AND [EndTime]<=@endtime ORDER BY [Name];";
+        public const string Sql_Project_Repository_GetEntity = "SELECT [Id],[Name],[StartTime],[EndTime],[Responsible],[ContactPhone],[Company],[CreatedTime],[Creator],[Comment],[Enabled] FROM [dbo].[M_Projects] WHERE [Id]=@Id";
+        public const string Sql_Project_Repository_Insert = "INSERT INTO [dbo].[M_Projects]([Id],[Name],[StartTime],[EndTime],[Responsible],[ContactPhone],[Company],[Creator],[CreatedTime],[Comment],[Enabled]) VALUES(@Id,@Name,@StartTime,@EndTime,@Responsible,@ContactPhone,@Company,@Creator,@CreatedTime,@Comment,@Enabled);";
+        public const string Sql_Project_Repository_Update = "UPDATE [dbo].[M_Projects] SET [Name]=@Name,[StartTime]=@StartTime,[EndTime]=@EndTime,[Responsible]=@Responsible,[ContactPhone]=@ContactPhone,[Company]=@Company,[Comment]=@Comment,[Enabled]=@Enabled WHERE [Id]=@Id";
+
+        //appointment repository
+        public const string Sql_Appointment_Repository_GetEntities = @"SELECT [Id],[StartTime],[EndTime],[ProjectId],[Creator],[CreatedTime],[Comment],[Enabled] FROM [dbo].[M_Appointments] ORDER BY [CreatedTime];";
+        public const string Sql_Appointment_Repository_GetEntitiesByDate = @"SELECT [Id],[StartTime],[EndTime],[ProjectId],[Creator],[CreatedTime],[Comment],[Enabled] FROM [dbo].[M_Appointments] WHERE [StartTime]>=@startTime and [EndTime]<=@endTime ORDER BY [CreatedTime];";
+        public const string Sql_Appointment_Repository_GetEntity = @"SELECT [Id],[StartTime],[EndTime],[ProjectId],[Creator],[CreatedTime],[Comment],[Enabled] FROM [dbo].[M_Appointments] WHERE [Id]=@Id;";
+        public const string Sql_Appointment_Repository_Insert = @"INSERT INTO [dbo].[M_Appointments]([Id],[StartTime],[EndTime],[ProjectId],[Creator],[CreatedTime],[Comment],[Enabled]) VALUES(@Id,@StartTime,@EndTime,@ProjectId,@Creator,@CreatedTime,@Comment,@Enabled);";
+        public const string Sql_Appointment_Repository_Update = @"UPDATE [dbo].[M_Appointments] SET [StartTime]=@StartTime,[EndTime]=@EndTime,[ProjectId]=@ProjectId,[Creator]=@Creator,[CreatedTime]=@CreatedTime,[Comment]=@Comment,[Enabled]=@Enabled WHERE [Id]=@Id;";
+        public const string Sql_Appointment_Repository_Delete = @"DELETE FROM [dbo].[M_Appointments] WHERE [Id]=@Id;";
+
+        //NodesInAppointment Repository
+        public const string Sql_NodesInAppointment_Repository_GetEntities = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment];";
+        public const string Sql_NodesInAppointment_Repository_GetEntitiesByNodeType = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment] WHERE [NodeType]=@NodeType;";
+        public const string Sql_NodesInAppointment_Repository_GetEntitiesByAppointmentId = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment] WHERE [AppointmentId]=@AppointmentId;";
+        public const string Sql_NodesInAppointment_Repository_Insert = @"INSERT INTO [dbo].[M_NodesInAppointment]([AppointmentId],[NodeId],[NodeType]) VALUES(@AppointmentId,@NodeId,@NodeType);";
+        public const string Sql_NodesInAppointment_Repository_Delete = @"DELETE FROM [dbo].[M_NodesInAppointment] WHERE [AppointmentId]=@AppointmentId;";
     }
 }

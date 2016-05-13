@@ -36,7 +36,7 @@ namespace iPem.Services.Resource {
             return _deviceRepository.GetEntity(id);
         }
 
-        public IPagedList<Device> GetDevicesByParent(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public IPagedList<Device> GetDevices(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
             var result = _deviceRepository.GetEntities(parent);
             return new PagedList<Device>(result, pageIndex, pageSize);
         }

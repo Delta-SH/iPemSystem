@@ -34,7 +34,7 @@ namespace iPem.Data.Repository.Master {
                     var entity = new Device();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
-                    entity.ProtcolId = SqlTypeConverter.DBNullInt32Handler(rdr["ProtcolId"]);
+                    entity.ProtcolId = SqlTypeConverter.DBNullStringHandler(rdr["ProtcolId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);

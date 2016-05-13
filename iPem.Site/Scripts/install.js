@@ -552,7 +552,7 @@
         $.each(config.database, function (index, item) {
             if (item.id === _databases_types.master) {
                 $.ajax({
-                    url: "Installation/InstallCs",
+                    url: "/Installation/InstallCs",
                     data: { type: config.type, data: JSON.stringify(item) },
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -594,7 +594,7 @@
         $.each(config.database, function (index, item) {
             if (item.id === _databases_types.history) {
                 $.ajax({
-                    url: "Installation/InstallHs",
+                    url: "/Installation/InstallHs",
                     data: { type: config.type, data: JSON.stringify(item) },
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -636,7 +636,7 @@
         $.each(config.database, function (index, item) {
             if (item.id === _databases_types.resource) {
                 $.ajax({
-                    url: "Installation/InstallRs",
+                    url: "/Installation/InstallRs",
                     data: { type: config.type, data: JSON.stringify(item) },
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
@@ -676,7 +676,7 @@
             throw new Error(_cookie_invalid_message);
 
         $.ajax({
-            url: "Installation/InstallRl",
+            url: "/Installation/InstallRl",
             data: { type: config.type, data: JSON.stringify(config.account.role) },
             dataType: 'json',
             beforeSend: function (jqXHR) {
@@ -712,7 +712,7 @@
             throw new Error(_cookie_invalid_message);
 
         $.ajax({
-            url: "Installation/InstallUe",
+            url: "/Installation/InstallUe",
             data: { type: config.type, data: JSON.stringify(config.account.user) },
             dataType: 'json',
             beforeSend: function (jqXHR) {
@@ -742,7 +742,7 @@
 
     function install_fs(config) {
         $.ajax({
-            url: "Installation/InstallFs",
+            url: "/Installation/InstallFs",
             data: { type: config.type, data: '' },
             dataType: 'json',
             beforeSend: function (jqXHR) {

@@ -33,32 +33,27 @@ namespace iPem.Services.Master {
 
         #region Methods
 
-        public IPagedList<Protocol> GetProtocolsByDeviceType(int deviceType, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_ProtocolsInDevTypePattern, deviceType);
-
+        public IPagedList<Protocol> GetProtocolsByDeviceType(string deviceType, int pageIndex = 0, int pageSize = int.MaxValue) {
             List<Protocol> result = null;
-            if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<Protocol>>(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_ProtocolsRepository)) {
+                var all = _cacheManager.Get<List<Protocol>>(GlobalCacheKeys.Cs_ProtocolsRepository);
+                result = all.FindAll(p => p.DeviceTypeId == deviceType);
             } else {
                 result = _protocolRepository.GetEntities(deviceType);
-                _cacheManager.Set<List<Protocol>>(key, result);
             }
 
             return new PagedList<Protocol>(result, pageIndex, pageSize);
         }
 
-        public IPagedList<Protocol> GetProtocols(int deviceType, int[] subDevTypes, int pageIndex = 0, int pageSize = int.MaxValue) {
-            var key = string.Format(GlobalCacheKeys.Cs_ProtocolsInDevTypePattern, deviceType);
-
+        public IPagedList<Protocol> GetProtocols(string deviceType, string[] subDevTypes, int pageIndex = 0, int pageSize = int.MaxValue) {
             List<Protocol> result = null;
-            if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<Protocol>>(key);
+            if(_cacheManager.IsSet(GlobalCacheKeys.Cs_ProtocolsRepository)) {
+                var all = _cacheManager.Get<List<Protocol>>(GlobalCacheKeys.Cs_ProtocolsRepository);
+                result = all.FindAll(p => p.DeviceTypeId == deviceType && subDevTypes.Contains(p.SubDevTypeId));
             } else {
-                result = _protocolRepository.GetEntities(deviceType);
-                _cacheManager.Set<List<Protocol>>(key, result);
+                result = _protocolRepository.GetEntities(deviceType).FindAll(p => subDevTypes.Contains(p.SubDevTypeId));
             }
 
-            result = result.FindAll(p => subDevTypes.Contains(p.SubDevTypeId));
             return new PagedList<Protocol>(result, pageIndex, pageSize);
         }
 

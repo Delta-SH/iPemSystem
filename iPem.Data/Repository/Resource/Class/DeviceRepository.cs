@@ -38,8 +38,8 @@ namespace iPem.Data.Repository.Resource {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDeviceTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]);
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
@@ -51,10 +51,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -74,8 +70,8 @@ namespace iPem.Data.Repository.Resource {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDeviceTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]);
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
@@ -87,10 +83,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -108,8 +100,8 @@ namespace iPem.Data.Repository.Resource {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
-                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["SubDeviceTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
+                    entity.SubDeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]);
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
@@ -121,10 +113,6 @@ namespace iPem.Data.Repository.Resource {
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
-                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entity.Modifier = SqlTypeConverter.DBNullStringHandler(rdr["Modifier"]);
-                    entity.ModifiedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ModifiedTime"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);

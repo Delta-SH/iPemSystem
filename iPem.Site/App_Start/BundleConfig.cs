@@ -86,18 +86,28 @@ namespace iPem.Site {
 
             //component
             bundles.Add(new ScriptBundle("~/bundles/components").Include(
+                "~/Scripts/components/AreaTypeComponent.js",
                 "~/Scripts/components/StationTypeComponent.js",
                 "~/Scripts/components/RoomTypeComponent.js",
                 "~/Scripts/components/DeviceTypeComponent.js",
                 "~/Scripts/components/AlarmLevelComponent.js",
                 "~/Scripts/components/LogicTypeComponent.js",
-                "~/Scripts/components/PointComponent.js"));
+                "~/Scripts/components/PointComponent.js",
+                "~/Scripts/components/AreaComponent.js",
+                "~/Scripts/components/StationComponent.js",
+                "~/Scripts/components/EmployeeComponent.js"));
 
             //help
             bundles.Add(new ScriptBundle("~/bundles/help").Include(
                 "~/Scripts/help.js"));
             bundles.Add(new StyleBundle("~/bundles/help/css").Include(
                 "~/Content/themes/css/help.css"));
+
+            //speech
+            bundles.Add(new ScriptBundle("~/bundles/speech").Include(
+                "~/Scripts/home.speech.js"));
+            bundles.Add(new StyleBundle("~/bundles/speech/css").Include(
+                "~/Content/themes/css/home.speech.css"));
         }
     }
 }

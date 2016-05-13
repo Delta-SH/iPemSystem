@@ -45,7 +45,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the duty identifier
         /// </summary>
-        public int DutyId { get; set; }
+        public string DutyId { get; set; }
 
         /// <summary>
         /// Gets or sets the card identifier
@@ -141,26 +141,6 @@ namespace iPem.Core.Domain.Resource {
         /// Gets or sets the remarks
         /// </summary>
         public string Remarks { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creater
-        /// </summary>
-        public string Creater { get; set; }
-
-        /// <summary>
-        /// Gets or sets the created time
-        /// </summary>
-        public DateTime CreatedTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modifier
-        /// </summary>
-        public string Modifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modified time
-        /// </summary>
-        public DateTime ModifiedTime { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the employee is enabled.

@@ -32,7 +32,7 @@ namespace iPem.Services.Resource {
 
         #region Methods
 
-        public SubDeviceType GetSubDeviceType(int id) {
+        public SubDeviceType GetSubDeviceType(string id) {
             return _subDeviceTypeRepository.GetEntity(id);
         }
 

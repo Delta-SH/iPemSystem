@@ -101,6 +101,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
@@ -110,8 +111,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\History\ActAlm.cs" />
+    <Compile Include="Domain\Master\Appointment.cs" />
     <Compile Include="Domain\Master\Device.cs" />
+    <Compile Include="Domain\Master\Dictionary.cs" />
+    <Compile Include="Domain\Master\NodesInAppointment.cs" />
     <Compile Include="Domain\Master\Point.cs" />
     <Compile Include="Domain\Master\Project.cs" />
     <Compile Include="Domain\Master\Protocol.cs" />
@@ -127,7 +132,6 @@
     <Compile Include="Domain\Resource\Area.cs" />
     <Compile Include="Domain\Resource\Brand.cs" />
     <Compile Include="Domain\Resource\Department.cs" />
-    <Compile Include="Domain\Resource\DeviceStatus.cs" />
     <Compile Include="Domain\Resource\DeviceType.cs" />
     <Compile Include="Domain\Resource\Duty.cs" />
     <Compile Include="Domain\Resource\Employee.cs" />
@@ -144,6 +148,8 @@
     <Compile Include="Domain\Resource\Supplier.cs" />
     <Compile Include="Domain\Resource\Unit.cs" />
     <Compile Include="Domain\Resource\User.cs" />
+    <Compile Include="Enum\EnmDictionary.cs" />
+    <Compile Include="Enum\EnmMethodType.cs" />
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />
@@ -189,7 +195,6 @@
     <Compile Include="WriteLockDisposable.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

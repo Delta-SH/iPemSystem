@@ -4,16 +4,17 @@
 @using iPem.Core.Enum;
 @using iPem.Core;
 @{
-    var mid = Request.QueryString["mid"];
+    var mid = ViewContext.RouteData.Values["id"];
     Menu CurrentMenu = null;
-    if(!string.IsNullOrWhiteSpace(mid)) {
+    if(mid != null) {
         int menuId;
-        if(int.TryParse(mid.Trim(), out menuId)) {
+        if(int.TryParse(mid.ToString(), out menuId)) {
             CurrentMenu = EngineContext.Current.Resolve<IMenuService>().GetMenu(menuId);
         }
     }
-
+    
     var CurrentStore = EngineContext.Current.Resolve<IWorkContext>();
+    var CurrentUser = CurrentStore.CurrentUser;
     var AssociatedEmployee = CurrentStore.AssociatedEmployee;
 }
 
@@ -111,6 +112,8 @@
         if (typeof window.$$iPems === 'undefined' || typeof window.$$iPems !== 'object')
             window.$$iPems = {};
 
+        window.$$iPems.currentUser = '@(CurrentUser != null ? CurrentUser.Uid: "")';
+        window.$$iPems.associatedEmployee = '@(AssociatedEmployee != null ? AssociatedEmployee.Name : "")';
         window.$$iPems.menuId = '@(CurrentMenu != null ? CurrentMenu.Id : -1)';
         window.$$iPems.menuVisible = @((ViewBag.MenuVisible ?? true) ? 1 : 0 ) === 1;
     </script>

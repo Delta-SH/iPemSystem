@@ -76,4 +76,12 @@
         Begin,
         End
     }
+
+    /// <summary>
+    /// Represents the human resourse enumeration
+    /// </summary>
+    public enum EnmHR {
+        Department,
+        Employee
+    }
 }

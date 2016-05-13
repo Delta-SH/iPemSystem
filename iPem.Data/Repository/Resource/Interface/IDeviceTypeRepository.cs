@@ -8,7 +8,7 @@ namespace iPem.Data.Repository.Resource {
     /// </summary>
     public partial interface IDeviceTypeRepository {
 
-        DeviceType GetEntity(int id);
+        DeviceType GetEntity(string id);
 
         List<DeviceType> GetEntities();
 

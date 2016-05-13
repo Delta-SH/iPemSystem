@@ -31,9 +31,9 @@ namespace iPem.Site.Controllers {
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
         private readonly MsSrv.IWebLogger _webLogger;
-        private readonly MsSrv.IMenuService _menuService;
         private readonly MsSrv.INoticeService _noticeService;
         private readonly MsSrv.INoticeInUserService _noticeInUserService;
+        private readonly MsSrv.IDictionaryService _dictionaryService;
         private readonly MsSrv.IPointService _msPointService;
         private readonly MsSrv.IProfileService _msProfileService;
         private readonly HsSrv.IActAlmService _hsActAlmService;
@@ -48,9 +48,9 @@ namespace iPem.Site.Controllers {
             ICacheManager cacheManager,
             IWorkContext workContext,
             MsSrv.IWebLogger webLogger,
-            MsSrv.IMenuService menuService,
             MsSrv.INoticeService noticeService,
             MsSrv.INoticeInUserService noticeInUserService,
+            MsSrv.IDictionaryService dictionaryService,
             MsSrv.IPointService msPointService,
             MsSrv.IProfileService msProfileService,
             HsSrv.IActAlmService hsActAlmService,
@@ -59,9 +59,9 @@ namespace iPem.Site.Controllers {
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
-            this._menuService = menuService;
             this._noticeService = noticeService;
             this._noticeInUserService = noticeInUserService;
+            this._dictionaryService = dictionaryService;
             this._msPointService = msPointService;
             this._msProfileService = msProfileService;
             this._hsActAlmService = hsActAlmService;
@@ -96,15 +96,135 @@ namespace iPem.Site.Controllers {
 
         public ActionResult Notice() {
             ViewBag.BarIndex = 3;
-            ViewBag.MenuVisible = false;
+            ViewBag.MenuVisible = true;
             return View();
         }
 
         public ActionResult UCenter() {
             ViewBag.BarIndex = 4;
-            ViewBag.MenuVisible = false;
+            ViewBag.MenuVisible = true;
             ViewBag.Current = _workContext.CurrentUser;
             return View();
+        }
+
+        public ActionResult Speech() {
+            return View();
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetSpeech() {
+            var data = new AjaxDataModel<List<string>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<string>()
+            };
+
+            try {
+                var dic = _dictionaryService.GetDictionary((int)EnmDictionary.Ts);
+                if(dic == null || string.IsNullOrWhiteSpace(dic.ValuesJson))
+                    return Json(data, JsonRequestBehavior.AllowGet);
+
+                var config = JsonConvert.DeserializeObject<TsValues>(dic.ValuesJson);
+                if(config.basic == null || !config.basic.Contains(1))
+                    return Json(data, JsonRequestBehavior.AllowGet);
+
+                if(config.level == null || config.level.Length == 0)
+                    return Json(data, JsonRequestBehavior.AllowGet);
+
+                if(config.content == null || config.content.Length == 0)
+                    return Json(data, JsonRequestBehavior.AllowGet);
+
+                var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
+                if(config.stationtypes != null && config.stationtypes.Length > 0)
+                    devices = devices.FindAll(d => config.stationtypes.Contains(d.Station.StaTypeId));
+
+                if(config.roomtypes != null && config.roomtypes.Length > 0)
+                    devices = devices.FindAll(d => config.roomtypes.Contains(d.Room.RoomTypeId));
+
+                if(config.devicetypes != null && config.devicetypes.Length > 0)
+                    devices = devices.FindAll(d => config.devicetypes.Contains(d.Current.DeviceTypeId));
+
+                var points = _workContext.GetAssociatedPointAttributes(config.pointtypes != null && config.pointtypes.Length > 0 ? config.pointtypes : new int[] { (int)EnmPoint.AI, (int)EnmPoint.DI });
+                if(config.logictypes != null && config.logictypes.Length > 0)
+                    points = points.FindAll(p => config.logictypes.Contains(p.Current.LogicTypeId));
+
+                if(!string.IsNullOrWhiteSpace(config.pointnames)) {
+                    var names = Common.SplitCondition(config.pointnames);
+                    if(names.Length > 0)
+                        points = points.FindAll(p => CommonHelper.ConditionContain(p.Current.Name, names));
+                }
+
+                if(Session["ScanTime"] == null)
+                    Session["ScanTime"] = DateTime.Now.AddSeconds(-30).Ticks;
+
+                var start = new DateTime(Convert.ToInt64(Session["ScanTime"]));
+                var end = DateTime.Now;
+                var alarms = _hsActAlmService.GetActAlmsByTime(start, end).Where(a => config.level.Contains((int)a.AlmLevel));
+                var result = from alarm in alarms
+                             join point in points on alarm.PointId equals point.Current.Id
+                             join device in devices on alarm.DeviceId equals device.Current.Id
+                             orderby alarm.StartTime descending
+                             select new {
+                                 Current = alarm,
+                                 Point = point,
+                                 Device = device,
+                             };
+
+                foreach(var model in result) {
+                    var contents = new List<string>();
+                    if(config.content.Contains(1))
+                        contents.Add(string.Join("", this.GetParentsInArea(model.Device.Area).Select(a => a.Name)));
+
+                    if(config.content.Contains(2))
+                        contents.Add(string.Join("", this.GetParentsInStation(model.Device.Station).Select(a => a.Name)));
+
+                    if(config.content.Contains(3))
+                        contents.Add(model.Device.Room.Name);
+
+                    if(config.content.Contains(4))
+                        contents.Add(model.Device.Current.Name);
+
+                    if(config.content.Contains(5))
+                        contents.Add(model.Point.Current.Name);
+
+                    if(config.content.Contains(6))
+                        contents.Add(CommonHelper.DateTimeConverter(model.Current.StartTime));
+
+                    if(config.content.Contains(7))
+                        contents.Add(string.Format("发生{0}", Common.GetAlarmLevelDisplay(model.Current.AlmLevel)));
+
+                    if(config.content.Contains(8) && !string.IsNullOrWhiteSpace(model.Current.AlmDesc))
+                        contents.Add(model.Current.AlmDesc);
+
+                    data.data.Add(string.Join("，", contents));
+                }
+
+                if(!config.basic.Contains(2))
+                    Session["ScanTime"] = end.Ticks;
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public FileResult Speaker(string text) {
+            try {
+                if(string.IsNullOrWhiteSpace(text))
+                    throw new iPemException("参数无效 text");
+
+                var bytes = CommonHelper.ConvertTextToSpeech(text);
+                if(bytes == null)
+                    throw new iPemException("语音转换失败");
+
+                return File(bytes, "audio/wav");
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return File(new byte[] { }, "audio/wav");
+            }
         }
 
         public ContentResult GetNavMenus() {
@@ -116,9 +236,15 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var menus = _menuService.GetMenus(_workContext.CurrentRole.Id).ToList();
-                if(menus.Count > 0) {
-                    var _menus = menus.FindAll(m => m.LastId == 0).OrderBy(m => m.Index).ToList();
+                var menus = _workContext.AssociatedMenus;
+                if(menus != null && menus.Count > 0) {
+                    var roots = new List<MsDomain.Menu>();
+                    foreach(var menu in menus) {
+                        if(!menus.Any(m => m.Id == menu.LastId))
+                            roots.Add(menu);
+                    }
+
+                    var _menus = roots.OrderBy(m => m.Index).ToList();
                     if(_menus.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -127,7 +253,7 @@ namespace iPem.Site.Controllers {
                             var root = new TreeModel {
                                 id = _menus[i].Id.ToString(),
                                 text = _menus[i].Name,
-                                href = string.IsNullOrWhiteSpace(_menus[i].Url) ? "javascript:void(0);" : string.Format("{0}?mid={1}", _menus[i].Url, _menus[i].Id),
+                                href = string.IsNullOrWhiteSpace(_menus[i].Url) ? "javascript:void(0);" : string.Format("{0}/{1}", _menus[i].Url, _menus[i].Id),
                                 icon = _menus[i].Icon,
                                 expanded = false,
                                 leaf = false
@@ -154,7 +280,7 @@ namespace iPem.Site.Controllers {
                     var children = new TreeModel {
                         id = _menus[i].Id.ToString(),
                         text = _menus[i].Name,
-                        href = string.IsNullOrWhiteSpace(_menus[i].Url) ? "javascript:void(0);" : string.Format("{0}?mid={1}", _menus[i].Url, _menus[i].Id),
+                        href = string.IsNullOrWhiteSpace(_menus[i].Url) ? "javascript:void(0);" : string.Format("{0}/{1}", _menus[i].Url, _menus[i].Id),
                         icon = _menus[i].Icon,
                         expanded = false,
                         leaf = false
@@ -607,12 +733,17 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActAlarms(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project, int start, int limit) {
-            var data = new AjaxDataModel<List<ActAlmModel>> {
+        public JsonResult RequestActAlarms(string nodeid, int nodetype, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project, int start, int limit) {
+            var data = new AjaxChartModel<List<ActAlmModel>, List<ChartModel>[]> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<ActAlmModel>()
+                data = new List<ActAlmModel>(),
+                chart = new List<ChartModel>[3] { 
+                    new List<ChartModel>() { new ChartModel { name="NoData",value=1, comment="" } },
+                    new List<ChartModel>() { new ChartModel { name="NoData",value=1, comment="" } },
+                    new List<ChartModel>() { new ChartModel { name="NoData",value=1, comment="" } }
+                }
             };
 
             try {
@@ -625,7 +756,7 @@ namespace iPem.Site.Controllers {
                     if(end > models.Count)
                         end = models.Count;
 
-                    for (int i = start; i < end; i++) {
+                    for(int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
                             id = models[i].Current.Id,
                             level = Common.GetAlarmLevelDisplay(models[i].Current.AlmLevel),
@@ -643,227 +774,10 @@ namespace iPem.Site.Controllers {
                             frequency = models[i].Current.Frequency
                         });
                     }
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false;
-                data.message = exc.Message;
-            }
 
-            return Json(data);
-        }
-
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult RequestActChart1(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
-            var data = new AjaxDataModel<List<ChartModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<ChartModel>()
-            };
-
-            try {
-                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
-                if(models != null && models.Count > 0) {
-                    var groups = models.GroupBy(m => m.Current.AlmLevel).OrderBy(g=>g.Key);
-                    foreach(var group in groups) {
-                        data.data.Add(new ChartModel {
-                            name = Common.GetAlarmLevelDisplay(group.Key),
-                            value = group.Count(),
-                            comment = ""
-                        });
-                    }
-
-                    data.message = "200 Ok";
-                    data.total = data.data.Count;
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data);
-        }
-
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult RequestActChart2(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
-            var data = new AjaxDataModel<List<ChartModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<ChartModel>()
-            };
-
-            try {
-                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
-                if(models != null && models.Count > 0) {
-                    var groups = models.GroupBy(m => new { m.Device.Type.Id, m.Device.Type.Name }).OrderBy(g => g.Key.Id);
-                    foreach(var group in groups) {
-                        data.data.Add(new ChartModel {
-                            name = group.Key.Name,
-                            value = group.Count(),
-                            comment = ""
-                        });
-                    }
-
-                    data.message = "200 Ok";
-                    data.total = data.data.Count;
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data);
-        }
-
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult RequestActChart3(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
-            var data = new AjaxDataModel<List<ChartModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<ChartModel>()
-            };
-
-            try {
-                var models = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
-                if(models != null && models.Count > 0) {
-                    var type = Enum.IsDefined(typeof(EnmOrganization), nodetype) ? (EnmOrganization)nodetype : EnmOrganization.Area;
-                    if(type == EnmOrganization.Area && nodeid == "root") {
-                        #region root
-                        var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
-                        var roots = new List<RsDomain.Area>();
-                        foreach(var area in _workContext.AssociatedAreas) {
-                            if(!dict.ContainsKey(area.ParentId))
-                                roots.Add(area);
-                        }
-
-                        foreach(var root in roots) {
-                            var matchs = new Dictionary<string, string>();
-                                matchs.Add(root.AreaId, root.Name);
-
-                            if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
-                                var current = _workContext.AssociatedAreaAttributes[root.AreaId];
-                                if(current.HasChildren) {
-                                    foreach(var child in current.Children) {
-                                        matchs[child.AreaId] = child.Name;
-                                    }
-                                }
-                            }
-
-                            var count = models.Count(m => matchs.ContainsKey(m.Device.Area.AreaId));
-                            if(count > 0)
-                                data.data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
-                        }
-                        #endregion
-                    } else if(type == EnmOrganization.Area) {
-                        #region area
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
-                            var currentRoot = _workContext.AssociatedAreaAttributes[nodeid];
-                            if(currentRoot.HasChildren) {
-                                foreach(var rc in currentRoot.FirstChildren) {
-                                    var matchs = new Dictionary<string, string>();
-                                        matchs.Add(rc.AreaId, rc.Name);
-
-                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(rc.AreaId)) {
-                                        var current = _workContext.AssociatedAreaAttributes[rc.AreaId];
-                                        if(current.HasChildren) {
-                                            foreach(var child in current.Children) {
-                                                matchs[child.AreaId] = child.Name;
-                                            }
-                                        }
-                                    }
-
-                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Area.AreaId));
-                                    if(count > 0)
-                                        data.data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
-                                }
-                            } else {
-                                var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == nodeid);
-                                var dict = stations.ToDictionary(k => k.Id, v => v.Name);
-                                var roots = new List<RsDomain.Station>();
-                                foreach(var sta in stations) {
-                                    if(!dict.ContainsKey(sta.ParentId))
-                                        roots.Add(sta);
-                                }
-
-                                foreach(var root in roots) {
-                                    var matchs = new Dictionary<string, string>();
-                                        matchs.Add(root.Id, root.Name);
-
-                                    if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
-                                        var current = _workContext.AssociatedStationAttributes[root.Id];
-                                        if(current.HasChildren) {
-                                            foreach(var child in current.Children) {
-                                                matchs[child.Id] = child.Name;
-                                            }
-                                        }
-                                    }
-
-                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Station.Id));
-                                    if(count > 0)
-                                        data.data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
-                                }
-                            }
-                        }
-                        #endregion
-                    } else if(type == EnmOrganization.Station) {
-                        #region station
-                        if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
-                            var currentRoot = _workContext.AssociatedStationAttributes[nodeid];
-                            if(currentRoot.HasChildren) {
-                                foreach(var rc in currentRoot.FirstChildren) {
-                                    var matchs = new Dictionary<string, string>();
-                                        matchs.Add(rc.Id, rc.Name);
-
-                                    if(_workContext.AssociatedStationAttributes.ContainsKey(rc.Id)) {
-                                        var current = _workContext.AssociatedStationAttributes[rc.Id];
-                                        if(current.HasChildren) {
-                                            foreach(var child in current.Children) {
-                                                matchs[child.Id] = child.Name;
-                                            }
-                                        }
-                                    }
-
-                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Station.Id));
-                                    if(count > 0)
-                                        data.data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
-                                }
-                            } else {
-                                var rooms = _workContext.AssociatedRooms.FindAll(s => s.StationId == currentRoot.Current.Id);
-                                foreach(var room in rooms) {
-                                    var count = models.Count(m => m.Device.Room.Id == room.Id);
-                                    if(count > 0)
-                                        data.data.Add(new ChartModel { name = room.Name, value = count, comment = "" });
-                                }
-                            }
-                        }
-                        #endregion
-                    } else if(type == EnmOrganization.Room) {
-                        #region room
-                        var devices = _workContext.AssociatedDevices.FindAll(d => d.RoomId == nodeid);
-                        foreach(var device in devices) {
-                            var count = models.Count(m => m.Device.Current.Id == device.Id);
-                            if(count > 0)
-                                data.data.Add(new ChartModel { name = device.Name, value = count, comment = "" });
-                        }
-                        #endregion
-                    } else if(type == EnmOrganization.Device) {
-                        #region device
-                        var current = _workContext.AssociatedDevices.Find(d => d.Id == nodeid);
-                        if(current != null) {
-                            var count = models.Count(m => m.Device.Current.Id == current.Id);
-                            if(count > 0)
-                                data.data.Add(new ChartModel { name = current.Name, value = count, comment = "" });
-                        }
-                        #endregion
-                    }
+                    data.chart[0] = this.GetActAlmChart1(models);
+                    data.chart[1] = this.GetActAlmChart2(models);
+                    data.chart[2] = this.GetActAlmChart3(nodeid, nodetype, models);
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
@@ -876,7 +790,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadActAlms(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
+        public ActionResult DownloadActAlms(string nodeid, int nodetype, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project) {
             try {
                 var models = new List<ActAlmModel>();
                 var cached = this.GetActAlmStore(nodeid, nodetype, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
@@ -912,20 +826,6 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestRemoveActAlmCache() {
-            try {
-                var key = Common.GetCachedKey(SiteCacheKeys.Site_ActAlmResultPattern, _workContext);
-                if(_cacheManager.IsSet(key))
-                    _cacheManager.Remove(key);
-
-                return Json(new AjaxResultModel { success = true, code = 200, message = "Ok" }, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [AjaxAuthorize]
         public JsonResult GetPointRss() {
             var data = new AjaxDataModel<PointRss> {
                 success = true,
@@ -949,7 +849,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult SavePointRss(int[] stationtypes, int[] roomtypes, int[] devicetypes, int[] logictypes, int[] pointtypes, string pointnames) {
+        public JsonResult SavePointRss(string[] stationtypes, string[] roomtypes, string[] devicetypes, string[] logictypes, int[] pointtypes, string pointnames) {
             try {
                 var profile = _workContext.CurrentProfile ?? new ProfileValues();
                 profile.PointRss = new PointRss() {
@@ -1120,12 +1020,7 @@ namespace iPem.Site.Controllers {
          *需要实现告警上传入库后才可以继续
          *需要明确告警确认字段和工程告警字段是扩展新表还是在原表加字段
          */
-        private List<ActAlmStore> GetActAlmStore(string nodeid, int nodetype, int[] statype, int[] roomtype, int[] devtype, int[] almlevel, int[] logictype, string pointname, string confirm, string project) {
-            var key = Common.GetCachedKey(SiteCacheKeys.Site_ActAlmResultPattern, _workContext);
-
-            if(_cacheManager.IsSet(key))
-                return _cacheManager.Get<List<ActAlmStore>>(key);
-
+        private List<ActAlmStore> GetActAlmStore(string nodeid, int nodetype, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project) {
             if(string.IsNullOrWhiteSpace(nodeid)) 
                 throw new ArgumentException("参数无效 id");
 
@@ -1185,7 +1080,7 @@ namespace iPem.Site.Controllers {
                 points = points.FindAll(p => logictype.Contains(p.Current.LogicTypeId));
 
             if(!string.IsNullOrWhiteSpace(pointname)) {
-                var names = CommonHelper.ConditionSplit(pointname);
+                var names = Common.SplitCondition(pointname);
                 if(names.Length > 0)
                     points = points.FindAll(p => CommonHelper.ConditionContain(p.Current.Name, names));
             }
@@ -1201,8 +1096,191 @@ namespace iPem.Site.Controllers {
                               Device = device,
                           }).ToList();
 
-            _cacheManager.Set<List<ActAlmStore>>(key, models, CachedIntervals.Site_ActiveIntervals);
             return models;
+        }
+
+        private List<ChartModel> GetActAlmChart1(List<ActAlmStore> models) {
+            var data = new List<ChartModel>();
+            try {
+                if(models != null && models.Count > 0) {
+                    var groups = models.GroupBy(m => m.Current.AlmLevel).OrderBy(g => g.Key);
+                    foreach(var group in groups) {
+                        data.Add(new ChartModel {
+                            name = Common.GetAlarmLevelDisplay(group.Key),
+                            value = group.Count(),
+                            comment = ""
+                        });
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+            }
+
+            return data;
+        }
+
+        private List<ChartModel> GetActAlmChart2(List<ActAlmStore> models) {
+            var data = new List<ChartModel>();
+
+            try {
+                if(models != null && models.Count > 0) {
+                    var groups = models.GroupBy(m => new { m.Device.Type.Id, m.Device.Type.Name }).OrderBy(g => g.Key.Id);
+                    foreach(var group in groups) {
+                        data.Add(new ChartModel {
+                            name = group.Key.Name,
+                            value = group.Count(),
+                            comment = ""
+                        });
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+            }
+
+            return data;
+        }
+
+        private List<ChartModel> GetActAlmChart3(string nodeid, int nodetype, List<ActAlmStore> models) {
+            var data = new List<ChartModel>();
+
+            try {
+                if(models != null && models.Count > 0) {
+                    var type = Enum.IsDefined(typeof(EnmOrganization), nodetype) ? (EnmOrganization)nodetype : EnmOrganization.Area;
+                    if(type == EnmOrganization.Area && nodeid == "root") {
+                        #region root
+                        var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
+                        var roots = new List<RsDomain.Area>();
+                        foreach(var area in _workContext.AssociatedAreas) {
+                            if(!dict.ContainsKey(area.ParentId))
+                                roots.Add(area);
+                        }
+
+                        foreach(var root in roots) {
+                            var matchs = new Dictionary<string, string>();
+                            matchs.Add(root.AreaId, root.Name);
+
+                            if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
+                                var current = _workContext.AssociatedAreaAttributes[root.AreaId];
+                                if(current.HasChildren) {
+                                    foreach(var child in current.Children) {
+                                        matchs[child.AreaId] = child.Name;
+                                    }
+                                }
+                            }
+
+                            var count = models.Count(m => matchs.ContainsKey(m.Device.Area.AreaId));
+                            if(count > 0)
+                                data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Area) {
+                        #region area
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
+                            var currentRoot = _workContext.AssociatedAreaAttributes[nodeid];
+                            if(currentRoot.HasChildren) {
+                                foreach(var rc in currentRoot.FirstChildren) {
+                                    var matchs = new Dictionary<string, string>();
+                                    matchs.Add(rc.AreaId, rc.Name);
+
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(rc.AreaId)) {
+                                        var current = _workContext.AssociatedAreaAttributes[rc.AreaId];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.AreaId] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Area.AreaId));
+                                    if(count > 0)
+                                        data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
+                                }
+                            } else {
+                                var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == nodeid);
+                                var dict = stations.ToDictionary(k => k.Id, v => v.Name);
+                                var roots = new List<RsDomain.Station>();
+                                foreach(var sta in stations) {
+                                    if(!dict.ContainsKey(sta.ParentId))
+                                        roots.Add(sta);
+                                }
+
+                                foreach(var root in roots) {
+                                    var matchs = new Dictionary<string, string>();
+                                    matchs.Add(root.Id, root.Name);
+
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
+                                        var current = _workContext.AssociatedStationAttributes[root.Id];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.Id] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Station.Id));
+                                    if(count > 0)
+                                        data.Add(new ChartModel { name = root.Name, value = count, comment = "" });
+                                }
+                            }
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Station) {
+                        #region station
+                        if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
+                            var currentRoot = _workContext.AssociatedStationAttributes[nodeid];
+                            if(currentRoot.HasChildren) {
+                                foreach(var rc in currentRoot.FirstChildren) {
+                                    var matchs = new Dictionary<string, string>();
+                                    matchs.Add(rc.Id, rc.Name);
+
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(rc.Id)) {
+                                        var current = _workContext.AssociatedStationAttributes[rc.Id];
+                                        if(current.HasChildren) {
+                                            foreach(var child in current.Children) {
+                                                matchs[child.Id] = child.Name;
+                                            }
+                                        }
+                                    }
+
+                                    var count = models.Count(m => matchs.ContainsKey(m.Device.Station.Id));
+                                    if(count > 0)
+                                        data.Add(new ChartModel { name = rc.Name, value = count, comment = "" });
+                                }
+                            } else {
+                                var rooms = _workContext.AssociatedRooms.FindAll(s => s.StationId == currentRoot.Current.Id);
+                                foreach(var room in rooms) {
+                                    var count = models.Count(m => m.Device.Room.Id == room.Id);
+                                    if(count > 0)
+                                        data.Add(new ChartModel { name = room.Name, value = count, comment = "" });
+                                }
+                            }
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Room) {
+                        #region room
+                        var devices = _workContext.AssociatedDevices.FindAll(d => d.RoomId == nodeid);
+                        foreach(var device in devices) {
+                            var count = models.Count(m => m.Device.Current.Id == device.Id);
+                            if(count > 0)
+                                data.Add(new ChartModel { name = device.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    } else if(type == EnmOrganization.Device) {
+                        #region device
+                        var current = _workContext.AssociatedDevices.Find(d => d.Id == nodeid);
+                        if(current != null) {
+                            var count = models.Count(m => m.Device.Current.Id == current.Id);
+                            if(count > 0)
+                                data.Add(new ChartModel { name = current.Name, value = count, comment = "" });
+                        }
+                        #endregion
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+            }
+
+            return data;
         }
 
         private List<IdValuePair<DeviceAttributes, PointAttributes>> GetRssPoints(string nodeid, int nodetype) {

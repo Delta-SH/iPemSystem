@@ -23,7 +23,7 @@
         model: 'EventModel',
         proxy: {
             type: 'ajax',
-            url: '../Account/GetEvents',
+            url: '/Account/GetEvents',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -51,7 +51,7 @@
         ],
         proxy: {
             type: 'ajax',
-            url: '../Account/GetComboEventLevels',
+            url: '/Account/GetComboEventLevels',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -72,7 +72,7 @@
         ],
         proxy: {
             type: 'ajax',
-            url: '../Account/GetComboEventTypes',
+            url: '/Account/GetComboEventTypes',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -101,31 +101,31 @@
             preserveScrollOnRefresh: true
         },
         columns: [{
-            text: $$iPems.lang.Event.Index,
+            text: $$iPems.lang.Event.Columns.Index,
             dataIndex: 'index',
             width: 60,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Level,
+            text: $$iPems.lang.Event.Columns.Level,
             dataIndex: 'level',
             width: 100,
             align: 'center',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Type,
+            text: $$iPems.lang.Event.Columns.Type,
             dataIndex: 'type',
             width: 100,
             align: 'center',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.ShortMessage,
+            text: $$iPems.lang.Event.Columns.ShortMessage,
             dataIndex: 'shortMessage',
             width: 100,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.FullMessage,
+            text: $$iPems.lang.Event.Columns.FullMessage,
             dataIndex: 'fullMessage',
             flex: 1,
             minWidth:100,
@@ -136,31 +136,31 @@
                 return value;
             }
         }, {
-            text: $$iPems.lang.Event.IP,
+            text: $$iPems.lang.Event.Columns.IP,
             dataIndex: 'ip',
             width: 100,
             align: 'center',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Page,
+            text: $$iPems.lang.Event.Columns.Page,
             dataIndex: 'page',
             width: 100,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Referrer,
+            text: $$iPems.lang.Event.Columns.Referrer,
             dataIndex: 'referrer',
             width: 100,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.User,
+            text: $$iPems.lang.Event.Columns.User,
             dataIndex: 'user',
             align: 'left',
             width: 100,
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Created,
+            text: $$iPems.lang.Event.Columns.Created,
             dataIndex: 'created',
             align: 'center',
             width: 100,
@@ -174,7 +174,7 @@
                     border: false,
                     items: [Ext.create('Ext.ux.MultiCombo', {
                         id: 'levels-multicombo',
-                        fieldLabel: $$iPems.lang.Event.Level,
+                        fieldLabel: $$iPems.lang.Event.ToolBar.Level,
                         valueField: 'id',
                         displayField: 'text',
                         delimiter: $$iPems.Delimiter,
@@ -188,7 +188,7 @@
                         store: comboLevelStore
                     }), Ext.create('Ext.ux.MultiCombo', {
                         id: 'types-multicombo',
-                        fieldLabel: $$iPems.lang.Event.Type,
+                        fieldLabel: $$iPems.lang.Event.ToolBar.Type,
                         valueField: 'id',
                         displayField: 'text',
                         delimiter: $$iPems.Delimiter,
@@ -207,7 +207,7 @@
                     items: [{
                         id: 'begin-datefield',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Event.BeginTime,
+                        fieldLabel: $$iPems.lang.Event.ToolBar.BeginTime,
                         labelWidth: 60,
                         width: 250,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -216,7 +216,7 @@
                     }, {
                         id: 'end-datefield',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Event.EndTime,
+                        fieldLabel: $$iPems.lang.Event.ToolBar.EndTime,
                         labelWidth: 60,
                         width: 250,
                         value: new Date(),
@@ -231,13 +231,13 @@
                             //plain: true,
                             items: [
                                 {
-                                    text: $$iPems.lang.Event.Clear,
+                                    text: $$iPems.lang.Event.ToolBar.Clear,
                                     glyph: 0xf023,
                                     handler: function (el, e) {
-                                        Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Event.ClearConfirm, function (buttonId, text) {
+                                        Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Event.Confirm, function (buttonId, text) {
                                             if (buttonId === 'yes') {
                                                 Ext.Ajax.request({
-                                                    url: '../Account/ClearEvents',
+                                                    url: '/Account/ClearEvents',
                                                     mask: new Ext.LoadMask(currentGridPanel, { msg: $$iPems.lang.AjaxHandling }),
                                                     success: function (response, options) {
                                                         var data = Ext.decode(response.responseText, true);
@@ -257,7 +257,7 @@
                                     handler: function (el, e) {
                                         var params = currentStore.getProxy().extraParams;
                                         $$iPems.download({
-                                            url: '../Account/DownloadEvents',
+                                            url: '/Account/DownloadEvents',
                                             params: {
                                                 levels: params.levels,
                                                 types: params.types,
@@ -279,120 +279,12 @@
                             currentStore.getProxy().extraParams.types = types;
                             currentStore.getProxy().extraParams.startDate = startDate;
                             currentStore.getProxy().extraParams.endDate = endDate;
-                            currentPagingToolbar.doRefresh();
+                            currentStore.loadPage(1);
                         }
                     }]
                 })
             ]
         }],
-        //tbar: Ext.create('Ext.toolbar.Toolbar', {
-        //    items: [Ext.create('Ext.ux.MultiCombo', {
-        //        id: 'levels-multicombo',
-        //        fieldLabel: $$iPems.lang.Event.Level,
-        //        valueField: 'id',
-        //        displayField: 'text',
-        //        delimiter: $$iPems.Delimiter,
-        //        queryMode: 'local',
-        //        triggerAction: 'all',
-        //        selectionMode: 'all',
-        //        emptyText: $$iPems.lang.AllEmptyText,
-        //        forceSelection: true,
-        //        labelWidth: 60,
-        //        width: 200,
-        //        store: comboLevelStore
-        //    }), Ext.create('Ext.ux.MultiCombo', {
-        //        id: 'types-multicombo',
-        //        fieldLabel: $$iPems.lang.Event.Type,
-        //        valueField: 'id',
-        //        displayField: 'text',
-        //        delimiter: $$iPems.Delimiter,
-        //        queryMode: 'local',
-        //        triggerAction: 'all',
-        //        selectionMode: 'all',
-        //        emptyText: $$iPems.lang.AllEmptyText,
-        //        forceSelection: true,
-        //        labelWidth: 60,
-        //        width: 200,
-        //        store: comboTypeStore
-        //    }), {
-        //        id: 'begin-datefield',
-        //        xtype: 'datefield',
-        //        fieldLabel: $$iPems.lang.Event.BeginTime,
-        //        labelWidth: 60,
-        //        width: 200,
-        //        value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-        //        editable: false,
-        //        allowBlank: false
-        //    }, {
-        //        id: 'end-datefield',
-        //        xtype: 'datefield',
-        //        fieldLabel: $$iPems.lang.Event.EndTime,
-        //        labelWidth: 60,
-        //        width: 200,
-        //        value: new Date(),
-        //        editable: false,
-        //        allowBlank: false
-        //    }, {
-        //        xtype: 'splitbutton',
-        //        text: $$iPems.lang.Query,
-        //        glyph: 0xf005,
-        //        menu: {
-        //            border: false,
-        //            plain: true,
-        //            items: [
-        //                {
-        //                    text: $$iPems.lang.Event.Clear,
-        //                    glyph: 0xf023,
-        //                    handler: function (el, e) {
-        //                        Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Event.ClearConfirm, function (buttonId, text) {
-        //                            if (buttonId === 'yes') {
-        //                                Ext.Ajax.request({
-        //                                    url: '../Account/ClearEvents',
-        //                                    mask: new Ext.LoadMask(currentGridPanel, { msg: $$iPems.lang.AjaxHandling }),
-        //                                    success: function (response, options) {
-        //                                        var data = Ext.decode(response.responseText, true);
-        //                                        if (data.success)
-        //                                            Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-        //                                        else
-        //                                            Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-        //                                    }
-        //                                });
-        //                            }
-        //                        });
-        //                    }
-        //                },'-',
-        //                {
-        //                    text: $$iPems.lang.Import,
-        //                    glyph: 0xf010,
-        //                    handler: function (el, e) {
-        //                        var params = currentStore.getProxy().extraParams;
-        //                        $$iPems.download({
-        //                            url: '../Account/DownloadEvents',
-        //                            params: {
-        //                                levels: params.levels,
-        //                                types: params.types,
-        //                                startDate: params.startDate,
-        //                                endDate: params.endDate
-        //                            }
-        //                        });
-        //                    }
-        //                }
-        //            ]
-        //        },
-        //        handler: function (el, e) {
-        //            var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
-        //                types = Ext.getCmp('types-multicombo').getSelectedValues(),
-        //                startDate = Ext.getCmp('begin-datefield').getRawValue(),
-        //                endDate = Ext.getCmp('end-datefield').getRawValue();
-
-        //            currentStore.getProxy().extraParams.levels = levels;
-        //            currentStore.getProxy().extraParams.types = types;
-        //            currentStore.getProxy().extraParams.startDate = startDate;
-        //            currentStore.getProxy().extraParams.endDate = endDate;
-        //            currentPagingToolbar.doRefresh();
-        //        }
-        //    }]
-        //}),
         bbar: currentPagingToolbar
     });
 

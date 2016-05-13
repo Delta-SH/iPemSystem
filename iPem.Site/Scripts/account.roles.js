@@ -16,7 +16,7 @@ var currentStore = Ext.create('Ext.data.Store', {
     model: 'RoleModel',
     proxy: {
         type: 'ajax',
-        url: '../Account/GetRoles',
+        url: '/Account/GetRoles',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -35,13 +35,13 @@ var menuStore = Ext.create('Ext.data.TreeStore',{
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.TreeRoot,
+        text: $$iPems.lang.Site.MenuNavRoot,
         icon: $$iPems.icons.Home,
         root: true
     },
     proxy: {
         type: 'ajax',
-        url: '../Account/GetMenusInRole',
+        url: '/Account/GetMenusInRole',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -56,13 +56,13 @@ var areaStore = Ext.create('Ext.data.TreeStore',{
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.TreeRoot,
+        text: $$iPems.lang.Site.MenuNavRoot,
         icon: $$iPems.icons.Home,
         root: true
     },
     proxy: {
         type: 'ajax',
-        url: '../Account/GetAreasInRole',
+        url: '/Account/GetAreasInRole',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -77,13 +77,13 @@ var operateStore = Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.TreeRoot,
+        text: $$iPems.lang.Site.MenuNavRoot,
         icon: $$iPems.icons.Home,
         root: true
     },
     proxy: {
         type: 'ajax',
-        url: '../Account/GetOperateInRole',
+        url: '/Account/GetOperateInRole',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -126,10 +126,41 @@ var saveWnd = Ext.create('Ext.window.Window', {
             margin: '10 5 10 5'
         },
         items: [
-            { id: 'id', name: 'id', xtype: 'textfield', fieldLabel: $$iPems.lang.Role.ID, allowBlank: false, readOnly: true, labelAlign: 'top' },
-            { id: 'name', name: 'name', xtype: 'textfield', fieldLabel: $$iPems.lang.Role.Name, allowBlank: false, labelAlign: 'top' },
-            { id: 'comment', name: 'comment', xtype: 'textareafield', fieldLabel: $$iPems.lang.Role.Comment, height: 100, labelAlign: 'top' },
-            { id: 'enabled', name: 'enabled', xtype: 'checkboxfield', fieldLabel: $$iPems.lang.Role.Enabled, boxLabel: $$iPems.lang.Role.EnabledLabel, inputValue: true, checked: false, labelAlign: 'top' }
+            {
+                id: 'id',
+                name: 'id',
+                xtype: 'textfield',
+                fieldLabel: $$iPems.lang.Role.Window.ID,
+                allowBlank: false,
+                readOnly: true,
+                labelAlign: 'top'
+            },
+            {
+                id: 'name',
+                name: 'name',
+                xtype: 'textfield',
+                fieldLabel: $$iPems.lang.Role.Window.Name,
+                allowBlank: false,
+                labelAlign: 'top'
+            },
+            {
+                id: 'comment',
+                name: 'comment',
+                xtype: 'textareafield',
+                fieldLabel: $$iPems.lang.Role.Window.Comment,
+                height: 100,
+                labelAlign: 'top'
+            },
+            {
+                id: 'enabled',
+                name: 'enabled',
+                xtype: 'checkboxfield',
+                fieldLabel: $$iPems.lang.Role.Window.Enabled,
+                boxLabel: $$iPems.lang.Role.Window.EnabledLabel,
+                inputValue: true,
+                checked: false,
+                labelAlign: 'top'
+            }
         ]
     },
     {
@@ -147,7 +178,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         items: [{
             id: 'treeMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.MenuTitle,
+            title: $$iPems.lang.Role.Window.MenuTitle,
             glyph: 0xf011,
             store: menuStore,
             listeners: {
@@ -166,7 +197,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         },{
             id: 'areaMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.AreaTitle,
+            title: $$iPems.lang.Role.Window.AreaTitle,
             glyph: 0xf019,
             store: areaStore,
             listeners: {
@@ -185,7 +216,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         }, {
             id: 'operateMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.OperateTitle,
+            title: $$iPems.lang.Role.Window.OperateTitle,
             glyph: 0xf028,
             store: operateStore,
             listeners: {
@@ -220,7 +251,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                   }
 
                   var areas = Ext.getCmp('areaMenus').getChecked();
-                  if (menus.length === 0) {
+                  if (areas.length === 0) {
                       result.setTextWithIcon($$iPems.lang.Role.AreaError, 'x-icon-error');
                       return false;
                   }
@@ -247,7 +278,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       submitEmptyText: false,
                       clientValidation: true,
                       preventWindow: true,
-                      url: '../Account/SaveRole',
+                      url: '/Account/SaveRole',
                       params: {
                           menuIds: menuIds,
                           areaIds: areaIds,
@@ -288,14 +319,14 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
 
-    Ext.getCmp('saveForm').getForm().load({
-        url: '../Account/GetRole',
+    var basic = Ext.getCmp('saveForm').getForm();
+    basic.load({
+        url: '/Account/GetRole',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        reset: true,
         waitMsg: $$iPems.lang.AjaxHandling,
         waitTitle: $$iPems.lang.SysTipTitle,
         success: function (form, action) {
-            form.setValues(action.result.data);
+            form.clearInvalid();
             Ext.getCmp('name').setReadOnly(true);
 
             var menuIds = [];
@@ -342,7 +373,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.Role.EditTitle);
+            saveWnd.setTitle($$iPems.lang.Role.Window.EditTitle);
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -356,7 +387,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
-                url: '../Account/DeleteRole',
+                url: '/Account/DeleteRole',
                 params: { id: record.raw.id },
                 mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
                 success: function (response, options) {
@@ -388,31 +419,31 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Role.Index,
+        text: $$iPems.lang.Role.Columns.Index,
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Role.ID,
+        text: $$iPems.lang.Role.Columns.ID,
         dataIndex: 'id',
         width: 150,
         align: 'center',
         sortable: false
     }, {
-        text: $$iPems.lang.Role.Name,
+        text: $$iPems.lang.Role.Columns.Name,
         dataIndex: 'name',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Role.Comment,
+        text: $$iPems.lang.Role.Columns.Comment,
         dataIndex: 'comment',
         flex: 1,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Role.Enabled,
+        text: $$iPems.lang.Role.Columns.Enabled,
         dataIndex: 'enabled',
         width: 100,
         align: 'center',
@@ -442,18 +473,18 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
     tbar: Ext.create('Ext.toolbar.Toolbar', {
         items: [{
             xtype: 'button',
-            text: $$iPems.lang.Role.AddTitle,
+            text: $$iPems.lang.Role.ToolBar.Add,
             glyph: 0xf001,
             handler: function (el, e) {
-                var form = Ext.getCmp('saveForm').getForm();
-                form.load({
-                    url: '../Account/GetRole',
+                var basic = Ext.getCmp('saveForm').getForm();
+                basic.load({
+                    url: '/Account/GetRole',
                     params: { id: '', action: $$iPems.Action.Add },
-                    reset: true,
                     waitMsg: $$iPems.lang.AjaxHandling,
                     waitTitle: $$iPems.lang.SysTipTitle,
                     success: function (form, action) {
-                        form.setValues(action.result.data);
+                        form.clearInvalid();
+
                         Ext.getCmp('name').setReadOnly(false);
                         var root = Ext.getCmp('treeMenus').getRootNode();
                         if (root.hasChildNodes()) {
@@ -467,7 +498,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
 
                         Ext.getCmp('saveResult').setTextWithIcon('', '');
                         saveWnd.setGlyph(0xf001);
-                        saveWnd.setTitle($$iPems.lang.Role.AddTitle);
+                        saveWnd.setTitle($$iPems.lang.Role.Window.AddTitle);
                         saveWnd.opaction = $$iPems.Action.Add;
                         saveWnd.show();
                     }
@@ -478,12 +509,12 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             text: $$iPems.lang.Import,
             glyph: 0xf010,
             handler: function (el, e) {
-                $$iPems.download({ url: '../Account/DownloadRoles', params: { condition: currentStore.getProxy().extraParams.condition } });
+                $$iPems.download({ url: '/Account/DownloadRoles', params: { condition: currentStore.getProxy().extraParams.condition } });
             }
         }, '-', {
             xtype: 'textfield',
             id: 'namesfield',
-            fieldLabel: $$iPems.lang.Role.Name,
+            fieldLabel: $$iPems.lang.Role.ToolBar.Name,
             labelWidth: 60,
             width: 250,
             maxLength: 100,
@@ -496,7 +527,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                 var namesfield = Ext.getCmp('namesfield');
                 if (!Ext.isEmpty(namesfield) && namesfield.isValid()) {
                     currentStore.getProxy().extraParams.condition = namesfield.getRawValue();
-                    currentPagingToolbar.doRefresh();
+                    currentStore.loadPage(1);
                 }
             }
         }]

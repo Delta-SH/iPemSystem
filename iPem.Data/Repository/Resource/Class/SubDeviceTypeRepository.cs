@@ -27,17 +27,17 @@ namespace iPem.Data.Repository.Resource {
 
         #region Methods
 
-        public SubDeviceType GetEntity(int id) {
-            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
-            parms[0].Value = SqlTypeConverter.DBNullInt32Checker(id);
+        public SubDeviceType GetEntity(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             SubDeviceType entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_SubDeviceType_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
                     entity = new SubDeviceType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                 }
             }
@@ -49,9 +49,9 @@ namespace iPem.Data.Repository.Resource {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_SubDeviceType_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
                     var entity = new SubDeviceType();
-                    entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.DeviceTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["DeviceTypeId"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entities.Add(entity);
                 }

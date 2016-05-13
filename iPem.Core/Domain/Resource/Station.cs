@@ -19,7 +19,7 @@ namespace iPem.Core.Domain.Resource {
         /// <summary>
         /// Gets or sets the type of the station
         /// </summary>
-        public int StaTypeId { get; set; }
+        public string StaTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the longitude
@@ -85,26 +85,6 @@ namespace iPem.Core.Domain.Resource {
         /// Gets or sets the transmission phone
         /// </summary>
         public string TranPhone { get; set; }
-
-        /// <summary>
-        /// Gets or sets the creator
-        /// </summary>
-        public string Creator { get; set; }
-
-        /// <summary>
-        /// Gets or sets the created time
-        /// </summary>
-        public DateTime CreatedTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modifier
-        /// </summary>
-        public string Modifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the modified time
-        /// </summary>
-        public DateTime? ModifiedTime { get; set; }
 
         /// <summary>
         /// Gets or sets the parent identifier

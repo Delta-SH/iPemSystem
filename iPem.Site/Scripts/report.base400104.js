@@ -7,15 +7,15 @@
         items: [
             {
                 title: '报表参数',
-                glyph: 0xf043,
+                glyph: 0xf044,
             },
             {
                 title: '指标参数',
-                glyph: 0xf043,
+                glyph: 0xf044,
             },
             {
                 title: '能耗分类字典',
-                glyph: 0xf043,
+                glyph: 0xf044,
             }
         ]
     });

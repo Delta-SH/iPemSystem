@@ -19,7 +19,7 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         ///  Gets or sets the protcol identifier
         /// </summary>
-        public int ProtcolId { get; set; }
+        public string ProtcolId { get; set; }
 
         /// <summary>
         ///  Gets or sets the comment

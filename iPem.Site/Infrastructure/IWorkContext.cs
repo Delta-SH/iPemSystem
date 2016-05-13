@@ -68,6 +68,11 @@ namespace iPem.Site.Infrastructure {
         List<RsDomain.Device> AssociatedDevices { get; }
 
         /// <summary>
+        /// Gets or sets the associated menus
+        /// </summary>
+        List<MsDomain.Menu> AssociatedMenus { get; }
+
+        /// <summary>
         /// Gets or sets the associated operations
         /// </summary>
         Dictionary<EnmOperation, string> AssociatedOperations { get; }
