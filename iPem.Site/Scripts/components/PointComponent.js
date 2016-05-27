@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.PointTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "point.type.multicombo",
+    xtype: "PointTypeMultiCombo",
     fieldLabel: $$iPems.lang.Component.PointType,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.PointTypeComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "point.type.combo",
+    xtype: "PointTypeCombo",
     fieldLabel: $$iPems.lang.Component.PointType,
     displayField: 'text',
     valueField: 'id',

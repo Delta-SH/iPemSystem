@@ -19,6 +19,11 @@ namespace iPem.Site.Infrastructure {
         public Room Room { get; set; }
 
         /// <summary>
+        /// Fsu
+        /// </summary>
+        public Fsu Fsu { get; set; }
+
+        /// <summary>
         /// Current
         /// </summary>
         public Device Current { get; set; }

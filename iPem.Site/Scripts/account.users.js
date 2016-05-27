@@ -204,7 +204,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 {
                                     id: 'empId',
                                     name: 'empId',
-                                    xtype: 'employee.treepanel',
+                                    xtype: 'EmployeePicker',
                                     fieldLabel: $$iPems.lang.User.Window.EmpName,
                                     allowBlank: false
                                 },
@@ -488,6 +488,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         forceFit: true,
         trackOver: true,
         stripeRows: true,
+        emptyText: $$iPems.lang.GridEmptyText,
         preserveScrollOnRefresh: true
     },
     columns: [{

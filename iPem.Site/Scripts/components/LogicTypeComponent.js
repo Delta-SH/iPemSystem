@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.LogicTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "logic.type.multicombo",
+    xtype: "LogicTypeMultiCombo",
     fieldLabel: $$iPems.lang.Component.LogicType,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.LogicTypeComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "logic.type.combo",
+    xtype: "LogicTypeCombo",
     fieldLabel: $$iPems.lang.Component.LogicType,
     displayField: 'text',
     valueField: 'id',

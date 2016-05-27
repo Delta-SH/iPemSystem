@@ -59,6 +59,12 @@
     pickerHeight: 300,
 
     /**
+    * @cfg {Number} minWidth
+    * The min width of the tree dropdown. Defaults to 220.
+    */
+    minWidth: 220,
+
+    /**
     * @cfg {Boolean} selectOnLeaf
     * Defaults to `false`.
     */
@@ -176,6 +182,7 @@
             focusOnToFront: false,
             pageSize: me.pageSize,
             height: me.pickerHeight,
+            minWidth: me.minWidth,
             shadow: false,
             viewConfig: {
                 loadMask: true,

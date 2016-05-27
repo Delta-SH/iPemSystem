@@ -7,5 +7,7 @@ namespace iPem.Data.Repository.Master {
 
         List<IdValuePair<string, string>> GetEntities();
 
+        List<IdValuePair<string, string>> GetRelation();
+
     }
 }

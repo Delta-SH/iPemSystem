@@ -332,6 +332,11 @@ namespace iPem.Core {
             return (fractions / numerator).ToString();
         }
 
+        /// <summary>
+        /// Convert text to speech stream
+        /// </summary>
+        /// <param name="word">the words to convert</param>
+        /// <returns>the speech stream</returns>
         public static byte[] ConvertTextToSpeech(string word) {
             byte[] bytes = null;
             var task = new Thread(() => {

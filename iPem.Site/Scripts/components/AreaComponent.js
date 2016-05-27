@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.AreaMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "area.multi.treepanel",
+    xtype: "AreaMultiPicker",
     fieldLabel: $$iPems.lang.Component.AreaName,
     displayField: 'text',
     labelWidth: 60,
@@ -116,7 +116,7 @@
 
 Ext.define("Ext.ux.AreaTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "area.treepanel",
+    xtype: "AreaPicker",
     fieldLabel: $$iPems.lang.Component.AreaName,
     displayField: 'text',
     labelWidth: 60,

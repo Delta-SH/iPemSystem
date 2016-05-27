@@ -1,4 +1,6 @@
-﻿using iPem.Core.Domain.History;
+﻿using iPem.Core;
+using iPem.Core.Domain.History;
+using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -32,6 +34,5 @@ namespace iPem.Data.Repository.History {
         /// </summary>
         /// <returns>active alarm list</returns>
         List<ActAlm> GetEntities();
-
     }
 }

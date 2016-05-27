@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.AlarmLevelMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "alarm.level.multicombo",
+    xtype: "AlarmLevelMultiCombo",
     fieldLabel: $$iPems.lang.Component.AlarmLevel,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.AlarmLevelComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "alarm.level.combo",
+    xtype: "AlarmLevelCombo",
     fieldLabel: $$iPems.lang.Component.AlarmLevel,
     displayField: 'text',
     valueField: 'id',

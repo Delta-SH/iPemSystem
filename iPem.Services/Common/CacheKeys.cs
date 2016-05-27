@@ -13,8 +13,6 @@ namespace iPem.Services.Common {
         public const string Cs_StationsRepository = "ipems:global:cs-stations@repository";
         public const string Cs_RoomsRepository = "ipems:global:cs-rooms@repository";
         public const string Cs_DevicesRepository = "ipems:global:cs-devices@repository";
-        public const string Cs_PointsInTypePattern = "ipems:global:cs-points-type@{0}@repository";
-        public const string Cs_PointsInProtcolPattern = "ipems:global:cs-points-protcol@{0}@repository";
         public const string Cs_PointsRepository = "ipems:global:cs-points@repository";
         public const string Cs_ProtocolsRepository = "ipems:global:cs-protocols@repository";
 
@@ -38,6 +36,7 @@ namespace iPem.Services.Common {
         public const string Rs_SubDeviceTypesRepository = "ipems:global:rs-sub-device-types@repository";
         public const string Rs_SuppliersRepository = "ipems:global:rs-suppliers@repository";
         public const string Rs_UnitsRepository = "ipems:global:rs-units@repository";
+        public const string Rs_FsusRepository = "ipems:global:rs-fsus@repository";
 
         //role result
         public const string Rl_UsersResultPattern = "ipems:global:role-users@{0}@result";
@@ -46,9 +45,11 @@ namespace iPem.Services.Common {
         public const string Rl_StationsResultPattern = "ipems:global:role-stations@{0}@result";
         public const string Rl_RoomsResultPattern = "ipems:global:role-rooms@{0}@result";
         public const string Rl_DevicesResultPattern = "ipems:global:role-devices@{0}@result";
+        public const string Rl_FsusResultPattern = "ipems:global:role-fsus@{0}@result";
         public const string Rl_OperationsResultPattern = "ipems:global:role-operations@{0}@result";
         public const string Rl_AreaAttributesResultPattern = "ipems:global:role-area-attributes@{0}@result";
         public const string Rl_StationAttributesResultPattern = "ipems:global:role-station-attributes@{0}@result";
+        public const string Rl_RoomAttributesResultPattern = "ipems:global:role-room-attributes@{0}@result";
         public const string Rl_DeviceAttributesResultPattern = "ipems:global:role-device-attributes@{0}@result";
 
         //user result

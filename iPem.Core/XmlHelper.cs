@@ -5,5 +5,6 @@ namespace iPem.Core {
     /// Xml helper class
     /// </summary>
     public partial class XmlHelper {
+
     }
 }

@@ -114,6 +114,24 @@ namespace iPem.Data.Common {
         }
 
         /// <summary>
+        /// DBNull DateTime Nullable Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static DateTime? DBNullDateTimeNullableHandler(object val) {
+            if(val == DBNull.Value) { return null; }
+            return (DateTime)val;
+        }
+
+        /// <summary>
+        /// DBNull DateTime Nullable Checker
+        /// </summary>
+        /// <param name="val">val</param>
+        public static object DBNullDateTimeNullableChecker(DateTime? val) {
+            if(!val.HasValue) { return DBNull.Value; }
+            return val.Value;
+        }
+
+        /// <summary>
         /// DBNull Boolean Handler
         /// </summary>
         /// <param name="val">val</param>
@@ -269,6 +287,17 @@ namespace iPem.Data.Common {
         }
 
         /// <summary>
+        /// DBNull Confirm Status Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static EnmConfirmStatus DBNullEnmConfirmStatusHandler(object val) {
+            if(val == DBNull.Value) { return EnmConfirmStatus.Unconfirmed; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmConfirmStatus), v) ? (EnmConfirmStatus)v : EnmConfirmStatus.Unconfirmed;
+        }
+
+        /// <summary>
         /// DBNull Organisation Handler
         /// </summary>
         /// <param name="val">val</param>
@@ -277,6 +306,28 @@ namespace iPem.Data.Common {
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmOrganization), v) ? (EnmOrganization)v : EnmOrganization.Area;
+        }
+
+        /// <summary>
+        /// DBNull PointStatus Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static EnmPointStatus DBNullEnmPointStatusHandler(object val) {
+            if(val == DBNull.Value) { return EnmPointStatus.Invalid; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmPointStatus), v) ? (EnmPointStatus)v : EnmPointStatus.Invalid;
+        }
+
+        /// <summary>
+        /// DBNull EndType Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static EnmAlarmEndType DBNullEnmEndTypeHandler(object val) {
+            if(val == DBNull.Value) { return EnmAlarmEndType.Normal; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmAlarmEndType), v) ? (EnmAlarmEndType)v : EnmAlarmEndType.Normal;
         }
     }
 }

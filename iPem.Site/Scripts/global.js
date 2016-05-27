@@ -249,12 +249,18 @@ window.$$iPems.Organization = {
     Point: 4
 };
 
-/*Point Type*/
+/** 
+Point Type
+0-遥信信号（DI）
+1-遥测信号（AI）
+2-遥控信号（DO）
+3-遥调信号（AO）
+*/
 window.$$iPems.Point = {
     DI: 0,
     AI: 1,
-    AO: 2,
-    DO: 3
+    DO: 2,
+    AO: 3
 };
 
 /*Point Status*/
@@ -316,6 +322,12 @@ window.$$iPems.GetAlmLevelCls = function (value) {
 
 /*global delimiter*/
 window.$$iPems.Delimiter = ';';
+
+/*global chart empty data*/
+window.$$iPems.ChartEmptyDataPie = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataLine = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataColumn = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataGauge = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
 
 /*download files via ajax*/
 window.$$iPems.download = function (config) {

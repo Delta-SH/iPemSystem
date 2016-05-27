@@ -1,5 +1,7 @@
 ﻿using iPem.Core.Enum;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace iPem.Core.Domain.History {
     /// <summary>
@@ -80,6 +82,39 @@ namespace iPem.Core.Domain.History {
         /// <summary>
         /// Gets or sets the end type
         /// </summary>
-        public int EndType { get; set; }
+        public EnmAlarmEndType EndType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the project identifier
+        /// </summary>
+        public string ProjectId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the confirm status
+        /// </summary>
+        public EnmConfirmStatus ConfirmedStatus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the confirm datetime
+        /// </summary>
+        public DateTime? ConfirmedTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the confirmer
+        /// </summary>
+        public string Confirmer { get; set; }
+
+        /// <summary>
+        /// Gets the identifier
+        /// </summary>
+        /// <returns>the identifier</returns>
+        public string GetId() {
+            var key = string.Format("{0},{1},{2}", this.DeviceId ?? "", this.PointId ?? "", this.StartTime.Ticks);
+            using(var md5Provider = new MD5CryptoServiceProvider()) {
+                var bytes = Encoding.UTF8.GetBytes(key);
+                var hash = md5Provider.ComputeHash(bytes);
+                return new Guid(hash).ToString();
+            }
+        }
     }
 }

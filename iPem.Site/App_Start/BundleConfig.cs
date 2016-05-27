@@ -92,10 +92,13 @@ namespace iPem.Site {
                 "~/Scripts/components/DeviceTypeComponent.js",
                 "~/Scripts/components/AlarmLevelComponent.js",
                 "~/Scripts/components/LogicTypeComponent.js",
-                "~/Scripts/components/PointComponent.js",
                 "~/Scripts/components/AreaComponent.js",
                 "~/Scripts/components/StationComponent.js",
-                "~/Scripts/components/EmployeeComponent.js"));
+                "~/Scripts/components/RoomComponent.js",
+                "~/Scripts/components/DeviceComponent.js",
+                "~/Scripts/components/PointComponent.js",
+                "~/Scripts/components/EmployeeComponent.js",
+                "~/Scripts/components/ImageExporterComponent.js"));
 
             //help
             bundles.Add(new ScriptBundle("~/bundles/help").Include(

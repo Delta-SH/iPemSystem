@@ -34,13 +34,17 @@
     SearchEmptyText: '未找到指定内容:<br/>{0}',
     SearchEndText: '搜索完毕',
     MultiConditionEmptyText: '多条件请以;分隔，例: A;B;C',
+    GridEmptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+    ChartEmptyText: '无数据',
     Component: {
         All:'全部',
         AreaName: '所属区域',
         AreaType: '区域类型',
         StationName: '所属站点',
         StationType: '站点类型',
+        RoomName: '所属机房',
         RoomType: '机房类型',
+        DeviceName: '设备名称',
         DeviceType: '设备类型',
         AlarmLevel: '告警级别',
         LogicType: '逻辑分类',
@@ -217,6 +221,24 @@
             ShowProject: '工程告警',
             ShowUnProject: '非工程告警'
         },
+        Confirm: {
+            Warning: '请勾选需要确认的告警',
+            Confirm: '共{0}条告警将被确认，您确定吗？'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
         Chart:{
             PieTotal: '告警总量',
             PieRate: '告警占比'
@@ -234,7 +256,11 @@
             Point: '信号名称',
             Comment: '告警描述',
             Value: '触发值',
-            Frequency: '触发频次'
+            Frequency: '触发频次',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
         }
     },
     ActivePoint: {
@@ -271,6 +297,72 @@
             StatusDisplay: '信号状态',
             Control: '遥控',
             Adjust: '遥调'
+        }
+    },
+    Dictionary:{
+        IPv4Text: 'IPv4地址格式错误',
+        Ws: {
+            Title: '数据通信',
+            LoginTitle: 'WebService 登录信息',
+            PathTitle: 'WebService 访问路径',
+            LoginItems: {
+                IP: 'WebService 通信地址',
+                IPEmptyText: '示例： 192.168.10.100',
+                Port: 'WebService 通信端口',
+                Uid: 'WebService 登录帐号',
+                Pwd: 'WebService 登录密码'
+            },
+            PathItems: {
+                Data: '实时数据 访问路径',
+                DataEmptyText: '示例： /Services/GetData',
+                Order: '远程控制 访问路径',
+                OrderEmptyText: '示例： /Services/SetOrder'
+            }
+        },
+        Ts: {
+            Title: '语音播报',
+            BasicTitle: '语音播报',
+            LevelTitle: '播报级别',
+            ContentTitle: '播报内容',
+            ConditionTitle: '播报条件',
+            BasicItems: {
+                Enabled: '启用语音播报',
+                Loop: '循环播报告警',
+                Project: '禁播工程告警'
+            },
+            LevelItems: {
+                Level1: '一级告警',
+                Level2: '二级告警',
+                Level3: '三级告警',
+                Level4: '四级告警'
+            },
+            ContentItems: {
+                Area: '所属区域',
+                Station: '所属站点',
+                Room: '所属机房',
+                Device: '所属设备',
+                Point: '所属信号',
+                AlmTime: '告警时间',
+                AlmLevel: '告警等级',
+                AlmComment: '告警描述'
+            },
+            ConditionItems: {
+                Point: '信号名称'
+            }
+        },
+        Pue: {
+            Title: '能耗分类'
+        },
+        Report: {
+            Title: '报表参数',
+            Cache: {
+                Title: '缓存管理',
+                Clear: '清空缓存',
+                Confirm: '您确认要清空缓存吗？'
+            },
+            Param: {
+                Title: '报表参数'
+            }
         }
     },
     Project:{
@@ -369,6 +461,163 @@
             Type: '类型',
             Comment: '备注',
             Enabled: '状态'
+        }
+    },
+    Report400102: {
+        ConditionTitle: '站点统计条件',
+        ChartTitle: '站点类型分类占比',
+        GridTitle: '站点统计列表',
+        GroupTpl: '{columnName}: {name} ({rows.length}条)',
+        Chart: {
+            PieTotal: '站点总量',
+            PieRate: '类型占比'
+        },
+        Columns: {
+            Index: '序号',
+            Id: '编号',
+            Name: '名称',
+            Type: '类型',
+            Longitude: '经度',
+            Latitude: '纬度',
+            Altitude: '海拔标高',
+            CityElecLoadType: '市电引入方式',
+            CityElecCap: '市电容',
+            CityElecLoad: '市电引入',
+            Contact: '维护责任人',
+            LineRadiusSize: '线径',
+            LineLength: '线缆长度',
+            SuppPowerType: '供电性质',
+            TranInfo: '转供信息',
+            TranContNo: '供电合同号',
+            TranPhone: '变电站电话',
+            Comment: '描述',
+            Enabled: '状态'
+        }
+    },
+    Report400103: {
+        ConditionTitle: '机房统计条件',
+        ChartTitle: '机房分类占比',
+        GridTitle: '机房统计列表',
+        GroupTpl: '{columnName}: {name} ({rows.length}条)',
+        Chart: {
+            PieTotal: '机房总量',
+            PieRate: '类型占比',
+        },
+        Columns: {
+            Index: '序号',
+            Id: '编号',
+            Name: '名称',
+            Type: '类型',
+            Property: '产权',
+            Address: '地址',
+            Floor: '楼层',
+            Length: '长度',
+            Width: '宽度',
+            Height: '高度',
+            FloorLoad: '楼面荷载',
+            LineHeigth: '走线架高度',
+            Square: '机房面积',
+            EffeSquare: '可使用面积',
+            FireFighEuip: '消防设备',
+            Owner: '业主联系人',
+            QueryPhone: '查询电话',
+            PowerSubMain: '动力代维',
+            TranSubMain: '传输代维',
+            EnviSubMain: '环境代维',
+            FireSubMain: '消防代维',
+            AirSubMain: '空调代维',
+            Contact: '维护负责人',
+            Comment: '描述',
+            Enabled: '状态'
+        }
+    },
+    Report400104: {
+        ConditionTitle: '设备统计条件',
+        ChartTitle: '设备分类占比',
+        GridTitle: '设备统计列表',
+        GroupTpl: '{columnName}: {name} ({rows.length}条)',
+        Chart: {
+            PieTotal: '设备总量',
+            PieRate: '类型占比',
+        },
+        Columns: {
+            Index: '序号',
+            Id: '编号',
+            Code: '编码',
+            Name: '名称',
+            Type: '类型',
+            SubType: '设备子类',
+            SysName: '系统名称',
+            SysCode: '系统编号',
+            Model: '型号',
+            Productor: '生产厂家',
+            Brand: '品牌',
+            Supplier: '供应商',
+            SubCompany: '维护厂家',
+            StartTime: '开始使用时间',
+            ScrapTime: '预计报废时间',
+            Status: '使用状态',
+            Contact: '维护负责人',
+            Comment: '描述',
+            Enabled: '状态'
+        }
+    },
+    Report400202: {
+        MenuNavTitle: '告警设备列表',
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警详细信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
         }
     }
 };

@@ -35,6 +35,11 @@ namespace iPem.Services.Master {
             return new PagedList<IdValuePair<string, string>>(result, pageIndex, pageSize);
         }
 
+        public IPagedList<IdValuePair<string, string>> GetRelation(int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = _pointsInProtcolRepository.GetRelation();
+            return new PagedList<IdValuePair<string, string>>(result, pageIndex, pageSize);
+        }
+
         #endregion
 
     }

@@ -47,9 +47,28 @@
         append = append || false;
         maxcount = maxcount || 60;
 
-        gauge.store.loadData([{ 'name': record.get('timestamp'), 'value': record.get('value'), 'comment': record.get('valueDisplay') }]);
+        var name = record.get('timestamp'),
+            value = record.get('value'),
+            comment = record.get('valueDisplay');
+
+        var abs = Math.abs(value);
+        if (abs <= 100) {
+            gauge.axes.items[0].minimum = -100;
+            gauge.axes.items[0].maximum = 100;
+        } else if (abs > 100 && abs <= 500) {
+            gauge.axes.items[0].minimum = -500;
+            gauge.axes.items[0].maximum = 500;
+        } else if (abs > 500 && abs <= 1000) {
+            gauge.axes.items[0].minimum = -1000;
+            gauge.axes.items[0].maximum = 1000;
+        } else if (abs > 1000) {
+            gauge.axes.items[0].minimum = -10000;
+            gauge.axes.items[0].maximum = 10000;
+        }
+
+        if (abs <= 10000) gauge.store.loadData([{ 'name': name, 'value': value, 'comment': comment }]);
         if (line.store.count() > maxcount) line.store.removeAt(0);
-        line.store.loadData([{ 'name': record.get('timestamp'), 'value': record.get('value'), 'comment': record.get('valueDisplay') }], append);
+        line.store.loadData([{ 'name': name, 'value': value, 'comment': comment }], append);
     };
 
     var change = function (node, pagingtoolbar, layout) {
@@ -131,7 +150,7 @@
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
             fields: ['name', 'value', 'comment'],
-            data: [{ name: 'NoData', value: 0, comment: '' }]
+            data: $$iPems.ChartEmptyDataGauge
         })
     });
 
@@ -200,7 +219,8 @@
         }],
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
-            fields: ['name', 'value', 'comment']
+            fields: ['name', 'value', 'comment'],
+            data: $$iPems.ChartEmptyDataLine
         })
     });
 
@@ -209,6 +229,8 @@
         pageSize: 20,
         model: 'PointModel',
         groupField: 'typeDisplay',
+        groupDir: 'undefined',
+        sortOnLoad: false,
         proxy: {
             type: 'ajax',
             url: '/Home/RequestActPoints',
@@ -287,19 +309,19 @@
                                 {
                                     id: 'station-type-multicombo',
                                     name: 'stationtypes',
-                                    xtype: 'station.type.multicombo',
+                                    xtype: 'StationTypeMultiCombo',
                                     emptyText: $$iPems.lang.AllEmptyText
                                 },
                                 {
                                     id: 'device-type-multicombo',
                                     name: 'devicetypes',
-                                    xtype: 'device.type.multicombo',
+                                    xtype: 'DeviceTypeMultiCombo',
                                     emptyText: $$iPems.lang.AllEmptyText
                                 },
                                 {
                                     id: 'point-type-multicombo',
                                     name: 'pointtypes',
-                                    xtype: 'point.type.multicombo',
+                                    xtype: 'PointTypeMultiCombo',
                                     emptyText: $$iPems.lang.AllEmptyText
                                 }
                             ]
@@ -312,13 +334,13 @@
                                 {
                                     id: 'room-type-multicombo',
                                     name: 'roomtypes',
-                                    xtype: 'room.type.multicombo',
+                                    xtype: 'RoomTypeMultiCombo',
                                     emptyText: $$iPems.lang.AllEmptyText
                                 },
                                 {
                                     id: 'logic-type-multicombo',
                                     name: 'logictypes',
-                                    xtype: 'logic.type.multicombo',
+                                    xtype: 'LogicTypeMultiCombo',
                                     emptyText: $$iPems.lang.AllEmptyText
                                 },
                                 {
@@ -386,8 +408,8 @@
 
     var controlWnd = Ext.create('Ext.window.Window', {
         title: $$iPems.lang.ActivePoint.Window.ControlTitle,
-        height: 200,
-        width: 320,
+        height: 250,
+        width: 400,
         glyph: 0xf040,
         modal: true,
         border: false,
@@ -472,8 +494,8 @@
 
     var adjustWnd = Ext.create('Ext.window.Window', {
         title: $$iPems.lang.ActivePoint.Window.AdjustTitle,
-        height: 200,
-        width: 320,
+        height: 250,
+        width: 400,
         glyph: 0xf028,
         modal: true,
         border: false,
@@ -792,6 +814,7 @@
                                 preserveScrollOnRefresh: true,
                                 stripeRows: true,
                                 trackOver: true,
+                                emptyText: $$iPems.lang.GridEmptyText,
                                 getRowClass: function (record, rowIndex, rowParams, store) {
                                     return $$iPems.GetPointStatusCls(record.get("status"));
                                 }

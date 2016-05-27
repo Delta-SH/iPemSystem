@@ -24,8 +24,7 @@
             position: 'right',
             itemSpacing: 3,
             boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0',
-            labelFont: '12px Arial, sans-serif'
+            boxStroke: '#c0c0c0'
         },
         series: [{
             type: 'pie',
@@ -65,8 +64,7 @@
         }],
         store: Ext.create('Ext.data.Store', {
             autoLoad: false,
-            fields: ['name', 'value', 'comment'],
-            data: [{ name: 'NoData', value: 1, comment: '' }]
+            fields: ['name', 'value', 'comment']
         })
     });
 
@@ -156,10 +154,16 @@
             load: function (me, records, successful) {
                 if (successful) {
                     var data = me.proxy.reader.jsonData;
-                    if (data && data.chart) {
-                        chartPie.getStore().loadData(data.chart, false);
-                        chartColumn.getStore().loadData(data.chart, false);
-                    }
+                    var chartDataPie = $$iPems.ChartEmptyDataPie;
+                    var chartDataColumn = $$iPems.ChartEmptyDataColumn;
+                    if (!Ext.isEmpty(data)
+                        && !Ext.isEmpty(data.chart)
+                        && Ext.isArray(data.chart)
+                        && data.chart.length > 0)
+                        chartDataPie = chartDataColumn = data.chart;
+
+                    chartPie.getStore().loadData(chartDataPie, false);
+                    chartColumn.getStore().loadData(chartDataColumn, false);
                 }
             }
         }
@@ -190,23 +194,26 @@
                         border: false,
                         items: [{
                             id: 'areasfield',
-                            xtype: 'area.treepanel',
+                            xtype: 'AreaPicker',
                             emptyText: $$iPems.lang.AllEmptyText
                         }, {
                             id: 'typesfield',
-                            xtype: 'area.type.multicombo',
+                            xtype: 'AreaTypeMultiCombo',
                             emptyText: $$iPems.lang.AllEmptyText
                         }, {
                             xtype: 'button',
                             text: $$iPems.lang.Query,
                             glyph: 0xf005,
                             handler: function (el, e) {
-                                var areasfield = Ext.getCmp('areasfield');
-                                var typesfield = Ext.getCmp('typesfield');
-                                if (!Ext.isEmpty(areasfield)) {
+                                var areasfield = Ext.getCmp('areasfield'),
+                                    typesfield = Ext.getCmp('typesfield'),
+                                    parent = areasfield.getValue(),
+                                    types = typesfield.getValue();
+
+                                if (!Ext.isEmpty(parent)) {
                                     var proxy = currentStore.getProxy();
-                                    proxy.extraParams.parent = areasfield.getValue();
-                                    proxy.extraParams.types = typesfield.getValue();
+                                    proxy.extraParams.parent = parent;
+                                    proxy.extraParams.types = types;
                                     currentStore.loadPage(1);
                                 }
                             }
@@ -220,7 +227,7 @@
                                     url: '/Report/DownloadBase400101',
                                     params: {
                                         parent: params.parent,
-                                        onlyroot: params.types
+                                        types: params.types
                                     }
                                 });
                             }
@@ -260,6 +267,7 @@
                         forceFit: true,
                         trackOver: true,
                         stripeRows: true,
+                        emptyText: $$iPems.lang.GridEmptyText,
                         preserveScrollOnRefresh: true
                     },
                     features: [{
@@ -317,6 +325,7 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
+            currentStore.loadPage(1);
         }
     });
 })();

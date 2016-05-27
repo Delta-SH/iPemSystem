@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Domain.History;
+using iPem.Core.Enum;
 using System;
 
 namespace iPem.Services.History {

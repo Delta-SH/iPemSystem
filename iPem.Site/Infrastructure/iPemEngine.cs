@@ -134,9 +134,15 @@ namespace iPem.Site.Infrastructure {
 
                 //register repository
                 builder.Register<HsData.IActAlmRepository>(c => new HsData.ActAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IAlmExtendRepository>(c => new HsData.AlmExtendRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IActValueRepository>(c => new HsData.ActValueRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IHisAlmRepository>(c => new HsData.HisAlmRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<HsSrv.ActAlmService>().As<HsSrv.IActAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.AlmExtendService>().As<HsSrv.IAlmExtendService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.ActValueService>().As<HsSrv.IActValueService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.HisAlmService>().As<HsSrv.IHisAlmService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDatabaseType.Resource)) {
@@ -162,6 +168,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<RsData.ISupplierRepository>(c => new RsData.SupplierRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IUnitRepository>(c => new RsData.UnitRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<RsData.IUserRepository>(c => new RsData.UserRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<RsData.IFsuRepository>(c => new RsData.FsuRepository(connectionString)).InstancePerLifetimeScope();
                                 
                 //register service
                 builder.RegisterType<RsSrv.EmployeeService>().As<RsSrv.IEmployeeService>().InstancePerLifetimeScope();
@@ -183,6 +190,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RsSrv.SupplierService>().As<RsSrv.ISupplierService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.UnitService>().As<RsSrv.IUnitService>().InstancePerLifetimeScope();
                 builder.RegisterType<RsSrv.UserService>().As<RsSrv.IUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<RsSrv.FsuService>().As<RsSrv.IFsuService>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);

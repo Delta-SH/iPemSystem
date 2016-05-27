@@ -1,4 +1,6 @@
-﻿using iPem.Core.Domain.History;
+﻿using iPem.Core;
+using iPem.Core.Domain.History;
+using iPem.Core.Enum;
 using iPem.Data.Common;
 using System;
 using System.Collections.Generic;
@@ -55,7 +57,11 @@ namespace iPem.Data.Repository.History {
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
                     entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullInt32Handler(rdr["EndType"]);
+                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
+                    entity.ConfirmedStatus = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["ConfirmedStatus"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
                     entities.Add(entity);
                 }
             }
@@ -92,7 +98,11 @@ namespace iPem.Data.Repository.History {
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
                     entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullInt32Handler(rdr["EndType"]);
+                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
+                    entity.ConfirmedStatus = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["ConfirmedStatus"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
                     entities.Add(entity);
                 }
             }
@@ -130,7 +140,11 @@ namespace iPem.Data.Repository.History {
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
                     entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullInt32Handler(rdr["EndType"]);
+                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
+                    entity.ConfirmedStatus = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["ConfirmedStatus"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
                     entities.Add(entity);
                 }
             }
@@ -160,7 +174,11 @@ namespace iPem.Data.Repository.History {
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
                     entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullInt32Handler(rdr["EndType"]);
+                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
+                    entity.ConfirmedStatus = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["ConfirmedStatus"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
                     entities.Add(entity);
                 }
             }

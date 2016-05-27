@@ -368,17 +368,17 @@ var saveWnd = Ext.create('Ext.window.Window', {
               if (starttime < nowtime) {
                   Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Appointment.ConfirmContinue, function (buttonId, text) {
                       if (buttonId === 'yes') {
-                          this.submit(form, nodes, result);
+                          submit(form, nodes, result);
                       }
                   });
               } else if (starttime_30 < nowtime) {
                   Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Appointment.ConfirmContinue2, function (buttonId, text) {
                       if (buttonId === 'yes') {
-                          this.submit(form, nodes, result);
+                          submit(form, nodes, result);
                       }
                   });
               } else {
-                  this.submit(form, nodes, result);
+                  submit(form, nodes, result);
               }
           }
       },
@@ -514,6 +514,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
         forceFit: true,
         trackOver: true,
         stripeRows: true,
+        emptyText: $$iPems.lang.GridEmptyText,
         preserveScrollOnRefresh: true
     },
     columns: [{

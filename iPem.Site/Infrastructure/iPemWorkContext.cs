@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Enum;
 using iPem.Services.Common;
 using iPem.Site.Models;
 using iPem.Site.Extensions;
@@ -13,7 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
-using iPem.Core.Enum;
 
 namespace iPem.Site.Infrastructure {
     /// <summary>
@@ -36,13 +36,16 @@ namespace iPem.Site.Infrastructure {
         private readonly MsSrv.IMenuService _msMenuService;
         private readonly MsSrv.IOperateInRoleService _msOperateInRoleService;
         private readonly MsSrv.IPointsInProtcolService _msPointsInProtcolService;
+        private readonly MsSrv.IDictionaryService _msDictionaryService;
         private readonly RsSrv.IAreaService _rsAreaService;
         private readonly RsSrv.IDeviceService _rsDeviceService;
         private readonly RsSrv.IEmployeeService _rsEmployeeService;
         private readonly RsSrv.IRoomService _rsRoomService;
         private readonly RsSrv.IStationService _rsStationService;
+        private readonly RsSrv.IRoomTypeService _rsRoomTypeService;
         private readonly RsSrv.IDeviceTypeService _rsDeviceTypeService;
         private readonly RsSrv.ILogicTypeService _rsLogicTypeService;
+        private readonly RsSrv.IFsuService _rsFsuService;
 
         private Guid? _cachedIdentifier;
         private Store _cachedStore;
@@ -50,14 +53,17 @@ namespace iPem.Site.Infrastructure {
         private MsDomain.User _cachedUser;
         private ProfileValues _cachedProfile;
         private RsDomain.Employee _cachedEmployee;
+        private WsValues _cachedWsValues;
         private List<RsDomain.Area> _cachedAssociatedAreas;
         private List<RsDomain.Station> _cachedAssociatedStations;
         private List<RsDomain.Room> _cachedAssociatedRooms;
         private List<RsDomain.Device> _cachedAssociatedDevices;
+        private List<RsDomain.Fsu> _cachedAssociatedFsus;
         private List<MsDomain.Menu> _cachedAssociatedMenus;
         private Dictionary<EnmOperation, string> _cachedAssociatedOperations;
         private Dictionary<string, AreaAttributes> _cachedAssociatedAreaAttributes;
         private Dictionary<string, StationAttributes> _cachedAssociatedStationAttributes;
+        private Dictionary<string, RoomAttributes> _cachedAssociatedRoomAttributes;
         private Dictionary<string, DeviceAttributes> _cachedAssociatedDeviceAttributes;
         private Dictionary<string, PointAttributes> _cachedAssociatedPointAttributes;
         private List<IdValuePair<DeviceAttributes, PointAttributes>> _cachedAssociatedRssPoints;
@@ -80,13 +86,16 @@ namespace iPem.Site.Infrastructure {
             MsSrv.IMenuService msMenuService,
             MsSrv.IOperateInRoleService msOperateInRoleService,
             MsSrv.IPointsInProtcolService msPointsInProtcolService,
+            MsSrv.IDictionaryService msDictionaryService,
             RsSrv.IAreaService rsAreaService,
             RsSrv.IDeviceService rsDeviceService,
             RsSrv.IEmployeeService rsEmployeeService,
             RsSrv.IRoomService rsRoomService,
             RsSrv.IStationService rsStationService,
+            RsSrv.IRoomTypeService rsRoomTypeService,
             RsSrv.IDeviceTypeService rsDeviceTypeService,
-            RsSrv.ILogicTypeService rsLogicTypeService) {
+            RsSrv.ILogicTypeService rsLogicTypeService,
+            RsSrv.IFsuService rsFsuService) {
             this._httpContext = httpContext;
             this._cacheManager = cacheManager;
             this._msAreaService = msAreaService;
@@ -100,13 +109,16 @@ namespace iPem.Site.Infrastructure {
             this._msMenuService = msMenuService;
             this._msOperateInRoleService = msOperateInRoleService;
             this._msPointsInProtcolService = msPointsInProtcolService;
+            this._msDictionaryService = msDictionaryService;
             this._rsAreaService = rsAreaService;
             this._rsDeviceService = rsDeviceService;
             this._rsEmployeeService = rsEmployeeService;
             this._rsRoomService = rsRoomService;
             this._rsStationService = rsStationService;
+            this._rsRoomTypeService = rsRoomTypeService;
             this._rsDeviceTypeService = rsDeviceTypeService;
             this._rsLogicTypeService = rsLogicTypeService;
+            this._rsFsuService = rsFsuService;
         }
 
         #endregion
@@ -242,6 +254,29 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public WsValues CurrentWsValues {
+            get {
+                if(_cachedWsValues != null)
+                    return _cachedWsValues;
+
+                if(Store.WsValues != null) {
+                    _cachedWsValues = Store.WsValues;
+                    return _cachedWsValues;
+                }
+
+                var ws = _msDictionaryService.GetDictionary((int)EnmDictionary.Ws);
+                if(ws != null && !string.IsNullOrWhiteSpace(ws.ValuesJson))
+                    Store.WsValues = _cachedWsValues = JsonConvert.DeserializeObject<WsValues>(ws.ValuesJson);
+
+                return _cachedWsValues;
+            }
+
+            set {
+                _cachedWsValues = value;
+                Store.WsValues = value;
+            }
+        }
+
         public RsDomain.Employee AssociatedEmployee {
             get {
                 if(_cachedEmployee != null)
@@ -341,6 +376,25 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public List<RsDomain.Fsu> AssociatedFsus {
+            get {
+                if(_cachedAssociatedFsus != null)
+                    return _cachedAssociatedFsus;
+
+                var key = string.Format(GlobalCacheKeys.Rl_FsusResultPattern, CurrentRole.Id);
+                if(_cacheManager.IsSet(key))
+                    return _cacheManager.Get<List<RsDomain.Fsu>>(key);
+
+                var fsus = _rsFsuService.GetAllFsus();
+                _cachedAssociatedFsus = (from dev in AssociatedDevices
+                                         join fsu in fsus on dev.Id equals fsu.Id
+                                         select fsu).ToList();
+
+                _cacheManager.Set<List<RsDomain.Fsu>>(key, _cachedAssociatedFsus, CachedIntervals.Global_RoleIntervals);
+                return _cachedAssociatedFsus;
+            }
+        }
+
         public List<MsDomain.Menu> AssociatedMenus {
             get {
                 if(_cachedAssociatedMenus != null)
@@ -409,6 +463,37 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public Dictionary<string, RoomAttributes> AssociatedRoomAttributes {
+            get {
+                if(_cachedAssociatedRoomAttributes != null)
+                    return _cachedAssociatedRoomAttributes;
+
+                var key = string.Format(GlobalCacheKeys.Rl_RoomAttributesResultPattern, CurrentRole.Id);
+                if(_cacheManager.IsSet(key))
+                    return _cacheManager.Get<Dictionary<string, RoomAttributes>>(key);
+
+                var types = _rsRoomTypeService.GetAllRoomTypes();
+                var attributes = from room in AssociatedRooms
+                                 join type in types on room.RoomTypeId equals type.Id
+                                 join station in AssociatedStations on room.StationId equals station.Id
+                                 join area in AssociatedAreas on station.AreaId equals area.AreaId
+                                 select new RoomAttributes {
+                                     Area = area,
+                                     Station = station,
+                                     Current = room,
+                                     Type = type
+                                 };
+
+                _cachedAssociatedRoomAttributes = new Dictionary<string, RoomAttributes>();
+                foreach(var entity in attributes) {
+                    _cachedAssociatedRoomAttributes[entity.Current.Id] = entity;
+                }
+
+                _cacheManager.Set<Dictionary<string, RoomAttributes>>(key, _cachedAssociatedRoomAttributes, CachedIntervals.Global_RoleIntervals);
+                return _cachedAssociatedRoomAttributes;
+            }
+        }
+
         public Dictionary<string, DeviceAttributes> AssociatedDeviceAttributes {
             get {
                 if(_cachedAssociatedDeviceAttributes != null)
@@ -418,18 +503,31 @@ namespace iPem.Site.Infrastructure {
                 if(_cacheManager.IsSet(key))
                     return _cacheManager.Get<Dictionary<string, DeviceAttributes>>(key);
 
-                var devTypes = _rsDeviceTypeService.GetAllDeviceTypes();
-                var attributes = from device in AssociatedDevices
-                                 join devType in devTypes on device.DeviceTypeId equals devType.Id
-                                 join room in AssociatedRooms on device.RoomId equals room.Id
+                var msDevices = _msDeviceService.GetAllDevices();
+                var rsDevices = _rsDeviceService.GetAllDevices();
+                var types = _rsDeviceTypeService.GetAllDeviceTypes();
+
+                var fuDevices = from device in msDevices
+                                join fsu in AssociatedFsus on device.FsuId equals fsu.Id into temp
+                                from defaultFsu in temp.DefaultIfEmpty()
+                                select new {
+                                    Id = device.Id,
+                                    Fsu = defaultFsu
+                                };
+
+                var attributes = from rsd in rsDevices
+                                 join fud in fuDevices on rsd.Id equals fud.Id
+                                 join type in types on rsd.DeviceTypeId equals type.Id
+                                 join room in AssociatedRooms on rsd.RoomId equals room.Id
                                  join station in AssociatedStations on room.StationId equals station.Id
                                  join area in AssociatedAreas on station.AreaId equals area.AreaId
                                  select new DeviceAttributes {
                                      Area = area,
                                      Station = station,
                                      Room = room,
-                                     Current = device,
-                                     Type = devType
+                                     Fsu = fud.Fsu,
+                                     Current = rsd,
+                                     Type = type
                                  };
 
                 _cachedAssociatedDeviceAttributes = new Dictionary<string, DeviceAttributes>();
@@ -449,18 +547,23 @@ namespace iPem.Site.Infrastructure {
 
                 var points = _msPointService.GetPoints();
                 var logictypes = _rsLogicTypeService.GetAllLogicTypes();
-                _cachedAssociatedPointAttributes = (from point in points
-                                                    join logic in logictypes on point.LogicTypeId equals logic.Id
-                                                    select new PointAttributes {
-                                                        Current = point,
-                                                        LogicType = logic
-                                                    }).ToDictionary(k => k.Current.Id, v => v);
+                var attributes = from point in points
+                                 join logic in logictypes on point.LogicTypeId equals logic.Id
+                                 select new PointAttributes {
+                                     Current = point,
+                                     LogicType = logic
+                                 };
+
+                _cachedAssociatedPointAttributes = new Dictionary<string, PointAttributes>();
+                foreach(var entity in attributes) {
+                    _cachedAssociatedPointAttributes[entity.Current.Id] = entity;
+                }
 
                 return _cachedAssociatedPointAttributes;
             }
         }
 
-        public List<IdValuePair<DeviceAttributes,PointAttributes>> AssociatedRssPoints {
+        public List<IdValuePair<DeviceAttributes, PointAttributes>> AssociatedRssPoints {
             get {
                 if(_cachedAssociatedRssPoints != null)
                     return _cachedAssociatedRssPoints;
@@ -475,32 +578,46 @@ namespace iPem.Site.Infrastructure {
                 var logictypes = CurrentProfile.PointRss.logictypes ?? new string[] { };
                 var pointtypes = CurrentProfile.PointRss.pointtypes ?? new int[] { };
                 var pointnames = Common.SplitCondition(CurrentProfile.PointRss.pointnames);
-                if(stationtypes.Length == 0
-                    && roomtypes.Length == 0
-                    && devicetypes.Length == 0
-                    && logictypes.Length == 0
-                    && pointtypes.Length == 0
+
+                if(stationtypes.Length == 0 
+                    && roomtypes.Length == 0 
+                    && devicetypes.Length == 0 
+                    && logictypes.Length == 0 
+                    && pointtypes.Length == 0 
                     && pointnames.Length == 0)
                     return new List<IdValuePair<DeviceAttributes, PointAttributes>>();
 
-                var devices = this.AssociatedDeviceAttributes.Values.ToList().FindAll(d => (stationtypes.Length == 0 || stationtypes.Contains(d.Station.StaTypeId)) && (roomtypes.Length == 0 || roomtypes.Contains(d.Room.RoomTypeId)) && (devicetypes.Length == 0 || devicetypes.Contains(d.Current.DeviceTypeId)));
-                var points = (pointtypes.Length == 0 ? this.AssociatedPointAttributes.Values.ToList() : this.GetAssociatedPointAttributes(pointtypes)).FindAll(p => (logictypes.Length == 0 || logictypes.Contains(p.Current.LogicTypeId)) && (pointnames.Length == 0 || CommonHelper.ConditionContain(p.Current.Name, pointnames)));
+                var relations = _msPointsInProtcolService.GetRelation();
+                var devWpot = from device in AssociatedDevices
+                              join rlt in relations on device.Id equals rlt.Id
+                              select rlt;
 
-                var protcolInDevice = _msDeviceService.GetAllDevices();
-                var pointsInProtcol = _msPointsInProtcolService.GetAllPointsInProtcol();
-                var pointsInDevice = from pid in protcolInDevice
-                                     join pip in pointsInProtcol on pid.ProtcolId equals pip.Id
-                                     select new {
-                                         DeviceId = pid.Id,
-                                         PointId = pip.Value
-                                     };
+                var deviceResult = AssociatedDeviceAttributes.Values.ToList();
+                if(stationtypes.Length > 0)
+                    deviceResult = deviceResult.FindAll(d => stationtypes.Contains(d.Station.StaTypeId));
 
-                _cachedAssociatedRssPoints = (from p in points
-                                              join pid in pointsInDevice on p.Current.Id equals pid.PointId
-                                              join d in devices on pid.DeviceId equals d.Current.Id
+                if(roomtypes.Length > 0)
+                    deviceResult = deviceResult.FindAll(d => roomtypes.Contains(d.Room.RoomTypeId));
+
+                if(devicetypes.Length > 0)
+                    deviceResult = deviceResult.FindAll(d => devicetypes.Contains(d.Current.DeviceTypeId));
+
+                var pointResult = AssociatedPointAttributes.Values.ToList();
+                if(pointtypes.Length > 0)
+                    pointResult = pointResult.FindAll(p => pointtypes.Contains((int)p.Current.Type));
+
+                if(logictypes.Length > 0)
+                    pointResult = pointResult.FindAll(p => logictypes.Contains(p.Current.LogicTypeId));
+
+                if(pointnames.Length > 0)
+                    pointResult = pointResult.FindAll(p => CommonHelper.ConditionContain(p.Current.Name, pointnames));
+
+                _cachedAssociatedRssPoints = (from dp in devWpot
+                                              join dr in deviceResult on dp.Id equals dr.Current.Id
+                                              join pr in pointResult on dp.Value equals pr.Current.Id
                                               select new IdValuePair<DeviceAttributes, PointAttributes> {
-                                                  Id = d,
-                                                  Value = p
+                                                  Id = dr,
+                                                  Value = pr
                                               }).ToList();
 
                 _cacheManager.Set<List<IdValuePair<DeviceAttributes, PointAttributes>>>(key, _cachedAssociatedRssPoints, CachedIntervals.Global_UserIntervals);
@@ -512,17 +629,22 @@ namespace iPem.Site.Infrastructure {
 
         #region Methods
 
-        public List<PointAttributes> GetAssociatedPointAttributes(int[] types) {
-            var logicTypes = _rsLogicTypeService.GetAllLogicTypes();
-            var points = _msPointService.GetPointsByType(types);
-            var attributes = from point in points
-                             join logic in logicTypes on point.LogicTypeId equals logic.Id
-                             select new PointAttributes {
-                                 Current = point,
-                                 LogicType = logic
-                             };
+        public List<RsDomain.Area> GetParentsInArea(RsDomain.Area current, bool include = true) {
+            var result = new List<RsDomain.Area>();
+            if(this.AssociatedAreaAttributes.ContainsKey(current.AreaId))
+                result.AddRange(this.AssociatedAreaAttributes[current.AreaId].Parents);
 
-            return attributes.ToList();
+            if(include) result.Add(current);
+            return result;
+        }
+
+        public List<RsDomain.Station> GetParentsInStation(RsDomain.Station current, bool include = true) {
+            var result = new List<RsDomain.Station>();
+            if(this.AssociatedStationAttributes.ContainsKey(current.Id))
+                result.AddRange(this.AssociatedStationAttributes[current.Id].Parents);
+
+            if(include) result.Add(current);
+            return result;
         }
 
         #endregion

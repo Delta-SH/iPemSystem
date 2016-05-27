@@ -109,7 +109,7 @@ namespace iPem.Data.Common {
         public const string Sql_Room_Repository_GetEntities = @"SELECT [Id],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Room];";
 
         //device repository
-        public const string Sql_Device_Repository_GetEntities = @"SELECT [Id],[Code],[ProtcolId],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
+        public const string Sql_Device_Repository_GetEntities = @"SELECT [Id],[Code],[ProtcolId],[FsuId],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
 
         //point repository
         public const string Sql_Point_Repository_GetEntitiesByDevice = @"
@@ -130,7 +130,7 @@ namespace iPem.Data.Common {
 
         //points in protocol
         public const string Sql_PointsInProtocol_Repository_GetEntities = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol];";
-        public const string Sql_PointsInProtocol_Repository_GetEntitiesByProtocol = @"SELECT [ProtcolId],[PointId] FROM [dbo].[P_PointsInProtcol] WHERE [ProtcolId] = @ProtcolId;";
+        public const string Sql_PointsInProtocol_Repository_GetRelation = @"SELECT D.[Id] AS [DeviceId],PP.[PointId] FROM [dbo].[M_Device] D INNER JOIN [dbo].[P_PointsInProtcol] PP ON D.[ProtcolId] = PP.[ProtcolId];";
 
         //dictionary repository
         public const string Sql_Dictionary_Repository_GetEntity = @"SELECT [Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate] FROM [dbo].[M_Dictionary] WHERE [Id]=@Id;";
@@ -152,7 +152,7 @@ namespace iPem.Data.Common {
         public const string Sql_Appointment_Repository_Update = @"UPDATE [dbo].[M_Appointments] SET [StartTime]=@StartTime,[EndTime]=@EndTime,[ProjectId]=@ProjectId,[Creator]=@Creator,[CreatedTime]=@CreatedTime,[Comment]=@Comment,[Enabled]=@Enabled WHERE [Id]=@Id;";
         public const string Sql_Appointment_Repository_Delete = @"DELETE FROM [dbo].[M_Appointments] WHERE [Id]=@Id;";
 
-        //NodesInAppointment Repository
+        //nodes in appointment repository
         public const string Sql_NodesInAppointment_Repository_GetEntities = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment];";
         public const string Sql_NodesInAppointment_Repository_GetEntitiesByNodeType = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment] WHERE [NodeType]=@NodeType;";
         public const string Sql_NodesInAppointment_Repository_GetEntitiesByAppointmentId = @"SELECT [AppointmentId],[NodeId],[NodeType] FROM [dbo].[M_NodesInAppointment] WHERE [AppointmentId]=@AppointmentId;";

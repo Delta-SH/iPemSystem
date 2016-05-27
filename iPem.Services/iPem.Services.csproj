@@ -42,7 +42,13 @@
   <ItemGroup>
     <Compile Include="Common\CacheKeys.cs" />
     <Compile Include="History\Class\ActAlmService.cs" />
+    <Compile Include="History\Class\ActValueService.cs" />
+    <Compile Include="History\Class\AlmExtendService.cs" />
+    <Compile Include="History\Class\HisAlmService.cs" />
     <Compile Include="History\Interface\IActAlmService.cs" />
+    <Compile Include="History\Interface\IActValueService.cs" />
+    <Compile Include="History\Interface\IAlmExtendService.cs" />
+    <Compile Include="History\Interface\IHisAlmService.cs" />
     <Compile Include="Master\Class\AppointmentService.cs" />
     <Compile Include="Master\Class\AreaService.cs" />
     <Compile Include="Master\Class\AreasInRoleService.cs" />
@@ -94,6 +100,7 @@
     <Compile Include="Resource\Class\DutyService.cs" />
     <Compile Include="Resource\Class\EmployeeService.cs" />
     <Compile Include="Resource\Class\EnumMethodsService.cs" />
+    <Compile Include="Resource\Class\FsuService.cs" />
     <Compile Include="Resource\Class\LogicTypeService.cs" />
     <Compile Include="Resource\Class\ProductorService.cs" />
     <Compile Include="Resource\Class\RoomTypeService.cs" />
@@ -111,6 +118,7 @@
     <Compile Include="Resource\Interface\IDutyService.cs" />
     <Compile Include="Resource\Interface\IEmployeeService.cs" />
     <Compile Include="Resource\Interface\IEnumMethodsService.cs" />
+    <Compile Include="Resource\Interface\IFsuService.cs" />
     <Compile Include="Resource\Interface\ILogicTypeService.cs" />
     <Compile Include="Resource\Interface\IProductorService.cs" />
     <Compile Include="Resource\Interface\IRoomService.cs" />

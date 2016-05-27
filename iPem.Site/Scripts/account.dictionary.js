@@ -3,7 +3,7 @@
         IPv4: function (v) {
             return /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(v);
         },
-        IPv4Text: 'IPv4地址格式错误',
+        IPv4Text: $$iPems.lang.Dictionary.IPv4Text,
         IPv4Mask: /[\d\.]/i
     });
 
@@ -14,7 +14,7 @@
         items: [
             {
                 id: 'wsconfig',
-                title: '数据通信',
+                title: $$iPems.lang.Dictionary.Ws.Title,
                 glyph: 0xf047,
                 xtype: 'form',
                 layout: {
@@ -24,7 +24,7 @@
                 items: [{
                     itemId: 'login',
                     xtype: 'fieldset',
-                    title: 'WebService 登录信息',
+                    title: $$iPems.lang.Dictionary.Ws.LoginTitle,
                     margin: '20 20 10 20',
                     defaultType: 'textfield',
                     layout: 'anchor',
@@ -39,8 +39,8 @@
                             itemId: 'ip',
                             name:'ip',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 通信地址',
-                            emptyText: '示例： 192.168.10.100',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.IP,
+                            emptyText: $$iPems.lang.Dictionary.Ws.LoginItems.IPEmptyText,
                             vtype: 'IPv4',
                             allowBlank: false
                         },
@@ -48,7 +48,7 @@
                             itemId: 'port',
                             name: 'port',
                             xtype: 'numberfield',
-                            fieldLabel: 'WebService 通信端口',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Port,
                             value: 8080,
                             minValue: 1,
                             maxValue: 65535,
@@ -58,21 +58,21 @@
                             itemId: 'uid',
                             name: 'uid',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 登录帐号',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Uid,
                             allowBlank: false
                         },
                         {
                             itemId: 'pwd',
                             name: 'pwd',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 登录密码',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Pwd,
                             allowBlank: false
                         }
                     ]
                 }, {
                     itemId: 'path',
                     xtype: 'fieldset',
-                    title: 'WebService 访问路径',
+                    title: $$iPems.lang.Dictionary.Ws.PathTitle,
                     margin: '10 20 20 20',
                     defaultType: 'textfield',
                     layout: 'anchor',
@@ -87,16 +87,16 @@
                             itemId: 'data',
                             name: 'data',
                             xtype: 'textfield',
-                            fieldLabel: '实时数据 访问路径',
-                            emptyText: '示例： /Services/GetData?wsdl',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.PathItems.Data,
+                            emptyText: $$iPems.lang.Dictionary.Ws.PathItems.DataEmptyText,
                             allowBlank: false
                         },
                         {
                             itemId: 'order',
                             name: 'order',
                             xtype: 'textfield',
-                            fieldLabel: '远程控制 访问路径',
-                            emptyText: '示例： /Services/SetOrder?wsdl',
+                            fieldLabel: $$iPems.lang.Dictionary.Ws.PathItems.Order,
+                            emptyText: $$iPems.lang.Dictionary.Ws.PathItems.OrderEmptyText,
                             allowBlank: false
                         }
                     ]
@@ -105,7 +105,7 @@
                 buttons: [
                     {
                         xtype: 'button',
-                        text: '保存',
+                        text: $$iPems.lang.Save,
                         width: 90,
                         scale: 'medium',
                         handler: function () {
@@ -142,7 +142,7 @@
             },
             {
                 id: 'tsconfig',
-                title: '语音播报',
+                title: $$iPems.lang.Dictionary.Ts.Title,
                 glyph: 0xf048,
                 xtype: 'form',
                 items: [
@@ -154,7 +154,7 @@
                             {
                                 xtype: 'fieldset',
                                 flex: 1,
-                                title: '语音播报',
+                                title: $$iPems.lang.Dictionary.Ts.BasicTitle,
                                 defaultType: 'checkbox',
                                 layout: 'anchor',
                                 defaults: {
@@ -163,10 +163,11 @@
                                 },
                                 items: [{
                                     xtype: 'checkboxgroup',
-                                    columns:1,
+                                    columns:2,
                                     items: [
-                                        { boxLabel: '启用语音', name: 'basic', inputValue: 1 },
-                                        { boxLabel: '循环播报', name: 'basic', inputValue: 2 }
+                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Enabled, name: 'basic', inputValue: 1 },
+                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Loop, name: 'basic', inputValue: 2 },
+                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Project, name: 'basic', inputValue: 3 }
                                     ]
                                 }]
                             }, {
@@ -175,7 +176,7 @@
                             }, {
                                 xtype: 'fieldset',
                                 flex: 1,
-                                title: '播报级别',
+                                title: $$iPems.lang.Dictionary.Ts.LevelTitle,
                                 defaultType: 'radio',
                                 layout: 'anchor',
                                 defaults: {
@@ -187,10 +188,10 @@
                                         xtype: 'checkboxgroup',
                                         columns:2,
                                         items: [
-                                            { boxLabel: '一级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level1 },
-                                            { boxLabel: '二级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level2 },
-                                            { boxLabel: '三级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level3 },
-                                            { boxLabel: '四级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level4 }
+                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level1, name: 'level', inputValue: $$iPems.AlmLevel.Level1 },
+                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level2, name: 'level', inputValue: $$iPems.AlmLevel.Level2 },
+                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level3, name: 'level', inputValue: $$iPems.AlmLevel.Level3 },
+                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level4, name: 'level', inputValue: $$iPems.AlmLevel.Level4 }
                                         ]
                                     }
                                 ]
@@ -199,7 +200,7 @@
                     },
                     {
                         xtype: 'fieldset',
-                        title: '播报内容',
+                        title: $$iPems.lang.Dictionary.Ts.ContentTitle,
                         margin: '10 20 20 20',
                         defaultType: 'checkbox',
                         layout: 'anchor',
@@ -211,20 +212,20 @@
                             xtype: 'checkboxgroup',
                             columns: 4,
                             items: [
-                                { boxLabel: '所属区域', name: 'content', inputValue: 1 },
-                                { boxLabel: '所属站点', name: 'content', inputValue: 2 },
-                                { boxLabel: '所属机房', name: 'content', inputValue: 3 },
-                                { boxLabel: '所属设备', name: 'content', inputValue: 4 },
-                                { boxLabel: '所属信号', name: 'content', inputValue: 5 },
-                                { boxLabel: '告警时间', name: 'content', inputValue: 6 },
-                                { boxLabel: '告警等级', name: 'content', inputValue: 7 },
-                                { boxLabel: '告警描述', name: 'content', inputValue: 8 }
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Area, name: 'content', inputValue: 1 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Station, name: 'content', inputValue: 2 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Room, name: 'content', inputValue: 3 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Device, name: 'content', inputValue: 4 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Point, name: 'content', inputValue: 5 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmTime, name: 'content', inputValue: 6 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmLevel, name: 'content', inputValue: 7 },
+                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmComment, name: 'content', inputValue: 8 }
                             ]
                         }]
                     },
                     {
                         xtype: 'fieldset',
-                        title: '播报条件',
+                        title: $$iPems.lang.Dictionary.Ts.ConditionTitle,
                         margin: 20,
                         fieldDefaults: {
                             anchor: '100%',
@@ -244,17 +245,17 @@
                                         items: [
                                             {
                                                 name: 'stationtypes',
-                                                xtype: 'station.type.multicombo',
+                                                xtype: 'StationTypeMultiCombo',
                                                 emptyText: $$iPems.lang.AllEmptyText
                                             },
                                             {
                                                 name: 'devicetypes',
-                                                xtype: 'device.type.multicombo',
+                                                xtype: 'DeviceTypeMultiCombo',
                                                 emptyText: $$iPems.lang.AllEmptyText
                                             },
                                             {
                                                 name: 'pointtypes',
-                                                xtype: 'point.type.multicombo',
+                                                xtype: 'PointTypeMultiCombo',
                                                 emptyText: $$iPems.lang.AllEmptyText
                                             }
                                         ]
@@ -266,18 +267,18 @@
                                         items: [
                                             {
                                                 name: 'roomtypes',
-                                                xtype: 'room.type.multicombo',
+                                                xtype: 'RoomTypeMultiCombo',
                                                 emptyText: $$iPems.lang.AllEmptyText
                                             },
                                             {
                                                 name: 'logictypes',
-                                                xtype: 'logic.type.multicombo',
+                                                xtype: 'LogicTypeMultiCombo',
                                                 emptyText: $$iPems.lang.AllEmptyText
                                             },
                                             {
                                                 name: 'pointnames',
                                                 xtype: 'textfield',
-                                                fieldLabel: '信号名称',
+                                                fieldLabel: $$iPems.lang.Dictionary.Ts.ConditionItems.Point,
                                                 emptyText: $$iPems.lang.MultiConditionEmptyText
                                             }
                                         ]
@@ -291,7 +292,7 @@
                 buttons: [
                     {
                         xtype: 'button',
-                        text: '保存',
+                        text: $$iPems.lang.Save,
                         width: 90,
                         scale: 'medium',
                         handler: function () {
@@ -327,7 +328,7 @@
                 ]
             },
             {
-                title: '能耗分类',
+                title: $$iPems.lang.Dictionary.Pue.Title,
                 glyph: 0xf043,
                 layout: {
                     type: 'hbox',
@@ -335,8 +336,64 @@
                 }
             },
             {
-                title: '报表参数',
+                title: $$iPems.lang.Dictionary.Report.Title,
                 glyph: 0xf044,
+                xtype: 'form',
+                items: [
+                    {
+                        xtype: 'fieldset',
+                        title: $$iPems.lang.Dictionary.Report.Cache.Title,
+                        margin: '10 20 20 20',
+                        layout: {
+                            type: 'hbox',
+                            align: 'middle'
+                        },
+                        defaults: {
+                            margin: 15
+                        },
+                        items: [{
+                            xtype: 'button',
+                            text: $$iPems.lang.Dictionary.Report.Cache.Clear,
+                            width: 90,
+                            scale: 'medium',
+                            handler: function () {
+                                Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Dictionary.Report.Cache.Confirm, function (buttonId, text) {
+                                    if (buttonId === 'yes') {
+                                        var cacheResult = Ext.getCmp('cacheResult');
+                                        cacheResult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                        Ext.Ajax.request({
+                                            url: '/Account/ClearCache',
+                                            success: function (response, options) {
+                                                var data = Ext.decode(response.responseText, true);
+                                                if (data.success)
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
+                                                else
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            id: 'cacheResult',
+                            xtype: 'iconlabel',
+                            text: ''
+                        }]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: $$iPems.lang.Dictionary.Report.Param.Title,
+                        height: 100,
+                        margin: '10 20 20 20',
+                        defaultType: 'checkbox',
+                        layout: 'anchor',
+                        defaults: {
+                            margin: 15
+                        },
+                        items: []
+                    }
+                ]
             }
         ]
     });

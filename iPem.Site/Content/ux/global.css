@@ -81,3 +81,7 @@
 .x-tip-body-default a {
   color: rgb(255, 255, 255);
 }
+
+.x-custom-tool .x-tool-print {
+    background-image: url('../themes/icons/print.png');
+}

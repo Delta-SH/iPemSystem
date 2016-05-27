@@ -104,6 +104,7 @@
     <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -113,6 +114,9 @@
   <ItemGroup>
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\History\ActAlm.cs" />
+    <Compile Include="Domain\History\ActValue.cs" />
+    <Compile Include="Domain\History\AlmExtend.cs" />
+    <Compile Include="Domain\History\HisAlm.cs" />
     <Compile Include="Domain\Master\Appointment.cs" />
     <Compile Include="Domain\Master\Device.cs" />
     <Compile Include="Domain\Master\Dictionary.cs" />
@@ -137,6 +141,7 @@
     <Compile Include="Domain\Resource\Employee.cs" />
     <Compile Include="Domain\Resource\Device.cs" />
     <Compile Include="Domain\Resource\EnumMethods.cs" />
+    <Compile Include="Domain\Resource\Fsu.cs" />
     <Compile Include="Domain\Resource\LogicType.cs" />
     <Compile Include="Domain\Resource\Productor.cs" />
     <Compile Include="Domain\Resource\Room.cs" />
@@ -148,6 +153,7 @@
     <Compile Include="Domain\Resource\Supplier.cs" />
     <Compile Include="Domain\Resource\Unit.cs" />
     <Compile Include="Domain\Resource\User.cs" />
+    <Compile Include="Enum\EnmBI.cs" />
     <Compile Include="Enum\EnmDictionary.cs" />
     <Compile Include="Enum\EnmMethodType.cs" />
     <Compile Include="Enum\EnmSite.cs" />
@@ -192,6 +198,7 @@
     <Compile Include="Task\TaskManager.cs" />
     <Compile Include="Task\TaskThread.cs" />
     <Compile Include="WebHelper.cs" />
+    <Compile Include="WebServiceHelper.cs" />
     <Compile Include="WriteLockDisposable.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>

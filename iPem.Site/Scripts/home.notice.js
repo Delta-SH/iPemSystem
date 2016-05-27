@@ -93,6 +93,7 @@
             forceFit: true,
             trackOver: true,
             stripeRows: true,
+            emptyText: $$iPems.lang.GridEmptyText,
             preserveScrollOnRefresh: true
         },
         columns: [{

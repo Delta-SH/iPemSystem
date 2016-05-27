@@ -166,7 +166,6 @@ namespace iPem.Site.Controllers {
 
                     var store = new Store {
                         Id = Guid.NewGuid(),
-                        ActAlmNoticeTime = now,
                         ExpireUtc = now.Add(CachedIntervals.Site_StoreIntervals),
                         CreatedUtc = now
                     };
@@ -1562,6 +1561,7 @@ namespace iPem.Site.Controllers {
                     LastUpdatedDate = DateTime.Now
                 });
 
+                _workContext.CurrentWsValues = values;
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
@@ -1621,6 +1621,17 @@ namespace iPem.Site.Controllers {
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult ClearCache() {
+            try {
+                _cacheManager.Clear();
+                return Json(new AjaxResultModel { success = true, code = 200, message = "清空缓存成功" }, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 

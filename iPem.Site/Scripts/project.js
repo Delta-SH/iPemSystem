@@ -229,6 +229,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
+        emptyText: $$iPems.lang.GridEmptyText,
         preserveScrollOnRefresh: true
     },
     columns: [{

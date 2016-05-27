@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.AreaTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "area.type.multicombo",
+    xtype: "AreaTypeMultiCombo",
     fieldLabel: $$iPems.lang.Component.AreaType,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.AreaTypeComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "area.type.combo",
+    xtype: "AreaTypeCombo",
     fieldLabel: $$iPems.lang.Component.AreaType,
     displayField: 'text',
     valueField: 'id',

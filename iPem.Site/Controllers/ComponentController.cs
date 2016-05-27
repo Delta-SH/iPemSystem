@@ -167,6 +167,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(EnmAlarmLevel level in Enum.GetValues(typeof(EnmAlarmLevel))) {
+                    if(level == EnmAlarmLevel.NoAlarm) continue;
                     data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplay(level) });
                 }
             } catch(Exception exc) {
@@ -649,6 +650,677 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonNetResult GetRooms(string node, bool? multiselect, bool? leafselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(node == "root") {
+                    #region root organization
+                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
+                    var roots = new List<RsDomain.Area>();
+                    foreach(var area in _workContext.AssociatedAreas) {
+                        if(!dict.ContainsKey(area.ParentId))
+                            roots.Add(area);
+                    }
+
+                    if(roots.Count > 0) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = roots.Count;
+                        for(var i = 0; i < roots.Count; i++) {
+                            var root = new TreeModel {
+                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].AreaId),
+                                text = roots[i].Name,
+                                icon = Icons.Diqiu,
+                                expanded = false,
+                                leaf = false
+                            };
+
+                            if(multiselect.HasValue && multiselect.Value) {
+                                if(!leafselect.HasValue || !leafselect.Value)
+                                    root.selected = false;
+                            }
+
+                            data.data.Add(root);
+                        }
+                    }
+                    #endregion
+                } else if(!string.IsNullOrWhiteSpace(node)) {
+                    var keys = Common.SplitKeys(node);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Area) {
+                            #region area organization
+                            if(_workContext.AssociatedAreaAttributes.ContainsKey(id)) {
+                                var current = _workContext.AssociatedAreaAttributes[id];
+                                if(current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.FirstChildren.Count;
+                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.FirstChildren[i].AreaId),
+                                            text = current.FirstChildren[i].Name,
+                                            icon = Icons.Diqiu,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value) {
+                                            if(!leafselect.HasValue || !leafselect.Value)
+                                                root.selected = false;
+                                        }
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == id);
+                                    var dict = stations.ToDictionary(k => k.Id, v => v.Name);
+                                    var roots = new List<RsDomain.Station>();
+                                    foreach(var sta in stations) {
+                                        if(!dict.ContainsKey(sta.ParentId))
+                                            roots.Add(sta);
+                                    }
+
+                                    if(roots.Count > 0) {
+                                        data.success = true;
+                                        data.message = "200 Ok";
+                                        data.total = roots.Count;
+                                        for(var i = 0; i < roots.Count; i++) {
+                                            var root = new TreeModel {
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, roots[i].Id),
+                                                text = roots[i].Name,
+                                                icon = Icons.Juzhan,
+                                                expanded = false,
+                                                leaf = false
+                                            };
+
+                                            if(multiselect.HasValue && multiselect.Value) {
+                                                if(!leafselect.HasValue || !leafselect.Value)
+                                                    root.selected = false;
+                                            }
+
+                                            data.data.Add(root);
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Station) {
+                            #region station organization
+                            if(_workContext.AssociatedStationAttributes.ContainsKey(id)) {
+                                var current = _workContext.AssociatedStationAttributes[id];
+                                if(current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.FirstChildren.Count;
+                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Station, current.FirstChildren[i].Id),
+                                            text = current.FirstChildren[i].Name,
+                                            icon = Icons.Juzhan,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value) {
+                                            if(!leafselect.HasValue || !leafselect.Value)
+                                                root.selected = false;
+                                        }
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == id);
+                                    if(rooms.Count > 0) {
+                                        data.success = true;
+                                        data.message = "200 Ok";
+                                        data.total = rooms.Count;
+                                        for(var i = 0; i < rooms.Count; i++) {
+                                            var root = new TreeModel {
+                                                id = Common.JoinKeys((int)EnmOrganization.Room, rooms[i].Id),
+                                                text = rooms[i].Name,
+                                                icon = Icons.Room,
+                                                expanded = false,
+                                                leaf = true
+                                            };
+
+                                            if(multiselect.HasValue && multiselect.Value)
+                                                root.selected = false;
+
+                                            data.data.Add(root);
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetRoomPath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach(var node in nodes) {
+                    var keys = Common.SplitKeys(node);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Area) {
+                            #region area organization
+                            var match = _workContext.AssociatedAreas.Find(a => a.AreaId == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                    }
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Station) {
+                            #region station organization
+                            var match = _workContext.AssociatedStations.Find(s => s.Id == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                    }
+                                }
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+
+                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
+                                    var current = _workContext.AssociatedStationAttributes[match.Id];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                    }
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Room) {
+                            #region room organization
+                            var match = _workContext.AssociatedRooms.Find(r => r.Id == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.StationId)) {
+                                    var station = _workContext.AssociatedStationAttributes[match.StationId];
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
+                                        var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
+                                        if(current.HasParents) {
+                                            foreach(var parent in current.Parents)
+                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                        }
+                                    }
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
+
+                                    if(station.HasParents) {
+                                        foreach(var parent in station.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                    }
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult FilterRoomPath(string text) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(text)) {
+                    text = text.Trim().ToLower();
+
+                    var areaMatchs = _workContext.AssociatedAreas.FindAll(a => a.Name.ToLower().Contains(text));
+                    foreach(var match in areaMatchs) {
+                        var paths = new List<string>();
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                            if(current.HasParents) {
+                                foreach(var parent in current.Parents)
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                            }
+                        }
+
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+                        data.data.Add(paths.ToArray());
+                    }
+
+                    var staMatchs = _workContext.AssociatedStations.FindAll(s => s.Name.ToLower().Contains(text));
+                    foreach(var match in staMatchs) {
+                        var paths = new List<string>();
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                            if(current.HasParents) {
+                                foreach(var parent in current.Parents)
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                            }
+                        }
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+
+                        if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
+                            var current = _workContext.AssociatedStationAttributes[match.Id];
+                            if(current.HasParents) {
+                                foreach(var parent in current.Parents)
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                            }
+                        }
+
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                        data.data.Add(paths.ToArray());
+                    }
+
+                    var roomMatchs = _workContext.AssociatedRooms.FindAll(r => r.Name.ToLower().Contains(text));
+                    foreach(var match in roomMatchs) {
+                        var paths = new List<string>();
+                        var root = _workContext.AssociatedStations.Find(s => s.Id == match.StationId);
+                        if(root != null) {
+                            if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
+                                var current = _workContext.AssociatedAreaAttributes[root.AreaId];
+                                if(current.HasParents) {
+                                    foreach(var parent in current.Parents)
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                }
+                            }
+                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, root.AreaId));
+
+                            if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
+                                var current = _workContext.AssociatedStationAttributes[root.Id];
+                                if(current.HasParents) {
+                                    foreach(var parent in current.Parents)
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                }
+                            }
+                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, root.Id));
+                        }
+
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                        data.data.Add(paths.ToArray());
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetDevices(string node, bool? multiselect, bool? leafselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(node == "root") {
+                    #region root organization
+                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
+                    var roots = new List<RsDomain.Area>();
+                    foreach(var area in _workContext.AssociatedAreas) {
+                        if(!dict.ContainsKey(area.ParentId))
+                            roots.Add(area);
+                    }
+
+                    if(roots.Count > 0) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = roots.Count;
+                        for(var i = 0; i < roots.Count; i++) {
+                            var root = new TreeModel {
+                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].AreaId),
+                                text = roots[i].Name,
+                                icon = Icons.Diqiu,
+                                expanded = false,
+                                leaf = false
+                            };
+
+                            if(multiselect.HasValue && multiselect.Value) {
+                                if(!leafselect.HasValue || !leafselect.Value)
+                                    root.selected = false;
+                            }
+
+                            data.data.Add(root);
+                        }
+                    }
+                    #endregion
+                } else if(!string.IsNullOrWhiteSpace(node)) {
+                    var keys = Common.SplitKeys(node);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Area) {
+                            #region area organization
+                            if(_workContext.AssociatedAreaAttributes.ContainsKey(id)) {
+                                var current = _workContext.AssociatedAreaAttributes[id];
+                                if(current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.FirstChildren.Count;
+                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.FirstChildren[i].AreaId),
+                                            text = current.FirstChildren[i].Name,
+                                            icon = Icons.Diqiu,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value) {
+                                            if(!leafselect.HasValue || !leafselect.Value)
+                                                root.selected = false;
+                                        }
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == id);
+                                    var dict = stations.ToDictionary(k => k.Id, v => v.Name);
+                                    var roots = new List<RsDomain.Station>();
+                                    foreach(var sta in stations) {
+                                        if(!dict.ContainsKey(sta.ParentId))
+                                            roots.Add(sta);
+                                    }
+
+                                    if(roots.Count > 0) {
+                                        data.success = true;
+                                        data.message = "200 Ok";
+                                        data.total = roots.Count;
+                                        for(var i = 0; i < roots.Count; i++) {
+                                            var root = new TreeModel {
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, roots[i].Id),
+                                                text = roots[i].Name,
+                                                icon = Icons.Juzhan,
+                                                expanded = false,
+                                                leaf = false
+                                            };
+
+                                            if(multiselect.HasValue && multiselect.Value) {
+                                                if(!leafselect.HasValue || !leafselect.Value)
+                                                    root.selected = false;
+                                            }
+
+                                            data.data.Add(root);
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Station) {
+                            #region station organization
+                            if(_workContext.AssociatedStationAttributes.ContainsKey(id)) {
+                                var current = _workContext.AssociatedStationAttributes[id];
+                                if(current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.FirstChildren.Count;
+                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Station, current.FirstChildren[i].Id),
+                                            text = current.FirstChildren[i].Name,
+                                            icon = Icons.Juzhan,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value) {
+                                            if(!leafselect.HasValue || !leafselect.Value)
+                                                root.selected = false;
+                                        }
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == id);
+                                    if(rooms.Count > 0) {
+                                        data.success = true;
+                                        data.message = "200 Ok";
+                                        data.total = rooms.Count;
+                                        for(var i = 0; i < rooms.Count; i++) {
+                                            var root = new TreeModel {
+                                                id = Common.JoinKeys((int)EnmOrganization.Room, rooms[i].Id),
+                                                text = rooms[i].Name,
+                                                icon = Icons.Room,
+                                                expanded = false,
+                                                leaf = false
+                                            };
+
+                                            if(multiselect.HasValue && multiselect.Value) {
+                                                if(!leafselect.HasValue || !leafselect.Value)
+                                                    root.selected = false;
+                                            }
+
+                                            data.data.Add(root);
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Room) {
+                            #region room organization
+                            var devices = _workContext.AssociatedDevices.FindAll(d => d.RoomId == id);
+                            if(devices.Count > 0) {
+                                data.success = true;
+                                data.message = "200 Ok";
+                                data.total = devices.Count;
+                                for(var i = 0; i < devices.Count; i++) {
+                                    var root = new TreeModel {
+                                        id = Common.JoinKeys((int)EnmOrganization.Device, devices[i].Id),
+                                        text = devices[i].Name,
+                                        icon = Icons.Device,
+                                        expanded = false,
+                                        leaf = true
+                                    };
+
+                                    if(multiselect.HasValue && multiselect.Value)
+                                        root.selected = false;
+
+                                    data.data.Add(root);
+                                }
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetDevicePath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach(var node in nodes) {
+                    var keys = Common.SplitKeys(node);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Area) {
+                            #region area organization
+                            var match = _workContext.AssociatedAreas.Find(a => a.AreaId == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                    }
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Station) {
+                            #region station organization
+                            var match = _workContext.AssociatedStations.Find(s => s.Id == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
+                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                    }
+                                }
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+
+                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
+                                    var current = _workContext.AssociatedStationAttributes[match.Id];
+                                    if(current.HasParents) {
+                                        foreach(var parent in current.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                    }
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Room) {
+                            #region room organization
+                            var match = _workContext.AssociatedRooms.Find(r => r.Id == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.StationId)) {
+                                    var station = _workContext.AssociatedStationAttributes[match.StationId];
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
+                                        var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
+                                        if(current.HasParents) {
+                                            foreach(var parent in current.Parents)
+                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                        }
+                                    }
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
+
+                                    if(station.HasParents) {
+                                        foreach(var parent in station.Parents)
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                    }
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Device) {
+                            #region device organization
+                            var match = _workContext.AssociatedDevices.Find(d => d.Id == id);
+                            if(match != null) {
+                                var paths = new List<string>();
+                                var room = _workContext.AssociatedRooms.Find(r => r.Id == match.RoomId);
+                                if(room != null) {
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(room.StationId)) {
+                                        var station = _workContext.AssociatedStationAttributes[room.StationId];
+                                        if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
+                                            var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
+                                            if(current.HasParents) {
+                                                foreach(var parent in current.Parents)
+                                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                            }
+                                        }
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
+
+                                        if(station.HasParents) {
+                                            foreach(var parent in station.Parents)
+                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                        }
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                    }
+
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Room, room.Id));
+                                }
+
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Device, match.Id));
+                                data.data.Add(paths.ToArray());
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonNetResult GetEmployees(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
@@ -764,6 +1436,21 @@ namespace iPem.Site.Controllers {
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult SaveCharts(string[] svgs) {
+            try {
+                var images = Common.MergeSvgXml(svgs);
+                if(images != null)
+                    return File(images, "image/png", "chart.png");
+
+                throw new iPemException("生成图片失败");
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
         }
 
         #endregion

@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.DeviceTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "device.type.multicombo",
+    xtype: "DeviceTypeMultiCombo",
     fieldLabel: $$iPems.lang.Component.DeviceType,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.DeviceTypeComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "device.type.combo",
+    xtype: "DeviceTypeCombo",
     fieldLabel: $$iPems.lang.Component.DeviceType,
     displayField: 'text',
     valueField: 'id',

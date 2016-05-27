@@ -40,6 +40,19 @@ namespace iPem.Data.Repository.Master {
             return entities;
         }
 
+        public virtual List<IdValuePair<string, string>> GetRelation() {
+            var entities = new List<IdValuePair<string, string>>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_PointsInProtocol_Repository_GetRelation, null)) {
+                while(rdr.Read()) {
+                    entities.Add(new IdValuePair<string, string>() {
+                        Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]),
+                        Value = SqlTypeConverter.DBNullStringHandler(rdr["PointId"])
+                    });
+                }
+            }
+            return entities;
+        }
+
         #endregion
  
     }

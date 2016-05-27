@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.StationTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
-    xtype: "station.type.multicombo",
+    xtype: "StationTypeMultiCombo",
     fieldLabel: $$iPems.lang.Component.StationType,
     valueField: 'id',
     displayField: 'text',
@@ -38,7 +38,7 @@
 
 Ext.define("Ext.ux.StationTypeComboBox", {
     extend: "Ext.form.ComboBox",
-    xtype: "station.type.combo",
+    xtype: "StationTypeCombo",
     fieldLabel: $$iPems.lang.Component.StationType,
     displayField: 'text',
     valueField: 'id',

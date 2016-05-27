@@ -22,6 +22,11 @@ namespace iPem.Core.Domain.Master {
         public string ProtcolId { get; set; }
 
         /// <summary>
+        ///  Gets or sets the fsu identifier
+        /// </summary>
+        public string FsuId { get; set; }
+
+        /// <summary>
         ///  Gets or sets the comment
         /// </summary>
         public string Comment { get; set; }

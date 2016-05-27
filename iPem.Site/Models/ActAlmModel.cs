@@ -8,6 +8,9 @@ namespace iPem.Site.Models {
     [Serializable]
     public class ActAlmModel {
         [ExcelDisplayName("序号")]
+        public int index { get; set; }
+
+        [ExcelIgnore]
         public string id { get; set; }
 
         [ExcelDisplayName("告警级别")]
@@ -48,6 +51,18 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("触发频次")]
         public int frequency { get; set; }
+
+        [ExcelDisplayName("工程预约")]
+        public string project { get; set; }
+
+        [ExcelDisplayName("确认状态")]
+        public string confirmedstatus { get; set; }
+
+        [ExcelDisplayName("确认时间")]
+        public string confirmedtime { get; set; }
+
+        [ExcelDisplayName("确认人员")]
+        public string confirmer { get; set; }
 
         [ScriptIgnore]
         [ExcelBackground]

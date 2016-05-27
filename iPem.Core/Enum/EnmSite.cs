@@ -39,11 +39,17 @@
     /// <summary>
     /// Represents the point enumeration
     /// </summary>
+    /// <remarks>
+    /// 0-遥信信号（DI）
+    /// 1-遥测信号（AI）
+    /// 2-遥控信号（DO）
+    /// 3-遥调信号（AO）
+    /// </remarks>
     public enum EnmPoint {
         DI,
         AI,
-        AO,
-        DO
+        DO,
+        AO
     }
 
     /// <summary>
@@ -63,7 +69,8 @@
     /// Represents the alarm level enumeration
     /// </summary>
     public enum EnmAlarmLevel {
-        Level1 = 1,
+        NoAlarm,
+        Level1,
         Level2,
         Level3,
         Level4
@@ -75,6 +82,34 @@
     public enum EnmAlarmFlag {
         Begin,
         End
+    }
+
+    /// <summary>
+    /// Represents the alarm end type enumeration
+    /// </summary>
+    /// <remarks>
+    /// Normal - 正常结束
+    /// UpLevel - 升级结束
+    /// Filter - 过滤结束
+    /// Mask - 手动屏蔽结束
+    /// NodeRemove - 节点删除
+    /// DeviceRemove - 设备删除
+    /// </remarks>
+    public enum EnmAlarmEndType {
+        Normal,
+        UpLevel,
+        Filter,
+        Mask,
+        NodeRemove,
+        DeviceRemove
+    }
+
+    /// <summary>
+    /// Represents the alarm confirm status enumeration
+    /// </summary>
+    public enum EnmConfirmStatus {
+        Unconfirmed,
+        Confirmed
     }
 
     /// <summary>

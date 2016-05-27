@@ -7,8 +7,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Reflection;
 using System.Web;
 using System.Web.Security;
+using System.Xml;
 
 namespace iPem.Site.Infrastructure {
     public class Common {
@@ -106,6 +108,45 @@ namespace iPem.Site.Infrastructure {
                 code += chars[index].ToString();
             }
             return code;
+        }
+
+        public static byte[] MergeSvgXml(string[] svgs) {
+            if(svgs == null || svgs.Length == 0)
+                return null;
+
+            var images = new Bitmap[svgs.Length];
+            for(var i = 0; i < svgs.Length; i++) {
+                var xml = new XmlDocument();
+                xml.XmlResolver = null;
+                xml.LoadXml(HttpUtility.HtmlDecode(svgs[i]));
+                var svgGraph = Svg.SvgDocument.Open(xml);
+                var image = svgGraph.Draw();
+                images[i] = image;
+            }
+
+            int width = 0, height = 0;
+            foreach(var image in images) {
+                width = width + image.Width;
+                if(image.Height > height)
+                    height = image.Height;
+            }
+
+            using(var result = new Bitmap(width, height)) {
+                using(var canvas = Graphics.FromImage(result)) {
+                    var start = 0;
+                    canvas.Clear(Color.White);
+                    for(var i = 0; i < images.Length; i++) {
+                        canvas.DrawImage(images[i], new Rectangle(start, 0, images[i].Width, images[i].Height));
+                        start += images[i].Width;
+                    }
+                    canvas.Save();
+                }
+
+                using(var ms = new MemoryStream()) {
+                    result.Save(ms, ImageFormat.Png);
+                    return ms.ToArray();
+                }
+            }
         }
 
         public static string GetCachedKey(string pattern, IWorkContext workContext) {
@@ -221,6 +262,8 @@ namespace iPem.Site.Infrastructure {
 
         public static string GetAlarmLevelDisplay(EnmAlarmLevel level) {
             switch(level) {
+                case EnmAlarmLevel.NoAlarm:
+                    return "无告警";
                 case EnmAlarmLevel.Level1:
                     return "一级告警";
                 case EnmAlarmLevel.Level2:
@@ -229,6 +272,61 @@ namespace iPem.Site.Infrastructure {
                     return "三级告警";
                 case EnmAlarmLevel.Level4:
                     return "四级告警";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetConfirmStatusDisplay(EnmConfirmStatus status) {
+            switch(status) {
+                case EnmConfirmStatus.Confirmed:
+                    return "已确认";
+                case EnmConfirmStatus.Unconfirmed:
+                    return "未确认";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetValueDisplay(EnmPoint type, double value, string unit) {
+            switch(type) {
+                case EnmPoint.DI:
+                case EnmPoint.DO:
+                    var result = string.Empty;
+                    var units = (unit ?? string.Empty).Split(new char[] { ';' },StringSplitOptions.RemoveEmptyEntries);
+                    foreach(var u in units) {
+                        var vs = u.Split(new char[] { '&' },StringSplitOptions.RemoveEmptyEntries);
+                        if(vs.Length != 2) continue;
+
+                        var flag = ((int)value).ToString();
+                        if(vs[0].Trim() == flag) {
+                            result = vs[1].Trim();
+                            break;
+                        }
+                    }
+                    return result;
+                case EnmPoint.AI:
+                case EnmPoint.AO:
+                    return string.Format("{0} {1}", value, unit ?? string.Empty);
+                default:
+                    return "";
+            }
+        }
+
+        public static string GetEndTypeDisplay(EnmAlarmEndType type) {
+            switch(type) {
+                case EnmAlarmEndType.Normal:
+                    return "正常结束";
+                case EnmAlarmEndType.UpLevel:
+                    return "升级结束";
+                case EnmAlarmEndType.Filter:
+                    return "过滤结束";
+                case EnmAlarmEndType.Mask:
+                    return "手动屏蔽结束";
+                case EnmAlarmEndType.NodeRemove:
+                    return "节点删除";
+                case EnmAlarmEndType.DeviceRemove:
+                    return "设备删除";
                 default:
                     return "未定义";
             }
@@ -268,6 +366,44 @@ namespace iPem.Site.Infrastructure {
                 return string.Empty;
 
             return string.Join(GlobalSeparator, keys);
+        }
+
+        public static bool SetAllowUnsafeHeaderParsing() {
+            //Get the assembly that contains the internal class
+            var aNetAssembly = Assembly.GetAssembly(typeof(System.Net.Configuration.SettingsSection));
+            if(aNetAssembly != null) {
+                //Use the assembly in order to get the internal type for the internal class
+                var aSettingsType = aNetAssembly.GetType("System.Net.Configuration.SettingsSectionInternal");
+                if(aSettingsType != null) {
+                    //Use the internal static property to get an instance of the internal settings class.
+                    //If the static instance isn't created allready the property will create it for us.
+                    var anInstance = aSettingsType.InvokeMember("Section", BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.NonPublic, null, null, new object[] { });
+                    if(anInstance != null) {
+                        //Locate the private bool field that tells the framework is unsafe header parsing should be allowed or not
+                        var aUseUnsafeHeaderParsing = aSettingsType.GetField("useUnsafeHeaderParsing", BindingFlags.NonPublic | BindingFlags.Instance);
+                        if(aUseUnsafeHeaderParsing != null) {
+                            aUseUnsafeHeaderParsing.SetValue(anInstance, true);
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static EnmBIType ConvertEnmPoint(EnmPoint type) {
+            switch(type) {
+                case EnmPoint.AI:
+                    return EnmBIType.AI;
+                case EnmPoint.AO:
+                    return EnmBIType.AO;
+                case EnmPoint.DI:
+                    return EnmBIType.DI;
+                case EnmPoint.DO:
+                    return EnmBIType.DO;
+                default:
+                    return EnmBIType.AREA;
+            }
         }
     }
 }

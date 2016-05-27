@@ -1,8 +1,10 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Domain.History;
+using iPem.Core.Enum;
 using iPem.Data.Repository.History;
 using System;
+using System.Collections.Generic;
 
 namespace iPem.Services.History {
     public partial class ActAlmService : IActAlmService {

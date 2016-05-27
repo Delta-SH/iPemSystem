@@ -47,6 +47,10 @@
       <HintPath>..\packages\Autofac.Mvc4.3.1.0\lib\net40\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FsuService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Resources\services\FsuService.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +74,10 @@
     </Reference>
     <Reference Include="NPOI.OpenXmlFormats, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Svg, Version=2.1.0.28187, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.2.1.0\lib\Svg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -173,6 +181,7 @@
     </Compile>
     <Compile Include="Extensions\AjaxAuthorizeAttribute.cs" />
     <Compile Include="Infrastructure\AreaAttributes.cs" />
+    <Compile Include="Infrastructure\BIPack.cs" />
     <Compile Include="Infrastructure\Common.cs" />
     <Compile Include="Infrastructure\DeviceAttributes.cs" />
     <Compile Include="Infrastructure\EngineContext.cs" />
@@ -183,16 +192,26 @@
     <Compile Include="Infrastructure\IWorkContext.cs" />
     <Compile Include="Extensions\JsonNetResult.cs" />
     <Compile Include="Infrastructure\PointAttributes.cs" />
+    <Compile Include="Infrastructure\RoomAttributes.cs" />
     <Compile Include="Infrastructure\StationAttributes.cs" />
     <Compile Include="Infrastructure\Store.cs" />
     <Compile Include="Models\ActAlmModel.cs" />
-    <Compile Include="Models\ActAlmStore.cs" />
+    <Compile Include="Models\AlmStore.cs" />
     <Compile Include="Models\ActPointModel.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />
     <Compile Include="Models\AjaxChartModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\BI\ActDataAckTemplate.cs" />
+    <Compile Include="Models\BI\ActDataDeviceAckTemplate.cs" />
+    <Compile Include="Models\BI\ActDataDeviceTemplate .cs" />
+    <Compile Include="Models\BI\ActDataTemplate.cs" />
+    <Compile Include="Models\BI\SetDataAckTemplate.cs" />
+    <Compile Include="Models\BI\SetDataDeviceAckTemplate.cs" />
+    <Compile Include="Models\BI\SetDataDeviceTemplate.cs" />
+    <Compile Include="Models\BI\SetDataTemplate.cs" />
+    <Compile Include="Models\BI\TSemaphore.cs" />
     <Compile Include="Models\Model400101.cs" />
     <Compile Include="Models\ChartModel.cs" />
     <Compile Include="Models\ComboItem.cs" />
@@ -203,6 +222,10 @@
     <Compile Include="Models\Installation\DbModel.cs" />
     <Compile Include="Models\Installation\RoleModel.cs" />
     <Compile Include="Models\Installation\UserModel.cs" />
+    <Compile Include="Models\Model400102.cs" />
+    <Compile Include="Models\Model400103.cs" />
+    <Compile Include="Models\Model400104.cs" />
+    <Compile Include="Models\Model400202.cs" />
     <Compile Include="Models\NoticeModel.cs" />
     <Compile Include="Models\PointRss.cs" />
     <Compile Include="Models\ProfileValues.cs" />
@@ -302,6 +325,7 @@
     <Content Include="Resources\install\upgrade\update_hs_database.sql" />
     <Content Include="Resources\install\upgrade\update_rs_data.sql" />
     <Content Include="Resources\install\upgrade\update_rs_database.sql" />
+    <Content Include="Resources\services\FsuService.dll" />
     <Content Include="Scripts\account.dictionary.js" />
     <Content Include="Scripts\account.events.js" />
     <Content Include="Scripts\account.login.js" />
@@ -313,10 +337,13 @@
     <Content Include="Scripts\components\AlarmLevelComponent.js" />
     <Content Include="Scripts\components\AreaComponent.js" />
     <Content Include="Scripts\components\AreaTypeComponent.js" />
+    <Content Include="Scripts\components\DeviceComponent.js" />
     <Content Include="Scripts\components\DeviceTypeComponent.js" />
     <Content Include="Scripts\components\EmployeeComponent.js" />
+    <Content Include="Scripts\components\ImageExporterComponent.js" />
     <Content Include="Scripts\components\LogicTypeComponent.js" />
     <Content Include="Scripts\components\PointComponent.js" />
+    <Content Include="Scripts\components\RoomComponent.js" />
     <Content Include="Scripts\components\RoomTypeComponent.js" />
     <Content Include="Scripts\components\StationComponent.js" />
     <Content Include="Scripts\components\StationTypeComponent.js" />

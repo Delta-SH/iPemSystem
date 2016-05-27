@@ -1,6 +1,6 @@
 ﻿Ext.define("Ext.ux.StationMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "station.multi.treepanel",
+    xtype: "StationMultiPicker",
     fieldLabel: $$iPems.lang.Component.StationName,
     displayField: 'text',
     labelWidth: 60,
@@ -117,7 +117,7 @@
 
 Ext.define("Ext.ux.StationTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "station.treepanel",
+    xtype: "StationPicker",
     fieldLabel: $$iPems.lang.Component.StationName,
     displayField: 'text',
     labelWidth: 60,

@@ -43,6 +43,11 @@ namespace iPem.Site.Infrastructure {
         ProfileValues CurrentProfile { get; set; }
 
         /// <summary>
+        /// Gets or sets the current webservice values
+        /// </summary>
+        WsValues CurrentWsValues { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated employee
         /// </summary>
         RsDomain.Employee AssociatedEmployee { get; }
@@ -68,6 +73,11 @@ namespace iPem.Site.Infrastructure {
         List<RsDomain.Device> AssociatedDevices { get; }
 
         /// <summary>
+        /// Gets or sets the associated fsus
+        /// </summary>
+        List<RsDomain.Fsu> AssociatedFsus { get; }
+
+        /// <summary>
         /// Gets or sets the associated menus
         /// </summary>
         List<MsDomain.Menu> AssociatedMenus { get; }
@@ -88,6 +98,11 @@ namespace iPem.Site.Infrastructure {
         Dictionary<string, StationAttributes> AssociatedStationAttributes { get; }
 
         /// <summary>
+        /// Gets or sets the associated room attributes
+        /// </summary>
+        Dictionary<string, RoomAttributes> AssociatedRoomAttributes { get; }
+
+        /// <summary>
         /// Gets or sets the associated device attributes
         /// </summary>
         Dictionary<string, DeviceAttributes> AssociatedDeviceAttributes { get; }
@@ -103,10 +118,19 @@ namespace iPem.Site.Infrastructure {
         List<IdValuePair<DeviceAttributes, PointAttributes>> AssociatedRssPoints { get; }
 
         /// <summary>
-        /// Gets the associated point attributes
+        /// Gets the parent areas
         /// </summary>
-        /// <param name="types">the point types array</param>
-        /// <returns>the associated point attributes</returns>
-        List<PointAttributes> GetAssociatedPointAttributes(int[] types);
+        /// <param name="current">current area</param>
+        /// <param name="include">include</param>
+        /// <returns></returns>
+        List<RsDomain.Area> GetParentsInArea(RsDomain.Area current, bool include = true);
+
+        /// <summary>
+        /// Gets the parent stations
+        /// </summary>
+        /// <param name="current">current station</param>
+        /// <param name="include">include</param>
+        /// <returns></returns>
+        List<RsDomain.Station> GetParentsInStation(RsDomain.Station current, bool include = true);
     }
 }

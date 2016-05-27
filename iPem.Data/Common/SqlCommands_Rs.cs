@@ -92,5 +92,9 @@ namespace iPem.Data.Common {
         //user repository
         public const string Sql_User_Repository_GetEntity = @"SELECT [Id],[Uid],[Pwd],[PwdFormat],[PwdSalt],[OpLevel],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark],[EmpId],[Enabled] FROM [dbo].[U_User] WHERE [Id]=@Id;";
         public const string Sql_User_Repository_GetEntities = @"SELECT [Id],[Uid],[Pwd],[PwdFormat],[PwdSalt],[OpLevel],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark],[EmpId],[Enabled] FROM [dbo].[U_User] ORDER BY [Uid];";
+
+        //fsu repository
+        public const string Sql_Fsu_Repository_GetEntity = @"SELECT D.[Id],D.[Name],D.[Code],D.[DeviceTypeId],D.[SubDeviceTypeId],D.[SysName],D.[SysCode],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],D.[RoomId],D.[Desc] AS [Comment],D.[Enabled],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority],F.[Desc] AS [FsuComment],F.[Enabled] AS [IsOnLine] FROM [dbo].[D_FSU] F INNER JOIN [dbo].[D_Device] D ON F.[DeviceId] = D.[Id] WHERE D.[Id] = @Id;";
+        public const string Sql_Fsu_Repository_GetEntities = @"SELECT D.[Id],D.[Name],D.[Code],D.[DeviceTypeId],D.[SubDeviceTypeId],D.[SysName],D.[SysCode],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],D.[RoomId],D.[Desc] AS [Comment],D.[Enabled],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority],F.[Desc] AS [FsuComment],F.[Enabled] AS [IsOnLine] FROM [dbo].[D_FSU] F INNER JOIN [dbo].[D_Device] D ON F.[DeviceId] = D.[Id];";
     }
 }

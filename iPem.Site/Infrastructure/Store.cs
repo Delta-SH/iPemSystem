@@ -36,9 +36,9 @@ namespace iPem.Site.Infrastructure {
         public RsDomain.Employee Employee { get; set; }
 
         /// <summary>
-        /// Gets or sets the active alarm notice datetime
+        /// Gets or sets the webservice values
         /// </summary>
-        public DateTime ActAlmNoticeTime { get; set; }
+        public WsValues WsValues { get; set; }
 
         /// <summary>
         /// Gets or sets the expire utc time
