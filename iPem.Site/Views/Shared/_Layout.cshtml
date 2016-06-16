@@ -4,18 +4,19 @@
 @using iPem.Core.Enum;
 @using iPem.Core;
 @{
-    var mid = ViewContext.RouteData.Values["id"];
-    Menu CurrentMenu = null;
-    if(mid != null) {
-        int menuId;
-        if(int.TryParse(mid.ToString(), out menuId)) {
-            CurrentMenu = EngineContext.Current.Resolve<IMenuService>().GetMenu(menuId);
-        }
-    }
-    
     var CurrentStore = EngineContext.Current.Resolve<IWorkContext>();
     var CurrentUser = CurrentStore.CurrentUser;
     var AssociatedEmployee = CurrentStore.AssociatedEmployee;
+
+    Menu CurrentMenu = null;
+    var mid = ViewContext.RouteData.Values["id"];
+    if(mid != null) {
+        int menuId;
+        if(int.TryParse(mid.ToString(), out menuId)) {
+            CurrentMenu = CurrentStore.AssociatedMenus.Find(m => m.Id == menuId);
+        }
+    }
+    
 }
 
 <!DOCTYPE html>

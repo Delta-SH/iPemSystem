@@ -92,6 +92,7 @@ namespace iPem.Site {
                 "~/Scripts/components/DeviceTypeComponent.js",
                 "~/Scripts/components/AlarmLevelComponent.js",
                 "~/Scripts/components/LogicTypeComponent.js",
+                "~/Scripts/components/PointTypeComponent.js",
                 "~/Scripts/components/AreaComponent.js",
                 "~/Scripts/components/StationComponent.js",
                 "~/Scripts/components/RoomComponent.js",

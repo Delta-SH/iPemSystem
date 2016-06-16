@@ -3,9 +3,11 @@
 namespace iPem.Site.Models {
     [Serializable]
     public class ChartModel {
+        public int index { get; set; }
+
         public string name { get; set; }
 
-        public int value { get; set; }
+        public double value { get; set; }
 
         public string comment { get; set; }
     }

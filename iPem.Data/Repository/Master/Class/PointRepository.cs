@@ -46,7 +46,7 @@ namespace iPem.Data.Repository.Master {
                     entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                    entity.SubLogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]);
                     entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
                     entity.AlarmTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmTimeDesc"]);
                     entity.NormalTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalTimeDesc"]);
@@ -87,7 +87,7 @@ namespace iPem.Data.Repository.Master {
                     entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                    entity.SubLogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]);
                     entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
                     entity.AlarmTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmTimeDesc"]);
                     entity.NormalTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalTimeDesc"]);
@@ -129,7 +129,7 @@ namespace iPem.Data.Repository.Master {
                     entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                    entity.SubLogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]);
                     entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
                     entity.AlarmTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmTimeDesc"]);
                     entity.NormalTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalTimeDesc"]);
@@ -166,7 +166,7 @@ namespace iPem.Data.Repository.Master {
                     entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                    entity.SubLogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]);
                     entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
                     entity.AlarmTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmTimeDesc"]);
                     entity.NormalTimeDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalTimeDesc"]);

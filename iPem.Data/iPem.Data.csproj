@@ -51,10 +51,16 @@
     <Compile Include="Repository\History\Class\ActValueRepository.cs" />
     <Compile Include="Repository\History\Class\AlmExtendRepository.cs" />
     <Compile Include="Repository\History\Class\HisAlmRepository.cs" />
+    <Compile Include="Repository\History\Class\HisBatRepository.cs" />
+    <Compile Include="Repository\History\Class\HisStaticRepository.cs" />
+    <Compile Include="Repository\History\Class\HisValueRepository.cs" />
     <Compile Include="Repository\History\Interface\IActAlmRepository.cs" />
     <Compile Include="Repository\History\Interface\IActValueRepository.cs" />
     <Compile Include="Repository\History\Interface\IAlmExtendRepository.cs" />
     <Compile Include="Repository\History\Interface\IHisAlmRepository.cs" />
+    <Compile Include="Repository\History\Interface\IHisBatRepository.cs" />
+    <Compile Include="Repository\History\Interface\IHisStaticRepository.cs" />
+    <Compile Include="Repository\History\Interface\IHisValueRepository.cs" />
     <Compile Include="Repository\Master\Class\AppointmentRepository.cs" />
     <Compile Include="Repository\Master\Class\AreaRepository.cs" />
     <Compile Include="Repository\Master\Class\AreasInRoleRepository.cs" />

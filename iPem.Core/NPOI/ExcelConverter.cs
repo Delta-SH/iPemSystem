@@ -30,11 +30,15 @@ namespace iPem.Core.NPOI {
         private XSSFCellStyle _yellow;
         private XSSFCellStyle _skyblue;
         private XSSFCellStyle _blue;
+        private XSSFCellStyle _limegreen;
+        private XSSFCellStyle _lightgray;
         private XSSFCellStyle _datewithred;
         private XSSFCellStyle _datewithorange;
         private XSSFCellStyle _datewithyellow;
         private XSSFCellStyle _datewithskyblue;
         private XSSFCellStyle _datewithblue;
+        private XSSFCellStyle _datewithlimegreen;
+        private XSSFCellStyle _datewithlightgray;
         private XSSFFont _font;
         private IDataFormat _format;
 
@@ -243,6 +247,56 @@ namespace iPem.Core.NPOI {
             }
         }
 
+        public XSSFCellStyle LimeGreen {
+            get {
+                if(_limegreen != null)
+                    return _limegreen;
+
+                _limegreen = (XSSFCellStyle)_workbook.CreateCellStyle();
+                _limegreen.Alignment = HorizontalAlignment.Left;
+                _limegreen.VerticalAlignment = VerticalAlignment.Center;
+                _limegreen.BorderBottom = BorderStyle.Thin;
+                _limegreen.BorderLeft = BorderStyle.Thin;
+                _limegreen.BorderRight = BorderStyle.Thin;
+                _limegreen.BorderTop = BorderStyle.Thin;
+                _limegreen.SetBottomBorderColor(_c0c0c0);
+                _limegreen.SetLeftBorderColor(_c0c0c0);
+                _limegreen.SetRightBorderColor(_c0c0c0);
+                _limegreen.SetTopBorderColor(_c0c0c0);
+                _limegreen.SetFillForegroundColor(new XSSFColor(Color.LimeGreen));
+                _limegreen.FillPattern = FillPattern.SolidForeground;
+                _limegreen.SetFillBackgroundColor(new XSSFColor(Color.LimeGreen));
+                _limegreen.SetFont(this.Font);
+
+                return _limegreen;
+            }
+        }
+
+        public XSSFCellStyle LightGray {
+            get {
+                if(_lightgray != null)
+                    return _lightgray;
+
+                _lightgray = (XSSFCellStyle)_workbook.CreateCellStyle();
+                _lightgray.Alignment = HorizontalAlignment.Left;
+                _lightgray.VerticalAlignment = VerticalAlignment.Center;
+                _lightgray.BorderBottom = BorderStyle.Thin;
+                _lightgray.BorderLeft = BorderStyle.Thin;
+                _lightgray.BorderRight = BorderStyle.Thin;
+                _lightgray.BorderTop = BorderStyle.Thin;
+                _lightgray.SetBottomBorderColor(_c0c0c0);
+                _lightgray.SetLeftBorderColor(_c0c0c0);
+                _lightgray.SetRightBorderColor(_c0c0c0);
+                _lightgray.SetTopBorderColor(_c0c0c0);
+                _lightgray.SetFillForegroundColor(new XSSFColor(Color.LightGray));
+                _lightgray.FillPattern = FillPattern.SolidForeground;
+                _lightgray.SetFillBackgroundColor(new XSSFColor(Color.LightGray));
+                _lightgray.SetFont(this.Font);
+
+                return _lightgray;
+            }
+        }
+
         public XSSFCellStyle Date {
             get {
                 if(_date != null)
@@ -396,6 +450,58 @@ namespace iPem.Core.NPOI {
             }
         }
 
+        public XSSFCellStyle DateWithLimeGreen {
+            get {
+                if(_datewithlimegreen != null)
+                    return _datewithlimegreen;
+
+                _datewithlimegreen = (XSSFCellStyle)_workbook.CreateCellStyle();
+                _datewithlimegreen.Alignment = HorizontalAlignment.Left;
+                _datewithlimegreen.VerticalAlignment = VerticalAlignment.Center;
+                _datewithlimegreen.BorderBottom = BorderStyle.Thin;
+                _datewithlimegreen.BorderLeft = BorderStyle.Thin;
+                _datewithlimegreen.BorderRight = BorderStyle.Thin;
+                _datewithlimegreen.BorderTop = BorderStyle.Thin;
+                _datewithlimegreen.SetBottomBorderColor(_c0c0c0);
+                _datewithlimegreen.SetLeftBorderColor(_c0c0c0);
+                _datewithlimegreen.SetRightBorderColor(_c0c0c0);
+                _datewithlimegreen.SetTopBorderColor(_c0c0c0);
+                _datewithlimegreen.DataFormat = this.DateFormat;
+                _datewithlimegreen.SetFillForegroundColor(new XSSFColor(Color.LimeGreen));
+                _datewithlimegreen.FillPattern = FillPattern.SolidForeground;
+                _datewithlimegreen.SetFillBackgroundColor(new XSSFColor(Color.LimeGreen));
+                _datewithlimegreen.SetFont(this.Font);
+
+                return _datewithlimegreen;
+            }
+        }
+
+        public XSSFCellStyle DateWithLightGray {
+            get {
+                if(_datewithlightgray != null)
+                    return _datewithlightgray;
+
+                _datewithlightgray = (XSSFCellStyle)_workbook.CreateCellStyle();
+                _datewithlightgray.Alignment = HorizontalAlignment.Left;
+                _datewithlightgray.VerticalAlignment = VerticalAlignment.Center;
+                _datewithlightgray.BorderBottom = BorderStyle.Thin;
+                _datewithlightgray.BorderLeft = BorderStyle.Thin;
+                _datewithlightgray.BorderRight = BorderStyle.Thin;
+                _datewithlightgray.BorderTop = BorderStyle.Thin;
+                _datewithlightgray.SetBottomBorderColor(_c0c0c0);
+                _datewithlightgray.SetLeftBorderColor(_c0c0c0);
+                _datewithlightgray.SetRightBorderColor(_c0c0c0);
+                _datewithlightgray.SetTopBorderColor(_c0c0c0);
+                _datewithlightgray.DataFormat = this.DateFormat;
+                _datewithlightgray.SetFillForegroundColor(new XSSFColor(Color.LightGray));
+                _datewithlightgray.FillPattern = FillPattern.SolidForeground;
+                _datewithlightgray.SetFillBackgroundColor(new XSSFColor(Color.LightGray));
+                _datewithlightgray.SetFont(this.Font);
+
+                return _datewithlightgray;
+            }
+        }
+
         public XSSFCellStyle Title {
             get {
                 if(_title != null)
@@ -490,7 +596,10 @@ namespace iPem.Core.NPOI {
 
         #region Methods
 
-        public XSSFCellStyle GetCellStyle(Color color) {
+        public XSSFCellStyle GetCellStyle(Color color, bool draw = true) {
+            if(!draw)
+                return this.Default;
+
             if(color == Color.Red)
                 return this.Red;
 
@@ -506,10 +615,19 @@ namespace iPem.Core.NPOI {
             if(color == Color.Blue)
                 return this.Blue;
 
+            if(color == Color.LimeGreen)
+                return this.LimeGreen;
+
+            if(color == Color.LightGray)
+                return this.LightGray;
+
             return this.Default;
         }
 
-        public XSSFCellStyle GetDateCellStyle(Color color) {
+        public XSSFCellStyle GetDateCellStyle(Color color, bool draw = true) {
+            if(!draw)
+                return this.Date;
+
             if(color == Color.Red)
                 return this.DateWithRed;
 
@@ -524,6 +642,12 @@ namespace iPem.Core.NPOI {
 
             if(color == Color.Blue)
                 return this.DateWithBlue;
+
+            if(color == Color.LimeGreen)
+                return this.DateWithLimeGreen;
+
+            if(color == Color.LightGray)
+                return this.DateWithLightGray;
 
             return this.Date;
         }

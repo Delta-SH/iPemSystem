@@ -73,5 +73,5 @@ Ext.define('Ext.ux.DateTimePicker', {
             minDate: me.minDate,
             maxDate: me.maxDate
         });
-    },
+    }
 });

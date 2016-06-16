@@ -137,12 +137,19 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<HsData.IAlmExtendRepository>(c => new HsData.AlmExtendRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<HsData.IActValueRepository>(c => new HsData.ActValueRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<HsData.IHisAlmRepository>(c => new HsData.HisAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IHisValueRepository>(c => new HsData.HisValueRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IHisStaticRepository>(c => new HsData.HisStaticRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<HsData.IHisBatRepository>(c => new HsData.HisBatRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<HsSrv.ActAlmService>().As<HsSrv.IActAlmService>().InstancePerLifetimeScope();
                 builder.RegisterType<HsSrv.AlmExtendService>().As<HsSrv.IAlmExtendService>().InstancePerLifetimeScope();
                 builder.RegisterType<HsSrv.ActValueService>().As<HsSrv.IActValueService>().InstancePerLifetimeScope();
                 builder.RegisterType<HsSrv.HisAlmService>().As<HsSrv.IHisAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.HisValueService>().As<HsSrv.IHisValueService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.HisStaticService>().As<HsSrv.IHisStaticService>().InstancePerLifetimeScope();
+                builder.RegisterType<HsSrv.HisBatService>().As<HsSrv.IHisBatService>().InstancePerLifetimeScope();
+
             }
 
             if(dbManager.IsValid(EnmDatabaseType.Resource)) {

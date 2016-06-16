@@ -43,6 +43,17 @@
     border-color: #c0c0c0;
 }
 
+.x-grid-expander .x-grid-rowbody {
+    background-color: #f8f8f8;
+    color: #666;
+    font: 12px/15px helvetica,arial,verdana,sans-serif;
+    padding: 5px 10px;
+}
+
+.x-grid-expander .row-table td {
+    padding: 5px 5px 5px 0;
+}
+
 .x-cell-icon {
     margin:0 5px;
 }

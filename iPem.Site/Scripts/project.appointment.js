@@ -615,7 +615,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                         xtype: 'datefield',
                         fieldLabel: $$iPems.lang.Appointment.ToolBar.StartTime,
                         labelWidth: 60,
-                        width: 230,
+                        width: 250,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -7),
                         editable: false,
                         allowBlank: false
@@ -624,10 +624,68 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                         xtype: 'datefield',
                         fieldLabel: $$iPems.lang.Appointment.ToolBar.EndTime,
                         labelWidth: 60,
-                        width: 230,
+                        width: 250,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, +7),
                         editable: false,
                         allowBlank: false
+                    }, {
+                        xtype: 'button',
+                        text: $$iPems.lang.Query,
+                        glyph: 0xf005,
+                        handler: function (el, e) {
+                            var begin = Ext.getCmp('start-datefield').getRawValue(),
+                                    end = Ext.getCmp('end-datefield').getRawValue(),
+                                    type = Ext.getCmp('type-combobox').getValue(),
+                                    keyWord = Ext.getCmp('keyword-textbox').getRawValue();
+
+                            var proxy = currentStore.getProxy();
+                            proxy.extraParams.startTime = begin;
+                            proxy.extraParams.endTime = end;
+                            proxy.extraParams.type = type;
+                            proxy.extraParams.keyWord = keyWord;
+                            currentStore.loadPage(1);
+                        }
+                    }, '-', {
+                        xtype: 'button',
+                        text: $$iPems.lang.Import,
+                        glyph: 0xf010,
+                        handler: function (el, e) {
+                            var params = currentStore.getProxy().extraParams;
+                            $$iPems.download({
+                                url: '/Project/DownloadAppointments',
+                                params: {
+                                    startTime: params.startTime,
+                                    entTime: params.endTime,
+                                    type: params.type,
+                                    keyWord: params.keyWord
+                                }
+                            });
+                        }
+                    }]
+            }),
+            Ext.create('Ext.toolbar.Toolbar', {
+                border: false,
+                items: [
+                    {
+                        id: 'type-combobox',
+                        xtype: 'combobox',
+                        fieldLabel: $$iPems.lang.Appointment.ToolBar.Type,
+                        labelWidth: 60,
+                        width: 250,
+                        store: typeStore,
+                        align: 'center',
+                        value: -1,
+                        editable: false,
+                        displayField: 'name',
+                        valueField: 'id',
+                    }, {
+                        id: 'keyword-textbox',
+                        xtype: 'textfield',
+                        labelWidth: 50,
+                        labelAlign: 'center',
+                        width: 250,
+                        maxLength: 100,
+                        emptyText: $$iPems.lang.MultiConditionEmptyText,
                     }, {
                         xtype: 'button',
                         text: $$iPems.lang.Appointment.ToolBar.AddTitle,
@@ -667,64 +725,6 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                                     saveWnd.show();
                                 }
                             });
-                        }
-                    }, '-', {
-                        xtype: 'button',
-                        text: $$iPems.lang.Import,
-                        glyph: 0xf010,
-                        handler: function (el, e) {
-                            var params = currentStore.getProxy().extraParams;
-                            $$iPems.download({
-                                url: '/Project/DownloadAppointments',
-                                params: {
-                                    startTime: params.startTime,
-                                    entTime: params.endTime,
-                                    type: params.type,
-                                    keyWord: params.keyWord
-                                }
-                            });
-                        }
-                    }]
-            }),
-            Ext.create('Ext.toolbar.Toolbar', {
-                border: false,
-                items: [
-                    {
-                        id: 'type-combobox',
-                        xtype: 'combobox',
-                        fieldLabel: $$iPems.lang.Appointment.ToolBar.Type,
-                        labelWidth: 60,
-                        width: 230,
-                        store: typeStore,
-                        align: 'center',
-                        value: -1,
-                        editable: false,
-                        displayField: 'name',
-                        valueField: 'id',
-                    }, {
-                        id: 'keyword-textbox',
-                        xtype: 'textfield',
-                        labelWidth: 50,
-                        labelAlign: 'center',
-                        width: 230,
-                        maxLength: 100,
-                        emptyText: $$iPems.lang.MultiConditionEmptyText,
-                    }, {
-                        xtype: 'button',
-                        text: $$iPems.lang.Query,
-                        glyph: 0xf005,
-                        handler: function (el, e) {
-                            var begin = Ext.getCmp('start-datefield').getRawValue(),
-                                    end = Ext.getCmp('end-datefield').getRawValue(),
-                                    type = Ext.getCmp('type-combobox').getValue(),
-                                    keyWord = Ext.getCmp('keyword-textbox').getRawValue();
-
-                            var proxy = currentStore.getProxy();
-                            proxy.extraParams.startTime = begin;
-                            proxy.extraParams.endTime = end;
-                            proxy.extraParams.type = type;
-                            proxy.extraParams.keyWord = keyWord;
-                            currentStore.loadPage(1);
                         }
                     }
                 ]

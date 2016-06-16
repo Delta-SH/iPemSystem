@@ -113,15 +113,15 @@ namespace iPem.Data.Common {
 
         //point repository
         public const string Sql_Point_Repository_GetEntitiesByDevice = @"
-        SELECT P.[Id],P.[Name],P.[Type],P.[RoomTypeId],P.[DeviceTypeId],P.[LogicTypeId],P.[Unit],P.[AlarmTimeDesc],P.[NormalTimeDesc],
+        SELECT P.[Id],P.[Name],P.[Type],P.[RoomTypeId],P.[DeviceTypeId],P.[SubLogicTypeId],P.[Unit],P.[AlarmTimeDesc],P.[NormalTimeDesc],
         P.[AlarmLevel],P.[TriggerTypeId],P.[Interpret],P.[AlarmLimit],P.[AlarmReturnDiff],P.[AlarmRecoveryDelay],P.[AlarmDelay],
         P.[SavedPeriod],P.[AbsoluteThreshold],P.[PerThreshold],P.[Comment],P.[Desc],P.[Enabled] FROM [dbo].[M_Device] DV 
         INNER JOIN [dbo].[P_PointsInProtcol] PP ON DV.[ProtcolId] = PP.[ProtcolId] AND DV.[Id] = @DeviceId
         INNER JOIN [dbo].[P_Point] P ON PP.[PointId] = P.[Id]
         ORDER BY P.[Type],P.[Id]";
-        public const string Sql_Point_Repository_GetEntitiesByType = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] WHERE [Type] = @Type ORDER BY [Id];";
-        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.[Id] = PP.[PointId] AND PP.[ProtcolId] = @ProtcolId ORDER BY [Type],[Id];";
-        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[LogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] ORDER BY [Type],[Id];";
+        public const string Sql_Point_Repository_GetEntitiesByType = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[SubLogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] WHERE [Type] = @Type ORDER BY [Id];";
+        public const string Sql_Point_Repository_GetEntitiesByProtcol = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[SubLogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_PointsInProtcol] PP ON P.[Id] = PP.[PointId] AND PP.[ProtcolId] = @ProtcolId ORDER BY [Type],[Id];";
+        public const string Sql_Point_Repository_GetEntities = @"SELECT [Id],[Name],[Type],[RoomTypeId],[DeviceTypeId],[SubLogicTypeId],[Unit],[AlarmTimeDesc],[NormalTimeDesc],[AlarmLevel],[TriggerTypeId],[Interpret],[AlarmLimit],[AlarmReturnDiff],[AlarmRecoveryDelay],[AlarmDelay],[SavedPeriod],[AbsoluteThreshold],[PerThreshold],[Comment],[Desc],[Enabled] FROM [dbo].[P_Point] ORDER BY [Type],[Id];";
 
         //protocol repository
         public const string Sql_Protocol_Repository_GetEntitiesByDeviceType = @"SELECT [Id],[Name],[DeviceTypeId],[SubDevTypeId],[Desc] AS [Comment],[Enabled] FROM [dbo].[P_Protocol] WHERE [DeviceTypeId]=@DeviceTypeId;";

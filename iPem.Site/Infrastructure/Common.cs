@@ -347,6 +347,27 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static Color GetPointStatusColor(EnmPointStatus status) {
+            switch(status) {
+                case EnmPointStatus.Normal:
+                    return Color.LimeGreen;
+                case EnmPointStatus.Level1:
+                    return Color.Red;
+                case EnmPointStatus.Level2:
+                    return Color.Orange;
+                case EnmPointStatus.Level3:
+                    return Color.Yellow;
+                case EnmPointStatus.Level4:
+                    return Color.SkyBlue;
+                case EnmPointStatus.Opevent:
+                    return Color.Blue;
+                case EnmPointStatus.Invalid:
+                    return Color.LightGray;
+                default:
+                    return Color.White;
+            }
+        }
+
         public static string[] SplitCondition(string conditions) {
             if(string.IsNullOrWhiteSpace(conditions))
                 return new string[] { };

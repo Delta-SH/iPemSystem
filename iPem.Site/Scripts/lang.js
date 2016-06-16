@@ -35,6 +35,7 @@
     SearchEndText: '搜索完毕',
     MultiConditionEmptyText: '多条件请以;分隔，例: A;B;C',
     GridEmptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+    RowEmptyText: '没有数据记录',
     ChartEmptyText: '无数据',
     Component: {
         All:'全部',
@@ -49,6 +50,7 @@
         AlarmLevel: '告警级别',
         LogicType: '逻辑分类',
         PointType: '信号类型',
+        PointName: '信号名称',
         Employee: '隶属员工'
     },
     Site: {
@@ -360,20 +362,28 @@
                 Clear: '清空缓存',
                 Confirm: '您确认要清空缓存吗？'
             },
-            Param: {
-                Title: '报表参数'
+            Exception: {
+                Title: '异常告警',
+                ChaoPin: '超频告警',
+                ChaoPinEmptyText: '统计时间内告警次数阈值',
+                ChaoDuan: '超短告警',
+                ChaoDuanEmptyText: '告警历时的最大分钟阈值',
+                ChaoChang: '超长告警',
+                ChaoChangEmptyText: '告警历时的最小分钟阈值',
+                CiShu: '次数',
+                FenZhong: '分钟',
             }
         }
     },
     Project:{
-        Title: '工程管理',
+        Title: '工程管理信息',
         ToolBar: {
             ProjectName: '工程名称',
             StartTime: '开始时间',
             EndTime: '结束时间'
         },
         Window: {
-            AddTitle: '添加工程',
+            AddTitle: '新增工程',
             EditTitle: '编辑工程',
             Id: '工程标识',
             Name: '工程名称',
@@ -402,7 +412,7 @@
         }
     },
     Appointment: {
-        Title: '工程预约信息表',
+        Title: '工程预约信息',
         ConfirmContinue: '开始时间早于当前时间，您确定要继续吗？',
         ConfirmContinue2: '开始时间距现在不足30分钟，您确定要继续吗？',
         NodesError: '请勾选需要预约的监控点',
@@ -562,8 +572,31 @@
             Enabled: '状态'
         }
     },
+    Report400201: {
+        ConditionTitle: '信号筛选条件',
+        DetailTitle: '信号测值信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            DevName: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Type: '信号类型',
+            Value: '信号测值',
+            Timestamp: '测值时间',
+            Status: '信号状态'
+        }
+    },
     Report400202: {
-        MenuNavTitle: '告警设备列表',
         ConditionTitle: '告警筛选条件',
         RateTitle: '告警分类占比',
         DetailTitle: '告警详细信息',
@@ -608,6 +641,417 @@
             Level: '告警级别',
             StartTime: '开始时间',
             EndTime: '结束时间',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
+        }
+    },
+    Report400203: {
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警分类信息',
+        GroupTpl: '{columnName}: {name} ({rows.length}条)',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
+        }
+    },
+    Report400204: {
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警分类信息',
+        GroupTpl: '{columnName}: {name} ({rows.length}条)',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
+        }
+    },
+    Report400205: {
+        Title: '工程项目统计信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            Count: '工程数量',
+            Interval: '平均历时(分钟)',
+            Timeout: '超时工程数量',
+            Rate: '超时工程占比',
+            Rows: {
+                Name: '工程名称',
+                StartTime: '开始时间',
+                EndTime: '结束时间',
+                Responsible: '负责人员',
+                ContactPhone: '联系电话',
+                Company: '施工公司',
+                Timeout: '超时工程',
+            }
+        }
+    },
+    Report400206: {
+        Title: '工程预约统计信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            Count: '预约数量',
+            Interval: '预约时长(分钟)',
+            Rows: {
+                Id: '预约编号',
+                StartTime: '开始时间',
+                EndTime: '结束时间',
+                Project: '预约工程',
+                Creator: '创建人员',
+                CreatedTime: '创建时间',
+            }
+        }
+    },
+    Report400301: {
+        ConditionTitle: '信号筛选条件',
+        LineTitle: '信号测值曲线',
+        DetailTitle: '信号测值信息',
+        ToolBar: {
+            DeviceEmptyText: '请选择设备...',
+            PointEmptyText: '请选择信号...',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Columns: {
+            Id: '序号',
+            Value: '信号测值',
+            Time: '测值时间',
+            Threshold: '信号阈值',
+            State: '信号状态'
+        }
+    },
+    Report400302: {
+        ConditionTitle: '信号筛选条件',
+        LineTitle: '测值统计曲线',
+        DetailTitle: '测值统计信息',
+        ToolBar: {
+            DeviceEmptyText: '请选择设备...',
+            PointEmptyText: '请选择信号...',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Chart: {
+            Max: '最大测值',
+            Min: '最小测值',
+            Avg: '平均测值',
+            Range: '时间范围',
+            Value: '信号测值',
+            Time: '测值时间',
+            Total: '统计数量'
+        },
+        Columns: {
+            Id: '序号',
+            Start: '开始时间',
+            End: '结束时间',
+            MaxValue: '最大测值',
+            MaxTime: '最大时间',
+            MinValue: '最小测值',
+            MinTime: '最小时间',
+            AvgValue: '平均测值',
+            Total: '统计数量'
+        }
+    },
+    Report400303: {
+        ConditionTitle: '信号筛选条件',
+        LineTitle: '电池放电曲线',
+        DetailTitle: '电池放电信息',
+        GroupTpl: '{name} ({rows.length}条)',
+        ToolBar: {
+            DeviceEmptyText: '请选择设备...',
+            PointEmptyText: '请选择信号...',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Chart: {
+            Value: '放电测值',
+            Time: '测值时间'
+        },
+        Columns: {
+            Id: '序号',
+            Point: '信号名称',
+            Start: '开始时间',
+            Value: '放电测值',
+            Time: '测值时间'
+        }
+    },
+    Report400401: {
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警详细信息',
+        GroupTpl: '{name} ({rows.length}条)',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
+        }
+    },
+    Report400402: {
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警详细信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            Interval: '告警历时(分钟)',
+            StartValue: '触发值',
+            EndValue: '结束值',
+            AlmComment: '告警描述',
+            NormalComment: '正常描述',
+            Frequency: '触发频次',
+            EndType: '结束方式',
+            Project: '工程预约',
+            ConfirmedStatus: '确认状态',
+            ConfirmedTime: '确认时间',
+            Confirmer: '确认人员'
+        }
+    },
+    Report400403: {
+        ConditionTitle: '告警筛选条件',
+        RateTitle: '告警分类占比',
+        DetailTitle: '告警详细信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            PointName: '信号名称',
+            OtherOption: '其他选项',
+            ShowConfirm: '已确认告警',
+            ShowUnConfirm: '未确认告警',
+            ShowProject: '工程告警',
+            ShowUnProject: '非工程告警'
+        },
+        Window: {
+            Project: {
+                Title: '工程预约',
+                Fields: {
+                    Id: '预约编号',
+                    StartTime: '开始时间',
+                    EndTime: '结束时间',
+                    ProjectName: '工程名称',
+                    Creator: '创建人员',
+                    CreatedTime: '创建时间',
+                    Comment: '预约备注'
+                }
+            }
+        },
+        Chart: {
+            PieTotal: '告警总量',
+            PieRate: '告警占比'
+        },
+        Columns: {
+            Id: '序号',
+            Area: '所属区域',
+            Station: '所属站点',
+            Room: '所属机房',
+            DevType: '设备类型',
+            Device: '设备名称',
+            Logic: '逻辑分类',
+            Point: '信号名称',
+            Level: '告警级别',
+            StartTime: '开始时间',
+            EndTime: '结束时间',
+            Interval: '告警历时(分钟)',
             StartValue: '触发值',
             EndValue: '结束值',
             AlmComment: '告警描述',

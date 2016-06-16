@@ -1625,6 +1625,54 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetRt() {
+            var data = new AjaxDataModel<RtValues> {
+                success = true,
+                message = "200 Ok",
+                total = 0,
+                data = new RtValues() {
+                    chaopin = 1,
+                    chaoduan = 1,
+                    chaochang = 1
+                }
+            };
+
+            try {
+                var rt = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
+                if(rt != null && !string.IsNullOrWhiteSpace(rt.ValuesJson))
+                    data.data = JsonConvert.DeserializeObject<RtValues>(rt.ValuesJson);
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveRt(RtValues values) {
+            try {
+                if(values == null)
+                    throw new ArgumentException("参数无效 values");
+
+                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                    Id = (int)EnmDictionary.Report,
+                    Name = Common.GetDictionaryDisplay(EnmDictionary.Report),
+                    ValuesJson = JsonConvert.SerializeObject(values),
+                    ValuesBinary = null,
+                    LastUpdatedDate = DateTime.Now
+                });
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult ClearCache() {
             try {
                 _cacheManager.Clear();

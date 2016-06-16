@@ -13,6 +13,7 @@ namespace iPem.Site.Models {
         [ExcelIgnore]
         public string id { get; set; }
 
+        [ExcelColor]
         [ExcelDisplayName("告警级别")]
         public string level { get; set; }
 

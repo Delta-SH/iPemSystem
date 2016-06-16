@@ -165,7 +165,7 @@ namespace iPem.Site.Controllers {
                     points = points.FindAll(p => p.Current.Type == EnmPoint.AI || p.Current.Type == EnmPoint.DI);
 
                 if(config.logictypes != null && config.logictypes.Length > 0)
-                    points = points.FindAll(p => config.logictypes.Contains(p.Current.LogicTypeId));
+                    points = points.FindAll(p => config.logictypes.Contains(p.LogicType.Id));
 
                 if(!string.IsNullOrWhiteSpace(config.pointnames)) {
                     var names = Common.SplitCondition(config.pointnames);
@@ -842,6 +842,10 @@ namespace iPem.Site.Controllers {
                             comment = cached[i].Current.AlmDesc,
                             value = string.Format("{0:F2} {1}", cached[i].Current.StartValue, cached[i].Current.ValueUnit),
                             frequency = cached[i].Current.Frequency,
+                            project = cached[i].Current.ProjectId,
+                            confirmedstatus = Common.GetConfirmStatusDisplay(cached[i].Current.ConfirmedStatus),
+                            confirmedtime = cached[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(cached[i].Current.ConfirmedTime.Value) : string.Empty,
+                            confirmer = cached[i].Current.Confirmer,
                             background = Common.GetAlarmLevelColor(cached[i].Current.AlmLevel)
                         });
                     }
@@ -925,7 +929,8 @@ namespace iPem.Site.Controllers {
                         if(_workContext.AssociatedDeviceAttributes.ContainsKey(nodeid)) {
                             var current = _workContext.AssociatedDeviceAttributes[nodeid];
                             var points = _msPointService.GetPoints(current.Current.Id, types);
-                            var logics = _rsLogicTypeService.GetAllLogicTypes().ToDictionary(k => k.Id, v => v.Name);
+                            var logics = _rsLogicTypeService.GetAllLogicTypes();
+                            var sublogics = _rsLogicTypeService.GetAllSubLogicTypes();
 
                             if(points.TotalCount > 0) {
                                 data.message = "200 Ok";
@@ -983,10 +988,14 @@ namespace iPem.Site.Controllers {
 
                                 var actValues = _hsActValueService.GetActValues(current.Current.Id);
                                 var result = from rcd in records
+                                             join sublogic in sublogics on rcd.SubLogicTypeId equals sublogic.Id
+                                             join logic in logics on sublogic.LogicTypeId equals logic.Id
                                              join av in actValues on rcd.Id equals av.PointId into temp
                                              from defaultAv in temp.DefaultIfEmpty()
                                              select new {
                                                  Point = rcd,
+                                                 SubLogic = sublogic,
+                                                 Logic = logic,
                                                  Value = defaultAv
                                              };
 
@@ -1003,7 +1012,7 @@ namespace iPem.Site.Controllers {
                                         devType = current.Type.Name,
                                         devId = current.Current.Id,
                                         devName = current.Current.Name,
-                                        logic = logics.ContainsKey(point.Point.LogicTypeId) ? logics[point.Point.LogicTypeId] : string.Empty,
+                                        logic = point.Logic.Name,
                                         id = point.Point.Id,
                                         name = point.Point.Name,
                                         type = (int)point.Point.Type,
@@ -1379,7 +1388,7 @@ namespace iPem.Site.Controllers {
                 points = points.FindAll(p => p.Current.Type == EnmPoint.AI || p.Current.Type == EnmPoint.DI);
 
             if(logictype != null && logictype.Length > 0)
-                points = points.FindAll(p => logictype.Contains(p.Current.LogicTypeId));
+                points = points.FindAll(p => logictype.Contains(p.LogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(pointname)) {
                 var names = Common.SplitCondition(pointname);

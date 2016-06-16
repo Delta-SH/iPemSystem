@@ -39,6 +39,22 @@ namespace iPem.Data.Repository.Resource {
             return entity;
         }
 
+        public SubLogicType GetSubEntity(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+
+            SubLogicType entity = null;
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetSubEntity, parms)) {
+                if(rdr.Read()) {
+                    entity = new SubLogicType();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                }
+            }
+            return entity;
+        }
+
         public List<LogicType> GetEntities() {
             var entities = new List<LogicType>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetEntities, null)) {
@@ -46,6 +62,37 @@ namespace iPem.Data.Repository.Resource {
                     var entity = new LogicType();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<SubLogicType> GetSubEntities(string logic) {
+            SqlParameter[] parms = { new SqlParameter("@LogicTypeId", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(logic);
+
+            var entities = new List<SubLogicType>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetSubEntitiesByParent, parms)) {
+                while(rdr.Read()) {
+                    var entity = new SubLogicType();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<SubLogicType> GetSubEntities() {
+            var entities = new List<SubLogicType>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_LogicType_Repository_GetSubEntities, null)) {
+                while(rdr.Read()) {
+                    var entity = new SubLogicType();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
                     entities.Add(entity);
                 }
             }

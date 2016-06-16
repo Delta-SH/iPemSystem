@@ -25,7 +25,7 @@ namespace iPem.Core.Domain.Master {
         /// <summary>
         /// Gets or sets the logic type
         /// </summary>
-        public string LogicTypeId { get; set; }
+        public string SubLogicTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the device type

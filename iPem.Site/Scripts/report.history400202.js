@@ -359,13 +359,15 @@
                 collapseFirst: false,
                 margin: '5 0 0 0',
                 flex: 1,
-                tools: [{
-                    type: 'print',
-                    tooltip: $$iPems.lang.Import,
-                    handler: function (event, toolEl, panelHeader) {
-                        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
-                    }
-                }],
+                tools: [
+                    //{
+                    //    type: 'print',
+                    //    tooltip: $$iPems.lang.Import,
+                    //    handler: function (event, toolEl, panelHeader) {
+                    //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
+                    //    }
+                    //}
+                ],
                 layout: {
                     type: 'hbox',
                     align: 'stretch',

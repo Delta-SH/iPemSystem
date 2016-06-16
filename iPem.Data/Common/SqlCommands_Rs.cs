@@ -59,7 +59,10 @@ namespace iPem.Data.Common {
 
         //logic type repository
         public const string Sql_LogicType_Repository_GetEntity = @"SELECT [Id],[Name] FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
+        public const string Sql_LogicType_Repository_GetSubEntity = @"SELECT [Id],[Name],[LogicTypeId] FROM [dbo].[C_SubLogicType] WHERE [Id] = @Id;";
         public const string Sql_LogicType_Repository_GetEntities = @"SELECT [Id],[Name] FROM [dbo].[C_LogicType] ORDER BY [Id];";
+        public const string Sql_LogicType_Repository_GetSubEntitiesByParent = @"SELECT [Id],[Name],[LogicTypeId] FROM [dbo].[C_SubLogicType] WHERE [LogicTypeId] = @LogicTypeId ORDER BY [Id];";
+        public const string Sql_LogicType_Repository_GetSubEntities = @"SELECT [Id],[Name],[LogicTypeId] FROM [dbo].[C_SubLogicType] ORDER BY [Id];";
 
         //productor repository
         public const string Sql_Productor_Repository_GetEntity = @"SELECT [Id],[Name],[EngName],[Phone],[Fax],[Address],[PostalCode],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Productor] WHERE [Id]=@Id;";

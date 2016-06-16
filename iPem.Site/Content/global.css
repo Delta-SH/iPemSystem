@@ -126,8 +126,8 @@ div.title-bar {
 div.title-bar h1 {
     padding: 0;
     margin: 0;
-    font-size: 15px;
-    font-weight:bold;
+    color: #535353;
+    font-size: 14px;
 }
 
 div.title-bar div.desc {
@@ -196,7 +196,7 @@ div.help-tip div.help-tip-content p {
 
 /**point status css*/
 .point-status-normal .x-status-cell {
-    background-color : #00d046;
+    background-color : #32cd32;
 }
 .point-status-level1 .x-status-cell { 
     background-color : #ff0000; 
@@ -214,7 +214,7 @@ div.help-tip div.help-tip-content p {
     background-color : #0000ff; 
 }
 .point-status-invalid .x-status-cell { 
-    background-color : #dddddd; 
+    background-color : #d3d3d3; 
 }
 
 /**alarm level css*/

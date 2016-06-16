@@ -336,6 +336,7 @@
                 }
             },
             {
+                id: 'rtconfig',
                 title: $$iPems.lang.Dictionary.Report.Title,
                 glyph: 0xf044,
                 xtype: 'form',
@@ -383,16 +384,117 @@
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Report.Param.Title,
-                        height: 100,
+                        title: $$iPems.lang.Dictionary.Report.Exception.Title,
                         margin: '10 20 20 20',
-                        defaultType: 'checkbox',
-                        layout: 'anchor',
-                        defaults: {
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left',
                             margin: 15
                         },
-                        items: []
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                items: [{
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'chaopin',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoPin,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoPinEmptyText,
+                                        value: 1,
+                                        minValue: 1
+                                    }, {
+                                        name: 'chaochang',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoChang,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoChangEmptyText,
+                                        value: 1,
+                                        minValue: 1
+                                    }]
+                                }, {
+                                    xtype: 'container',
+                                    layout: 'anchor',
+                                    items: [{
+                                        xtype: 'displayfield',
+                                        value: $$iPems.lang.Dictionary.Report.Exception.CiShu,
+                                        margin: '15 15 15 0'
+                                    }, {
+                                        xtype: 'displayfield',
+                                        value: $$iPems.lang.Dictionary.Report.Exception.FenZhong,
+                                        margin: '15 15 15 0'
+                                    }]
+                                }, {
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'chaoduan',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoDuan,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoDuanEmptyText,
+                                        value: 1,
+                                        minValue: 1
+                                    }]
+                                }, {
+                                    xtype: 'container',
+                                    layout: 'anchor',
+                                    items: [{
+                                        xtype: 'displayfield',
+                                        value: $$iPems.lang.Dictionary.Report.Exception.FenZhong,
+                                        margin: '15 15 15 0'
+                                    }]
+                                }]
+                            }
+                        ]
                     }
+                ],
+                buttonAlign: 'left',
+                buttons: [
+                    {
+                        xtype: 'button',
+                        text: $$iPems.lang.Save,
+                        width: 90,
+                        scale: 'medium',
+                        handler: function () {
+                            var rtconfig = Ext.getCmp('rtconfig'),
+                                rtbasic = rtconfig.getForm(),
+                                rtresult = Ext.getCmp('rtresult');
+
+                            rtresult.setTextWithIcon('', '');
+                            if (rtbasic.isValid()) {
+                                rtresult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                rtbasic.submit({
+                                    submitEmptyText: false,
+                                    clientValidation: true,
+                                    preventWindow: true,
+                                    url: '/Account/SaveRt',
+                                    success: function (form, action) {
+                                        rtresult.setTextWithIcon(action.result.message, 'x-icon-accept');
+                                    },
+                                    failure: function (form, action) {
+                                        var message = 'undefined error.';
+                                        if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+                                            message = action.result.message;
+
+                                        rtresult.setTextWithIcon(message, 'x-icon-error');
+                                    }
+                                });
+                            } else {
+                                rtresult.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                            }
+                        }
+                    },
+                    { id: 'rtresult', xtype: 'iconlabel', text: '' }
                 ]
             }
         ]
@@ -429,6 +531,20 @@
                 success: function (form, action) {
                     form.clearInvalid();
                     tsresult.setTextWithIcon('', '');
+                }
+            });
+
+            var rtconfig = Ext.getCmp('rtconfig'),
+                rtbasic = rtconfig.getForm(),
+                rtresult = Ext.getCmp('rtresult');
+
+            rtbasic.load({
+                url: '/Account/GetRt',
+                waitMsg: $$iPems.lang.AjaxHandling,
+                waitTitle: $$iPems.lang.SysTipTitle,
+                success: function (form, action) {
+                    form.clearInvalid();
+                    rtresult.setTextWithIcon('', '');
                 }
             });
         }

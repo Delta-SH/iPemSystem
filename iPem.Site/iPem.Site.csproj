@@ -76,8 +76,8 @@
       <HintPath>..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Svg, Version=2.1.0.28187, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
-      <HintPath>..\packages\Svg.2.1.0\lib\Svg.dll</HintPath>
+    <Reference Include="Svg, Version=2.2.1.1459, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.2.2.1\lib\net35\Svg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -225,15 +225,28 @@
     <Compile Include="Models\Model400102.cs" />
     <Compile Include="Models\Model400103.cs" />
     <Compile Include="Models\Model400104.cs" />
+    <Compile Include="Models\Model400201.cs" />
     <Compile Include="Models\Model400202.cs" />
+    <Compile Include="Models\Model400203.cs" />
+    <Compile Include="Models\Model400204.cs" />
+    <Compile Include="Models\Model400205.cs" />
+    <Compile Include="Models\Model400206.cs" />
+    <Compile Include="Models\Model400301.cs" />
+    <Compile Include="Models\Model400302.cs" />
+    <Compile Include="Models\Model400303.cs" />
+    <Compile Include="Models\Model400401.cs" />
+    <Compile Include="Models\Model400402.cs" />
+    <Compile Include="Models\Model400403.cs" />
     <Compile Include="Models\NoticeModel.cs" />
     <Compile Include="Models\PointRss.cs" />
     <Compile Include="Models\ProfileValues.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Models\RtValues.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\TsValues.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\ValStore.cs" />
     <Compile Include="Models\WsValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ClearCacheTask.cs" />
@@ -343,6 +356,7 @@
     <Content Include="Scripts\components\ImageExporterComponent.js" />
     <Content Include="Scripts\components\LogicTypeComponent.js" />
     <Content Include="Scripts\components\PointComponent.js" />
+    <Content Include="Scripts\components\PointTypeComponent.js" />
     <Content Include="Scripts\components\RoomComponent.js" />
     <Content Include="Scripts\components\RoomTypeComponent.js" />
     <Content Include="Scripts\components\StationComponent.js" />
@@ -3513,6 +3527,7 @@
     <Content Include="Content\ux\fonts\topbar.ttf" />
     <Content Include="Content\ux\fonts\topbar.woff" />
     <Content Include="Scripts\account.notice.js" />
+    <Content Include="Scripts\report.custom400403.js" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
@@ -3670,6 +3685,7 @@
     <Content Include="Scripts\report.chart400302.js" />
     <Content Include="Scripts\report.chart400301.js" />
     <Content Include="Scripts\report.custom400401.js" />
+    <Content Include="Scripts\report.custom400402.js" />
     <Content Include="Scripts\report.history400206.js" />
     <Content Include="Scripts\report.history400205.js" />
     <Content Include="Scripts\report.history400204.js" />
@@ -3738,6 +3754,8 @@
     <Content Include="Views\Project\Index.cshtml" />
     <Content Include="Views\Project\Appointment.cshtml" />
     <Content Include="Views\Home\Speech.cshtml" />
+    <Content Include="Views\Report\custom400402.cshtml" />
+    <Content Include="Views\Report\custom400403.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

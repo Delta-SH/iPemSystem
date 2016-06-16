@@ -31,6 +31,13 @@
         idProperty: 'id'
     });
 
+    var print = function (store) {
+        $$iPems.download({
+            url: '/Report/DownloadBase400103',
+            params: store.proxy.extraParams
+        });
+    };
+
     var chartPie = Ext.create('Ext.chart.Chart', {
         id: 'chartPie',
         xtype: 'chart',
@@ -240,14 +247,7 @@
                             text: $$iPems.lang.Import,
                             glyph: 0xf010,
                             handler: function (el, e) {
-                                var params = currentStore.getProxy().extraParams;
-                                $$iPems.download({
-                                    url: '/Report/DownloadBase400103',
-                                    params: {
-                                        parent: params.parent,
-                                        types: params.types
-                                    }
-                                });
+                                print(currentStore);
                             }
                         }]
                     }]
@@ -281,6 +281,13 @@
                     disableSelection: false,
                     loadMask: true,
                     forceFit: false,
+                    tools: [{
+                        type: 'print',
+                        tooltip: $$iPems.lang.Import,
+                        handler: function (event, toolEl, panelHeader) {
+                            print(currentStore);
+                        }
+                    }],
                     viewConfig: {
                         forceFit: true,
                         trackOver: true,

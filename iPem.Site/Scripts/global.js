@@ -320,8 +320,15 @@ window.$$iPems.GetAlmLevelCls = function (value) {
     }
 };
 
+/*Split Node Keys*/
+window.$$iPems.SplitKeys = function (key) {
+    if(Ext.isEmpty(key)) return [];
+    return key.split($$iPems.Separator);
+};
+
 /*global delimiter*/
 window.$$iPems.Delimiter = ';';
+window.$$iPems.Separator = '┆';
 
 /*global chart empty data*/
 window.$$iPems.ChartEmptyDataPie = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];

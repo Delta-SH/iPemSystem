@@ -573,13 +573,15 @@
                     collapseFirst: false,
                     margin: '5 0 0 0',
                     flex: 1,
-                    tools: [{
-                        type: 'print',
-                        tooltip: $$iPems.lang.Import,
-                        handler: function (event, toolEl, panelHeader) {
-                            Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
-                        }
-                    }],
+                    tools: [
+                        //{
+                        //    type: 'print',
+                        //    tooltip: $$iPems.lang.Import,
+                        //    handler: function (event, toolEl, panelHeader) {
+                        //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
+                        //    }
+                        //}
+                    ],
                     layout: {
                         type: 'hbox',
                         align: 'stretch',
@@ -618,14 +620,12 @@
                         border: false,
                         store: currentStore,
                         loadMask: false,
-                        normalViewConfig: {
-                            emptyText: $$iPems.lang.GridEmptyText
-                        },
                         viewConfig: {
                             loadMask: false,
                             preserveScrollOnRefresh: true,
                             stripeRows: true,
                             trackOver: true,
+                            emptyText: $$iPems.lang.GridEmptyText,
                             getRowClass: function (record, rowIndex, rowParams, store) {
                                 return $$iPems.GetAlmLevelCls(record.get("levelValue"));
                             }
@@ -673,24 +673,20 @@
                         },
                         columns: [
                             {
+                                text: $$iPems.lang.ActiveAlarm.Columns.Id,
+                                dataIndex: 'index',
+                                width: 60
+                            },
+                            {
                                 text: $$iPems.lang.ActiveAlarm.Columns.Level,
                                 dataIndex: 'level',
                                 align: 'center',
-                                locked: true,
                                 tdCls: 'x-level-cell'
                             },
                             {
                                 text: $$iPems.lang.ActiveAlarm.Columns.Start,
                                 dataIndex: 'start',
-                                align: 'center',
-                                width: 150,
-                                locked: true,
-                                tdCls: 'x-level-cell'
-                            },
-                            {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Id,
-                                dataIndex: 'index',
-                                width: 60
+                                width: 150
                             },
                             {
                                 text: $$iPems.lang.ActiveAlarm.Columns.Area,

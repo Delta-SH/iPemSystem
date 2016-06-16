@@ -343,23 +343,17 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     emptyText: $$iPems.lang.MultiConditionEmptyText
                 }), {
                     xtype: 'button',
-                    text: $$iPems.lang.Project.Window.AddTitle,
-                    glyph: 0xf001,
+                    text: $$iPems.lang.Query,
+                    glyph: 0xf005,
                     handler: function (el, e) {
-                        var form = Ext.getCmp('saveForm').getForm();
-                        form.load({
-                            url: '/Project/GetProject',
-                            params: { id: '', action: $$iPems.Action.Add },
-                            waitMsg: $$iPems.lang.AjaxHandling,
-                            waitTitle: $$iPems.lang.SysTipTitle,
-                            success: function (form, action) {
-                                Ext.getCmp('saveResult').setTextWithIcon('', '');
-                                saveWnd.setGlyph(0xf001);
-                                saveWnd.setTitle($$iPems.lang.Project.Window.AddTitle);
-                                saveWnd.opaction = $$iPems.Action.Add;
-                                saveWnd.show();
-                            }
-                        });
+                        var namesfield = Ext.getCmp('names-textfield');
+                        var startTime = Ext.getCmp('begin-datefield');
+                        var endTime = Ext.getCmp('end-datefield');
+
+                        currentStore.getProxy().extraParams.name = namesfield.getRawValue();
+                        currentStore.getProxy().extraParams.startTime = startTime.getRawValue();
+                        currentStore.getProxy().extraParams.endTime = endTime.getRawValue();
+                        currentStore.loadPage(1);
                     }
                 }, '-', {
                     xtype: 'button',
@@ -392,17 +386,23 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     allowBlank: false
                 }, {
                     xtype: 'button',
-                    text: $$iPems.lang.Query,
-                    glyph: 0xf005,
+                    text: $$iPems.lang.Project.Window.AddTitle,
+                    glyph: 0xf001,
                     handler: function (el, e) {
-                        var namesfield = Ext.getCmp('names-textfield');
-                        var startTime = Ext.getCmp('begin-datefield');
-                        var endTime = Ext.getCmp('end-datefield');
-
-                        currentStore.getProxy().extraParams.name = namesfield.getRawValue();
-                        currentStore.getProxy().extraParams.startTime = startTime.getRawValue();
-                        currentStore.getProxy().extraParams.endTime = endTime.getRawValue();
-                        currentStore.loadPage(1);
+                        var form = Ext.getCmp('saveForm').getForm();
+                        form.load({
+                            url: '/Project/GetProject',
+                            params: { id: '', action: $$iPems.Action.Add },
+                            waitMsg: $$iPems.lang.AjaxHandling,
+                            waitTitle: $$iPems.lang.SysTipTitle,
+                            success: function (form, action) {
+                                Ext.getCmp('saveResult').setTextWithIcon('', '');
+                                saveWnd.setGlyph(0xf001);
+                                saveWnd.setTitle($$iPems.lang.Project.Window.AddTitle);
+                                saveWnd.opaction = $$iPems.Action.Add;
+                                saveWnd.show();
+                            }
+                        });
                     }
                 }]
             })

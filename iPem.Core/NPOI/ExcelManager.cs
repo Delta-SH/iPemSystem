@@ -19,6 +19,7 @@ namespace iPem.Core.NPOI {
             var worksheet = converter.CreateSheet();
 
             PropertyInfo backgroundAttribute = null;
+            var colorAttributes = new List<string>();
             var boolAttributes = new List<IdValuePair<PropertyInfo, ExcelBooleanNameAttribute>>();
             var dataAttributes = new List<IdValuePair<PropertyInfo, string>>();
 
@@ -32,6 +33,10 @@ namespace iPem.Core.NPOI {
                         backgroundAttribute = prop;
 
                     continue;
+                }
+
+                if(prop.IsDefined(typeof(ExcelColorAttribute), true)) {
+                    colorAttributes.Add(prop.Name);
                 }
 
                 if(prop.IsDefined(typeof(ExcelBooleanNameAttribute), true)) {
@@ -91,12 +96,13 @@ namespace iPem.Core.NPOI {
                 for(int g = 0; g < dataAttributes.Count; g++) {
                     var cell = row.CreateCell(g);
                     var prop = dataAttributes[g].Id;
+                    var draw = colorAttributes.Contains(prop.Name);
                     var name = prop.Name;
                     var type = prop.PropertyType;
                     var value = prop.GetValue(data[k]);
 
                     if(value == null) {
-                        cell.CellStyle = converter.GetCellStyle(background);
+                        cell.CellStyle = converter.GetCellStyle(background, draw);
                         continue;
                     }
 
@@ -105,10 +111,10 @@ namespace iPem.Core.NPOI {
                         type == typeof(Int64) ||
                         type == typeof(Single) ||
                         type == typeof(Double)) {
-                        cell.CellStyle = converter.GetCellStyle(background);
+                        cell.CellStyle = converter.GetCellStyle(background, draw);
                         cell.SetCellValue(Convert.ToDouble(value));
                     } else if(type == typeof(Boolean)) {
-                        cell.CellStyle = converter.GetCellStyle(background);
+                        cell.CellStyle = converter.GetCellStyle(background, draw);
 
                         var boolAttribute = boolAttributes.Find(b => b.Id.Equals(prop));
                         if(boolAttribute != null)
@@ -116,10 +122,10 @@ namespace iPem.Core.NPOI {
                         else
                             cell.SetCellValue((Boolean)value);
                     } else if(type == typeof(DateTime)) {
-                        cell.CellStyle = converter.GetDateCellStyle(background);
+                        cell.CellStyle = converter.GetDateCellStyle(background, draw);
                         cell.SetCellValue((DateTime)value);
                     } else {
-                        cell.CellStyle = converter.GetCellStyle(background);
+                        cell.CellStyle = converter.GetCellStyle(background, draw);
                         cell.SetCellValue(new XSSFRichTextString(value.ToString()));
                     }
                 }

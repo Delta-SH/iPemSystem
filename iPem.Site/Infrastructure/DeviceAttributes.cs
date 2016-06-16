@@ -32,5 +32,10 @@ namespace iPem.Site.Infrastructure {
         /// Type
         /// </summary>
         public DeviceType Type { get; set; }
+
+        /// <summary>
+        /// SubType
+        /// </summary>
+        public SubDeviceType SubType { get; set; }
     }
 }

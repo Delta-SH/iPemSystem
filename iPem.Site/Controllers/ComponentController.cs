@@ -22,6 +22,7 @@ namespace iPem.Site.Controllers {
 
         private readonly IWorkContext _workContext;
         private readonly MsSrv.IWebLogger _webLogger;
+        private readonly MsSrv.IPointService _msPointService;
 
         private readonly RsSrv.IEnumMethodsService _rsEnumMethodsService;
         private readonly RsSrv.IStationTypeService _rsStationTypeService;
@@ -38,6 +39,7 @@ namespace iPem.Site.Controllers {
         public ComponentController(
             IWorkContext workContext,
             MsSrv.IWebLogger webLogger,
+            MsSrv.IPointService msPointService,
             RsSrv.IEnumMethodsService rsEnumMethodsService,
             RsSrv.IStationTypeService rsStationTypeService,
             RsSrv.IRoomTypeService rsRoomTypeService,
@@ -47,6 +49,7 @@ namespace iPem.Site.Controllers {
             RsSrv.IDepartmentService rsDepartmentService) {
             this._workContext = workContext;
             this._webLogger = webLogger;
+            this._msPointService = msPointService;
             this._rsEnumMethodsService = rsEnumMethodsService;
             this._rsStationTypeService = rsStationTypeService;
             this._rsRoomTypeService = rsRoomTypeService;
@@ -1310,6 +1313,38 @@ namespace iPem.Site.Controllers {
                             }
                             #endregion
                         }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetPoints(string device, bool AI = true, bool AO = true, bool DI = true, bool DO = true) {
+            var data = new AjaxDataModel<List<ComboItem<string, string>>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ComboItem<string, string>>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(device)) {
+                    var types = new List<int>();
+                    if(AI) types.Add((int)EnmPoint.AI);
+                    if(AO) types.Add((int)EnmPoint.AO);
+                    if(DI) types.Add((int)EnmPoint.DI);
+                    if(DO) types.Add((int)EnmPoint.DO);
+
+                    var models = AI && AO && DI && DO ? _msPointService.GetPointsByDevice(device) : _msPointService.GetPoints(device, types.ToArray());
+                    if(models.Count > 0) {
+                        data.message = "200 Ok";
+                        data.total = models.TotalCount;
+                        data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
                     }
                 }
             } catch(Exception exc) {

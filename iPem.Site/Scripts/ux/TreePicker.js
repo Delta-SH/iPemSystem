@@ -62,7 +62,7 @@
     * @cfg {Number} minWidth
     * The min width of the tree dropdown. Defaults to 220.
     */
-    minWidth: 220,
+    minWidth: 215,
 
     /**
     * @cfg {Boolean} selectOnLeaf

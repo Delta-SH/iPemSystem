@@ -44,6 +44,7 @@ namespace iPem.Site.Infrastructure {
         private readonly RsSrv.IStationService _rsStationService;
         private readonly RsSrv.IRoomTypeService _rsRoomTypeService;
         private readonly RsSrv.IDeviceTypeService _rsDeviceTypeService;
+        private readonly RsSrv.ISubDeviceTypeService _rsSubDeviceTypeService;
         private readonly RsSrv.ILogicTypeService _rsLogicTypeService;
         private readonly RsSrv.IFsuService _rsFsuService;
 
@@ -94,6 +95,7 @@ namespace iPem.Site.Infrastructure {
             RsSrv.IStationService rsStationService,
             RsSrv.IRoomTypeService rsRoomTypeService,
             RsSrv.IDeviceTypeService rsDeviceTypeService,
+            RsSrv.ISubDeviceTypeService rsSubDeviceTypeService,
             RsSrv.ILogicTypeService rsLogicTypeService,
             RsSrv.IFsuService rsFsuService) {
             this._httpContext = httpContext;
@@ -117,6 +119,7 @@ namespace iPem.Site.Infrastructure {
             this._rsStationService = rsStationService;
             this._rsRoomTypeService = rsRoomTypeService;
             this._rsDeviceTypeService = rsDeviceTypeService;
+            this._rsSubDeviceTypeService = rsSubDeviceTypeService;
             this._rsLogicTypeService = rsLogicTypeService;
             this._rsFsuService = rsFsuService;
         }
@@ -506,6 +509,7 @@ namespace iPem.Site.Infrastructure {
                 var msDevices = _msDeviceService.GetAllDevices();
                 var rsDevices = _rsDeviceService.GetAllDevices();
                 var types = _rsDeviceTypeService.GetAllDeviceTypes();
+                var subtypes = _rsSubDeviceTypeService.GetAllSubDeviceTypes();
 
                 var fuDevices = from device in msDevices
                                 join fsu in AssociatedFsus on device.FsuId equals fsu.Id into temp
@@ -518,6 +522,7 @@ namespace iPem.Site.Infrastructure {
                 var attributes = from rsd in rsDevices
                                  join fud in fuDevices on rsd.Id equals fud.Id
                                  join type in types on rsd.DeviceTypeId equals type.Id
+                                 join subtype in subtypes on rsd.SubDeviceTypeId equals subtype.Id
                                  join room in AssociatedRooms on rsd.RoomId equals room.Id
                                  join station in AssociatedStations on room.StationId equals station.Id
                                  join area in AssociatedAreas on station.AreaId equals area.AreaId
@@ -527,7 +532,8 @@ namespace iPem.Site.Infrastructure {
                                      Room = room,
                                      Fsu = fud.Fsu,
                                      Current = rsd,
-                                     Type = type
+                                     Type = type,
+                                     SubType = subtype
                                  };
 
                 _cachedAssociatedDeviceAttributes = new Dictionary<string, DeviceAttributes>();
@@ -547,10 +553,13 @@ namespace iPem.Site.Infrastructure {
 
                 var points = _msPointService.GetPoints();
                 var logictypes = _rsLogicTypeService.GetAllLogicTypes();
+                var sublogictypes = _rsLogicTypeService.GetAllSubLogicTypes();
                 var attributes = from point in points
-                                 join logic in logictypes on point.LogicTypeId equals logic.Id
+                                 join sublogic in sublogictypes on point.SubLogicTypeId equals sublogic.Id
+                                 join logic in logictypes on sublogic.LogicTypeId equals logic.Id
                                  select new PointAttributes {
                                      Current = point,
+                                     SubLogicType = sublogic,
                                      LogicType = logic
                                  };
 
@@ -607,7 +616,7 @@ namespace iPem.Site.Infrastructure {
                     pointResult = pointResult.FindAll(p => pointtypes.Contains((int)p.Current.Type));
 
                 if(logictypes.Length > 0)
-                    pointResult = pointResult.FindAll(p => logictypes.Contains(p.Current.LogicTypeId));
+                    pointResult = pointResult.FindAll(p => logictypes.Contains(p.LogicType.Id));
 
                 if(pointnames.Length > 0)
                     pointResult = pointResult.FindAll(p => CommonHelper.ConditionContain(p.Current.Name, pointnames));

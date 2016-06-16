@@ -10,7 +10,13 @@ namespace iPem.Data.Repository.Resource {
 
         LogicType GetEntity(string id);
 
+        SubLogicType GetSubEntity(string id);
+
         List<LogicType> GetEntities();
+
+        List<SubLogicType> GetSubEntities(string logic);
+
+        List<SubLogicType> GetSubEntities();
 
     }
 }

@@ -26,6 +26,7 @@ namespace iPem.Services.Common {
         public const string Rs_EmployeesRepository = "ipems:global:rs-employees@repository";
         public const string Rs_EnumMethodsRepository = "ipems:global:rs-enum-methods@repository";
         public const string Rs_LogicTypesRepository = "ipems:global:rs-logic-types@repository";
+        public const string Rs_SubLogicTypesRepository = "ipems:global:rs-sub-logic-types@repository";
         public const string Rs_ProductorsRepository = "ipems:global:rs-productors@repository";
         public const string Rs_RoomsRepository = "ipems:global:rs-rooms@repository";
         public const string Rs_RoomTypesRepository = "ipems:global:rs-room-types@repository";

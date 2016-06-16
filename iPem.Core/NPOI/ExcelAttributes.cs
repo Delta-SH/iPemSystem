@@ -68,7 +68,18 @@ namespace iPem.Core.NPOI {
     }
 
     /// <summary>
-    /// Instructs the <see cref="ExcelManager"/> to fill the background color of each row with a specified color,
+    /// Instructs the <see cref="ExcelManager"/> to fill the background color of each cell with a specified color.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class ExcelColorAttribute : Attribute {
+        /// <summary>
+        /// Initializes a new instance of the ExcelColorAttribute class.
+        /// </summary>
+        public ExcelColorAttribute() { }
+    }
+
+    /// <summary>
+    /// Instructs the <see cref="ExcelManager"/> to fill the background color of each cell with a specified color,
     /// the attribute must be set on the <see cref="System.Drawing.Color"/> properties or fields,
     /// currently only supported colors include Red、Orange、Yellow、SkyBlue、Blue.
     /// </summary>

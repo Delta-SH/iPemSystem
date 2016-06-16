@@ -45,10 +45,16 @@
     <Compile Include="History\Class\ActValueService.cs" />
     <Compile Include="History\Class\AlmExtendService.cs" />
     <Compile Include="History\Class\HisAlmService.cs" />
+    <Compile Include="History\Class\HisBatService.cs" />
+    <Compile Include="History\Class\HisStaticService.cs" />
+    <Compile Include="History\Class\HisValueService.cs" />
     <Compile Include="History\Interface\IActAlmService.cs" />
     <Compile Include="History\Interface\IActValueService.cs" />
     <Compile Include="History\Interface\IAlmExtendService.cs" />
     <Compile Include="History\Interface\IHisAlmService.cs" />
+    <Compile Include="History\Interface\IHisBatService.cs" />
+    <Compile Include="History\Interface\IHisStaticService.cs" />
+    <Compile Include="History\Interface\IHisValueService.cs" />
     <Compile Include="Master\Class\AppointmentService.cs" />
     <Compile Include="Master\Class\AreaService.cs" />
     <Compile Include="Master\Class\AreasInRoleService.cs" />
