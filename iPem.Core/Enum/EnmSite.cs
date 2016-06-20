@@ -119,4 +119,13 @@
         Department,
         Employee
     }
+
+    /// <summary>
+    /// Represents the logic point enumeration
+    /// </summary>
+    public enum EnmLogicPoint {
+        Logic,
+        SubLogic,
+        Point
+    }
 }

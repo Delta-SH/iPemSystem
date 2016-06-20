@@ -17,6 +17,7 @@
                 title: $$iPems.lang.Dictionary.Ws.Title,
                 glyph: 0xf047,
                 xtype: 'form',
+                overflowY: 'auto',
                 layout: {
                     type: 'vbox',
                     align: 'stretch'
@@ -145,6 +146,7 @@
                 title: $$iPems.lang.Dictionary.Ts.Title,
                 glyph: 0xf048,
                 xtype: 'form',
+                overflowY: 'auto',
                 items: [
                     {
                         xtype: 'container',
@@ -340,6 +342,7 @@
                 title: $$iPems.lang.Dictionary.Report.Title,
                 glyph: 0xf044,
                 xtype: 'form',
+                overflowY: 'auto',
                 items: [
                     {
                         xtype: 'fieldset',
@@ -347,7 +350,7 @@
                         margin: '10 20 20 20',
                         layout: {
                             type: 'hbox',
-                            align: 'middle'
+                            align: 'stretch'
                         },
                         defaults: {
                             margin: 15
@@ -452,6 +455,110 @@
                                         xtype: 'displayfield',
                                         value: $$iPems.lang.Dictionary.Report.Exception.FenZhong,
                                         margin: '15 15 15 0'
+                                    }]
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: $$iPems.lang.Dictionary.Report.TingDian.Title,
+                        margin: '10 20 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left',
+                            margin: 15
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                items: [{
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'weitingdian',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.WeiTingDian,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.TingDian.WeiTingDianEmptyText,
+                                        value: 0,
+                                        minValue: 0
+                                    }, {
+                                        name: 'tingdianxinhao',
+                                        xtype: 'LogicPointMultiPicker',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.Point,
+                                        allowBlank: false
+                                    }]
+                                }, {
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'tingdian',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.TingDian,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.TingDian.TingDianEmptyText,
+                                        value: 1,
+                                        minValue: 0
+                                    }]
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: $$iPems.lang.Dictionary.Report.FaDian.Title,
+                        margin: '10 20 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left',
+                            margin: 15
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                items: [{
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'weifadian',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.WeiFaDian,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.FaDian.WeiFaDianEmptyText,
+                                        value: 0,
+                                        minValue: 0
+                                    }, {
+                                        name: 'fadianxinhao',
+                                        xtype: 'LogicPointMultiPicker',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.Point,
+                                        allowBlank: false
+                                    }]
+                                }, {
+                                    xtype: 'container',
+                                    flex: 1,
+                                    layout: 'anchor',
+                                    items: [{
+                                        name: 'fadian',
+                                        xtype: 'numberfield',
+                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.FaDian,
+                                        allowBlank: false,
+                                        emptyText: $$iPems.lang.Dictionary.Report.FaDian.FaDianEmptyText,
+                                        value: 1,
+                                        minValue: 0
                                     }]
                                 }]
                             }

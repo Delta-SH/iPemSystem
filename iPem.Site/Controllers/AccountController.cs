@@ -1633,7 +1633,13 @@ namespace iPem.Site.Controllers {
                 data = new RtValues() {
                     chaopin = 1,
                     chaoduan = 1,
-                    chaochang = 1
+                    chaochang = 1,
+                    weitingdian = 0,
+                    tingdian = 1,
+                    tingdianxinhao = new string[] { },
+                    weifadian = 0,
+                    fadian = 1,
+                    fadianxinhao = new string[] { }
                 }
             };
 

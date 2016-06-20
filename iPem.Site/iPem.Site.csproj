@@ -263,6 +263,8 @@
     <Content Include="Content\install\dbconfiguration.css" />
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
     <Content Include="Content\themes\css\home.speech.css" />
+    <Content Include="Content\themes\icons\category.png" />
+    <Content Include="Content\themes\icons\signal.png" />
     <Content Include="Content\themes\images\cfg.png" />
     <Content Include="Content\themes\images\map.png" />
     <Content Include="Content\themes\css\configuration.map.iframe.css" />
@@ -3697,6 +3699,7 @@
     <Content Include="Scripts\ux\IFrame.js" />
     <Content Include="Scripts\ux\Label.js" />
     <Content Include="Scripts\ux\MultiCombo.js" />
+    <Content Include="Scripts\ux\SingleCombo.js" />
     <Content Include="Scripts\ux\TreePicker.js" />
     <Content Include="Scripts\report.base400101.js" />
     <Content Include="Web.config">

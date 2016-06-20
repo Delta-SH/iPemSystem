@@ -372,6 +372,22 @@
                 ChaoChangEmptyText: '告警历时的最小分钟阈值',
                 CiShu: '次数',
                 FenZhong: '分钟',
+            },
+            TingDian: {
+                Title: '市电停电',
+                WeiTingDian: '正常测值',
+                WeiTingDianEmptyText: '市电信号正常时所输出的测值',
+                TingDian: '停电测值',
+                TingDianEmptyText: '市电信号停电时所输出的测值',
+                Point: '停电信号'
+            },
+            FaDian: {
+                Title: '油机发电',
+                WeiFaDian: '正常测值',
+                WeiFaDianEmptyText: '油机信号正常时所输出的测值',
+                FaDian: '发电测值',
+                FaDianEmptyText: '油机信号发电时所输出的测值',
+                Point: '发电信号'
             }
         }
     },

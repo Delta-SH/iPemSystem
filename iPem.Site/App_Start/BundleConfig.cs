@@ -53,6 +53,7 @@ namespace iPem.Site {
                 "~/Scripts/My97DatePicker/WdatePicker.js",
                 "~/Scripts/ux/Label.js",
                 "~/Scripts/ux/MultiCombo.js",
+                "~/Scripts/ux/SingleCombo.js",
                 "~/Scripts/ux/TreePicker.js",
                 "~/Scripts/ux/DateTimePicker.js",
                 "~/Scripts/ux/IFrame.js"));

@@ -12,32 +12,15 @@
     labelWidth: 60,
     width: 220,
     initComponent: function () {
-        this.callParent(arguments);
-        this.store.load();
-    },
-    store: Ext.create('Ext.data.Store', {
-        pageSize: 1024,
-        fields: [
-            { name: 'id', type: 'string' },
-            { name: 'text', type: 'string' },
-            { name: 'comment', type: 'string' }
-        ],
-        proxy: {
-            type: 'ajax',
-            url: '/Component/GetLogicTypes',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            }
-        }
-    })
+        var me = this;
+        me.storeUrl = '/Component/GetLogicTypes';
+        me.callParent(arguments);
+        me.store.load();
+    }
 });
 
 Ext.define("Ext.ux.LogicTypeComboBox", {
-    extend: "Ext.form.ComboBox",
+    extend: "Ext.ux.SingleCombo",
     xtype: "LogicTypeCombo",
     fieldLabel: $$iPems.lang.Component.LogicType,
     displayField: 'text',
@@ -50,26 +33,9 @@ Ext.define("Ext.ux.LogicTypeComboBox", {
     labelWidth: 60,
     width: 220,
     initComponent: function () {
-        this.callParent(arguments);
-        this.store.load();
-    },
-    store: Ext.create('Ext.data.Store', {
-        pageSize: 1024,
-        fields: [
-            { name: 'id', type: 'string' },
-            { name: 'text', type: 'string' },
-            { name: 'comment', type: 'string' }
-        ],
-        proxy: {
-            type: 'ajax',
-            url: '/Component/GetLogicTypes',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            }
-        }
-    })
+        var me = this;
+        me.storeUrl = '/Component/GetLogicTypes';
+        me.callParent(arguments);
+        me.store.load();
+    }
 });

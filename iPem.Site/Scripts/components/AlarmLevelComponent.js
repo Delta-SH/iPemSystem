@@ -12,32 +12,15 @@
     labelWidth: 60,
     width: 220,
     initComponent: function () {
-        this.callParent(arguments);
-        this.store.load();
-    },
-    store: Ext.create('Ext.data.Store', {
-        pageSize: 1024,
-        fields: [
-            { name: 'id', type: 'int' },
-            { name: 'text', type: 'string' },
-            { name: 'comment', type: 'string' }
-        ],
-        proxy: {
-            type: 'ajax',
-            url: '/Component/GetAlarmLevels',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            }
-        }
-    })
+        var me = this;
+        me.storeUrl = '/Component/GetAlarmLevels';
+        me.callParent(arguments);
+        me.store.load();
+    }
 });
 
 Ext.define("Ext.ux.AlarmLevelComboBox", {
-    extend: "Ext.form.ComboBox",
+    extend: "Ext.ux.SingleCombo",
     xtype: "AlarmLevelCombo",
     fieldLabel: $$iPems.lang.Component.AlarmLevel,
     displayField: 'text',
@@ -50,26 +33,9 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
     labelWidth: 60,
     width: 220,
     initComponent: function () {
-        this.callParent(arguments);
-        this.store.load();
-    },
-    store: Ext.create('Ext.data.Store', {
-        pageSize: 1024,
-        fields: [
-            { name: 'id', type: 'int' },
-            { name: 'text', type: 'string' },
-            { name: 'comment', type: 'string' }
-        ],
-        proxy: {
-            type: 'ajax',
-            url: '/Component/GetAlarmLevels',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            }
-        }
-    })
+        var me = this;
+        me.storeUrl = '/Component/GetAlarmLevels';
+        me.callParent(arguments);
+        me.store.load();
+    }
 });

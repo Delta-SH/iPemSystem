@@ -2,6 +2,7 @@
     extend: "Ext.form.field.ComboBox",
     xtype: "multicombo",
     selectionMode: "checkbox",
+    storeUrl: null,
     multiSelect: true,
     assertValue: function () {
         this.collapse();
@@ -47,7 +48,6 @@
 
         return this.picker;
     },
-
     onViewReady: function () {
         Ext.each(this.valueModels, function (r) {
             this.selectRecord(r);
@@ -62,8 +62,32 @@
             this.deselectRecord(record);
     },
     initComponent: function () {
-        this.editable = false;
-        this.callParent(arguments);
+        var me = this;
+
+        if (!Ext.isEmpty(me.storeUrl)) {
+            me.store = Ext.create('Ext.data.Store', {
+                pageSize: 1024,
+                fields: [
+                    { name: 'id', type: 'int' },
+                    { name: 'text', type: 'string' },
+                    { name: 'comment', type: 'string' }
+                ],
+                proxy: {
+                    type: 'ajax',
+                    url: me.storeUrl,
+                    reader: {
+                        type: 'json',
+                        successProperty: 'success',
+                        messageProperty: 'message',
+                        totalProperty: 'total',
+                        root: 'data'
+                    }
+                }
+            });
+        }
+
+        me.editable = false;
+        me.callParent(arguments);
     },
     getDisplayValue: function () {
         var value = this.displayTpl.apply(this.displayTplData);

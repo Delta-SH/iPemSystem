@@ -67,7 +67,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetAreaTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -91,7 +91,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetStationTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -115,7 +115,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetRoomTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -139,7 +139,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetDeviceTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -163,7 +163,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetAlarmLevels(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<int, string>>()
             };
@@ -172,6 +172,11 @@ namespace iPem.Site.Controllers {
                 foreach(EnmAlarmLevel level in Enum.GetValues(typeof(EnmAlarmLevel))) {
                     if(level == EnmAlarmLevel.NoAlarm) continue;
                     data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplay(level) });
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -185,7 +190,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetLogicTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -209,7 +214,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetPointTypes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<int, string>>()
             };
@@ -217,6 +222,11 @@ namespace iPem.Site.Controllers {
             try {
                 foreach(EnmPoint type in Enum.GetValues(typeof(EnmPoint))) {
                     data.data.Add(new ComboItem<int, string>() { id = (int)type, text = Common.GetPointTypeDisplay(type) });
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -230,7 +240,7 @@ namespace iPem.Site.Controllers {
         public JsonNetResult GetAreas(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<TreeModel>()
             };
@@ -331,6 +341,11 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths.ToArray());
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -367,6 +382,11 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths.ToArray());
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -379,7 +399,7 @@ namespace iPem.Site.Controllers {
         public JsonNetResult GetStations(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<TreeModel>()
             };
@@ -584,6 +604,11 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -644,6 +669,11 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths.ToArray());
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -656,7 +686,7 @@ namespace iPem.Site.Controllers {
         public JsonNetResult GetRooms(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<TreeModel>()
             };
@@ -907,6 +937,11 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -995,6 +1030,11 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths.ToArray());
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -1007,7 +1047,7 @@ namespace iPem.Site.Controllers {
         public JsonNetResult GetDevices(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<TreeModel>()
             };
@@ -1315,6 +1355,11 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -1327,7 +1372,7 @@ namespace iPem.Site.Controllers {
         public JsonResult GetPoints(string device, bool AI = true, bool AO = true, bool DI = true, bool DO = true) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<ComboItem<string, string>>()
             };
@@ -1359,7 +1404,7 @@ namespace iPem.Site.Controllers {
         public JsonNetResult GetEmployees(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
-                message = "无数据",
+                message = "No data",
                 total = 0,
                 data = new List<TreeModel>()
             };
@@ -1438,6 +1483,11 @@ namespace iPem.Site.Controllers {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmHR.Department, current.DeptId), current.Id });
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -1465,6 +1515,149 @@ namespace iPem.Site.Controllers {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmHR.Department, match.DeptId), match.Id });
                     }
                 }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetLogicPoints(string node, bool? multiselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(node)) {
+                    if(node == "root") {
+                        var roots = _rsLogicTypeService.GetAllLogicTypes();
+                        if(roots.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = roots.Count;
+                            for(var i = 0; i < roots.Count; i++) {
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmLogicPoint.Logic, roots[i].Id),
+                                    text = roots[i].Name,
+                                    icon = Icons.Category,
+                                    expanded = false,
+                                    leaf = false
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                    } else {
+                        var keys = Common.SplitKeys(node);
+                        if(keys.Length == 2
+                            && ((int)EnmLogicPoint.Logic).ToString().Equals(keys[0])
+                            && !string.IsNullOrWhiteSpace(keys[1])) {
+                            var matchs = _rsLogicTypeService.GetSubLogicTypes(keys[1]).Select(l=>l.Id);
+                            var children = _msPointService.GetPoints().Where(p => matchs.Contains(p.SubLogicTypeId)).ToList();
+                            if(children.Count > 0) {
+                                data.success = true;
+                                data.message = "200 Ok";
+                                data.total = children.Count;
+                                for(var i = 0; i < children.Count; i++) {
+                                    var child = new TreeModel {
+                                        id = children[i].Id,
+                                        text = children[i].Name,
+                                        icon = Icons.Signal,
+                                        leaf = true
+                                    };
+
+                                    if(multiselect.HasValue && multiselect.Value)
+                                        child.selected = false;
+
+                                    data.data.Add(child);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetLogicPointPath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                var logics = _rsLogicTypeService.GetAllSubLogicTypes().ToList();
+                var points = _msPointService.GetPoints().ToList();
+                foreach(var node in nodes) {
+                    var current = points.Find(p=>p.Id == node);
+                    if(current != null) {
+                        var logic = logics.Find(l => l.Id == current.SubLogicTypeId);
+                        if(logic != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, logic.LogicTypeId), current.Id });
+                        }
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult FilterLogicPointPath(string text) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(text)) {
+                    text = text.Trim().ToLower();
+
+                    var logics = _rsLogicTypeService.GetAllSubLogicTypes().ToList();
+                    var points = _msPointService.GetPoints().ToList();
+                    var matchs = points.FindAll(a => a.Name.ToLower().Contains(text));
+                    foreach(var match in matchs) {
+                        var logic = logics.Find(l => l.Id == match.SubLogicTypeId);
+                        if(logic != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, logic.LogicTypeId), match.Id });
+                        }
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
             } catch(Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -1481,7 +1674,7 @@ namespace iPem.Site.Controllers {
                 if(images != null)
                     return File(images, "image/png", "chart.png");
 
-                throw new iPemException("生成图片失败");
+                throw new iPemException("An error occurred when trying to generate the image.");
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });

@@ -5,6 +5,7 @@ namespace iPem.Site.Infrastructure {
         public const string Add = @"/content/themes/icons/add.png";
         public const string Cancel = @"/content/themes/icons/cancel.png";
         public const string Clear = @"/content/themes/icons/clear.png";
+        public const string Category = @"/content/themes/icons/category.png";
         public const string Cog = @"/content/themes/icons/cog.png";
         public const string Delete = @"/content/themes/icons/delete.png";
         public const string Department = @"/content/themes/icons/department.png";
@@ -32,6 +33,7 @@ namespace iPem.Site.Infrastructure {
         public const string Remove = @"/content/themes/icons/remove.png";
         public const string Room = @"/content/themes/icons/room.png";
         public const string Save = @"/content/themes/icons/save.png";
+        public const string Signal = @"/content/themes/icons/signal.png";
         public const string Tick = @"/content/themes/icons/tick.png";
         public const string Unread = @"/content/themes/icons/unread.png";
         public const string User = @"/content/themes/icons/user.png";

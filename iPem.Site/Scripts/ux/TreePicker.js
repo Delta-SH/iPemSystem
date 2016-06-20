@@ -60,7 +60,7 @@
 
     /**
     * @cfg {Number} minWidth
-    * The min width of the tree dropdown. Defaults to 220.
+    * The min width of the tree dropdown. Defaults to 215.
     */
     minWidth: 215,
 
@@ -82,13 +82,154 @@
     */
     searchVisible: false,
 
-    searchChange: Ext.emptyFn,
+    /**
+    * @cfg {Array} remoteValues
+    * Defaults to [].
+    */
+    remoteValues: [],
+
+    /**
+    * @cfg {Number} queryDelay
+    * Defaults to 300.
+    */
+    queryDelay: 300,
+
+    /**
+     * @cfg {String} storeUrl
+     * The URL from which to request the data object.
+     */
+    storeUrl: null,
+
+    /**
+     * @cfg {String} searchUrl
+     * The URL from which to request the data object.
+     */
+    searchUrl: null,
+
+    /**
+     * @cfg {String} queryUrl
+     * The URL from which to request the data object.
+     */
+    queryUrl: null,
+
+    searchChange: function (me, newValue, oldValue) {
+        delete me._filterData;
+        delete me._filterIndex;
+    },
+
+    doRawSearch: function (field, text) {
+        var me = this;
+
+        if (Ext.isEmpty(me.searchUrl))
+            return false;
+
+        var picker = me.getPicker(),
+            root = me.findRoot(),
+            separator = '/';
+
+        if (Ext.isEmpty(text, false))
+            return;
+
+        if (text.length < 2)
+            return;
+
+        if (!picker)
+            return;
+
+        if (field._filterData != null && field._filterIndex != null) {
+            var index = field._filterIndex + 1;
+            var paths = field._filterData;
+            if (index >= paths.length) {
+                index = 0;
+            }
+
+            var nodes = Ext.Array.from(paths[index]);
+            var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
+            picker.selectPath(path);
+            field._filterIndex = index;
+        } else {
+            Ext.Ajax.request({
+                url: me.searchUrl,
+                params: { text: text },
+                mask: new Ext.LoadMask({ target: picker, msg: $$iPems.lang.AjaxHandling }),
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success) {
+                        var len = data.data.length;
+                        if (len > 0) {
+                            var nodes = Ext.Array.from(data.data[0]);
+                            var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
+                            picker.selectPath(path);
+
+                            field._filterData = data.data;
+                            field._filterIndex = 0;
+                        }
+                    } else {
+                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                }
+            });
+        }
+    },
+
+    doRawQuery: function () {
+        var me = this;
+        if (Ext.isEmpty(me.queryUrl))
+            return false;
+
+        var picker = me.getPicker(),
+            values = me.remoteValues,
+            separator = '/',
+            root;
+
+        Ext.Ajax.request({
+            url: me.queryUrl,
+            params: { nodes: values },
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success && picker) {
+                    root = picker.getRootNode();
+                    Ext.Array.each(data.data, function (item, index, all) {
+                        item = Ext.Array.from(item);
+
+                        var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), item.join(separator));
+                        picker.expandPath(path);
+                    });
+                }
+            }
+        });
+    },
 
     initComponent: function () {
-        var me = this,
-            store = me.store;
+        var me = this;
 
-        me.mon(store, {
+        if (!Ext.isEmpty(me.storeUrl)) {
+            me.store = Ext.create('Ext.data.TreeStore', {
+                root: {
+                    id: 'root',
+                    text: $$iPems.lang.Component.All,
+                    icon: $$iPems.icons.Home,
+                    root: true
+                },
+                proxy: {
+                    type: 'ajax',
+                    url: me.storeUrl,
+                    extraParams: {
+                        multiselect: me.multiSelect,
+                        leafselect: me.selectOnLeaf
+                    },
+                    reader: {
+                        type: 'json',
+                        successProperty: 'success',
+                        messageProperty: 'message',
+                        totalProperty: 'total',
+                        root: 'data'
+                    }
+                }
+            });
+        }
+
+        me.mon(me.store, {
             load: me.onLoad,
             exception: me.onException,
             scope: me
@@ -96,9 +237,7 @@
 
         this.addEvents(
             'select',
-            'checkchange',
-            'search',
-            'syncselect'
+            'checkchange'
         );
 
         if (!me.displayTpl) {
@@ -113,6 +252,7 @@
         }
 
         me.callParent(arguments);
+        me.doQueryTask = new Ext.util.DelayedTask(me.doRawQuery, me);
     },
 
     onException: function () {
@@ -122,25 +262,13 @@
     onLoad: function (store, parent, records, success) {
         var me = this,
             picker = me.picker,
-            value = me.value,
-            node;
+            value = me.value;
 
-        if (success && value) {
-            me.setValue(value, false);
-            if (!me.multiSelect) {
-                value = Ext.isArray(value) ? value[0] : value;
-                if (value) {
-                    node = Ext.Array.findBy(records, function (item, index) {
-                        return item.getId() === value;
-                    });
-
-                    if (!Ext.isEmpty(node)) {
-                        picker.getSelectionModel().select(node);
-                    }
-                }
-            } else {
+        if (success && value != null) {
+            me.setValue(value);
+            if (me.multiSelect === true) {
                 value = Ext.Array.from(value);
-                if (parent.hasChildNodes()) {
+                if (parent && parent.hasChildNodes()) {
                     parent.eachChild(function (c) {
                         c.cascadeBy(function (n) {
                             var checked = n.get('checked');
@@ -149,6 +277,12 @@
                             }
                         });
                     });
+                }
+            } else {
+                value = Ext.isArray(value) ? value[0] : value;
+                if (value) {
+                    var node = me.findRecord(value);
+                    if (node) picker.getSelectionModel().select(node);
                 }
             }
         }
@@ -168,7 +302,8 @@
         var query = Ext.create('Ext.button.Button', {
             glyph: 0xf005,
             handler: function (btn, e) {
-                me.fireEvent('search', me, search, search.getRawValue());
+                var text = me.search.getRawValue();
+                me.doRawSearch(me.search, text);
             }
         });
 
@@ -279,36 +414,24 @@
             picker = me.picker,
             value = me.value;
 
-        if (value) {
-            if (!me.multiSelect) {
-                value = Ext.isArray(value) ? value[0] : value;
-                if (value) {
-                    node = me.findRecord(value);
-                }
-
-                if (Ext.isEmpty(node)) {
-                    node = me.findRoot();
-                }
-
-                picker.selectPath(node.getPath());
-            } else {
-                value = Ext.Array.from(value);
-                node = me.findRoot();
-                if (node.hasChildNodes()) {
-                    node.eachChild(function (c) {
-                        c.cascadeBy(function (n) {
-                            var checked = n.get('checked');
-                            if (checked !== null) {
-                                n.set('checked', Ext.Array.contains(value, n.data.id));
-                            }
-                        });
-                    });
-                }
+        if (me.multiSelect === true) {
+            var nodes = picker.getChecked();
+            Ext.Array.each(nodes, function (item, index, items) {
+                picker.selectPath(item.getPath());
+            });
+        } else {
+            value = Ext.isArray(value) ? value[0] : value;
+            if (value) {
+                var node = me.findRecord(value);
+                if (node) picker.selectPath(node.getPath());
             }
         }
 
+        if (me.remoteValues.length > 0)
+            me.doQueryTask.delay(me.queryDelay);
+
         Ext.defer(function () {
-            picker.focus();
+            me.picker.focus();
         }, 5);
     },
 
@@ -319,20 +442,20 @@
         return this.store.getNodeById(value);
     },
 
-    findRoot:function() {
+    findRoot: function () {
         return this.store.getRootNode();
     },
 
-    setValue: function (value, fireSelection) {
+    setValue: function (value) {
         var me = this,
             inputEl = me.inputEl,
             i, len, record,
             dataObj,
             matchedRecords = [],
             displayTplData = [],
-            processedValue = [],
-            selection = [];
+            processedValue = [];
 
+        me.remoteValues = [];
         if (me.store.loading) {
             me.value = value;
             return me;
@@ -354,7 +477,7 @@
                 dataObj = {};
                 dataObj[me.displayField] = value[i];
                 displayTplData.push(dataObj);
-                selection.push(value[i]);
+                me.remoteValues.push(value[i]);
             }
         }
 
@@ -371,9 +494,6 @@
 
         me.setRawValue(me.getDisplayValue());
         me.applyEmptyText();
-        if (!(fireSelection === false) && selection.length > 0) {
-            me.fireEvent('syncselect', me, selection);
-        }
 
         return me;
     },
@@ -385,7 +505,7 @@
     getValue: function () {
         var me = this,
             picker = me.picker,
-            rawValue = me.getRawValue(), 
+            rawValue = me.getRawValue(),
             value = me.value;
 
         if (me.getDisplayValue() !== rawValue) {

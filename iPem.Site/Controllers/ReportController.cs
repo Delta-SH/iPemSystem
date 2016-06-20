@@ -1856,6 +1856,7 @@ namespace iPem.Site.Controllers {
         }
 
         private List<ValStore<HsDomain.HisValue>> GetHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string[] logictypes, string pointname) {
+            endtime = endtime.AddSeconds(86399);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
@@ -1937,6 +1938,7 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HsDomain.HisAlm>> GetHistory400202(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+            endtime = endtime.AddSeconds(86399);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
@@ -2034,6 +2036,7 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HsDomain.HisAlm>> GetHistory400203(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+            endtime = endtime.AddSeconds(86399);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
@@ -2131,6 +2134,7 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HsDomain.HisAlm>> GetHistory400204(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+            endtime = endtime.AddSeconds(86399);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
@@ -2229,6 +2233,7 @@ namespace iPem.Site.Controllers {
 
         private List<Model400205> GetHistory400205(string parent, DateTime starttime, DateTime endtime) {
             var result = new List<Model400205>();
+            endtime = endtime.AddSeconds(86399);
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -2239,8 +2244,8 @@ namespace iPem.Site.Controllers {
                     if(nodeType == EnmOrganization.Area) {
                         if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
                             var current = _workContext.AssociatedAreaAttributes[nodeid];
-                            var appSets = this.GetAppointmentsInDevices(starttime, endtime);
-                            var projects = _msProjectService.GetAllProjects();
+                            var projects = _msProjectService.GetProjects(starttime, endtime);
+                            var appSets = this.GetAppointmentsInDevices(projects);
                             if(current.HasChildren) {
                                 #region area children
                                 var areaTypes = _rsEnumMethodsService.GetEnumMethods(EnmMethodType.Area, "类型").ToList();
@@ -2392,8 +2397,8 @@ namespace iPem.Site.Controllers {
                     } else if(nodeType == EnmOrganization.Station) {
                         if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
                             var current = _workContext.AssociatedStationAttributes[nodeid];
-                            var appSets = this.GetAppointmentsInDevices(starttime, endtime);
-                            var projects = _msProjectService.GetAllProjects();
+                            var projects = _msProjectService.GetProjects(starttime, endtime);
+                            var appSets = this.GetAppointmentsInDevices(projects);
                             if(current.HasChildren) {
                                 #region station children
                                 var stationTypes = _rsStationTypeService.GetAllStationTypes().ToList();
@@ -2537,6 +2542,7 @@ namespace iPem.Site.Controllers {
 
         private List<Model400206> GetHistory400206(string parent, DateTime starttime, DateTime endtime) {
             var result = new List<Model400206>();
+            endtime = endtime.AddSeconds(86399);
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -2764,8 +2770,18 @@ namespace iPem.Site.Controllers {
         }
 
         private List<IdValuePair<MsDomain.Appointment, HashSet<string>>> GetAppointmentsInDevices(DateTime start, DateTime end) {
-            var appSets = new List<IdValuePair<MsDomain.Appointment, HashSet<string>>>();
             var entities = _msAppointmentService.GetAppointmentsByDate(start, end);
+            return this.GetAppointmentsInDevices(entities);
+        }
+
+        private List<IdValuePair<MsDomain.Appointment, HashSet<string>>> GetAppointmentsInDevices(IEnumerable<MsDomain.Project> projects) {
+            var matchs = projects.Select(p=>p.Id);
+            var entities = _msAppointmentService.GetAllAppointments().Where(a => matchs.Contains(a.ProjectId));
+            return this.GetAppointmentsInDevices(entities);
+        }
+
+        private List<IdValuePair<MsDomain.Appointment, HashSet<string>>> GetAppointmentsInDevices(IEnumerable<MsDomain.Appointment> entities) {
+            var appSets = new List<IdValuePair<MsDomain.Appointment, HashSet<string>>>();
             foreach(var entity in entities) {
                 var appSet = new IdValuePair<MsDomain.Appointment, HashSet<string>>() { Id = entity, Value = new HashSet<string>() };
                 var nodes = _msNodesInAppointmentService.GetNodesInAppointment(entity.Id);
@@ -2823,6 +2839,7 @@ namespace iPem.Site.Controllers {
             if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson))
                 return null;
 
+            endtime = endtime.AddSeconds(86399);
             var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
@@ -2930,6 +2947,7 @@ namespace iPem.Site.Controllers {
             if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson))
                 return null;
 
+            endtime = endtime.AddSeconds(86399);
             var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
@@ -3035,6 +3053,7 @@ namespace iPem.Site.Controllers {
             if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson))
                 return null;
 
+            endtime = endtime.AddSeconds(86399);
             var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
             var devices = _workContext.AssociatedDeviceAttributes.Values.ToList();
             if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {

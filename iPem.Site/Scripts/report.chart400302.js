@@ -434,7 +434,7 @@
                                 fieldLabel: $$iPems.lang.Report400302.ToolBar.Start,
                                 labelWidth: 60,
                                 width: 280,
-                                value: Ext.ux.DateTime.todayString(Ext.ux.DateTime.defaultFormat),
+                                value: Ext.ux.DateTime.addDays(Ext.ux.DateTime.today(),-1),
                                 editable: false,
                                 allowBlank: false
                             },
@@ -444,7 +444,7 @@
                                 fieldLabel: $$iPems.lang.Report400302.ToolBar.End,
                                 labelWidth: 60,
                                 width: 280,
-                                value: Ext.ux.DateTime.nowString(),
+                                value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
                                 editable: false,
                                 allowBlank: false
                             }

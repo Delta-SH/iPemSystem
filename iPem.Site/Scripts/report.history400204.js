@@ -505,7 +505,7 @@
                                 fieldLabel: $$iPems.lang.Report400204.ToolBar.End,
                                 labelWidth: 60,
                                 width: 220,
-                                value: new Date(),
+                                value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                                 editable: false,
                                 allowBlank: false
                             },
