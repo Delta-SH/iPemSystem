@@ -84,7 +84,6 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     columnLines: true,
     disableSelection: false,
     loadMask: true,
-    forceFit: true,
     cls: 'x-grid-expander',
     plugins: [{
         ptype: 'rowexpander',
@@ -95,8 +94,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                    Ext.String.format('<td>#</td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>'
-                    , $$iPems.lang.Report400206.Columns.Rows.Id
+                    Ext.String.format('<td>#</td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td>'
                     , $$iPems.lang.Report400206.Columns.Rows.StartTime
                     , $$iPems.lang.Report400206.Columns.Rows.EndTime
                     , $$iPems.lang.Report400206.Columns.Rows.Project
@@ -106,7 +104,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 '</thead>',
                 '<tbody>',
                     '<tpl for="appointments">',
-                        '<tr><td>{#}</td><td>{id}</td><td>{startTime}</td><td>{endTime}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
+                        '<tr><td>{#}</td><td>{startTime}</td><td>{endTime}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
                     '</tpl>',
                 '</tbody>',
             '</tpl>',
@@ -139,6 +137,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: $$iPems.lang.Report400206.Columns.Name,
         dataIndex: 'name',
         align: 'left',
+        flex: 1,
         sortable: true
     }, {
         text: $$iPems.lang.Report400206.Columns.Count,

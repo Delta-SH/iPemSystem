@@ -126,11 +126,27 @@ namespace iPem.Site.Infrastructure {
         List<RsDomain.Area> GetParentsInArea(RsDomain.Area current, bool include = true);
 
         /// <summary>
+        /// Gets the parent areas
+        /// </summary>
+        /// <param name="id">current area identifier</param>
+        /// <param name="include">include</param>
+        /// <returns></returns>
+        List<RsDomain.Area> GetParentsInArea(string id, bool include = true);
+
+        /// <summary>
         /// Gets the parent stations
         /// </summary>
         /// <param name="current">current station</param>
         /// <param name="include">include</param>
         /// <returns></returns>
         List<RsDomain.Station> GetParentsInStation(RsDomain.Station current, bool include = true);
+
+        /// <summary>
+        /// Gets the parent stations
+        /// </summary>
+        /// <param name="id">current station identifier</param>
+        /// <param name="include">include</param>
+        /// <returns></returns>
+        List<RsDomain.Station> GetParentsInStation(string id, bool include = true);
     }
 }

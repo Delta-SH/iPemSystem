@@ -20,6 +20,15 @@ namespace iPem.Data.Repository.History {
         List<HisValue> GetEntities(string device, string point, DateTime start, DateTime end);
 
         /// <summary>
+        /// Gets entities from the repository by the specific point identifiers
+        /// </summary>
+        /// <param name="points">the points array</param>
+        /// <param name="start">the start time</param>
+        /// <param name="end">the end time</param>
+        /// <returns>history value list</returns>
+        List<HisValue> GetEntities(string[] points, DateTime start, DateTime end);
+
+        /// <summary>
         /// Gets entities from the repository by the specific datetime
         /// </summary>
         /// <param name="start">the start datetime</param>

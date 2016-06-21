@@ -179,6 +179,64 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+        public const string Sql_HisValue_Repository_GetEntitiesByPoints = @"
+        DECLARE @Current [varchar](max) = '',@Pos INT;
+        SET @Pos = CHARINDEX(@Delimiter, @Points);
+        WHILE(@Pos > 0) 
+        BEGIN
+	        IF(LEN(@Current)>0)
+	        BEGIN
+		        SET @Current += ' UNION ALL ';
+	        END
+
+	        SELECT @Current += 'SELECT ''' + LEFT(@Points, @Pos - 1) + ''' AS Id';
+            SELECT @Points = STUFF(@Points, 1, @Pos, ''), @Pos = CHARINDEX(@Delimiter, @Points);
+        END
+        IF(LEN(@Points) > 0)
+        BEGIN
+	        IF(LEN(@Current)>0)
+	        BEGIN
+		        SET @Current += ' UNION ALL ';
+	        END
+	        SELECT @Current += 'SELECT ''' + @Points + ''' AS Id';
+        END
+
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Hist'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' UNION ALL ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Time] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH HisValue AS
+		        (
+			        ' + @SQL + N'
+		        ),
+		        Matchs AS 
+		        (
+			        ' + @Current + N'
+		        )
+		        SELECT HV.* FROM HisValue HV INNER JOIN Matchs ST ON HV.[PointId] = ST.[Id] ORDER BY HV.[Time];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
         public const string Sql_HisValue_Repository_GetEntitiesByPoint = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),

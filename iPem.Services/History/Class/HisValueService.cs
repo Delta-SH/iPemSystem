@@ -40,6 +40,11 @@ namespace iPem.Services.History {
             return new PagedList<HisValue>(result, pageIndex, pageSize);
         }
 
+        public IPagedList<HisValue> GetHisValues(string[] points, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            var result = _hisRepository.GetEntities(points, start, end);
+            return new PagedList<HisValue>(result, pageIndex, pageSize);
+        }
+
         public IPagedList<HisValue> GetHisValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             var result = _hisRepository.GetEntities(start, end);
             return new PagedList<HisValue>(result, pageIndex, pageSize);

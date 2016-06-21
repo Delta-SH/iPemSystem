@@ -8,6 +8,8 @@ namespace iPem.Services.History {
 
         IPagedList<HisValue> GetHisValues(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
+        IPagedList<HisValue> GetHisValues(string[] points, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
         IPagedList<HisValue> GetHisValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

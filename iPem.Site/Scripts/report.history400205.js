@@ -88,7 +88,6 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     columnLines: true,
     disableSelection: false,
     loadMask: true,
-    forceFit: true,
     cls: 'x-grid-expander',
     plugins: [{
         ptype: 'rowexpander',
@@ -147,6 +146,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: $$iPems.lang.Report400205.Columns.Name,
         dataIndex: 'name',
         align: 'left',
+        flex: 1,
         sortable: true
     }, {
         text: $$iPems.lang.Report400205.Columns.Count,

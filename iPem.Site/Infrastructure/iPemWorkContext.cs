@@ -647,6 +647,13 @@ namespace iPem.Site.Infrastructure {
             return result;
         }
 
+        public List<RsDomain.Area> GetParentsInArea(string id, bool include = true) {
+            if(!this.AssociatedAreaAttributes.ContainsKey(id))
+                return new List<RsDomain.Area>();
+
+            return this.GetParentsInArea(this.AssociatedAreaAttributes[id].Current, include);
+        }
+
         public List<RsDomain.Station> GetParentsInStation(RsDomain.Station current, bool include = true) {
             var result = new List<RsDomain.Station>();
             if(this.AssociatedStationAttributes.ContainsKey(current.Id))
@@ -654,6 +661,13 @@ namespace iPem.Site.Infrastructure {
 
             if(include) result.Add(current);
             return result;
+        }
+
+        public List<RsDomain.Station> GetParentsInStation(string id, bool include = true) {
+            if(!this.AssociatedStationAttributes.ContainsKey(id))
+                return new List<RsDomain.Station>();
+
+            return this.GetParentsInStation(this.AssociatedStationAttributes[id].Current, include);
         }
 
         #endregion

@@ -445,7 +445,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400202(int start, int limit, string parent, DateTime starttime, DateTime endtime,  string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+        public JsonResult RequestHistory400202(int start, int limit, string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
             var data = new AjaxChartModel<List<Model400202>, List<ChartModel>[]> {
                 success = true,
                 message = "无数据",
@@ -781,7 +781,7 @@ namespace iPem.Site.Controllers {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
-        
+
         [AjaxAuthorize]
         public JsonResult RequestHistory400205(int start, int limit, string parent, DateTime starttime, DateTime endtime) {
             var data = new AjaxDataModel<List<Model400205>> {
@@ -875,6 +875,98 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult RequestHistory400207(int start, int limit, string parent, DateTime starttime, DateTime endtime) {
+            var data = new AjaxDataModel<List<Model400207>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400207>()
+            };
+
+            try {
+                var models = this.GetHistory400207(parent, starttime, endtime);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400207(string parent, DateTime starttime, DateTime endtime) {
+            try {
+                var models = this.GetHistory400207(parent, starttime, endtime);
+                using(var ms = _excelManager.Export<Model400207>(models, "市电停电统计列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistory400208(int start, int limit, string parent, DateTime starttime, DateTime endtime) {
+            var data = new AjaxDataModel<List<Model400208>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400208>()
+            };
+
+            try {
+                var models = this.GetHistory400208(parent, starttime, endtime);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400208(string parent, DateTime starttime, DateTime endtime) {
+            try {
+                var models = this.GetHistory400208(parent, starttime, endtime);
+                using(var ms = _excelManager.Export<Model400208>(models, "油机发电统计列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult RequestChart400301(int start, int limit, string device, string point, DateTime starttime, DateTime endtime) {
             var data = new AjaxChartModel<List<Model400301>, List<ChartModel>> {
                 success = true,
@@ -907,7 +999,7 @@ namespace iPem.Site.Controllers {
                             });
                         }
 
-                        for(var i = 0; i < models.Count;i++ ) {
+                        for(var i = 0; i < models.Count; i++) {
                             data.chart.Add(new ChartModel {
                                 index = i + 1,
                                 name = CommonHelper.DateTimeConverter(models[i].Time),
@@ -1091,7 +1183,7 @@ namespace iPem.Site.Controllers {
                         var current = _workContext.AssociatedPointAttributes[models[i].PointId];
                         data.data.Add(new Model400303 {
                             index = start + i + 1,
-                            point =  current.Current.Name,
+                            point = current.Current.Name,
                             start = CommonHelper.DateTimeConverter(models[i].StartTime),
                             value = Common.GetValueDisplay(current.Current.Type, models[i].Value, current.Current.Unit),
                             time = CommonHelper.DateTimeConverter(models[i].ValueTime)
@@ -1819,7 +1911,7 @@ namespace iPem.Site.Controllers {
                         orderby device.Current.DeviceTypeId
                         select new {
                             Device = device.Current,
-                            Type  = device.Type,
+                            Type = device.Type,
                             SubDeviceType = device.SubType.Name,
                             Productor = defaulPdr != null ? defaulPdr.Name : null,
                             Brand = defaulBrd != null ? defaulBrd.Name : null,
@@ -1996,7 +2088,7 @@ namespace iPem.Site.Controllers {
                 devices = devices.FindAll(d => devtypes.Contains(d.Current.DeviceTypeId));
 
             var points = _workContext.AssociatedPointAttributes.Values.ToList();
-                points = points.FindAll(p => p.Current.Type == EnmPoint.AI || p.Current.Type == EnmPoint.DI);
+            points = points.FindAll(p => p.Current.Type == EnmPoint.AI || p.Current.Type == EnmPoint.DI);
 
             if(logictypes != null && logictypes.Length > 0)
                 points = points.FindAll(p => logictypes.Contains(p.LogicType.Id));
@@ -2282,7 +2374,7 @@ namespace iPem.Site.Controllers {
                                                             Project = pro,
                                                             Appointments = ags.Appointments,
                                                             ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalMinutes,
-                                                            AppointMaxTime = ags.Appointments.Max(a=>a.EndTime),
+                                                            AppointMaxTime = ags.Appointments.Max(a => a.EndTime),
                                                             AppointMinTime = ags.Appointments.Min(a => a.StartTime)
                                                         };
 
@@ -2292,7 +2384,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400205 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = child.Name,
+                                            name = string.Join(",", _workContext.GetParentsInArea(child).Select(n => n.Name)),
                                             count = total,
                                             interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
                                             timeout = timeout,
@@ -2369,7 +2461,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400205 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = root.Name,
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(current.Current).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(root).Select(n => n.Name))),
                                             count = total,
                                             interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
                                             timeout = timeout,
@@ -2423,11 +2515,11 @@ namespace iPem.Site.Controllers {
                                         }
 
                                         var appGroups = from app in appentities
-                                                         group app by app.ProjectId into g
-                                                         select new {
-                                                             Key = g.Key,
-                                                             Appointments = g.AsEnumerable()
-                                                         };
+                                                        group app by app.ProjectId into g
+                                                        select new {
+                                                            Key = g.Key,
+                                                            Appointments = g.AsEnumerable()
+                                                        };
 
                                         var proDetail = from pro in projects
                                                         join ags in appGroups on pro.Id equals ags.Key
@@ -2445,7 +2537,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400205 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = child.Name,
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(child.AreaId).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(child).Select(n => n.Name))),
                                             count = total,
                                             interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
                                             timeout = timeout,
@@ -2505,10 +2597,12 @@ namespace iPem.Site.Controllers {
 
                                         var total = proDetail.Count();
                                         var timeout = proDetail.Count(p => p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime);
+                                        var stations = _workContext.GetParentsInStation(room.StationId);
+                                        var areas = stations.Count > 0 ? _workContext.GetParentsInArea(stations[0].AreaId) : new List<RsDomain.Area>();
                                         result.Add(new Model400205 {
                                             index = ++index,
                                             type = childCurrent.Type.Name,
-                                            name = room.Name,
+                                            name = string.Format("{0},{1},{2}", string.Join(",", areas.Select(n => n.Name)), string.Join(",", stations.Select(n => n.Name)), room.Name),
                                             count = total,
                                             interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
                                             timeout = timeout,
@@ -2596,7 +2690,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400206 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = child.Name,
+                                            name = string.Join(",", _workContext.GetParentsInArea(child).Select(n => n.Name)),
                                             count = details.Count,
                                             interval = Math.Round(appentities.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
                                             appointments = details
@@ -2618,7 +2712,7 @@ namespace iPem.Site.Controllers {
                                 foreach(var root in roots) {
                                     if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
                                         var childCurrent = _workContext.AssociatedStationAttributes[root.Id];
-                                        
+
                                         var matchs = new HashSet<string>();
                                         matchs.Add(childCurrent.Current.Id);
                                         foreach(var cc in childCurrent.Children)
@@ -2653,7 +2747,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400206 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = root.Name,
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(current.Current).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(root).Select(n => n.Name))),
                                             interval = Math.Round(appentities.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
                                             count = details.Count,
                                             appointments = details
@@ -2709,7 +2803,7 @@ namespace iPem.Site.Controllers {
                                         result.Add(new Model400206 {
                                             index = ++index,
                                             type = childtype != null ? childtype.Name : "",
-                                            name = child.Name,
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(child.AreaId).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(child).Select(n => n.Name))),
                                             interval = Math.Round(appentities.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
                                             count = details.Count,
                                             appointments = details
@@ -2749,13 +2843,387 @@ namespace iPem.Site.Controllers {
                                                            enabled = app.Enabled,
                                                        }).ToList();
 
+                                        var stations = _workContext.GetParentsInStation(room.StationId);
+                                        var areas = stations.Count > 0 ? _workContext.GetParentsInArea(stations[0].AreaId) : new List<RsDomain.Area>();
                                         result.Add(new Model400206 {
                                             index = ++index,
                                             type = childCurrent.Type.Name,
-                                            name = room.Name,
+                                            name = string.Format("{0},{1},{2}", string.Join(",", areas.Select(n => n.Name)), string.Join(",", stations.Select(n => n.Name)), room.Name),
                                             interval = Math.Round(appentities.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
                                             count = details.Count,
                                             appointments = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model400207> GetHistory400207(string parent, DateTime starttime, DateTime endtime) {
+            var result = new List<Model400207>();
+            endtime = endtime.AddSeconds(86399);
+
+            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+                var keys = Common.SplitKeys(parent);
+                if(keys.Length == 2) {
+                    var index = 0;
+                    var type = int.Parse(keys[0]);
+                    var nodeid = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                    if(nodeType == EnmOrganization.Area) {
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
+                            var current = _workContext.AssociatedAreaAttributes[nodeid];
+                            var values = this.GetTingDianValues(starttime, endtime);
+                            if(current.HasChildren) {
+                                #region area children
+                                var areaTypes = _rsEnumMethodsService.GetEnumMethods(EnmMethodType.Area, "类型").ToList();
+                                foreach(var child in current.FirstChildren) {
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(child.AreaId)) {
+                                        var childCurrent = _workContext.AssociatedAreaAttributes[child.AreaId];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.AreaId);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.AreaId);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Area.AreaId));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n=>n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n=>n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = areaTypes.Find(t => t.Id == child.NodeLevel);
+                                        result.Add(new Model400207 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Join(",", _workContext.GetParentsInArea(child).Select(n => n.Name)),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            } else {
+                                #region station children
+                                var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == nodeid);
+                                var rootMatchs = stations.ToDictionary(k => k.Id, v => v.Name);
+                                var roots = new List<RsDomain.Station>();
+                                foreach(var sta in stations) {
+                                    if(!rootMatchs.ContainsKey(sta.ParentId))
+                                        roots.Add(sta);
+                                }
+
+                                var stationTypes = _rsStationTypeService.GetAllStationTypes().ToList();
+                                foreach(var root in roots) {
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
+                                        var childCurrent = _workContext.AssociatedStationAttributes[root.Id];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.Id);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.Id);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Station.Id));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = stationTypes.Find(s => s.Id == root.StaTypeId);
+                                        result.Add(new Model400207 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(current.Current).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(root).Select(n => n.Name))),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                    } else if(nodeType == EnmOrganization.Station) {
+                        if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
+                            var current = _workContext.AssociatedStationAttributes[nodeid];
+                            var values = this.GetTingDianValues(starttime, endtime);
+                            if(current.HasChildren) {
+                                #region station children
+                                var stationTypes = _rsStationTypeService.GetAllStationTypes().ToList();
+                                foreach(var child in current.FirstChildren) {
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(child.Id)) {
+                                        var childCurrent = _workContext.AssociatedStationAttributes[child.Id];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.Id);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.Id);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Station.Id));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = stationTypes.Find(s => s.Id == child.StaTypeId);
+                                        result.Add(new Model400207 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(child.AreaId).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(child).Select(n => n.Name))),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            } else {
+                                #region room children
+                                var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == nodeid);
+                                foreach(var room in rooms) {
+                                    if(_workContext.AssociatedRoomAttributes.ContainsKey(room.Id)) {
+                                        var childCurrent = _workContext.AssociatedRoomAttributes[room.Id];
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => d.Current.RoomId == childCurrent.Current.Id);
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var stations = _workContext.GetParentsInStation(room.StationId);
+                                        var areas = stations.Count > 0 ? _workContext.GetParentsInArea(stations[0].AreaId) : new List<RsDomain.Area>();
+                                        result.Add(new Model400207 {
+                                            index = ++index,
+                                            type = childCurrent.Type.Name,
+                                            name = string.Format("{0},{1},{2}", string.Join(",", areas.Select(n => n.Name)), string.Join(",", stations.Select(n => n.Name)), room.Name),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model400208> GetHistory400208(string parent, DateTime starttime, DateTime endtime) {
+            var result = new List<Model400208>();
+            endtime = endtime.AddSeconds(86399);
+
+            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+                var keys = Common.SplitKeys(parent);
+                if(keys.Length == 2) {
+                    var index = 0;
+                    var type = int.Parse(keys[0]);
+                    var nodeid = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                    if(nodeType == EnmOrganization.Area) {
+                        if(_workContext.AssociatedAreaAttributes.ContainsKey(nodeid)) {
+                            var current = _workContext.AssociatedAreaAttributes[nodeid];
+                            var values = this.GetFaDianValues(starttime, endtime);
+                            if(current.HasChildren) {
+                                #region area children
+                                var areaTypes = _rsEnumMethodsService.GetEnumMethods(EnmMethodType.Area, "类型").ToList();
+                                foreach(var child in current.FirstChildren) {
+                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(child.AreaId)) {
+                                        var childCurrent = _workContext.AssociatedAreaAttributes[child.AreaId];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.AreaId);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.AreaId);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Area.AreaId));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = areaTypes.Find(t => t.Id == child.NodeLevel);
+                                        result.Add(new Model400208 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Join(",", _workContext.GetParentsInArea(child).Select(n => n.Name)),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            } else {
+                                #region station children
+                                var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == nodeid);
+                                var rootMatchs = stations.ToDictionary(k => k.Id, v => v.Name);
+                                var roots = new List<RsDomain.Station>();
+                                foreach(var sta in stations) {
+                                    if(!rootMatchs.ContainsKey(sta.ParentId))
+                                        roots.Add(sta);
+                                }
+
+                                var stationTypes = _rsStationTypeService.GetAllStationTypes().ToList();
+                                foreach(var root in roots) {
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
+                                        var childCurrent = _workContext.AssociatedStationAttributes[root.Id];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.Id);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.Id);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Station.Id));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = stationTypes.Find(s => s.Id == root.StaTypeId);
+                                        result.Add(new Model400208 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(current.Current).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(root).Select(n => n.Name))),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            }
+                        }
+                    } else if(nodeType == EnmOrganization.Station) {
+                        if(_workContext.AssociatedStationAttributes.ContainsKey(nodeid)) {
+                            var current = _workContext.AssociatedStationAttributes[nodeid];
+                            var values = this.GetFaDianValues(starttime, endtime);
+                            if(current.HasChildren) {
+                                #region station children
+                                var stationTypes = _rsStationTypeService.GetAllStationTypes().ToList();
+                                foreach(var child in current.FirstChildren) {
+                                    if(_workContext.AssociatedStationAttributes.ContainsKey(child.Id)) {
+                                        var childCurrent = _workContext.AssociatedStationAttributes[child.Id];
+
+                                        var matchs = new HashSet<string>();
+                                        matchs.Add(childCurrent.Current.Id);
+                                        foreach(var cc in childCurrent.Children)
+                                            matchs.Add(cc.Id);
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => matchs.Contains(d.Station.Id));
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var childtype = stationTypes.Find(s => s.Id == child.StaTypeId);
+                                        result.Add(new Model400208 {
+                                            index = ++index,
+                                            type = childtype != null ? childtype.Name : "",
+                                            name = string.Format("{0},{1}", string.Join(",", _workContext.GetParentsInArea(child.AreaId).Select(n => n.Name)), string.Join(",", _workContext.GetParentsInStation(child).Select(n => n.Name))),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
+                                        });
+                                    }
+                                }
+                                #endregion
+                            } else {
+                                #region room children
+                                var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == nodeid);
+                                foreach(var room in rooms) {
+                                    if(_workContext.AssociatedRoomAttributes.ContainsKey(room.Id)) {
+                                        var childCurrent = _workContext.AssociatedRoomAttributes[room.Id];
+
+                                        var devices = _workContext.AssociatedDeviceAttributes.Values.Where(d => d.Current.RoomId == childCurrent.Current.Id);
+                                        var details = from device in devices
+                                                      join value in values on device.Current.Id equals value.DeviceId
+                                                      select new ShiDianDetailModel {
+                                                          area = string.Join(",", _workContext.GetParentsInArea(device.Area).Select(n => n.Name)),
+                                                          station = string.Join(",", _workContext.GetParentsInStation(device.Station).Select(n => n.Name)),
+                                                          room = device.Room.Name,
+                                                          device = device.Current.Name,
+                                                          point = _workContext.AssociatedPointAttributes.ContainsKey(value.PointId) ? _workContext.AssociatedPointAttributes[value.PointId].Current.Name : "",
+                                                          start = CommonHelper.DateTimeConverter(value.StartTime),
+                                                          end = CommonHelper.DateTimeConverter(value.EndTime),
+                                                          interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
+                                                      };
+
+                                        var stations = _workContext.GetParentsInStation(room.StationId);
+                                        var areas = stations.Count > 0 ? _workContext.GetParentsInArea(stations[0].AreaId) : new List<RsDomain.Area>();
+                                        result.Add(new Model400208 {
+                                            index = ++index,
+                                            type = childCurrent.Type.Name,
+                                            name = string.Format("{0},{1},{2}", string.Join(",", areas.Select(n => n.Name)), string.Join(",", stations.Select(n => n.Name)), room.Name),
+                                            count = details.Count(),
+                                            interval = details.Sum(d => d.interval),
+                                            details = details
                                         });
                                     }
                                 }
@@ -2775,7 +3243,7 @@ namespace iPem.Site.Controllers {
         }
 
         private List<IdValuePair<MsDomain.Appointment, HashSet<string>>> GetAppointmentsInDevices(IEnumerable<MsDomain.Project> projects) {
-            var matchs = projects.Select(p=>p.Id);
+            var matchs = projects.Select(p => p.Id);
             var entities = _msAppointmentService.GetAllAppointments().Where(a => matchs.Contains(a.ProjectId));
             return this.GetAppointmentsInDevices(entities);
         }
@@ -2832,6 +3300,114 @@ namespace iPem.Site.Controllers {
             }
 
             return appSets;
+        }
+
+        private List<ShiDianModel> GetTingDianValues(DateTime start, DateTime end) {
+            var models = new List<ShiDianModel>();
+
+            var parms = _msDictionaryService.GetDictionary((int)EnmDictionary.Report);
+            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson))
+                return models;
+
+            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
+            if(limit.tingdianxinhao.Length == 0)
+                return models;
+
+            var values = _hsHisValueService.GetHisValues(limit.tingdianxinhao, start, end);
+            var groups = from v in values
+                         group v by new { v.DeviceId, v.PointId } into g
+                         select new {
+                             DeviceId = g.Key.DeviceId,
+                             PointId = g.Key.PointId,
+                             Values = g
+                         };
+
+            foreach(var group in groups) {
+                DateTime? onetime = null;
+                var pointValues = group.Values.OrderBy(v => v.Time);
+
+                foreach(var pv in pointValues) {
+                    if(pv.Value == limit.tingdian && !onetime.HasValue) {
+                        onetime = pv.Time;
+                    } else if(pv.Value == limit.weitingdian && onetime.HasValue) {
+                        models.Add(new ShiDianModel {
+                            DeviceId = group.DeviceId,
+                            PointId = group.PointId,
+                            StartTime = onetime.Value,
+                            EndTime = pv.Time
+                        });
+
+                        onetime = null;
+                    }
+                }
+
+                if(onetime.HasValue) {
+                    models.Add(new ShiDianModel {
+                        DeviceId = group.DeviceId,
+                        PointId = group.PointId,
+                        StartTime = onetime.Value,
+                        EndTime = end
+                    });
+
+                    onetime = null;
+                }
+            }
+
+            return models;
+        }
+
+        private List<ShiDianModel> GetFaDianValues(DateTime start, DateTime end) {
+            var models = new List<ShiDianModel>();
+
+            var parms = _msDictionaryService.GetDictionary((int)EnmDictionary.Report);
+            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson))
+                return models;
+
+            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
+            if(limit.fadianxinhao.Length == 0)
+                return models;
+
+            var values = _hsHisValueService.GetHisValues(limit.fadianxinhao, start, end);
+            var groups = from v in values
+                         group v by new { v.DeviceId, v.PointId } into g
+                         select new {
+                             DeviceId = g.Key.DeviceId,
+                             PointId = g.Key.PointId,
+                             Values = g
+                         };
+
+            foreach(var group in groups) {
+                DateTime? onetime = null;
+                var pointValues = group.Values.OrderBy(v => v.Time);
+
+                foreach(var pv in pointValues) {
+                    if(pv.Value == limit.fadian && !onetime.HasValue) {
+                        onetime = pv.Time;
+                    } else if(pv.Value == limit.weifadian && onetime.HasValue) {
+                        models.Add(new ShiDianModel {
+                            DeviceId = group.DeviceId,
+                            PointId = group.PointId,
+                            StartTime = onetime.Value,
+                            EndTime = pv.Time
+                        });
+
+                        onetime = null;
+                    }
+                }
+
+                if(onetime.HasValue) {
+                    models.Add(new ShiDianModel {
+                        DeviceId = group.DeviceId,
+                        PointId = group.PointId,
+                        StartTime = onetime.Value,
+                        EndTime = end
+                    });
+
+                    onetime = null;
+                }
+            }
+
+            return models;
         }
 
         private List<AlmStore<HsDomain.HisAlm>> GetCustom400401(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
@@ -2932,7 +3508,7 @@ namespace iPem.Site.Controllers {
             var models = (from alarm in currentAlarms
                           join point in points on alarm.PointId equals point.Current.Id
                           join device in devices on alarm.DeviceId equals device.Current.Id
-                          orderby device.Current.RoomId, device.Current.Id,point.Current.Id
+                          orderby device.Current.RoomId, device.Current.Id, point.Current.Id
                           select new AlmStore<HsDomain.HisAlm> {
                               Current = alarm,
                               Point = point,

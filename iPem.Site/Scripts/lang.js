@@ -834,6 +834,56 @@
             }
         }
     },
+    Report400207: {
+        Title: '市电停电统计信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            Count: '停电次数',
+            Interval: '停电时长(分钟)',
+            Rows: {
+                Area: '所属区域',
+                Station: '所属站点',
+                Room: '所属机房',
+                Device: '所属设备',
+                Point: '信号名称',
+                Start: '开始时间',
+                End: '结束时间',
+                Interval: '历时(分钟)'
+            }
+        }
+    },
+    Report400208: {
+        Title: '油机发电统计信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            Count: '发电次数',
+            Interval: '发电时长(分钟)',
+            Rows: {
+                Area: '所属区域',
+                Station: '所属站点',
+                Room: '所属机房',
+                Device: '所属设备',
+                Point: '信号名称',
+                Start: '开始时间',
+                End: '结束时间',
+                Interval: '历时(分钟)'
+            }
+        }
+    },
     Report400301: {
         ConditionTitle: '信号筛选条件',
         LineTitle: '信号测值曲线',
