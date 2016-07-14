@@ -164,24 +164,18 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'StationPicker',
                         selectAll: false,
                         allowBlank: false,
+                        emptyText: $$iPems.lang.Report400207.ToolBar.RangeEmptyText,
                         fieldLabel: $$iPems.lang.Report400207.ToolBar.Range,
                         labelWidth: 60,
                         width: 448,
                     },
                     {
-                        xtype: 'splitbutton',
+                        xtype: 'button',
                         glyph: 0xf005,
-                        text: $$iPems.lang.Ok,
+                        text: $$iPems.lang.Query,
                         handler: function (me, event) {
                             query(currentPagingToolbar);
-                        },
-                        menu: [{
-                            text: $$iPems.lang.Import,
-                            glyph: 0xf010,
-                            handler: function (me, event) {
-                                print(currentStore);
-                            }
-                        }]
+                        }
                     }
                 ]
             },
@@ -208,6 +202,14 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                         editable: false,
                         allowBlank: false
+                    },
+                    {
+                        xtype: 'button',
+                        glyph: 0xf010,
+                        text: $$iPems.lang.Import,
+                        handler: function (me, event) {
+                            print(currentStore);
+                        }
                     }
                 ]
             }

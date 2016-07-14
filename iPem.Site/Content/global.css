@@ -194,6 +194,133 @@ div.help-tip div.help-tip-content p {
     float: right;
 }
 
+/**home index*/
+.overview .viewbox {
+    background-color: #f8f8f8;
+    height: 60px;
+    position: relative;
+    text-align: center;
+}
+
+.overview .iconbox {
+	margin-left: 50px;
+    padding: 2px 0 0 20px;
+    text-align: left;
+}
+
+.viewbox .symbol {
+    position: absolute;
+    left: -51px;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: block;
+    height: auto;
+    width: 51px;
+    text-align: center;
+    border: 1px solid #f6f6f6;
+}
+
+.viewbox .symbol i {
+    color: #fff;
+    font-size: 28px;
+    position: relative;
+    top: 15px;
+}
+
+.viewbox h4 {
+    font: 300 22px/24px 'Microsoft Yahei', Arial, SimSun, Sans-Serif;
+    margin: 8px 0 2px;
+}
+
+.viewbox small {
+    color: #999;
+    display: block;
+    font-size: 12px;
+}
+
+.purple .symbol {
+    background-color: #b198dc;
+    border-color: #b198dc;
+}
+
+.purple small {
+    color: #b198dc;
+}
+
+.red .symbol {
+    background-color: #f04b51;
+    border-color: #f04b51;
+}
+
+.red small {
+    color: #f04b51;
+}
+
+.orange .symbol {
+    background-color: #efa91f;
+    border-color: #efa91f;
+}
+
+.orange small {
+    color: #efa91f;
+}
+
+.yellow .symbol {
+    background-color: #f5d313;
+    border-color: #f5d313;
+}
+
+.yellow small {
+    color: #f5d313;
+}
+
+.blue .symbol {
+    background-color: #0892cd;
+    border-color: #0892cd;
+}
+
+.blue small {
+    color: #0892cd;
+}
+
+/** alarm charts */
+.almview-almchart {
+    height: 242px;
+}
+
+.svrview-cpuchart {
+    height: 100px;
+}
+
+.svrview-memorychart {
+    height: 100px;
+}
+
+.energyview-bar {
+	height: 242px;
+}
+
+.energyview-pie {
+	height: 242px;
+}
+
+.unconnectedview-pie {
+	height: 262px;
+}
+
+.unconnectedview-list {
+	height: 262px;
+}
+
+.offlineview-pie {
+	height: 262px;
+}
+
+.offlineview-list {
+	height: 262px;
+}
+
 /**point status css*/
 .point-status-normal .x-status-cell {
     background-color : #32cd32;
@@ -229,6 +356,109 @@ div.help-tip div.help-tip-content p {
 }
 .alm-level4 .x-level-cell { 
     background-color : #87ceeb; 
+}
+
+/**custom button css*/
+a.custom-button {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+a.custom-primary {
+  color: #ffffff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+a.custom-primary:hover {
+  color: #ffffff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+a.custom-primary:active {
+  color: #ffffff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+a.custom-success {
+  color: #ffffff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+a.custom-success:hover {
+  color: #ffffff;
+  background-color: #449d44;
+  border-color: #398439;
+}
+a.custom-success:active {
+  color: #ffffff;
+  background-color: #449d44;
+  border-color: #398439;
+}
+
+a.custom-info {
+  color: #ffffff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+a.custom-info:hover {
+  color: #ffffff;
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
+a.custom-info:active {
+  color: #ffffff;
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
+
+a.custom-warning {
+  color: #ffffff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+a.custom-warning:hover {
+  color: #ffffff;
+  background-color: #ec971f;
+  border-color: #d58512;
+}
+a.custom-warning:active {
+  color: #ffffff;
+  background-color: #ec971f;
+  border-color: #d58512;
+}
+
+a.custom-danger {
+  color: #ffffff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+a.custom-danger:hover {
+  color: #ffffff;
+  background-color: #c9302c;
+  border-color: #ac2925;
+}
+a.custom-danger:active {
+  color: #ffffff;
+  background-color: #c9302c;
+  border-color: #ac2925;
 }
 
 @media screen and (max-width: 768px) {

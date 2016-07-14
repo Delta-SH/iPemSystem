@@ -142,25 +142,25 @@
         BaseTitle: '基本信息',
         ChangeTitle: '修改密码',
         LogoutTitle: '登出系统',
-        OriginPassword: '当前密码',
-        Password: '登录密码',
+        OriginPassword: '原始密码',
+        Password: '新的密码',
         Confirm: '确认密码',
         ConfirmError: '密码不一致',
         SavePassword: '保存密码',
         ConfirmChangePassword: '您确认要修改密码吗？',
-        Name: '用户名称',
+        Name: '登录用户',
         Role: '隶属角色',
         EmpName: '隶属员工',
-        EmpNo: '工号',
-        Sex: '性别',
+        EmpNo: '员工工号',
+        Sex: '性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别',
         Mobile: '联系电话',
         Email: 'Email',
         Created: '创建日期',
         Limited: '有效日期',
-        LastPasswordChanged: '密码更改日期',
+        LastPasswordChanged: '更新密码',
         IsLockedOut: '锁定状态',
-        LastLockedout: '最后锁定日期',
-        Comment: '用户备注'
+        LastLockedout: '锁定日期',
+        Comment: '备注信息'
     },
     Event: {
         Title: '日志信息列表',
@@ -388,6 +388,18 @@
                 FaDian: '发电测值',
                 FaDianEmptyText: '油机信号发电时所输出的测值',
                 Point: '发电信号'
+            },
+            WanHaoLv: {
+                Title: '系统设备完好率',
+                Interval: '忽略时长',
+                Remark: '分钟（注：为了规避频繁告警，统计时将忽略小于该时长的告警）'
+            },
+            JiShiLv: {
+                Title: '故障处理及时率',
+                GuiDing: '处理时长',
+                GuiDingRemark: '分钟（注：统计时将计算超过该规定处理时长的告警数量）',
+                HuLue: '忽略时长',
+                HuLueRemark: '分钟（注：为了规避频繁告警，统计时将忽略小于该时长的告警）',
             }
         }
     },
@@ -790,7 +802,8 @@
         ToolBar: {
             Range: '查询范围',
             Start: '开始时间',
-            End: '结束时间'
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
         },
         Columns: {
             Index: '序号',
@@ -816,7 +829,8 @@
         ToolBar: {
             Range: '查询范围',
             Start: '开始时间',
-            End: '结束时间'
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
         },
         Columns: {
             Index: '序号',
@@ -839,7 +853,8 @@
         ToolBar: {
             Range: '查询范围',
             Start: '开始时间',
-            End: '结束时间'
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
         },
         Columns: {
             Index: '序号',
@@ -864,7 +879,8 @@
         ToolBar: {
             Range: '查询范围',
             Start: '开始时间',
-            End: '结束时间'
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
         },
         Columns: {
             Index: '序号',
@@ -1128,6 +1144,41 @@
             ConfirmedStatus: '确认状态',
             ConfirmedTime: '确认时间',
             Confirmer: '确认人员'
+        }
+    },
+    Report500101: {
+        Title: '系统设备完好率信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            DevCount: '设备数量',
+            AlmTime: '设备告警时长(分钟)',
+            CntTime: '设备统计时长(分钟)',
+            Rate: '设备完好率'
+        }
+    },
+    Report500102: {
+        Title: '故障处理及时率信息',
+        ToolBar: {
+            Range: '查询范围',
+            Start: '开始时间',
+            End: '结束时间',
+            RangeEmptyText: '请选择查询范围...'
+        },
+        Columns: {
+            Index: '序号',
+            Type: '类型',
+            Name: '名称',
+            Count: '超出规定处理时长的设备故障次数',
+            Total: '设备故障总次数',
+            Rate: '故障处理及时率'
         }
     }
 };

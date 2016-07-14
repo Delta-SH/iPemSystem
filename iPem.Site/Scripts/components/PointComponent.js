@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.PointMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "PointMultiCombo",
-    fieldLabel: $$iPems.lang.Component.PointName,
+    fieldLabel: '信号名称',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -53,7 +53,7 @@
 Ext.define("Ext.ux.PointComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "PointCombo",
-    fieldLabel: $$iPems.lang.Component.PointName,
+    fieldLabel: '信号名称',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,
@@ -114,7 +114,7 @@ Ext.define("Ext.ux.PointComboBox", {
 Ext.define("Ext.ux.LogicPointMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "LogicPointMultiPicker",
-    fieldLabel: $$iPems.lang.Component.PointName,
+    fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
     width: 280,
@@ -136,7 +136,7 @@ Ext.define("Ext.ux.LogicPointMultiTreePanel", {
 Ext.define("Ext.ux.LogicPointTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "LogicPointPicker",
-    fieldLabel: $$iPems.lang.Component.PointName,
+    fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
     width: 280,

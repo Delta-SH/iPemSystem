@@ -93,12 +93,12 @@
             selmodel = grid.getSelectionModel();
 
         if (!selmodel.hasSelection()) {
-            Ext.Msg.show({ title: $$iPems.lang.SysWarningTitle, msg: $$iPems.lang.ActiveAlarm.Confirm.Warning, buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING });
+            Ext.Msg.show({ title: '系统警告', msg: '请勾选需要确认的告警', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING });
             return false;
         }
 
         var models = selmodel.getSelection();
-        Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, Ext.String.format($$iPems.lang.ActiveAlarm.Confirm.Confirm, models.length), function (buttonId, text) {
+        Ext.Msg.confirm('确认对话框', Ext.String.format('共{0}条告警将被确认，您确定吗？', models.length), function (buttonId, text) {
             if (buttonId === 'yes') {
                 var ids = [];
                 Ext.Array.each(models, function (item, index, allItems) {
@@ -108,13 +108,13 @@
                 Ext.Ajax.request({
                     url: '/Home/ConfirmAlarms',
                     params: { ids: ids },
-                    mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
+                    mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
                         if (data.success)
                             pagingtoolbar.doRefresh();
                         else
-                            Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                     }
                 });
             }
@@ -122,7 +122,7 @@
     };
 
     var projectWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActiveAlarm.Window.Project.Title,
+        title: '工程预约',
         glyph: 0xf045,
         height: 300,
         width: 400,
@@ -136,36 +136,36 @@
         items: [{
             itemId: 'id',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.Id
+            fieldLabel: '预约编号'
         }, {
             itemId: 'startTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.StartTime
+            fieldLabel: '开始时间'
         }, {
             itemId: 'endTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.EndTime
+            fieldLabel: '结束时间'
         }, {
             itemId: 'projectName',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.ProjectName
+            fieldLabel: '工程名称'
         }, {
             itemId: 'creator',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.Creator
+            fieldLabel: '创建人员'
         }, {
             itemId: 'createdTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.CreatedTime
+            fieldLabel: '创建时间'
         }, {
             itemId: 'comment',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.ActiveAlarm.Window.Project.Fields.Comment
+            fieldLabel: '预约备注'
         }],
         buttonAlign: 'right',
         buttons: [{
             xtype: 'button',
-            text: $$iPems.lang.Close,
+            text: '关闭',
             handler: function (el, e) {
                 projectWnd.hide();
             }
@@ -213,11 +213,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -270,11 +270,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -327,11 +327,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.ActiveAlarm.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.ActiveAlarm.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -422,7 +422,7 @@
                 id: 'alarm-organization',
                 region: 'west',
                 xtype: 'treepanel',
-                title: $$iPems.lang.ActiveAlarm.MenuNavTitle,
+                title: '系统设备列表',
                 glyph: 0xf011,
                 width: 220,
                 split: true,
@@ -433,7 +433,7 @@
                 rootVisible: true,
                 root: {
                     id: 'root',
-                    text: $$iPems.lang.All,
+                    text: '全部',
                     expanded: true,
                     icon: $$iPems.icons.Home,
                     attributes: [
@@ -492,7 +492,7 @@
                     {
                         id: 'alarm-search-field',
                         xtype: 'textfield',
-                        emptyText: $$iPems.lang.PlsInputEmptyText,
+                        emptyText: '请输入筛选条件...',
                         flex: 1,
                         listeners: {
                             change: function (me, newValue, oldValue, eOpts) {
@@ -524,7 +524,7 @@
                                 var paths = search._filterData;
                                 if (index >= paths.length) {
                                     index = 0;
-                                    Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: $$iPems.lang.SearchEndText, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                    Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                 }
 
                                 selectPath(tree, paths[index]);
@@ -533,7 +533,7 @@
                                 Ext.Ajax.request({
                                     url: '/Home/SearchOrganization',
                                     params: { text: text },
-                                    mask: new Ext.LoadMask({ target: tree, msg: $$iPems.lang.AjaxHandling }),
+                                    mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
                                     success: function (response, options) {
                                         var data = Ext.decode(response.responseText, true);
                                         if (data.success) {
@@ -543,10 +543,10 @@
                                                 search._filterData = data.data;
                                                 search._filterIndex = 0;
                                             } else {
-                                                Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: Ext.String.format($$iPems.lang.SearchEmptyText, text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                                Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                             }
                                         } else {
-                                            Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                         }
                                     }
                                 });
@@ -568,7 +568,7 @@
                 items: [{
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: $$iPems.lang.ActiveAlarm.RateTitle,
+                    title: '告警分类占比',
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
@@ -576,7 +576,7 @@
                     tools: [
                         //{
                         //    type: 'print',
-                        //    tooltip: $$iPems.lang.Import,
+                        //    tooltip: '数据导出',
                         //    handler: function (event, toolEl, panelHeader) {
                         //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
                         //    }
@@ -591,7 +591,7 @@
                 }, {
                     xtype: 'panel',
                     glyph: 0xf029,
-                    title: $$iPems.lang.ActiveAlarm.DetailTitle,
+                    title: '告警详细信息',
                     collapsible: true,
                     collapseFirst: false,
                     layout: 'fit',
@@ -600,14 +600,14 @@
                     tools: [
                         {
                             type: 'refresh',
-                            tooltip: $$iPems.lang.Refresh,
+                            tooltip: '刷新',
                             handler: function (event, toolEl, panelHeader) {
                                 currentPagingToolbar.doRefresh();
                             }
                         },
                         {
                             type: 'print',
-                            tooltip: $$iPems.lang.Import,
+                            tooltip: '数据导出',
                             handler: function (event, toolEl, panelHeader) {
                                 print(currentStore);
                             }
@@ -625,7 +625,7 @@
                             preserveScrollOnRefresh: true,
                             stripeRows: true,
                             trackOver: true,
-                            emptyText: $$iPems.lang.GridEmptyText,
+                            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                             getRowClass: function (record, rowIndex, rowParams, store) {
                                 return $$iPems.GetAlmLevelCls(record.get("levelValue"));
                             }
@@ -644,7 +644,7 @@
                                     url: '/Home/GetAppointmentDetail',
                                     Method: 'POST',
                                     params: { id: fieldValue },
-                                    mask: new Ext.LoadMask(view.ownerCt, { msg: $$iPems.lang.AjaxHandling }),
+                                    mask: new Ext.LoadMask(view.ownerCt, { msg: '正在处理，请稍后...' }),
                                     success: function (response, options) {
                                         var data = Ext.decode(response.responseText, true);
                                         if (data.success) {
@@ -665,7 +665,7 @@
                                             comment.setValue(data.data.comment);
                                             projectWnd.show();
                                         } else {
-                                            Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                         }
                                     }
                                 });
@@ -673,78 +673,78 @@
                         },
                         columns: [
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Id,
+                                text: '序号',
                                 dataIndex: 'index',
                                 width: 60
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Level,
+                                text: '告警级别',
                                 dataIndex: 'level',
                                 align: 'center',
                                 tdCls: 'x-level-cell'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Start,
+                                text: '告警时间',
                                 dataIndex: 'start',
                                 width: 150
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Area,
+                                text: '所属区域',
                                 dataIndex: 'area'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Station,
+                                text: '所属站点',
                                 dataIndex: 'station'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Room,
+                                text: '所属机房',
                                 dataIndex: 'room'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.DevType,
+                                text: '设备类型',
                                 dataIndex: 'devType'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Device,
+                                text: '设备名称',
                                 dataIndex: 'device'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Logic,
+                                text: '逻辑分类',
                                 dataIndex: 'logic'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Point,
+                                text: '信号名称',
                                 dataIndex: 'point'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Comment,
+                                text: '告警描述',
                                 dataIndex: 'comment'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Value,
+                                text: '触发值',
                                 dataIndex: 'value'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Frequency,
+                                text: '触发频次',
                                 dataIndex: 'frequency'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Project,
+                                text: '工程预约',
                                 dataIndex: 'project',
                                 renderer: function (value, p, record) {
                                     return Ext.String.format('<a href="javascript:void(0)" style="color:#157fcc;">{0}</a>', value);
                                 }
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.ConfirmedStatus,
+                                text: '确认状态',
                                 dataIndex: 'confirmedstatus'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.ConfirmedTime,
+                                text: '确认时间',
                                 dataIndex: 'confirmedtime'
                             },
                             {
-                                text: $$iPems.lang.ActiveAlarm.Columns.Confirmer,
+                                text: '确认人员',
                                 dataIndex: 'confirmer'
                             }
                         ],
@@ -754,7 +754,7 @@
                 dockedItems: [{
                     xtype: 'panel',
                     glyph: 0xf034,
-                    title: $$iPems.lang.ActiveAlarm.ConditionTitle,
+                    title: '告警筛选条件',
                     collapsible: true,
                     collapsed: false,
                     dock: 'top',
@@ -766,28 +766,28 @@
                                 {
                                     id: 'station-type-multicombo',
                                     xtype: 'StationTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'room-type-multicombo',
                                     xtype: 'RoomTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'device-type-multicombo',
                                     xtype: 'DeviceTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     xtype: 'splitbutton',
                                     glyph: 0xf005,
-                                    text: $$iPems.lang.Ok,
+                                    text: '确定',
                                     handler: function (me, event) {
                                         filter(currentPagingToolbar);
                                     },
                                     menu: [
                                         {
-                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ConfirmAlarm,
+                                            text: '告警确认',
                                             glyph: 0xf035,
                                             hidden: !$$iPems.ConfirmOperation,
                                             handler: function (me, event) {
@@ -799,7 +799,7 @@
                                             hidden: !$$iPems.ConfirmOperation
                                         },
                                         {
-                                            text: $$iPems.lang.Import,
+                                            text: '数据导出',
                                             glyph: 0xf010,
                                             handler: function (me, event) {
                                                 print(currentStore);
@@ -816,30 +816,30 @@
                                 {
                                     id: 'alarm-level-multicombo',
                                     xtype: 'AlarmLevelMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'logic-type-multicombo',
                                     xtype: 'LogicTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'point-name-textfield',
                                     xtype: 'textfield',
-                                    fieldLabel: $$iPems.lang.ActiveAlarm.ToolBar.PointName,
-                                    emptyText: $$iPems.lang.MultiConditionEmptyText,
+                                    fieldLabel: '信号名称',
+                                    emptyText: '多条件请以;分隔，例: A;B;C',
                                     labelWidth: 60,
                                     width: 220
                                 },
                                 {
                                     id: 'other-option-button',
                                     xtype: 'button',
-                                    text: $$iPems.lang.ActiveAlarm.ToolBar.OtherOption,
+                                    text: '其他选项',
                                     menu: [
                                         {
                                             id: 'show-confirm-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowConfirm,
+                                            text: '已确认告警',
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -850,7 +850,7 @@
                                         {
                                             id: 'show-unconfirm-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowUnConfirm,
+                                            text: '未确认告警',
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -862,7 +862,7 @@
                                         {
                                             id: 'show-project-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowProject,
+                                            text: '工程告警',
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {
@@ -873,7 +873,7 @@
                                         {
                                             id: 'show-unproject-menu',
                                             xtype: 'menucheckitem',
-                                            text: $$iPems.lang.ActiveAlarm.ToolBar.ShowUnProject,
+                                            text: '非工程告警',
                                             checked: false,
                                             checkHandler: function (me, checked) {
                                                 if (checked) {

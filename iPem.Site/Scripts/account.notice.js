@@ -26,6 +26,11 @@
 				totalProperty: 'total',
 				root: 'data'
 			},
+			listeners: {
+			    exception: function (proxy, response, operation) {
+			        Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+			    }
+			},
 			extraParams: {
 				begin: '',
 				end: ''
@@ -89,7 +94,7 @@
 					itemId: 'title',
 					name: 'title',
 					xtype: 'textfield',
-					fieldLabel: $$iPems.lang.Notice.Window.Title,
+					fieldLabel: '消息标题',
 					maxLength: 256,
 				    enforceMaxLength:true,
 					allowBlank: false
@@ -100,18 +105,18 @@
 					xtype: 'textareafield',
 					autoScroll: true,
 					height:150,
-					fieldLabel: $$iPems.lang.Notice.Window.Content,
+					fieldLabel: '详细信息',
 					allowBlank: false
 				}, Ext.create('Ext.ux.MultiCombo', {
 					itemId: 'toRoles',
-					fieldLabel: $$iPems.lang.Notice.Window.Role,
+					fieldLabel: '广播对象',
 					valueField: 'id',
 					displayField: 'text',
 					delimiter: $$iPems.Delimiter,
 					queryMode: 'local',
 					triggerAction: 'all',
 					selectionMode: 'all',
-					emptyText: $$iPems.lang.AllEmptyText,
+					emptyText: '默认全部',
 					forceSelection: true,
 					store: noticeRoleStore,
 				    submitValue: false
@@ -119,8 +124,8 @@
 					itemId: 'enabled',
 					name: 'enabled',
 					xtype: 'checkboxfield',
-					fieldLabel: $$iPems.lang.Notice.Window.Enabled,
-					boxLabel: $$iPems.lang.Notice.Window.EnabledLabel,
+					fieldLabel: '消息状态',
+					boxLabel: '(勾选表示启用)',
 					inputValue: true,
 					checked: false
 				}
@@ -132,7 +137,7 @@
 			{ xtype: 'tbfill' },
 			{
 				xtype: 'button',
-				text: $$iPems.lang.Save,
+				text: '保存',
 				handler: function (el, e) {
 					var form = saveWnd.getComponent('saveForm'),
 						baseForm = form.getForm(),
@@ -140,7 +145,7 @@
 
 					saveResult.setTextWithIcon('', '');
 					if (baseForm.isValid()) {
-						saveResult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+						saveResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
 
 						var toRoles = form.getComponent('toRoles'),
 							roles = toRoles.getSelectedValues();
@@ -170,12 +175,12 @@
 							}
 						});
 					} else {
-						saveResult.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+						saveResult.setTextWithIcon('表单填写错误', 'x-icon-error');
 					}
 				}
 			}, {
 				xtype: 'button',
-				text: $$iPems.lang.Close,
+				text: '关闭',
 				handler: function (el, e) {
 					saveWnd.hide();
 				}
@@ -191,13 +196,13 @@
 		basic.load({
 			url: '/Account/GetNotice',
 			params: { id: record.raw.id, action: $$iPems.Action.Edit },
-			waitMsg: $$iPems.lang.AjaxHandling,
-			waitTitle: $$iPems.lang.SysTipTitle,
+			waitMsg: '正在处理，请稍后...',
+			waitTitle: '系统提示',
 			success: function (form, action) {
 			    form.clearInvalid();
 
 				Ext.getCmp('saveResult').setTextWithIcon('', '');
-				saveWnd.setTitle($$iPems.lang.Notice.Window.EditTitle);
+				saveWnd.setTitle('编辑消息');
 				saveWnd.opaction = $$iPems.Action.Edit;
 				saveWnd.show();
 			}
@@ -208,18 +213,18 @@
 		var record = grid.getStore().getAt(rowIndex);
 		if (Ext.isEmpty(record)) return false;
 
-		Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
+		Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
 			if (buttonId === 'yes') {
 				Ext.Ajax.request({
 					url: '/Account/DeleteNotice',
 					params: { id: record.raw.id },
-					mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
+					mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
 					success: function (response, options) {
 						var data = Ext.decode(response.responseText, true);
 						if (data.success)
 							currentPagingToolbar.doRefresh();
 						else
-							Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+							Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
 					}
 				});
 			}
@@ -228,7 +233,7 @@
 
 	var currentGridPanel = Ext.create('Ext.grid.Panel', {
 	    glyph: 0xf025,
-		title: $$iPems.lang.Notice.Title,
+	    title: '系统消息',
 		region: 'center',
 		store: currentStore,
 		columnLines: true,
@@ -240,23 +245,23 @@
 			forceFit: true,
 			trackOver: true,
 			stripeRows: true,
-			emptyText: $$iPems.lang.GridEmptyText,
+			emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
 			preserveScrollOnRefresh: true
 		},
 		columns: [{
-		    text: $$iPems.lang.Notice.Columns.Index,
+		    text: '序号',
 			dataIndex: 'index',
 			width: 60,
 			align: 'left',
 			sortable: true
 		}, {
-		    text: $$iPems.lang.Notice.Columns.Title,
+		    text: '消息标题',
 			dataIndex: 'title',
 			width: 150,
 			align: 'left',
 			sortable: true
 		}, {
-		    text: $$iPems.lang.Notice.Columns.Content,
+		    text: '详细信息',
 			dataIndex: 'content',
 			flex: 1,
 			align: 'left',
@@ -266,25 +271,25 @@
 				return value;
 			}
 		}, {
-		    text: $$iPems.lang.Notice.Columns.Created,
+		    text: '消息日期',
 			dataIndex: 'created',
 			width: 150,
 			align: 'center',
 			sortable: true
 		}, {
-		    text: $$iPems.lang.Notice.Columns.Enabled,
+		    text: '消息状态',
 			dataIndex: 'enabled',
 			width: 80,
 			align: 'center',
 			sortable: true,
-			renderer: function (value) { return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse; }
+			renderer: function (value) { return value ? '有效' : '禁用'; }
 		}, {
 			xtype: 'actioncolumn',
 			width: 80,
 			align: 'center',
 			menuDisabled: true,
-			menuText: $$iPems.lang.Operate,
-			text: $$iPems.lang.Operate,
+			menuText: '操作',
+			text: '操作',
 			items: [{
 			    iconCls: 'x-cell-icon x-icon-edit',
 				handler: function (grid, rowIndex, colIndex) {
@@ -300,20 +305,20 @@
 		tbar: Ext.create('Ext.toolbar.Toolbar', {
 			items: [{
 				xtype: 'button',
-				text: $$iPems.lang.Notice.ToolBar.Add,
+				text: '新增消息',
 				glyph: 0xf001,
 				handler: function (el, e) {
 					var basic = saveWnd.getComponent('saveForm').getForm();
 					basic.load({
 						url: '/Account/GetNotice',
 						params: { id: '', action: $$iPems.Action.Add },
-						waitMsg: $$iPems.lang.AjaxHandling,
-						waitTitle: $$iPems.lang.SysTipTitle,
+						waitMsg: '正在处理，请稍后...',
+						waitTitle: '系统提示',
 						success: function (form, action) {
 						    form.clearInvalid();
 
 							Ext.getCmp('saveResult').setTextWithIcon('', '');
-							saveWnd.setTitle($$iPems.lang.Notice.Window.AddTitle);
+							saveWnd.setTitle('新增消息');
 							saveWnd.opaction = $$iPems.Action.Add;
 							saveWnd.show();
 						}
@@ -322,7 +327,7 @@
 			}, '-', {
 				id: 'begin-datefield',
 				xtype: 'datefield',
-				fieldLabel: $$iPems.lang.Notice.ToolBar.Begin,
+				fieldLabel: '开始日期',
 				labelWidth: 60,
 				width: 250,
 				value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -331,7 +336,7 @@
 			}, {
 				id: 'end-datefield',
 				xtype: 'datefield',
-				fieldLabel: $$iPems.lang.Notice.ToolBar.End,
+				fieldLabel: '结束日期',
 				labelWidth: 60,
 				width: 250,
 				value: new Date(),
@@ -340,7 +345,7 @@
 			}, {
 				id: 'query',
 				xtype: 'button',
-				text: $$iPems.lang.Query,
+				text: '数据查询',
 				glyph: 0xf005,
 				listeners: {
 					'click' : function(el, e) {

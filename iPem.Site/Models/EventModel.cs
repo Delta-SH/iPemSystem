@@ -1,5 +1,6 @@
 ﻿using iPem.Core.NPOI;
 using System;
+using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
@@ -19,22 +20,23 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("日志摘要")]
         public string shortMessage { get; set; }
 
+        [ScriptIgnore]
         [ExcelDisplayName("详细信息")]
         public string fullMessage { get; set; }
 
-        [ExcelDisplayName("客户端地址")]
+        [ExcelDisplayName("客户端IP")]
         public string ip { get; set; }
 
-        [ExcelDisplayName("页面Url")]
+        [ExcelDisplayName("请求URL")]
         public string page { get; set; }
 
-        [ExcelDisplayName("相关Url")]
+        [ExcelDisplayName("关联URL")]
         public string referrer { get; set; }
 
         [ExcelDisplayName("用户名称")]
         public string user { get; set; }
 
-        [ExcelDisplayName("记录日期")]
+        [ExcelDisplayName("记录时间")]
         public string created { get; set; }
     }
 }

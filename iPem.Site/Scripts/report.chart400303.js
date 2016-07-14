@@ -57,7 +57,7 @@
                     return false;
 
                 if (!data.success) {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                     return false;
                 }
 
@@ -92,9 +92,9 @@
                             renderer: function (storeItem) {
                                 this.update(
                                     Ext.String.format('{0}: {1}<br/>{2}: {3}',
-                                    $$iPems.lang.Report400303.Chart.Value,
+                                    '放电测值',
                                     storeItem.get(item.display),
-                                    $$iPems.lang.Report400303.Chart.Time,
+                                    '测值时间',
                                     storeItem.get(item.time))
                                 );
                             }
@@ -234,7 +234,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: $$iPems.lang.Report400303.LineTitle,
+                title: '电池放电曲线',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -248,7 +248,7 @@
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: $$iPems.lang.Report400303.DetailTitle,
+                title: '电池放电信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -257,7 +257,7 @@
                 loadMask: true,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -267,37 +267,37 @@
                     preserveScrollOnRefresh: true,
                     stripeRows: true,
                     trackOver: true,
-                    emptyText: $$iPems.lang.GridEmptyText,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     getRowClass: function (record, rowIndex, rowParams, store) {
                         return $$iPems.GetPointStatusCls(record.get("state"));
                     }
                 },
                 features: [{
                     ftype: 'grouping',
-                    groupHeaderTpl: $$iPems.lang.Report400303.GroupTpl,
+                    groupHeaderTpl: '{name} ({rows.length}条)',
                     hideGroupedHeader: false,
                     startCollapsed: true
                 }],
                 columns: [
                     {
-                        text: $$iPems.lang.Report400303.Columns.Id,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 60
                     },
                     {
-                        text: $$iPems.lang.Report400303.Columns.Point,
+                        text: '信号名称',
                         dataIndex: 'point'
                     },
                     {
-                        text: $$iPems.lang.Report400303.Columns.Start,
+                        text: '开始时间',
                         dataIndex: 'start'
                     },
                     {
-                        text: $$iPems.lang.Report400303.Columns.Value,
+                        text: '放电测值',
                         dataIndex: 'value'
                     },
                     {
-                        text: $$iPems.lang.Report400303.Columns.Time,
+                        text: '测值时间',
                         dataIndex: 'time'
                     }
                 ],
@@ -306,7 +306,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400303.ConditionTitle,
+                title: '信号筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',
@@ -319,7 +319,7 @@
                                 id: 'devicePicker',
                                 xtype: 'DevicePicker',
                                 allowBlank: false,
-                                emptyText: $$iPems.lang.Report400303.ToolBar.DeviceEmptyText,
+                                emptyText: '请选择设备...',
                                 selectOnLeaf: true,
                                 selectAll: false,
                                 listeners: {
@@ -336,24 +336,17 @@
                                 id: 'pointCombo',
                                 xtype: 'PointMultiCombo',
                                 allowBlank: false,
-                                emptyText: $$iPems.lang.Report400303.ToolBar.PointEmptyText,
+                                emptyText: '请选择信号...',
                                 labelWidth: 60,
                                 width: 280,
                             },
                             {
-                                xtype: 'splitbutton',
+                                xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Ok,
+                                text: '数据查询',
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
-                                },
-                                menu: [{
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (me, event) {
-                                        print(currentStore);
-                                    }
-                                }]
+                                }
                             }
                         ]
                     },
@@ -364,7 +357,7 @@
                             {
                                 id: 'startField',
                                 xtype: 'datetimepicker',
-                                fieldLabel: $$iPems.lang.Report400303.ToolBar.Start,
+                                fieldLabel: '开始时间',
                                 labelWidth: 60,
                                 width: 280,
                                 value: Ext.ux.DateTime.addDays(Ext.ux.DateTime.today(), -1),
@@ -374,12 +367,20 @@
                             {
                                 id: 'endField',
                                 xtype: 'datetimepicker',
-                                fieldLabel: $$iPems.lang.Report400303.ToolBar.End,
+                                fieldLabel: '结束时间',
                                 labelWidth: 60,
                                 width: 280,
                                 value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
                                 editable: false,
                                 allowBlank: false
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf010,
+                                text: '数据导出',
+                                handler: function (me, event) {
+                                    print(currentStore);
+                                }
                             }
                         ]
                     }

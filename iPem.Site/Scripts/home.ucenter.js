@@ -41,7 +41,7 @@
                         bir.getComponent('empNo').setValue(result.empNo);
                         bir.getComponent('mobile').setValue(result.mobile);
                         bir.getComponent('created').setValue(result.created);
-                        bir.getComponent('isLockedOut').setValue(result.isLockedOut ? window.$$iPems.lang.StatusLocked : window.$$iPems.lang.StatusUnlocked);
+                        bir.getComponent('isLockedOut').setValue(result.isLockedOut ? '锁定' : '正常');
                         bir.getComponent('lastPasswordChanged').setValue(result.lastPasswordChanged);
 
                         cfm.getComponent('id').setValue(result.id);
@@ -51,49 +51,58 @@
             }
         },
         items: [{
-            title: $$iPems.lang.UCenter.BaseTitle,
+            title: '基本信息',
             glyph: 0xf012,
             layout: 'hbox',
             items: [{
+                xtype: 'container',
+                width: 100,
+                items: [{
+                    xtype: 'image',
+                    height: 80,
+                    width: 80,
+                    margin: '25 0 0 20',
+                    src: '/Account/GetCurrentPhoto'
+                }]
+            },{
                 xtype: 'container',
                 id:'base-info-left',
                 flex: 1,
                 layout: 'anchor',
                 defaults: {
-                    anchor: '90%',
-                    labelWidth: 100,
-                    labelStyle: 'font-weight:bold',
-                    margin: '20 25 20 25'
+                    anchor: '100%',
+                    labelWidth: 80,
+                    margin: 20
                 },
                 items: [
                     {
                         xtype: 'displayfield',
                         itemId: 'uid',
-                        fieldLabel: $$iPems.lang.UCenter.Name
+                        fieldLabel: '登录用户'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'empName',
-                        fieldLabel: $$iPems.lang.UCenter.EmpName
+                        fieldLabel: '隶属员工'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'sexName',
-                        fieldLabel: $$iPems.lang.UCenter.Sex
+                        fieldLabel: '性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'email',
-                        fieldLabel: $$iPems.lang.UCenter.Email
+                        fieldLabel: 'Email'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'limited',
-                        fieldLabel: $$iPems.lang.UCenter.Limited
+                        fieldLabel: '有效日期'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'lastLockedout',
-                        fieldLabel: $$iPems.lang.UCenter.LastLockedout
+                        fieldLabel: '锁定日期'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'comment',
-                        fieldLabel: $$iPems.lang.UCenter.Comment
+                        fieldLabel: '备注信息'
                     }
                 ]
             }, {
@@ -102,41 +111,40 @@
                 flex: 1,
                 layout: 'anchor',
                 defaults: {
-                    anchor: '90%',
-                    labelWidth: 100,
-                    labelStyle: 'font-weight:bold',
+                    anchor: '100%',
+                    labelWidth: 80,
                     margin: '20 25 20 25'
                 },
                 items: [
                     {
                         xtype: 'displayfield',
                         itemId: 'roleName',
-                        fieldLabel: $$iPems.lang.UCenter.Role
+                        fieldLabel: '隶属角色'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'empNo',
-                        fieldLabel: $$iPems.lang.UCenter.EmpNo
+                        fieldLabel: '员工工号'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'mobile',
-                        fieldLabel: $$iPems.lang.UCenter.Mobile
+                        fieldLabel: '联系电话'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'created',
-                        fieldLabel: $$iPems.lang.UCenter.Created
+                        fieldLabel: '创建日期'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'isLockedOut',
-                        fieldLabel: $$iPems.lang.UCenter.IsLockedOut
+                        fieldLabel: '锁定状态'
                     }, {
                         xtype: 'displayfield',
                         itemId: 'lastPasswordChanged',
-                        fieldLabel: $$iPems.lang.UCenter.LastPasswordChanged
+                        fieldLabel: '更新密码'
                     },
                 ]
             }]
         }, {
-            title: $$iPems.lang.UCenter.ChangeTitle,
+            title: '修改密码',
             glyph: 0xf022,
             items: [{
                 xtype: 'form',
@@ -146,7 +154,6 @@
                 fieldDefaults: {
                     labelWidth: 60,
                     labelAlign: 'left',
-                    labelStyle: 'font-weight:bold',
                     margin: '25 25 25 25',
                     width: 360
                 },
@@ -160,31 +167,31 @@
                         itemId: 'uid',
                         xtype: 'textfield',
                         readOnly: true,
-                        fieldLabel: $$iPems.lang.UCenter.Name,
+                        fieldLabel: '登录用户',
                         allowBlank: false
                     },
                     {
                         itemId: 'origin',
                         xtype: 'textfield',
                         inputType: 'password',
-                        fieldLabel: $$iPems.lang.UCenter.OriginPassword,
+                        fieldLabel: '原始密码',
                         allowBlank: false
                     },
                     {
                         itemId: 'password',
                         xtype: 'textfield',
                         inputType: 'password',
-                        fieldLabel: $$iPems.lang.UCenter.Password,
+                        fieldLabel: '新的密码',
                         allowBlank: false
                     },
                     {
                         itemId: 'confirmPassword',
                         xtype: 'textfield',
                         inputType: 'password',
-                        fieldLabel: $$iPems.lang.UCenter.Confirm,
+                        fieldLabel: '确认密码',
                         allowBlank: false,
                         vtype: 'password',
-                        vtypeText: $$iPems.lang.UCenter.ConfirmError,
+                        vtypeText: '密码不一致',
                         confirmTo: 'password'
                     }
                 ]
@@ -193,8 +200,8 @@
             buttons: [
                 {
                     xtype: 'button',
-                    text: $$iPems.lang.UCenter.SavePassword,
-                    scale: 'medium',
+                    text: '保存密码',
+                    cls: 'custom-button custom-success',
                     handler: function () {
                         var form = Ext.getCmp('changeForm'),
                             basic = form.getForm(),
@@ -203,9 +210,9 @@
 
                         result.setTextWithIcon('', '');
                         if (basic.isValid() && !Ext.isEmpty(id)) {
-                            Ext.Msg.confirm(window.$$iPems.lang.ConfirmWndTitle, window.$$iPems.lang.UCenter.ConfirmChangePassword, function (buttonId, text) {
+                            Ext.Msg.confirm('确认对话框', '您确认要修改密码吗？', function (buttonId, text) {
                                 if (buttonId === 'yes') {
-                                    result.setTextWithIcon(window.$$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                    result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                     var origin = form.getComponent('origin').getValue();
                                     var password = form.getComponent('password').getValue();
                                     basic.submit({
@@ -232,7 +239,7 @@
                                 }
                             });
                         } else {
-                            result.setTextWithIcon(window.$$iPems.lang.FormError, 'x-icon-error');
+                            result.setTextWithIcon('表单填写错误', 'x-icon-error');
                         }
                     }
                 },
@@ -242,26 +249,17 @@
     });
 
     var logout = Ext.create('Ext.panel.Panel', {
-        title: $$iPems.lang.UCenter.LogoutTitle,
+        title: '登出系统',
         collapsible: true,
         cls: 'x-danger-panel',
         margin: '10 0 0 0',
         glyph: 0xf026,
         border: true,
         bodyPadding: 10,
-        items: [
-            {
-                xtype: 'label',
-                contentEl: 'logout-tips'
-            },
-            {
-                xtype: 'button',
-                text: $$iPems.lang.Logout,
-                scale: 'medium',
-                href: '/Account/LogOut',
-                hrefTarget:'_self'
-            }
-        ]
+        items: [{
+            xtype: 'container',
+            contentEl: 'logout-content'
+        }]
     });
 
     var hcontent = Ext.create('Ext.panel.Panel', {

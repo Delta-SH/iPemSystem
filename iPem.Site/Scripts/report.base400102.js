@@ -72,11 +72,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400102.Chart.PieTotal,
+                        '站点总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400102.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -124,11 +124,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400102.Chart.PieTotal,
+                        '站点总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400102.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -202,7 +202,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400102.ConditionTitle,
+                title: '站点统计条件',
                 bodyCls: 'x-docked-top-with-bottom',
                 collapsible: true,
                 collapsed: false,
@@ -213,14 +213,14 @@
                     items: [{
                         id: 'areasfield',
                         xtype: 'AreaPicker',
-                        emptyText: $$iPems.lang.AllEmptyText
+                        emptyText: '默认全部'
                     }, {
                         id: 'typesfield',
                         xtype: 'StationTypeMultiCombo',
-                        emptyText: $$iPems.lang.AllEmptyText
+                        emptyText: '默认全部'
                     }, {
                         xtype: 'button',
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         glyph: 0xf005,
                         handler: function (el, e) {
                             var areasfield = Ext.getCmp('areasfield'),
@@ -237,7 +237,7 @@
                         }
                     }, '-', {
                         xtype: 'button',
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         glyph: 0xf010,
                         handler: function (el, e) {
                             print(currentStore);
@@ -248,7 +248,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: $$iPems.lang.Report400102.ChartTitle,
+                title: '站点类型分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -266,7 +266,7 @@
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,
-                title: $$iPems.lang.Report400102.GridTitle,
+                title: '站点统计列表',
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,
@@ -274,7 +274,7 @@
                 forceFit: false,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -283,131 +283,131 @@
                     forceFit: true,
                     trackOver: true,
                     stripeRows: true,
-                    emptyText: $$iPems.lang.GridEmptyText,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     preserveScrollOnRefresh: true
                 },
                 features: [{
                     ftype: 'grouping',
-                    groupHeaderTpl: $$iPems.lang.Report400102.GroupTpl,
+                    groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
                     hideGroupedHeader: false,
                     startCollapsed: true
                 }],
                 columns: [{
-                    text: $$iPems.lang.Report400102.Columns.Index,
+                    text: '序号',
                     dataIndex: 'index',
                     width: 60,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Id,
+                    text: '编号',
                     dataIndex: 'id',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Name,
+                    text: '名称',
                     dataIndex: 'name',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Type,
+                    text: '类型',
                     dataIndex: 'type',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Longitude,
+                    text: '经度',
                     dataIndex: 'longitude',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Latitude,
+                    text: '纬度',
                     dataIndex: 'latitude',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Altitude,
+                    text: '海拔标高',
                     dataIndex: 'altitude',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.CityElecLoadType,
+                    text: '市电引入方式',
                     dataIndex: 'cityelecloadtype',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.CityElecCap,
+                    text: '市电容',
                     dataIndex: 'cityeleccap',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.CityElecLoad,
+                    text: '市电引入',
                     dataIndex: 'cityelecload',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Contact,
+                    text: '维护责任人',
                     dataIndex: 'contact',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.LineRadiusSize,
+                    text: '线径',
                     dataIndex: 'lineradiussize',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.LineLength,
+                    text: '线缆长度',
                     dataIndex: 'linelength',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.SuppPowerType,
+                    text: '供电性质',
                     dataIndex: 'supppowertype',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.TranInfo,
+                    text: '转供信息',
                     dataIndex: 'traninfo',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.TranContNo,
+                    text: '供电合同号',
                     dataIndex: 'trancontno',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.TranPhone,
+                    text: '变电站电话',
                     dataIndex: 'tranphone',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Comment,
+                    text: '描述',
                     dataIndex: 'comment',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400102.Columns.Enabled,
+                    text: '状态',
                     dataIndex: 'enabled',
                     align: 'center',
                     width: 100,
                     sortable: true,
                     renderer: function (value) {
-                        return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+                        return value ? '有效' : '禁用';
                     }
                 }],
                 bbar: currentPagingToolbar

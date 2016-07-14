@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.RoomTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "RoomTypeMultiCombo",
-    fieldLabel: $$iPems.lang.Component.RoomType,
+    fieldLabel: '机房类型',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.RoomTypeComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "RoomTypeCombo",
-    fieldLabel: $$iPems.lang.Component.RoomType,
+    fieldLabel: '机房类型',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

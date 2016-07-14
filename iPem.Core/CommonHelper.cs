@@ -10,12 +10,21 @@ using System.Security.Cryptography;
 using System.Speech.Synthesis;
 using System.Web;
 using System.Web.Hosting;
+using System.Diagnostics;
+using Microsoft.VisualBasic.Devices;
 
 namespace iPem.Core {
     /// <summary>
     /// Represents a common helper
     /// </summary>
     public partial class CommonHelper {
+        private static PerformanceCounter cpuCounter;
+        private static PerformanceCounter ramCounter;
+
+        static CommonHelper() {
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+        }
 
         /// <summary>
         /// Generate random digit code
@@ -223,16 +232,7 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string DateTimeConverter(DateTime val) {
-            if(val == default(DateTime))
-                return string.Empty;
-
-            /*
-             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
-             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
-             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
-             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
-             */
-            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+            if(!IsValidDateTime(val))
                 return string.Empty;
 
             return val.ToString("yyyy-MM-dd HH:mm:ss");
@@ -243,16 +243,7 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string DateConverter(DateTime val) {
-            if(val == default(DateTime))
-                return string.Empty;
-
-            /*
-             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
-             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
-             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
-             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
-             */
-            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+            if(!IsValidDateTime(val))
                 return string.Empty;
 
             return val.ToString("yyyy-MM-dd");
@@ -263,19 +254,21 @@ namespace iPem.Core {
         /// </summary>
         /// <param name="val">val</param>
         public static string TimeConverter(DateTime val) {
-            if(val == default(DateTime))
-                return string.Empty;
-
-            /*
-             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
-             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
-             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
-             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
-             */
-            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+            if(!IsValidDateTime(val))
                 return string.Empty;
 
             return val.ToString("HH:mm:ss");
+        }
+
+        /// <summary>
+        /// Time Converter
+        /// </summary>
+        /// <param name="val">val</param>
+        public static string ShortTimeConverter(DateTime val) {
+            if(!IsValidDateTime(val))
+                return string.Empty;
+
+            return val.ToString("mm′ss″");
         }
 
         /// <summary>
@@ -354,6 +347,45 @@ namespace iPem.Core {
             task.Start();
             task.Join();
             return bytes;
+        }
+
+        /// <summary>
+        /// Gets the computer cpu usage.
+        /// </summary>
+        /// <returns>cpu usage</returns>
+        public static double GetCpuUsage() {
+            var rate = cpuCounter.NextValue();
+            return Math.Round(rate, 2);
+        }
+
+        /// <summary>
+        /// Gets the computer memory usage.
+        /// </summary>
+        /// <returns>cpu usage</returns>
+        public static double GetMemoryUsage() {
+            var computer = new ComputerInfo();
+            //var total = (computer.TotalPhysicalMemory) / (1024 * 1024);
+            //var ram = ramCounter.NextValue();
+            //return Math.Round((1 - ram / total) * 100, 2);
+
+            var rate = (double)computer.AvailablePhysicalMemory / (double)computer.TotalPhysicalMemory;
+            return Math.Round(rate * 100, 2);
+        }
+
+        private static bool IsValidDateTime(DateTime val) {
+            if(val == default(DateTime))
+                return false;
+
+            /*
+             * 解决JsonSerializer.DeserializeFromString方法转换默认时间[default(DateTime)]会自动加上时区(+8H)
+             * 在使用Redis缓存时，NServiceKit默认会使用JsonSerializer.SerializeToString方法对要缓存的数据进行Json序列化
+             * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
+             * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
+             */
+            if(val == new DateTime(1, 1, 1, 8, 0, 0))
+                return false;
+
+            return true;
         }
     }
 }

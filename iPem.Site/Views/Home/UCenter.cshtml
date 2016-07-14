@@ -14,9 +14,10 @@
         </div>
     </div>
 </div>
-<div id="logout-tips">
+<div id="logout-content">
     <div>本账户最后登录时间为：@iPem.Core.CommonHelper.DateTimeConverter(ViewBag.Current.LastLoginDate)</div>
     <p>强烈建议用户在使用完本系统后，通过以下按钮安全退出系统。这样可以清空系统缓存的用户相关信息，避免信息泄露。</p>
+    <a class="custom-button custom-danger" href="/Account/LogOut" target="_self">安全退出</a>
 </div>
 @section scripts {
     <script src="@Url.Content("~/Scripts/home.ucenter.js")" type="text/javascript"></script>

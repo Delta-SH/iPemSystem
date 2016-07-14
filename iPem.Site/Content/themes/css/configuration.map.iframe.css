@@ -1,5 +1,148 @@
-﻿body {
-    margin:0;
-    padding:0;
+﻿html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
     font: 13px/15px 'Microsoft Yahei', Arial, SimSun, Sans-Serif;
+}
+
+#container {
+    height: 100%;
+}
+
+#search-panel {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#searchbox {
+    position: relative;
+    pointer-events: auto;
+    border-radius: 2px;
+    background: #fff none repeat scroll 0 0;
+}
+
+#searchbox #searchbox-container {
+    float: left;
+    position: relative;
+}
+
+#searchbox #searchbox-input {
+    border-color: transparent;
+    border-image: none;
+    border-radius: 2px 0 0 2px;
+    border-style: none solid;
+    border-width: 0 10px 0 10px;
+    box-sizing: border-box;
+    outline: 0px;
+    color: #535353;
+    font-size: 15px;
+    width: 300px;
+    height: 38px;
+    line-height: 20px;
+    padding: 9px 0;
+    position: relative;
+}
+
+#searchbox #search-button {
+    background: #3385ff url("../images/search.png") no-repeat scroll 0 0;
+    border: 0 none;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    float: left;
+    width: 57px;
+    height: 38px;
+    padding: 0px;
+    pointer-events: auto;
+}
+
+#searchbox #search-button:hover {
+    background-color: #2e77e5;
+}
+
+#search-results {
+    border: 1px solid #c0c0c0;
+    width: 150px;
+    height: auto;
+    display: none;
+}
+
+#unconnected-panel {
+    margin: 0 20px 20px 20px;
+    display: none;
+}
+
+#unconnected-panel p {
+    font-size: 13px; 
+    margin-bottom: 5px;
+}
+
+#unconnected-panel .title {
+    font-size: 15px; 
+    font-weight: bold; 
+    color: #cc0000; 
+    text-align: center; 
+    margin: 10px 0;
+}
+
+input::-webkit-input-placeholder { 
+    color: #aaa;
+    font-size: 14px;
+}
+
+input::-moz-placeholder { 
+    color: #aaa;
+    font-size: 14px;
+}
+
+input:-ms-input-placeholder { 
+    color: #aaa;
+    font-size: 14px;
+}
+
+.clearfix::before, .clearfix::after {
+    content: "";
+    display: table;
+}
+
+.clearfix::after {
+    clear: both;
+}
+
+.contentWndBox .content {
+    width: 100%;
+    color: #4d4d4d;
+    margin: 5px;
+}
+.contentWndBox .content td {
+    padding-bottom:5px;
+}
+.contentWndBox .content td.title {
+    width: 40px;
+}
+.contentWndBox .alarm {
+    width: 100%;
+    color: #4d4d4d;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.contentWndBox .alarm td {
+    padding-bottom:5px;
+}
+.contentWndBox .alarm td.title {
+    width: 65px;
+} 
+.contentWndBox .alarm td a {
+    color: #3d6dcc;
+    text-decoration: none;
+}
+.contentWndBox .alarm td a:hover {
+    text-decoration: underline;
 }

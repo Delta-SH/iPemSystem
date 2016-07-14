@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.RoomMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "RoomMultiPicker",
-    fieldLabel: $$iPems.lang.Component.RoomName,
+    fieldLabel: '所属机房',
     displayField: 'text',
     labelWidth: 60,
     width: 280,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.RoomTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "RoomPicker",
-    fieldLabel: $$iPems.lang.Component.RoomName,
+    fieldLabel: '所属机房',
     displayField: 'text',
     labelWidth: 60,
     width: 280,

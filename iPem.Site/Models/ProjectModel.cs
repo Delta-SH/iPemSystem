@@ -19,25 +19,25 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("结束时间")]
         public string EndTime { get; set; }
 
-        [ExcelDisplayName("负责人")]
+        [ExcelDisplayName("负责人员")]
         public string Responsible { get; set; }
 
-        [ExcelDisplayName("预留手机号")]
+        [ExcelDisplayName("联系电话")]
         public string ContactPhone { get; set; }
 
         [ExcelDisplayName("施工公司")]
         public string Company { get; set; }
 
-        [ExcelDisplayName("创建人")]
+        [ExcelDisplayName("创建人员")]
         public string Creator { get; set; }
 
         [ExcelDisplayName("创建时间")]
         public string CreatedTime { get; set; }
 
-        [ExcelDisplayName("备注")]
+        [ExcelDisplayName("备注信息")]
         public string Comment { get; set; }
 
-        [ExcelDisplayName("状态")]
+        [ExcelDisplayName("工程状态")]
         [ExcelBooleanNameAttribute(True = "有效", False = "禁用")]
         public bool Enabled { get; set; }
     }

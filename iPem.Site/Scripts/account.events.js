@@ -7,7 +7,7 @@
             { name: 'level', type: 'string' },
             { name: 'type', type: 'string' },
             { name: 'shortMessage', type: 'string' },
-            { name: 'fullMessage', type: 'string' },
+            //{ name: 'fullMessage', type: 'string' },
             { name: 'ip', type: 'string' },
             { name: 'page', type: 'string' },
             { name: 'referrer', type: 'string' },
@@ -30,6 +30,11 @@
                 messageProperty: 'message',
                 totalProperty: 'total',
                 root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
             },
             extraParams: {
                 levels: [],
@@ -58,6 +63,11 @@
                 messageProperty: 'message',
                 totalProperty: 'total',
                 root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
             }
         }
     });
@@ -79,6 +89,11 @@
                 messageProperty: 'message',
                 totalProperty: 'total',
                 root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
             }
         }
     });
@@ -87,7 +102,7 @@
 
     var currentGridPanel = Ext.create('Ext.grid.Panel', {
         glyph:0xf029,
-        title: $$iPems.lang.Event.Title,
+        title: '系统日志信息',
         region: 'center',
         store: currentStore,
         columnLines: true,
@@ -98,72 +113,79 @@
             forceFit: true,
             trackOver: true,
             stripeRows: true,
-            emptyText: $$iPems.lang.GridEmptyText,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
             preserveScrollOnRefresh: true
         },
         columns: [{
-            text: $$iPems.lang.Event.Columns.Index,
+            text: '序号',
             dataIndex: 'index',
             width: 60,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.Level,
+            text: '级别',
             dataIndex: 'level',
             width: 100,
-            align: 'center',
+            align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.Type,
+            text: '类型',
             dataIndex: 'type',
             width: 100,
-            align: 'center',
+            align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.ShortMessage,
+            text: '日志摘要',
             dataIndex: 'shortMessage',
             width: 100,
             align: 'left',
-            sortable: true
-        }, {
-            text: $$iPems.lang.Event.Columns.FullMessage,
-            dataIndex: 'fullMessage',
             flex: 1,
-            minWidth:100,
-            align: 'left',
             sortable: true,
             renderer: function (value, metadata, record, rowIndex, columnIndex, store, view) {
                 metadata.tdAttr = Ext.String.format("data-qtip='{0}'", value);
                 return value;
             }
-        }, {
-            text: $$iPems.lang.Event.Columns.IP,
+        },
+        //{
+        //    text: '详细信息',
+        //    dataIndex: 'fullMessage',
+        //    flex: 1,
+        //    minWidth:100,
+        //    align: 'left',
+        //    sortable: true,
+        //    renderer: function (value, metadata, record, rowIndex, columnIndex, store, view) {
+        //        metadata.tdAttr = Ext.String.format("data-qtip='{0}'", value);
+        //        return value;
+        //    }
+        //},
+        {
+            text: '客户端IP',
             dataIndex: 'ip',
             width: 100,
-            align: 'center',
+            align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.Page,
+            text: '请求URL',
             dataIndex: 'page',
             width: 100,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.Referrer,
+            text: '关联URL',
             dataIndex: 'referrer',
             width: 100,
             align: 'left',
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.User,
+            text: '用户名称',
             dataIndex: 'user',
             align: 'left',
             width: 100,
             sortable: true
         }, {
-            text: $$iPems.lang.Event.Columns.Created,
+            text: '记录时间',
             dataIndex: 'created',
-            align: 'center',
+            align: 'left',
             width: 100,
             sortable: true
         }],
@@ -175,101 +197,36 @@
                     border: false,
                     items: [Ext.create('Ext.ux.MultiCombo', {
                         id: 'levels-multicombo',
-                        fieldLabel: $$iPems.lang.Event.ToolBar.Level,
+                        fieldLabel: '日志级别',
                         valueField: 'id',
                         displayField: 'text',
                         delimiter: $$iPems.Delimiter,
                         queryMode: 'local',
                         triggerAction: 'all',
                         selectionMode: 'all',
-                        emptyText: $$iPems.lang.AllEmptyText,
+                        emptyText: '默认全部',
                         forceSelection: true,
                         labelWidth: 60,
                         width: 250,
                         store: comboLevelStore
                     }), Ext.create('Ext.ux.MultiCombo', {
                         id: 'types-multicombo',
-                        fieldLabel: $$iPems.lang.Event.ToolBar.Type,
+                        fieldLabel: '日志类型',
                         valueField: 'id',
                         displayField: 'text',
                         delimiter: $$iPems.Delimiter,
                         queryMode: 'local',
                         triggerAction: 'all',
                         selectionMode: 'all',
-                        emptyText: $$iPems.lang.AllEmptyText,
+                        emptyText: '默认全部',
                         forceSelection: true,
                         labelWidth: 60,
                         width: 250,
                         store: comboTypeStore
-                    })]
-                }),
-                Ext.create('Ext.toolbar.Toolbar', {
-                    border: false,
-                    items: [{
-                        id: 'begin-datefield',
-                        xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Event.ToolBar.BeginTime,
-                        labelWidth: 60,
-                        width: 250,
-                        value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-                        editable: false,
-                        allowBlank: false
-                    }, {
-                        id: 'end-datefield',
-                        xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Event.ToolBar.EndTime,
-                        labelWidth: 60,
-                        width: 250,
-                        value: new Date(),
-                        editable: false,
-                        allowBlank: false
-                    }, {
-                        xtype: 'splitbutton',
-                        text: $$iPems.lang.Query,
+                    }), {
+                        xtype: 'button',
                         glyph: 0xf005,
-                        menu: {
-                            //border: false,
-                            //plain: true,
-                            items: [
-                                {
-                                    text: $$iPems.lang.Event.ToolBar.Clear,
-                                    glyph: 0xf023,
-                                    handler: function (el, e) {
-                                        Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Event.Confirm, function (buttonId, text) {
-                                            if (buttonId === 'yes') {
-                                                Ext.Ajax.request({
-                                                    url: '/Account/ClearEvents',
-                                                    mask: new Ext.LoadMask(currentGridPanel, { msg: $$iPems.lang.AjaxHandling }),
-                                                    success: function (response, options) {
-                                                        var data = Ext.decode(response.responseText, true);
-                                                        if (data.success)
-                                                            Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-                                                        else
-                                                            Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                }, '-',
-                                {
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (el, e) {
-                                        var params = currentStore.getProxy().extraParams;
-                                        $$iPems.download({
-                                            url: '/Account/DownloadEvents',
-                                            params: {
-                                                levels: params.levels,
-                                                types: params.types,
-                                                startDate: params.startDate,
-                                                endDate: params.endDate
-                                            }
-                                        });
-                                    }
-                                }
-                            ]
-                        },
+                        text: '数据查询',
                         handler: function (el, e) {
                             var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
                                 types = Ext.getCmp('types-multicombo').getSelectedValues(),
@@ -281,6 +238,60 @@
                             currentStore.getProxy().extraParams.startDate = startDate;
                             currentStore.getProxy().extraParams.endDate = endDate;
                             currentStore.loadPage(1);
+                        }
+                    }, '-', {
+                        xtype: 'button',
+                        glyph: 0xf010,
+                        text: '数据导出',
+                        handler: function (el, e) {
+                            var params = currentStore.getProxy().extraParams;
+                            $$iPems.download({
+                                url: '/Account/DownloadEvents',
+                                params: params
+                            });
+                        }
+                    }]
+                }),
+                Ext.create('Ext.toolbar.Toolbar', {
+                    border: false,
+                    items: [{
+                        id: 'begin-datefield',
+                        xtype: 'datefield',
+                        fieldLabel: '开始日期',
+                        labelWidth: 60,
+                        width: 250,
+                        value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
+                        editable: false,
+                        allowBlank: false
+                    }, {
+                        id: 'end-datefield',
+                        xtype: 'datefield',
+                        fieldLabel: '结束日期',
+                        labelWidth: 60,
+                        width: 250,
+                        value: new Date(),
+                        editable: false,
+                        allowBlank: false
+                    }, {
+                        xtype: 'button',
+                        glyph: 0xf023,
+                        text: '清理日志',
+                        handler: function (el, e) {
+                            Ext.Msg.confirm('确认对话框', '您确定要删除三个月之前的日志信息吗？', function (buttonId, text) {
+                                if (buttonId === 'yes') {
+                                    Ext.Ajax.request({
+                                        url: '/Account/ClearEvents',
+                                        mask: new Ext.LoadMask(currentGridPanel, { msg: '正在处理，请稍后...' }),
+                                        success: function (response, options) {
+                                            var data = Ext.decode(response.responseText, true);
+                                            if (data.success)
+                                                Ext.Msg.show({ title: '系统提示', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                            else
+                                                Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }]
                 })

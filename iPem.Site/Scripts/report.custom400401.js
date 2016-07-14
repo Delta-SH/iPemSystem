@@ -66,7 +66,7 @@
     };
 
     var projectWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.Report400401.Window.Project.Title,
+        title: '工程预约',
         glyph: 0xf045,
         height: 300,
         width: 400,
@@ -80,36 +80,36 @@
         items: [{
             itemId: 'id',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.Id
+            fieldLabel: '预约编号'
         }, {
             itemId: 'startTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.StartTime
+            fieldLabel: '开始时间'
         }, {
             itemId: 'endTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.EndTime
+            fieldLabel: '结束时间'
         }, {
             itemId: 'projectName',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.ProjectName
+            fieldLabel: '工程名称'
         }, {
             itemId: 'creator',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.Creator
+            fieldLabel: '创建人员'
         }, {
             itemId: 'createdTime',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.CreatedTime
+            fieldLabel: '创建时间'
         }, {
             itemId: 'comment',
             labelWidth: 60,
-            fieldLabel: $$iPems.lang.Report400401.Window.Project.Fields.Comment
+            fieldLabel: '备注信息'
         }],
         buttonAlign: 'right',
         buttons: [{
             xtype: 'button',
-            text: $$iPems.lang.Close,
+            text: '关闭',
             handler: function (el, e) {
                 projectWnd.hide();
             }
@@ -157,11 +157,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400401.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400401.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -214,11 +214,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400401.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400401.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -271,11 +271,11 @@
                     //this.setTitle('');
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400401.Chart.PieTotal,
+                        '告警总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400401.Chart.PieRate,
+                        '告警占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -359,7 +359,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: $$iPems.lang.Report400401.RateTitle,
+                title: '告警分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -367,7 +367,7 @@
                 tools: [
                     //{
                     //    type: 'print',
-                    //    tooltip: $$iPems.lang.Import,
+                    //    tooltip: '数据导出',
                     //    handler: function (event, toolEl, panelHeader) {
                     //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
                     //    }
@@ -383,7 +383,7 @@
                 id: 'history-alarm-grid',
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: $$iPems.lang.Report400401.DetailTitle,
+                title: '告警详细信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -392,7 +392,7 @@
                 loadMask: true,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -402,11 +402,11 @@
                     preserveScrollOnRefresh: true,
                     stripeRows: true,
                     trackOver: true,
-                    emptyText: $$iPems.lang.GridEmptyText
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
                 },
                 features: [{
                     ftype: 'grouping',
-                    groupHeaderTpl: $$iPems.lang.Report400401.GroupTpl,
+                    groupHeaderTpl: '{name} ({rows.length}条)',
                     hideGroupedHeader: false,
                     startCollapsed: true
                 }],
@@ -424,7 +424,7 @@
                             url: '/Home/GetAppointmentDetail',
                             Method: 'POST',
                             params: { id: fieldValue },
-                            mask: new Ext.LoadMask(view.ownerCt, { msg: $$iPems.lang.AjaxHandling }),
+                            mask: new Ext.LoadMask(view.ownerCt, { msg: '正在处理，请稍后...' }),
                             success: function (response, options) {
                                 var data = Ext.decode(response.responseText, true);
                                 if (data.success) {
@@ -445,7 +445,7 @@
                                     comment.setValue(data.data.comment);
                                     projectWnd.show();
                                 } else {
-                                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                 }
                             }
                         });
@@ -453,91 +453,91 @@
                 },
                 columns: [
                     {
-                        text: $$iPems.lang.Report400401.Columns.Id,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 60
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Area,
+                        text: '所属区域',
                         dataIndex: 'area'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Station,
+                        text: '所属站点',
                         dataIndex: 'station'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Room,
+                        text: '所属机房',
                         dataIndex: 'room'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.DevType,
+                        text: '设备类型',
                         dataIndex: 'devType'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Device,
+                        text: '设备名称',
                         dataIndex: 'device'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Logic,
+                        text: '逻辑分类',
                         dataIndex: 'logic'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Point,
+                        text: '信号名称',
                         dataIndex: 'point'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Level,
+                        text: '告警级别',
                         dataIndex: 'levelDisplay'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.StartTime,
+                        text: '开始时间',
                         dataIndex: 'startTime'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.EndTime,
+                        text: '结束时间',
                         dataIndex: 'endTime'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.StartValue,
+                        text: '触发值',
                         dataIndex: 'startValue'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.EndValue,
+                        text: '结束值',
                         dataIndex: 'endValue'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.AlmComment,
+                        text: '告警描述',
                         dataIndex: 'almComment'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.NormalComment,
+                        text: '正常描述',
                         dataIndex: 'normalComment'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Frequency,
+                        text: '触发频次',
                         dataIndex: 'frequency'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.EndType,
+                        text: '结束方式',
                         dataIndex: 'endType'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Project,
+                        text: '工程预约',
                         dataIndex: 'project',
                         renderer: function (value, p, record) {
                             return Ext.String.format('<a href="javascript:void(0)" style="color:#157fcc;">{0}</a>', value);
                         }
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.ConfirmedStatus,
+                        text: '确认状态',
                         dataIndex: 'confirmedStatus'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.ConfirmedTime,
+                        text: '确认时间',
                         dataIndex: 'confirmedTime'
                     },
                     {
-                        text: $$iPems.lang.Report400401.Columns.Confirmer,
+                        text: '确认人员',
                         dataIndex: 'confirmer'
                     }
                 ],
@@ -546,7 +546,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400401.ConditionTitle,
+                title: '告警筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',
@@ -558,15 +558,15 @@
                             {
                                 id: 'rangePicker',
                                 xtype: 'DevicePicker',
-                                fieldLabel: $$iPems.lang.Report400401.ToolBar.Range,
-                                emptyText: $$iPems.lang.AllEmptyText,
+                                fieldLabel: '查询范围',
+                                emptyText: '默认全部',
                                 labelWidth: 60,
                                 width: 220,
                             },
                             {
                                 id: 'startField',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Report400401.ToolBar.Start,
+                                fieldLabel: '开始时间',
                                 labelWidth: 60,
                                 width: 220,
                                 value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -576,7 +576,7 @@
                             {
                                 id: 'endField',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Report400401.ToolBar.End,
+                                fieldLabel: '结束时间',
                                 labelWidth: 60,
                                 width: 220,
                                 value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -584,19 +584,12 @@
                                 allowBlank: false
                             },
                             {
-                                xtype: 'splitbutton',
+                                xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Ok,
+                                text: '数据查询',
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
-                                },
-                                menu: [{
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (me, event) {
-                                        print(currentStore);
-                                    }
-                                }]
+                                }
                             }
                         ]
                     },
@@ -607,27 +600,59 @@
                             {
                                 id: 'station-type-multicombo',
                                 xtype: 'StationTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'room-type-multicombo',
                                 xtype: 'RoomTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'device-type-multicombo',
                                 xtype: 'DeviceTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf010,
+                                text: '数据导出',
+                                handler: function (me, event) {
+                                    print(currentStore);
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'toolbar',
+                        border: false,
+                        items: [
+                            {
+                                id: 'alarm-level-multicombo',
+                                xtype: 'AlarmLevelMultiCombo',
+                                emptyText: '默认全部'
+                            },
+                            {
+                                id: 'logic-type-multicombo',
+                                xtype: 'LogicTypeMultiCombo',
+                                emptyText: '默认全部'
+                            },
+                            {
+                                id: 'point-name-textfield',
+                                xtype: 'textfield',
+                                fieldLabel: '信号名称',
+                                emptyText: '多条件请以;分隔，例: A;B;C',
+                                labelWidth: 60,
+                                width: 220
                             },
                             {
                                 id: 'other-option-button',
                                 xtype: 'button',
-                                text: $$iPems.lang.Report400401.ToolBar.OtherOption,
+                                text: '其他选项',
                                 menu: [
                                     {
                                         id: 'show-confirm-menu',
                                         xtype: 'menucheckitem',
-                                        text: $$iPems.lang.Report400401.ToolBar.ShowConfirm,
+                                        text: '已确认告警',
                                         checked: false,
                                         checkHandler: function (me, checked) {
                                             if (checked) {
@@ -638,7 +663,7 @@
                                     {
                                         id: 'show-unconfirm-menu',
                                         xtype: 'menucheckitem',
-                                        text: $$iPems.lang.Report400401.ToolBar.ShowUnConfirm,
+                                        text: '未确认告警',
                                         checked: false,
                                         checkHandler: function (me, checked) {
                                             if (checked) {
@@ -650,7 +675,7 @@
                                     {
                                         id: 'show-project-menu',
                                         xtype: 'menucheckitem',
-                                        text: $$iPems.lang.Report400401.ToolBar.ShowProject,
+                                        text: '工程告警',
                                         checked: false,
                                         checkHandler: function (me, checked) {
                                             if (checked) {
@@ -661,39 +686,15 @@
                                     {
                                         id: 'show-unproject-menu',
                                         xtype: 'menucheckitem',
-                                        text: $$iPems.lang.Report400401.ToolBar.ShowUnProject,
+                                        text: '非工程告警',
                                         checked: false,
                                         checkHandler: function (me, checked) {
                                             if (checked) {
                                                 Ext.getCmp('show-project-menu').setChecked(false);
                                             }
                                         }
-                                    },
+                                    }
                                 ]
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'toolbar',
-                        border: false,
-                        items: [
-                            {
-                                id: 'alarm-level-multicombo',
-                                xtype: 'AlarmLevelMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
-                            },
-                            {
-                                id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
-                            },
-                            {
-                                id: 'point-name-textfield',
-                                xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Report400401.ToolBar.PointName,
-                                emptyText: $$iPems.lang.MultiConditionEmptyText,
-                                labelWidth: 60,
-                                width: 220
                             }
                         ]
                     }

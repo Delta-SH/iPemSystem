@@ -151,7 +151,7 @@
             Ext.Ajax.request({
                 url: me.searchUrl,
                 params: { text: text },
-                mask: new Ext.LoadMask({ target: picker, msg: $$iPems.lang.AjaxHandling }),
+                mask: new Ext.LoadMask({ target: picker, msg: '正在处理，请稍后...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success) {
@@ -165,7 +165,7 @@
                             field._filterIndex = 0;
                         }
                     } else {
-                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                     }
                 }
             });
@@ -207,7 +207,7 @@
             me.store = Ext.create('Ext.data.TreeStore', {
                 root: {
                     id: 'root',
-                    text: $$iPems.lang.Component.All,
+                    text: '全部',
                     icon: $$iPems.icons.Home,
                     root: true
                 },
@@ -292,7 +292,7 @@
         var me = this;
 
         var search = me.search = Ext.create('Ext.form.field.Text', {
-            emptyText: $$iPems.lang.PlsInputEmptyText,
+            emptyText: '请输入筛选条件...',
             flex: 1,
             listeners: {
                 change: me.searchChange

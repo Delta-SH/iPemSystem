@@ -72,7 +72,7 @@
         buttonAlign: 'right',
         buttons: [{
             xtype: 'button',
-            text: $$iPems.lang.Close,
+            text: '关闭',
             handler: function (el, e) {
                 detailWnd.hide();
             }
@@ -80,7 +80,7 @@
     });
 
     var currentGridPanel = Ext.create('Ext.grid.Panel', {
-        glyph: 0xf024,
+        glyph: 0xf025,
         title: '系统消息列表',
         region: 'center',
         store: currentStore,
@@ -93,14 +93,14 @@
             forceFit: true,
             trackOver: true,
             stripeRows: true,
-            emptyText: $$iPems.lang.GridEmptyText,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
             preserveScrollOnRefresh: true
         },
         columns: [{
             text: '消息标题',
             dataIndex: 'title',
             flex: 1,
-            align: 'center',
+            align: 'left',
             sortable: true,
             renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
                 if (!record.raw.readed) {
@@ -127,8 +127,8 @@
             width: 50,
             align: 'center',
             menuDisabled: true,
-            menuText: $$iPems.lang.Operate,
-            text: $$iPems.lang.Operate,
+            menuText: '操作',
+            text: '操作',
             items: [{
                 iconCls: 'x-cell-icon x-icon-detail',
                 handler: function (grid, rowIndex, colIndex) {
@@ -213,7 +213,7 @@
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,
-                msg: $$iPems.lang.AjaxHandling
+                msg: '正在处理，请稍后...'
             }),
             params: {
                 notices: [record.raw.id],
@@ -231,7 +231,7 @@
                     detailWnd.show();
                     currentPagingToolbar.doRefresh();
                 } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             }
         });
@@ -243,7 +243,7 @@
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,
-                msg: $$iPems.lang.AjaxHandling
+                msg: '正在处理，请稍后...'
             }),
             params: {
                 notices: notices,
@@ -254,7 +254,7 @@
                 if (data.success) {
                     currentPagingToolbar.doRefresh();
                 } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             }
         });

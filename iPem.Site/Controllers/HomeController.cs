@@ -21,6 +21,7 @@ using MsSrv = iPem.Services.Master;
 using RsDomain = iPem.Core.Domain.Resource;
 using RsSrv = iPem.Services.Resource;
 using iPem.Site.Models.BI;
+using System.Diagnostics;
 
 namespace iPem.Site.Controllers {
     [Authorize]
@@ -1021,7 +1022,7 @@ namespace iPem.Site.Controllers {
                                         valueDisplay = Common.GetValueDisplay(point.Point.Type,value,point.Point.Unit),
                                         status = (int)status,
                                         statusDisplay = Common.GetPointStatusDisplay(status),
-                                        timestamp = CommonHelper.TimeConverter(rectime)
+                                        timestamp = CommonHelper.ShortTimeConverter(rectime)
                                     });
                                 }
                             }
@@ -1117,7 +1118,7 @@ namespace iPem.Site.Controllers {
                                     valueDisplay = Common.GetValueDisplay(point.Point.Value.Current.Type, value, point.Point.Value.Current.Unit),
                                     status = (int)status,
                                     statusDisplay = Common.GetPointStatusDisplay(status),
-                                    timestamp = CommonHelper.TimeConverter(rectime)
+                                    timestamp = CommonHelper.ShortTimeConverter(rectime)
                                 });
                             }
                         }
@@ -1327,6 +1328,108 @@ namespace iPem.Site.Controllers {
             } catch(Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomeAlm() {
+            var data = new AjaxDataModel<HomeAlmModel> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = null
+            };
+
+            try {
+                var model = new HomeAlmModel();
+                var alarms = _hsActAlmService.GetAllActAlms();
+                model.total1 = alarms.Count(a=>a.AlmLevel == EnmAlarmLevel.Level1);
+                model.total2 = alarms.Count(a=>a.AlmLevel == EnmAlarmLevel.Level2);
+                model.total3 = alarms.Count(a=>a.AlmLevel == EnmAlarmLevel.Level3);
+                model.total4 = alarms.Count(a=>a.AlmLevel == EnmAlarmLevel.Level4);
+                model.total = model.total1 + model.total2 + model.total3 + model.total4;
+
+                var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
+                var roots = new List<RsDomain.Area>();
+                foreach(var area in _workContext.AssociatedAreas) {
+                    if(!dict.ContainsKey(area.ParentId))
+                        roots.Add(area);
+                }
+
+                var almsInDevId = from alm in alarms
+                                  group alm by alm.DeviceId into g
+                                  select new { Id = g.Key, Alarms = g };
+
+                var almsInDev = from alm in almsInDevId
+                                join dev in _workContext.AssociatedDeviceAttributes.Values on alm.Id equals dev.Current.Id
+                                select new { Key = dev, Alarms = alm.Alarms };
+
+                var almsInArea = from alm in almsInDev
+                                 group alm by alm.Key.Area.AreaId into g
+                                 select new { Id = g.Key, Alarms = g.SelectMany(a => a.Alarms) };
+
+                model.alarms = new List<HomeAreaAlmModel>();
+                foreach(var root in roots) {
+                    var matchs = new HashSet<string>();
+                    matchs.Add(root.AreaId);
+
+                    if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
+                        var current = _workContext.AssociatedAreaAttributes[root.AreaId];
+                        foreach(var child in current.Children)
+                            matchs.Add(child.AreaId);
+                    }
+
+                    var almsInRoot = new List<HsDomain.ActAlm>();
+                    foreach(var area in almsInArea) {
+                        if(matchs.Contains(area.Id))
+                            almsInRoot.AddRange(area.Alarms);
+                    }
+
+                    var areaAlm = new HomeAreaAlmModel();
+                    areaAlm.name = root.Name;
+                    areaAlm.level1 = almsInRoot.Count(a => a.AlmLevel == EnmAlarmLevel.Level1);
+                    areaAlm.level2 = almsInRoot.Count(a => a.AlmLevel == EnmAlarmLevel.Level2);
+                    areaAlm.level3 = almsInRoot.Count(a => a.AlmLevel == EnmAlarmLevel.Level3);
+                    areaAlm.level4 = almsInRoot.Count(a => a.AlmLevel == EnmAlarmLevel.Level4);
+                    areaAlm.total = areaAlm.level1 + areaAlm.level2 + areaAlm.level3 + areaAlm.level4;
+                    model.alarms.Add(areaAlm);
+                }
+
+                data.data = model;
+                data.total = 1;
+                data.message = "200 Ok";
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomeSvr() {
+            var data = new AjaxDataModel<HomeServerModel> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = null
+            };
+
+            try {
+                var model = new HomeServerModel();
+                model.cpu = CommonHelper.GetCpuUsage();
+                model.memory = CommonHelper.GetMemoryUsage();
+                model.time = CommonHelper.ShortTimeConverter(DateTime.Now);
+                data.data = model;
+                data.total = 1;
+                data.message = "200 Ok";
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         private List<AlmStore<HsDomain.ActAlm>> GetActAlmStore(string nodeid, int nodetype, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project) {

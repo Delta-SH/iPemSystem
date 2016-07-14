@@ -4,9 +4,9 @@ namespace iPem.Site.Models {
     public class RtValues {
         public int chaopin { get; set; }
 
-        public int chaoduan { get; set; }
+        public double chaoduan { get; set; }
 
-        public int chaochang { get; set; }
+        public double chaochang { get; set; }
 
         public int weitingdian { get; set; }
 
@@ -19,5 +19,11 @@ namespace iPem.Site.Models {
         public int fadian { get; set; }
 
         public string[] fadianxinhao { get; set; }
+
+        public double whlinterval { get; set; }
+
+        public double jslguiding { get; set; }
+
+        public double jslhulue { get; set; }
     }
 }

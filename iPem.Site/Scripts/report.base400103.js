@@ -78,11 +78,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400103.Chart.PieTotal,
+                        '机房总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400103.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -130,11 +130,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400103.Chart.PieTotal,
+                        '机房总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400103.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -209,7 +209,7 @@
                 {
                     xtype: 'panel',
                     glyph: 0xf034,
-                    title: $$iPems.lang.Report400103.ConditionTitle,
+                    title: '机房统计条件',
                     bodyCls: 'x-docked-top-with-bottom',
                     collapsible: true,
                     collapsed: false,
@@ -220,14 +220,14 @@
                         items: [{
                             id: 'stationfield',
                             xtype: 'StationPicker',
-                            emptyText: $$iPems.lang.AllEmptyText
+                            emptyText: '默认全部'
                         }, {
                             id: 'typesfield',
                             xtype: 'RoomTypeMultiCombo',
-                            emptyText: $$iPems.lang.AllEmptyText
+                            emptyText: '默认全部'
                         }, {
                             xtype: 'button',
-                            text: $$iPems.lang.Query,
+                            text: '数据查询',
                             glyph: 0xf005,
                             handler: function (el, e) {
                                 var stationfield = Ext.getCmp('stationfield'),
@@ -244,7 +244,7 @@
                             }
                         }, '-', {
                             xtype: 'button',
-                            text: $$iPems.lang.Import,
+                            text: '数据导出',
                             glyph: 0xf010,
                             handler: function (el, e) {
                                 print(currentStore);
@@ -257,7 +257,7 @@
                 {
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: $$iPems.lang.Report400103.ChartTitle,
+                    title: '机房分类占比',
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
@@ -275,7 +275,7 @@
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,
-                    title: $$iPems.lang.Report400103.GridTitle,
+                    title: '机房统计列表',
                     store: currentStore,
                     columnLines: true,
                     disableSelection: false,
@@ -283,7 +283,7 @@
                     forceFit: false,
                     tools: [{
                         type: 'print',
-                        tooltip: $$iPems.lang.Import,
+                        tooltip: '数据导出',
                         handler: function (event, toolEl, panelHeader) {
                             print(currentStore);
                         }
@@ -292,167 +292,167 @@
                         forceFit: true,
                         trackOver: true,
                         stripeRows: true,
-                        emptyText: $$iPems.lang.GridEmptyText,
+                        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                         preserveScrollOnRefresh: true
                     },
                     features: [{
                         ftype: 'grouping',
-                        groupHeaderTpl: $$iPems.lang.Report400103.GroupTpl,
+                        groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
                         hideGroupedHeader: false,
                         startCollapsed: true
                     }],
                     columns: [{
-                        text: $$iPems.lang.Report400103.Columns.Index,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 60,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Id,
+                        text: '编号',
                         dataIndex: 'id',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Name,
+                        text: '名称',
                         dataIndex: 'name',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Type,
+                        text: '类型',
                         dataIndex: 'type',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Property,
+                        text: '产权',
                         dataIndex: 'property',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Address,
+                        text: '地址',
                         dataIndex: 'address',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Floor,
+                        text: '楼层',
                         dataIndex: 'floor',
                         width: 100,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Length,
+                        text: '长度',
                         dataIndex: 'length',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Width,
+                        text: '宽度',
                         dataIndex: 'width',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Height,
+                        text: '高度',
                         dataIndex: 'height',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.FloorLoad,
+                        text: '楼面荷载',
                         dataIndex: 'floorLoad',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.LineHeigth,
+                        text: '走线架高度',
                         dataIndex: 'lineHeigth',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Square,
+                        text: '机房面积',
                         dataIndex: 'square',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.EffeSquare,
+                        text: '可使用面积',
                         dataIndex: 'effeSquare',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.FireFighEuip,
+                        text: '消防设备',
                         dataIndex: 'fireFighEuip',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Owner,
+                        text: '业主联系人',
                         dataIndex: 'owner',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.QueryPhone,
+                        text: '查询电话',
                         dataIndex: 'queryPhone',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.PowerSubMain,
+                        text: '动力代维',
                         dataIndex: 'powerSubMain',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.TranSubMain,
+                        text: '传输代维',
                         dataIndex: 'tranSubMain',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.EnviSubMain,
+                        text: '环境代维',
                         dataIndex: 'enviSubMain',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.FireSubMain,
+                        text: '消防代维',
                         dataIndex: 'fireSubMain',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.AirSubMain,
+                        text: '空调代维',
                         dataIndex: 'airSubMain',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Contact,
+                        text: '维护负责人',
                         dataIndex: 'contact',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Comment,
+                        text: '描述',
                         dataIndex: 'comment',
                         align: 'left',
                         width: 100,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400103.Columns.Enabled,
+                        text: '状态',
                         dataIndex: 'enabled',
                         align: 'center',
                         width: 100,
                         sortable: true,
                         renderer: function (value) {
-                            return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+                            return value ? '有效' : '禁用';
                         }
                     }],
                     bbar: currentPagingToolbar

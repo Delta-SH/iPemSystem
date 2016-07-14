@@ -74,7 +74,7 @@
     var change = function (node, pagingtoolbar, layout) {
         Ext.Ajax.request({
             url: '/Home/RequestRemoveRssPointsCache',
-            mask: new Ext.LoadMask(layout || Ext.getCmp('currentLayout'), { msg: $$iPems.lang.AjaxHandling }),
+            mask: new Ext.LoadMask(layout || Ext.getCmp('currentLayout'), { msg: '正在处理，请稍后...' }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -118,7 +118,7 @@
                     resetchart();
                     me.loadPage(1);
                 } else {
-                    Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             }
         });
@@ -272,7 +272,7 @@
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     var pointRssWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActivePoint.Window.RssTitle,
+        title: '信号订阅',
         height: 300,
         width: 600,
         glyph: 0xf041,
@@ -310,19 +310,19 @@
                                     id: 'station-type-multicombo',
                                     name: 'stationtypes',
                                     xtype: 'StationTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'device-type-multicombo',
                                     name: 'devicetypes',
                                     xtype: 'DeviceTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'point-type-multicombo',
                                     name: 'pointtypes',
                                     xtype: 'PointTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 }
                             ]
                         },
@@ -335,20 +335,20 @@
                                     id: 'room-type-multicombo',
                                     name: 'roomtypes',
                                     xtype: 'RoomTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'logic-type-multicombo',
                                     name: 'logictypes',
                                     xtype: 'LogicTypeMultiCombo',
-                                    emptyText: $$iPems.lang.AllEmptyText
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'point-name-textfield',
                                     name: 'pointnames',
                                     xtype: 'textfield',
-                                    fieldLabel: $$iPems.lang.ActivePoint.Window.PointName,
-                                    emptyText: $$iPems.lang.MultiConditionEmptyText
+                                    fieldLabel: '信号名称',
+                                    emptyText: '多条件请以;分隔，例: A;B;C'
                                 }
                             ]
                         }
@@ -357,7 +357,7 @@
             ]
         }, {
             xtype: 'iconlabel',
-            text:  $$iPems.lang.ActivePoint.Window.RssTips,
+            text: '请尽量精确订阅条件，避免因数据过多导致网页响应迟缓，影响其他操作。',
             margin: '15 15 15 15',
             iconCls: 'x-icon-tips'
         }],
@@ -366,7 +366,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.ActivePoint.Window.Rss,
+              text: '订阅',
               handler: function (el, e) {
                   Ext.getCmp('pointRssResult').setTextWithIcon('', '');
 
@@ -374,7 +374,7 @@
                       baseForm = form.getForm();
 
                   if (baseForm.isValid()) {
-                      Ext.getCmp('pointRssResult').setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                      Ext.getCmp('pointRssResult').setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                       baseForm.submit({
                           submitEmptyText: false,
                           clientValidation: true,
@@ -393,12 +393,12 @@
                           }
                       });
                   } else {
-                      Ext.getCmp('pointRssResult').setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                      Ext.getCmp('pointRssResult').setTextWithIcon('表单填写错误', 'x-icon-error');
                   }
               }
           }, {
               xtype: 'button',
-              text: $$iPems.lang.Close,
+              text: '关闭',
               handler: function (el, e) {
                   pointRssWnd.close();
               }
@@ -407,7 +407,7 @@
     });
 
     var controlWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActivePoint.Window.ControlTitle,
+        title: '信号遥控参数',
         height: 250,
         width: 400,
         glyph: 0xf040,
@@ -437,9 +437,9 @@
                     columns: 1,
                     vertical: true,
                     items: [
-                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption0, name: 'ctrl', inputValue: 0, checked: true },
-                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption1, name: 'ctrl', inputValue: 1 },
-                        { boxLabel: $$iPems.lang.ActivePoint.Window.ControlOption2, name: 'ctrl', inputValue: 2 }
+                        { boxLabel: '常开控制(0)', name: 'ctrl', inputValue: 0, checked: true },
+                        { boxLabel: '常闭控制(1)', name: 'ctrl', inputValue: 1 },
+                        { boxLabel: '脉冲控制(2)', name: 'ctrl', inputValue: 2 }
                     ]
                 }]
         }],
@@ -448,7 +448,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.ActivePoint.Window.Control,
+              text: '遥控',
               handler: function (el, e) {
                   var form = controlWnd.getComponent('controlForm'),
                       baseForm = form.getForm(),
@@ -456,7 +456,7 @@
 
                   result.setTextWithIcon('', '');
                   if (baseForm.isValid()) {
-                      result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                      result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                       baseForm.submit({
                           submitEmptyText: false,
                           clientValidation: true,
@@ -475,12 +475,12 @@
                           }
                       });
                   } else {
-                      result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                      result.setTextWithIcon('表单填写错误', 'x-icon-error');
                   }
               }
           }, {
               xtype: 'button',
-              text: $$iPems.lang.Close,
+              text: '关闭',
               handler: function (el, e) {
                   var form = controlWnd.getComponent('controlForm'),
                       baseForm = form.getForm();
@@ -493,7 +493,7 @@
     });
 
     var adjustWnd = Ext.create('Ext.window.Window', {
-        title: $$iPems.lang.ActivePoint.Window.AdjustTitle,
+        title: '信号遥调参数',
         height: 250,
         width: 400,
         glyph: 0xf028,
@@ -521,7 +521,7 @@
                     itemId: 'adjust',
                     xtype: 'numberfield',
                     name: 'adjust',
-                    fieldLabel: $$iPems.lang.ActivePoint.Window.AdjustOption,
+                    fieldLabel: '模拟量输出值',
                     value: 0,
                     width: 280,
                     allowOnlyWhitespace:false
@@ -532,7 +532,7 @@
           { xtype: 'tbfill' },
           {
               xtype: 'button',
-              text: $$iPems.lang.ActivePoint.Window.Adjust,
+              text: '遥调',
               handler: function (el, e) {
                   var form = adjustWnd.getComponent('adjustForm'),
                       baseForm = form.getForm(),
@@ -540,7 +540,7 @@
 
                   result.setTextWithIcon('', '');
                   if (baseForm.isValid()) {
-                      result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                      result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                       baseForm.submit({
                           submitEmptyText: false,
                           clientValidation: true,
@@ -559,12 +559,12 @@
                           }
                       });
                   } else {
-                      result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                      result.setTextWithIcon('表单填写错误', 'x-icon-error');
                   }
               }
           }, {
               xtype: 'button',
-              text: $$iPems.lang.Close,
+              text: '关闭',
               handler: function (el, e) {
                   var form = adjustWnd.getComponent('adjustForm'),
                       baseForm = form.getForm();
@@ -587,7 +587,7 @@
                     id: 'point-organization',
                     region: 'west',
                     xtype: 'treepanel',
-                    title: $$iPems.lang.ActivePoint.MenuNavTitle,
+                    title: '系统设备列表',
                     glyph: 0xf011,
                     width: 220,
                     split: true,
@@ -598,7 +598,7 @@
                     rootVisible: true,
                     root: {
                         id: 'root',
-                        text: $$iPems.lang.All,
+                        text: '全部',
                         expanded: true,
                         icon: $$iPems.icons.Home,
                         attributes: [
@@ -657,7 +657,7 @@
                         {
                             id: 'point-search-field',
                             xtype: 'textfield',
-                            emptyText: $$iPems.lang.PlsInputEmptyText,
+                            emptyText: '请输入筛选条件...',
                             flex: 1,
                             listeners: {
                                 change: function (me, newValue, oldValue, eOpts) {
@@ -689,7 +689,7 @@
                                     var paths = search._filterData;
                                     if (index >= paths.length) {
                                         index = 0;
-                                        Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: $$iPems.lang.SearchEndText, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                        Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                     }
 
                                     selectPath(tree, paths[index]);
@@ -698,7 +698,7 @@
                                     Ext.Ajax.request({
                                         url: '/Home/SearchOrganization',
                                         params: { text: text },
-                                        mask: new Ext.LoadMask({ target: tree, msg: $$iPems.lang.AjaxHandling }),
+                                        mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
                                         success: function (response, options) {
                                             var data = Ext.decode(response.responseText, true);
                                             if (data.success) {
@@ -708,10 +708,10 @@
                                                     search._filterData = data.data;
                                                     search._filterIndex = 0;
                                                 } else {
-                                                    Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: Ext.String.format($$iPems.lang.SearchEmptyText, text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                                    Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                                 }
                                             } else {
-                                                Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                                Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                             }
                                         }
                                     });
@@ -734,7 +734,7 @@
                         {
                             xtype: 'panel',
                             glyph: 0xf039,
-                            title: $$iPems.lang.ActivePoint.DashboardChart,
+                            title: '信号实时图表',
                             collapsible: true,
                             collapseFirst: false,
                             flex: 1,
@@ -755,16 +755,16 @@
                             flex: 2,
                             header: {
                                 glyph: 0xf029,
-                                title: $$iPems.lang.ActivePoint.DashboardGrid,
+                                title: '信号实时测值',
                                 items: [
                                     {
                                         xtype: 'checkboxgroup',
                                         width: 240,
                                         items: [
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.DI, inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.AI, inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.AO, inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: $$iPems.lang.Site.DO, inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                         ],
                                         listeners: {
                                             change: function (me, newValue, oldValue) {
@@ -784,20 +784,20 @@
                             tools: [
                                 {
                                     type: 'refresh',
-                                    tooltip: $$iPems.lang.Refresh,
+                                    tooltip: '刷新',
                                     handler: function (event, toolEl, panelHeader) {
                                         currentPagingToolbar.doRefresh();
                                     }
                                 },
                                 {
                                     type: 'gear',
-                                    tooltip: $$iPems.lang.ActivePoint.RssTips,
+                                    tooltip: '信号订阅',
                                     handler: function (event, toolEl, panelHeader) {
                                         var basic = Ext.getCmp('pointRssForm').getForm();
                                         basic.load({
                                             url: '/Home/GetPointRss',
-                                            waitMsg: $$iPems.lang.AjaxHandling,
-                                            waitTitle: $$iPems.lang.SysTipTitle,
+                                            waitMsg: '正在处理，请稍后...',
+                                            waitTitle: '系统提示',
                                             success: function (form, action) {
                                                 form.clearInvalid();
 
@@ -814,38 +814,38 @@
                                 preserveScrollOnRefresh: true,
                                 stripeRows: true,
                                 trackOver: true,
-                                emptyText: $$iPems.lang.GridEmptyText,
+                                emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                                 getRowClass: function (record, rowIndex, rowParams, store) {
                                     return $$iPems.GetPointStatusCls(record.get("status"));
                                 }
                             },
                             features: [{
                                 ftype: 'grouping',
-                                groupHeaderTpl: $$iPems.lang.ActivePoint.GroupHeaderTpl,
+                                groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
                                 hideGroupedHeader: true,
                                 startCollapsed: false
                             }],
                             columns: [
-                                { text: $$iPems.lang.ActivePoint.Columns.Area, dataIndex: 'area' },
-                                { text: $$iPems.lang.ActivePoint.Columns.Station, dataIndex: 'station' },
-                                { text: $$iPems.lang.ActivePoint.Columns.Room, dataIndex: 'room' },
-                                { text: $$iPems.lang.ActivePoint.Columns.DevType, dataIndex: 'devType' },
-                                { text: $$iPems.lang.ActivePoint.Columns.DevName, dataIndex: 'devName' },
-                                { text: $$iPems.lang.ActivePoint.Columns.Logic, dataIndex: 'logic' },
-                                { text: $$iPems.lang.ActivePoint.Columns.Id, dataIndex: 'id' },
-                                { text: $$iPems.lang.ActivePoint.Columns.Name, dataIndex: 'name' },
-                                { text: $$iPems.lang.ActivePoint.Columns.TypeDisplay, dataIndex: 'typeDisplay', align: 'center' },
-                                { text: $$iPems.lang.ActivePoint.Columns.ValueDisplay, dataIndex: 'valueDisplay' },
-                                { text: $$iPems.lang.ActivePoint.Columns.StatusDisplay, dataIndex: 'statusDisplay', tdCls: 'x-status-cell', align: 'center' },
+                                { text: '所属区域', dataIndex: 'area' },
+                                { text: '所属站点', dataIndex: 'station' },
+                                { text: '所属机房', dataIndex: 'room' },
+                                { text: '设备类型', dataIndex: 'devType' },
+                                { text: '设备名称', dataIndex: 'devName' },
+                                { text: '逻辑分类', dataIndex: 'logic' },
+                                { text: '信号ID', dataIndex: 'id' },
+                                { text: '信号名称', dataIndex: 'name' },
+                                { text: '信号类型', dataIndex: 'typeDisplay', align: 'center' },
+                                { text: '信号测值', dataIndex: 'valueDisplay' },
+                                { text: '信号状态', dataIndex: 'statusDisplay', tdCls: 'x-status-cell', align: 'center' },
                                 {
                                     xtype: 'actioncolumn',
                                     width: 80,
                                     align: 'center',
                                     menuDisabled: true,
-                                    menuText: $$iPems.lang.Operate,
-                                    text: $$iPems.lang.Operate,
+                                    menuText: '操作',
+                                    text: '操作',
                                     items: [{
-                                        tooltip: $$iPems.lang.ActivePoint.Columns.Control,
+                                        tooltip: '遥控',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
                                             return (r.get('type') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
                                         },
@@ -862,7 +862,7 @@
                                             controlWnd.show();
                                         }
                                     }, {
-                                        tooltip: $$iPems.lang.ActivePoint.Columns.Adjust,
+                                        tooltip: '遥调',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
                                             return (r.get('type') === $$iPems.Point.AO && $$iPems.AdjustOperation) ? 'x-cell-icon x-icon-remote-setting' : 'x-cell-icon x-icon-hidden';
                                         },

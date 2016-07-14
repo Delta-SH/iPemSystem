@@ -510,19 +510,12 @@
                                 allowBlank: false
                             },
                             {
-                                xtype: 'splitbutton',
+                                xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Ok,
+                                text: $$iPems.lang.Query,
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
-                                },
-                                menu: [{
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (me, event) {
-                                        print(currentStore);
-                                    }
-                                }]
+                                }
                             }
                         ]
                     },
@@ -544,6 +537,38 @@
                                 id: 'device-type-multicombo',
                                 xtype: 'DeviceTypeMultiCombo',
                                 emptyText: $$iPems.lang.AllEmptyText
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf010,
+                                text: $$iPems.lang.Import,
+                                handler: function (me, event) {
+                                    print(currentStore);
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'toolbar',
+                        border: false,
+                        items: [
+                            {
+                                id: 'alarm-level-multicombo',
+                                xtype: 'AlarmLevelMultiCombo',
+                                emptyText: $$iPems.lang.AllEmptyText
+                            },
+                            {
+                                id: 'logic-type-multicombo',
+                                xtype: 'LogicTypeMultiCombo',
+                                emptyText: $$iPems.lang.AllEmptyText
+                            },
+                            {
+                                id: 'point-name-textfield',
+                                xtype: 'textfield',
+                                fieldLabel: $$iPems.lang.Report400204.ToolBar.PointName,
+                                emptyText: $$iPems.lang.MultiConditionEmptyText,
+                                labelWidth: 60,
+                                width: 220
                             },
                             {
                                 id: 'other-option-button',
@@ -594,32 +619,8 @@
                                                 Ext.getCmp('show-project-menu').setChecked(false);
                                             }
                                         }
-                                    },
+                                    }
                                 ]
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'toolbar',
-                        border: false,
-                        items: [
-                            {
-                                id: 'alarm-level-multicombo',
-                                xtype: 'AlarmLevelMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
-                            },
-                            {
-                                id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
-                            },
-                            {
-                                id: 'point-name-textfield',
-                                xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Report400204.ToolBar.PointName,
-                                emptyText: $$iPems.lang.MultiConditionEmptyText,
-                                labelWidth: 60,
-                                width: 220
                             }
                         ]
                     }

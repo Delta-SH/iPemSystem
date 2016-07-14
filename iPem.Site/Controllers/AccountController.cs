@@ -236,6 +236,19 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        [Authorize]
+        public ActionResult GetCurrentPhoto() {
+            if(_workContext.AssociatedEmployee != null && _workContext.AssociatedEmployee.Photo != null) {
+                return File(_workContext.AssociatedEmployee.Photo, @"image/png");
+            } else if(_workContext.AssociatedEmployee.Sex == EnmSex.Female) {
+                var photo = Convert.FromBase64String(@"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MTFEOEQ4NTY5MjdCMTFFNThCQ0RDMzY1NUJFQjdBQTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MTFEOEQ4NTc5MjdCMTFFNThCQ0RDMzY1NUJFQjdBQTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxMUQ4RDg1NDkyN0IxMUU1OEJDREMzNjU1QkVCN0FBOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxMUQ4RDg1NTkyN0IxMUU1OEJDREMzNjU1QkVCN0FBOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuDyG6MAAAQISURBVHjanFRJbBtlFJ75x+OZ8TjjLa7rxCUloUXETZQuWYRKxRIVxFYVRA8cuVZCVEhFHLj0CKpYhMQBTlWvLKJSJUgjSkMR2ZoqaWPHtHZSY9fx7vFsnhnPz+8FN1i202Q0h/+993+f3nvf+x8uZmNYx68sxozcHaOUwoDZxB0knEMYTnSGmDrE9PScsvZduRDY6gSMlx58n/Qc7wDE22VaundJCX3bDsYMnTfve2NnpFp8Srp9oVMRGonRT3UNv2f2TjweqS7y189AlW/b5RIm5WAVjbme/5h58rWmC6BF4dGrWxlNnJ/qOU153ySsB5AJDUwuwHoMYvm/vngsofSH040z1XOKtB+rnUnHqM7fFe5fMVtJo6zqkgghVpZlQ/gHWH2dSGFZ0QvBesw20mBsZG0/7K+dlcRsPnAF8arZVfr/pM3lG8IGIq60i2Cpva900IreO05y7gpEzm5TvlFKVxUgKN87uc1iSU4ig7LQDq8HGvBheF0WRKQP53Ls8flM3CGV/03NPLB0JtWSdyCG49SwiR1wWKAglUS5RJsBZsD4vYjFZgU2ZxdLswxVFY3WSxAz0dupT+0RU4YulSrp4vjP15e+vDxl4bpwACSh6PR4Ll765erMMgqhC6qYk3OQsI9spz7pQC3VxM2a9e6rE/C/+cGxCtGn585UCSufmt9s2W7Q+sFIGUOTa8kCUOfACaBrGjJraWIQKm2eeGtSBFDzkSafd3+fIkoNEzEamrITUoRJBZo8rI2z2m0NU4wFdrz6lNRdQ38dmCoqFzJ8IlYZNZfH3u1xViuBfORWO2zbTGFZTa+v1Bedlcml8rl0wWpja57MelCTCrtZ0mpiUe4dYhjKTJETLx155Fe1bPDGLje/mVD4vIAoOI6tKY6mSxAkQRBNuqjvjhSnHQzLSJLMFwWKMhM4rigaIHAry2oWuy6kd0aq0f0Wzk31HkcJsqyF0suqphkQWliGNFUg9sOn+LU/hGwS8JFOm59PJUNzc6H5+Vgk+cmPP6zeuOYEUbzxeprnGObgE4MnJi+cftvX5z4wPvr02FhXt7ue6fL0VGhxObwaTicebbC/F28feuHl1d+v2Y11HDTzGhDjQb//uRdDi0upRBb9S7NrGHbZ7XX2+wcOHhkh6I1sLBKXBHkrTBaKx05Ouvf35yVKSMcpEjZCvAhI37MDR0fR+fvPv97ceNAIIZJYOL5881brnq7M/BmYnX9mfHTfoL/o7fnp4mdlKYNqBmz3Wx+etzrs6E5wbmFl5mZLODHW29cysDa3cPTkJErkq7Pn7q8E49F0PJqJhaMLv04PjAyjVn/zwUeKJLUem7NjJ9pNhqvHy6czmqo2b0eKsnW70rF4O+C/AgwABxjY7MvCiokAAAAASUVORK5CYII=");
+                return File(photo, @"image/png");
+            } else {
+                var photo = Convert.FromBase64String(@"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDhDNDdFNEQ5MjdCMTFFNTgwNkM5MDlCQUE5OEEyNkYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDhDNDdFNEU5MjdCMTFFNTgwNkM5MDlCQUE5OEEyNkYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowOEM0N0U0QjkyN0IxMUU1ODA2QzkwOUJBQTk4QTI2RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowOEM0N0U0QzkyN0IxMUU1ODA2QzkwOUJBQTk4QTI2RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuuUA5kAAAPCSURBVHjarFbdbxRVFL93Pnd2Z3bodtrurmUL/ZBCC0aqtqWgAXmAhBAeNDGx8mBIiD6gf4BP+PEiEH3ynRC0MSFBI2iIbEtti0p3t7RAwKK2ARbW/f7o7p2dmeudThCKnXGXeHMnOXPuzO/c8zu/c2eYUvou+L8H47CGq8Xy9c8odxAyEoAY6CrFK7TSR7manhoU69k5LR7GhrrCDWl+3Wuu7ncBpOoDxdV8KfKBnoquGgv9MQIYl6vrkB0oXJXT4i/v6cmIfRJUFXkxH/K+8A7f3LvK8r9dWvLXfxAh42GkbsjKj63T5YxeyWTQ/Znk+SNabqGm9LXEpGWwDf2cfw+EDDBUlPhRy88CKAC2Q1TaDLVYWriko1xp/nu57/B/gxqVhLkgdfOBfQ/z4Xj/XjJX5Mi5s3MjeiFeU/oQsuY2fYPOuuHktmUApjZQzzOmcIRWZ1CalyBFMVKwJk5pbydkRJJeIZ0pZXMkAMuxvqAfA3Dv9u8qQoaB1yiNSjAAaDfr66oJlGkeYpRRDDAwsKelpVRWPS66itCDxTsN/uaCiiUPr+YLGGOhtd/VOlBb+qQs7W9AACXF981o7PNTF1yiyAkCQkiU5eMnfzg3PuvzN0MIpefehDRbq/iBoeuL42b7mANQFCT2/NW5zi29JHdIApoXRYe2r9qsNv1L0VZZycsWosk1bT5Mbk1E02Lt2t/2UID0k3Sv79m0sqCsbRc7SMZZUpDm6j76ICfiCtETyKXy0alrhF2rMbYObfY2iMvqF+sHlQI4f5eQJzd6e/o2xBcThMC164MWIolAS/76D2lWzBVV2cOSsjQFfGQ+OlExzi1pjYy7fk7JZt3K/XhSVauPO8ltPJ6EbqcvCnT48GHajTJ3ErNhQWB43iwLqqClitayZTcnt1AGqmOnpHN+Cl/8+OiH6ULZ19a7btfbGq+kUlkydVdT+6uHfKFNyVz5k6MfTYyGVaTa7pTQNH/r5lg4PHE5Ertxu4I04jz91ZdDgy8ur4KTY9eJ6odf3mgJf2x86uDwW8QQePb5nvZt/X2v7NzZ0fWs1RfMd2fPXBq//HP0xoNU7omA0WjMAp24p33651pidHTp24I0Maanp61nyqg6GblJ5rEvTvsVeWBrz47tgzAU6rCj5qWBga9HTmXypfcvliZTAvHsaFw6sUtc4/XsP/D6TDT6ND8TkStXEsnsrYX4wSDOp72EhuFA4dpv6c6Q/2os5vCik6Q0TTt77oJhGH8VwExsaSZWTheBbhhnvj2PrQazGX8LMAA0pn/L4p+vyAAAAABJRU5ErkJggg==");
+                return File(photo, @"image/png");
+            }
+        }
+
         /**
          *TODO:跳转权限判断
          *在跳转时需要判断一下该角色下是否拥有这个菜单权限，每个Action跳转时都需要判断
@@ -1639,7 +1652,10 @@ namespace iPem.Site.Controllers {
                     tingdianxinhao = new string[] { },
                     weifadian = 0,
                     fadian = 1,
-                    fadianxinhao = new string[] { }
+                    fadianxinhao = new string[] { },
+                    whlinterval = 0,
+                    jslguiding = 0,
+                    jslhulue = 0
                 }
             };
 

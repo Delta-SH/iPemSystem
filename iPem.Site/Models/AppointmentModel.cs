@@ -29,10 +29,10 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("创建时间")]
         public string createdTime { get; set; }
 
-        [ExcelDisplayName("预约备注")]
+        [ExcelDisplayName("备注信息")]
         public string comment { get; set; }
 
-        [ExcelDisplayName("启用标识")]
+        [ExcelDisplayName("预约状态")]
         [ExcelBooleanNameAttribute(True = "有效", False = "禁用")]
         public bool enabled { get; set; }
 

@@ -72,11 +72,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400104.Chart.PieTotal,
+                        '设备总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400104.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -124,11 +124,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400104.Chart.PieTotal,
+                        '设备总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400104.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -202,7 +202,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400104.ConditionTitle,
+                title: '设备统计条件',
                 bodyCls: 'x-docked-top-with-bottom',
                 collapsible: true,
                 collapsed: false,
@@ -213,14 +213,14 @@
                     items: [{
                         id: 'roomfield',
                         xtype: 'RoomPicker',
-                        emptyText: $$iPems.lang.AllEmptyText
+                        emptyText: '默认全部'
                     }, {
                         id: 'typesfield',
                         xtype: 'DeviceTypeMultiCombo',
-                        emptyText: $$iPems.lang.AllEmptyText
+                        emptyText: '默认全部'
                     }, {
                         xtype: 'button',
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         glyph: 0xf005,
                         handler: function (el, e) {
                             var roomfield = Ext.getCmp('roomfield'),
@@ -237,7 +237,7 @@
                         }
                     }, '-', {
                         xtype: 'button',
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         glyph: 0xf010,
                         handler: function (el, e) {
                             print(currentStore);
@@ -248,7 +248,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: $$iPems.lang.Report400104.ChartTitle,
+                title: '设备分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -266,7 +266,7 @@
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,
-                title: $$iPems.lang.Report400104.GridTitle,
+                title: '设备统计列表',
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,
@@ -274,7 +274,7 @@
                 forceFit: false,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -283,131 +283,131 @@
                     forceFit: true,
                     trackOver: true,
                     stripeRows: true,
-                    emptyText: $$iPems.lang.GridEmptyText,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     preserveScrollOnRefresh: true
                 },
                 features: [{
                     ftype: 'grouping',
-                    groupHeaderTpl: $$iPems.lang.Report400104.GroupTpl,
+                    groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
                     hideGroupedHeader: false,
                     startCollapsed: true
                 }],
                 columns: [{
-                    text: $$iPems.lang.Report400104.Columns.Index,
+                    text: '序号',
                     dataIndex: 'index',
                     width: 60,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Id,
+                    text: '编号',
                     dataIndex: 'id',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Code,
+                    text: '编码',
                     dataIndex: 'code',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Name,
+                    text: '名称',
                     dataIndex: 'name',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Type,
+                    text: '类型',
                     dataIndex: 'type',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.SubType,
+                    text: '设备子类',
                     dataIndex: 'subType',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.SysName,
+                    text: '系统名称',
                     dataIndex: 'sysName',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.SysCode,
+                    text: '系统编号',
                     dataIndex: 'sysCode',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Model,
+                    text: '型号',
                     dataIndex: 'model',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Productor,
+                    text: '生产厂家',
                     dataIndex: 'productor',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Brand,
+                    text: '品牌',
                     dataIndex: 'brand',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Supplier,
+                    text: '供应商',
                     dataIndex: 'supplier',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.SubCompany,
+                    text: '维护厂家',
                     dataIndex: 'subCompany',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.StartTime,
+                    text: '开始使用时间',
                     dataIndex: 'startTime',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.ScrapTime,
+                    text: '预计报废时间',
                     dataIndex: 'scrapTime',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Status,
+                    text: '使用状态',
                     dataIndex: 'status',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Contact,
+                    text: '维护负责人',
                     dataIndex: 'contact',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Comment,
+                    text: '描述',
                     dataIndex: 'comment',
                     align: 'left',
                     width: 100,
                     sortable: true
                 }, {
-                    text: $$iPems.lang.Report400104.Columns.Enabled,
+                    text: '状态',
                     dataIndex: 'enabled',
                     align: 'center',
                     width: 100,
                     sortable: true,
                     renderer: function (value) {
-                        return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+                        return value ? '有效' : '禁用';
                     }
                 }],
                 bbar: currentPagingToolbar

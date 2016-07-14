@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.DeviceTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "DeviceTypeMultiCombo",
-    fieldLabel: $$iPems.lang.Component.DeviceType,
+    fieldLabel: '设备类型',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.DeviceTypeComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "DeviceTypeCombo",
-    fieldLabel: $$iPems.lang.Component.DeviceType,
+    fieldLabel: '设备类型',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

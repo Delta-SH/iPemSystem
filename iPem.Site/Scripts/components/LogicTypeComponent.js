@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.LogicTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "LogicTypeMultiCombo",
-    fieldLabel: $$iPems.lang.Component.LogicType,
+    fieldLabel: '逻辑分类',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.LogicTypeComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "LogicTypeCombo",
-    fieldLabel: $$iPems.lang.Component.LogicType,
+    fieldLabel: '逻辑分类',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

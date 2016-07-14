@@ -71,7 +71,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'Id',
                                 name: 'Id',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Project.Window.Id,
+                                fieldLabel: '工程标识',
                                 allowBlank: false,
                                 readOnly: true
                             },
@@ -79,7 +79,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'StartTime',
                                 name: 'StartTime',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Project.Window.StartTime,
+                                fieldLabel: '开始时间',
                                 allowBlank: false,
                                 editable: false
                             },
@@ -87,14 +87,14 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'Responsible',
                                 name: 'Responsible',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Project.Window.Responsible,
+                                fieldLabel: '负责人员',
                                 allowBlank: false
                             },
                             {
                                 id: 'Comment',
                                 name: 'Comment',
                                 xtype: 'textareafield',
-                                fieldLabel: $$iPems.lang.Project.Window.Comment,
+                                fieldLabel: '备注信息',
                                 height: 100
                             },
                         ]
@@ -108,14 +108,14 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'Name',
                                 name: 'Name',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Project.Window.Name,
+                                fieldLabel: '工程名称',
                                 allowBlank: false
                             },
                             {
                                 id: 'EndTime',
                                 name: 'EndTime',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Project.Window.EndTime,
+                                fieldLabel: '结束时间',
                                 allowBlank: false,
                                 editable: false
                             },
@@ -123,22 +123,22 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'ContactPhone',
                                 name: 'ContactPhone',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Project.Window.ContactPhone,
+                                fieldLabel: '联系电话',
                                 allowBlank: false
                             },
                             {
                                 id: 'Company',
                                 name: 'Company',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Project.Window.Company,
+                                fieldLabel: '施工公司',
                                 allowBlank: false
                             },
                             {
                                 id: 'Enabled',
                                 name: 'Enabled',
                                 xtype: 'checkboxfield',
-                                fieldLabel: $$iPems.lang.Project.Window.Enabled,
-                                boxLabel: $$iPems.lang.Project.Window.EnabledLabel,
+                                fieldLabel: '工程状态',
+                                boxLabel: '(勾选表示启用)',
                                 inputValue: true,
                                 checked: true
                             }
@@ -152,13 +152,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
       { id: 'saveResult', xtype: 'iconlabel', text: '' },
       { xtype: 'tbfill' },
       {
-          xtype: 'button', text: $$iPems.lang.Save, handler: function (el, e) {
+          xtype: 'button', text: '保存', handler: function (el, e) {
               var form = Ext.getCmp('saveForm').getForm(),
                   result = Ext.getCmp('saveResult');
 
               result.setTextWithIcon('', '');
               if (form.isValid()) {
-                  result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                  result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                   form.submit({
                       submitEmptyText: false,
                       clientValidation: true,
@@ -183,12 +183,12 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       }
                   });
               } else {
-                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       },
       {
-          xtype: 'button', text: $$iPems.lang.Close, handler: function (el, e) {
+          xtype: 'button', text: '关闭', handler: function (el, e) {
               saveWnd.close();
           }
       }
@@ -202,13 +202,13 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     Ext.getCmp('saveForm').getForm().load({
         url: '/Project/GetProject',
         params: { id: record.raw.Id, action: $$iPems.Action.Edit },
-        waitMsg: $$iPems.lang.AjaxHandling,
-        waitTitle: $$iPems.lang.SysTipTitle,
+        waitMsg: '正在处理，请稍后...',
+        waitTitle: '系统提示',
         success: function (form, action) {
             Ext.getCmp('Name').setReadOnly(true);
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.Project.Window.EditTitle);
+            saveWnd.setTitle('编辑工程');
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -217,7 +217,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf046,
-    title: $$iPems.lang.Project.Title,
+    title: '工程管理信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -229,92 +229,92 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Project.Columns.Index,
+        text: '序号',
         dataIndex: 'Index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Id,
+        text: '工程标识',
         name: 'Id',
         dataIndex: 'Id',
         width: 100,
         align: 'left',
         sortable: false
     }, {
-        text: $$iPems.lang.Project.Columns.Name,
+        text: '工程名称',
         dataIndex: 'Name',
         width: 100,
         align: 'left',
         sortable: false
     }, {
-        text: $$iPems.lang.Project.Columns.StartTime,
+        text: '开始时间',
         dataIndex: 'StartTime',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.EndTime,
+        text: '结束时间',
         dataIndex: 'EndTime',
         width: 100,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Responsible,
+        text: '负责人员',
         dataIndex: 'Responsible',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.ContactPhone,
+        text: '联系电话',
         dataIndex: 'ContactPhone',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Company,
+        text: '施工公司',
         dataIndex: 'Company',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Creator,
+        text: '创建人员',
         dataIndex: 'Creator',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.CreatedTime,
+        text: '创建时间',
         dataIndex: 'CreatedTime',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Comment,
+        text: '备注信息',
         dataIndex: 'Comment',
         width: 100,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Enabled,
+        text: '工程状态',
         dataIndex: 'Enabled',
         width: 60,
         align: 'left',
         sortable: true,
         renderer: function (value) {
-            return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+            return value ? '有效' : '禁用';
         }
     }, {
         xtype: 'actioncolumn',
         width: 100,
         align: 'center',
         menuDisabled: true,
-        menuText: $$iPems.lang.Operate,
-        text: $$iPems.lang.Operate,
+        menuText: '操作',
+        text: '操作',
         items: [{
             getClass: function (v, metadata, r, rowIndex, colIndex, store) {
                 return (r.get('Creator') === $$iPems.associatedEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
@@ -336,14 +336,14 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 border: false,
                 items: [Ext.create('Ext.form.TextField', {
                     id: 'names-textfield',
-                    fieldLabel: $$iPems.lang.Project.ToolBar.ProjectName,
+                    fieldLabel: '工程名称',
                     labelWidth: 60,
                     width: 508,
                     maxLength: 100,
-                    emptyText: $$iPems.lang.MultiConditionEmptyText
+                    emptyText: '多条件请以;分隔，例: A;B;C'
                 }), {
                     xtype: 'button',
-                    text: $$iPems.lang.Query,
+                    text: '数据查询',
                     glyph: 0xf005,
                     handler: function (el, e) {
                         var namesfield = Ext.getCmp('names-textfield');
@@ -357,7 +357,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     }
                 }, '-', {
                     xtype: 'button',
-                    text: $$iPems.lang.Import,
+                    text: '数据导出',
                     glyph: 0xf010,
                     handler: function (el, e) {
                         $$iPems.download({ url: '/Project/DownloadProjects', params: { Name: currentStore.getProxy().extraParams.Name, StartTime: currentStore.getProxy().extraParams.StartTime, endTime: currentStore.getProxy().extraParams.endTime } });
@@ -369,7 +369,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 items: [{
                     id: 'begin-datefield',
                     xtype: 'datefield',
-                    fieldLabel: $$iPems.lang.Project.ToolBar.StartTime,
+                    fieldLabel: '开始时间',
                     labelWidth: 60,
                     width: 250,
                     value: Ext.Date.getFirstDateOfMonth(new Date()),
@@ -378,7 +378,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 }, {
                     id: 'end-datefield',
                     xtype: 'datefield',
-                    fieldLabel: $$iPems.lang.Project.ToolBar.EndTime,
+                    fieldLabel: '结束时间',
                     labelWidth: 60,
                     value: Ext.Date.subtract(Ext.Date.add(Ext.Date.getFirstDateOfMonth(new Date()), Ext.Date.MONTH, +1), Ext.Date.SECOND, 1),
                     width: 250,
@@ -386,19 +386,19 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     allowBlank: false
                 }, {
                     xtype: 'button',
-                    text: $$iPems.lang.Project.Window.AddTitle,
+                    text: '新增工程',
                     glyph: 0xf001,
                     handler: function (el, e) {
                         var form = Ext.getCmp('saveForm').getForm();
                         form.load({
                             url: '/Project/GetProject',
                             params: { id: '', action: $$iPems.Action.Add },
-                            waitMsg: $$iPems.lang.AjaxHandling,
-                            waitTitle: $$iPems.lang.SysTipTitle,
+                            waitMsg: '正在处理，请稍后...',
+                            waitTitle: '系统提示',
                             success: function (form, action) {
                                 Ext.getCmp('saveResult').setTextWithIcon('', '');
                                 saveWnd.setGlyph(0xf001);
-                                saveWnd.setTitle($$iPems.lang.Project.Window.AddTitle);
+                                saveWnd.setTitle('新增工程');
                                 saveWnd.opaction = $$iPems.Action.Add;
                                 saveWnd.show();
                             }

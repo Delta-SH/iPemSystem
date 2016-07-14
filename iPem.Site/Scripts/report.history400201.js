@@ -198,19 +198,12 @@
                                 allowBlank: false
                             },
                             {
-                                xtype: 'splitbutton',
+                                xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Ok,
+                                text: $$iPems.lang.Query,
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
-                                },
-                                menu: [{
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (me, event) {
-                                        print(currentStore);
-                                    }
-                                }]
+                                }
                             }
                         ]
                     },
@@ -232,6 +225,14 @@
                                 id: 'device-type-multicombo',
                                 xtype: 'DeviceTypeMultiCombo',
                                 emptyText: $$iPems.lang.AllEmptyText
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf010,
+                                text: $$iPems.lang.Import,
+                                handler: function (me, event) {
+                                    print(currentStore);
+                                }
                             }
                         ]
                     },

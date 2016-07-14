@@ -2,7 +2,7 @@
     Ext.onReady(function () {
         var iframe = Ext.create('Ext.ux.IFrame', {
             flex: 1,
-            loadMask: $$iPems.lang.AjaxHandling
+            loadMask: '正在处理，请稍后...'
         });
 
         var hcontent = Ext.create('Ext.panel.Panel', {

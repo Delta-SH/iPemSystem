@@ -39,11 +39,11 @@ var typeStore = Ext.create('Ext.data.Store', {
          { name: 'name', type: 'string' }
     ],
     data: [
-        { "id": -1, "name": $$iPems.lang.Appointment.ToolBar.ProjectType },
-        { "id": $$iPems.Organization.Area, "name": $$iPems.lang.Appointment.ToolBar.AreaType },
-        { "id": $$iPems.Organization.Station, "name": $$iPems.lang.Appointment.ToolBar.StationType },
-        { "id": $$iPems.Organization.Room, "name": $$iPems.lang.Appointment.ToolBar.RoomType },
-        { "id": $$iPems.Organization.Device, "name": $$iPems.lang.Appointment.ToolBar.DeviceType }
+        { "id": -1, "name": '按工程名称' },
+        { "id": $$iPems.Organization.Area, "name": '按区域名称' },
+        { "id": $$iPems.Organization.Station, "name": '按站点名称' },
+        { "id": $$iPems.Organization.Room, "name": '按机房名称' },
+        { "id": $$iPems.Organization.Device, "name": '按设备名称' }
     ]
 });
 
@@ -77,7 +77,7 @@ var projectStore = Ext.create('Ext.data.Store', {
 var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var submit = function (form, nodes, result) {
-    result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+    result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
     form.submit({
         submitEmptyText: false,
         clientValidation: true,
@@ -105,7 +105,7 @@ var submit = function (form, nodes, result) {
 };
 
 var detailWnd = Ext.create('Ext.window.Window', {
-    title: $$iPems.lang.Appointment.Window.DetailTitle,
+    title: '预约详情',
     glyph: 0xf045,
     height: 250,
     width: 400,
@@ -119,24 +119,24 @@ var detailWnd = Ext.create('Ext.window.Window', {
     items: [{
         itemId: 'detail_area',
         labelWidth: 60,
-        fieldLabel: $$iPems.lang.Appointment.Window.DetailArea
+        fieldLabel: '预约区域'
     }, {
         itemId: 'detail_station',
         labelWidth: 60,
-        fieldLabel: $$iPems.lang.Appointment.Window.DetailStation
+        fieldLabel: '预约站点'
     }, {
         itemId: 'detail_room',
         labelWidth: 60,
-        fieldLabel: $$iPems.lang.Appointment.Window.DetailRoom
+        fieldLabel: '预约机房'
     }, {
         itemId: 'detail_device',
         labelWidth: 60,
-        fieldLabel: $$iPems.lang.Appointment.Window.DetailDevice
+        fieldLabel: '预约设备'
     }],
     buttonAlign: 'right',
     buttons: [{
         xtype: 'button',
-        text: $$iPems.lang.Close,
+        text: '关闭',
         handler: function (el, e) {
             detailWnd.hide();
         }
@@ -181,7 +181,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'projectId',
                 name: 'projectId',
                 xtype: 'combobox',
-                fieldLabel: $$iPems.lang.Appointment.Window.Name,
+                fieldLabel: '工程名称',
                 store: projectStore,
                 displayField: 'text',
                 valueField: 'id',
@@ -196,7 +196,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'startTime',
                 name: 'startTime',
                 xtype: 'datetimepicker',
-                fieldLabel: $$iPems.lang.Appointment.Window.StartTime,
+                fieldLabel: '开始时间',
                 editable: false,
                 allowBlank: false
             },
@@ -204,7 +204,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'endTime',
                 name: 'endTime',
                 xtype: 'datetimepicker',
-                fieldLabel: $$iPems.lang.Appointment.Window.EndTime,
+                fieldLabel: '结束时间',
                 editable: false,
                 allowBlank: false
             },
@@ -212,15 +212,15 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'comment',
                 name: 'comment',
                 xtype: 'textareafield',
-                fieldLabel: $$iPems.lang.Appointment.Window.Comment,
+                fieldLabel: '备注信息',
                 height: 70
             },
             {
                 id: 'enabled',
                 name: 'enabled',
                 xtype: 'checkboxfield',
-                fieldLabel: $$iPems.lang.Appointment.Window.Enabled,
-                boxLabel: $$iPems.lang.Appointment.Window.EnabledLabel,
+                fieldLabel: '预约状态',
+                boxLabel: '(勾选表示启用)',
                 inputValue: true,
                 checked: false
             }
@@ -237,7 +237,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         rootVisible: false,
         root: {
             id: 'root',
-            text: $$iPems.lang.All,
+            text: '全部',
             icon: $$iPems.icons.Home,
             expanded: true
         },
@@ -262,7 +262,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 {
                     id: 'node-search-field',
                     xtype: 'textfield',
-                    emptyText: $$iPems.lang.PlsInputEmptyText,
+                    emptyText: '请输入筛选条件...',
                     flex: 1,
                     listeners: {
                         change: function (me, newValue, oldValue, eOpts) {
@@ -296,7 +296,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             var paths = search._filterData;
                             if (index >= paths.length) {
                                 index = 0;
-                                Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: $$iPems.lang.SearchEndText, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                             }
 
                             var nodes = Ext.Array.from(paths[index]);
@@ -307,7 +307,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             Ext.Ajax.request({
                                 url: '/Project/SearchOrganization',
                                 params: { text: text },
-                                mask: new Ext.LoadMask({ target: tree, msg: $$iPems.lang.AjaxHandling }),
+                                mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
                                 success: function (response, options) {
                                     var data = Ext.decode(response.responseText, true);
                                     if (data.success) {
@@ -320,10 +320,10 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                             search._filterData = data.data;
                                             search._filterIndex = 0;
                                         } else {
-                                            Ext.Msg.show({ title: $$iPems.lang.SysTipTitle, msg: Ext.String.format($$iPems.lang.SearchEmptyText, text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                            Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                         }
                                     } else {
-                                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                     }
                                 }
                             });
@@ -337,7 +337,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
       { xtype: 'tbfill' },
       {
           xtype: 'button',
-          text: $$iPems.lang.Save,
+          text: '保存',
           handler: function (el, e) {
               var form = Ext.getCmp('saveForm').getForm(),
                   result = Ext.getCmp('saveResult'),
@@ -351,13 +351,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (!form.isValid()) {
-                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
                   return false;
               }
 
               var ckNodes = tree.getChecked();
               if (ckNodes.length === 0) {
-                  result.setTextWithIcon($$iPems.lang.Appointment.NodesError, 'x-icon-error');
+                  result.setTextWithIcon('请勾选需要预约的监控点', 'x-icon-error');
                   return false;
               }
 
@@ -366,13 +366,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
               });
 
               if (starttime < nowtime) {
-                  Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Appointment.ConfirmContinue, function (buttonId, text) {
+                  Ext.Msg.confirm('确认对话框', '开始时间早于当前时间，您确定要继续吗？', function (buttonId, text) {
                       if (buttonId === 'yes') {
                           submit(form, nodes, result);
                       }
                   });
               } else if (starttime_30 < nowtime) {
-                  Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Appointment.ConfirmContinue2, function (buttonId, text) {
+                  Ext.Msg.confirm('确认对话框', '开始时间距现在不足30分钟，您确定要继续吗？', function (buttonId, text) {
                       if (buttonId === 'yes') {
                           submit(form, nodes, result);
                       }
@@ -384,7 +384,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
       },
       {
           xtype: 'button',
-          text: $$iPems.lang.Close,
+          text: '关闭',
           handler:function (el, e) {
               saveWnd.close();
           }
@@ -414,7 +414,7 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
                 detaildevice.setValue(data.data.devices);
                 detailWnd.show();
             } else {
-                Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         }
     });
@@ -440,8 +440,8 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     basic.load({
         url: '/Project/GetAppointment',
         params:{id: record.data.id,action: $$iPems.Action.Edit},
-        waitMsg: $$iPems.lang.AjaxHandling,
-        waitTitle: $$iPems.lang.SysTipTitle,
+        waitMsg: '正在处理，请稍后...',
+        waitTitle: '系统提示',
         success: function (form, action) {
             var separator = '/',
                 nodes = action.result.data.nodes;
@@ -472,7 +472,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             form.clearInvalid();
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.Appointment.Window.EditTitle);
+            saveWnd.setTitle('编辑预约');
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -483,18 +483,18 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
 
-    Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
+    Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
                 url: '/Project/DeleteAppointment',
                 params: { id: record.raw.id },
-                mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
+                mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success)
                         currentPagingToolbar.doRefresh();
                     else
-                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             });
         }
@@ -503,7 +503,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
 
 var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf045,
-    title: $$iPems.lang.Appointment.Title,
+    title: '工程预约信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -514,71 +514,71 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
         forceFit: true,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Appointment.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'center',
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.Id,
+        text: '预约编号',
         dataIndex: 'id',
         width: 150,
         align: 'center',
         sortable: false
     }, {
-        text: $$iPems.lang.Appointment.Columns.StartTime,
+        text: '开始时间',
         dataIndex: 'startTime',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.EndTime,
+        text: '结束时间',
         dataIndex: 'endTime',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Project.Columns.Name,
+        text: '工程名称',
         dataIndex: 'projectName',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.Creator,
+        text: '创建人',
         dataIndex: 'creator',
         align: 'center',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.CreatedTime,
+        text: '创建时间',
         dataIndex: 'createdTime',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.Comment,
+        text: '备注信息',
         dataIndex: 'comment',
         align: 'center',
         width: 250,
         sortable: true
     }, {
-        text: $$iPems.lang.Appointment.Columns.Enabled,
+        text: '预约状态',
         dataIndex: 'enabled',
         align: 'center',
         width: 80,
         sortable: true,
-        renderer: function (value) { return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse; }
+        renderer: function (value) { return value ? '有效' : '禁用'; }
     }, {
         xtype: 'actioncolumn',
         width: 120,
         align: 'center',
         menuDisabled: true,
-        menuText: $$iPems.lang.Operate,
-        text: $$iPems.lang.Operate,
+        menuText: '操作',
+        text: '操作',
         items: [{
                     iconCls: 'x-cell-icon x-icon-detail',
                     handler: function (grid, rowIndex, colIndex) {
@@ -613,7 +613,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                     {
                         id: 'start-datefield',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Appointment.ToolBar.StartTime,
+                        fieldLabel: '开始时间',
                         labelWidth: 60,
                         width: 250,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -7),
@@ -622,7 +622,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                     }, {
                         id: 'end-datefield',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Appointment.ToolBar.EndTime,
+                        fieldLabel: '结束时间',
                         labelWidth: 60,
                         width: 250,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, +7),
@@ -630,7 +630,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                         allowBlank: false
                     }, {
                         xtype: 'button',
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         glyph: 0xf005,
                         handler: function (el, e) {
                             var begin = Ext.getCmp('start-datefield').getRawValue(),
@@ -647,7 +647,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                         }
                     }, '-', {
                         xtype: 'button',
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         glyph: 0xf010,
                         handler: function (el, e) {
                             var params = currentStore.getProxy().extraParams;
@@ -669,7 +669,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                     {
                         id: 'type-combobox',
                         xtype: 'combobox',
-                        fieldLabel: $$iPems.lang.Appointment.ToolBar.Type,
+                        fieldLabel: '筛选类型',
                         labelWidth: 60,
                         width: 250,
                         store: typeStore,
@@ -685,10 +685,10 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                         labelAlign: 'center',
                         width: 250,
                         maxLength: 100,
-                        emptyText: $$iPems.lang.MultiConditionEmptyText,
+                        emptyText: '多条件请以;分隔，例: A;B;C',
                     }, {
                         xtype: 'button',
-                        text: $$iPems.lang.Appointment.ToolBar.AddTitle,
+                        text: '新增预约',
                         glyph: 0xf001,
                         handler: function (el, e) {
                             var basic = saveWnd.getComponent('saveForm').getForm(),
@@ -707,8 +707,8 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                             basic.load({
                                 url: '/Project/GetAppointment',
                                 params:{ action: $$iPems.Action.Add },
-                                waitMsg: $$iPems.lang.AjaxHandling,
-                                waitTitle: $$iPems.lang.SysTipTitle,
+                                waitMsg: '正在处理，请稍后...',
+                                waitTitle: '系统提示',
                                 success: function (form, action) {
                                     var combo = Ext.getCmp('projectId'),
                                         comboStore = combo.getStore();
@@ -720,7 +720,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                                     Ext.getCmp('projectId').setReadOnly(false);
                                     Ext.getCmp('saveResult').setTextWithIcon('', '');
                                     saveWnd.setGlyph(0xf001);
-                                    saveWnd.setTitle($$iPems.lang.Appointment.Window.AddTitle);
+                                    saveWnd.setTitle('新增预约');
                                     saveWnd.opaction = $$iPems.Action.Add;
                                     saveWnd.show();
                                 }

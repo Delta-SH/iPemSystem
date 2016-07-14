@@ -23,10 +23,10 @@ namespace iPem.Site.Models {
         [ExcelIgnore]
         public string empId { get; set; }
 
-        [ExcelDisplayName("姓名")]
+        [ExcelDisplayName("隶属员工")]
         public string empName { get; set; }
 
-        [ExcelDisplayName("工号")]
+        [ExcelDisplayName("员工工号")]
         public string empNo { get; set; }
 
         [ExcelIgnore]
@@ -53,7 +53,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("最后登录日期")]
         public string lastLogined { get; set; }
 
-        [ExcelDisplayName("最后密码更改日期")]
+        [ExcelDisplayName("密码更改日期")]
         public string lastPasswordChanged { get; set; }
 
         [ExcelDisplayName("锁定状态")]

@@ -181,15 +181,15 @@ namespace iPem.Site.Infrastructure {
         public static string GetEventLevelDisplay(EnmEventLevel level) {
             switch(level) {
                 case EnmEventLevel.Debug:
-                    return "调试";
+                    return "调试信息";
                 case EnmEventLevel.Information:
-                    return "信息";
+                    return "普通信息";
                 case EnmEventLevel.Warning:
-                    return "警告";
+                    return "系统警告";
                 case EnmEventLevel.Error:
-                    return "错误";
+                    return "异常错误";
                 case EnmEventLevel.Fatal:
-                    return "致命";
+                    return "严重错误";
                 default:
                     return "未定义";
             }
@@ -198,13 +198,13 @@ namespace iPem.Site.Infrastructure {
         public static string GetEventTypeDisplay(EnmEventType type) {
             switch(type) {
                 case EnmEventType.Exception:
-                    return "异常";
+                    return "异常操作";
                 case EnmEventType.Operating:
-                    return "操作";
+                    return "正常操作";
                 case EnmEventType.Login:
-                    return "登录";
+                    return "登录系统";
                 case EnmEventType.Logout:
-                    return "登出";
+                    return "登出系统";
                 case EnmEventType.Other:
                 default:
                     return "其他";

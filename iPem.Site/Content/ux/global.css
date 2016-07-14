@@ -64,7 +64,7 @@
 
 .x-danger-panel .x-panel-header-default {
     line-height: 18px;
-    opacity: 0.8;
+    opacity: 1;
 
     background-color: #df3e3e;
     background-image: none;
@@ -95,4 +95,46 @@
 
 .x-custom-tool .x-tool-print {
     background-image: url('../themes/icons/print.png');
+}
+
+.x-toolbar-footer {
+    background: #f8f8f8 none repeat scroll 0 0;
+    border-top: 1px solid #c0c0c0 !important;
+    border-right: 0 none;
+    border-bottom: 0 none;
+    border-left: 0 none;
+    margin: 0;
+    padding: 6px 0 6px 6px;
+}
+
+.x-layout-split-left {
+  background-image: url('images/util/splitter/mini-left.png');
+}
+
+.x-layout-split-right {
+  background-image: url('images/util/splitter/mini-right.png');
+}
+
+.x-layout-split-top {
+  background-image: url('images/util/splitter/mini-top.png');
+}
+
+.x-layout-split-bottom {
+  background-image: url('images/util/splitter/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-left {
+  background-image: url('images/util/splitter/mini-right.png');
+}
+
+.x-splitter-collapsed .x-layout-split-right {
+  background-image: url('images/util/splitter/mini-left.png');
+}
+
+.x-splitter-collapsed .x-layout-split-top {
+  background-image: url('images/util/splitter/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-bottom {
+  background-image: url('images/util/splitter/mini-top.png');
 }

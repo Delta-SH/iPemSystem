@@ -36,7 +36,7 @@
                 {
                     id: 'left-nav-panel-fw',
                     region: 'west',
-                    title: $$iPems.lang.Site.MenuNavTitle,
+                    title: '我的菜单',
                     xtype: 'treepanel',
                     glyph: 0xf011,
                     width: 220,
@@ -54,7 +54,7 @@
                         autoLoad: false,
                         root: {
                             id: -10078,
-                            text: $$iPems.lang.Site.MenuNavRoot,
+                            text: '系统主页',
                             href: '/Home',
                             icon: $$iPems.icons.Home,
                             root: true
@@ -96,7 +96,6 @@
                     contentEl: 'center-content-panel',
                     border: false,
                     items: [_north],
-                    autoScroll: true,
                     padding: $$iPems.menuVisible ? '5 5 5 0' : 5
                 }, {
                     id: 'bottom-speech-panel-fw',
@@ -110,7 +109,7 @@
                     items: [
                         Ext.create('Ext.ux.IFrame', {
                             flex: 1,
-                            loadMask: $$iPems.lang.AjaxHandling,
+                            loadMask: '正在处理，请稍后...',
                             src: '/Home/Speech'
                         })
                     ]

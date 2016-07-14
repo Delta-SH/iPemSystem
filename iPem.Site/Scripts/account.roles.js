@@ -24,6 +24,11 @@ var currentStore = Ext.create('Ext.data.Store', {
             totalProperty: 'total',
             root: 'data'
         },
+        listeners: {
+            exception: function (proxy, response, operation) {
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+            }
+        },
         extraParams: {
             condition: ''
         },
@@ -35,7 +40,7 @@ var menuStore = Ext.create('Ext.data.TreeStore',{
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.MenuNavRoot,
+        text: '系统主页',
         icon: $$iPems.icons.Home,
         root: true
     },
@@ -56,7 +61,7 @@ var areaStore = Ext.create('Ext.data.TreeStore',{
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.MenuNavRoot,
+        text: '系统主页',
         icon: $$iPems.icons.Home,
         root: true
     },
@@ -77,7 +82,7 @@ var operateStore = Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     root: {
         id: -10078,
-        text: $$iPems.lang.Site.MenuNavRoot,
+        text: '系统主页',
         icon: $$iPems.icons.Home,
         root: true
     },
@@ -130,7 +135,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'id',
                 name: 'id',
                 xtype: 'textfield',
-                fieldLabel: $$iPems.lang.Role.Window.ID,
+                fieldLabel: '角色标识',
                 allowBlank: false,
                 readOnly: true,
                 labelAlign: 'top'
@@ -139,7 +144,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'name',
                 name: 'name',
                 xtype: 'textfield',
-                fieldLabel: $$iPems.lang.Role.Window.Name,
+                fieldLabel: '角色名称',
                 allowBlank: false,
                 labelAlign: 'top'
             },
@@ -147,7 +152,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'comment',
                 name: 'comment',
                 xtype: 'textareafield',
-                fieldLabel: $$iPems.lang.Role.Window.Comment,
+                fieldLabel: '角色备注',
                 height: 100,
                 labelAlign: 'top'
             },
@@ -155,8 +160,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 id: 'enabled',
                 name: 'enabled',
                 xtype: 'checkboxfield',
-                fieldLabel: $$iPems.lang.Role.Window.Enabled,
-                boxLabel: $$iPems.lang.Role.Window.EnabledLabel,
+                fieldLabel: '角色状态',
+                boxLabel: '(勾选表示启用)',
                 inputValue: true,
                 checked: false,
                 labelAlign: 'top'
@@ -178,7 +183,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         items: [{
             id: 'treeMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.Window.MenuTitle,
+            title: '菜单权限',
             glyph: 0xf011,
             store: menuStore,
             listeners: {
@@ -197,7 +202,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         },{
             id: 'areaMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.Window.AreaTitle,
+            title: '区域权限',
             glyph: 0xf019,
             store: areaStore,
             listeners: {
@@ -216,7 +221,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         }, {
             id: 'operateMenus',
             xtype: 'treepanel',
-            title: $$iPems.lang.Role.Window.OperateTitle,
+            title: '操作权限',
             glyph: 0xf028,
             store: operateStore,
             listeners: {
@@ -238,7 +243,9 @@ var saveWnd = Ext.create('Ext.window.Window', {
       { id: 'saveResult', xtype: 'iconlabel', text: '' },
       { xtype: 'tbfill' },
       {
-          xtype: 'button', text: $$iPems.lang.Save, handler: function (el, e) {
+          xtype: 'button',
+          text: '保存',
+          handler: function (el, e) {
               var form = Ext.getCmp('saveForm').getForm(),
                   result = Ext.getCmp('saveResult');
 
@@ -246,13 +253,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
               if (form.isValid()) {
                   var menus = Ext.getCmp('treeMenus').getChecked();
                   if (menus.length === 0) {
-                      result.setTextWithIcon($$iPems.lang.Role.MenuError, 'x-icon-error');
+                      result.setTextWithIcon('请选择角色的菜单权限...', 'x-icon-error');
                       return false;
                   }
 
                   var areas = Ext.getCmp('areaMenus').getChecked();
                   if (areas.length === 0) {
-                      result.setTextWithIcon($$iPems.lang.Role.AreaError, 'x-icon-error');
+                      result.setTextWithIcon('请选择角色的区域权限...', 'x-icon-error');
                       return false;
                   }
 
@@ -273,7 +280,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       operateIds.push(m.data.id);
                   });
 
-                  result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                  result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                   form.submit({
                       submitEmptyText: false,
                       clientValidation: true,
@@ -301,13 +308,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       }
                   });
               } else {
-                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       },
       {
           xtype: 'button',
-          text: $$iPems.lang.Close,
+          text: '关闭',
           handler: function (el, e) {
               saveWnd.close();
           }
@@ -323,8 +330,8 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     basic.load({
         url: '/Account/GetRole',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        waitMsg: $$iPems.lang.AjaxHandling,
-        waitTitle: $$iPems.lang.SysTipTitle,
+        waitMsg: '正在处理，请稍后...',
+        waitTitle: '系统提示',
         success: function (form, action) {
             form.clearInvalid();
             Ext.getCmp('name').setReadOnly(true);
@@ -373,7 +380,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.Role.Window.EditTitle);
+            saveWnd.setTitle('编辑角色');
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -384,18 +391,18 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
 
-    Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
+    Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
                 url: '/Account/DeleteRole',
                 params: { id: record.raw.id },
-                mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
+                mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success)
                         currentPagingToolbar.doRefresh();
                     else
-                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             });
         }
@@ -404,7 +411,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
 
 var currentGridPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf033,
-    title: $$iPems.lang.Role.Title,
+    title: '系统角色信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -416,49 +423,49 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         forceFit: true,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Role.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Role.Columns.ID,
+        text: '角色标识',
         dataIndex: 'id',
         width: 150,
         align: 'center',
         sortable: false
     }, {
-        text: $$iPems.lang.Role.Columns.Name,
+        text: '角色名称',
         dataIndex: 'name',
         align: 'center',
         width: 150,
         sortable: true
     }, {
-        text: $$iPems.lang.Role.Columns.Comment,
+        text: '角色备注',
         dataIndex: 'comment',
         flex: 1,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Role.Columns.Enabled,
+        text: '角色状态',
         dataIndex: 'enabled',
         width: 100,
         align: 'center',
         sortable: true,
         renderer: function (value) {
-            return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+            return value ? '有效' : '禁用';
         }
     }, {
         xtype: 'actioncolumn',
         width: 100,
         align: 'center',
         menuDisabled: true,
-        menuText: $$iPems.lang.Operate,
-        text: $$iPems.lang.Operate,
+        menuText: '操作',
+        text: '操作',
         items: [{
             iconCls: 'x-cell-icon x-icon-edit',
             handler: function (grid, rowIndex, colIndex) {
@@ -474,15 +481,15 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
     tbar: Ext.create('Ext.toolbar.Toolbar', {
         items: [{
             xtype: 'button',
-            text: $$iPems.lang.Role.ToolBar.Add,
+            text: '新增角色',
             glyph: 0xf001,
             handler: function (el, e) {
                 var basic = Ext.getCmp('saveForm').getForm();
                 basic.load({
                     url: '/Account/GetRole',
                     params: { id: '', action: $$iPems.Action.Add },
-                    waitMsg: $$iPems.lang.AjaxHandling,
-                    waitTitle: $$iPems.lang.SysTipTitle,
+                    waitMsg: '正在处理，请稍后...',
+                    waitTitle: '系统提示',
                     success: function (form, action) {
                         form.clearInvalid();
 
@@ -499,30 +506,23 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
 
                         Ext.getCmp('saveResult').setTextWithIcon('', '');
                         saveWnd.setGlyph(0xf001);
-                        saveWnd.setTitle($$iPems.lang.Role.Window.AddTitle);
+                        saveWnd.setTitle('新增角色');
                         saveWnd.opaction = $$iPems.Action.Add;
                         saveWnd.show();
                     }
                 });
             }
         }, '-', {
-            xtype: 'button',
-            text: $$iPems.lang.Import,
-            glyph: 0xf010,
-            handler: function (el, e) {
-                $$iPems.download({ url: '/Account/DownloadRoles', params: { condition: currentStore.getProxy().extraParams.condition } });
-            }
-        }, '-', {
             xtype: 'textfield',
             id: 'namesfield',
-            fieldLabel: $$iPems.lang.Role.ToolBar.Name,
+            fieldLabel: '角色名称',
             labelWidth: 60,
             width: 250,
             maxLength: 100,
-            emptyText: $$iPems.lang.MultiConditionEmptyText
+            emptyText: '多条件请以;分隔，例: A;B;C'
         }, {
             xtype: 'button',
-            text: $$iPems.lang.Query,
+            text: '数据查询',
             glyph: 0xf005,
             handler: function (el, e) {
                 var namesfield = Ext.getCmp('namesfield');
@@ -530,6 +530,13 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                     currentStore.getProxy().extraParams.condition = namesfield.getRawValue();
                     currentStore.loadPage(1);
                 }
+            }
+        }, '-', {
+            xtype: 'button',
+            text: '数据导出',
+            glyph: 0xf010,
+            handler: function (el, e) {
+                $$iPems.download({ url: '/Account/DownloadRoles', params: { condition: currentStore.getProxy().extraParams.condition } });
             }
         }]
     }),

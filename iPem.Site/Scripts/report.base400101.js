@@ -59,11 +59,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400101.Chart.PieTotal,
+                        '区域总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400101.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -111,11 +111,11 @@
 
                     this.update(
                         Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        $$iPems.lang.Report400101.Chart.PieTotal,
+                        '区域总量',
                         total,
                         storeItem.get('name'),
                         storeItem.get('value'),
-                        $$iPems.lang.Report400101.Chart.PieRate,
+                        '类型占比',
                         (storeItem.get('value') / total * 100).toFixed(2))
                     );
                 }
@@ -191,7 +191,7 @@
                 {
                     xtype: 'panel',
                     glyph: 0xf034,
-                    title: $$iPems.lang.Report400101.ConditionTitle,
+                    title: '区域统计条件',
                     bodyCls: 'x-docked-top-with-bottom',
                     collapsible: true,
                     collapsed: false,
@@ -202,14 +202,14 @@
                         items: [{
                             id: 'areasfield',
                             xtype: 'AreaPicker',
-                            emptyText: $$iPems.lang.AllEmptyText
+                            emptyText: '默认全部'
                         }, {
                             id: 'typesfield',
                             xtype: 'AreaTypeMultiCombo',
-                            emptyText: $$iPems.lang.AllEmptyText
+                            emptyText: '默认全部'
                         }, {
                             xtype: 'button',
-                            text: $$iPems.lang.Query,
+                            text: '数据查询',
                             glyph: 0xf005,
                             handler: function (el, e) {
                                 var areasfield = Ext.getCmp('areasfield'),
@@ -226,7 +226,7 @@
                             }
                         }, '-', {
                             xtype: 'button',
-                            text: $$iPems.lang.Import,
+                            text: '数据导出',
                             glyph: 0xf010,
                             handler: function (el, e) {
                                 print(currentStore);
@@ -239,7 +239,7 @@
                 {
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: $$iPems.lang.Report400101.ChartTitle,
+                    title: '区域分类占比',
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
@@ -257,7 +257,7 @@
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,
-                    title: $$iPems.lang.Report400101.GridTitle,
+                    title: '区域统计列表',
                     store: currentStore,
                     columnLines: true,
                     disableSelection: false,
@@ -265,7 +265,7 @@
                     forceFit: false,
                     tools: [{
                         type: 'print',
-                        tooltip: $$iPems.lang.Import,
+                        tooltip: '数据导出',
                         handler: function (event, toolEl, panelHeader) {
                             print(currentStore);
                         }
@@ -274,53 +274,53 @@
                         forceFit: true,
                         trackOver: true,
                         stripeRows: true,
-                        emptyText: $$iPems.lang.GridEmptyText,
+                        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                         preserveScrollOnRefresh: true
                     },
                     features: [{
                         ftype: 'grouping',
-                        groupHeaderTpl: $$iPems.lang.Report400101.GroupTpl,
+                        groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
                         hideGroupedHeader: false,
                         startCollapsed: true
                     }],
                     columns: [{
-                        text: $$iPems.lang.Report400101.Columns.Index,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 80,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400101.Columns.Id,
+                        text: '编号',
                         dataIndex: 'id',
                         width: 120,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400101.Columns.Name,
+                        text: '名称',
                         dataIndex: 'name',
                         width: 120,
                         align: 'left',
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400101.Columns.Type,
+                        text: '类型',
                         dataIndex: 'type',
                         align: 'left',
                         width: 120,
                         sortable: true
                     }, {
-                        text: $$iPems.lang.Report400101.Columns.Comment,
+                        text: '备注',
                         dataIndex: 'comment',
                         align: 'left',
                         width: 120,
                         sortable: true
                     },  {
-                        text: $$iPems.lang.Report400101.Columns.Enabled,
+                        text: '状态',
                         dataIndex: 'enabled',
                         align: 'center',
                         width: 120,
                         sortable: true,
                         renderer: function (value) {
-                            return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;
+                            return value ? '有效' : '禁用';
                         }
                     }],
                     bbar: currentPagingToolbar

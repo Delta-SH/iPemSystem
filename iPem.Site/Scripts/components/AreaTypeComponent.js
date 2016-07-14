@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.AreaTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "AreaTypeMultiCombo",
-    fieldLabel: $$iPems.lang.Component.AreaType,
+    fieldLabel: '区域类型',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.AreaTypeComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "AreaTypeCombo",
-    fieldLabel: $$iPems.lang.Component.AreaType,
+    fieldLabel: '区域类型',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

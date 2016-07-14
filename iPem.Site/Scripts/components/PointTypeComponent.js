@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.PointTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "PointTypeMultiCombo",
-    fieldLabel: $$iPems.lang.Component.PointType,
+    fieldLabel: '信号类型',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.PointTypeComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "PointTypeCombo",
-    fieldLabel: $$iPems.lang.Component.PointType,
+    fieldLabel: '信号类型',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

@@ -140,7 +140,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'id',
                                 name: 'id',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.User.Window.ID,
+                                fieldLabel: '用户标识',
                                 allowBlank: false,
                                 readOnly: true
                             },
@@ -148,13 +148,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'roleId',
                                 name: 'roleId',
                                 xtype: 'combobox',
-                                fieldLabel: $$iPems.lang.User.Window.Role,
+                                fieldLabel: '隶属角色',
                                 displayField: 'text',
                                 valueField: 'id',
                                 typeAhead: true,
                                 queryMode: 'local',
                                 triggerAction: 'all',
-                                emptyText: $$iPems.lang.PlsSelectEmptyText,
+                                emptyText: '请选择隶属角色...',
                                 selectOnFocus: true,
                                 forceSelection: true,
                                 allowBlank: false,
@@ -165,7 +165,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 name: 'password',
                                 xtype: 'textfield',
                                 inputType: 'password',
-                                fieldLabel: $$iPems.lang.User.Window.Password,
+                                fieldLabel: '登录密码',
                                 allowBlank: false,
                                 hidden: false
                             },
@@ -173,7 +173,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'limited',
                                 name: 'limited',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.User.Window.Limited,
+                                fieldLabel: '有效日期',
                                 value: new Date(),
                                 editable: false,
                                 allowBlank: false
@@ -182,7 +182,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                 id: 'comment',
                                 name: 'comment',
                                 xtype: 'textareafield',
-                                fieldLabel: $$iPems.lang.User.Window.Comment,
+                                fieldLabel: '用户备注',
                                 height: 100,
                                 maxLength: 500
                             }
@@ -197,7 +197,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'uid',
                                     name: 'uid',
                                     xtype: 'textfield',
-                                    fieldLabel: $$iPems.lang.User.Window.Name,
+                                    fieldLabel: '用户名称',
                                     allowBlank: false,
                                     readOnly: false
                                 },
@@ -205,7 +205,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'empId',
                                     name: 'empId',
                                     xtype: 'EmployeePicker',
-                                    fieldLabel: $$iPems.lang.User.Window.EmpName,
+                                    fieldLabel: '隶属员工',
                                     allowBlank: false
                                 },
                                 {
@@ -213,19 +213,19 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     name: 'confirmPassword',
                                     xtype: 'textfield',
                                     inputType: 'password',
-                                    fieldLabel: $$iPems.lang.User.Window.Confirm,
+                                    fieldLabel: '确认密码',
                                     allowBlank: false,
                                     hidden: false,
                                     vtype: 'password',
-                                    vtypeText: $$iPems.lang.User.ConfirmError,
+                                    vtypeText: '密码不一致',
                                     confirmTo: 'password'
                                 },
                                 {
                                     id: 'isLockedOut',
                                     name: 'isLockedOut',
                                     xtype: 'checkboxfield',
-                                    fieldLabel: $$iPems.lang.User.Window.IsLockedOut,
-                                    boxLabel: $$iPems.lang.User.Window.LockedOutLabel,
+                                    fieldLabel: '锁定状态',
+                                    boxLabel: '(勾选锁定用户)',
                                     inputValue: true,
                                     checked: false
                                 },
@@ -233,8 +233,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
                                     id: 'enabled',
                                     name: 'enabled',
                                     xtype: 'checkboxfield',
-                                    fieldLabel: $$iPems.lang.User.Window.Enabled,
-                                    boxLabel: $$iPems.lang.User.Window.EnabledLabel,
+                                    fieldLabel: '用户状态',
+                                    boxLabel: '(勾选表示启用)',
                                     inputValue: true,
                                     checked: false
                                 }
@@ -249,7 +249,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
       { xtype: 'tbfill' },
       {
           xtype: 'button',
-          text: $$iPems.lang.Save,
+          text: '保存',
           handler: function (el, e) {
               var form = Ext.getCmp('saveForm'),
                   baseForm = form.getForm(),
@@ -257,7 +257,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (baseForm.isValid()) {
-                  result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                  result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                   baseForm.submit({
                       submitEmptyText: false,
                       clientValidation: true,
@@ -282,12 +282,12 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       }
                   });
               } else {
-                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       }, {
           xtype: 'button',
-          text: $$iPems.lang.Close,
+          text: '关闭',
           handler: function (el, e) {
               saveWnd.close();
           }
@@ -296,7 +296,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 });
 
 var resetWnd = Ext.create('Ext.window.Window', {
-    title: $$iPems.lang.User.Window.ResetPassword,
+    title: '重置密码',
     glyph: 0xf022,
     height: 220,
     width: 400,
@@ -325,7 +325,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                 {
                     itemId: 'uid',
                     xtype: 'textfield',
-                    fieldLabel: $$iPems.lang.User.Window.Name,
+                    fieldLabel: '用户名称',
                     allowBlank: false,
                     readOnly: true
                 },
@@ -334,7 +334,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
                     itemId: 'password',
                     xtype: 'textfield',
                     inputType: 'password',
-                    fieldLabel: $$iPems.lang.User.Window.Password,
+                    fieldLabel: '新的密码',
                     allowBlank: false,
                     hidden: false
                 },
@@ -343,11 +343,11 @@ var resetWnd = Ext.create('Ext.window.Window', {
                     itemId: 'confirmPassword',
                     xtype: 'textfield',
                     inputType: 'password',
-                    fieldLabel: $$iPems.lang.User.Window.Confirm,
+                    fieldLabel: '确认密码',
                     allowBlank: false,
                     hidden: false,
                     vtype: 'password',
-                    vtypeText: $$iPems.lang.User.ConfirmError,
+                    vtypeText: '密码不一致',
                     confirmTo: 'reset-password'
                 }
             ]
@@ -358,7 +358,7 @@ var resetWnd = Ext.create('Ext.window.Window', {
       { xtype: 'tbfill' },
       {
           xtype: 'button',
-          text: $$iPems.lang.Reset,
+          text: '重置',
           handler: function (el, e) {
               var form = Ext.getCmp('resetForm'),
                   baseForm = form.getForm(),
@@ -367,9 +367,9 @@ var resetWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (baseForm.isValid() && !Ext.isEmpty(id)) {
-                  Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.User.ConfirmReset, function (buttonId, text) {
+                  Ext.Msg.confirm('确认对话框', '您确认要重置密码吗？', function (buttonId, text) {
                       if (buttonId === 'yes') {
-                          result.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                          result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                           var password = form.getComponent('password').getValue();
                           baseForm.submit({
                               submitEmptyText: false,
@@ -394,13 +394,13 @@ var resetWnd = Ext.create('Ext.window.Window', {
                       }
                   });
               } else {
-                  result.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       },
       {
           xtype: 'button',
-          text: $$iPems.lang.Close,
+          text: '关闭',
           handler: function (el, e) {
               resetWnd.close();
           }
@@ -416,8 +416,8 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     basic.load({
         url: '/Account/GetUser',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        waitMsg: $$iPems.lang.AjaxHandling,
-        waitTitle: $$iPems.lang.SysTipTitle,
+        waitMsg: '正在处理，请稍后...',
+        waitTitle: '系统提示',
         success: function (form, action) {
             form.clearInvalid();
 
@@ -433,7 +433,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
-            saveWnd.setTitle($$iPems.lang.User.Window.EditTitle);
+            saveWnd.setTitle('编辑用户');
             saveWnd.opaction = $$iPems.Action.Edit;
             saveWnd.show();
         }
@@ -456,18 +456,18 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
 
-    Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.ConfirmDelete, function (buttonId, text) {
+    Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
                 url: '/Account/DeleteUser',
                 params: { id: record.raw.id },
-                mask: new Ext.LoadMask(grid, { msg: $$iPems.lang.AjaxHandling }),
+                mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success)
                         currentPagingToolbar.doRefresh();
                     else
-                        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
             });
         }
@@ -476,7 +476,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
 
 var currentGridPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf012,
-    title: $$iPems.lang.User.Title,
+    title: '系统用户信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -488,114 +488,114 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         forceFit: true,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.User.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Name,
+        text: '用户名称',
         dataIndex: 'uid',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Role,
+        text: '隶属角色',
         dataIndex: 'roleName',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.EmpName,
+        text: '隶属员工',
         dataIndex: 'empName',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.EmpNo,
+        text: '员工工号',
         dataIndex: 'empNo',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Sex,
+        text: '性别',
         dataIndex: 'sexName',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Mobile,
+        text: '联系电话',
         dataIndex: 'mobile',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Email,
+        text: 'Email',
         dataIndex: 'email',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Created,
+        text: '创建日期',
         dataIndex: 'created',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Limited,
+        text: '有效日期',
         dataIndex: 'limited',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.LastLogined,
+        text: '最后登录日期',
         dataIndex: 'lastLogined',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.LastPasswordChanged,
+        text: '密码更改日期',
         dataIndex: 'lastPasswordChanged',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.IsLockedOut,
+        text: '锁定状态',
         dataIndex: 'isLockedOut',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true,
-        renderer: function (value) { return value ? $$iPems.lang.StatusLocked : $$iPems.lang.StatusUnlocked; }
+        renderer: function (value) { return value ? '锁定' : '正常'; }
     }, {
-        text: $$iPems.lang.User.Columns.LastLockedout,
+        text: '最后锁定日期',
         dataIndex: 'lastLockedout',
-        align: 'center',
+        align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Comment,
+        text: '用户备注',
         dataIndex: 'comment',
         align: 'left',
         width: 100,
         sortable: true
     }, {
-        text: $$iPems.lang.User.Columns.Enabled,
+        text: '用户状态',
         dataIndex: 'enabled',
         width: 100,
-        align: 'center',
+        align: 'left',
         sortable: true,
-        renderer: function (value) { return value ? $$iPems.lang.StatusTrue : $$iPems.lang.StatusFalse;}
+        renderer: function (value) { return value ? '有效' : '禁用'; }
     }, {
         xtype: 'actioncolumn',
         width: 120,
         align: 'center',
         menuDisabled: true,
-        menuText: $$iPems.lang.Operate,
-        text: $$iPems.lang.Operate,
+        menuText: '操作',
+        text: '操作',
         items: [{
             iconCls: 'x-cell-icon x-icon-edit',
             handler: function (grid, rowIndex, colIndex) {
@@ -616,15 +616,15 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
     tbar: Ext.create('Ext.toolbar.Toolbar', {
         items: [{
             xtype: 'button',
-            text: $$iPems.lang.User.ToolBar.Add,
+            text: '新增用户',
             glyph: 0xf001,
             handler: function (el, e) {
                 var basic = Ext.getCmp('saveForm').getForm();
                 basic.load({
                     url: '/Account/GetUser',
                     params: { id: '', action: $$iPems.Action.Add },
-                    waitMsg: $$iPems.lang.AjaxHandling,
-                    waitTitle: $$iPems.lang.SysTipTitle,
+                    waitMsg: '正在处理，请稍后...',
+                    waitTitle: '系统提示',
                     success: function (form, action) {
                         form.clearInvalid();
 
@@ -640,36 +640,22 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
 
                         Ext.getCmp('saveResult').setTextWithIcon('', '');
                         saveWnd.setGlyph(0xf001);
-                        saveWnd.setTitle($$iPems.lang.User.Window.AddTitle);
+                        saveWnd.setTitle('新增用户');
                         saveWnd.opaction = $$iPems.Action.Add;
                         saveWnd.show();
                     }
                 });
             }
-        }, '-', {
-            xtype: 'button',
-            text: $$iPems.lang.Import,
-            glyph: 0xf010,
-            handler: function (el, e) {
-                var params = currentStore.getProxy().extraParams;
-                $$iPems.download({
-                    url: '/Account/DownloadUsers',
-                    params: {
-                        rids: params.rids,
-                        names: params.names
-                    }
-                });
-            }
         }, '-', Ext.create('Ext.ux.MultiCombo', {
             id: 'rids-multicombo',
-            fieldLabel: $$iPems.lang.User.ToolBar.Role,
+            fieldLabel: '角色名称',
             valueField: 'id',
             displayField: 'text',
             delimiter: $$iPems.Delimiter,
             queryMode: 'local',
             triggerAction: 'all',
             selectionMode: 'all',
-            emptyText: $$iPems.lang.AllEmptyText,
+            emptyText: '默认全部',
             forceSelection: true,
             labelWidth: 60,
             width: 250,
@@ -677,14 +663,14 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         }), {
             id: 'names-textbox',
             xtype: 'textfield',
-            fieldLabel: $$iPems.lang.User.ToolBar.User,
+            fieldLabel: '用户名称',
             labelWidth: 60,
             width: 250,
             maxLength: 100,
-            emptyText: $$iPems.lang.MultiConditionEmptyText
+            emptyText: '多条件请以;分隔，例: A;B;C'
         }, {
             xtype: 'button',
-            text: $$iPems.lang.Query,
+            text: '数据查询',
             glyph: 0xf005,
             handler: function (el, e) {
                 var ridsfield = Ext.getCmp('rids-multicombo');
@@ -701,6 +687,20 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                         currentStore.getProxy().extraParams.rids = rids;
                         currentStore.getProxy().extraParams.names = names;
                         currentStore.loadPage(1);
+                    }
+                });
+            }
+        }, '-', {
+            xtype: 'button',
+            text: '数据导出',
+            glyph: 0xf010,
+            handler: function (el, e) {
+                var params = currentStore.getProxy().extraParams;
+                $$iPems.download({
+                    url: '/Account/DownloadUsers',
+                    params: {
+                        rids: params.rids,
+                        names: params.names
                     }
                 });
             }

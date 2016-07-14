@@ -106,7 +106,7 @@ Ext.Ajax.on('requestexception', function (conn, response, options) {
 });
 Ext.direct.Manager.on('exception', function (event) {
     if (!Ext.isEmpty(event) && !Ext.isEmpty(event.message))
-        Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: event.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+        Ext.Msg.show({ title: '系统错误', msg: event.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
 });
 
 /*global datetime formart*/
@@ -160,7 +160,7 @@ window.$$iPems.ShowFailure = function (response, errorMsg) {
         modal: true,
         width: width,
         height: height,
-        title: $$iPems.lang.SysErrorTitle,
+        title: '系统错误',
         layout: "fit",
         maximizable: true,
         items: [{
@@ -331,10 +331,10 @@ window.$$iPems.Delimiter = ';';
 window.$$iPems.Separator = '┆';
 
 /*global chart empty data*/
-window.$$iPems.ChartEmptyDataPie = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataLine = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataColumn = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataGauge = [{ name: $$iPems.lang.ChartEmptyText, value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataPie = [{ name: '无数据', value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataLine = [{ name: '无数据', value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataColumn = [{ name: '无数据', value: 0, comment: null }];
+window.$$iPems.ChartEmptyDataGauge = [{ name: '无数据', value: 0, comment: null }];
 
 /*download files via ajax*/
 window.$$iPems.download = function (config) {
@@ -387,13 +387,13 @@ window.$$iPems.clonePagingToolbar = function (store) {
                     ]
                 }),
                 xtype: 'combobox',
-                fieldLabel: $$iPems.lang.DisplayRows,
+                fieldLabel: '显示条数',
                 displayField: 'text',
                 valueField: 'id',
                 typeAhead: true,
                 queryMode: 'local',
                 triggerAction: 'all',
-                emptyText: $$iPems.lang.PlsSelectEmptyText,
+                emptyText: '每页显示的条数',
                 selectOnFocus: true,
                 forceSelection: true,
                 labelWidth: 60,
@@ -409,6 +409,45 @@ window.$$iPems.clonePagingToolbar = function (store) {
         ]
     });
 };
+
+window.$$iPems.animateNumber = function (target, now) {
+    if (Ext.isString(target))
+        target = Ext.get(target);
+
+    now = Math.round(now);
+    var display = target.getHTML();
+    var current = Ext.isEmpty(display) ? 0 : parseInt(display);
+    var count = Math.abs(now - current);
+    var numUp = now > current;
+
+    var step = 25,
+        speed = Math.round(count / step),
+        int_speed = 25;
+
+    var interval = setInterval(function () {
+        if (numUp) {
+            if (speed > 1 && current + speed < now) {
+                current += speed;
+                target.setHTML(current);
+            } else if (current < now) {
+                current += 1;
+                target.setHTML(current);
+            } else {
+                clearInterval(interval);
+            }
+        } else {
+            if (speed > 1 && current - speed > now) {
+                current -= speed;
+                target.setHTML(current);
+            } else if (current > now) {
+                current -= 1;
+                target.setHTML(current);
+            } else {
+                clearInterval(interval);
+            }
+        }
+    }, int_speed);
+}
 
 //global tasks
 window.$$iPems.Tasks = {
@@ -477,5 +516,19 @@ window.$$iPems.Tasks = {
         fireOnStart: true,
         interval: 15000,
         repeat: 1
-    })
+    }),
+    homeTasks: {
+        almTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
+        svrTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 5000,
+            repeat: 1
+        })
+    }
 };

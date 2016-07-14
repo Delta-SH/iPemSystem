@@ -175,7 +175,8 @@ namespace iPem.Core.NPOI {
         }
 
         public string RandomFileName {
-            get { return string.Format("{0}.xlsx", Guid.NewGuid().ToString("N").ToLower()); }
+            //get { return string.Format("{0}.xlsx", Guid.NewGuid().ToString("N").ToLower()); }
+            get { return string.Format("{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmssff")); }
         }
     }
 }

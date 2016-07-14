@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.DeviceMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "DeviceMultiPicker",
-    fieldLabel: $$iPems.lang.Component.DeviceName,
+    fieldLabel: '设备名称',
     displayField: 'text',
     labelWidth: 60,
     width: 280,
@@ -22,7 +22,7 @@
 Ext.define("Ext.ux.DeviceTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "DevicePicker",
-    fieldLabel: $$iPems.lang.Component.DeviceName,
+    fieldLabel: '设备名称',
     displayField: 'text',
     labelWidth: 60,
     width: 280,

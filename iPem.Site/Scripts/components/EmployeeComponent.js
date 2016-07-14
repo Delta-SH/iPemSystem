@@ -1,7 +1,7 @@
 ﻿Ext.define("Ext.ux.EmployeeMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "EmployeeMultiPicker",
-    fieldLabel: $$iPems.lang.Component.Employee,
+    fieldLabel: '隶属员工',
     displayField: 'text',
     labelWidth: 60,
     width: 280,
@@ -23,7 +23,7 @@
 Ext.define("Ext.ux.EmployeeTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "EmployeePicker",
-    fieldLabel: $$iPems.lang.Component.Employee,
+    fieldLabel: '隶属员工',
     displayField: 'text',
     labelWidth: 60,
     width: 280,

@@ -72,7 +72,7 @@
         }],
         series: [{
             type: 'line',
-            title: $$iPems.lang.Report400302.Chart.Max,
+            title: '最大测值',
             smooth: true,
             axis: ['left', 'bottom'],
             xField: 'index',
@@ -89,14 +89,14 @@
                 renderer: function (storeItem, item) {
                     this.update(
                         Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}<br/>{7}: {8}',
-                        $$iPems.lang.Report400302.Chart.Range,
+                        '时间范围',
                         storeItem.get('start'),
                         storeItem.get('end'),
-                        $$iPems.lang.Report400302.Chart.Value,
+                        '信号测值',
                         storeItem.get('maxdisplay'),
-                        $$iPems.lang.Report400302.Chart.Time,
+                        '测值时间',
                         storeItem.get('maxtime'),
-                        $$iPems.lang.Report400302.Chart.Total,
+                        '统计数量',
                         storeItem.get('total'))
                     );
                 }
@@ -122,7 +122,7 @@
             }
         }, {
             type: 'line',
-            title: $$iPems.lang.Report400302.Chart.Avg,
+            title: '平均测值',
             smooth: true,
             axis: ['left', 'bottom'],
             xField: 'index',
@@ -139,12 +139,12 @@
                 renderer: function (storeItem, item) {
                     this.update(
                         Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}',
-                        $$iPems.lang.Report400302.Chart.Range,
+                        '时间范围',
                         storeItem.get('start'),
                         storeItem.get('end'),
-                        $$iPems.lang.Report400302.Chart.Value,
+                        '信号测值',
                         storeItem.get('avgdisplay'),
-                        $$iPems.lang.Report400302.Chart.Total,
+                        '统计数量',
                         storeItem.get('total'))
                     );
                 }
@@ -170,7 +170,7 @@
             }
         }, {
             type: 'line',
-            title: $$iPems.lang.Report400302.Chart.Min,
+            title: '最小测值',
             smooth: true,
             axis: ['left', 'bottom'],
             xField: 'index',
@@ -187,14 +187,14 @@
                 renderer: function (storeItem, item) {
                     this.update(
                         Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}<br/>{7}: {8}',
-                        $$iPems.lang.Report400302.Chart.Range,
+                        '时间范围',
                         storeItem.get('start'),
                         storeItem.get('end'),
-                        $$iPems.lang.Report400302.Chart.Value,
+                        '信号测值',
                         storeItem.get('mindisplay'),
-                        $$iPems.lang.Report400302.Chart.Time,
+                        '测值时间',
                         storeItem.get('mintime'),
-                        $$iPems.lang.Report400302.Chart.Total,
+                        '统计数量',
                         storeItem.get('total'))
                     );
                 }
@@ -282,7 +282,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: $$iPems.lang.Report400302.LineTitle,
+                title: '测值统计曲线',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -290,7 +290,7 @@
                 tools: [
                     //{
                     //    type: 'print',
-                    //    tooltip: $$iPems.lang.Import,
+                    //    tooltip: '数据导出',
                     //    handler: function (event, toolEl, panelHeader) {
                     //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
                     //    }
@@ -305,7 +305,7 @@
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: $$iPems.lang.Report400302.DetailTitle,
+                title: '测值统计信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -314,7 +314,7 @@
                 loadMask: true,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -324,47 +324,47 @@
                     preserveScrollOnRefresh: true,
                     stripeRows: true,
                     trackOver: true,
-                    emptyText: $$iPems.lang.GridEmptyText,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     getRowClass: function (record, rowIndex, rowParams, store) {
                         return $$iPems.GetPointStatusCls(record.get("state"));
                     }
                 },
                 columns: [
                     {
-                        text: $$iPems.lang.Report400302.Columns.Id,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 60
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.Start,
+                        text: '开始时间',
                         dataIndex: 'start'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.End,
+                        text: '结束时间',
                         dataIndex: 'end'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.MaxValue,
+                        text: '最大测值',
                         dataIndex: 'maxdisplay'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.MaxTime,
+                        text: '最大时间',
                         dataIndex: 'maxtime'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.MinValue,
+                        text: '最小测值',
                         dataIndex: 'mindisplay'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.MinTime,
+                        text: '最小时间',
                         dataIndex: 'mintime'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.AvgValue,
+                        text: '平均测值',
                         dataIndex: 'avgdisplay'
                     },
                     {
-                        text: $$iPems.lang.Report400302.Columns.Total,
+                        text: '统计数量',
                         dataIndex: 'total'
                     }
                 ],
@@ -373,7 +373,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400302.ConditionTitle,
+                title: '信号筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',
@@ -386,7 +386,7 @@
                                 id: 'devicePicker',
                                 xtype: 'DevicePicker',
                                 allowBlank: false,
-                                emptyText: $$iPems.lang.Report400302.ToolBar.DeviceEmptyText,
+                                emptyText: '请选择设备...',
                                 selectOnLeaf: true,
                                 selectAll: false,
                                 listeners: {
@@ -403,24 +403,17 @@
                                 id: 'pointCombo',
                                 xtype: 'PointCombo',
                                 allowBlank: false,
-                                emptyText: $$iPems.lang.Report400302.ToolBar.PointEmptyText,
+                                emptyText: '请选择信号...',
                                 labelWidth: 60,
                                 width: 280,
                             },
                             {
-                                xtype: 'splitbutton',
+                                xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Ok,
+                                text: '数据查询',
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
-                                },
-                                menu: [{
-                                    text: $$iPems.lang.Import,
-                                    glyph: 0xf010,
-                                    handler: function (me, event) {
-                                        print(currentStore);
-                                    }
-                                }]
+                                }
                             }
                         ]
                     },
@@ -431,7 +424,7 @@
                             {
                                 id: 'startField',
                                 xtype: 'datetimepicker',
-                                fieldLabel: $$iPems.lang.Report400302.ToolBar.Start,
+                                fieldLabel: '开始时间',
                                 labelWidth: 60,
                                 width: 280,
                                 value: Ext.ux.DateTime.addDays(Ext.ux.DateTime.today(),-1),
@@ -441,12 +434,20 @@
                             {
                                 id: 'endField',
                                 xtype: 'datetimepicker',
-                                fieldLabel: $$iPems.lang.Report400302.ToolBar.End,
+                                fieldLabel: '结束时间',
                                 labelWidth: 60,
                                 width: 280,
                                 value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
                                 editable: false,
                                 allowBlank: false
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf010,
+                                text: '数据导出',
+                                handler: function (me, event) {
+                                    print(currentStore);
+                                }
                             }
                         ]
                     }

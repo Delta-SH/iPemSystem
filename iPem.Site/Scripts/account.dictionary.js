@@ -3,7 +3,7 @@
         IPv4: function (v) {
             return /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(v);
         },
-        IPv4Text: $$iPems.lang.Dictionary.IPv4Text,
+        IPv4Text: 'IPv4地址格式错误',
         IPv4Mask: /[\d\.]/i
     });
 
@@ -14,7 +14,7 @@
         items: [
             {
                 id: 'wsconfig',
-                title: $$iPems.lang.Dictionary.Ws.Title,
+                title: '数据通信',
                 glyph: 0xf047,
                 xtype: 'form',
                 overflowY: 'auto',
@@ -25,7 +25,7 @@
                 items: [{
                     itemId: 'login',
                     xtype: 'fieldset',
-                    title: $$iPems.lang.Dictionary.Ws.LoginTitle,
+                    title: 'WebService 登录信息',
                     margin: '20 20 10 20',
                     defaultType: 'textfield',
                     layout: 'anchor',
@@ -40,8 +40,8 @@
                             itemId: 'ip',
                             name:'ip',
                             xtype: 'textfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.IP,
-                            emptyText: $$iPems.lang.Dictionary.Ws.LoginItems.IPEmptyText,
+                            fieldLabel: 'WebService 通信地址',
+                            emptyText: '示例： 192.168.10.100',
                             vtype: 'IPv4',
                             allowBlank: false
                         },
@@ -49,7 +49,7 @@
                             itemId: 'port',
                             name: 'port',
                             xtype: 'numberfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Port,
+                            fieldLabel: 'WebService 通信端口',
                             value: 8080,
                             minValue: 1,
                             maxValue: 65535,
@@ -59,21 +59,21 @@
                             itemId: 'uid',
                             name: 'uid',
                             xtype: 'textfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Uid,
+                            fieldLabel: 'WebService 登录帐号',
                             allowBlank: false
                         },
                         {
                             itemId: 'pwd',
                             name: 'pwd',
                             xtype: 'textfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.LoginItems.Pwd,
+                            fieldLabel: 'WebService 登录密码',
                             allowBlank: false
                         }
                     ]
                 }, {
                     itemId: 'path',
                     xtype: 'fieldset',
-                    title: $$iPems.lang.Dictionary.Ws.PathTitle,
+                    title: 'WebService 访问路径',
                     margin: '10 20 20 20',
                     defaultType: 'textfield',
                     layout: 'anchor',
@@ -88,16 +88,16 @@
                             itemId: 'data',
                             name: 'data',
                             xtype: 'textfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.PathItems.Data,
-                            emptyText: $$iPems.lang.Dictionary.Ws.PathItems.DataEmptyText,
+                            fieldLabel: '实时数据 访问路径',
+                            emptyText: '示例： /Services/GetData',
                             allowBlank: false
                         },
                         {
                             itemId: 'order',
                             name: 'order',
                             xtype: 'textfield',
-                            fieldLabel: $$iPems.lang.Dictionary.Ws.PathItems.Order,
-                            emptyText: $$iPems.lang.Dictionary.Ws.PathItems.OrderEmptyText,
+                            fieldLabel: '远程控制 访问路径',
+                            emptyText: '示例： /Services/SetOrder',
                             allowBlank: false
                         }
                     ]
@@ -106,9 +106,8 @@
                 buttons: [
                     {
                         xtype: 'button',
-                        text: $$iPems.lang.Save,
-                        width: 90,
-                        scale: 'medium',
+                        text: '保存当前页',
+                        cls: 'custom-button custom-success',
                         handler: function () {
                             var wsconfig = Ext.getCmp('wsconfig'),
                                 wsbasic = wsconfig.getForm(),
@@ -116,7 +115,7 @@
 
                             wsresult.setTextWithIcon('', '');
                             if (wsbasic.isValid()) {
-                                wsresult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                wsresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                 wsbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -134,7 +133,7 @@
                                     }
                                 });
                             } else {
-                                wsresult.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                                wsresult.setTextWithIcon('表单填写错误', 'x-icon-error');
                             }
                         }
                     },
@@ -143,7 +142,7 @@
             },
             {
                 id: 'tsconfig',
-                title: $$iPems.lang.Dictionary.Ts.Title,
+                title: '语音播报',
                 glyph: 0xf048,
                 xtype: 'form',
                 overflowY: 'auto',
@@ -156,7 +155,7 @@
                             {
                                 xtype: 'fieldset',
                                 flex: 1,
-                                title: $$iPems.lang.Dictionary.Ts.BasicTitle,
+                                title: '语音播报',
                                 defaultType: 'checkbox',
                                 layout: 'anchor',
                                 defaults: {
@@ -167,9 +166,9 @@
                                     xtype: 'checkboxgroup',
                                     columns:2,
                                     items: [
-                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Enabled, name: 'basic', inputValue: 1 },
-                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Loop, name: 'basic', inputValue: 2 },
-                                        { boxLabel: $$iPems.lang.Dictionary.Ts.BasicItems.Project, name: 'basic', inputValue: 3 }
+                                        { boxLabel: '启用语音播报', name: 'basic', inputValue: 1 },
+                                        { boxLabel: '循环播报告警', name: 'basic', inputValue: 2 },
+                                        { boxLabel: '禁播工程告警', name: 'basic', inputValue: 3 }
                                     ]
                                 }]
                             }, {
@@ -178,7 +177,7 @@
                             }, {
                                 xtype: 'fieldset',
                                 flex: 1,
-                                title: $$iPems.lang.Dictionary.Ts.LevelTitle,
+                                title: '播报级别',
                                 defaultType: 'radio',
                                 layout: 'anchor',
                                 defaults: {
@@ -190,10 +189,10 @@
                                         xtype: 'checkboxgroup',
                                         columns:2,
                                         items: [
-                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level1, name: 'level', inputValue: $$iPems.AlmLevel.Level1 },
-                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level2, name: 'level', inputValue: $$iPems.AlmLevel.Level2 },
-                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level3, name: 'level', inputValue: $$iPems.AlmLevel.Level3 },
-                                            { boxLabel: $$iPems.lang.Dictionary.Ts.LevelItems.Level4, name: 'level', inputValue: $$iPems.AlmLevel.Level4 }
+                                            { boxLabel: '一级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level1 },
+                                            { boxLabel: '二级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level2 },
+                                            { boxLabel: '三级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level3 },
+                                            { boxLabel: '四级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level4 }
                                         ]
                                     }
                                 ]
@@ -202,7 +201,7 @@
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Ts.ContentTitle,
+                        title: '播报内容',
                         margin: '10 20 20 20',
                         defaultType: 'checkbox',
                         layout: 'anchor',
@@ -214,20 +213,20 @@
                             xtype: 'checkboxgroup',
                             columns: 4,
                             items: [
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Area, name: 'content', inputValue: 1 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Station, name: 'content', inputValue: 2 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Room, name: 'content', inputValue: 3 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Device, name: 'content', inputValue: 4 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.Point, name: 'content', inputValue: 5 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmTime, name: 'content', inputValue: 6 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmLevel, name: 'content', inputValue: 7 },
-                                { boxLabel: $$iPems.lang.Dictionary.Ts.ContentItems.AlmComment, name: 'content', inputValue: 8 }
+                                { boxLabel: '所属区域', name: 'content', inputValue: 1 },
+                                { boxLabel: '所属站点', name: 'content', inputValue: 2 },
+                                { boxLabel: '所属机房', name: 'content', inputValue: 3 },
+                                { boxLabel: '所属设备', name: 'content', inputValue: 4 },
+                                { boxLabel: '所属信号', name: 'content', inputValue: 5 },
+                                { boxLabel: '告警时间', name: 'content', inputValue: 6 },
+                                { boxLabel: '告警等级', name: 'content', inputValue: 7 },
+                                { boxLabel: '告警描述', name: 'content', inputValue: 8 }
                             ]
                         }]
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Ts.ConditionTitle,
+                        title: '播报条件',
                         margin: 20,
                         fieldDefaults: {
                             anchor: '100%',
@@ -248,17 +247,17 @@
                                             {
                                                 name: 'stationtypes',
                                                 xtype: 'StationTypeMultiCombo',
-                                                emptyText: $$iPems.lang.AllEmptyText
+                                                emptyText: '默认全部'
                                             },
                                             {
                                                 name: 'devicetypes',
                                                 xtype: 'DeviceTypeMultiCombo',
-                                                emptyText: $$iPems.lang.AllEmptyText
+                                                emptyText: '默认全部'
                                             },
                                             {
                                                 name: 'pointtypes',
                                                 xtype: 'PointTypeMultiCombo',
-                                                emptyText: $$iPems.lang.AllEmptyText
+                                                emptyText: '默认全部'
                                             }
                                         ]
                                     },
@@ -270,18 +269,18 @@
                                             {
                                                 name: 'roomtypes',
                                                 xtype: 'RoomTypeMultiCombo',
-                                                emptyText: $$iPems.lang.AllEmptyText
+                                                emptyText: '默认全部'
                                             },
                                             {
                                                 name: 'logictypes',
                                                 xtype: 'LogicTypeMultiCombo',
-                                                emptyText: $$iPems.lang.AllEmptyText
+                                                emptyText: '默认全部'
                                             },
                                             {
                                                 name: 'pointnames',
                                                 xtype: 'textfield',
-                                                fieldLabel: $$iPems.lang.Dictionary.Ts.ConditionItems.Point,
-                                                emptyText: $$iPems.lang.MultiConditionEmptyText
+                                                fieldLabel: '信号名称',
+                                                emptyText: '多条件请以;分隔，例: A;B;C'
                                             }
                                         ]
                                     }
@@ -294,9 +293,8 @@
                 buttons: [
                     {
                         xtype: 'button',
-                        text: $$iPems.lang.Save,
-                        width: 90,
-                        scale: 'medium',
+                        text: '保存当前页',
+                        cls: 'custom-button custom-success',
                         handler: function () {
                             var tsconfig = Ext.getCmp('tsconfig'),
                                 tsbasic = tsconfig.getForm(),
@@ -304,7 +302,7 @@
 
                             tsresult.setTextWithIcon('', '');
                             if (tsbasic.isValid()) {
-                                tsresult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                tsresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                 tsbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -322,7 +320,7 @@
                                     }
                                 });
                             } else {
-                                tsresult.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                                tsresult.setTextWithIcon('表单填写错误', 'x-icon-error');
                             }
                         }
                     },
@@ -330,7 +328,7 @@
                 ]
             },
             {
-                title: $$iPems.lang.Dictionary.Pue.Title,
+                title: '能耗分类',
                 glyph: 0xf043,
                 layout: {
                     type: 'hbox',
@@ -339,32 +337,29 @@
             },
             {
                 id: 'rtconfig',
-                title: $$iPems.lang.Dictionary.Report.Title,
+                title: '报表参数',
                 glyph: 0xf044,
                 xtype: 'form',
                 overflowY: 'auto',
                 items: [
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Report.Cache.Title,
-                        margin: '10 20 20 20',
+                        title: '缓存管理',
+                        margin: '10 35 20 20',
                         layout: {
                             type: 'hbox',
                             align: 'stretch'
                         },
-                        defaults: {
-                            margin: 15
-                        },
                         items: [{
                             xtype: 'button',
-                            text: $$iPems.lang.Dictionary.Report.Cache.Clear,
-                            width: 90,
-                            scale: 'medium',
+                            text: '清空缓存',
+                            cls: 'custom-button custom-danger',
+                            margin: 15,
                             handler: function () {
-                                Ext.Msg.confirm($$iPems.lang.ConfirmWndTitle, $$iPems.lang.Dictionary.Report.Cache.Confirm, function (buttonId, text) {
+                                Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
                                     if (buttonId === 'yes') {
                                         var cacheResult = Ext.getCmp('cacheResult');
-                                        cacheResult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                         Ext.Ajax.request({
                                             url: '/Account/ClearCache',
                                             success: function (response, options) {
@@ -382,13 +377,15 @@
                         {
                             id: 'cacheResult',
                             xtype: 'iconlabel',
-                            text: ''
+                            margin: '21 0 21 0',
+                            text: '',
+                            flex: 1
                         }]
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Report.Exception.Title,
-                        margin: '10 20 20 20',
+                        title: '异常告警',
+                        margin: '10 35 20 20',
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
@@ -409,17 +406,18 @@
                                     items: [{
                                         name: 'chaopin',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoPin,
+                                        fieldLabel: '超频告警',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoPinEmptyText,
+                                        allowDecimals: false,
+                                        emptyText: '统计时间内告警次数阈值',
                                         value: 1,
                                         minValue: 1
                                     }, {
                                         name: 'chaochang',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoChang,
+                                        fieldLabel: '超长告警',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoChangEmptyText,
+                                        emptyText: '告警历时的最小时间阈值',
                                         value: 1,
                                         minValue: 1
                                     }]
@@ -428,11 +426,11 @@
                                     layout: 'anchor',
                                     items: [{
                                         xtype: 'displayfield',
-                                        value: $$iPems.lang.Dictionary.Report.Exception.CiShu,
+                                        value: '次数',
                                         margin: '15 15 15 0'
                                     }, {
                                         xtype: 'displayfield',
-                                        value: $$iPems.lang.Dictionary.Report.Exception.FenZhong,
+                                        value: '分钟',
                                         margin: '15 15 15 0'
                                     }]
                                 }, {
@@ -442,9 +440,9 @@
                                     items: [{
                                         name: 'chaoduan',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.Exception.ChaoDuan,
+                                        fieldLabel: '超短告警',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.Exception.ChaoDuanEmptyText,
+                                        emptyText: '告警历时的最大时间阈值',
                                         value: 1,
                                         minValue: 1
                                     }]
@@ -453,7 +451,7 @@
                                     layout: 'anchor',
                                     items: [{
                                         xtype: 'displayfield',
-                                        value: $$iPems.lang.Dictionary.Report.Exception.FenZhong,
+                                        value: '分钟',
                                         margin: '15 15 15 0'
                                     }]
                                 }]
@@ -462,8 +460,8 @@
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Report.TingDian.Title,
-                        margin: '10 20 20 20',
+                        title: '市电停电',
+                        margin: '10 35 20 20',
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
@@ -484,15 +482,16 @@
                                     items: [{
                                         name: 'weitingdian',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.WeiTingDian,
+                                        fieldLabel: '正常测值',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.TingDian.WeiTingDianEmptyText,
+                                        allowDecimals: false,
+                                        emptyText: '市电信号正常时所输出的测值',
                                         value: 0,
                                         minValue: 0
                                     }, {
                                         name: 'tingdianxinhao',
                                         xtype: 'LogicPointMultiPicker',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.Point,
+                                        fieldLabel: '停电信号',
                                         allowBlank: false
                                     }]
                                 }, {
@@ -502,9 +501,10 @@
                                     items: [{
                                         name: 'tingdian',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.TingDian.TingDian,
+                                        fieldLabel: '停电测值',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.TingDian.TingDianEmptyText,
+                                        allowDecimals: false,
+                                        emptyText: '市电信号停电时所输出的测值',
                                         value: 1,
                                         minValue: 0
                                     }]
@@ -514,8 +514,8 @@
                     },
                     {
                         xtype: 'fieldset',
-                        title: $$iPems.lang.Dictionary.Report.FaDian.Title,
-                        margin: '10 20 20 20',
+                        title: '油机发电',
+                        margin: '10 35 20 20',
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
@@ -536,15 +536,16 @@
                                     items: [{
                                         name: 'weifadian',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.WeiFaDian,
+                                        fieldLabel: '正常测值',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.FaDian.WeiFaDianEmptyText,
+                                        allowDecimals: false,
+                                        emptyText: '油机信号正常时所输出的测值',
                                         value: 0,
                                         minValue: 0
                                     }, {
                                         name: 'fadianxinhao',
                                         xtype: 'LogicPointMultiPicker',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.Point,
+                                        fieldLabel: '发电信号',
                                         allowBlank: false
                                     }]
                                 }, {
@@ -554,12 +555,101 @@
                                     items: [{
                                         name: 'fadian',
                                         xtype: 'numberfield',
-                                        fieldLabel: $$iPems.lang.Dictionary.Report.FaDian.FaDian,
+                                        fieldLabel: '发电测值',
                                         allowBlank: false,
-                                        emptyText: $$iPems.lang.Dictionary.Report.FaDian.FaDianEmptyText,
+                                        allowDecimals: false,
+                                        emptyText: '油机信号发电时所输出的测值',
                                         value: 1,
                                         minValue: 0
                                     }]
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '系统设备完好率',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: 15,
+                                items: [{
+                                    name: 'whlinterval',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '忽略告警',
+                                    allowBlank: false,
+                                    value: 0,
+                                    minValue: 0,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该值的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '故障处理及时率',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'jslguiding',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '处理时长',
+                                    allowBlank: false,
+                                    value: 0,
+                                    minValue: 0,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '分钟（注：报表统计时将计算超过该规定处理时长的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'jslhulue',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '忽略告警',
+                                    allowBlank: false,
+                                    value: 0,
+                                    minValue: 0,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该值的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
                                 }]
                             }
                         ]
@@ -569,9 +659,8 @@
                 buttons: [
                     {
                         xtype: 'button',
-                        text: $$iPems.lang.Save,
-                        width: 90,
-                        scale: 'medium',
+                        text: '保存当前页',
+                        cls: 'custom-button custom-success',
                         handler: function () {
                             var rtconfig = Ext.getCmp('rtconfig'),
                                 rtbasic = rtconfig.getForm(),
@@ -579,7 +668,7 @@
 
                             rtresult.setTextWithIcon('', '');
                             if (rtbasic.isValid()) {
-                                rtresult.setTextWithIcon($$iPems.lang.AjaxHandling, 'x-icon-loading');
+                                rtresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                 rtbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -597,7 +686,7 @@
                                     }
                                 });
                             } else {
-                                rtresult.setTextWithIcon($$iPems.lang.FormError, 'x-icon-error');
+                                rtresult.setTextWithIcon('表单填写错误', 'x-icon-error');
                             }
                         }
                     },
@@ -619,8 +708,8 @@
 
             wsbasic.load({
                 url: '/Account/GetWs',
-                waitMsg: $$iPems.lang.AjaxHandling,
-                waitTitle: $$iPems.lang.SysTipTitle,
+                waitMsg: '正在处理，请稍后...',
+                waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();
                     wsresult.setTextWithIcon('', '');
@@ -633,8 +722,8 @@
 
             tsbasic.load({
                 url: '/Account/GetTs',
-                waitMsg: $$iPems.lang.AjaxHandling,
-                waitTitle: $$iPems.lang.SysTipTitle,
+                waitMsg: '正在处理，请稍后...',
+                waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();
                     tsresult.setTextWithIcon('', '');
@@ -647,8 +736,8 @@
 
             rtbasic.load({
                 url: '/Account/GetRt',
-                waitMsg: $$iPems.lang.AjaxHandling,
-                waitTitle: $$iPems.lang.SysTipTitle,
+                waitMsg: '正在处理，请稍后...',
+                waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();
                     rtresult.setTextWithIcon('', '');
