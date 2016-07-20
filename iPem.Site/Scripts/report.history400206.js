@@ -67,7 +67,7 @@ var currentStore = Ext.create('Ext.data.Store', {
         },
         listeners: {
             exception: function (proxy, response, operation) {
-                Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         },
         simpleSortMode: true
@@ -78,7 +78,7 @@ var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf045,
-    title: $$iPems.lang.Report400206.Title,
+    title: '工程预约统计信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -90,16 +90,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         rowBodyTpl: new Ext.XTemplate(
             '<table class="row-table" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
             '<tpl if="this.isEmpty(appointments)">',
-                Ext.String.format('<tbody><tr><td>{0}</td><tr/></tbody>', $$iPems.lang.RowEmptyText),
+                '<tbody><tr><td>没有数据记录</td><tr/></tbody>',
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                    Ext.String.format('<td>#</td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td>'
-                    , $$iPems.lang.Report400206.Columns.Rows.StartTime
-                    , $$iPems.lang.Report400206.Columns.Rows.EndTime
-                    , $$iPems.lang.Report400206.Columns.Rows.Project
-                    , $$iPems.lang.Report400206.Columns.Rows.Creator
-                    , $$iPems.lang.Report400206.Columns.Rows.CreatedTime),
+                        '<td>#</td><td>开始时间</td><td>结束时间</td><td>预约工程</td><td>创建人员</td><td>创建时间</td>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
@@ -119,33 +114,33 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Report400206.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400206.Columns.Type,
+        text: '类型',
         dataIndex: 'type',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400206.Columns.Name,
+        text: '名称',
         dataIndex: 'name',
         align: 'left',
         flex: 1,
         sortable: true
     }, {
-        text: $$iPems.lang.Report400206.Columns.Count,
+        text: '预约数量',
         dataIndex: 'count',
         align: 'left',
         sortable: true
     },{
-        text: $$iPems.lang.Report400206.Columns.Interval,
+        text: '预约时长(分钟)',
         dataIndex: 'interval',
         align: 'left',
         sortable: true
@@ -163,15 +158,15 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'StationPicker',
                         selectAll: false,
                         allowBlank: false,
-                        emptyText: $$iPems.lang.Report400206.ToolBar.RangeEmptyText,
-                        fieldLabel: $$iPems.lang.Report400206.ToolBar.Range,
+                        emptyText: '请选择查询范围...',
+                        fieldLabel: '查询范围',
                         labelWidth: 60,
                         width: 448,
                     },
                     {
                         xtype: 'button',
                         glyph: 0xf005,
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         handler: function (me, event) {
                             query(currentPagingToolbar);
                         }
@@ -185,7 +180,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'startField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400206.ToolBar.Start,
+                        fieldLabel: '开始时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -195,7 +190,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'endField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400206.ToolBar.End,
+                        fieldLabel: '结束时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -205,7 +200,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         xtype: 'button',
                         glyph: 0xf010,
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         handler: function (me, event) {
                             print(currentStore);
                         }

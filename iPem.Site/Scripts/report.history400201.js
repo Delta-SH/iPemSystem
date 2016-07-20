@@ -79,7 +79,7 @@
             items: [{
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: $$iPems.lang.Report400201.DetailTitle,
+                title: '信号测值信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -88,7 +88,7 @@
                 loadMask: true,
                 tools: [{
                     type: 'print',
-                    tooltip: $$iPems.lang.Import,
+                    tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
                         print(currentStore);
                     }
@@ -98,59 +98,59 @@
                     preserveScrollOnRefresh: true,
                     stripeRows: true,
                     trackOver: true,
-                    emptyText: $$iPems.lang.GridEmptyText,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     getRowClass: function (record, rowIndex, rowParams, store) {
                         return $$iPems.GetPointStatusCls(record.get("status"));
                     }
                 },
                 columns: [
                     {
-                        text: $$iPems.lang.Report400201.Columns.Id,
+                        text: '序号',
                         dataIndex: 'index',
                         width: 60
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Area,
+                        text: '所属区域',
                         dataIndex: 'area'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Station,
+                        text: '所属站点',
                         dataIndex: 'station'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Room,
+                        text: '所属机房',
                         dataIndex: 'room'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.DevType,
+                        text: '设备类型',
                         dataIndex: 'devType'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.DevName,
+                        text: '设备名称',
                         dataIndex: 'devName'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Logic,
+                        text: '逻辑分类',
                         dataIndex: 'logic'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Point,
+                        text: '信号名称',
                         dataIndex: 'point'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Type,
+                        text: '信号类型',
                         dataIndex: 'type'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Value,
+                        text: '信号测值',
                         dataIndex: 'value'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Timestamp,
+                        text: '测值时间',
                         dataIndex: 'timestamp'
                     },
                     {
-                        text: $$iPems.lang.Report400201.Columns.Status,
+                        text: '信号状态',
                         dataIndex: 'statusDisplay',
                         tdCls: 'x-status-cell'
                     }
@@ -160,7 +160,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: $$iPems.lang.Report400201.ConditionTitle,
+                title: '信号筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',
@@ -172,15 +172,15 @@
                             {
                                 id: 'rangePicker',
                                 xtype: 'DevicePicker',
-                                fieldLabel: $$iPems.lang.Report400201.ToolBar.Range,
-                                emptyText: $$iPems.lang.AllEmptyText,
+                                fieldLabel: '查询范围',
+                                emptyText: '默认全部',
                                 labelWidth: 60,
                                 width: 220,
                             },
                             {
                                 id: 'startField',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Report400201.ToolBar.Start,
+                                fieldLabel: '开始时间',
                                 labelWidth: 60,
                                 width: 220,
                                 value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -190,7 +190,7 @@
                             {
                                 id: 'endField',
                                 xtype: 'datefield',
-                                fieldLabel: $$iPems.lang.Report400201.ToolBar.End,
+                                fieldLabel: '结束时间',
                                 labelWidth: 60,
                                 width: 220,
                                 value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -200,7 +200,7 @@
                             {
                                 xtype: 'button',
                                 glyph: 0xf005,
-                                text: $$iPems.lang.Query,
+                                text: '数据查询',
                                 handler: function (me, event) {
                                     query(currentPagingToolbar);
                                 }
@@ -214,22 +214,22 @@
                             {
                                 id: 'station-type-multicombo',
                                 xtype: 'StationTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'room-type-multicombo',
                                 xtype: 'RoomTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'device-type-multicombo',
                                 xtype: 'DeviceTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 xtype: 'button',
                                 glyph: 0xf010,
-                                text: $$iPems.lang.Import,
+                                text: '数据导出',
                                 handler: function (me, event) {
                                     print(currentStore);
                                 }
@@ -243,13 +243,13 @@
                             {
                                 id: 'logic-type-multicombo',
                                 xtype: 'LogicTypeMultiCombo',
-                                emptyText: $$iPems.lang.AllEmptyText
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'point-name-textfield',
                                 xtype: 'textfield',
-                                fieldLabel: $$iPems.lang.Report400201.ToolBar.PointName,
-                                emptyText: $$iPems.lang.MultiConditionEmptyText,
+                                fieldLabel: '信号名称',
+                                emptyText: '多条件请以;分隔，例: A;B;C',
                                 labelWidth: 60,
                                 width: 450
                             }

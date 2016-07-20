@@ -26,6 +26,7 @@ namespace iPem.Site.Controllers {
         private readonly IDbManager _dbManager;
         private readonly IDbInstaller _dbInstaller;
         private readonly ICacheManager _cacheManager;
+        private readonly IWebHelper _webHelper;
 
         #endregion
 
@@ -35,11 +36,13 @@ namespace iPem.Site.Controllers {
             IDataProvider dataProvider,
             IDbManager dbManager,
             IDbInstaller dbInstaller,
-            ICacheManager cacheManager) {
+            ICacheManager cacheManager,
+            IWebHelper webHelper) {
             this._dataProvider = dataProvider;
             this._dbManager = dbManager;
             this._dbInstaller = dbInstaller;
             this._cacheManager = cacheManager;
+            this._webHelper = webHelper;
         }
 
         #endregion
@@ -382,6 +385,7 @@ namespace iPem.Site.Controllers {
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
                 _dbManager.Initializer();
+                //_webHelper.RestartAppDomain();
 
                 result.success = true;
                 result.code = 200;
@@ -413,6 +417,7 @@ namespace iPem.Site.Controllers {
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
                 _dbManager.Initializer();
+                //_webHelper.RestartAppDomain();
 
                 result.success = true;
                 result.code = 200;
@@ -444,6 +449,7 @@ namespace iPem.Site.Controllers {
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
                 _dbManager.Initializer();
+                //_webHelper.RestartAppDomain();
 
                 result.success = true;
                 result.code = 200;
@@ -473,6 +479,8 @@ namespace iPem.Site.Controllers {
 
                 _dataProvider.CleanEntites();
                 _dbManager.Clean();
+                //_webHelper.RestartAppDomain();
+
                 result.success = true;
                 result.code = 200;
                 result.message = "删除成功，页面将在<span id='leftseconds'>5</span>秒后跳转到安装向导。";

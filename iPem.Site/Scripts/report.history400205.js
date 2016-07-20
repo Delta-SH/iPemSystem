@@ -71,7 +71,7 @@ var currentStore = Ext.create('Ext.data.Store', {
         },
         listeners: {
             exception: function (proxy, response, operation) {
-                Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         },
         simpleSortMode: true
@@ -82,7 +82,7 @@ var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf046,
-    title: $$iPems.lang.Report400205.Title,
+    title: '工程项目统计信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -94,18 +94,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         rowBodyTpl: new Ext.XTemplate(
             '<table class="row-table" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
             '<tpl if="this.isEmpty(projects)">',
-                Ext.String.format('<tbody><tr><td>{0}</td><tr/></tbody>', $$iPems.lang.RowEmptyText),
+                '<tbody><tr><td>没有数据记录</td><tr/></tbody>',
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                    Ext.String.format('<td>#</td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>'
-                    , $$iPems.lang.Report400205.Columns.Rows.Name
-                    , $$iPems.lang.Report400205.Columns.Rows.StartTime
-                    , $$iPems.lang.Report400205.Columns.Rows.EndTime
-                    , $$iPems.lang.Report400205.Columns.Rows.Responsible
-                    , $$iPems.lang.Report400205.Columns.Rows.ContactPhone
-                    , $$iPems.lang.Report400205.Columns.Rows.Company
-                    , $$iPems.lang.Report400205.Columns.Rows.Timeout),
+                        '<td>#</td><td>工程名称</td><td>开始时间</td><td>结束时间</td><td>负责人员</td><td>联系电话</td><td>施工公司</td><td>超时工程</td>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
@@ -120,7 +113,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     return !(Ext.isArray(values) && values.length > 0);
                 },
                 isTimeout: function (timeout) {
-                    return timeout === true ? $$iPems.lang.YesTrue : $$iPems.lang.YesFalse;
+                    return timeout === true ? '是' : '否';
                 }
             })
     }],
@@ -128,43 +121,43 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Report400205.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Type,
+        text: '类型',
         dataIndex: 'type',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Name,
+        text: '名称',
         dataIndex: 'name',
         align: 'left',
         flex: 1,
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Count,
+        text: '工程数量',
         dataIndex: 'count',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Interval,
+        text: '平均历时(分钟)',
         dataIndex: 'interval',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Timeout,
+        text: '超时工程数量',
         dataIndex: 'timeout',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400205.Columns.Rate,
+        text: '超时工程占比',
         dataIndex: 'rate',
         align: 'left',
         sortable: true
@@ -182,15 +175,15 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'StationPicker',
                         selectAll: false,
                         allowBlank: false,
-                        emptyText: $$iPems.lang.Report400205.ToolBar.RangeEmptyText,
-                        fieldLabel: $$iPems.lang.Report400205.ToolBar.Range,
+                        emptyText: '请选择查询范围...',
+                        fieldLabel: '查询范围',
                         labelWidth: 60,
                         width: 448,
                     },
                     {
                         xtype: 'button',
                         glyph: 0xf005,
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         handler: function (me, event) {
                             query(currentPagingToolbar);
                         }
@@ -204,7 +197,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'startField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400205.ToolBar.Start,
+                        fieldLabel: '开始时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -214,7 +207,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'endField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400205.ToolBar.End,
+                        fieldLabel: '结束时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -224,7 +217,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         xtype: 'button',
                         glyph: 0xf010,
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         handler: function (me, event) {
                             print(currentStore);
                         }

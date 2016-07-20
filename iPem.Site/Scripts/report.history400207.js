@@ -65,7 +65,7 @@ var currentStore = Ext.create('Ext.data.Store', {
         },
         listeners: {
             exception: function (proxy, response, operation) {
-                Ext.Msg.show({ title: $$iPems.lang.SysErrorTitle, msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         },
         simpleSortMode: true
@@ -76,7 +76,7 @@ var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf029,
-    title: $$iPems.lang.Report400207.Title,
+    title: '市电停电统计信息',
     region: 'center',
     store: currentStore,
     columnLines: true,
@@ -88,19 +88,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         rowBodyTpl: new Ext.XTemplate(
             '<table class="row-table" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
             '<tpl if="this.isEmpty(details)">',
-                Ext.String.format('<tbody><tr><td>{0}</td><tr/></tbody>', $$iPems.lang.RowEmptyText),
+                '<tbody><tr><td>没有数据记录</td><tr/></tbody>',
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                    Ext.String.format('<td>#</td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td>'
-                    , $$iPems.lang.Report400207.Columns.Rows.Area
-                    , $$iPems.lang.Report400207.Columns.Rows.Station
-                    , $$iPems.lang.Report400207.Columns.Rows.Room
-                    , $$iPems.lang.Report400207.Columns.Rows.Device
-                    , $$iPems.lang.Report400207.Columns.Rows.Point
-                    , $$iPems.lang.Report400207.Columns.Rows.Start
-                    , $$iPems.lang.Report400207.Columns.Rows.End
-                    , $$iPems.lang.Report400207.Columns.Rows.Interval),
+                        '<td>#</td><td>所属区域</td><td>所属站点</td><td>所属机房</td><td>所属设备</td><td>信号名称</td><td>开始时间</td><td>结束时间</td><td>历时(分钟)</td>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
@@ -120,33 +112,33 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: $$iPems.lang.GridEmptyText,
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         preserveScrollOnRefresh: true
     },
     columns: [{
-        text: $$iPems.lang.Report400207.Columns.Index,
+        text: '序号',
         dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400207.Columns.Type,
+        text: '类型',
         dataIndex: 'type',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400207.Columns.Name,
+        text: '名称',
         dataIndex: 'name',
         align: 'left',
         flex:1,
         sortable: true
     }, {
-        text: $$iPems.lang.Report400207.Columns.Count,
+        text: '停电次数',
         dataIndex: 'count',
         align: 'left',
         sortable: true
     }, {
-        text: $$iPems.lang.Report400207.Columns.Interval,
+        text: '停电时长(分钟)',
         dataIndex: 'interval',
         align: 'left',
         sortable: true
@@ -164,15 +156,15 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'StationPicker',
                         selectAll: false,
                         allowBlank: false,
-                        emptyText: $$iPems.lang.Report400207.ToolBar.RangeEmptyText,
-                        fieldLabel: $$iPems.lang.Report400207.ToolBar.Range,
+                        emptyText: '请选择查询范围...',
+                        fieldLabel: '查询范围',
                         labelWidth: 60,
                         width: 448,
                     },
                     {
                         xtype: 'button',
                         glyph: 0xf005,
-                        text: $$iPems.lang.Query,
+                        text: '数据查询',
                         handler: function (me, event) {
                             query(currentPagingToolbar);
                         }
@@ -186,7 +178,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'startField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400207.ToolBar.Start,
+                        fieldLabel: '开始时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -196,7 +188,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         id: 'endField',
                         xtype: 'datefield',
-                        fieldLabel: $$iPems.lang.Report400207.ToolBar.End,
+                        fieldLabel: '结束时间',
                         labelWidth: 60,
                         width: 220,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
@@ -206,7 +198,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     {
                         xtype: 'button',
                         glyph: 0xf010,
-                        text: $$iPems.lang.Import,
+                        text: '数据导出',
                         handler: function (me, event) {
                             print(currentStore);
                         }
