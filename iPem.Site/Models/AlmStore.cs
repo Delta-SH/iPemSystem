@@ -1,14 +1,24 @@
-﻿using iPem.Core.Domain.History;
-using iPem.Site.Infrastructure;
+﻿using iPem.Core.Domain.Rs;
+using iPem.Core.Domain.Sc;
 using System;
 
 namespace iPem.Site.Models {
     [Serializable]
-    public class AlmStore<T> where T: class {
+    public class AlmStore<T> where T : class {
         public T Current { get; set; }
 
-        public PointAttributes Point { get; set; }
+        public ExtAlm ExtSet1 { get; set; }
 
-        public DeviceAttributes Device { get; set; }
+        public Point Point { get; set; }
+
+        public Device Device { get; set; }
+
+        public Room Room { get; set; }
+
+        public Station Station { get; set; }
+
+        public Area Area { get; set; }
+
+        public String AreaFullName { get; set; }
     }
 }

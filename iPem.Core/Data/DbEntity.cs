@@ -1,5 +1,5 @@
-﻿using System;
-using iPem.Core.Enum;
+﻿using iPem.Core.Enum;
+using System;
 
 namespace iPem.Core.Data {
     /// <summary>
@@ -12,37 +12,37 @@ namespace iPem.Core.Data {
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Database Provider
+        /// Gets or sets the provider
         /// </summary>
         public EnmDbProvider Provider { get; set; }
 
         /// <summary>
-        /// Database Type
+        /// Gets or sets the type
         /// </summary>
-        public EnmDatabaseType Type { get; set; }
+        public EnmDbType Type { get; set; }
 
         /// <summary>
-        /// Database IP
+        /// Gets or sets the ip
         /// </summary>
         public String IP { get; set; }
 
         /// <summary>
-        /// Database Port
+        /// Gets or sets the port
         /// </summary>
         public Int32 Port { get; set; }
 
         /// <summary>
-        /// Database UId
+        /// Gets or sets the uid
         /// </summary>
-        public String UId { get; set; }
+        public String Uid { get; set; }
 
         /// <summary>
-        /// Database Password
+        /// Gets or sets the password
         /// </summary>
-        public String Pwd { get; set; }
+        public String Password { get; set; }
 
         /// <summary>
-        /// Database Name
+        /// Gets or sets the name
         /// </summary>
         public String Name { get; set; }
     }

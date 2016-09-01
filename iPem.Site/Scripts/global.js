@@ -233,6 +233,26 @@ Ext.override(Ext.panel.Header, {
     }
 });
 
+/*
+ 修复当Grid分组，然后折叠第一组，其他组无法选中行的问题
+*/
+Ext.override(Ext.view.Table, {
+    getRecord: function (node) {
+        node = this.getNode(node);
+        if (node) {
+            return this.dataSource.data.get(node.getAttribute('data-recordId'));
+        }
+    },
+    indexInStore: function (node) {
+        node = this.getNode(node, true);
+        if (!node && node !== 0) {
+            return -1;
+        }
+
+        return this.dataSource.indexOf(this.getRecord(node));
+    }
+});
+
 /*ajax action*/
 window.$$iPems.Action = {
     Add: 0,
@@ -330,12 +350,6 @@ window.$$iPems.SplitKeys = function (key) {
 window.$$iPems.Delimiter = ';';
 window.$$iPems.Separator = '┆';
 
-/*global chart empty data*/
-window.$$iPems.ChartEmptyDataPie = [{ name: '无数据', value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataLine = [{ name: '无数据', value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataColumn = [{ name: '无数据', value: 0, comment: null }];
-window.$$iPems.ChartEmptyDataGauge = [{ name: '无数据', value: 0, comment: null }];
-
 /*download files via ajax*/
 window.$$iPems.download = function (config) {
     config = config || {};
@@ -408,6 +422,16 @@ window.$$iPems.clonePagingToolbar = function (store) {
             }
         ]
     });
+};
+
+/*select tree node by paths*/
+window.$$iPems.selectNodePath = function (tree, paths, callback) {
+    var root = tree.getRootNode(),
+        field = 'id',
+        separator = '/',
+        path = separator + root.get(field) + separator + paths.join(separator);
+
+    tree.selectPath(path, field, separator, callback || Ext.emptyFn);
 };
 
 window.$$iPems.animateNumber = function (target, now) {
@@ -528,6 +552,18 @@ window.$$iPems.Tasks = {
             run: Ext.emptyFn,
             fireOnStart: true,
             interval: 5000,
+            repeat: 1
+        }),
+        unconnectedTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
+        offTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
             repeat: 1
         })
     }

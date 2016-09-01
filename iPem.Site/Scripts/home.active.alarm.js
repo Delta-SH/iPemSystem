@@ -1,58 +1,182 @@
 ﻿(function () {
+    var pieChart = null,
+        lineChart = null,
+        pieOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                y: 'center',
+                data: ['一级告警', '二级告警', '三级告警', '四级告警']
+            },
+            series: [
+                {
+                    name: '实时告警',
+                    type: 'pie',
+                    radius: ['45%', '85%'],
+                    center: ['60%', '50%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '13',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        {
+                            value: 0,
+                            name: '一级告警',
+                            itemStyle: {
+                                normal: {
+                                    color: '#f04b51'
+                                }
+                            }
+                        },
+                        {
+                            value: 0,
+                            name: '二级告警',
+                            itemStyle: {
+                                normal: {
+                                    color: '#efa91f'
+                                }
+                            }
+                        },
+                        {
+                            value: 0,
+                            name: '三级告警',
+                            itemStyle: {
+                                normal: {
+                                    color: '#f5d313'
+                                }
+                            }
+                        },
+                        {
+                            value: 0,
+                            name: '四级告警',
+                            itemStyle: {
+                                normal: {
+                                    color: '#0892cd'
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        lineOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: 15,
+                left: 0,
+                right: 5,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '一级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f04b51'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '二级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#efa91f'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '三级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f5d313'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '四级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#0892cd'
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
+            { name: 'fsuid', type: 'string' },
 			{ name: 'id', type: 'string' },
             { name: 'level', type: 'string' },
-            { name: 'levelValue', type: 'int' },
+            { name: 'levelid', type: 'int' },
             { name: 'start', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
 			{ name: 'room', type: 'string' },
-            { name: 'devType', type: 'string' },
             { name: 'device', type: 'string' },
-            { name: 'logic', type: 'string' },
             { name: 'point', type: 'string' },
             { name: 'comment', type: 'string' },
             { name: 'value', type: 'string' },
             { name: 'frequency', type: 'int' },
-            { name: 'project', type: 'string' },
-            { name: 'confirmedstatus', type: 'string' },
+            { name: 'interval', type: 'string' },
+            { name: 'confirmed', type: 'string' },
+            { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
-            { name: 'confirmer', type: 'string' }
+            { name: 'project', type: 'string' }
         ],
-        idProperty: 'id'
+        idProperty: 'index'
     });
 
-    var selectPath = function (tree, ids, callback) {
-        var root = tree.getRootNode(),
-            field = 'id',
-            separator = '/',
-            path = ids.join(separator);
-
-        path = separator + root.get(field) + separator + path;
-        tree.selectPath(path, field, separator, callback || Ext.emptyFn);
-    };
-
     var change = function (node, pagingtoolbar) {
-        var me = pagingtoolbar.store, attributes = node.raw.attributes;
-        if (!Ext.isEmpty(attributes) && attributes.length > 0) {
-            var id = Ext.Array.findBy(attributes, function (item, index) {
-                return item.key === 'id';
-            });
-
-            if (!Ext.isEmpty(id))
-                me.proxy.extraParams.nodeid = id.value;
-
-            var type = Ext.Array.findBy(attributes, function (item, index) {
-                return item.key === 'type';
-            });
-
-            if (!Ext.isEmpty(type))
-                me.proxy.extraParams.nodetype = type.value;
-        }
-
+        var me = pagingtoolbar.store;
+        me.proxy.extraParams.node = node.getId();
         me.loadPage(1);
     };
 
@@ -64,7 +188,7 @@
         me.proxy.extraParams.devtype = Ext.getCmp('device-type-multicombo').getSelectedValues();
         me.proxy.extraParams.almlevel = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
         me.proxy.extraParams.logictype = Ext.getCmp('logic-type-multicombo').getSelectedValues();
-        me.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
+        me.proxy.extraParams.pointname = Ext.getCmp('point-name-textfield').getRawValue();
 
         me.proxy.extraParams.confirm = 'all';
         if (Ext.getCmp('show-confirm-menu').checked)
@@ -89,25 +213,25 @@
     };
 
     var confirm = function (pagingtoolbar) {
-        var grid = Ext.getCmp('active-alarm-grid'),
-            selmodel = grid.getSelectionModel();
+        var grid = Ext.getCmp('alarms-grid'),
+            selection = grid.getSelectionModel();
 
-        if (!selmodel.hasSelection()) {
+        if (!selection.hasSelection()) {
             Ext.Msg.show({ title: '系统警告', msg: '请勾选需要确认的告警', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING });
             return false;
         }
 
-        var models = selmodel.getSelection();
+        var models = selection.getSelection();
         Ext.Msg.confirm('确认对话框', Ext.String.format('共{0}条告警将被确认，您确定吗？', models.length), function (buttonId, text) {
             if (buttonId === 'yes') {
-                var ids = [];
+                var keys = [];
                 Ext.Array.each(models, function (item, index, allItems) {
-                    ids.push(item.get('id'));
+                    keys.push(Ext.String.format('{0}{1}{2}', item.get('fsuid'), $$iPems.Separator, item.get('id')));
                 });
 
                 Ext.Ajax.request({
                     url: '/Home/ConfirmAlarms',
-                    params: { ids: ids },
+                    params: { keys: keys },
                     mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
@@ -172,177 +296,6 @@
         }]
     });
 
-    var chartPie1 = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie1',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie1.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    //this.setTitle('');
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '告警总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '告警占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
-    var chartPie2 = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie2',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie2.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-                    
-                    //this.setTitle('');
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '告警总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '告警占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
-    var chartPie3 = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie3',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie3.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-                    
-                    //this.setTitle('');
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '告警总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '告警占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
@@ -364,14 +317,13 @@
                 root: 'data'
             },
             extraParams: {
-                nodeid: 'root',
-                nodetype: $$iPems.Organization.Area,
+                node: 'root',
                 statype: [],
                 roomtype: [],
                 devtype: [],
                 almlevel: [],
                 logictype: [],
-                point: '',
+                pointname: '',
                 confirm: 'all',
                 project: 'all'
             },
@@ -379,29 +331,78 @@
         },
         listeners: {
             load: function (me, records, successful) {
-                if (successful) {
-                    var data = me.proxy.reader.jsonData,
-                        chartData1 = $$iPems.ChartEmptyDataPie,
-                        chartData2 = $$iPems.ChartEmptyDataPie,
-                        chartData3 = $$iPems.ChartEmptyDataPie;
-
+                if (successful && pieChart && lineChart) {
+                    var data = me.proxy.reader.jsonData;
                     if (!Ext.isEmpty(data)
                         && !Ext.isEmpty(data.chart)
                         && Ext.isArray(data.chart)
-                        && data.chart.length == 3) {
-                        if (!Ext.isEmpty(data.chart[0]))
-                            chartData1 = data.chart[0];
+                        && data.chart.length == 2) {
+                        if (!Ext.isEmpty(data.chart[0])) {
+                            pieOption.series[0].data[0].value = 0;
+                            pieOption.series[0].data[1].value = 0;
+                            pieOption.series[0].data[2].value = 0;
+                            pieOption.series[0].data[3].value = 0;
+                            Ext.Array.each(data.chart[0], function (item, index) {
+                                if (item.index == $$iPems.AlmLevel.Level1)
+                                    pieOption.series[0].data[0].value = item.value;
+                                else if(item.index == $$iPems.AlmLevel.Level2)
+                                    pieOption.series[0].data[1].value = item.value;
+                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                    pieOption.series[0].data[2].value = item.value;
+                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                    pieOption.series[0].data[3].value = item.value;
+                            });
+                            pieChart.setOption(pieOption);
+                        }
+                            
+                        if (!Ext.isEmpty(data.chart[1])) {
+                            var xaxis = [],
+                                series1 = [],
+                                series2 = [],
+                                series3 = [],
+                                series4 = [],
+                                groups = {};
 
-                        if (!Ext.isEmpty(data.chart[1]))
-                            chartData2 = data.chart[1];
+                            
+                            Ext.Array.each(data.chart[1], function (item, index) {
+                                if (!groups[item.name]) {
+                                    groups[item.name] = {
+                                        Key: item.name,
+                                        L1: 0,
+                                        L2: 0,
+                                        L3: 0,
+                                        L4: 0
+                                    };
+                                }
 
-                        if (!Ext.isEmpty(data.chart[2]))
-                            chartData3 = data.chart[2];
+                                if (item.index == $$iPems.AlmLevel.Level1)
+                                    groups[item.name].L1 = item.value;
+                                else if (item.index == $$iPems.AlmLevel.Level2)
+                                    groups[item.name].L2 = item.value;
+                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                    groups[item.name].L3 = item.value;
+                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                    groups[item.name].L4 = item.value;
+                            });
+
+                            for (var x in groups) {
+                                if (Object.prototype.hasOwnProperty.call(groups, x)) {
+                                    xaxis.push(groups[x].Key);
+                                    series1.push(groups[x].L1);
+                                    series2.push(groups[x].L2);
+                                    series3.push(groups[x].L3);
+                                    series4.push(groups[x].L4);
+                                }
+                            }
+                            
+                            lineOption.xAxis[0].data = xaxis;
+                            lineOption.series[0].data = series1;
+                            lineOption.series[1].data = series2;
+                            lineOption.series[2].data = series3;
+                            lineOption.series[3].data = series4;
+                            lineChart.setOption(lineOption);
+                        }
                     }
-
-                    chartPie1.getStore().loadData(chartData1, false);
-                    chartPie2.getStore().loadData(chartData2, false);
-                    chartPie3.getStore().loadData(chartData3, false);
 
                     $$iPems.Tasks.actAlmTask.fireOnStart = false;
                     $$iPems.Tasks.actAlmTask.restart();
@@ -419,10 +420,10 @@
             layout: 'border',
             border: false,
             items: [{
-                id: 'alarm-organization',
+                id: 'organization',
                 region: 'west',
                 xtype: 'treepanel',
-                title: '系统设备列表',
+                title: '系统层级列表',
                 glyph: 0xf011,
                 width: 220,
                 split: true,
@@ -435,11 +436,7 @@
                     id: 'root',
                     text: '全部',
                     expanded: true,
-                    icon: $$iPems.icons.Home,
-                    attributes: [
-                        { key: 'id', value: 'root' },
-                        { key: 'type', value: $$iPems.Organization.Area }
-                    ]
+                    icon: $$iPems.icons.Home
                 },
                 viewConfig: {
                     loadMask: true
@@ -449,37 +446,13 @@
                     nodeParam: 'node',
                     proxy: {
                         type: 'ajax',
-                        url: '/Home/GetOrganization',
-                        extraParams: {
-                            id: '',
-                            type: -1
-                        },
+                        url: '/Component/GetDevices',
                         reader: {
                             type: 'json',
                             successProperty: 'success',
                             messageProperty: 'message',
                             totalProperty: 'total',
                             root: 'data'
-                        }
-                    },
-                    listeners: {
-                        beforeexpand: function (node) {
-                            var me = this, attributes = node.raw.attributes;
-                            if (!Ext.isEmpty(attributes) && attributes.length > 0) {
-                                var id = Ext.Array.findBy(attributes, function (item, index) {
-                                    return item.key === 'id';
-                                });
-
-                                if (!Ext.isEmpty(id))
-                                    me.proxy.extraParams.id = id.value;
-
-                                var type = Ext.Array.findBy(attributes, function (item, index) {
-                                    return item.key === 'type';
-                                });
-
-                                if (!Ext.isEmpty(type))
-                                    me.proxy.extraParams.type = type.value;
-                            }
                         }
                     }
                 }),
@@ -490,7 +463,7 @@
                 },
                 tbar: [
                     {
-                        id: 'alarm-search-field',
+                        id: 'organization-search-field',
                         xtype: 'textfield',
                         emptyText: '请输入筛选条件...',
                         flex: 1,
@@ -506,8 +479,8 @@
                         xtype: 'button',
                         glyph: 0xf005,
                         handler: function () {
-                            var tree = Ext.getCmp('alarm-organization'),
-                                search = Ext.getCmp('alarm-search-field'),
+                            var tree = Ext.getCmp('organization'),
+                                search = Ext.getCmp('organization-search-field'),
                                 text = search.getRawValue();
 
                             if (Ext.isEmpty(text, false)) {
@@ -527,11 +500,11 @@
                                     Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                 }
 
-                                selectPath(tree, paths[index]);
+                                $$iPems.selectNodePath(tree, paths[index]);
                                 search._filterIndex = index;
                             } else {
                                 Ext.Ajax.request({
-                                    url: '/Home/SearchOrganization',
+                                    url: '/Component/FilterRoomPath',
                                     params: { text: text },
                                     mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
                                     success: function (response, options) {
@@ -539,7 +512,7 @@
                                         if (data.success) {
                                             var len = data.data.length;
                                             if (len > 0) {
-                                                selectPath(tree, data.data[0]);
+                                                $$iPems.selectNodePath(tree, data.data[0]);
                                                 search._filterData = data.data;
                                                 search._filterIndex = 0;
                                             } else {
@@ -555,7 +528,6 @@
                     }
                 ]
             }, {
-                id: 'alarm-dashboard',
                 region: 'center',
                 xtype: 'panel',
                 border: false,
@@ -572,22 +544,31 @@
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
-                    flex: 1,
-                    tools: [
-                        //{
-                        //    type: 'print',
-                        //    tooltip: '数据导出',
-                        //    handler: function (event, toolEl, panelHeader) {
-                        //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
-                        //    }
-                        //}
-                    ],
+                    //tools: [
+                    //    {
+                    //        type: 'print',
+                    //        tooltip: '数据导出',
+                    //        handler: function (event, toolEl, panelHeader) {
+                    //            Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
+                    //        }
+                    //    }
+                    //],
                     layout: {
                         type: 'hbox',
                         align: 'stretch',
                         pack: 'start'
                     },
-                    items: [chartPie1, chartPie2, chartPie3]
+                    items: [
+                        {
+                            xtype: 'container',
+                            flex: 1,
+                            contentEl: 'pie-chart'
+                        }, {
+                            xtype: 'container',
+                            flex: 2,
+                            contentEl: 'line-chart'
+                        }
+                    ]
                 }, {
                     xtype: 'panel',
                     glyph: 0xf029,
@@ -614,20 +595,19 @@
                         }
                     ],
                     items: [{
-                        id: 'active-alarm-grid',
+                        id: 'alarms-grid',
                         xtype: 'grid',
                         selType: 'checkboxmodel',
                         border: false,
                         store: currentStore,
-                        loadMask: false,
                         viewConfig: {
                             loadMask: false,
-                            preserveScrollOnRefresh: true,
                             stripeRows: true,
                             trackOver: true,
+                            preserveScrollOnRefresh: true,
                             emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                             getRowClass: function (record, rowIndex, rowParams, store) {
-                                return $$iPems.GetAlmLevelCls(record.get("levelValue"));
+                                return $$iPems.GetAlmLevelCls(record.get("levelid"));
                             }
                         },
                         listeners: {
@@ -701,16 +681,8 @@
                                 dataIndex: 'room'
                             },
                             {
-                                text: '设备类型',
-                                dataIndex: 'devType'
-                            },
-                            {
-                                text: '设备名称',
+                                text: '所属设备',
                                 dataIndex: 'device'
-                            },
-                            {
-                                text: '逻辑分类',
-                                dataIndex: 'logic'
                             },
                             {
                                 text: '信号名称',
@@ -729,23 +701,27 @@
                                 dataIndex: 'frequency'
                             },
                             {
-                                text: '工程预约',
-                                dataIndex: 'project',
-                                renderer: function (value, p, record) {
-                                    return Ext.String.format('<a href="javascript:void(0)" style="color:#157fcc;">{0}</a>', value);
-                                }
+                                text: '告警历时',
+                                dataIndex: 'interval'
                             },
                             {
                                 text: '确认状态',
-                                dataIndex: 'confirmedstatus'
+                                dataIndex: 'confirmed'
+                            },
+                            {
+                                text: '确认人员',
+                                dataIndex: 'confirmer'
                             },
                             {
                                 text: '确认时间',
                                 dataIndex: 'confirmedtime'
                             },
                             {
-                                text: '确认人员',
-                                dataIndex: 'confirmer'
+                                text: '工程预约',
+                                dataIndex: 'project',
+                                renderer: function (value, p, record) {
+                                    return Ext.String.format('<a href="javascript:void(0)" style="color:#157fcc;">{0}</a>', value);
+                                }
                             }
                         ],
                         bbar: currentPagingToolbar,
@@ -900,5 +876,14 @@
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
+    });
+
+    Ext.onReady(function () {
+        pieChart = echarts.init(document.getElementById("pie-chart"), 'shine');
+        lineChart = echarts.init(document.getElementById("line-chart"), 'shine');
+
+        //init charts
+        pieChart.setOption(pieOption);
+        lineChart.setOption(lineOption);
     });
 })();

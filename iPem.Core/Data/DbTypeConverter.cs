@@ -144,10 +144,10 @@ namespace iPem.Core.Data {
         /// DBNull Database Type Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmDatabaseType DBNullDatabaseTypeHandler(object val) {
-            if(val == DBNull.Value) { return EnmDatabaseType.Master; }
+        public static EnmDbType DBNullDatabaseTypeHandler(object val) {
+            if(val == DBNull.Value) { return EnmDbType.Sc; }
             var em = Convert.ToInt32(val);
-            return System.Enum.IsDefined(typeof(EnmDatabaseType), em) ? (EnmDatabaseType)em : EnmDatabaseType.Master;
+            return System.Enum.IsDefined(typeof(EnmDbType), em) ? (EnmDbType)em : EnmDbType.Sc;
         }
     }
 }

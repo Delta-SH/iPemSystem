@@ -21,8 +21,8 @@ namespace iPem.Core.Data {
                 throw new ArgumentNullException("dataProvider");
 
             this._dataProvider = dataProvider;
-            this.CurrentDbSets = new Dictionary<EnmDatabaseType, DbEntity>();
-            this.CurrentConnetions = new Dictionary<EnmDatabaseType, string>();
+            this.CurrentDbSets = new Dictionary<EnmDbType, DbEntity>();
+            this.CurrentConnetions = new Dictionary<EnmDbType, string>();
             this.Initializer();
         }
 
@@ -77,8 +77,8 @@ namespace iPem.Core.Data {
             builder.IntegratedSecurity = false;
             builder.DataSource = String.Format("{0},{1}", entity.IP, entity.Port);
             builder.InitialCatalog = entity.Name;
-            builder.UserID = entity.UId;
-            builder.Password = entity.Pwd;
+            builder.UserID = entity.Uid;
+            builder.Password = entity.Password;
             builder.PersistSecurityInfo = false;
             builder.MultipleActiveResultSets = true;
             builder.ConnectTimeout = 120;
@@ -105,19 +105,19 @@ namespace iPem.Core.Data {
         }
 
         public virtual bool DatabaseIsInstalled() {
-            if(!IsValid(EnmDatabaseType.Master))
+            if(!IsValid(EnmDbType.Rs))
                 return false;
 
-            if(!IsValid(EnmDatabaseType.History))
+            if(!IsValid(EnmDbType.Cs))
                 return false;
 
-            if(!IsValid(EnmDatabaseType.Resource))
+            if(!IsValid(EnmDbType.Sc))
                 return false;
 
             return true;
         }
 
-        public virtual bool IsValid(EnmDatabaseType dt) {
+        public virtual bool IsValid(EnmDbType dt) {
             return CurrentDbSets.ContainsKey(dt) && CurrentConnetions.ContainsKey(dt);
         }
 
@@ -125,9 +125,9 @@ namespace iPem.Core.Data {
 
         #region Properties
 
-        public virtual Dictionary<EnmDatabaseType, DbEntity> CurrentDbSets { get; private set; }
+        public virtual Dictionary<EnmDbType, DbEntity> CurrentDbSets { get; private set; }
 
-        public virtual Dictionary<EnmDatabaseType, string> CurrentConnetions { get; private set; }
+        public virtual Dictionary<EnmDbType, string> CurrentConnetions { get; private set; }
 
         #endregion
 

@@ -19,8 +19,6 @@ namespace iPem.Site.Models {
 
         public bool leaf  { get; set; }
 
-        public List<CustomAttribute> attributes { get; set; }
-
         public List<TreeModel> data { get; set; }
     }
 }

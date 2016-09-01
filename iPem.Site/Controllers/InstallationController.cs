@@ -1,12 +1,12 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Data;
-using iPem.Core.Domain.Master;
+using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Data.Common;
 using iPem.Data.Installation;
-using iPem.Data.Repository.Master;
-using iPem.Services.Master;
+using iPem.Data.Repository.Sc;
+using iPem.Services.Sc;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
 using iPem.Site.Models.Installation;
@@ -67,138 +67,17 @@ namespace iPem.Site.Controllers {
             return RedirectToRoute("HomePage");
         }
 
-        public JsonResult InstallCs(int type, string data) {
-            var result = new AjaxResultModel {
-                success = false,
-                code = 400,
-                message = "Install.InstallCs error."
-            };
-
-            try {
-                var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); var created = (database.crdnew == 0);
-
-                var scripts = new List<string>(){
-                        "~/Resources/install/create/create_cs_database.sql",
-                        "~/Resources/install/create/create_cs_data.sql"
-                    };
-
-                if(!created)
-                    database.name = database.oname;
-
-                if(created) {
-                    var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
-                    _dbInstaller.InstallDatabase(createdString, database.name, database.path);
-                } else if(!database.uncheck) {
-                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
-                        throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
-                }
-
-                var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
-                using(var scope = new System.Transactions.TransactionScope()) {
-                    foreach(var file in scripts) {
-                        _dbInstaller.InstallData(connectionString, file);
-                    }
-
-                    scope.Complete();
-                }
-
-                var entity = new DbEntity() {
-                    Id = Guid.NewGuid(),
-                    Provider = EnmDbProvider.SqlServer,
-                    Type = EnmDatabaseType.Master,
-                    IP = database.ipv4,
-                    Port = database.port,
-                    UId = database.uid,
-                    Pwd = database.pwd,
-                    Name = database.name
-                };
-
-                _dataProvider.DelEntites(new List<DbEntity>() { entity });
-                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
-                _dbManager.Initializer();
-
-                result.success = true;
-                result.code = 200;
-                result.message = "OK";
-            } catch(Exception err) {
-                result.message = err.Message;
-            }
-
-            return Json(result);
-        }
-
-        public JsonResult InstallHs(int type, string data) {
-            var result = new AjaxResultModel {
-                success = false,
-                code = 400,
-                message = "Install.InstallHs error."
-            };
-
-            try {
-                var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); var created = (database.crdnew == 0);
-
-                var scripts = new List<string>(){
-                        "~/Resources/install/create/create_hs_database.sql",
-                        "~/Resources/install/create/create_hs_data.sql"
-                    };
-
-                if(!created)
-                    database.name = database.oname;
-
-                if(created) {
-                    var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
-                    _dbInstaller.InstallDatabase(createdString, database.name, database.path);
-                } else if(!database.uncheck) {
-                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
-                        throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
-                }
-
-                var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
-                using(var scope = new System.Transactions.TransactionScope()) {
-                    foreach(var file in scripts) {
-                        _dbInstaller.InstallData(connectionString, file);
-                    }
-
-                    scope.Complete();
-                }
-
-                var entity = new DbEntity() {
-                    Id = Guid.NewGuid(),
-                    Provider = EnmDbProvider.SqlServer,
-                    Type = EnmDatabaseType.History,
-                    IP = database.ipv4,
-                    Port = database.port,
-                    UId = database.uid,
-                    Pwd = database.pwd,
-                    Name = database.name
-                };
-
-                _dataProvider.DelEntites(new List<DbEntity>() { entity });
-                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
-                _dbManager.Initializer();
-
-                result.success = true;
-                result.code = 200;
-                result.message = "OK";
-            } catch(Exception err) {
-                result.message = err.Message;
-            }
-
-            return Json(result);
-        }
-
         public JsonResult InstallRs(int type, string data) {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.InstallRs error."
+                message = "Error: Installation.InstallRs."
             };
 
             try {
                 var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); var created = (database.crdnew == 0);
+                var installed = (type == 0); 
+                var created = (database.crdnew == 0);
 
                 var scripts = new List<string>(){
                         "~/Resources/install/create/create_rs_database.sql",
@@ -228,11 +107,135 @@ namespace iPem.Site.Controllers {
                 var entity = new DbEntity() {
                     Id = Guid.NewGuid(),
                     Provider = EnmDbProvider.SqlServer,
-                    Type = EnmDatabaseType.Resource,
+                    Type = EnmDbType.Rs,
                     IP = database.ipv4,
                     Port = database.port,
-                    UId = database.uid,
-                    Pwd = database.pwd,
+                    Uid = database.uid,
+                    Password = database.pwd,
+                    Name = database.name
+                };
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+
+                result.success = true;
+                result.code = 200;
+                result.message = "OK";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        public JsonResult InstallCs(int type, string data) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Error: Installation.InstallCs."
+            };
+
+            try {
+                var database = JsonConvert.DeserializeObject<DbModel>(data);
+                var installed = (type == 0); 
+                var created = (database.crdnew == 0);
+
+                var scripts = new List<string>(){
+                        "~/Resources/install/create/create_cs_database.sql",
+                        "~/Resources/install/create/create_cs_data.sql"
+                    };
+
+                if(!created)
+                    database.name = database.oname;
+
+                if(created) {
+                    var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
+                    _dbInstaller.InstallDatabase(createdString, database.name, database.path);
+                } else if(!database.uncheck) {
+                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
+                        throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
+                }
+
+                var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
+                using(var scope = new System.Transactions.TransactionScope()) {
+                    foreach(var file in scripts) {
+                        _dbInstaller.InstallData(connectionString, file);
+                    }
+
+                    scope.Complete();
+                }
+
+                var entity = new DbEntity() {
+                    Id = Guid.NewGuid(),
+                    Provider = EnmDbProvider.SqlServer,
+                    Type = EnmDbType.Cs,
+                    IP = database.ipv4,
+                    Port = database.port,
+                    Uid = database.uid,
+                    Password = database.pwd,
+                    Name = database.name
+                };
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+
+                result.success = true;
+                result.code = 200;
+                result.message = "OK";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        public JsonResult InstallSc(int type, string data) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Error: Installation.InstallSc."
+            };
+
+            try {
+                var database = JsonConvert.DeserializeObject<DbModel>(data);
+                var installed = (type == 0); 
+                var created = (database.crdnew == 0);
+
+                var scripts = new List<string>(){
+                        "~/Resources/install/create/create_sc_database.sql",
+                        "~/Resources/install/create/create_sc_data.sql"
+                    };
+
+                if(!created)
+                    database.name = database.oname;
+
+                if(created) {
+                    var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
+                    _dbInstaller.InstallDatabase(createdString, database.name, database.path);
+                } else if(!database.uncheck) {
+                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
+                        throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
+                }
+
+                var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
+                using(var scope = new System.Transactions.TransactionScope()) {
+                    foreach(var file in scripts) {
+                        _dbInstaller.InstallData(connectionString, file);
+                    }
+
+                    scope.Complete();
+                }
+
+                var entity = new DbEntity() {
+                    Id = Guid.NewGuid(),
+                    Provider = EnmDbProvider.SqlServer,
+                    Type = EnmDbType.Sc,
+                    IP = database.ipv4,
+                    Port = database.port,
+                    Uid = database.uid,
+                    Password = database.pwd,
                     Name = database.name
                 };
 
@@ -254,20 +257,20 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.InstallRl error."
+                message = "Error: Installation.InstallRl."
             };
 
             try {
                 if(!_dbManager.DatabaseIsInstalled())
-                    throw new iPemException("数据库未配置");
+                    throw new iPemException("数据库尚未配置，请完成配置后重试。");
 
                 var model = JsonConvert.DeserializeObject<iPem.Site.Models.Installation.RoleModel>(data);
-                var repository = new RoleRepository(_dbManager.CurrentConnetions[EnmDatabaseType.Master]);
+                var repository = new RoleRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
                 var service = new RoleService(repository, _cacheManager);
                 var installed = (type == 0);
 
                 var entity = service.GetRole(Role.SuperId);
-                if(entity != null) service.DeleteRole(entity);
+                if(entity != null) service.Remove(entity);
 
                 entity = new Role() {
                     Id = Role.SuperId,
@@ -276,8 +279,7 @@ namespace iPem.Site.Controllers {
                     Enabled = true
                 };
 
-                service.InsertRole(entity);
-
+                service.Add(entity);
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
@@ -292,22 +294,22 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.InstallUe error."
+                message = "Error: Installation.InstallUe."
             };
 
             try {
                 if(!_dbManager.DatabaseIsInstalled())
-                    throw new iPemException("数据库未配置");
+                    throw new iPemException("数据库尚未配置，请完成配置后重试。");
 
                 var model = JsonConvert.DeserializeObject<iPem.Site.Models.Installation.UserModel>(data);
-                var repository = new UserRepository(_dbManager.CurrentConnetions[EnmDatabaseType.Master]);
+                var repository = new UserRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
                 var service = new UserService(repository, _cacheManager);
                 var installed = (type == 0);
 
                 var entity = service.GetUser(model.name);
-                if(entity != null) service.DeleteUser(entity);
+                if(entity != null) service.Remove(entity);
 
-                service.InsertUser(new User() {
+                service.Add(new User() {
                     RoleId = Role.SuperId,
                     Id = Guid.NewGuid(),
                     Uid = model.name,
@@ -339,12 +341,11 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.InstallFs error."
+                message = "Error: Installation.InstallFs."
             };
 
             try {
                 EngineContext.Initialize(true);
-
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
@@ -359,74 +360,10 @@ namespace iPem.Site.Controllers {
             if(!_dbManager.DatabaseIsInstalled())
                 return RedirectToAction("Index");
 
-            ViewData["master"] = _dbManager.CurrentDbSets[EnmDatabaseType.Master];
-            ViewData["history"] = _dbManager.CurrentDbSets[EnmDatabaseType.History];
-            ViewData["resource"] = _dbManager.CurrentDbSets[EnmDatabaseType.Resource];
+            ViewData["RsDbSet"] = _dbManager.CurrentDbSets[EnmDbType.Rs];
+            ViewData["CsDbSet"] = _dbManager.CurrentDbSets[EnmDbType.Cs];
+            ViewData["ScDbSet"] = _dbManager.CurrentDbSets[EnmDbType.Sc];
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult SaveCs(DbEntity entity) {
-            var result = new AjaxResultModel {
-                success = false,
-                code = 400,
-                message = "Install.SaveCs error."
-            };
-
-            try {
-                if(entity == null)
-                    throw new ArgumentException("参数无效 entity");
-
-                entity.Id = Guid.NewGuid();
-                entity.Provider = EnmDbProvider.SqlServer;
-                entity.Type = EnmDatabaseType.Master;
-
-                _dataProvider.DelEntites(new List<DbEntity>() { entity });
-                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
-                _dbManager.Initializer();
-                //_webHelper.RestartAppDomain();
-
-                result.success = true;
-                result.code = 200;
-                result.message = "数据保存成功";
-            } catch(Exception err) {
-                result.message = err.Message;
-            }
-
-            return Json(result);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult SaveHs(DbEntity entity) {
-            var result = new AjaxResultModel {
-                success = false,
-                code = 400,
-                message = "Install.SaveHs error."
-            };
-
-            try {
-                if(entity == null)
-                    throw new ArgumentException("参数无效 entity");
-
-                entity.Id = Guid.NewGuid();
-                entity.Provider = EnmDbProvider.SqlServer;
-                entity.Type = EnmDatabaseType.History;
-
-                _dataProvider.DelEntites(new List<DbEntity>() { entity });
-                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
-                _dbManager.Initializer();
-                //_webHelper.RestartAppDomain();
-
-                result.success = true;
-                result.code = 200;
-                result.message = "数据保存成功";
-            } catch(Exception err) {
-                result.message = err.Message;
-            }
-
-            return Json(result);
         }
 
         [HttpPost]
@@ -435,21 +372,82 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.SaveRs error."
+                message = "Error: Installation.SaveRs."
             };
 
             try {
-                if(entity == null)
-                    throw new ArgumentException("参数无效 entity");
+                if(entity == null) throw new ArgumentException("参数无效 entity");
 
                 entity.Id = Guid.NewGuid();
                 entity.Provider = EnmDbProvider.SqlServer;
-                entity.Type = EnmDatabaseType.Resource;
+                entity.Type = EnmDbType.Rs;
 
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
                 _dbManager.Initializer();
-                //_webHelper.RestartAppDomain();
+                EngineContext.Initialize(true);
+
+                result.success = true;
+                result.code = 200;
+                result.message = "数据保存成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult SaveCs(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Error: Installation.SaveCs."
+            };
+
+            try {
+                if(entity == null) throw new ArgumentException("参数无效 entity");
+
+                entity.Id = Guid.NewGuid();
+                entity.Provider = EnmDbProvider.SqlServer;
+                entity.Type = EnmDbType.Cs;
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+                EngineContext.Initialize(true);
+
+                result.success = true;
+                result.code = 200;
+                result.message = "数据保存成功";
+            } catch(Exception err) {
+                result.message = err.Message;
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult SaveSc(DbEntity entity) {
+            var result = new AjaxResultModel {
+                success = false,
+                code = 400,
+                message = "Error: Installation.SaveSc."
+            };
+
+            try {
+                if(entity == null) throw new ArgumentException("参数无效 entity");
+
+                entity.Id = Guid.NewGuid();
+                entity.Provider = EnmDbProvider.SqlServer;
+                entity.Type = EnmDbType.Sc;
+
+                _dataProvider.DelEntites(new List<DbEntity>() { entity });
+                _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _dbManager.Initializer();
+                EngineContext.Initialize(true);
 
                 result.success = true;
                 result.code = 200;
@@ -467,7 +465,7 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.DbClean error."
+                message = "Error: Installation.DbClean."
             };
 
             try {
@@ -479,7 +477,7 @@ namespace iPem.Site.Controllers {
 
                 _dataProvider.CleanEntites();
                 _dbManager.Clean();
-                //_webHelper.RestartAppDomain();
+                EngineContext.Initialize(true);
 
                 result.success = true;
                 result.code = 200;
@@ -497,14 +495,12 @@ namespace iPem.Site.Controllers {
             var result = new AjaxResultModel {
                 success = false,
                 code = 400,
-                message = "Install.DbTest error."
+                message = "Error: Installation.DbTest."
             };
 
             try {
-                if(entity == null)
-                    throw new ArgumentException("参数无效 entity");
-
-                SqlHelper.TestConnection(false, entity.IP, entity.Port, entity.Name, entity.UId, entity.Pwd);
+                if(entity == null) throw new ArgumentException("参数无效 entity");
+                SqlHelper.TestConnection(false, entity.IP, entity.Port, entity.Name, entity.Uid, entity.Password);
                 result.success = true;
                 result.code = 200;
                 result.message = "数据库连接成功";

@@ -1,15 +1,13 @@
 ﻿using iPem.Core;
-using iPem.Core.Domain.Resource;
 using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Web;
-using System.Web.Security;
 using System.Xml;
 
 namespace iPem.Site.Infrastructure {
@@ -308,6 +306,31 @@ namespace iPem.Site.Infrastructure {
                 case EnmPoint.AI:
                 case EnmPoint.AO:
                     return string.Format("{0} {1}", value, unit ?? string.Empty);
+                default:
+                    return "";
+            }
+        }
+
+        public static string GetUnitDisplay(EnmPoint type, double value, string unit) {
+            switch(type) {
+                case EnmPoint.DI:
+                case EnmPoint.DO:
+                    var result = string.Empty;
+                    var units = (unit ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach(var u in units) {
+                        var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+                        if(vs.Length != 2) continue;
+
+                        var flag = ((int)value).ToString();
+                        if(vs[0].Trim() == flag) {
+                            result = vs[1].Trim();
+                            break;
+                        }
+                    }
+                    return result;
+                case EnmPoint.AI:
+                case EnmPoint.AO:
+                    return unit;
                 default:
                     return "";
             }

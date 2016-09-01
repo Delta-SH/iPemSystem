@@ -11,13 +11,14 @@ using iPem.Data.Common;
 
 namespace iPem.Data.Installation {
     public partial class DbInstaller : IDbInstaller {
+
         #region Utilities
 
         protected virtual void ExecuteSqlFile(string path, string connectionString) {
             var statements = new List<string>();
 
             using (var stream = File.OpenRead(path))
-            using (var reader = new StreamReader(stream)) {
+            using(var reader = new StreamReader(stream, Encoding.Default)) {
                 string statement;
                 while ((statement = ReadNextStatementFromStream(reader)) != null) {
                     statements.Add(statement);
@@ -177,5 +178,6 @@ namespace iPem.Data.Installation {
         }
 
         #endregion
+
     }
 }

@@ -27,6 +27,16 @@
     background-repeat: no-repeat;
 }
 
+.x-icon-add {
+    background-image: url("../themes/icons/add.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tick {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
 .x-icon-delete {
     background-image: url("../themes/icons/delete.png") !important;
     background-repeat: no-repeat;

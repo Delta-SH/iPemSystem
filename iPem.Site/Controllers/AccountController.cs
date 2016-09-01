@@ -1,11 +1,16 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
 using iPem.Services.Common;
+using iPem.Services.Cs;
+using iPem.Services.Rs;
+using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
+using iPem.Site.Models.Organization;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,10 +19,6 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using MsDomain = iPem.Core.Domain.Master;
-using MsSrv = iPem.Services.Master;
-using RsDomain = iPem.Core.Domain.Resource;
-using RsSrv = iPem.Services.Resource;
 
 namespace iPem.Site.Controllers {
     public class AccountController : Controller {
@@ -27,21 +28,17 @@ namespace iPem.Site.Controllers {
         private readonly IExcelManager _excelManager;
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-        private readonly MsSrv.IWebLogger _webLogger;
-        private readonly MsSrv.IDictionaryService _dictionaryService;
-        private readonly MsSrv.IUserService _userService;
-        private readonly MsSrv.IRoleService _roleService;
-        private readonly MsSrv.IMenuService _menuService;
-        private readonly MsSrv.IMenusInRoleService _menusInRoleService;
-        private readonly MsSrv.INoticeService _noticeService;
-        private readonly MsSrv.INoticeInUserService _noticeInUserService;
-        private readonly MsSrv.IAreaService _msAreaService;
-        private readonly MsSrv.IAreasInRoleService _areaInRoleService;
-        private readonly MsSrv.IOperateInRoleService _operateInRoleService;
-        private readonly RsSrv.IEmployeeService _employeeService;
-        private readonly RsSrv.IDepartmentService _departmentService;
-        private readonly RsSrv.IAreaService _rsAreaService;
-
+        private readonly IWebLogger _webLogger;
+        private readonly IEmployeeService _employeeService;
+        private readonly IAreasInRoleService _areaInRoleService;
+        private readonly IDictionaryService _dictionaryService;
+        private readonly IMenuService _menuService;
+        private readonly IMenusInRoleService _menusInRoleService;
+        private readonly INoticeService _noticeService;
+        private readonly INoticeInUserService _noticeInUserService;
+        private readonly IOperateInRoleService _operateInRoleService;
+        private readonly IRoleService _roleService;
+        private readonly IUserService _userService;
         private const string _captchaSalt = "w9hRaAIX+tRJ4GD4wnVkVQ==";
 
         #endregion
@@ -52,37 +49,31 @@ namespace iPem.Site.Controllers {
             IExcelManager excelManager,
             ICacheManager cacheManager,
             IWorkContext workContext,
-            MsSrv.IWebLogger webLogger,
-            MsSrv.IDictionaryService dictionaryService,
-            MsSrv.IUserService userService,
-            MsSrv.IRoleService roleService,
-            MsSrv.IMenuService menuService,
-            MsSrv.IMenusInRoleService menusInRoleService,
-            MsSrv.INoticeService noticeService,
-            MsSrv.INoticeInUserService noticeInUserService,
-            MsSrv.IAreaService msAreaService,
-            MsSrv.IAreasInRoleService areaInRoleService,
-            MsSrv.IOperateInRoleService operateInRoleService,
-            RsSrv.IEmployeeService employeeService,
-            RsSrv.IDepartmentService departmentService,
-            RsSrv.IAreaService rsAreaService) {
+            IWebLogger webLogger,
+            IEmployeeService employeeService,
+            IAreasInRoleService areaInRoleService,
+            IDictionaryService dictionaryService,
+            IMenuService menuService,
+            IMenusInRoleService menusInRoleService,
+            INoticeService noticeService,
+            INoticeInUserService noticeInUserService,
+            IOperateInRoleService operateInRoleService,
+            IRoleService roleService,
+            IUserService userService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
+            this._employeeService = employeeService;
+            this._areaInRoleService = areaInRoleService;
             this._dictionaryService = dictionaryService;
-            this._userService = userService;
-            this._roleService = roleService;
             this._menuService = menuService;
             this._menusInRoleService = menusInRoleService;
             this._noticeService = noticeService;
             this._noticeInUserService = noticeInUserService;
-            this._msAreaService = msAreaService;
-            this._areaInRoleService = areaInRoleService;
             this._operateInRoleService = operateInRoleService;
-            this._employeeService = employeeService;
-            this._departmentService = departmentService;
-            this._rsAreaService = rsAreaService;
+            this._roleService = roleService;
+            this._userService = userService;
         }
 
         #endregion
@@ -166,7 +157,7 @@ namespace iPem.Site.Controllers {
 
                     var store = new Store {
                         Id = Guid.NewGuid(),
-                        ExpireUtc = now.Add(CachedIntervals.Site_StoreIntervals),
+                        ExpireUtc = now.Add(CachedIntervals.Store_Intervals),
                         CreatedUtc = now
                     };
 
@@ -238,9 +229,9 @@ namespace iPem.Site.Controllers {
 
         [Authorize]
         public ActionResult GetCurrentPhoto() {
-            if(_workContext.AssociatedEmployee != null && _workContext.AssociatedEmployee.Photo != null) {
-                return File(_workContext.AssociatedEmployee.Photo, @"image/png");
-            } else if(_workContext.AssociatedEmployee.Sex == EnmSex.Female) {
+            if(_workContext.Employee != null && _workContext.Employee.Photo != null) {
+                return File(_workContext.Employee.Photo, @"image/png");
+            } else if(_workContext.Employee.Sex == EnmSex.Female) {
                 var photo = Convert.FromBase64String(@"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAIAAAD9b0jDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MTFEOEQ4NTY5MjdCMTFFNThCQ0RDMzY1NUJFQjdBQTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MTFEOEQ4NTc5MjdCMTFFNThCQ0RDMzY1NUJFQjdBQTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxMUQ4RDg1NDkyN0IxMUU1OEJDREMzNjU1QkVCN0FBOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxMUQ4RDg1NTkyN0IxMUU1OEJDREMzNjU1QkVCN0FBOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuDyG6MAAAQISURBVHjanFRJbBtlFJ75x+OZ8TjjLa7rxCUloUXETZQuWYRKxRIVxFYVRA8cuVZCVEhFHLj0CKpYhMQBTlWvLKJSJUgjSkMR2ZoqaWPHtHZSY9fx7vFsnhnPz+8FN1i202Q0h/+993+f3nvf+x8uZmNYx68sxozcHaOUwoDZxB0knEMYTnSGmDrE9PScsvZduRDY6gSMlx58n/Qc7wDE22VaundJCX3bDsYMnTfve2NnpFp8Srp9oVMRGonRT3UNv2f2TjweqS7y189AlW/b5RIm5WAVjbme/5h58rWmC6BF4dGrWxlNnJ/qOU153ySsB5AJDUwuwHoMYvm/vngsofSH040z1XOKtB+rnUnHqM7fFe5fMVtJo6zqkgghVpZlQ/gHWH2dSGFZ0QvBesw20mBsZG0/7K+dlcRsPnAF8arZVfr/pM3lG8IGIq60i2Cpva900IreO05y7gpEzm5TvlFKVxUgKN87uc1iSU4ig7LQDq8HGvBheF0WRKQP53Ls8flM3CGV/03NPLB0JtWSdyCG49SwiR1wWKAglUS5RJsBZsD4vYjFZgU2ZxdLswxVFY3WSxAz0dupT+0RU4YulSrp4vjP15e+vDxl4bpwACSh6PR4Ll765erMMgqhC6qYk3OQsI9spz7pQC3VxM2a9e6rE/C/+cGxCtGn585UCSufmt9s2W7Q+sFIGUOTa8kCUOfACaBrGjJraWIQKm2eeGtSBFDzkSafd3+fIkoNEzEamrITUoRJBZo8rI2z2m0NU4wFdrz6lNRdQ38dmCoqFzJ8IlYZNZfH3u1xViuBfORWO2zbTGFZTa+v1Bedlcml8rl0wWpja57MelCTCrtZ0mpiUe4dYhjKTJETLx155Fe1bPDGLje/mVD4vIAoOI6tKY6mSxAkQRBNuqjvjhSnHQzLSJLMFwWKMhM4rigaIHAry2oWuy6kd0aq0f0Wzk31HkcJsqyF0suqphkQWliGNFUg9sOn+LU/hGwS8JFOm59PJUNzc6H5+Vgk+cmPP6zeuOYEUbzxeprnGObgE4MnJi+cftvX5z4wPvr02FhXt7ue6fL0VGhxObwaTicebbC/F28feuHl1d+v2Y11HDTzGhDjQb//uRdDi0upRBb9S7NrGHbZ7XX2+wcOHhkh6I1sLBKXBHkrTBaKx05Ouvf35yVKSMcpEjZCvAhI37MDR0fR+fvPv97ceNAIIZJYOL5881brnq7M/BmYnX9mfHTfoL/o7fnp4mdlKYNqBmz3Wx+etzrs6E5wbmFl5mZLODHW29cysDa3cPTkJErkq7Pn7q8E49F0PJqJhaMLv04PjAyjVn/zwUeKJLUem7NjJ9pNhqvHy6czmqo2b0eKsnW70rF4O+C/AgwABxjY7MvCiokAAAAASUVORK5CYII=");
                 return File(photo, @"image/png");
             } else {
@@ -271,7 +262,7 @@ namespace iPem.Site.Controllers {
                 var names = Common.SplitCondition(condition);
                 var roles = names.Length == 0 ?
                     _roleService.GetAllRoles(start / limit, limit) :
-                    _roleService.GetAllRoles(names, start / limit, limit);
+                    _roleService.GetRoles(names, start / limit, limit);
 
                 if(roles.TotalCount > 0) {
                     data.message = "200 Ok";
@@ -287,7 +278,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -317,20 +308,19 @@ namespace iPem.Site.Controllers {
                 if(role == null)
                     throw new iPemException("未找到数据对象");
 
-                var menus = _menuService.GetMenus(role.Id);
-                var areas = _areaInRoleService.GetAreasInRole(role.Id);
-                var operate = _operateInRoleService.GetOperateInRole(role.Id);
+                var menus = _menuService.GetMenusAsList(role.Id);
+                var areas = _areaInRoleService.GetKeysAsList(role.Id);
+                var operate = _operateInRoleService.GetOperates(role.Id);
                 data.data.id = role.Id.ToString();
                 data.data.name = role.Name;
                 data.data.comment = role.Comment;
                 data.data.enabled = role.Enabled;
                 data.data.menuIds = menus.Select(m => m.Id.ToString()).ToArray();
-                data.data.areaIds = areas.AreaIds.ToArray();
-                data.data.operateIds = operate.OperateIds.Select(o => ((int)o).ToString()).ToArray();
-
+                data.data.areaIds = areas.ToArray();
+                data.data.operateIds = operate.Operates.Select(o => ((int)o).ToString()).ToArray();
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -346,9 +336,9 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var menus = _workContext.AssociatedMenus;
+                var menus = _workContext.Menus;
                 if(menus.Count > 0) {
-                    var roots = new List<MsDomain.Menu>();
+                    var roots = new List<Menu>();
                     foreach(var menu in menus) {
                         if(!menus.Any(m => m.Id == menu.LastId))
                             roots.Add(menu);
@@ -385,7 +375,7 @@ namespace iPem.Site.Controllers {
             };
         }
 
-        private void MenusRecursion(List<MsDomain.Menu> menus, int pid, TreeModel node) {
+        private void MenusRecursion(List<Menu> menus, int pid, TreeModel node) {
             var _menus = menus.FindAll(m => m.LastId == pid).OrderBy(m => m.Index).ToList();
             if(_menus.Count > 0) {
                 node.data = new List<TreeModel>();
@@ -417,30 +407,24 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var rsAreas = _rsAreaService.GetAreas().ToList();
-                var msAreas = _msAreaService.GetAllAreas().ToList();
-
-                var areas = (from ra in rsAreas
-                             join ma in msAreas on ra.AreaId equals ma.Id
-                             select ra).ToList();
-
-                if(areas.Count > 0) {
-                    var _areas = areas.FindAll(m => m.ParentId == "0");
-                    if(_areas.Count > 0) {
+                if(_workContext.Areas.Count > 0) {
+                    var roots = _workContext.Areas.FindAll(m => !m.HasParents);
+                    if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
-                        data.total = areas.Count;
-                        for(var i = 0; i < _areas.Count; i++) {
+                        data.total = _workContext.Areas.Count;
+                        for(var i = 0; i < roots.Count; i++) {
+                            var current = roots[i];
                             var root = new TreeModel {
-                                id = _areas[i].AreaId,
-                                text = _areas[i].Name,
+                                id = current.Current.Id,
+                                text = current.Current.Name,
                                 selected = false,
                                 icon = Icons.Diqiu,
                                 expanded = false,
                                 leaf = false
                             };
 
-                            AreasRecursion(areas, _areas[i].AreaId, root);
+                            AreasRecursion(current, root);
                             data.data.Add(root);
                         }
                     }
@@ -456,22 +440,22 @@ namespace iPem.Site.Controllers {
             };
         }
 
-        private void AreasRecursion(List<RsDomain.Area> areas, string pid, TreeModel node) {
-            var _areas = areas.FindAll(m => m.ParentId.Equals(pid, StringComparison.CurrentCultureIgnoreCase));
-            if(_areas.Count > 0) {
+        private void AreasRecursion(OrgArea parent, TreeModel node) {
+            if(parent.HasChildren) {
                 node.data = new List<TreeModel>();
-                for(var i = 0; i < _areas.Count; i++) {
-                    var children = new TreeModel {
-                        id = _areas[i].AreaId,
-                        text = _areas[i].Name,
+                for(var i = 0; i < parent.ChildRoot.Count; i++) {
+                    var current = parent.ChildRoot[i];
+                    var child = new TreeModel {
+                        id = current.Current.Id,
+                        text = current.Current.Name,
                         selected = false,
                         icon = Icons.Diqiu,
                         expanded = false,
                         leaf = false
                     };
 
-                    AreasRecursion(areas, _areas[i].AreaId, children);
-                    node.data.Add(children);
+                    AreasRecursion(current, child);
+                    node.data.Add(child);
                 }
             } else {
                 node.leaf = true;
@@ -529,19 +513,16 @@ namespace iPem.Site.Controllers {
                 if(role.areaIds == null || role.areaIds.Length == 0)
                     throw new iPemException("无效的区域权限，保存失败。");
 
-                var menus = new MsDomain.MenusInRole {
+                var menus = new MenusInRole {
                     RoleId = new Guid(role.id),
-                    Menus = role.menuIds.Select(i => new MsDomain.Menu { Id = int.Parse(i) }).ToList()
+                    Menus = role.menuIds.Select(i => new Menu { Id = int.Parse(i) }).ToList()
                 };
 
-                var areas = new MsDomain.AreasInRole {
-                    RoleId = new Guid(role.id),
-                    AreaIds = role.areaIds.ToList()
-                };
+                var areas = role.areaIds.ToList();
 
-                var operates = new MsDomain.OperateInRole {
+                var operates = new OperateInRole {
                     RoleId = new Guid(role.id),
-                    OperateIds = role.operateIds != null && role.operateIds.Length > 0 ? role.operateIds.Select(o => (EnmOperation)(int.Parse(o))).ToList() : new List<EnmOperation>()
+                    Operates = role.operateIds != null && role.operateIds.Length > 0 ? role.operateIds.Select(o => (EnmOperation)(int.Parse(o))).ToList() : new List<EnmOperation>()
                 };
 
                 if(action == (int)EnmAction.Add) {
@@ -549,18 +530,18 @@ namespace iPem.Site.Controllers {
                     if(existedRole != null)
                         throw new iPemException("角色已存在，保存失败。");
 
-                    var newRole = new MsDomain.Role {
+                    var newRole = new Role {
                         Id = new Guid(role.id),
                         Name = role.name,
                         Comment = role.comment,
                         Enabled = role.enabled
                     };
 
-                    _roleService.InsertRole(newRole);
+                    _roleService.Add(newRole);
                     _menusInRoleService.AddMenusInRole(menus);
-                    _areaInRoleService.AddAreasInRole(areas);
-                    _operateInRoleService.AddOperateInRole(operates);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增角色[{0}]", newRole.Name), null, _workContext.CurrentUser.Id);
+                    _areaInRoleService.Add(new Guid(role.id), areas);
+                    _operateInRoleService.Add(operates);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增角色[{0}]", newRole.Name), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existedRole = _roleService.GetRole(role.name);
@@ -572,20 +553,20 @@ namespace iPem.Site.Controllers {
                     existedRole.Comment = role.comment;
                     existedRole.Enabled = role.enabled;
 
-                    _roleService.UpdateRole(existedRole);
+                    _roleService.Update(existedRole);
                     _menusInRoleService.DeleteMenusInRole(existedRole.Id);
-                    _areaInRoleService.DeleteAreasInRole(existedRole.Id);
-                    _operateInRoleService.DeleteOperateInRole(existedRole.Id);
+                    _areaInRoleService.Remove(existedRole.Id);
+                    _operateInRoleService.Remove(existedRole.Id);
                     _menusInRoleService.AddMenusInRole(menus);
-                    _areaInRoleService.AddAreasInRole(areas);
-                    _operateInRoleService.AddOperateInRole(operates);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新角色[{0}]", existedRole.Name), null, _workContext.CurrentUser.Id);
+                    _areaInRoleService.Add(new Guid(role.id), areas);
+                    _operateInRoleService.Add(operates);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新角色[{0}]", existedRole.Name), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
                 }
 
                 throw new ArgumentException("参数无效 action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -605,14 +586,14 @@ namespace iPem.Site.Controllers {
                 if(usersInRole.TotalCount > 0)
                     throw new iPemException("存在隶属该角色的用户，禁止删除");
 
-                _roleService.DeleteRole(existedRole);
+                _roleService.Remove(existedRole);
                 _menusInRoleService.DeleteMenusInRole(existedRole.Id);
-                _areaInRoleService.DeleteAreasInRole(existedRole.Id);
-                _operateInRoleService.DeleteOperateInRole(existedRole.Id);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除角色[{0}]", existedRole.Name), null, _workContext.CurrentUser.Id);
+                _areaInRoleService.Remove(existedRole.Id);
+                _operateInRoleService.Remove(existedRole.Id);
+                _webLogger.Information(EnmEventType.Operating, string.Format("删除角色[{0}]", existedRole.Name), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "角色删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -623,8 +604,8 @@ namespace iPem.Site.Controllers {
             try {
                 var names = Common.SplitCondition(condition);
                 var roles = names.Length == 0 ?
-                    _roleService.GetAllRoles() :
-                    _roleService.GetAllRoles(names);
+                    _roleService.GetAllRolesAsList() :
+                    _roleService.GetRolesAsList(names);
 
                 var models = new List<RoleModel>();
                 for(var i = 0; i < roles.Count; i++) {
@@ -637,11 +618,11 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<RoleModel>(models, "角色信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<RoleModel>(models, "角色信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -661,40 +642,33 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
+                var users = _userService.GetUsersAsList(_workContext.Role.Id);
 
-                List<UserModel> models = null;
-                if(_cacheManager.IsSet(key)) {
-                    models = _cacheManager.Get<List<UserModel>>(key);
-                } else {
-                    var users = _userService.GetUsers(_workContext.CurrentRole.Id).ToList();
+                if(rids != null && rids.Length > 0)
+                    users = users.FindAll(u => rids.Contains(u.RoleId.ToString()));
 
-                    if(rids != null && rids.Length > 0)
-                        users = users.FindAll(u => rids.Contains(u.RoleId.ToString()));
+                if(names != null && names.Length > 0)
+                    users = users.FindAll(u => CommonHelper.ConditionContain(u.Uid, names));
 
-                    if(names != null && names.Length > 0)
-                        users = users.FindAll(u => CommonHelper.ConditionContain(u.Uid, names));
-
-                    if(users.Count > 0) {
-                        var roles = _roleService.GetAllRoles(_workContext.CurrentRole.Id).ToList();
-                        var employees = _employeeService.GetAllEmployees().ToList();
-
-                        models = (from user in users
+                if(users.Count > 0) {
+                    var roles = _roleService.GetRolesAsList(_workContext.Role.Id);
+                    var employees = _employeeService.GetAllEmployeesAsList();
+                    var models = (from user in users
                                   join role in roles on user.RoleId equals role.Id
-                                  join employee in employees on user.EmployeeId equals employee.Id into lj
-                                  from ue in lj.DefaultIfEmpty()
+                                  join emp in employees on user.EmployeeId equals emp.Id into lt
+                                  from def in lt.DefaultIfEmpty()
                                   select new UserModel {
                                       id = user.Id.ToString(),
                                       uid = user.Uid,
                                       roleId = role.Id.ToString(),
                                       roleName = role.Name,
                                       empId = user.EmployeeId,
-                                      empName = ue != null ? ue.Name : "",
-                                      empNo = ue != null ? ue.EmpNo : "",
-                                      sex = (int)(ue != null ? ue.Sex : EnmSex.Male),
-                                      sexName = ue != null ? Common.GetSexDisplay(ue.Sex) : Common.GetSexDisplay(EnmSex.Male),
-                                      mobile = ue != null ? ue.MobilePhone : "",
-                                      email = ue != null ? ue.Email : "",
+                                      empName = def != null ? def.Name : "",
+                                      empNo = def != null ? def.Code : "",
+                                      sex = (int)(def != null ? def.Sex : EnmSex.Male),
+                                      sexName = def != null ? Common.GetSexDisplay(def.Sex) : Common.GetSexDisplay(EnmSex.Male),
+                                      mobile = def != null ? def.MobilePhone : "",
+                                      email = def != null ? def.Email : "",
                                       created = CommonHelper.DateTimeConverter(user.CreateDate),
                                       limited = CommonHelper.DateConverter(user.LimitDate),
                                       lastLogined = CommonHelper.DateTimeConverter(user.LastLoginDate),
@@ -705,25 +679,22 @@ namespace iPem.Site.Controllers {
                                       enabled = user.Enabled
                                   }).ToList();
 
-                        if(models.Count > 0)
-                            _cacheManager.Set<List<UserModel>>(key, models, CachedIntervals.Site_ResultIntervals);
-                    }
-                }
-
-                if(models != null && models.Count > 0) {
-                    var result = new PagedList<UserModel>(models, start / limit, limit);
-                    if(result.Count > 0) {
-                        data.message = "200 Ok";
-                        data.total = result.TotalCount;
-                        for(var i = 0; i < result.Count; i++) {
-                            result[i].index = start + 1 + i;
-                            data.data.Add(result[i]);
+                    if(models.Count > 0) {
+                        var result = new PagedList<UserModel>(models, start / limit, limit);
+                        if(result.Count > 0) {
+                            data.message = "200 Ok";
+                            data.total = result.TotalCount;
+                            for(var i = 0; i < result.Count; i++) {
+                                result[i].index = start + 1 + i;
+                                data.data.Add(result[i]);
+                            }
                         }
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false; data.message = exc.Message;
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; 
+                data.message = exc.Message;
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -751,7 +722,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(action == (int)EnmAction.Add) {
-                    data.data.roleId = _workContext.CurrentRole.Id.ToString();
+                    data.data.roleId = _workContext.Role.Id.ToString();
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
 
@@ -775,8 +746,9 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = user.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false; data.message = exc.Message;
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; 
+                data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
         }
@@ -791,9 +763,9 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var user = _workContext.CurrentUser;
-                var role = _workContext.CurrentRole;
-                var employee = _workContext.AssociatedEmployee;
+                var user = _workContext.User;
+                var role = _workContext.Role;
+                var employee = _workContext.Employee;
 
                 data.data.id = user.Id.ToString();
                 data.data.uid = user.Uid;
@@ -801,7 +773,7 @@ namespace iPem.Site.Controllers {
                 data.data.roleName = role.Name;
                 data.data.empId = user.EmployeeId;
                 data.data.empName = employee != null ? employee.Name : "";
-                data.data.empNo = employee != null ? employee.EmpNo : "";
+                data.data.empNo = employee != null ? employee.Code : "";
                 data.data.sex = (int)(employee != null ? employee.Sex : EnmSex.Male);
                 data.data.sexName = employee != null ? Common.GetSexDisplay(employee.Sex) : Common.GetSexDisplay(EnmSex.Male);
                 data.data.mobile = employee != null ? employee.MobilePhone : "";
@@ -818,8 +790,9 @@ namespace iPem.Site.Controllers {
                 data.message = "200 Ok";
                 data.total = 1;
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
-                data.success = false; data.message = exc.Message;
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; 
+                data.message = exc.Message;
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -837,7 +810,7 @@ namespace iPem.Site.Controllers {
                     if(existedUser != null)
                         throw new iPemException("用户已存在，保存失败。");
 
-                    var newUser = new MsDomain.User {
+                    var newUser = new User {
                         Id = new Guid(user.id),
                         RoleId = new Guid(user.roleId),
                         Uid = user.uid,
@@ -855,12 +828,8 @@ namespace iPem.Site.Controllers {
                         Enabled = user.enabled
                     };
 
-                    _userService.InsertUser(newUser);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
-                    if(_cacheManager.IsSet(key))
-                        _cacheManager.Remove(key);
-
+                    _userService.Add(newUser);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "用户保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existedUser = _userService.GetUser(user.uid);
@@ -876,18 +845,14 @@ namespace iPem.Site.Controllers {
                     existedUser.EmployeeId = user.empId;
                     existedUser.Enabled = user.enabled;
 
-                    _userService.UpdateUser(existedUser);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                    var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
-                    if(_cacheManager.IsSet(key))
-                        _cacheManager.Remove(key);
-
+                    _userService.Update(existedUser);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "用户保存成功" });
                 }
 
                 throw new ArgumentException("参数无效 action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -903,18 +868,14 @@ namespace iPem.Site.Controllers {
                 if(existedUser == null)
                     throw new iPemException("用户不存在，删除失败");
 
-                if(_workContext.CurrentUser.Uid.Equals(existedUser.Uid,StringComparison.CurrentCultureIgnoreCase))
+                if(_workContext.User.Uid.Equals(existedUser.Uid,StringComparison.CurrentCultureIgnoreCase))
                     throw new iPemException("无法删除当前用户");
 
-                _userService.DeleteUser(existedUser);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除用户[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
-                if(_cacheManager.IsSet(key))
-                    _cacheManager.Remove(key);
-
+                _userService.Remove(existedUser);
+                _webLogger.Information(EnmEventType.Operating, string.Format("删除用户[{0}]", existedUser.Uid), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "用户删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -934,14 +895,10 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("用户不存在，重置失败");
 
                 _userService.ForcePassword(existedUser, password);
-                _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
-                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
-                if(_cacheManager.IsSet(key))
-                    _cacheManager.Remove(key);
-
+                _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existedUser.Uid), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "密码重置成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -965,7 +922,7 @@ namespace iPem.Site.Controllers {
 
                 var result = _userService.ChangePassword(existedUser, origin, password);
                 if(result == EnmChangeResults.Successful) {
-                    _webLogger.Information(EnmEventType.Operating, string.Format("修改用户密码[{0}]", existedUser.Uid), null, _workContext.CurrentUser.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("修改用户密码[{0}]", existedUser.Uid), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "密码修改成功" });
                 } else if(result == EnmChangeResults.WrongPassword) {
                     throw new iPemException("原始密码错误");
@@ -973,7 +930,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("未知错误");
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -982,66 +939,52 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadUsers(string[] rids, string[] names) {
             try {
-                var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
+                var users = _userService.GetUsersAsList(_workContext.Role.Id);
 
-                IList<UserModel> models = null;
-                if(_cacheManager.IsSet(key)) {
-                    models = _cacheManager.Get<IList<UserModel>>(key);
-                } else {
-                    var users = _userService.GetUsers(_workContext.CurrentRole.Id).ToList();
+                if(rids != null && rids.Length > 0)
+                    users = users.FindAll(u => rids.Contains(u.RoleId.ToString()));
 
-                    if(rids != null && rids.Length > 0)
-                        users = users.FindAll(u => rids.Contains(u.RoleId.ToString()));
+                if(names != null && names.Length > 0)
+                    users = users.FindAll(u => CommonHelper.ConditionContain(u.Uid, names));
 
-                    if(names != null && names.Length > 0)
-                        users = users.FindAll(u => CommonHelper.ConditionContain(u.Uid, names));
-
-                    if(users.Count > 0) {
-                        var roles = _roleService.GetAllRoles(_workContext.CurrentRole.Id).ToList();
-                        var employees = _employeeService.GetAllEmployees().ToList();
-
-                        models = (from user in users
-                                  join role in roles on user.RoleId equals role.Id
-                                  join employee in employees on user.EmployeeId equals employee.Id into lj
-                                  from ue in lj.DefaultIfEmpty()
-                                  select new UserModel {
-                                      id = user.Id.ToString(),
-                                      uid = user.Uid,
-                                      roleId = role.Id.ToString(),
-                                      roleName = role.Name,
-                                      empId = user.EmployeeId,
-                                      empName = ue != null ? ue.Name : "",
-                                      empNo = ue != null ? ue.EmpNo : "",
-                                      sex = (int)(ue != null ? ue.Sex : EnmSex.Male),
-                                      sexName = ue != null ? Common.GetSexDisplay(ue.Sex) : Common.GetSexDisplay(EnmSex.Male),
-                                      mobile = ue != null ? ue.MobilePhone : "",
-                                      email = ue != null ? ue.Email : "",
-                                      created = CommonHelper.DateTimeConverter(user.CreateDate),
-                                      limited = CommonHelper.DateConverter(user.LimitDate),
-                                      lastLogined = CommonHelper.DateTimeConverter(user.LastLoginDate),
-                                      lastPasswordChanged = CommonHelper.DateTimeConverter(user.LastPasswordChangedDate),
-                                      isLockedOut = user.IsLockedOut,
-                                      lastLockedout = CommonHelper.DateTimeConverter(user.LastLockoutDate),
-                                      comment = user.Comment,
-                                      enabled = user.Enabled
-                                  }).ToList();
-
-                        if(models.Count > 0)
-                            _cacheManager.Set<IList<UserModel>>(key, models);
-                    }
+                var models = new List<UserModel>();
+                if(users.Count > 0) {
+                    var roles = _roleService.GetRolesAsList(_workContext.Role.Id);
+                    var employees = _employeeService.GetAllEmployeesAsList();
+                    models = (from user in users
+                              join role in roles on user.RoleId equals role.Id
+                              join employee in employees on user.EmployeeId equals employee.Id into lt
+                              from def in lt.DefaultIfEmpty()
+                              select new UserModel {
+                                  id = user.Id.ToString(),
+                                  uid = user.Uid,
+                                  roleId = role.Id.ToString(),
+                                  roleName = role.Name,
+                                  empId = user.EmployeeId,
+                                  empName = def != null ? def.Name : "",
+                                  empNo = def != null ? def.Code : "",
+                                  sex = (int)(def != null ? def.Sex : EnmSex.Male),
+                                  sexName = def != null ? Common.GetSexDisplay(def.Sex) : Common.GetSexDisplay(EnmSex.Male),
+                                  mobile = def != null ? def.MobilePhone : "",
+                                  email = def != null ? def.Email : "",
+                                  created = CommonHelper.DateTimeConverter(user.CreateDate),
+                                  limited = CommonHelper.DateConverter(user.LimitDate),
+                                  lastLogined = CommonHelper.DateTimeConverter(user.LastLoginDate),
+                                  lastPasswordChanged = CommonHelper.DateTimeConverter(user.LastPasswordChangedDate),
+                                  isLockedOut = user.IsLockedOut,
+                                  lastLockedout = CommonHelper.DateTimeConverter(user.LastLockoutDate),
+                                  comment = user.Comment,
+                                  enabled = user.Enabled
+                              }).ToList();
                 }
-
-                if(models == null || models.Count == 0)
-                    throw new iPemException("无数据");
-
                 for(var i = 0; i < models.Count; i++)
                     models[i].index = i + 1;
 
-                using(var ms = _excelManager.Export<UserModel>(models.ToList(), "用户信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<UserModel>(models.ToList(), "用户信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1056,8 +999,8 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _roleService.GetAllRoles(_workContext.CurrentRole.Id).AsQueryable().Select(r => new ComboItem<string, string> { id = r.Id.ToString(), text = r.Name });
-                var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit);
+                var models = _roleService.GetRolesAsList(_workContext.Role.Id).AsEnumerable().Select(r => new ComboItem<string, string> { id = r.Id.ToString(), text = r.Name });
+                var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit, models.Count());
                 if(result.Count > 0) {
                     data.message = "200 Ok";
                     data.total = result.TotalCount;
@@ -1066,7 +1009,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1088,24 +1031,24 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if("user".Equals(result.action)) {
-                    if("query".Equals(result.method)) {
-                        var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
-                        if(_cacheManager.IsSet(key))
-                            _cacheManager.Remove(key);
-                    } else
-                        throw new ArgumentException("参数无效 method");
-                } else if("role".Equals(result.action)) {
-                    if("query".Equals(result.method)) {
-                        var key = Common.GetCachedKey(SiteCacheKeys.Site_RolesResultPattern, _workContext);
-                        if(_cacheManager.IsSet(key))
-                            _cacheManager.Remove(key);
-                    } else
-                        throw new ArgumentException("参数无效 method");
-                } else
-                    throw new ArgumentException("参数无效 action");
+                //if("user".Equals(result.action)) {
+                //    if("query".Equals(result.method)) {
+                //        var key = Common.GetCachedKey(SiteCacheKeys.Site_UsersResultPattern, _workContext);
+                //        if(_cacheManager.IsSet(key))
+                //            _cacheManager.Remove(key);
+                //    } else
+                //        throw new ArgumentException("参数无效 method");
+                //} else if("role".Equals(result.action)) {
+                //    if("query".Equals(result.method)) {
+                //        var key = Common.GetCachedKey(SiteCacheKeys.Site_RolesResultPattern, _workContext);
+                //        if(_cacheManager.IsSet(key))
+                //            _cacheManager.Remove(key);
+                //    } else
+                //        throw new ArgumentException("参数无效 method");
+                //} else
+                //    throw new ArgumentException("参数无效 action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 result.type = "exception";
                 result.message = exc.Message;
             }
@@ -1140,7 +1083,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1169,7 +1112,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1238,7 +1181,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1299,11 +1242,11 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<EventModel>(models, "日志信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.AssociatedEmployee != null ? _workContext.AssociatedEmployee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<EventModel>(models, "日志信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1314,10 +1257,10 @@ namespace iPem.Site.Controllers {
                 var startDate = new DateTime(2000, 1, 1);
                 var endDate = DateTime.Today.AddMonths(-3);
                 _webLogger.Clear(startDate, endDate);
-                _webLogger.Information(EnmEventType.Operating, string.Format("清理{0}之前的系统日志信息", CommonHelper.DateConverter(endDate)), null, _workContext.CurrentUser.Id);
+                _webLogger.Information(EnmEventType.Operating, string.Format("清理{0}之前的系统日志信息", CommonHelper.DateConverter(endDate)), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "日志清理完成" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1346,7 +1289,7 @@ namespace iPem.Site.Controllers {
                 var beginDate = DateTime.Parse(begin);
                 var endDate = DateTime.Parse(end).AddSeconds(86399);
 
-                var result = _noticeService.GetAllNotices(beginDate,endDate,start / limit, limit);
+                var result = _noticeService.GetNotices(beginDate,endDate,start / limit, limit);
                 if(result.Count > 0) {
                     data.message = "200 Ok";
                     data.total = result.TotalCount;
@@ -1362,7 +1305,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1406,7 +1349,7 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = notice.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1424,7 +1367,7 @@ namespace iPem.Site.Controllers {
                     if(existed != null)
                         throw new iPemException("消息已存在，保存失败。");
 
-                    var one = new MsDomain.Notice {
+                    var one = new Notice {
                         Id = new Guid(notice.id),
                         Title = notice.title,
                         Content = notice.content,
@@ -1432,7 +1375,7 @@ namespace iPem.Site.Controllers {
                         Enabled = notice.enabled
                     };
 
-                    var toUsers = new List<MsDomain.User>();
+                    var toUsers = new List<User>();
                     var allUsers = _userService.GetUsers();
                     if(roles != null && roles.Length > 0) {
                         foreach(var id in roles) {
@@ -1444,9 +1387,9 @@ namespace iPem.Site.Controllers {
                         toUsers.AddRange(allUsers);
                     }
 
-                    var noticesInUsers = new List<MsDomain.NoticeInUser>();
+                    var noticesInUsers = new List<NoticeInUser>();
                     foreach(var user in toUsers) {
-                        noticesInUsers.Add(new MsDomain.NoticeInUser {
+                        noticesInUsers.Add(new NoticeInUser {
                             NoticeId = one.Id,
                             UserId = user.Id,
                             Readed = false,
@@ -1454,9 +1397,9 @@ namespace iPem.Site.Controllers {
                         });
                     }
 
-                    _noticeService.AddNotice(one);
-                    _noticeInUserService.AddNoticesInUsers(noticesInUsers);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增消息[{0}]", one.Title), null, _workContext.CurrentUser.Id);
+                    _noticeService.Add(one);
+                    _noticeInUserService.AddRange(noticesInUsers);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增消息[{0}]", one.Title), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "消息保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _noticeService.GetNotice(new Guid(notice.id));
@@ -1468,7 +1411,7 @@ namespace iPem.Site.Controllers {
                     existed.CreatedTime = DateTime.Now;
                     existed.Enabled = notice.enabled;
 
-                    var toUsers = new List<MsDomain.User>();
+                    var toUsers = new List<User>();
                     var allUsers = _userService.GetUsers();
                     if(roles != null && roles.Length > 0) {
                         foreach(var id in roles) {
@@ -1480,9 +1423,9 @@ namespace iPem.Site.Controllers {
                         toUsers.AddRange(allUsers);
                     }
 
-                    var noticesInUsers = new List<MsDomain.NoticeInUser>();
+                    var noticesInUsers = new List<NoticeInUser>();
                     foreach(var user in toUsers) {
-                        noticesInUsers.Add(new MsDomain.NoticeInUser {
+                        noticesInUsers.Add(new NoticeInUser {
                             NoticeId = existed.Id,
                             UserId = user.Id,
                             Readed = false,
@@ -1490,16 +1433,16 @@ namespace iPem.Site.Controllers {
                         });
                     }
 
-                    _noticeService.DeleteNotice(existed);
-                    _noticeService.AddNotice(existed);
-                    _noticeInUserService.AddNoticesInUsers(noticesInUsers);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新消息[{0}]", existed.Title), null, _workContext.CurrentUser.Id);
+                    _noticeService.Remove(existed);
+                    _noticeService.Add(existed);
+                    _noticeInUserService.AddRange(noticesInUsers);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新消息[{0}]", existed.Title), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "消息保存成功" });
                 }
 
                 throw new ArgumentException("参数无效 action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1515,11 +1458,11 @@ namespace iPem.Site.Controllers {
                 if(existed == null)
                     throw new iPemException("消息不存在，删除失败");
 
-                _noticeService.DeleteNotice(existed);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除系统消息[{0}]", existed.Title), null, _workContext.CurrentUser.Id);
+                _noticeService.Remove(existed);
+                _webLogger.Information(EnmEventType.Operating, string.Format("删除系统消息[{0}]", existed.Title), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "消息删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1553,7 +1496,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1566,7 +1509,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                _dictionaryService.Update(new Dictionary {
                     Id = (int)EnmDictionary.Ws,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Ws),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1574,10 +1517,10 @@ namespace iPem.Site.Controllers {
                     LastUpdatedDate = DateTime.Now
                 });
 
-                _workContext.CurrentWsValues = values;
+                _workContext.WsValues = values;
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1609,7 +1552,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1622,7 +1565,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                _dictionaryService.Update(new Dictionary {
                     Id = (int)EnmDictionary.Ts,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Ts),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1632,7 +1575,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1666,7 +1609,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1679,7 +1622,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.UpdateDictionary(new MsDomain.Dictionary {
+                _dictionaryService.Update(new Dictionary {
                     Id = (int)EnmDictionary.Report,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Report),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1689,7 +1632,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1698,9 +1641,31 @@ namespace iPem.Site.Controllers {
         public JsonResult ClearCache() {
             try {
                 _cacheManager.Clear();
-                return Json(new AjaxResultModel { success = true, code = 200, message = "清空缓存成功" }, JsonRequestBehavior.AllowGet);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "所有缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult ClearGlobalCache() {
+            try {
+                _cacheManager.RemoveByPattern(@"ipems:global:.+");
+                return Json(new AjaxResultModel { success = true, code = 200, message = "全局缓存清除成功" }, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult ClearUserCache() {
+            try {
+                _cacheManager.RemoveByPattern(@"ipems:site:.+");
+                return Json(new AjaxResultModel { success = true, code = 200, message = "用户缓存清除成功" }, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }

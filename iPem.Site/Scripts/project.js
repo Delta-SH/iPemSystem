@@ -317,13 +317,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '操作',
         items: [{
             getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                return (r.get('Creator') === $$iPems.associatedEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                return (r.get('Creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
             },
             handler: function (grid, rowIndex, colIndex) {
                 var record = grid.getStore().getAt(rowIndex);
                 if (Ext.isEmpty(record)) return false;
 
-                if (record.raw.Creator === $$iPems.associatedEmployee)
+                if (record.raw.Creator === $$iPems.currentEmployee)
                     editCellClick(grid, rowIndex, colIndex);
             }
         }]

@@ -7,9 +7,9 @@ namespace iPem.Site.Models.BI {
 
         public int Type { get; set; }
 
-        public double MeasuredVal { get; set; }
+        public float MeasuredVal { get; set; }
 
-        public double SetupVal { get; set; }
+        public float SetupVal { get; set; }
 
         public int Status { get; set; }
 

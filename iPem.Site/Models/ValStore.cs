@@ -1,4 +1,4 @@
-﻿using iPem.Site.Infrastructure;
+﻿using iPem.Core.Domain.Rs;
 using System;
 
 namespace iPem.Site.Models {
@@ -6,8 +6,16 @@ namespace iPem.Site.Models {
     public class ValStore<T> where T : class {
         public T Current { get; set; }
 
-        public PointAttributes Point { get; set; }
+        public Point Point { get; set; }
 
-        public DeviceAttributes Device { get; set; }
+        public Device Device { get; set; }
+
+        public Room Room { get; set; }
+
+        public Station Station { get; set; }
+
+        public Area Area { get; set; }
+
+        public String AreaFullName { get; set; }
     }
 }

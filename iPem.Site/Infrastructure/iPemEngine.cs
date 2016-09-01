@@ -6,22 +6,21 @@ using iPem.Core.Data;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
 using iPem.Data.Installation;
-using MsData = iPem.Data.Repository.Master;
-using MsSrv = iPem.Services.Master;
-using HsData = iPem.Data.Repository.History;
-using HsSrv = iPem.Services.History;
-using RsData = iPem.Data.Repository.Resource;
-using RsSrv = iPem.Services.Resource;
+using iPem.Data.Repository.Cs;
+using iPem.Data.Repository.Rs;
+using iPem.Data.Repository.Sc;
+using iPem.Services.Cs;
+using iPem.Services.Rs;
+using iPem.Services.Sc;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
-
 namespace iPem.Site.Infrastructure {
     /// <summary>
-    /// Engine
+    /// iPem Engine
     /// </summary>
     public class iPemEngine : IEngine {
 
@@ -79,125 +78,118 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<iPemWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
 
             var dbManager = new SqlDbManager(new SqliteDataProvider());
-            if(dbManager.IsValid(EnmDatabaseType.Master)) {
-                var connectionString = dbManager.CurrentConnetions[EnmDatabaseType.Master];
+            if(dbManager.IsValid(EnmDbType.Rs)) {
+                var connectionString = dbManager.CurrentConnetions[EnmDbType.Rs];
 
                 //register repository
-                builder.Register<MsData.IWebEventRepository>(c => new MsData.WebEventRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IRoleRepository>(c => new MsData.RoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IUserRepository>(c => new MsData.UserRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IProfileRepository>(c => new MsData.ProfileRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IMenuRepository>(c => new MsData.MenuRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IMenusInRoleRepository>(c => new MsData.MenusInRoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.INoticeRepository>(c => new MsData.NoticeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.INoticeInUserRepository>(c => new MsData.NoticeInUserRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IOperateInRoleRepository>(c => new MsData.OperateInRoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IAreaRepository>(c => new MsData.AreaRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IAreasInRoleRepository>(c => new MsData.AreasInRoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IStationRepository>(c => new MsData.StationRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IRoomRepository>(c => new MsData.RoomRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IDeviceRepository>(c => new MsData.DeviceRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IPointRepository>(c => new MsData.PointRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IProtocolRepository>(c => new MsData.ProtocolRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IPointsInProtcolRepository>(c => new MsData.PointsInProtcolRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IDictionaryRepository>(c => new MsData.DictionaryRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IProjectRepository>(c => new MsData.ProjectRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.IAppointmentRepository>(c => new MsData.AppointmentRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<MsData.INodesInAppointmentRepository>(c => new MsData.NodesInAppointmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IAreaRepository>(c => new AreaRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IBrandRepository>(c => new BrandRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDepartmentRepository>(c => new DepartmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDeviceRepository>(c => new DeviceRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDeviceTypeRepository>(c => new DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDutyRepository>(c => new DutyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IEmployeeRepository>(c => new EmployeeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IEnumMethodsRepository>(c => new EnumMethodsRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IFsuRepository>(c => new FsuRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ILogicTypeRepository>(c => new LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IPointRepository>(c => new PointRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IProductorRepository>(c => new ProductorRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IProtocolRepository>(c => new ProtocolRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IRoomRepository>(c => new RoomRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IRoomTypeRepository>(c => new RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IStationRepository>(c => new StationRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IStationTypeRepository>(c => new StationTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ISubCompanyRepository>(c => new SubCompanyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ISupplierRepository>(c => new SupplierRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IUnitRepository>(c => new UnitRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
-                builder.RegisterType<MsSrv.WebLogger>().As<MsSrv.IWebLogger>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.RoleService>().As<MsSrv.IRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.UserService>().As<MsSrv.IUserService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.ProfileService>().As<MsSrv.IProfileService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.MenuService>().As<MsSrv.IMenuService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.MenusInRoleService>().As<MsSrv.IMenusInRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.NoticeService>().As<MsSrv.INoticeService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.NoticeInUserService>().As<MsSrv.INoticeInUserService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.OperateInRoleService>().As<MsSrv.IOperateInRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.AreaService>().As<MsSrv.IAreaService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.AreasInRoleService>().As<MsSrv.IAreasInRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.StationService>().As<MsSrv.IStationService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.RoomService>().As<MsSrv.IRoomService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.DeviceService>().As<MsSrv.IDeviceService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.PointService>().As<MsSrv.IPointService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.ProtocolService>().As<MsSrv.IProtocolService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.PointsInProtcolService>().As<MsSrv.IPointsInProtcolService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.DictionaryService>().As<MsSrv.IDictionaryService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.ProjectsService>().As<MsSrv.IProjectService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.AppointmentService>().As<MsSrv.IAppointmentService>().InstancePerLifetimeScope();
-                builder.RegisterType<MsSrv.NodesInAppointmentService>().As<MsSrv.INodesInAppointmentService>().InstancePerLifetimeScope();
+                builder.RegisterType<AreaService>().As<IAreaService>().InstancePerLifetimeScope();
+                builder.RegisterType<BrandService>().As<IBrandService>().InstancePerLifetimeScope();
+                builder.RegisterType<DepartmentService>().As<IDepartmentService>().InstancePerLifetimeScope();
+                builder.RegisterType<DeviceService>().As<IDeviceService>().InstancePerLifetimeScope();
+                builder.RegisterType<DeviceTypeService>().As<IDeviceTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<DutyService>().As<IDutyService>().InstancePerLifetimeScope();
+                builder.RegisterType<EmployeeService>().As<IEmployeeService>().InstancePerLifetimeScope();
+                builder.RegisterType<EnumMethodsService>().As<IEnumMethodsService>().InstancePerLifetimeScope();
+                builder.RegisterType<FsuService>().As<IFsuService>().InstancePerLifetimeScope();
+                builder.RegisterType<LogicTypeService>().As<ILogicTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();
+                builder.RegisterType<ProductorService>().As<IProductorService>().InstancePerLifetimeScope();
+                builder.RegisterType<ProtocolService>().As<IProtocolService>().InstancePerLifetimeScope();
+                builder.RegisterType<RoomService>().As<IRoomService>().InstancePerLifetimeScope();
+                builder.RegisterType<RoomTypeService>().As<IRoomTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<StationService>().As<IStationService>().InstancePerLifetimeScope();
+                builder.RegisterType<StationTypeService>().As<IStationTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<SubCompanyService>().As<ISubCompanyService>().InstancePerLifetimeScope();
+                builder.RegisterType<SupplierService>().As<ISupplierService>().InstancePerLifetimeScope();
+                builder.RegisterType<UnitService>().As<IUnitService>().InstancePerLifetimeScope();
             }
 
-            if(dbManager.IsValid(EnmDatabaseType.History)) {
-                var connectionString = dbManager.CurrentConnetions[EnmDatabaseType.History];
+            if(dbManager.IsValid(EnmDbType.Cs)) {
+                var connectionString = dbManager.CurrentConnetions[EnmDbType.Cs];
 
                 //register repository
-                builder.Register<HsData.IActAlmRepository>(c => new HsData.ActAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IAlmExtendRepository>(c => new HsData.AlmExtendRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IActValueRepository>(c => new HsData.ActValueRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IHisAlmRepository>(c => new HsData.HisAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IHisValueRepository>(c => new HsData.HisValueRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IHisStaticRepository>(c => new HsData.HisStaticRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<HsData.IHisBatRepository>(c => new HsData.HisBatRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IActAlmRepository>(c => new ActAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IAreaKeyRepository>(c => new AreaKeyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDeviceKeyRepository>(c => new DeviceKeyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IFsuKeyRepository>(c => new FsuKeyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisAlmRepository>(c => new HisAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisBatRepository>(c => new HisBatRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisStaticRepository>(c => new HisStaticRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisValueRepository>(c => new HisValueRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IRoomKeyRepository>(c => new RoomKeyRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IStationKeyRepository>(c => new StationKeyRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
-                builder.RegisterType<HsSrv.ActAlmService>().As<HsSrv.IActAlmService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.AlmExtendService>().As<HsSrv.IAlmExtendService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.ActValueService>().As<HsSrv.IActValueService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.HisAlmService>().As<HsSrv.IHisAlmService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.HisValueService>().As<HsSrv.IHisValueService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.HisStaticService>().As<HsSrv.IHisStaticService>().InstancePerLifetimeScope();
-                builder.RegisterType<HsSrv.HisBatService>().As<HsSrv.IHisBatService>().InstancePerLifetimeScope();
-
+                builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<AreaKeyService>().As<IAreaKeyService>().InstancePerLifetimeScope();
+                builder.RegisterType<DeviceKeyService>().As<IDeviceKeyService>().InstancePerLifetimeScope();
+                builder.RegisterType<FsuKeyService>().As<IFsuKeyService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisAlmService>().As<IHisAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisBatService>().As<IHisBatService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisStaticService>().As<IHisStaticService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisValueService>().As<IHisValueService>().InstancePerLifetimeScope();
+                builder.RegisterType<RoomKeyService>().As<IRoomKeyService>().InstancePerLifetimeScope();
+                builder.RegisterType<StationKeyService>().As<IStationKeyService>().InstancePerLifetimeScope();
             }
 
-            if(dbManager.IsValid(EnmDatabaseType.Resource)) {
-                var connectionString = dbManager.CurrentConnetions[EnmDatabaseType.Resource];
+            if(dbManager.IsValid(EnmDbType.Sc)) {
+                var connectionString = dbManager.CurrentConnetions[EnmDbType.Sc];
 
                 //register repository
-                builder.Register<RsData.IEmployeeRepository>(c => new RsData.EmployeeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IDepartmentRepository>(c => new RsData.DepartmentRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IAreaRepository>(c => new RsData.AreaRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IStationRepository>(c => new RsData.StationRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IRoomRepository>(c => new RsData.RoomRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IDeviceRepository>(c => new RsData.DeviceRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IBrandRepository>(c => new RsData.BrandRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IDeviceTypeRepository>(c => new RsData.DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IDutyRepository>(c => new RsData.DutyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IEnumMethodsRepository>(c => new RsData.EnumMethodsRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.ILogicTypeRepository>(c => new RsData.LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IProductorRepository>(c => new RsData.ProductorRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IRoomTypeRepository>(c => new RsData.RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IStationTypeRepository>(c => new RsData.StationTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.ISubCompanyRepository>(c => new RsData.SubCompanyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.ISubDeviceTypeRepository>(c => new RsData.SubDeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.ISupplierRepository>(c => new RsData.SupplierRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IUnitRepository>(c => new RsData.UnitRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IUserRepository>(c => new RsData.UserRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<RsData.IFsuRepository>(c => new RsData.FsuRepository(connectionString)).InstancePerLifetimeScope();
-                                
+                builder.Register<IAppointmentRepository>(c => new AppointmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IAreasInRoleRepository>(c => new AreasInRoleRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IDictionaryRepository>(c => new DictionaryRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IExtendAlmRepository>(c => new ExtendAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IMenuRepository>(c => new MenuRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IMenusInRoleRepository>(c => new MenusInRoleRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<INodesInAppointmentRepository>(c => new NodesInAppointmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<INoticeInUserRepository>(c => new NoticeInUserRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<INoticeRepository>(c => new NoticeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IOperateInRoleRepository>(c => new OperateInRoleRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IProfileRepository>(c => new ProfileRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IProjectRepository>(c => new ProjectRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IRoleRepository>(c => new RoleRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IUserRepository>(c => new UserRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IWebEventRepository>(c => new WebEventRepository(connectionString)).InstancePerLifetimeScope();
+
                 //register service
-                builder.RegisterType<RsSrv.EmployeeService>().As<RsSrv.IEmployeeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.DepartmentService>().As<RsSrv.IDepartmentService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.AreaService>().As<RsSrv.IAreaService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.StationService>().As<RsSrv.IStationService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.RoomService>().As<RsSrv.IRoomService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.DeviceService>().As<RsSrv.IDeviceService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.BrandService>().As<RsSrv.IBrandService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.DeviceTypeService>().As<RsSrv.IDeviceTypeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.DutyService>().As<RsSrv.IDutyService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.EnumMethodsService>().As<RsSrv.IEnumMethodsService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.LogicTypeService>().As<RsSrv.ILogicTypeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.ProductorService>().As<RsSrv.IProductorService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.RoomTypeService>().As<RsSrv.IRoomTypeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.StationTypeService>().As<RsSrv.IStationTypeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.SubCompanyService>().As<RsSrv.ISubCompanyService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.SubDeviceTypeService>().As<RsSrv.ISubDeviceTypeService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.SupplierService>().As<RsSrv.ISupplierService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.UnitService>().As<RsSrv.IUnitService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.UserService>().As<RsSrv.IUserService>().InstancePerLifetimeScope();
-                builder.RegisterType<RsSrv.FsuService>().As<RsSrv.IFsuService>().InstancePerLifetimeScope();
+                builder.RegisterType<AppointmentService>().As<IAppointmentService>().InstancePerLifetimeScope();
+                builder.RegisterType<AreasInRoleService>().As<IAreasInRoleService>().InstancePerLifetimeScope();
+                builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerLifetimeScope();
+                builder.RegisterType<ExtendAlmService>().As<IExtendAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<MenuService>().As<IMenuService>().InstancePerLifetimeScope();
+                builder.RegisterType<MenusInRoleService>().As<IMenusInRoleService>().InstancePerLifetimeScope();
+                builder.RegisterType<NodesInAppointmentService>().As<INodesInAppointmentService>().InstancePerLifetimeScope();
+                builder.RegisterType<NoticeInUserService>().As<INoticeInUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<NoticeService>().As<INoticeService>().InstancePerLifetimeScope();
+                builder.RegisterType<OperateInRoleService>().As<IOperateInRoleService>().InstancePerLifetimeScope();
+                builder.RegisterType<ProfileService>().As<IProfileService>().InstancePerLifetimeScope();
+                builder.RegisterType<ProjectsService>().As<IProjectService>().InstancePerLifetimeScope();
+                builder.RegisterType<RoleService>().As<IRoleService>().InstancePerLifetimeScope();
+                builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<WebLogger>().As<IWebLogger>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);

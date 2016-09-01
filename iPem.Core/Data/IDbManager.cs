@@ -25,16 +25,16 @@ namespace iPem.Core.Data {
         /// <summary>
         /// A value indicating whether all databases has been configured
         /// </summary>
-        bool IsValid(EnmDatabaseType dt);
+        bool IsValid(EnmDbType dt);
 
         /// <summary>
         /// Gets or sets the current databases
         /// </summary>
-        Dictionary<EnmDatabaseType, DbEntity> CurrentDbSets { get; }
+        Dictionary<EnmDbType, DbEntity> CurrentDbSets { get; }
 
         /// <summary>
         /// Gets or sets the current connection
         /// </summary>
-        Dictionary<EnmDatabaseType, string> CurrentConnetions { get; }
+        Dictionary<EnmDbType, string> CurrentConnetions { get; }
     }
 }

@@ -1,21 +1,19 @@
 ﻿namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents a database type enumeration
+    /// Represents the database type
     /// </summary>
-    public enum EnmDatabaseType {
-        Master,
-        History,
-        Resource
+    public enum EnmDbType {
+        Rs,
+        Cs,
+        Sc
     }
 
     /// <summary>
-    /// Represents a database provider enumeration
+    /// Represents the database provider
     /// </summary>
     public enum EnmDbProvider {
         SqlServer,
-        MySql,
         Oracle,
-        Access,
-        MongoDB
+        MySql
     }
 }

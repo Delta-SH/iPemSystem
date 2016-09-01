@@ -1,7 +1,7 @@
 ﻿using iPem.Core;
-using iPem.Core.Domain.Master;
+using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
-using iPem.Services.Master;
+using iPem.Services.Sc;
 using iPem.Site.Infrastructure;
 using System;
 using System.Web;

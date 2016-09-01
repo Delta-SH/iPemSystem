@@ -6,7 +6,6 @@ namespace iPem.Core {
     /// </summary>
     [Serializable]
     public partial class iPemStore {
-
         /// <summary>
         /// Gets or sets the application identifier
         /// </summary>
@@ -70,6 +69,5 @@ namespace iPem.Core {
         /// Gets or sets the application port
         /// </summary>
         public int Port { get; set; }
-
     }
 }

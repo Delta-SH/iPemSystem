@@ -248,7 +248,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
             autoLoad: false,
             proxy: {
                 type: 'ajax',
-                url: '/Project/GetOrganization',
+                url: '/Component/GetDevices',
                 reader: {
                     type: 'json',
                     successProperty: 'success',
@@ -305,7 +305,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             search._filterIndex = index;
                         } else {
                             Ext.Ajax.request({
-                                url: '/Project/SearchOrganization',
+                                url: '/Component/FilterRoomPath',
                                 params: { text: text },
                                 mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
                                 success: function (response, options) {
@@ -448,7 +448,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             if (nodes && nodes.length > 0) {
                 Ext.Ajax.request({
-                    url: '/Project/GetOrganizationPath',
+                    url: '/Component/GetDevicePath',
                     params: { nodes: nodes },
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
@@ -586,7 +586,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                     }
                 }, {
                     getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                        return (r.get('creator') === $$iPems.associatedEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
                     },
                     handler: function (grid, rowIndex, colIndex) {
                         editCellClick(grid, rowIndex, colIndex);
@@ -595,7 +595,7 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                 //此处不是软删除，先屏蔽
                 //{
                 //    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                //        return (r.get('creator') === $$iPems.associatedEmployee) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
+                //        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
                 //    },
                 //    handler: function (grid, rowIndex, colIndex) {
                 //        deleteCellClick(grid, rowIndex, colIndex);

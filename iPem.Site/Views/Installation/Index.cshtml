@@ -68,60 +68,60 @@
                             <section id="database-panel">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">基础数据库<small>（存储动环系统相关的配置信息）</small></h3>
+                                        <h3 class="panel-title">资源数据库<small>（存储公共资源的相关信息）</small></h3>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">服务器地址</span>
-                                                    <input id="masterServerName" name="masterServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                    <input id="rsServerName" name="rsServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库端口</span>
-                                                    <input id="masterPort" name="masterPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                    <input id="rsPort" name="rsPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库账户</span>
-                                                    <input id="masterUid" name="masterUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                    <input id="rsUid" name="rsUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库密码</span>
-                                                    <input id="masterPwd" name="masterPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                    <input id="rsPwd" name="rsPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="icheck-radio-group">
                                                     <div class="radio-title">
-                                                        <input id="masterCreateNew" type="radio" tabindex="1" name="Master" checked value="0" />
-                                                        <label for="masterCreateNew">创建全新数据库</label>
+                                                        <input id="rsCreateNew" type="radio" tabindex="1" name="Rs" checked value="0" />
+                                                        <label for="rsCreateNew">创建全新数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="masterNewDatabaseName" name="masterNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                        <input id="rsNewDatabaseName" name="rsNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库目录</span>
-                                                        <input id="masterNewDatabasePath" name="masterNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                        <input id="rsNewDatabasePath" name="rsNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="radio-title">
-                                                        <input id="masterUseExisting" type="radio" tabindex="2" name="Master" value="1" />
-                                                        <label for="masterUseExisting">使用现有数据库</label>
+                                                        <input id="rsUseExisting" type="radio" tabindex="2" name="Rs" value="1" />
+                                                        <label for="rsUseExisting">使用现有数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="masterExistingDatabaseName" name="masterExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                        <input id="rsExistingDatabaseName" name="rsExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div>
-                                                        <input id="masterDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
-                                                        <label for="masterDontCheckDatabase">不检查数据库是否存在</label>
+                                                        <input id="rsDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="rsDontCheckDatabase">不检查数据库是否存在</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,60 +130,60 @@
                                 </div>
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">历史数据库<small>（存储动环系统相关的历史数据）</small></h3>
+                                        <h3 class="panel-title">动环数据库<small>（存储动环系统相关的数据）</small></h3>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">服务器地址</span>
-                                                    <input id="hisServerName" name="hisServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                    <input id="csServerName" name="csServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库端口</span>
-                                                    <input id="hisPort" name="hisPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                    <input id="csPort" name="csPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库账户</span>
-                                                    <input id="hisUid" name="hisUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                    <input id="csUid" name="csUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库密码</span>
-                                                    <input id="hisPwd" name="hisPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                    <input id="csPwd" name="csPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="icheck-radio-group">
                                                     <div class="radio-title">
-                                                        <input id="hisCreateNew" type="radio" tabindex="1" name="History" checked value="0" />
-                                                        <label for="hisCreateNew">创建全新数据库</label>
+                                                        <input id="csCreateNew" type="radio" tabindex="1" name="Cs" checked value="0" />
+                                                        <label for="csCreateNew">创建全新数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="hisNewDatabaseName" name="hisNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                        <input id="csNewDatabaseName" name="csNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库目录</span>
-                                                        <input id="hisNewDatabasePath" name="hisNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                        <input id="csNewDatabasePath" name="csNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="radio-title">
-                                                        <input id="hisUseExisting" type="radio" tabindex="2" name="History" value="1" />
-                                                        <label for="hisUseExisting">使用现有数据库</label>
+                                                        <input id="csUseExisting" type="radio" tabindex="2" name="Cs" value="1" />
+                                                        <label for="csUseExisting">使用现有数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="hisExistingDatabaseName" name="hisExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                        <input id="csExistingDatabaseName" name="csExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div>
-                                                        <input id="hisDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
-                                                        <label for="hisDontCheckDatabase">不检查数据库是否存在</label>
+                                                        <input id="csDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="csDontCheckDatabase">不检查数据库是否存在</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -192,60 +192,60 @@
                                 </div>
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">资管数据库<small>（存储固定资产相关信息）</small></h3>
+                                        <h3 class="panel-title">应用数据库<small>（存储扩展应用的相关信息）</small></h3>
                                     </div>
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="input-group">
                                                     <span class="input-group-addon">服务器地址</span>
-                                                    <input id="resServerName" name="resServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
+                                                    <input id="scServerName" name="scServerName" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库端口</span>
-                                                    <input id="resPort" name="resPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
+                                                    <input id="scPort" name="scPort" type="text" class="form-control" placeholder="数据库端口,默认1433" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库账户</span>
-                                                    <input id="resUid" name="resUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
+                                                    <input id="scUid" name="scUid" type="text" class="form-control" placeholder="登录数据库的账户" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">数据库密码</span>
-                                                    <input id="resPwd" name="resPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
+                                                    <input id="scPwd" name="scPwd" type="password" class="form-control" placeholder="登录数据库的密码" required />
                                                 </div>
                                                 <div class="error-tips"></div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="icheck-radio-group">
                                                     <div class="radio-title">
-                                                        <input id="resCreateNew" type="radio" tabindex="1" name="Resource" checked value="0" />
-                                                        <label for="resCreateNew">创建全新数据库</label>
+                                                        <input id="scCreateNew" type="radio" tabindex="1" name="Sc" checked value="0" />
+                                                        <label for="scCreateNew">创建全新数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="resNewDatabaseName" name="resNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
+                                                        <input id="scNewDatabaseName" name="scNewDatabaseName" type="text" class="form-control" placeholder="需要创建的数据库名称" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库目录</span>
-                                                        <input id="resNewDatabasePath" name="resNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
+                                                        <input id="scNewDatabasePath" name="scNewDatabasePath" type="text" class="form-control" placeholder="存储数据库文件的目录" required />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div class="radio-title">
-                                                        <input id="resUseExisting" type="radio" tabindex="2" name="Resource" value="1" />
-                                                        <label for="resUseExisting">使用现有数据库</label>
+                                                        <input id="scUseExisting" type="radio" tabindex="2" name="Sc" value="1" />
+                                                        <label for="scUseExisting">使用现有数据库</label>
                                                     </div>
                                                     <div class="input-group">
                                                         <span class="input-group-addon">数据库名称</span>
-                                                        <input id="resExistingDatabaseName" name="resExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
+                                                        <input id="scExistingDatabaseName" name="scExistingDatabaseName" type="text" class="form-control" placeholder="已存在的数据库名称" required disabled />
                                                     </div>
                                                     <div class="error-tips"></div>
                                                     <div>
-                                                        <input id="resDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
-                                                        <label for="resDontCheckDatabase">不检查数据库是否存在</label>
+                                                        <input id="scDontCheckDatabase" type="checkbox" tabindex="3" checked disabled />
+                                                        <label for="scDontCheckDatabase">不检查数据库是否存在</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -317,7 +317,39 @@
                                     </div>
                                 </div>
                                 <div class="bs-callout bs-callout-info">
-                                    <h4>基础数据库</h4>
+                                    <h4>资源数据库</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            服务器地址：<code id="cf-rs-01"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库端口：<code id="cf-rs-02"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据库账户：<code id="cf-rs-03"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库密码：<code id="cf-rs-04"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            数据源类型：<code id="cf-rs-05"></code>
+                                        </div>
+                                        <div class="col-md-6">
+                                            数据库名称：<code id="cf-rs-06"></code>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            数据库目录：<code id="cf-rs-07"></code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bs-callout bs-callout-info">
+                                    <h4>动环数据库</h4>
                                     <div class="row">
                                         <div class="col-md-6">
                                             服务器地址：<code id="cf-cs-01"></code>
@@ -349,66 +381,34 @@
                                     </div>
                                 </div>
                                 <div class="bs-callout bs-callout-info">
-                                    <h4>历史数据库</h4>
+                                    <h4>应用数据库</h4>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            服务器地址：<code id="cf-hs-01"></code>
+                                            服务器地址：<code id="cf-sc-01"></code>
                                         </div>
                                         <div class="col-md-6">
-                                            数据库端口：<code id="cf-hs-02"></code>
+                                            数据库端口：<code id="cf-sc-02"></code>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            数据库账户：<code id="cf-hs-03"></code>
+                                            数据库账户：<code id="cf-sc-03"></code>
                                         </div>
                                         <div class="col-md-6">
-                                            数据库密码：<code id="cf-hs-04"></code>
+                                            数据库密码：<code id="cf-sc-04"></code>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            数据源类型：<code id="cf-hs-05"></code>
+                                            数据源类型：<code id="cf-sc-05"></code>
                                         </div>
                                         <div class="col-md-6">
-                                            数据库名称：<code id="cf-hs-06"></code>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            数据库目录：<code id="cf-hs-07"></code>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bs-callout bs-callout-info">
-                                    <h4>资管数据库</h4>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            服务器地址：<code id="cf-rs-01"></code>
-                                        </div>
-                                        <div class="col-md-6">
-                                            数据库端口：<code id="cf-rs-02"></code>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            数据库账户：<code id="cf-rs-03"></code>
-                                        </div>
-                                        <div class="col-md-6">
-                                            数据库密码：<code id="cf-rs-04"></code>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            数据源类型：<code id="cf-rs-05"></code>
-                                        </div>
-                                        <div class="col-md-6">
-                                            数据库名称：<code id="cf-rs-06"></code>
+                                            数据库名称：<code id="cf-sc-06"></code>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            数据库目录：<code id="cf-rs-07"></code>
+                                            数据库目录：<code id="cf-sc-07"></code>
                                         </div>
                                     </div>
                                 </div>
@@ -467,7 +467,7 @@
                                                             <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
                                                         </span>
                                                     </th>
-                                                    <td>安装并配置基础数据库</td>
+                                                    <td>安装并配置资源数据库</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">
@@ -475,7 +475,7 @@
                                                             <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
                                                         </span>
                                                     </th>
-                                                    <td>安装并配置历史数据库</td>
+                                                    <td>安装并配置动环数据库</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">
@@ -483,7 +483,7 @@
                                                             <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 等待
                                                         </span>
                                                     </th>
-                                                    <td>安装并配置资管数据库</td>
+                                                    <td>安装并配置应用数据库</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">

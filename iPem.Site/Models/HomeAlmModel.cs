@@ -20,6 +20,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("四级告警")]
         public int total4 { get; set; }
 
+        [ExcelIgnore]
         [ExcelDisplayName("区域告警")]
         public List<HomeAreaAlmModel> alarms { get; set; }
     }

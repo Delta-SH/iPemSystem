@@ -120,9 +120,9 @@
      * @for defaults
      **/
     var _databases_types = {
-        master: 0,
-        history: 1,
-        resource: 2
+        rs: 0,
+        cs: 1,
+        sc: 2
     };
 
     /**
@@ -162,9 +162,9 @@
      * @for defaults
      **/
     var _install_steps_index = {
-        master: { index: 0, status: _install_status_messages.waiting.id },
-        history: { index: 1, status: _install_status_messages.waiting.id },
-        resource: { index: 2, status: _install_status_messages.waiting.id },
+        rs: { index: 0, status: _install_status_messages.waiting.id },
+        cs: { index: 1, status: _install_status_messages.waiting.id },
+        sc: { index: 2, status: _install_status_messages.waiting.id },
         role: { index: 3, status: _install_status_messages.waiting.id },
         user: { index: 4, status: _install_status_messages.waiting.id },
         finish: { index: 5, status: _install_status_messages.waiting.id },
@@ -278,38 +278,38 @@
                 && config.database != null) {
                 $.each(config.database, function (index, item) {
                     switch (item.id) {
-                        case _databases_types.master:
-                            $('#masterServerName').val(item.ipv4);
-                            $('#masterPort').val(item.port);
-                            $('#masterUid').val(item.uid);
-                            $('#masterPwd').val(item.pwd);
-                            $('input:radio[name*="Master"]').eq(item.crdnew).iCheck('check');
-                            $('#masterNewDatabaseName').val(item.name);
-                            $('#masterNewDatabasePath').val(item.path);
-                            $('#masterExistingDatabaseName').val(item.oname);
-                            $('#masterDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
+                        case _databases_types.rs:
+                            $('#rsServerName').val(item.ipv4);
+                            $('#rsPort').val(item.port);
+                            $('#rsUid').val(item.uid);
+                            $('#rsPwd').val(item.pwd);
+                            $('input:radio[name*="Rs"]').eq(item.crdnew).iCheck('check');
+                            $('#rsNewDatabaseName').val(item.name);
+                            $('#rsNewDatabasePath').val(item.path);
+                            $('#rsExistingDatabaseName').val(item.oname);
+                            $('#rsDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
                             break;
-                        case _databases_types.history:
-                            $('#hisServerName').val(item.ipv4);
-                            $('#hisPort').val(item.port);
-                            $('#hisUid').val(item.uid);
-                            $('#hisPwd').val(item.pwd);
-                            $('input:radio[name*="History"]').eq(item.crdnew).iCheck('check');
-                            $('#hisNewDatabaseName').val(item.name);
-                            $('#hisNewDatabasePath').val(item.path);
-                            $('#hisExistingDatabaseName').val(item.oname);
-                            $('#hisDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
+                        case _databases_types.cs:
+                            $('#csServerName').val(item.ipv4);
+                            $('#csPort').val(item.port);
+                            $('#csUid').val(item.uid);
+                            $('#csPwd').val(item.pwd);
+                            $('input:radio[name*="Cs"]').eq(item.crdnew).iCheck('check');
+                            $('#csNewDatabaseName').val(item.name);
+                            $('#csNewDatabasePath').val(item.path);
+                            $('#csExistingDatabaseName').val(item.oname);
+                            $('#csDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
                             break;
-                        case _databases_types.resource:
-                            $('#resServerName').val(item.ipv4);
-                            $('#resPort').val(item.port);
-                            $('#resUid').val(item.uid);
-                            $('#resPwd').val(item.pwd);
-                            $('input:radio[name*="Resource"]').eq(item.crdnew).iCheck('check');
-                            $('#resNewDatabaseName').val(item.name);
-                            $('#resNewDatabasePath').val(item.path);
-                            $('#resExistingDatabaseName').val(item.oname);
-                            $('#resDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
+                        case _databases_types.sc:
+                            $('#scServerName').val(item.ipv4);
+                            $('#scPort').val(item.port);
+                            $('#scUid').val(item.uid);
+                            $('#scPwd').val(item.pwd);
+                            $('input:radio[name*="Sc"]').eq(item.crdnew).iCheck('check');
+                            $('#scNewDatabaseName').val(item.name);
+                            $('#scNewDatabasePath').val(item.path);
+                            $('#scExistingDatabaseName').val(item.oname);
+                            $('#scDontCheckDatabase').iCheck(item.checked ? 'check' : 'uncheck');
                             break;
                         default:
                             break;
@@ -324,40 +324,40 @@
         if (isValid && $.cookie) {
             var databases = [
                 {
-                    id: _databases_types.master,
-                    ipv4: $('#masterServerName').val(),
-                    port: parseInt($('#masterPort').val(), 0),
-                    uid: $('#masterUid').val(),
-                    pwd: $('#masterPwd').val(),
-                    crdnew: parseInt($('input:radio[name*="Master"]:checked').val(), 0),
-                    name: $('#masterNewDatabaseName').val(),
-                    path: $('#masterNewDatabasePath').val(),
-                    oname: $('#masterExistingDatabaseName').val(),
-                    checked: $('#masterDontCheckDatabase').is(':checked')
+                    id: _databases_types.rs,
+                    ipv4: $('#rsServerName').val(),
+                    port: parseInt($('#rsPort').val(), 0),
+                    uid: $('#rsUid').val(),
+                    pwd: $('#rsPwd').val(),
+                    crdnew: parseInt($('input:radio[name*="Rs"]:checked').val(), 0),
+                    name: $('#rsNewDatabaseName').val(),
+                    path: $('#rsNewDatabasePath').val(),
+                    oname: $('#rsExistingDatabaseName').val(),
+                    checked: $('#rsDontCheckDatabase').is(':checked')
                 },
                 {
-                    id: _databases_types.history,
-                    ipv4: $('#hisServerName').val(),
-                    port: parseInt($('#hisPort').val(), 0),
-                    uid: $('#hisUid').val(),
-                    pwd: $('#hisPwd').val(),
-                    crdnew: parseInt($('input:radio[name*="History"]:checked').val(), 0),
-                    name: $('#hisNewDatabaseName').val(),
-                    path: $('#hisNewDatabasePath').val(),
-                    oname: $('#hisExistingDatabaseName').val(),
-                    checked: $('#hisDontCheckDatabase').is(':checked')
+                    id: _databases_types.cs,
+                    ipv4: $('#csServerName').val(),
+                    port: parseInt($('#csPort').val(), 0),
+                    uid: $('#csUid').val(),
+                    pwd: $('#csPwd').val(),
+                    crdnew: parseInt($('input:radio[name*="Cs"]:checked').val(), 0),
+                    name: $('#csNewDatabaseName').val(),
+                    path: $('#csNewDatabasePath').val(),
+                    oname: $('#csExistingDatabaseName').val(),
+                    checked: $('#csDontCheckDatabase').is(':checked')
                 },
                 {
-                    id: _databases_types.resource,
-                    ipv4: $('#resServerName').val(),
-                    port: parseInt($('#resPort').val(), 0),
-                    uid: $('#resUid').val(),
-                    pwd: $('#resPwd').val(),
-                    crdnew: parseInt($('input:radio[name*="Resource"]:checked').val(), 0),
-                    name: $('#resNewDatabaseName').val(),
-                    path: $('#resNewDatabasePath').val(),
-                    oname: $('#resExistingDatabaseName').val(),
-                    checked: $('#resDontCheckDatabase').is(':checked')
+                    id: _databases_types.sc,
+                    ipv4: $('#scServerName').val(),
+                    port: parseInt($('#scPort').val(), 0),
+                    uid: $('#scUid').val(),
+                    pwd: $('#scPwd').val(),
+                    crdnew: parseInt($('input:radio[name*="Sc"]:checked').val(), 0),
+                    name: $('#scNewDatabaseName').val(),
+                    path: $('#scNewDatabasePath').val(),
+                    oname: $('#scExistingDatabaseName').val(),
+                    checked: $('#scDontCheckDatabase').is(':checked')
                 }
             ];
 
@@ -447,7 +447,16 @@
                 if (config.database != null) {
                     $.each(config.database, function (index, item) {
                         switch (item.id) {
-                            case _databases_types.master:
+                            case _databases_types.rs:
+                                $('#cf-rs-01').html(item.ipv4);
+                                $('#cf-rs-02').html(item.port);
+                                $('#cf-rs-03').html(item.uid);
+                                $('#cf-rs-04').html(item.pwd);
+                                $('#cf-rs-05').html(item.crdnew === 0 ? _confirm_messages.created : _confirm_messages.existed);
+                                $('#cf-rs-06').html(item.crdnew === 0 ? item.name : item.oname);
+                                $('#cf-rs-07').html(item.crdnew === 0 ? item.path : 'undefined');
+                                break;
+                            case _databases_types.cs:
                                 $('#cf-cs-01').html(item.ipv4);
                                 $('#cf-cs-02').html(item.port);
                                 $('#cf-cs-03').html(item.uid);
@@ -456,23 +465,14 @@
                                 $('#cf-cs-06').html(item.crdnew === 0 ? item.name : item.oname);
                                 $('#cf-cs-07').html(item.crdnew === 0 ? item.path : 'undefined');
                                 break;
-                            case _databases_types.history:
-                                $('#cf-hs-01').html(item.ipv4);
-                                $('#cf-hs-02').html(item.port);
-                                $('#cf-hs-03').html(item.uid);
-                                $('#cf-hs-04').html(item.pwd);
-                                $('#cf-hs-05').html(item.crdnew === 0 ? _confirm_messages.created : _confirm_messages.existed);
-                                $('#cf-hs-06').html(item.crdnew === 0 ? item.name : item.oname);
-                                $('#cf-hs-07').html(item.crdnew === 0 ? item.path : 'undefined');
-                                break;
-                            case _databases_types.resource:
-                                $('#cf-rs-01').html(item.ipv4);
-                                $('#cf-rs-02').html(item.port);
-                                $('#cf-rs-03').html(item.uid);
-                                $('#cf-rs-04').html(item.pwd);
-                                $('#cf-rs-05').html(item.crdnew === 0 ? _confirm_messages.created : _confirm_messages.existed);
-                                $('#cf-rs-06').html(item.crdnew === 0 ? item.name : item.oname);
-                                $('#cf-rs-07').html(item.crdnew === 0 ? item.path : 'undefined');
+                            case _databases_types.sc:
+                                $('#cf-sc-01').html(item.ipv4);
+                                $('#cf-sc-02').html(item.port);
+                                $('#cf-sc-03').html(item.uid);
+                                $('#cf-sc-04').html(item.pwd);
+                                $('#cf-sc-05').html(item.crdnew === 0 ? _confirm_messages.created : _confirm_messages.existed);
+                                $('#cf-sc-06').html(item.crdnew === 0 ? item.name : item.oname);
+                                $('#cf-sc-07').html(item.crdnew === 0 ? item.path : 'undefined');
                                 break;
                             default:
                                 break;
@@ -498,9 +498,9 @@
             var status = parseInt($.cookie(_cookie_ipems_install_status), 0);
             if (!isNaN(status)) {
                 if (status == _install_status_messages.success.id) {
-                    install_ss(_install_steps_index.master.index, _install_status_messages.success.id);
-                    install_ss(_install_steps_index.history.index, _install_status_messages.success.id);
-                    install_ss(_install_steps_index.resource.index, _install_status_messages.success.id);
+                    install_ss(_install_steps_index.rs.index, _install_status_messages.success.id);
+                    install_ss(_install_steps_index.cs.index, _install_status_messages.success.id);
+                    install_ss(_install_steps_index.sc.index, _install_status_messages.success.id);
                     install_ss(_install_steps_index.role.index, _install_status_messages.success.id);
                     install_ss(_install_steps_index.user.index, _install_status_messages.success.id);
                     install_ss(_install_steps_index.finish.index, _install_status_messages.success.id);
@@ -508,9 +508,9 @@
                     finishInstall();
                     showSuccess();
                 } else if (status == _install_status_messages.failure.id) {
-                    install_ss(_install_steps_index.master.index, _install_status_messages.failure.id);
-                    install_ss(_install_steps_index.history.index, _install_status_messages.failure.id);
-                    install_ss(_install_steps_index.resource.index, _install_status_messages.failure.id);
+                    install_ss(_install_steps_index.rs.index, _install_status_messages.failure.id);
+                    install_ss(_install_steps_index.cs.index, _install_status_messages.failure.id);
+                    install_ss(_install_steps_index.sc.index, _install_status_messages.failure.id);
                     install_ss(_install_steps_index.role.index, _install_status_messages.failure.id);
                     install_ss(_install_steps_index.user.index, _install_status_messages.failure.id);
                     install_ss(_install_steps_index.finish.index, _install_status_messages.failure.id);
@@ -536,94 +536,10 @@
             if (typeof config !== 'object')
                 throw new Error(_cookie_invalid_message);
 
-            install_cs(config);
+            install_rs(config);
         } catch (ex) {
             showError(ex.message);
         }
-    }
-
-    function install_cs(config) {
-        if (typeof config.database === 'undefined')
-            throw new Error(_cookie_invalid_message);
-
-        if (config.database == null)
-            throw new Error(_cookie_invalid_message);
-
-        $.each(config.database, function (index, item) {
-            if (item.id === _databases_types.master) {
-                $.ajax({
-                    url: "/Installation/InstallCs",
-                    data: { type: config.type, data: JSON.stringify(item) },
-                    dataType: 'json',
-                    beforeSend: function (jqXHR) {
-                        install_ss(_install_steps_index.master.index, _install_status_messages.install.id);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        install_er(_install_steps_index.master.index, _ajax_error_message);
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        try {
-                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
-                                throw new Error(_ajax_data_error_message);
-                            }
-
-                            if (data.code == _ajax_return_ok_code) {
-                                install_ss(_install_steps_index.master.index, _install_status_messages.success.id);
-                                install_hs(config);
-                            } else {
-                                throw new Error(data.message);
-                            }
-                        } catch (ex) {
-                            install_er(_install_steps_index.master.index, ex.message);
-                        }
-                    }
-                });
-
-                return false;
-            }
-        });
-    }
-
-    function install_hs(config) {
-        if (typeof config.database === 'undefined')
-            throw new Error(_cookie_invalid_message);
-
-        if (config.database == null)
-            throw new Error(_cookie_invalid_message);
-
-        $.each(config.database, function (index, item) {
-            if (item.id === _databases_types.history) {
-                $.ajax({
-                    url: "/Installation/InstallHs",
-                    data: { type: config.type, data: JSON.stringify(item) },
-                    dataType: 'json',
-                    beforeSend: function (jqXHR) {
-                        install_ss(_install_steps_index.history.index, _install_status_messages.install.id);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        install_er(_install_steps_index.history.index, _ajax_error_message);
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        try {
-                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
-                                throw new Error(_ajax_data_error_message);
-                            }
-
-                            if (data.code == _ajax_return_ok_code) {
-                                install_ss(_install_steps_index.history.index, _install_status_messages.success.id);
-                                install_rs(config);
-                            } else {
-                                throw new Error(data.message);
-                            }
-                        } catch (ex) {
-                            install_er(_install_steps_index.history.index, ex.message);
-                        }
-                    }
-                });
-
-                return false;
-            }
-        });
     }
 
     function install_rs(config) {
@@ -634,16 +550,16 @@
             throw new Error(_cookie_invalid_message);
 
         $.each(config.database, function (index, item) {
-            if (item.id === _databases_types.resource) {
+            if (item.id === _databases_types.rs) {
                 $.ajax({
                     url: "/Installation/InstallRs",
                     data: { type: config.type, data: JSON.stringify(item) },
                     dataType: 'json',
                     beforeSend: function (jqXHR) {
-                        install_ss(_install_steps_index.resource.index, _install_status_messages.install.id);
+                        install_ss(_install_steps_index.rs.index, _install_status_messages.install.id);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        install_er(_install_steps_index.resource.index, _ajax_error_message);
+                        install_er(_install_steps_index.rs.index, _ajax_error_message);
                     },
                     success: function (data, textStatus, jqXHR) {
                         try {
@@ -652,13 +568,97 @@
                             }
 
                             if (data.code == _ajax_return_ok_code) {
-                                install_ss(_install_steps_index.resource.index, _install_status_messages.success.id);
+                                install_ss(_install_steps_index.rs.index, _install_status_messages.success.id);
+                                install_cs(config);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (ex) {
+                            install_er(_install_steps_index.rs.index, ex.message);
+                        }
+                    }
+                });
+
+                return false;
+            }
+        });
+    }
+
+    function install_cs(config) {
+        if (typeof config.database === 'undefined')
+            throw new Error(_cookie_invalid_message);
+
+        if (config.database == null)
+            throw new Error(_cookie_invalid_message);
+
+        $.each(config.database, function (index, item) {
+            if (item.id === _databases_types.cs) {
+                $.ajax({
+                    url: "/Installation/InstallCs",
+                    data: { type: config.type, data: JSON.stringify(item) },
+                    dataType: 'json',
+                    beforeSend: function (jqXHR) {
+                        install_ss(_install_steps_index.cs.index, _install_status_messages.install.id);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        install_er(_install_steps_index.cs.index, _ajax_error_message);
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        try {
+                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
+                                throw new Error(_ajax_data_error_message);
+                            }
+
+                            if (data.code == _ajax_return_ok_code) {
+                                install_ss(_install_steps_index.cs.index, _install_status_messages.success.id);
+                                install_sc(config);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (ex) {
+                            install_er(_install_steps_index.cs.index, ex.message);
+                        }
+                    }
+                });
+
+                return false;
+            }
+        });
+    }
+
+    function install_sc(config) {
+        if (typeof config.database === 'undefined')
+            throw new Error(_cookie_invalid_message);
+
+        if (config.database == null)
+            throw new Error(_cookie_invalid_message);
+
+        $.each(config.database, function (index, item) {
+            if (item.id === _databases_types.sc) {
+                $.ajax({
+                    url: "/Installation/InstallSc",
+                    data: { type: config.type, data: JSON.stringify(item) },
+                    dataType: 'json',
+                    beforeSend: function (jqXHR) {
+                        install_ss(_install_steps_index.sc.index, _install_status_messages.install.id);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        install_er(_install_steps_index.sc.index, _ajax_error_message);
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        try {
+                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
+                                throw new Error(_ajax_data_error_message);
+                            }
+
+                            if (data.code == _ajax_return_ok_code) {
+                                install_ss(_install_steps_index.sc.index, _install_status_messages.success.id);
                                 install_rl(config);
                             } else {
                                 throw new Error(data.message);
                             }
                         } catch (ex) {
-                            install_er(_install_steps_index.resource.index, ex.message);
+                            install_er(_install_steps_index.sc.index, ex.message);
                         }
                     }
                 });
@@ -811,23 +811,23 @@
 
     function install_er(index, message) {
         switch (index) {
-            case _install_steps_index.master.index:
-                install_ss(_install_steps_index.master.index, _install_status_messages.failure.id);
-                install_ss(_install_steps_index.history.index, _install_status_messages.cancel.id);
-                install_ss(_install_steps_index.resource.index, _install_status_messages.cancel.id);
+            case _install_steps_index.rs.index:
+                install_ss(_install_steps_index.rs.index, _install_status_messages.failure.id);
+                install_ss(_install_steps_index.cs.index, _install_status_messages.cancel.id);
+                install_ss(_install_steps_index.sc.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.role.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.user.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.finish.index, _install_status_messages.cancel.id);
                 break;
-            case _install_steps_index.history.index:
-                install_ss(_install_steps_index.history.index, _install_status_messages.failure.id);
-                install_ss(_install_steps_index.resource.index, _install_status_messages.cancel.id);
+            case _install_steps_index.cs.index:
+                install_ss(_install_steps_index.cs.index, _install_status_messages.failure.id);
+                install_ss(_install_steps_index.sc.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.role.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.user.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.finish.index, _install_status_messages.cancel.id);
                 break;
-            case _install_steps_index.resource.index:
-                install_ss(_install_steps_index.resource.index, _install_status_messages.failure.id);
+            case _install_steps_index.sc.index:
+                install_ss(_install_steps_index.sc.index, _install_status_messages.failure.id);
                 install_ss(_install_steps_index.role.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.user.index, _install_status_messages.cancel.id);
                 install_ss(_install_steps_index.finish.index, _install_status_messages.cancel.id);
@@ -1015,14 +1015,14 @@
             });
         });
 
-        $('input:radio[name*="Master"]').on('ifChecked', function (event) {
-            var val = $('input:radio[name*="Master"]:checked').val();
+        $('input:radio[name*="Rs"]').on('ifChecked', function (event) {
+            var val = $('input:radio[name*="Rs"]:checked').val();
             switch (parseInt(val, 0)) {
                 case 0:
-                    $('#masterNewDatabaseName').removeAttr('disabled');
-                    $('#masterNewDatabasePath').removeAttr('disabled');
-                    $('#masterDontCheckDatabase').iCheck('disable');
-                    var medn = $('#masterExistingDatabaseName');
+                    $('#rsNewDatabaseName').removeAttr('disabled');
+                    $('#rsNewDatabasePath').removeAttr('disabled');
+                    $('#rsDontCheckDatabase').iCheck('disable');
+                    var medn = $('#rsExistingDatabaseName');
                     medn.attr('disabled', 'disabled');
                     var info1 = medn.closest('.input-group');
                     if (info1.hasClass('has-error')) {
@@ -1031,9 +1031,9 @@
                     }
                     break;
                 case 1:
-                    $('#masterExistingDatabaseName').removeAttr('disabled');
-                    $('#masterDontCheckDatabase').iCheck('enable');
-                    var mndn = $('#masterNewDatabaseName');
+                    $('#rsExistingDatabaseName').removeAttr('disabled');
+                    $('#rsDontCheckDatabase').iCheck('enable');
+                    var mndn = $('#rsNewDatabaseName');
                     mndn.attr('disabled', 'disabled');
                     var info2 = mndn.closest('.input-group');
                     if (info2.hasClass('has-error')) {
@@ -1041,7 +1041,7 @@
                         info2.next().html('');
                     }
 
-                    var mndp = $('#masterNewDatabasePath');
+                    var mndp = $('#rsNewDatabasePath');
                     mndp.attr('disabled', 'disabled');
                     var info3 = mndp.closest('.input-group');
                     if (info3.hasClass('has-error')) {
@@ -1054,14 +1054,14 @@
             }
         });
 
-        $('input:radio[name*="History"]').on('ifChecked', function (event) {
-            var val = $('input:radio[name*="History"]:checked').val();
+        $('input:radio[name*="Cs"]').on('ifChecked', function (event) {
+            var val = $('input:radio[name*="Cs"]:checked').val();
             switch (parseInt(val, 0)) {
                 case 0:
-                    $('#hisNewDatabaseName').removeAttr('disabled');
-                    $('#hisNewDatabasePath').removeAttr('disabled');
-                    $('#hisDontCheckDatabase').iCheck('disable');
-                    var medn = $('#hisExistingDatabaseName');
+                    $('#csNewDatabaseName').removeAttr('disabled');
+                    $('#csNewDatabasePath').removeAttr('disabled');
+                    $('#csDontCheckDatabase').iCheck('disable');
+                    var medn = $('#csExistingDatabaseName');
                     medn.attr('disabled', 'disabled');
                     var info1 = medn.closest('.input-group');
                     if (info1.hasClass('has-error')) {
@@ -1070,9 +1070,9 @@
                     }
                     break;
                 case 1:
-                    $('#hisExistingDatabaseName').removeAttr('disabled');
-                    $('#hisDontCheckDatabase').iCheck('enable');
-                    var mndn = $('#hisNewDatabaseName');
+                    $('#csExistingDatabaseName').removeAttr('disabled');
+                    $('#csDontCheckDatabase').iCheck('enable');
+                    var mndn = $('#csNewDatabaseName');
                     mndn.attr('disabled', 'disabled');
                     var info2 = mndn.closest('.input-group');
                     if (info2.hasClass('has-error')) {
@@ -1080,7 +1080,7 @@
                         info2.next().html('');
                     }
 
-                    var mndp = $('#hisNewDatabasePath');
+                    var mndp = $('#csNewDatabasePath');
                     mndp.attr('disabled', 'disabled');
                     var info3 = mndp.closest('.input-group');
                     if (info3.hasClass('has-error')) {
@@ -1093,14 +1093,14 @@
             }
         });
 
-        $('input:radio[name*="Resource"]').on('ifChecked', function (event) {
-            var val = $('input:radio[name*="Resource"]:checked').val();
+        $('input:radio[name*="Sc"]').on('ifChecked', function (event) {
+            var val = $('input:radio[name*="Sc"]:checked').val();
             switch (parseInt(val, 0)) {
                 case 0:
-                    $('#resNewDatabaseName').removeAttr('disabled');
-                    $('#resNewDatabasePath').removeAttr('disabled');
-                    $('#resDontCheckDatabase').iCheck('disable');
-                    var medn = $('#resExistingDatabaseName');
+                    $('#scNewDatabaseName').removeAttr('disabled');
+                    $('#scNewDatabasePath').removeAttr('disabled');
+                    $('#scDontCheckDatabase').iCheck('disable');
+                    var medn = $('#scExistingDatabaseName');
                     medn.attr('disabled', 'disabled');
                     var info1 = medn.closest('.input-group');
                     if (info1.hasClass('has-error')) {
@@ -1109,9 +1109,9 @@
                     }
                     break;
                 case 1:
-                    $('#resExistingDatabaseName').removeAttr('disabled');
-                    $('#resDontCheckDatabase').iCheck('enable');
-                    var mndn = $('#resNewDatabaseName');
+                    $('#scExistingDatabaseName').removeAttr('disabled');
+                    $('#scDontCheckDatabase').iCheck('enable');
+                    var mndn = $('#scNewDatabaseName');
                     mndn.attr('disabled', 'disabled');
                     var info2 = mndn.closest('.input-group');
                     if (info2.hasClass('has-error')) {
@@ -1119,7 +1119,7 @@
                         info2.next().html('');
                     }
 
-                    var mndp = $('#resNewDatabasePath');
+                    var mndp = $('#scNewDatabasePath');
                     mndp.attr('disabled', 'disabled');
                     var info3 = mndp.closest('.input-group');
                     if (info3.hasClass('has-error')) {
@@ -1135,28 +1135,28 @@
 
         $('#insform').validate({
             rules: {
-                masterServerName: {
+                rsServerName: {
                     ipv4: true
                 },
-                masterPort: {
+                rsPort: {
                     required: true,
                     digits: true,
                     max: 65535,
                     min: 1
                 },
-                hisServerName: {
+                csServerName: {
                     ipv4: true
                 },
-                hisPort: {
+                csPort: {
                     required: true,
                     digits: true,
                     max: 65535,
                     min: 1
                 },
-                resServerName: {
+                scServerName: {
                     ipv4: true
                 },
-                resPort: {
+                scPort: {
                     required: true,
                     digits: true,
                     max: 65535,
@@ -1164,13 +1164,13 @@
                 }
             },
             messages: {
-                masterServerName: {
+                rsServerName: {
                     ipv4: _ipv4_error_message
                 },
-                hisServerName: {
+                csServerName: {
                     ipv4: _ipv4_error_message
                 },
-                resServerName: {
+                scServerName: {
                     ipv4: _ipv4_error_message
                 }
             },

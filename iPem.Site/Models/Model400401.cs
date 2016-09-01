@@ -60,6 +60,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("正常描述")]
         public string normalComment { get; set; }
 
+        [ExcelDisplayName("告警历时")]
+        public string interval { get; set; }
+
         [ExcelDisplayName("触发频次")]
         public int frequency { get; set; }
 

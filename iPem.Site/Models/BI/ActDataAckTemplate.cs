@@ -50,7 +50,7 @@ namespace iPem.Site.Models.BI {
                             var tse = new TSemaphore();
                             tse.Id = child.Attributes["Id"] != null ? child.Attributes["Id"].InnerText : string.Empty;
                             tse.Type = child.Attributes["Type"] != null ? int.Parse(child.Attributes["Type"].InnerText) : 0;
-                            tse.MeasuredVal = child.Attributes["MeasuredVal"] != null ? double.Parse(child.Attributes["MeasuredVal"].InnerText) : 0;
+                            tse.MeasuredVal = child.Attributes["MeasuredVal"] != null ? float.Parse(child.Attributes["MeasuredVal"].InnerText) : 0;
                             tse.SetupVal = child.Attributes["SetupVal"] != null ? float.Parse(child.Attributes["SetupVal"].InnerText) : 0;
                             tse.Status = child.Attributes["Status"] != null ? int.Parse(child.Attributes["Status"].InnerText) : 0;
                             tse.RecordTime = DateTime.Now;//child.Attributes["RecordTime"] != null ? DateTime.Parse(child.Attributes["RecordTime"].InnerText) : DateTime.Now;

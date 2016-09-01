@@ -1,18 +1,16 @@
-﻿using MsDomain = iPem.Core.Domain.Master;
-using RsDomain = iPem.Core.Domain.Resource;
-using MsSrv = iPem.Services.Master;
-using RsSrv = iPem.Services.Resource;
+﻿using iPem.Core;
+using iPem.Core.Enum;
+using iPem.Services.Rs;
+using iPem.Services.Sc;
+using iPem.Site.Extensions;
+using iPem.Site.Infrastructure;
+using iPem.Site.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using iPem.Site.Extensions;
-using iPem.Site.Models;
-using iPem.Core.Enum;
-using iPem.Core;
-using iPem.Site.Infrastructure;
-using Newtonsoft.Json;
 
 namespace iPem.Site.Controllers {
     [Authorize]
@@ -21,16 +19,11 @@ namespace iPem.Site.Controllers {
         #region Fields
 
         private readonly IWorkContext _workContext;
-        private readonly MsSrv.IWebLogger _webLogger;
-        private readonly MsSrv.IPointService _msPointService;
+        private readonly IWebLogger _webLogger;
 
-        private readonly RsSrv.IEnumMethodsService _rsEnumMethodsService;
-        private readonly RsSrv.IStationTypeService _rsStationTypeService;
-        private readonly RsSrv.IRoomTypeService _rsRoomTypeService;
-        private readonly RsSrv.IDeviceTypeService _rsDeviceTypeService;
-        private readonly RsSrv.ILogicTypeService _rsLogicTypeService;
-        private readonly RsSrv.IEmployeeService _rsEmployeeService;
-        private readonly RsSrv.IDepartmentService _rsDepartmentService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IEmployeeService _employeeService;
+        private readonly IPointService _pointService;
 
         #endregion
 
@@ -38,25 +31,15 @@ namespace iPem.Site.Controllers {
 
         public ComponentController(
             IWorkContext workContext,
-            MsSrv.IWebLogger webLogger,
-            MsSrv.IPointService msPointService,
-            RsSrv.IEnumMethodsService rsEnumMethodsService,
-            RsSrv.IStationTypeService rsStationTypeService,
-            RsSrv.IRoomTypeService rsRoomTypeService,
-            RsSrv.IDeviceTypeService rsDeviceTypeService,
-            RsSrv.ILogicTypeService rsLogicTypeService,
-            RsSrv.IEmployeeService rsEmployeeService,
-            RsSrv.IDepartmentService rsDepartmentService) {
+            IWebLogger webLogger,
+            IDepartmentService departmentService,
+            IEmployeeService employeeService,
+            IPointService pointService) {
             this._workContext = workContext;
             this._webLogger = webLogger;
-            this._msPointService = msPointService;
-            this._rsEnumMethodsService = rsEnumMethodsService;
-            this._rsStationTypeService = rsStationTypeService;
-            this._rsRoomTypeService = rsRoomTypeService;
-            this._rsDeviceTypeService = rsDeviceTypeService;
-            this._rsLogicTypeService = rsLogicTypeService;
-            this._rsEmployeeService = rsEmployeeService;
-            this._rsDepartmentService = rsDepartmentService;
+            this._departmentService = departmentService;
+            this._employeeService = employeeService;
+            this._pointService = pointService;
         }
 
         #endregion
@@ -73,11 +56,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _rsEnumMethodsService.GetEnumMethods(EnmMethodType.Area, "类型", start / limit, limit);
+                var models = _workContext.AreaTypes;
                 if(models.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = models.TotalCount;
-                    data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id.ToString(), text = d.Name }));
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id.ToString(),
+                            text = models[i].Name
+                        });
+                    }
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -97,11 +90,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _rsStationTypeService.GetAllStationTypes(start / limit, limit);
+                var models = _workContext.StationTypes;
                 if(models.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = models.TotalCount;
-                    data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = models[i].Name
+                        });
+                    }
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -121,11 +124,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _rsRoomTypeService.GetAllRoomTypes(start / limit, limit);
+                var models = _workContext.RoomTypes;
                 if(models.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = models.TotalCount;
-                    data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = models[i].Name
+                        });
+                    }
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -145,11 +158,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _rsDeviceTypeService.GetAllDeviceTypes(start / limit, limit);
+                var models = _workContext.DeviceTypes;
                 if(models.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = models.TotalCount;
-                    data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = models[i].Name
+                        });
+                    }
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -196,11 +219,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _rsLogicTypeService.GetAllLogicTypes(start / limit, limit);
+                var models = _workContext.LogicTypes;
                 if(models.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = models.TotalCount;
-                    data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = models[i].Name
+                        });
+                    }
                 }
             } catch(Exception exc) {
                 data.success = false;
@@ -248,24 +281,18 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
-                    var roots = new List<RsDomain.Area>();
-                    foreach(var area in _workContext.AssociatedAreas) {
-                        if(!dict.ContainsKey(area.ParentId))
-                            roots.Add(area);
-                    }
-
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = roots.Count;
                         for(var i = 0; i < roots.Count; i++) {
                             var root = new TreeModel {
-                                id = roots[i].AreaId,
-                                text = roots[i].Name,
+                                id = roots[i].Current.Id,
+                                text = roots[i].Current.Name,
                                 icon = Icons.Diqiu,
                                 expanded = false,
-                                leaf = false
+                                leaf = !roots[i].HasChildren
                             };
 
                             if(multiselect.HasValue && multiselect.Value)
@@ -277,29 +304,24 @@ namespace iPem.Site.Controllers {
                     #endregion
                 } else if(!string.IsNullOrWhiteSpace(node)) {
                     #region area organization
-                    if(_workContext.AssociatedAreaAttributes.ContainsKey(node)) {
-                        var current = _workContext.AssociatedAreaAttributes[node];
-                        if(current.HasChildren) {
-                            data.success = true;
-                            data.message = "200 Ok";
-                            data.total = current.FirstChildren.Count;
-                            foreach(var child in current.FirstChildren) {
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(child.AreaId)) {
-                                    var associatedChild = _workContext.AssociatedAreaAttributes[child.AreaId];
-                                    var root = new TreeModel {
-                                        id = associatedChild.Current.AreaId,
-                                        text = associatedChild.Current.Name,
-                                        icon = associatedChild.HasChildren ? Icons.Diqiu : Icons.Dingwei,
-                                        expanded = false,
-                                        leaf = !associatedChild.HasChildren
-                                    };
+                    var current = _workContext.RoleAreas.Find(a => a.Current.Id == node);
+                    if(current != null && current.HasChildren) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = current.ChildRoot.Count;
+                        foreach(var child in current.ChildRoot) {
+                            var root = new TreeModel {
+                                id = child.Current.Id,
+                                text = child.Current.Name,
+                                icon = child.HasChildren ? Icons.Diqiu : Icons.Dingwei,
+                                expanded = false,
+                                leaf = !child.HasChildren
+                            };
 
-                                    if(multiselect.HasValue && multiselect.Value)
-                                        root.selected = false;
+                            if(multiselect.HasValue && multiselect.Value)
+                                root.selected = false;
 
-                                    data.data.Add(root);
-                                }
-                            }
+                            data.data.Add(root);
                         }
                     }
                     #endregion
@@ -311,7 +333,7 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -326,20 +348,9 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var match = _workContext.AssociatedAreas.Find(a => a.AreaId == node);
-                    if(match != null) {
-                        var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(parent.AreaId);
-                            }
-                        }
-
-                        paths.Add(match.AreaId);
-                        data.data.Add(paths.ToArray());
-                    }
+                    var current = _workContext.RoleAreas.Find(a => a.Current.Id == node);
+                    if(current != null)
+                        data.data.Add(current.ToPath());
                 }
 
                 if(data.data.Count > 0) {
@@ -367,20 +378,9 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.AssociatedAreas.FindAll(a => a.Name.ToLower().Contains(text));
-                    foreach(var match in matchs) {
-                        var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(parent.AreaId);
-                            }
-                        }
-
-                        paths.Add(match.AreaId);
-                        data.data.Add(paths.ToArray());
-                    }
+                    var matchs = _workContext.RoleAreas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    foreach(var match in matchs)
+                        data.data.Add(match.ToPath());
                 }
 
                 if(data.data.Count > 0) {
@@ -407,21 +407,15 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
-                    var roots = new List<RsDomain.Area>();
-                    foreach(var area in _workContext.AssociatedAreas) {
-                        if(!dict.ContainsKey(area.ParentId))
-                            roots.Add(area);
-                    }
-
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = roots.Count;
                         for(var i = 0; i < roots.Count; i++) {
                             var root = new TreeModel {
-                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].AreaId),
-                                text = roots[i].Name,
+                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].Current.Id),
+                                text = roots[i].Current.Name,
                                 icon = Icons.Diqiu,
                                 expanded = false,
                                 leaf = false
@@ -444,16 +438,16 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            if(_workContext.AssociatedAreaAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedAreaAttributes[id];
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
                                 if(current.HasChildren) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                    data.total = current.ChildRoot.Count;
+                                    for(var i = 0; i < current.ChildRoot.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.FirstChildren[i].AreaId),
-                                            text = current.FirstChildren[i].Name,
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.ChildRoot[i].Current.Id),
+                                            text = current.ChildRoot[i].Current.Name,
                                             icon = Icons.Diqiu,
                                             expanded = false,
                                             leaf = false
@@ -467,56 +461,17 @@ namespace iPem.Site.Controllers {
                                         data.data.Add(root);
                                     }
                                 } else {
-                                    var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == id);
-                                    var dict = stations.ToDictionary(k => k.Id, v => v.Name);
-                                    var roots = new List<RsDomain.Station>();
-                                    foreach(var sta in stations) {
-                                        if(!dict.ContainsKey(sta.ParentId))
-                                            roots.Add(sta);
-                                    }
-
-                                    if(roots.Count > 0) {
+                                    if(current.Stations.Count > 0) {
                                         data.success = true;
                                         data.message = "200 Ok";
-                                        data.total = roots.Count;
-                                        for(var i = 0; i < roots.Count; i++) {
-                                            if(_workContext.AssociatedStationAttributes.ContainsKey(roots[i].Id)) {
-                                                var station = _workContext.AssociatedStationAttributes[roots[i].Id];
-                                                var root = new TreeModel {
-                                                    id = Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id),
-                                                    text = station.Current.Name,
-                                                    icon = Icons.Juzhan,
-                                                    expanded = false,
-                                                    leaf = !station.HasChildren
-                                                };
-
-                                                if(multiselect.HasValue && multiselect.Value)
-                                                    root.selected = false;
-
-                                                data.data.Add(root);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                        } else if(nodeType == EnmOrganization.Station) {
-                            #region station organization
-                            if(_workContext.AssociatedStationAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedStationAttributes[id];
-                                if(current.HasChildren) {
-                                    data.success = true;
-                                    data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
-                                        if(_workContext.AssociatedStationAttributes.ContainsKey(current.FirstChildren[i].Id)) {
-                                            var station = _workContext.AssociatedStationAttributes[current.FirstChildren[i].Id];
+                                        data.total = current.Stations.Count;
+                                        for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id),
-                                                text = station.Current.Name,
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, current.Stations[i].Current.Id),
+                                                text = current.Stations[i].Current.Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
-                                                leaf = !station.HasChildren
+                                                leaf = true
                                             };
 
                                             if(multiselect.HasValue && multiselect.Value)
@@ -538,7 +493,7 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -560,44 +515,30 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            var match = _workContext.AssociatedAreas.Find(a => a.AreaId == id);
-                            if(match != null) {
-                                var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
+                                var paths = current.ToPath();
+                                for(var i = 0; i < paths.Length; i++) {
+                                    paths[i] = Common.JoinKeys((int)EnmOrganization.Area, paths[i]);
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Station) {
                             #region station organization
-                            var match = _workContext.AssociatedStations.Find(s => s.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
-                                }
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-
-                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
-                                    var current = _workContext.AssociatedStationAttributes[match.Id];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                var parent = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
+                                if(parent != null) {
+                                    var parentPaths = parent.ToPath();
+                                    foreach(var pp in parentPaths) {
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                     }
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
@@ -630,42 +571,28 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var areaMatchs = _workContext.AssociatedAreas.FindAll(a => a.Name.ToLower().Contains(text));
-                    foreach(var match in areaMatchs) {
-                        var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                            }
+                    var areaMatchs = _workContext.RoleAreas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    foreach(var current in areaMatchs) {
+                        var paths = current.ToPath();
+                        for(var i = 0; i < paths.Length; i++) {
+                            paths[i] = Common.JoinKeys((int)EnmOrganization.Area, paths[i]);
                         }
 
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-                        data.data.Add(paths.ToArray());
+                        data.data.Add(paths);
                     }
 
-                    var staMatchs = _workContext.AssociatedStations.FindAll(s => s.Name.ToLower().Contains(text));
-                    foreach(var match in staMatchs) {
+                    var staMatchs = _workContext.RoleStations.FindAll(s => s.Current.Name.ToLower().Contains(text));
+                    foreach(var current in staMatchs) {
                         var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                            }
-                        }
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-
-                        if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
-                            var current = _workContext.AssociatedStationAttributes[match.Id];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                        var parent = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
+                        if(parent != null) {
+                            var parentPaths = parent.ToPath();
+                            foreach(var pp in parentPaths) {
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                             }
                         }
 
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, current.Current.Id));
                         data.data.Add(paths.ToArray());
                     }
                 }
@@ -694,21 +621,15 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
-                    var roots = new List<RsDomain.Area>();
-                    foreach(var area in _workContext.AssociatedAreas) {
-                        if(!dict.ContainsKey(area.ParentId))
-                            roots.Add(area);
-                    }
-
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = roots.Count;
                         for(var i = 0; i < roots.Count; i++) {
                             var root = new TreeModel {
-                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].AreaId),
-                                text = roots[i].Name,
+                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].Current.Id),
+                                text = roots[i].Current.Name,
                                 icon = Icons.Diqiu,
                                 expanded = false,
                                 leaf = false
@@ -731,16 +652,16 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            if(_workContext.AssociatedAreaAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedAreaAttributes[id];
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
                                 if(current.HasChildren) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                    data.total = current.ChildRoot.Count;
+                                    for(var i = 0; i < current.ChildRoot.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.FirstChildren[i].AreaId),
-                                            text = current.FirstChildren[i].Name,
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.ChildRoot[i].Current.Id),
+                                            text = current.ChildRoot[i].Current.Name,
                                             icon = Icons.Diqiu,
                                             expanded = false,
                                             leaf = false
@@ -754,22 +675,14 @@ namespace iPem.Site.Controllers {
                                         data.data.Add(root);
                                     }
                                 } else {
-                                    var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == id);
-                                    var dict = stations.ToDictionary(k => k.Id, v => v.Name);
-                                    var roots = new List<RsDomain.Station>();
-                                    foreach(var sta in stations) {
-                                        if(!dict.ContainsKey(sta.ParentId))
-                                            roots.Add(sta);
-                                    }
-
-                                    if(roots.Count > 0) {
+                                    if(current.Stations.Count > 0) {
                                         data.success = true;
                                         data.message = "200 Ok";
-                                        data.total = roots.Count;
-                                        for(var i = 0; i < roots.Count; i++) {
+                                        data.total = current.Stations.Count;
+                                        for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Station, roots[i].Id),
-                                                text = roots[i].Name,
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, current.Stations[i].Current.Id),
+                                                text = current.Stations[i].Current.Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
                                                 leaf = false
@@ -788,48 +701,25 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmOrganization.Station) {
                             #region station organization
-                            if(_workContext.AssociatedStationAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedStationAttributes[id];
-                                if(current.HasChildren) {
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
+                                if(current.Rooms.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                    data.total = current.Rooms.Count;
+                                    for(var i = 0; i < current.Rooms.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Station, current.FirstChildren[i].Id),
-                                            text = current.FirstChildren[i].Name,
-                                            icon = Icons.Juzhan,
+                                            id = Common.JoinKeys((int)EnmOrganization.Room, current.Rooms[i].Current.Id),
+                                            text = current.Rooms[i].Current.Name,
+                                            icon = Icons.Room,
                                             expanded = false,
-                                            leaf = false
+                                            leaf = true
                                         };
 
-                                        if(multiselect.HasValue && multiselect.Value) {
-                                            if(!leafselect.HasValue || !leafselect.Value)
-                                                root.selected = false;
-                                        }
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            root.selected = false;
 
                                         data.data.Add(root);
-                                    }
-                                } else {
-                                    var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == id);
-                                    if(rooms.Count > 0) {
-                                        data.success = true;
-                                        data.message = "200 Ok";
-                                        data.total = rooms.Count;
-                                        for(var i = 0; i < rooms.Count; i++) {
-                                            var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Room, rooms[i].Id),
-                                                text = rooms[i].Name,
-                                                icon = Icons.Room,
-                                                expanded = false,
-                                                leaf = true
-                                            };
-
-                                            if(multiselect.HasValue && multiselect.Value)
-                                                root.selected = false;
-
-                                            data.data.Add(root);
-                                        }
                                     }
                                 }
                             }
@@ -844,7 +734,7 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -866,71 +756,52 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            var match = _workContext.AssociatedAreas.Find(a => a.AreaId == id);
-                            if(match != null) {
-                                var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
+                                var paths = current.ToPath();
+                                for(var i = 0; i < paths.Length; i++) {
+                                    paths[i] = Common.JoinKeys((int)EnmOrganization.Area, paths[i]);
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-                                data.data.Add(paths.ToArray());
+                                data.data.Add(paths);
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Station) {
                             #region station organization
-                            var match = _workContext.AssociatedStations.Find(s => s.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
-                                }
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-
-                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
-                                    var current = _workContext.AssociatedStationAttributes[match.Id];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                var parent = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
+                                if(parent != null) {
+                                    var parentPaths = parent.ToPath();
+                                    foreach(var pp in parentPaths) {
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                     }
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Room) {
                             #region room organization
-                            var match = _workContext.AssociatedRooms.Find(r => r.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleRooms.Find(r => r.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.StationId)) {
-                                    var station = _workContext.AssociatedStationAttributes[match.StationId];
-                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
-                                        var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
-                                        if(current.HasParents) {
-                                            foreach(var parent in current.Parents)
-                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                var parent = _workContext.RoleStations.Find(s => s.Current.Id == current.Current.StationId);
+                                if(parent != null) {
+                                    var pparent = _workContext.RoleAreas.Find(a => a.Current.Id == parent.Current.AreaId);
+                                    if(pparent != null) {
+                                        var pparentPaths = pparent.ToPath();
+                                        foreach(var pp in pparentPaths) {
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                         }
                                     }
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
 
-                                    if(station.HasParents) {
-                                        foreach(var parent in station.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
-                                    }
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Current.Id));
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
@@ -963,70 +834,48 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var areaMatchs = _workContext.AssociatedAreas.FindAll(a => a.Name.ToLower().Contains(text));
-                    foreach(var match in areaMatchs) {
+                    var areaMatchs = _workContext.RoleAreas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    foreach(var current in areaMatchs) {
+                        var paths = current.ToPath();
+                        for(var i = 0; i < paths.Length; i++) {
+                            paths[i] = Common.JoinKeys((int)EnmOrganization.Area, paths[i]);
+                        }
+
+                        data.data.Add(paths);
+                    }
+
+                    var staMatchs = _workContext.RoleStations.FindAll(s => s.Current.Name.ToLower().Contains(text));
+                    foreach(var current in staMatchs) {
                         var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                        var parent = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
+                        if(parent != null) {
+                            var parentPaths = parent.ToPath();
+                            foreach(var pp in parentPaths) {
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                             }
                         }
 
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Current.Id));
                         data.data.Add(paths.ToArray());
                     }
 
-                    var staMatchs = _workContext.AssociatedStations.FindAll(s => s.Name.ToLower().Contains(text));
-                    foreach(var match in staMatchs) {
+                    var roomMatchs = _workContext.RoleRooms.FindAll(r => r.Current.Name.ToLower().Contains(text));
+                    foreach(var current in roomMatchs) {
                         var paths = new List<string>();
-                        if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                            var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                            }
-                        }
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-
-                        if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
-                            var current = _workContext.AssociatedStationAttributes[match.Id];
-                            if(current.HasParents) {
-                                foreach(var parent in current.Parents)
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
-                            }
-                        }
-
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
-                        data.data.Add(paths.ToArray());
-                    }
-
-                    var roomMatchs = _workContext.AssociatedRooms.FindAll(r => r.Name.ToLower().Contains(text));
-                    foreach(var match in roomMatchs) {
-                        var paths = new List<string>();
-                        var root = _workContext.AssociatedStations.Find(s => s.Id == match.StationId);
-                        if(root != null) {
-                            if(_workContext.AssociatedAreaAttributes.ContainsKey(root.AreaId)) {
-                                var current = _workContext.AssociatedAreaAttributes[root.AreaId];
-                                if(current.HasParents) {
-                                    foreach(var parent in current.Parents)
-                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                        var parent = _workContext.RoleStations.Find(s => s.Current.Id == current.Current.StationId);
+                        if(parent != null) {
+                            var pparent = _workContext.RoleAreas.Find(a => a.Current.Id == parent.Current.AreaId);
+                            if(pparent != null) {
+                                var pparentPaths = pparent.ToPath();
+                                foreach(var pp in pparentPaths) {
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                 }
                             }
-                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, root.AreaId));
 
-                            if(_workContext.AssociatedStationAttributes.ContainsKey(root.Id)) {
-                                var current = _workContext.AssociatedStationAttributes[root.Id];
-                                if(current.HasParents) {
-                                    foreach(var parent in current.Parents)
-                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
-                                }
-                            }
-                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, root.Id));
+                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Current.Id));
                         }
 
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Room, current.Current.Id));
                         data.data.Add(paths.ToArray());
                     }
                 }
@@ -1055,21 +904,15 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var dict = _workContext.AssociatedAreas.ToDictionary(k => k.AreaId, v => v.Name);
-                    var roots = new List<RsDomain.Area>();
-                    foreach(var area in _workContext.AssociatedAreas) {
-                        if(!dict.ContainsKey(area.ParentId))
-                            roots.Add(area);
-                    }
-
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = roots.Count;
                         for(var i = 0; i < roots.Count; i++) {
                             var root = new TreeModel {
-                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].AreaId),
-                                text = roots[i].Name,
+                                id = Common.JoinKeys((int)EnmOrganization.Area, roots[i].Current.Id),
+                                text = roots[i].Current.Name,
                                 icon = Icons.Diqiu,
                                 expanded = false,
                                 leaf = false
@@ -1092,16 +935,16 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            if(_workContext.AssociatedAreaAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedAreaAttributes[id];
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
                                 if(current.HasChildren) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                    data.total = current.ChildRoot.Count;
+                                    for(var i = 0; i < current.ChildRoot.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.FirstChildren[i].AreaId),
-                                            text = current.FirstChildren[i].Name,
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.ChildRoot[i].Current.Id),
+                                            text = current.ChildRoot[i].Current.Name,
                                             icon = Icons.Diqiu,
                                             expanded = false,
                                             leaf = false
@@ -1115,22 +958,14 @@ namespace iPem.Site.Controllers {
                                         data.data.Add(root);
                                     }
                                 } else {
-                                    var stations = _workContext.AssociatedStations.FindAll(s => s.AreaId == id);
-                                    var dict = stations.ToDictionary(k => k.Id, v => v.Name);
-                                    var roots = new List<RsDomain.Station>();
-                                    foreach(var sta in stations) {
-                                        if(!dict.ContainsKey(sta.ParentId))
-                                            roots.Add(sta);
-                                    }
-
-                                    if(roots.Count > 0) {
+                                    if(current.Stations.Count > 0) {
                                         data.success = true;
                                         data.message = "200 Ok";
-                                        data.total = roots.Count;
-                                        for(var i = 0; i < roots.Count; i++) {
+                                        data.total = current.Stations.Count;
+                                        for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Station, roots[i].Id),
-                                                text = roots[i].Name,
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, current.Stations[i].Current.Id),
+                                                text = current.Stations[i].Current.Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
                                                 leaf = false
@@ -1149,74 +984,51 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmOrganization.Station) {
                             #region station organization
-                            if(_workContext.AssociatedStationAttributes.ContainsKey(id)) {
-                                var current = _workContext.AssociatedStationAttributes[id];
-                                if(current.HasChildren) {
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
+                                if(current.Rooms.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = current.FirstChildren.Count;
-                                    for(var i = 0; i < current.FirstChildren.Count; i++) {
+                                    data.total = current.Rooms.Count;
+                                    for(var i = 0; i < current.Rooms.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Station, current.FirstChildren[i].Id),
-                                            text = current.FirstChildren[i].Name,
-                                            icon = Icons.Juzhan,
+                                            id = Common.JoinKeys((int)EnmOrganization.Room, current.Rooms[i].Current.Id),
+                                            text = current.Rooms[i].Current.Name,
+                                            icon = Icons.Room,
                                             expanded = false,
                                             leaf = false
                                         };
 
-                                        if(multiselect.HasValue && multiselect.Value) {
-                                            if(!leafselect.HasValue || !leafselect.Value)
-                                                root.selected = false;
-                                        }
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            root.selected = false;
 
                                         data.data.Add(root);
-                                    }
-                                } else {
-                                    var rooms = _workContext.AssociatedRooms.FindAll(r => r.StationId == id);
-                                    if(rooms.Count > 0) {
-                                        data.success = true;
-                                        data.message = "200 Ok";
-                                        data.total = rooms.Count;
-                                        for(var i = 0; i < rooms.Count; i++) {
-                                            var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Room, rooms[i].Id),
-                                                text = rooms[i].Name,
-                                                icon = Icons.Room,
-                                                expanded = false,
-                                                leaf = false
-                                            };
-
-                                            if(multiselect.HasValue && multiselect.Value) {
-                                                if(!leafselect.HasValue || !leafselect.Value)
-                                                    root.selected = false;
-                                            }
-
-                                            data.data.Add(root);
-                                        }
                                     }
                                 }
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Room) {
                             #region room organization
-                            var devices = _workContext.AssociatedDevices.FindAll(d => d.RoomId == id);
-                            if(devices.Count > 0) {
-                                data.success = true;
-                                data.message = "200 Ok";
-                                data.total = devices.Count;
-                                for(var i = 0; i < devices.Count; i++) {
-                                    var root = new TreeModel {
-                                        id = Common.JoinKeys((int)EnmOrganization.Device, devices[i].Id),
-                                        text = devices[i].Name,
-                                        icon = Icons.Device,
-                                        expanded = false,
-                                        leaf = true
-                                    };
+                            var current = _workContext.RoleRooms.Find(d => d.Current.Id == id);
+                            if(current != null) {
+                                if(current.Devices.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.Devices.Count;
+                                    for(var i = 0; i < current.Devices.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Device, current.Devices[i].Current.Id),
+                                            text = current.Devices[i].Current.Name,
+                                            icon = Icons.Device,
+                                            expanded = false,
+                                            leaf = true
+                                        };
 
-                                    if(multiselect.HasValue && multiselect.Value)
-                                        root.selected = false;
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            root.selected = false;
 
-                                    data.data.Add(root);
+                                        data.data.Add(root);
+                                    }
                                 }
                             }
                             #endregion
@@ -1230,7 +1042,7 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -1252,103 +1064,79 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                         if(nodeType == EnmOrganization.Area) {
                             #region area organization
-                            var match = _workContext.AssociatedAreas.Find(a => a.AreaId == id);
-                            if(match != null) {
-                                var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
+                                var paths = current.ToPath();
+                                for(var i = 0; i < paths.Length; i++) {
+                                    paths[i] = Common.JoinKeys((int)EnmOrganization.Area, paths[i]);
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-                                data.data.Add(paths.ToArray());
+                                data.data.Add(paths);
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Station) {
                             #region station organization
-                            var match = _workContext.AssociatedStations.Find(s => s.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                if(_workContext.AssociatedAreaAttributes.ContainsKey(match.AreaId)) {
-                                    var current = _workContext.AssociatedAreaAttributes[match.AreaId];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
-                                    }
-                                }
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, match.AreaId));
-
-                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.Id)) {
-                                    var current = _workContext.AssociatedStationAttributes[match.Id];
-                                    if(current.HasParents) {
-                                        foreach(var parent in current.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
+                                var parent = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
+                                if(parent != null) {
+                                    var parentPaths = parent.ToPath();
+                                    foreach(var pp in parentPaths) {
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                     }
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Room) {
                             #region room organization
-                            var match = _workContext.AssociatedRooms.Find(r => r.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleRooms.Find(r => r.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                if(_workContext.AssociatedStationAttributes.ContainsKey(match.StationId)) {
-                                    var station = _workContext.AssociatedStationAttributes[match.StationId];
-                                    if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
-                                        var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
-                                        if(current.HasParents) {
-                                            foreach(var parent in current.Parents)
-                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                var parent = _workContext.RoleStations.Find(s => s.Current.Id == current.Current.StationId);
+                                if(parent != null) {
+                                    var pparent = _workContext.RoleAreas.Find(a => a.Current.Id == parent.Current.AreaId);
+                                    if(pparent != null) {
+                                        var pparentPaths = pparent.ToPath();
+                                        foreach(var pp in pparentPaths) {
+                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                         }
                                     }
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
 
-                                    if(station.HasParents) {
-                                        foreach(var parent in station.Parents)
-                                            paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
-                                    }
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Current.Id));
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Room, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
                         } else if(nodeType == EnmOrganization.Device) {
                             #region device organization
-                            var match = _workContext.AssociatedDevices.Find(d => d.Id == id);
-                            if(match != null) {
+                            var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
+                            if(current != null) {
                                 var paths = new List<string>();
-                                var room = _workContext.AssociatedRooms.Find(r => r.Id == match.RoomId);
-                                if(room != null) {
-                                    if(_workContext.AssociatedStationAttributes.ContainsKey(room.StationId)) {
-                                        var station = _workContext.AssociatedStationAttributes[room.StationId];
-                                        if(_workContext.AssociatedAreaAttributes.ContainsKey(station.Current.AreaId)) {
-                                            var current = _workContext.AssociatedAreaAttributes[station.Current.AreaId];
-                                            if(current.HasParents) {
-                                                foreach(var parent in current.Parents)
-                                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Area, parent.AreaId));
+                                var parent = _workContext.RoleRooms.Find(r => r.Current.Id == current.Current.RoomId);
+                                if(parent != null) {
+                                    var pparent = _workContext.RoleStations.Find(s => s.Current.Id == parent.Current.StationId);
+                                    if(pparent != null) {
+                                        var ppparent = _workContext.RoleAreas.Find(a => a.Current.Id == pparent.Current.AreaId);
+                                        if(ppparent != null) {
+                                            var ppparentPaths = ppparent.ToPath();
+                                            foreach(var pp in ppparentPaths) {
+                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Area, pp));
                                             }
                                         }
-                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Area, station.Current.AreaId));
 
-                                        if(station.HasParents) {
-                                            foreach(var parent in station.Parents)
-                                                paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Id));
-                                        }
-                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, station.Current.Id));
+                                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, pparent.Current.Id));
                                     }
 
-                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Room, room.Id));
+                                    paths.Add(Common.JoinKeys((int)EnmOrganization.Room, parent.Current.Id));
                                 }
 
-                                paths.Add(Common.JoinKeys((int)EnmOrganization.Device, match.Id));
+                                paths.Add(Common.JoinKeys((int)EnmOrganization.Device, current.Current.Id));
                                 data.data.Add(paths.ToArray());
                             }
                             #endregion
@@ -1379,16 +1167,16 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(!string.IsNullOrWhiteSpace(device)) {
-                    var types = new List<int>();
-                    if(AI) types.Add((int)EnmPoint.AI);
-                    if(AO) types.Add((int)EnmPoint.AO);
-                    if(DI) types.Add((int)EnmPoint.DI);
-                    if(DO) types.Add((int)EnmPoint.DO);
+                    var types = new List<EnmPoint>();
+                    if(AI) types.Add(EnmPoint.AI);
+                    if(AO) types.Add(EnmPoint.AO);
+                    if(DI) types.Add(EnmPoint.DI);
+                    if(DO) types.Add(EnmPoint.DO);
 
-                    var models = AI && AO && DI && DO ? _msPointService.GetPointsByDevice(device) : _msPointService.GetPoints(device, types.ToArray());
+                    var models = _pointService.GetPointsInDeviceAsList(device).FindAll(p => types.Contains(p.Type));
                     if(models.Count > 0) {
                         data.message = "200 Ok";
-                        data.total = models.TotalCount;
+                        data.total = models.Count;
                         data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
                     }
                 }
@@ -1412,7 +1200,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _rsDepartmentService.GetAllDepartments();
+                        var roots = _departmentService.GetAllDepartmentsAsList();
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1434,7 +1222,7 @@ namespace iPem.Site.Controllers {
                         if(keys.Length == 2
                             && ((int)EnmHR.Department).ToString().Equals(keys[0])
                             && !string.IsNullOrWhiteSpace(keys[1])) {
-                            var children = _rsEmployeeService.GetEmployeesInDepartment(keys[1]);
+                            var children = _employeeService.GetEmployeesAsList(keys[1]);
                             if(children.Count > 0) {
                                 data.success = true;
                                 data.message = "200 Ok";
@@ -1457,13 +1245,13 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -1478,7 +1266,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _rsEmployeeService.GetEmpolyee(node);
+                    var current = _employeeService.GetEmpolyee(node);
                     if(current != null) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmHR.Department, current.DeptId), current.Id });
                     }
@@ -1509,7 +1297,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var employees = _rsEmployeeService.GetAllEmployees().ToList();
+                    var employees = _employeeService.GetAllEmployeesAsList();
                     var matchs = employees.FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmHR.Department, match.DeptId), match.Id });
@@ -1540,7 +1328,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _rsLogicTypeService.GetAllLogicTypes();
+                        var roots = _workContext.LogicTypes;
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1559,19 +1347,16 @@ namespace iPem.Site.Controllers {
                         }
                     } else {
                         var keys = Common.SplitKeys(node);
-                        if(keys.Length == 2
-                            && ((int)EnmLogicPoint.Logic).ToString().Equals(keys[0])
-                            && !string.IsNullOrWhiteSpace(keys[1])) {
-                            var matchs = _rsLogicTypeService.GetSubLogicTypes(keys[1]).Select(l=>l.Id);
-                            var children = _msPointService.GetPoints().Where(p => matchs.Contains(p.SubLogicTypeId)).ToList();
-                            if(children.Count > 0) {
+                        if(keys.Length == 2 && ((int)EnmLogicPoint.Logic).ToString().Equals(keys[0]) && !string.IsNullOrWhiteSpace(keys[1])) {
+                            var points = _workContext.Points.FindAll(p => p.LogicType.Id == keys[1]);
+                            if(points.Count > 0) {
                                 data.success = true;
                                 data.message = "200 Ok";
-                                data.total = children.Count;
-                                for(var i = 0; i < children.Count; i++) {
+                                data.total = points.Count;
+                                foreach(var point in points) {
                                     var child = new TreeModel {
-                                        id = children[i].Id,
-                                        text = children[i].Name,
+                                        id = point.Id,
+                                        text = point.Name,
                                         icon = Icons.Signal,
                                         leaf = true
                                     };
@@ -1586,13 +1371,13 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 data.success = false; data.message = exc.Message;
             }
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
         }
 
@@ -1606,15 +1391,10 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var logics = _rsLogicTypeService.GetAllSubLogicTypes().ToList();
-                var points = _msPointService.GetPoints().ToList();
                 foreach(var node in nodes) {
-                    var current = points.Find(p=>p.Id == node);
+                    var current = _workContext.Points.Find(p => p.Id == node);
                     if(current != null) {
-                        var logic = logics.Find(l => l.Id == current.SubLogicTypeId);
-                        if(logic != null) {
-                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, logic.LogicTypeId), current.Id });
-                        }
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, current.LogicType.Id), current.Id });
                     }
                 }
 
@@ -1643,14 +1423,9 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var logics = _rsLogicTypeService.GetAllSubLogicTypes().ToList();
-                    var points = _msPointService.GetPoints().ToList();
-                    var matchs = points.FindAll(a => a.Name.ToLower().Contains(text));
+                    var matchs = _workContext.Points.FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        var logic = logics.Find(l => l.Id == match.SubLogicTypeId);
-                        if(logic != null) {
-                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, logic.LogicTypeId), match.Id });
-                        }
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, match.LogicType.Id), match.Id });
                     }
                 }
 
@@ -1676,7 +1451,7 @@ namespace iPem.Site.Controllers {
 
                 throw new iPemException("An error occurred when trying to generate the image.");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.CurrentUser.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }

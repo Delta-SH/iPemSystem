@@ -1,8 +1,8 @@
 ﻿@{ 
     Layout = null;
-    var csModel = ViewData["master"] as iPem.Core.Data.DbEntity;
-    var hsModel = ViewData["history"] as iPem.Core.Data.DbEntity;
-    var rsModel = ViewData["resource"] as iPem.Core.Data.DbEntity;
+    var rsModel = ViewData["RsDbSet"] as iPem.Core.Data.DbEntity;
+    var csModel = ViewData["CsDbSet"] as iPem.Core.Data.DbEntity;
+    var scModel = ViewData["ScDbSet"] as iPem.Core.Data.DbEntity;
 }
 
 <!DOCTYPE html>
@@ -37,19 +37,74 @@
         <div class="row">
             <div id="left-nav" class="col-xs-3">
                 <ul class="nav nav-pills nav-stacked" data-spy="affix">
-                    <li class="active"><a href="#section-1">基础数据库</a></li>
-                    <li><a href="#section-2">历史数据库</a></li>
-                    <li><a href="#section-3">资管数据库</a></li>
+                    <li class="active"><a href="#section-1">资源数据库</a></li>
+                    <li><a href="#section-2">动环数据库</a></li>
+                    <li><a href="#section-3">应用数据库</a></li>
                     <li><a href="#section-4">删除配置信息</a></li>
                 </ul>
             </div>
             <div class="col-xs-9">
-                @using(Html.BeginForm("SaveCs", "Installation", FormMethod.Post, new { name = "csForm", id = "csForm" })) {
+                @using(Html.BeginForm("SaveRs", "Installation", FormMethod.Post, new { name = "rsForm", id = "rsForm" })) {
                     @Html.AntiForgeryToken()
                     <div id="section-1" class="section">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">基础数据库<small>（存储动环系统相关的配置信息）</small></h3>
+                                <h3 class="panel-title">资源数据库<small>（存储公共资源的相关信息）</small></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <span class="input-group-addon">服务器地址</span>
+                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(rsModel.IP!=null?rsModel.IP:string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库端口</span>
+                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(rsModel.Port)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库账户</span>
+                                    <input id="Uid" name="Uid" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(rsModel.Uid != null ? rsModel.Uid : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库密码</span>
+                                    <input id="Password" name="Password" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(rsModel.Password != null ? rsModel.Password : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">数据库名称</span>
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(rsModel.Name != null ? rsModel.Name : string.Empty)" />
+                                </div>
+                                <div class="error-tips"></div>
+                                <button id="testbtn" type="button" class="btn btn-primary">测试</button>
+                                <button id="savebtn" type="button" class="btn btn-success">保存</button>
+                                <div id="form-loading" class="alert alert-info" role="alert">
+                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
+                                    <span class="sr-only">Loading:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-error" class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Error:</span>
+                                    <span></span>
+                                </div>
+                                <div id="form-ok" class="alert alert-success" role="alert">
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                                    <span class="sr-only">Ok:</span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @using(Html.BeginForm("SaveCs", "Installation", FormMethod.Post, new { name = "csForm", id = "csForm" })) {
+                    @Html.AntiForgeryToken()
+                    <div id="section-2" class="section">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">动环数据库<small>（存储动环系统相关的数据）</small></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="input-group">
@@ -64,12 +119,12 @@
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库账户</span>
-                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(csModel.UId != null ? csModel.UId : string.Empty)" />
+                                    <input id="Uid" name="Uid" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(csModel.Uid != null ? csModel.Uid : string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库密码</span>
-                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(csModel.Pwd != null ? csModel.Pwd : string.Empty)" />
+                                    <input id="Password" name="Password" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(csModel.Password != null ? csModel.Password : string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
@@ -99,92 +154,37 @@
                     </div>
                 }
 
-                @using(Html.BeginForm("SaveHs", "Installation", FormMethod.Post, new { name = "hsForm", id = "hsForm" })) {
-                    @Html.AntiForgeryToken()
-                    <div id="section-2" class="section">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">历史数据库<small>（存储动环系统相关的历史数据）</small></h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="input-group">
-                                    <span class="input-group-addon">服务器地址</span>
-                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(hsModel.IP!=null?hsModel.IP:string.Empty)" />
-                                </div>
-                                <div class="error-tips"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">数据库端口</span>
-                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(hsModel.Port)" />
-                                </div>
-                                <div class="error-tips"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">数据库账户</span>
-                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(hsModel.UId != null ? hsModel.UId : string.Empty)" />
-                                </div>
-                                <div class="error-tips"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">数据库密码</span>
-                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(hsModel.Pwd != null ? hsModel.Pwd : string.Empty)" />
-                                </div>
-                                <div class="error-tips"></div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">数据库名称</span>
-                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(hsModel.Name != null ? hsModel.Name : string.Empty)" />
-                                </div>
-                                <div class="error-tips"></div>
-                                <button id="testbtn" type="button" class="btn btn-primary">测试</button>
-                                <button id="savebtn" type="button" class="btn btn-success">保存</button>
-                                <div id="form-loading" class="alert alert-info" role="alert">
-                                    <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>
-                                    <span class="sr-only">Loading:</span>
-                                    <span></span>
-                                </div>
-                                <div id="form-error" class="alert alert-danger" role="alert">
-                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                                    <span class="sr-only">Error:</span>
-                                    <span></span>
-                                </div>
-                                <div id="form-ok" class="alert alert-success" role="alert">
-                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                                    <span class="sr-only">Ok:</span>
-                                    <span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                @using(Html.BeginForm("SaveRs", "Installation", FormMethod.Post, new { name = "rsForm", id = "rsForm" })) {
+                @using(Html.BeginForm("SaveSc", "Installation", FormMethod.Post, new { name = "scForm", id = "scForm" })) {
                     @Html.AntiForgeryToken()
                     <div id="section-3" class="section">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">资管数据库<small>（存储固定资产相关信息）</small></h3>
+                                <h3 class="panel-title">应用数据库<small>（存储扩展应用的相关信息）</small></h3>
                             </div>
                             <div class="panel-body">
                                 <div class="input-group">
                                     <span class="input-group-addon">服务器地址</span>
-                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(rsModel.IP!=null?rsModel.IP:string.Empty)" />
+                                    <input id="IP" name="IP" type="text" class="form-control" placeholder="数据库服务器的IPv4地址" required value="@(scModel.IP!=null?scModel.IP:string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库端口</span>
-                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(rsModel.Port)" />
+                                    <input id="Port" name="Port" type="text" class="form-control" placeholder="数据库端口,默认1433" required value="@(scModel.Port)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库账户</span>
-                                    <input id="UId" name="UId" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(rsModel.UId != null ? rsModel.UId : string.Empty)" />
+                                    <input id="Uid" name="Uid" type="text" class="form-control" placeholder="登录数据库的账户" required value="@(scModel.Uid != null ? scModel.Uid : string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库密码</span>
-                                    <input id="Pwd" name="Pwd" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(rsModel.Pwd != null ? rsModel.Pwd : string.Empty)" />
+                                    <input id="Password" name="Password" type="password" class="form-control" placeholder="登录数据库的密码" required value="@(scModel.Password != null ? scModel.Password : string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <div class="input-group">
                                     <span class="input-group-addon">数据库名称</span>
-                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(rsModel.Name != null ? rsModel.Name : string.Empty)" />
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="登录数据库的名称" required value="@(scModel.Name != null ? scModel.Name : string.Empty)" />
                                 </div>
                                 <div class="error-tips"></div>
                                 <button id="testbtn" type="button" class="btn btn-primary">测试</button>

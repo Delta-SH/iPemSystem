@@ -6,7 +6,7 @@ namespace iPem.Site.Models {
     [Serializable]
     public class ActPointModel {
         [ExcelIgnore]
-        public string key { get; set; }
+        public int index { get; set; }
 
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
@@ -17,41 +17,44 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属机房")]
         public string room { get; set; }
 
-        [ExcelDisplayName("设备类型")]
-        public string devType { get; set; }
-
-        [ExcelIgnore]
-        public string devId { get; set; }
-
-        [ExcelDisplayName("设备名称")]
-        public string devName { get; set; }
-
-        [ExcelDisplayName("逻辑分类")]
-        public string logic { get; set; }
-
-        [ExcelDisplayName("信号ID")]
-        public string id { get; set; }
+        [ExcelDisplayName("所属设备")]
+        public string device { get; set; }
 
         [ExcelDisplayName("信号名称")]
-        public string name { get; set; }
-
-        [ExcelIgnore]
-        public int type { get; set; }
+        public string point { get; set; }
 
         [ExcelDisplayName("信号类型")]
-        public string typeDisplay { get; set; }
-
-        [ExcelIgnore]
-        public double value { get; set; }
+        public string type { get; set; }
 
         [ExcelDisplayName("信号测值")]
-        public string valueDisplay { get; set; }
+        public float value { get; set; }
 
-        [ExcelIgnore]
-        public int status { get; set; }
+        [ExcelDisplayName("单位/描述")]
+        public string unit { get; set; }
 
         [ExcelDisplayName("信号状态")]
-        public string statusDisplay { get; set; }
+        public string status { get; set; }
+
+        [ExcelDisplayName("值变时间")]
+        public string time { get; set; }
+
+        [ExcelIgnore]
+        public string devid { get; set; }
+
+        [ExcelIgnore]
+        public string pointid { get; set; }
+
+        [ExcelIgnore]
+        public int typeid { get; set; }
+
+        [ExcelIgnore]
+        public int statusid { get; set; }
+
+        [ExcelIgnore]
+        public bool rsspoint { get; set; }
+
+        [ExcelIgnore]
+        public bool rssfrom { get; set; }
 
         [ExcelIgnore]
         public string timestamp { get; set; }

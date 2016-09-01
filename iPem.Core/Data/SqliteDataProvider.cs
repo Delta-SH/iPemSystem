@@ -66,8 +66,8 @@ namespace iPem.Core.Data {
                                 Type = DbTypeConverter.DBNullDatabaseTypeHandler(rdr["Type"]),
                                 IP = DbTypeConverter.DBNullStringHandler(rdr["IP"]),
                                 Port = DbTypeConverter.DBNullInt32Handler(rdr["Port"]),
-                                UId = DbTypeConverter.DBNullStringHandler(rdr["UId"]),
-                                Pwd = DbTypeConverter.DBNullStringHandler(rdr["Pwd"]),
+                                Uid = DbTypeConverter.DBNullStringHandler(rdr["Uid"]),
+                                Password = DbTypeConverter.DBNullStringHandler(rdr["Password"]),
                                 Name = DbTypeConverter.DBNullStringHandler(rdr["Name"])
                             });
                         }
@@ -86,8 +86,8 @@ namespace iPem.Core.Data {
                                         new SQLiteParameter("@Type", DbType.Int32),
                                         new SQLiteParameter("@IP", DbType.String,128),
                                         new SQLiteParameter("@Port", DbType.Int32),
-                                        new SQLiteParameter("@UId", DbType.String,50),
-                                        new SQLiteParameter("@Pwd", DbType.String,50),
+                                        new SQLiteParameter("@Uid", DbType.String, 50),
+                                        new SQLiteParameter("@Password", DbType.String,50),
                                         new SQLiteParameter("@Name", DbType.String,128) };
 
             using(var conn = new SQLiteConnection(dataConnectionString)) {
@@ -99,8 +99,8 @@ namespace iPem.Core.Data {
                         parms[2].Value = (Int32)entity.Type;
                         parms[3].Value = DbTypeConverter.DBNullStringChecker(entity.IP);
                         parms[4].Value = DbTypeConverter.DBNullInt32Checker(entity.Port);
-                        parms[5].Value = DbTypeConverter.DBNullStringChecker(entity.UId);
-                        parms[6].Value = DbTypeConverter.DBNullStringChecker(entity.Pwd);
+                        parms[5].Value = DbTypeConverter.DBNullStringChecker(entity.Uid);
+                        parms[6].Value = DbTypeConverter.DBNullStringChecker(entity.Password);
                         parms[7].Value = DbTypeConverter.DBNullStringChecker(entity.Name);
 
                         command.Parameters.Clear();
@@ -120,8 +120,8 @@ namespace iPem.Core.Data {
                                         new SQLiteParameter("@Type", DbType.Int32),
                                         new SQLiteParameter("@IP", DbType.String,128),
                                         new SQLiteParameter("@Port", DbType.Int32),
-                                        new SQLiteParameter("@UId", DbType.String,50),
-                                        new SQLiteParameter("@Pwd", DbType.String,50),
+                                        new SQLiteParameter("@Uid", DbType.String,50),
+                                        new SQLiteParameter("@Password", DbType.String,50),
                                         new SQLiteParameter("@Name", DbType.String,128) };
 
             using(var conn = new SQLiteConnection(dataConnectionString)) {
@@ -133,8 +133,8 @@ namespace iPem.Core.Data {
                         parms[2].Value = (Int32)entity.Type;
                         parms[3].Value = DbTypeConverter.DBNullStringChecker(entity.IP);
                         parms[4].Value = DbTypeConverter.DBNullInt32Checker(entity.Port);
-                        parms[5].Value = DbTypeConverter.DBNullStringChecker(entity.UId);
-                        parms[6].Value = DbTypeConverter.DBNullStringChecker(entity.Pwd);
+                        parms[5].Value = DbTypeConverter.DBNullStringChecker(entity.Uid);
+                        parms[6].Value = DbTypeConverter.DBNullStringChecker(entity.Password);
                         parms[7].Value = DbTypeConverter.DBNullStringChecker(entity.Name);
 
                         command.Parameters.Clear();
@@ -171,20 +171,20 @@ namespace iPem.Core.Data {
             [Id] guid PRIMARY KEY NOT NULL,
             [Provider] int,
             [Type] int,
-            [IP] nvarchar(128),
+            [IP] varchar(128),
             [Port] int,
-            [UId] nvarchar(50),
-            [Pwd] nvarchar(50),
-            [Name] nvarchar(128)
+            [Uid] varchar(50),
+            [Password] varchar(50),
+            [Name] varchar(128)
         );";
 
         public const string Registry_Get_Entities = @"
-        SELECT [Id],[Provider],[Type],[IP],[Port],[UId],[Pwd],[Name] FROM [DbEntities];";
+        SELECT [Id],[Provider],[Type],[IP],[Port],[Uid],[Password],[Name] FROM [DbEntities];";
 
         public const string Registry_Save_Entities = @"
         DELETE FROM [DbEntities] WHERE [Type] = @Type;
-        INSERT INTO [DbEntities]([Id],[Provider],[Type],[IP],[Port],[UId],[Pwd],[Name]) 
-        VALUES(@Id,@Provider,@Type,@IP,@Port,@UId,@Pwd,@Name);";
+        INSERT INTO [DbEntities]([Id],[Provider],[Type],[IP],[Port],[Uid],[Password],[Name]) 
+        VALUES(@Id,@Provider,@Type,@IP,@Port,@Uid,@Password,@Name);";
 
         public const string Registry_Del_Entities = @"
         DELETE FROM [DbEntities] WHERE [Type] = @Type;";

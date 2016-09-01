@@ -5,75 +5,44 @@ namespace iPem.Services.Common {
     /// Global cache keys class
     /// </summary>
     public static partial class GlobalCacheKeys {
-        //master repository
-        public const string Cs_RolesRepository = "ipems:global:cs-roles@repository";
-        public const string Cs_MenusRepository = "ipems:global:cs-menus@repository";
-        public const string Cs_UsersRepository = "ipems:global:cs-users@repository";
-        public const string Cs_AreasRepository = "ipems:global:cs-areas@repository";
-        public const string Cs_StationsRepository = "ipems:global:cs-stations@repository";
-        public const string Cs_RoomsRepository = "ipems:global:cs-rooms@repository";
-        public const string Cs_DevicesRepository = "ipems:global:cs-devices@repository";
-        public const string Cs_PointsRepository = "ipems:global:cs-points@repository";
-        public const string Cs_ProtocolsRepository = "ipems:global:cs-protocols@repository";
+        //sc repository
+        public const string Sc_MenusRepository = "ipems:global:sc-menus@repository";
 
-        //resource repository
+        //rs repository
         public const string Rs_AreasRepository = "ipems:global:rs-areas@repository";
-        public const string Rs_BrandsRepository = "ipems:global:rs-brands@repository";
-        public const string Rs_DepartmentRepository = "ipems:global:rs-departments@repository";
-        public const string Rs_DevicesRepository = "ipems:global:rs-devices@repository";
-        public const string Rs_DeviceTypeRepository = "ipems:global:rs-device-type@repository";
-        public const string Rs_DutiesRepository = "ipems:global:rs-duties@repository";
-        public const string Rs_EmployeesRepository = "ipems:global:rs-employees@repository";
-        public const string Rs_EnumMethodsRepository = "ipems:global:rs-enum-methods@repository";
         public const string Rs_LogicTypesRepository = "ipems:global:rs-logic-types@repository";
         public const string Rs_SubLogicTypesRepository = "ipems:global:rs-sub-logic-types@repository";
-        public const string Rs_ProductorsRepository = "ipems:global:rs-productors@repository";
-        public const string Rs_RoomsRepository = "ipems:global:rs-rooms@repository";
-        public const string Rs_RoomTypesRepository = "ipems:global:rs-room-types@repository";
-        public const string Rs_StationsInAreaPattern = "ipems:global:rs-stations-area@{0}@repository";
-        public const string Rs_StationsRepository = "ipems:global:rs-stations@repository";
-        public const string Rs_StationTypesRepository = "ipems:global:rs-station-types@repository";
-        public const string Rs_SubCompaniesRepository = "ipems:global:rs-sub-companies@repository";
+        public const string Rs_DeviceTypeRepository = "ipems:global:rs-device-type@repository";
         public const string Rs_SubDeviceTypesRepository = "ipems:global:rs-sub-device-types@repository";
-        public const string Rs_SuppliersRepository = "ipems:global:rs-suppliers@repository";
-        public const string Rs_UnitsRepository = "ipems:global:rs-units@repository";
-        public const string Rs_FsusRepository = "ipems:global:rs-fsus@repository";
+        public const string Rs_RoomTypesRepository = "ipems:global:rs-room-types@repository";
+        public const string Rs_StationTypesRepository = "ipems:global:rs-station-types@repository";
+
+        //organization all result 
+        public const string Og_Points = "ipems:global:og-points@organization";
+        public const string Og_Protocols = "ipems:global:og-protocols@organization";
+        public const string Og_Devices = "ipems:global:og-devices@organization";
+        public const string Og_Fsus = "ipems:global:og-fsus@organization";
+        public const string Og_Rooms = "ipems:global:og-rooms@organization";
+        public const string Og_Stations = "ipems:global:og-stations@organization";
+        public const string Og_Areas = "ipems:global:og-areas@organization";
+
+        //organization role result 
+        public const string Og_RoleAreasPattern = "ipems:global:og-role-areas@{0}@organization";
+        public const string Og_RoleStationsPattern = "ipems:global:og-role-stations@{0}@organization";
+        public const string Og_RoleRoomsPattern = "ipems:global:og-role-rooms@{0}@organization";
+        public const string Og_RoleFsusPattern = "ipems:global:og-role-fsus@{0}@organization";
+        public const string Og_RoleDevicesPattern = "ipems:global:og-role-devices@{0}@organization";
 
         //role result
-        public const string Rl_UsersResultPattern = "ipems:global:role-users@{0}@result";
         public const string Rl_MenusResultPattern = "ipems:global:role-menus@{0}@result";
-        public const string Rl_AreasResultPattern = "ipems:global:role-areas@{0}@result";
-        public const string Rl_StationsResultPattern = "ipems:global:role-stations@{0}@result";
-        public const string Rl_RoomsResultPattern = "ipems:global:role-rooms@{0}@result";
-        public const string Rl_DevicesResultPattern = "ipems:global:role-devices@{0}@result";
-        public const string Rl_FsusResultPattern = "ipems:global:role-fsus@{0}@result";
         public const string Rl_OperationsResultPattern = "ipems:global:role-operations@{0}@result";
-        public const string Rl_AreaAttributesResultPattern = "ipems:global:role-area-attributes@{0}@result";
-        public const string Rl_StationAttributesResultPattern = "ipems:global:role-station-attributes@{0}@result";
-        public const string Rl_RoomAttributesResultPattern = "ipems:global:role-room-attributes@{0}@result";
-        public const string Rl_DeviceAttributesResultPattern = "ipems:global:role-device-attributes@{0}@result";
-
-        //user result
-        public const string Ur_RssPointsResultPattern = "ipems:global:user-rss-points@{0}@result";
-    }
-
-    /// <summary>
-    /// Site cache keys class
-    /// </summary>
-    public static partial class SiteCacheKeys {
-        public const string Site_RolesResultPattern = "ipems:site:role@{0}@result";
-        public const string Site_UsersResultPattern = "ipems:site:user@{0}@result";
-        public const string Site_RssPointsResultPattern = "ipems:site:rss-points@{0}@result";
     }
 
     /// <summary>
     /// Cached interval class
     /// </summary>
     public static partial class CachedIntervals {
-        public static readonly TimeSpan Site_StoreIntervals = TimeSpan.FromSeconds(300);
-        public static readonly TimeSpan Site_ResultIntervals = TimeSpan.FromSeconds(600);
-
-        public static readonly TimeSpan Global_RoleIntervals = TimeSpan.FromSeconds(1800);
-        public static readonly TimeSpan Global_UserIntervals = TimeSpan.FromSeconds(1800);
+        public static readonly TimeSpan Store_Intervals = TimeSpan.FromSeconds(600);
+        public static readonly TimeSpan Global_Intervals = TimeSpan.FromSeconds(3600);
     }
 }

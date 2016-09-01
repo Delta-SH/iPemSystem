@@ -352,7 +352,7 @@
                         },
                         items: [{
                             xtype: 'button',
-                            text: '清空缓存',
+                            text: '清空所有缓存',
                             cls: 'custom-button custom-danger',
                             margin: 15,
                             handler: function () {
@@ -362,6 +362,54 @@
                                         cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
                                         Ext.Ajax.request({
                                             url: '/Account/ClearCache',
+                                            success: function (response, options) {
+                                                var data = Ext.decode(response.responseText, true);
+                                                if (data.success)
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
+                                                else
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text: '清空全局缓存',
+                            cls: 'custom-button custom-warning',
+                            margin: 15,
+                            handler: function () {
+                                Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
+                                    if (buttonId === 'yes') {
+                                        var cacheResult = Ext.getCmp('cacheResult');
+                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                        Ext.Ajax.request({
+                                            url: '/Account/ClearGlobalCache',
+                                            success: function (response, options) {
+                                                var data = Ext.decode(response.responseText, true);
+                                                if (data.success)
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
+                                                else
+                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            xtype: 'button',
+                            text: '清空用户缓存',
+                            cls: 'custom-button custom-info',
+                            margin: 15,
+                            handler: function () {
+                                Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
+                                    if (buttonId === 'yes') {
+                                        var cacheResult = Ext.getCmp('cacheResult');
+                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                        Ext.Ajax.request({
+                                            url: '/Account/ClearUserCache',
                                             success: function (response, options) {
                                                 var data = Ext.decode(response.responseText, true);
                                                 if (data.success)

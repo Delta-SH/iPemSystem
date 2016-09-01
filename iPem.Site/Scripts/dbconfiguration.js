@@ -155,6 +155,39 @@
     };
 
     $(document).ready(function () {
+        $('#rsForm').validate({
+            rules: {
+                IP: {
+                    ipv4: true
+                },
+                Port: {
+                    required: true,
+                    digits: true,
+                    max: 65535,
+                    min: 1
+                }
+            },
+            messages: {
+                IP: {
+                    ipv4: _ipv4_error_message
+                }
+            },
+            errorElement: 'span',
+            highlight: function (element) {
+                var pt = $(element).closest('.input-group');
+                if (!pt.hasClass('has-error'))
+                    pt.addClass('has-error');
+            },
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parent().next());
+            },
+            success: function (label, element) {
+                var pt = $(element).closest('.input-group');
+                if (pt.hasClass('has-error'))
+                    pt.removeClass('has-error');
+            }
+        });
+
         $('#csForm').validate({
             rules: {
                 IP: {
@@ -188,40 +221,7 @@
             }
         });
 
-        $('#hsForm').validate({
-            rules: {
-                IP: {
-                    ipv4: true
-                },
-                Port: {
-                    required: true,
-                    digits: true,
-                    max: 65535,
-                    min: 1
-                }
-            },
-            messages: {
-                IP: {
-                    ipv4: _ipv4_error_message
-                }
-            },
-            errorElement: 'span',
-            highlight: function (element) {
-                var pt = $(element).closest('.input-group');
-                if (!pt.hasClass('has-error'))
-                    pt.addClass('has-error');
-            },
-            errorPlacement: function (error, element) {
-                error.appendTo(element.parent().next());
-            },
-            success: function (label, element) {
-                var pt = $(element).closest('.input-group');
-                if (pt.hasClass('has-error'))
-                    pt.removeClass('has-error');
-            }
-        });
-
-        $('#rsForm').validate({
+        $('#scForm').validate({
             rules: {
                 IP: {
                     ipv4: true
@@ -271,6 +271,68 @@
                 var pt = $(element).closest('.input-group');
                 if (pt.hasClass('has-error'))
                     pt.removeClass('has-error');
+            }
+        });
+
+        $("#rsForm button[id=testbtn]").click(function () {
+            var form = $('#rsForm');
+            if (form.valid()) {
+                $.ajax({
+                    url: "/Installation/DbTest",
+                    data: form.serializeArray(),
+                    dataType: 'json',
+                    beforeSend: function (jqXHR) {
+                        status_loading(form);
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        try {
+                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
+                                throw new Error(_ajax_data_error_message);
+                            }
+
+                            if (data.code == _ajax_return_ok_code) {
+                                status_ok(form, data.message);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (ex) {
+                            status_error(form, ex.message);
+                        }
+                    }
+                }).always(function () {
+                    request_completed(form);
+                });;
+            }
+        });
+
+        $("#rsForm button[id=savebtn]").click(function () {
+            var form = $('#rsForm');
+            if (form.valid()) {
+                $.ajax({
+                    url: "/Installation/SaveRs",
+                    data: form.serializeArray(),
+                    dataType: 'json',
+                    beforeSend: function (jqXHR) {
+                        status_loading(form);
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        try {
+                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
+                                throw new Error(_ajax_data_error_message);
+                            }
+
+                            if (data.code == _ajax_return_ok_code) {
+                                status_ok(form, data.message);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (ex) {
+                            status_error(form, ex.message);
+                        }
+                    }
+                }).always(function () {
+                    request_completed(form);
+                });;
             }
         });
 
@@ -336,8 +398,8 @@
             }
         });
 
-        $("#hsForm button[id=testbtn]").click(function () {
-            var form = $('#hsForm');
+        $("#scForm button[id=testbtn]").click(function () {
+            var form = $('#scForm');
             if (form.valid()) {
                 $.ajax({
                     url: "/Installation/DbTest",
@@ -367,73 +429,11 @@
             }
         });
 
-        $("#hsForm button[id=savebtn]").click(function () {
-            var form = $('#hsForm');
+        $("#scForm button[id=savebtn]").click(function () {
+            var form = $('#scForm');
             if (form.valid()) {
                 $.ajax({
-                    url: "/Installation/SaveHs",
-                    data: form.serializeArray(),
-                    dataType: 'json',
-                    beforeSend: function (jqXHR) {
-                        status_loading(form);
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        try {
-                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
-                                throw new Error(_ajax_data_error_message);
-                            }
-
-                            if (data.code == _ajax_return_ok_code) {
-                                status_ok(form, data.message);
-                            } else {
-                                throw new Error(data.message);
-                            }
-                        } catch (ex) {
-                            status_error(form, ex.message);
-                        }
-                    }
-                }).always(function () {
-                    request_completed(form);
-                });;
-            }
-        });
-
-        $("#rsForm button[id=testbtn]").click(function () {
-            var form = $('#rsForm');
-            if (form.valid()) {
-                $.ajax({
-                    url: "/Installation/DbTest",
-                    data: form.serializeArray(),
-                    dataType: 'json',
-                    beforeSend: function (jqXHR) {
-                        status_loading(form);
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        try {
-                            if (typeof data.code === 'undefined' || typeof data.message === 'undefined') {
-                                throw new Error(_ajax_data_error_message);
-                            }
-
-                            if (data.code == _ajax_return_ok_code) {
-                                status_ok(form, data.message);
-                            } else {
-                                throw new Error(data.message);
-                            }
-                        } catch (ex) {
-                            status_error(form, ex.message);
-                        }
-                    }
-                }).always(function () {
-                    request_completed(form);
-                });;
-            }
-        });
-
-        $("#rsForm button[id=savebtn]").click(function () {
-            var form = $('#rsForm');
-            if (form.valid()) {
-                $.ajax({
-                    url: "/Installation/SaveRs",
+                    url: "/Installation/SaveSc",
                     data: form.serializeArray(),
                     dataType: 'json',
                     beforeSend: function (jqXHR) {

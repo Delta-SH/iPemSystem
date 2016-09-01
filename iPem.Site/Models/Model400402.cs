@@ -45,8 +45,8 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("结束时间")]
         public string endTime { get; set; }
 
-        [ExcelDisplayName("告警历时(分钟)")]
-        public double interval { get; set; }
+        [ExcelDisplayName("告警历时")]
+        public string interval { get; set; }
 
         [ExcelDisplayName("触发值")]
         public string startValue { get; set; }

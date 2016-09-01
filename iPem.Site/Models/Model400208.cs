@@ -1,5 +1,4 @@
-﻿using iPem.Core.Domain.Master;
-using iPem.Core.NPOI;
+﻿using iPem.Core.NPOI;
 using System;
 using System.Collections.Generic;
 

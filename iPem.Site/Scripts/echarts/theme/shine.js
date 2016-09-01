@@ -115,12 +115,12 @@
                 show: true,
                 lineStyle: {
                     color: [[0.2, '#2b821d'],[0.8, '#005eaa'],[1, '#c12e34']],
-                    width: 5
+                    width: 10
                 }
             },
             axisTick: {
                 splitNumber: 10,
-                length:8,
+                length:15,
                 lineStyle: {
                     color: 'auto'
                 }
@@ -131,13 +131,13 @@
                 }
             },
             splitLine: {
-                length: 12,
+                length: 20,
                 lineStyle: {
                     color: 'auto'
                 }
             },
             pointer: {
-                length: '90%',
+                length: '80%',
                 width: 3,
                 color: 'auto'
             },

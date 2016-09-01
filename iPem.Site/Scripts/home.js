@@ -1,11 +1,379 @@
 ﻿(function () {
+    var almChart = null,
+        cpuChart = null,
+        memoryChart = null,
+        energybarChart = null,
+        energypieChart = null,
+        unconnectedChart = null,
+        offlineChart = null,
+        almOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['一级告警', '二级告警', '三级告警', '四级告警'],
+                align: 'left'
+            },
+            grid: {
+                top: 25,
+                left: 5,
+                right: 5,
+                bottom: 5,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '一级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f04b51'
+                        }
+                    },
+                    stack: 'alarm',
+                    data: []
+                },
+                {
+                    name: '二级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#efa91f'
+                        }
+                    },
+                    stack: 'alarm',
+                    data: []
+                },
+                {
+                    name: '三级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f5d313'
+                        }
+                    },
+                    stack: 'alarm',
+                    data: []
+                },
+                {
+                    name: '四级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#0892cd'
+                        }
+                    },
+                    stack: 'alarm',
+                    data: []
+                }
+            ]
+        },
+        cpuOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}<br/>{c}%'
+            },
+            grid: {
+                top: 10,
+                left: 0,
+                right: 15,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                splitLine: { show: false },
+                data: []
+            },
+            yAxis: {
+                type: 'value',
+                max: 100,
+                min: 0
+            },
+            series: [
+                {
+                    name: 'CPU',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'none',
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#0892cd'
+                        }
+                    },
+                    areaStyle: { normal: {} },
+                    data: []
+                }
+            ]
+        },
+        memoryOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}<br/>{c}%'
+            },
+            grid: {
+                top: 10,
+                left: 0,
+                right: 15,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                splitLine: { show: false },
+                data: []
+            },
+            yAxis: {
+                type: 'value',
+                max: 100,
+                min: 0
+            },
+            series: [
+                {
+                    name: 'Memory',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'none',
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#b198dc'
+                        }
+                    },
+                    areaStyle: { normal: {} },
+                    data: []
+                }
+            ]
+        },
+        energypieOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            
+            series: [
+                {
+                    name: '能耗分类占比',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '20',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        { value: 895, name: '空调' },
+                        { value: 221, name: '照明' },
+                        { value: 152, name: '办公' },
+                        { value: 335, name: '其他' }
+                    ]
+                }
+            ]
+        },
+        energybarOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['空调', '照明', '办公', '其他'],
+                align: 'left'
+            },
+            grid: {
+                top: 25,
+                left: 5,
+                right: 5,
+                bottom: 5,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['北京市', '上海市', '浙江省', '江苏省', '河北省', '广东省', '吉林省'],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '空调',
+                    type: 'bar',
+                    data: [120, 132, 101, 134, 90, 230, 210]
+                },
+                {
+                    name: '照明',
+                    type: 'bar',
+                    data: [220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name: '办公',
+                    type: 'bar',
+                    data: [150, 232, 201, 154, 190, 330, 410]
+                },
+                {
+                    name: '其他',
+                    type: 'bar',
+                    data: [220, 182, 191, 234, 290, 330, 310]
+                }
+            ]
+        },
+        unconnectedOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['正常', '断站']
+            },
+            series: [
+                {
+                    name: '站点断站率',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '20',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        {
+                            value: 0, name: '正常', itemStyle: {
+                                normal: {
+                                    color: '#48ac2e'
+                                }
+                            }
+                        },
+                        {
+                            value: 0, name: '断站', itemStyle: {
+                                normal: {
+                                    color: '#c12e34'
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        offlineOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['正常', '离线']
+            },
+            series: [
+                {
+                    name: 'Fsu离线率',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '20',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        {
+                            value: 0,
+                            name: '正常',
+                            itemStyle: {
+                                normal: {
+                                    color: '#48ac2e'
+                                }
+                            }
+                        },
+                        {
+                            value: 0,
+                            name: '离线',
+                            itemStyle: {
+                                normal: {
+                                    color: '#c12e34'
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
     Ext.define('UnconnectedModel', {
         extend: 'Ext.data.Model',
         fields: [
-            { name: 'index', type: 'string' },
+            { name: 'index', type: 'int' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
-            { name: 'interval', type: 'float' }
+            { name: 'time', type: 'string' },
+            { name: 'interval', type: 'string' }
         ],
         idProperty: 'index'
     });
@@ -13,12 +381,13 @@
     Ext.define('OffModel', {
         extend: 'Ext.data.Model',
         fields: [
-            { name: 'index', type: 'string' },
+            { name: 'index', type: 'int' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
             { name: 'room', type: 'string' },
             { name: 'name', type: 'string' },
-            { name: 'interval', type: 'float' }
+            { name: 'time', type: 'string' },
+            { name: 'interval', type: 'string' }
         ],
         idProperty: 'index'
     });
@@ -29,7 +398,7 @@
         model: 'UnconnectedModel',
         proxy: {
             type: 'ajax',
-            url: '/Home/GetNotices',
+            url: '/Home/RequestHomeUnconnected',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -38,6 +407,31 @@
                 root: 'data'
             },
             simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    var data = me.proxy.reader.jsonData;
+                    if (!Ext.isEmpty(data)
+                        && !Ext.isEmpty(data.chart)
+                        && Ext.isArray(data.chart)
+                        && data.chart.length == 2
+                        && unconnectedChart !== null) {
+                        if (!Ext.isEmpty(data.chart[0])) {
+                            unconnectedOption.series[0].data[0].value = data.chart[0].value;
+                        }
+
+                        if (!Ext.isEmpty(data.chart[1])) {
+                            unconnectedOption.series[0].data[1].value = data.chart[1].value;
+                        }
+
+                        unconnectedChart.setOption(unconnectedOption);
+                    }
+
+                    $$iPems.Tasks.homeTasks.unconnectedTask.fireOnStart = false;
+                    $$iPems.Tasks.homeTasks.unconnectedTask.restart();
+                }
+            }
         }
     });
 
@@ -47,7 +441,7 @@
         model: 'OffModel',
         proxy: {
             type: 'ajax',
-            url: '/Home/GetNotices',
+            url: '/Home/RequestHomeOff',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -56,388 +450,36 @@
                 root: 'data'
             },
             simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    var data = me.proxy.reader.jsonData;
+                    if (!Ext.isEmpty(data)
+                        && !Ext.isEmpty(data.chart)
+                        && Ext.isArray(data.chart)
+                        && data.chart.length == 2
+                        && offlineChart !== null) {
+                        if (!Ext.isEmpty(data.chart[0])) {
+                            offlineOption.series[0].data[0].value = data.chart[0].value;
+                        }
+
+                        if (!Ext.isEmpty(data.chart[1])) {
+                            offlineOption.series[0].data[1].value = data.chart[1].value;
+                        }
+
+                        offlineChart.setOption(offlineOption);
+                    }
+
+                    $$iPems.Tasks.homeTasks.offTask.fireOnStart = false;
+                    $$iPems.Tasks.homeTasks.offTask.restart();
+                }
+            }
         }
     });
 
     var unconnectedPagingToolbar = $$iPems.clonePagingToolbar(unconnectedStore);
-
     var offPagingToolbar = $$iPems.clonePagingToolbar(offStore);
-
-    var almOption = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                animation: false
-            }
-        },
-        toolbox: {
-            show: true,
-            feature: {
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'tiled'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        grid: {
-            top: 40,
-            left: 5,
-            right: 5,
-            bottom: 5,
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: [],
-                splitLine: { show: false }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: '一级告警',
-                type: 'bar',
-                itemStyle: {
-                    normal: {
-                        color: '#f04b51'
-                    }
-                },
-                stack: 'alarm',
-                data: []
-            },
-            {
-                name: '二级告警',
-                type: 'bar',
-                itemStyle: {
-                    normal: {
-                        color: '#efa91f'
-                    }
-                },
-                stack: 'alarm',
-                data: []
-            },
-            {
-                name: '三级告警',
-                type: 'bar',
-                itemStyle: {
-                    normal: {
-                        color: '#f5d313'
-                    }
-                },
-                stack: 'alarm',
-                data: []
-            },
-            {
-                name: '四级告警',
-                type: 'bar',
-                itemStyle: {
-                    normal: {
-                        color: '#0892cd'
-                    }
-                },
-                stack: 'alarm',
-                data: []
-            }
-        ]
-    };
-
-    var cpuOption = {
-        tooltip: {
-            trigger: 'axis',
-            formatter: '{b}<br/>{c}%'
-        },
-        grid: {
-            top: 10,
-            left: 0,
-            right: 15,
-            bottom: 0,
-            containLabel: true
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            splitLine: { show: false },
-            data: []
-        },
-        yAxis: {
-            type: 'value',
-            max: 100,
-            min: 0
-        },
-        series: [
-            {
-                name: 'CPU',
-                type: 'line',
-                smooth: true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                    normal: {
-                        color: '#0892cd'
-                    }
-                },
-                areaStyle: { normal: {} },
-                data: []
-            }
-        ]
-    };
-
-    var memoryOption = {
-        tooltip: {
-            trigger: 'axis',
-            formatter: '{b}<br/>{c}%'
-        },
-        grid: {
-            top: 10,
-            left: 0,
-            right: 15,
-            bottom: 0,
-            containLabel: true
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            splitLine: { show: false },
-            data: []
-        },
-        yAxis: {
-            type: 'value',
-            max: 100,
-            min: 0
-        },
-        series: [
-            {
-                name: 'Memory',
-                type: 'line',
-                smooth: true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                    normal: {
-                        color: '#b198dc'
-                    }
-                },
-                areaStyle: { normal: {} },
-                data: []
-            }
-        ]
-    };
-
-    var energypieOption = {
-        tooltip: {
-            trigger: 'item',
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
-        },
-        legend: {
-            x: 'center',
-            y: 'bottom',
-            data: ['空调', '照明', '办公', '其他']
-        },
-        series: [
-            {
-                name: '能耗分类占比',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                label: {
-                    normal: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        show: true,
-                        textStyle: {
-                            fontSize: '20',
-                            fontWeight: 'bold'
-                        }
-                    }
-                },
-                labelLine: {
-                    normal: {
-                        show: false
-                    }
-                },
-                data: [
-                    { value: 895, name: '空调' },
-                    { value: 221, name: '照明' },
-                    { value: 152, name: '办公' },
-                    { value: 335, name: '其他' }
-                ]
-            }
-        ]
-    };
-
-    var energybarOption = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                animation: false
-            }
-        },
-        toolbox: {
-            show: true,
-            feature: {
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ['line', 'bar', 'stack'] },
-                restore: { show: true },
-                saveAsImage: { show: true }
-            }
-        },
-        grid: {
-            top: 40,
-            left: 5,
-            right: 5,
-            bottom: 5,
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: ['北京市', '上海市', '浙江省', '江苏省', '河北省', '广东省', '吉林省'],
-                splitLine: { show: false }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: '空调',
-                type: 'bar',
-                data: [120, 132, 101, 134, 90, 230, 210]
-            },
-            {
-                name: '照明',
-                type: 'bar',
-                data: [220, 182, 191, 234, 290, 330, 310]
-            },
-            {
-                name: '办公',
-                type: 'bar',
-                data: [150, 232, 201, 154, 190, 330, 410]
-            },
-            {
-                name: '其他',
-                type: 'bar',
-                data: [220, 182, 191, 234, 290, 330, 310]
-            }
-        ]
-    };
-
-    var unconnectedOption = {
-        tooltip: {
-            trigger: 'item',
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
-        },
-        legend: {
-            x: 'center',
-            y: 'bottom',
-            data: ['正常', '断站']
-        },
-        series: [
-            {
-                name: '站点断站率',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                label: {
-                    normal: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        show: true,
-                        textStyle: {
-                            fontSize: '20',
-                            fontWeight: 'bold'
-                        }
-                    }
-                },
-                labelLine: {
-                    normal: {
-                        show: false
-                    }
-                },
-                data: [
-                    {
-                        value: 286, name: '正常', itemStyle: {
-                            normal: {
-                                color: '#48ac2e'
-                            }
-                        }
-                    },
-                    {
-                        value: 392, name: '断站', itemStyle: {
-                            normal: {
-                                color: '#c12e34'
-                            }
-                        }
-                    }
-                ]
-            }
-        ]
-    };
-
-    var offlineOption = {
-        tooltip: {
-            trigger: 'item',
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
-        },
-        legend: {
-            x: 'center',
-            y: 'bottom',
-            data: ['正常', '离线']
-        },
-        series: [
-            {
-                name: 'Fsu离线率',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                label: {
-                    normal: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        show: true,
-                        textStyle: {
-                            fontSize: '20',
-                            fontWeight: 'bold'
-                        }
-                    }
-                },
-                labelLine: {
-                    normal: {
-                        show: false
-                    }
-                },
-                data: [
-                    {
-                        value: 679, name: '正常', itemStyle: {
-                            normal: {
-                                color: '#48ac2e'
-                            }
-                        }
-                    },
-                    {
-                        value: 335, name: '离线', itemStyle: {
-                            normal: {
-                                color: '#c12e34'
-                            }
-                        }
-                    }
-                ]
-            }
-        ]
-    };
 
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
@@ -592,6 +634,10 @@
                     type: 'print',
                     tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
+                        $$iPems.download({
+                            url: '/Home/DownloadHomeUnconnected',
+                            params: unconnectedStore.proxy.extraParams
+                        });
                     }
                 }],
                 cls: 'unconnectedview',
@@ -607,14 +653,12 @@
                         xtype: 'grid',
                         flex: 3,
                         store: unconnectedStore,
-                        loadMask: false,
-                        forceFit: false,
                         border: false,
                         style: {
                             'border-left': '1px solid #c0c0c0'
                         },
                         viewConfig: {
-                            forceFit: true,
+                            loadMask: false,
                             trackOver: true,
                             stripeRows: true,
                             emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
@@ -623,7 +667,7 @@
                         columns: [{
                             text: '序号',
                             dataIndex: 'index',
-                            width: 80,
+                            width: 60,
                             align: 'left',
                             sortable: true
                         }, {
@@ -636,10 +680,16 @@
                             text: '站点名称',
                             dataIndex: 'station',
                             align: 'left',
-                            flex: 1,
+                            width: 120,
                             sortable: true
                         }, {
-                            text: '断站时长(分钟)',
+                            text: '断站时间',
+                            dataIndex: 'time',
+                            width: 150,
+                            align: 'left',
+                            sortable: true
+                        }, {
+                            text: '断站时长',
                             dataIndex: 'interval',
                             width: 120,
                             align: 'left',
@@ -665,6 +715,10 @@
                     type: 'print',
                     tooltip: '数据导出',
                     handler: function (event, toolEl, panelHeader) {
+                        $$iPems.download({
+                            url: '/Home/DownloadHomeOff',
+                            params: offStore.proxy.extraParams
+                        });
                     }
                 }],
                 cls: 'offlineview',
@@ -680,14 +734,12 @@
                         xtype: 'grid',
                         flex: 3,
                         store: offStore,
-                        loadMask: false,
-                        forceFit: false,
                         border: false,
                         style: {
                             'border-left': '1px solid #c0c0c0'
                         },
                         viewConfig: {
-                            forceFit: true,
+                            loadMask: false,
                             trackOver: true,
                             stripeRows: true,
                             emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
@@ -696,7 +748,7 @@
                         columns: [{
                             text: '序号',
                             dataIndex: 'index',
-                            width: 80,
+                            width: 60,
                             align: 'left',
                             sortable: true
                         }, {
@@ -709,22 +761,28 @@
                             text: '所属站点',
                             dataIndex: 'station',
                             align: 'left',
-                            flex: 1,
+                            width: 120,
                             sortable: true
                         }, {
                             text: '所属机房',
                             dataIndex: 'room',
                             align: 'left',
-                            flex: 1,
+                            width: 120,
                             sortable: true
                         }, {
                             text: 'Fsu名称',
                             dataIndex: 'name',
                             align: 'left',
-                            flex: 1,
+                            width: 120,
                             sortable: true
                         }, {
-                            text: '离线时长(分钟)',
+                            text: '离线时间',
+                            dataIndex: 'time',
+                            width: 150,
+                            align: 'left',
+                            sortable: true
+                        }, {
+                            text: '离线时长',
                             dataIndex: 'interval',
                             width: 120,
                             align: 'left',
@@ -744,22 +802,18 @@
     });
 
     Ext.onReady(function () {
-        var almChart = echarts.init(document.getElementById("alm-chart"), 'shine');
-        var cpuChart = echarts.init(document.getElementById("cpu-chart"), 'shine');
-        var memoryChart = echarts.init(document.getElementById("memory-chart"), 'shine');
-        var energybarChart = echarts.init(document.getElementById("energy-bar"), 'shine');
-        var energypieChart = echarts.init(document.getElementById("energy-pie"), 'shine');
-        var unconnectedChart = echarts.init(document.getElementById("unconnected-pie"), 'shine');
-        var offlineChart = echarts.init(document.getElementById("offline-pie"), 'shine');
-
-        almChart.on('magictypechanged', function (param) {
-            $$iPems.Tasks.homeTasks.almTask.stop();
-        });
-        almChart.on('restore', function (param) {
-            $$iPems.Tasks.homeTasks.almTask.start();
-        });
+        almChart = echarts.init(document.getElementById("alm-chart"), 'shine');
+        cpuChart = echarts.init(document.getElementById("cpu-chart"), 'shine');
+        memoryChart = echarts.init(document.getElementById("memory-chart"), 'shine');
+        energybarChart = echarts.init(document.getElementById("energy-bar"), 'shine');
+        energypieChart = echarts.init(document.getElementById("energy-pie"), 'shine');
+        unconnectedChart = echarts.init(document.getElementById("unconnected-pie"), 'shine');
+        offlineChart = echarts.init(document.getElementById("offline-pie"), 'shine');
 
         //init charts
+        almChart.setOption(almOption);
+        cpuChart.setOption(cpuOption);
+        memoryChart.setOption(memoryOption);
         energybarChart.setOption(energybarOption);
         energypieChart.setOption(energypieOption);
         unconnectedChart.setOption(unconnectedOption);
@@ -846,5 +900,15 @@
             });
         };
         $$iPems.Tasks.homeTasks.svrTask.start();
+
+        $$iPems.Tasks.homeTasks.offTask.run = function () {
+            offPagingToolbar.doRefresh();
+        };
+        $$iPems.Tasks.homeTasks.offTask.start();
+
+        $$iPems.Tasks.homeTasks.unconnectedTask.run = function () {
+            unconnectedPagingToolbar.doRefresh();
+        };
+        $$iPems.Tasks.homeTasks.unconnectedTask.start();
     });
 })();

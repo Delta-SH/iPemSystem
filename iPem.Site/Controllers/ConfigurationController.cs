@@ -1,4 +1,7 @@
 ﻿using iPem.Core.Caching;
+using iPem.Core.Enum;
+using iPem.Services.Cs;
+using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
@@ -7,13 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MsDomain = iPem.Core.Domain.Master;
-using HsDomain = iPem.Core.Domain.History;
-using RsDomain = iPem.Core.Domain.Resource;
-using MsSrv = iPem.Services.Master;
-using HsSrv = iPem.Services.History;
-using RsSrv = iPem.Services.Resource;
-using iPem.Core.Enum;
 
 namespace iPem.Site.Controllers {
     [Authorize]
@@ -23,10 +19,8 @@ namespace iPem.Site.Controllers {
 
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-        private readonly MsSrv.IWebLogger _webLogger;
-        private readonly MsSrv.IMenuService _menuService;
-        private readonly RsSrv.IStationTypeService _stationTypeService;
-        private readonly HsSrv.IActAlmService _actAlmService;
+        private readonly IWebLogger _webLogger;
+        private readonly IActAlmService _actAlmService;
 
         #endregion
 
@@ -35,15 +29,11 @@ namespace iPem.Site.Controllers {
         public ConfigurationController(
             ICacheManager cacheManager,
             IWorkContext workContext,
-            MsSrv.IWebLogger webLogger,
-            MsSrv.IMenuService menuService,
-            RsSrv.IStationTypeService stationTypeService,
-            HsSrv.IActAlmService actAlmService) {
+            IWebLogger webLogger,
+            IActAlmService actAlmService) {
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
-            this._menuService = menuService;
-            this._stationTypeService = stationTypeService;
             this._actAlmService = actAlmService;
         }
 
@@ -77,18 +67,18 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var stations = _workContext.AssociatedStations.FindAll(s => {
-                    if(string.IsNullOrWhiteSpace(s.Longitude))
+                var stations = _workContext.RoleStations.FindAll(s => {
+                    if(string.IsNullOrWhiteSpace(s.Current.Longitude))
                         return false;
 
-                    if(string.IsNullOrWhiteSpace(s.Latitude))
+                    if(string.IsNullOrWhiteSpace(s.Current.Latitude))
                         return false;
 
                     double lng, lat;
-                    if(!double.TryParse(s.Longitude, out lng))
+                    if(!double.TryParse(s.Current.Longitude, out lng))
                         return false;
 
-                    if(!double.TryParse(s.Latitude, out lat))
+                    if(!double.TryParse(s.Current.Latitude, out lat))
                         return false;
 
                     return lng >= minlng && lng <= maxlng && lat >= minlat && lat <= maxlat;
@@ -101,40 +91,24 @@ namespace iPem.Site.Controllers {
                     data.message = "200 Ok";
                     data.total = stations.Count;
 
-                    var types = _stationTypeService.GetAllStationTypes();
-                    var alarms = _actAlmService.GetAllActAlms();
-                    var almsInDev = from alarm in alarms
-                                    group alarm by alarm.DeviceId into g
+                    var alarms = _actAlmService.GetAllAlmsAsList();
+                    var almsInSta = from alarm in alarms
+                                    group alarm by alarm.StationId into g
                                     select new {
                                         Id = g.Key,
                                         Alarms = g
                                     };
 
-                    var almsInDev2 = from alarm in almsInDev
-                                     join attribute in _workContext.AssociatedDeviceAttributes.Values on alarm.Id equals attribute.Current.Id
-                                     select new {
-                                         Id = attribute.Station.Id,
-                                         Alarms = alarm.Alarms
-                                     };
-
-                    var almsInSta = from alarm in almsInDev2
-                                    group alarm by alarm.Id into g
-                                    select new {
-                                        Id = g.Key,
-                                        Alarms = g.SelectMany(a => a.Alarms)
-                                    };
-
                     foreach(var station in stations) {
-                        var type = types.FirstOrDefault(t=>t.Id == station.StaTypeId);
                         var model = new MarkerModel() {
-                            id = station.Id,
-                            name = station.Name,
-                            type = type != null ? type.Name : "",
-                            lng = double.Parse(station.Longitude),
-                            lat = double.Parse(station.Latitude)
+                            id = station.Current.Id,
+                            name = station.Current.Name,
+                            type = station.Current.Type.Name,
+                            lng = double.Parse(station.Current.Longitude),
+                            lat = double.Parse(station.Current.Latitude)
                         };
 
-                        var eachSta = almsInSta.FirstOrDefault(s => s.Id == station.Id);
+                        var eachSta = almsInSta.FirstOrDefault(s => s.Id == station.Current.Id);
                         if(eachSta != null) {
                             model.alm1 = eachSta.Alarms.Count(a=>a.AlmLevel == EnmAlarmLevel.Level1);
                             model.alm2 = eachSta.Alarms.Count(a => a.AlmLevel == EnmAlarmLevel.Level2);

@@ -89,7 +89,7 @@ $(document).ready(function () {
     mapContainer.enableScrollWheelZoom(true);
 
     //添加搜索功能
-    var acValue, acCtrl = new BMap.Autocomplete({ 'input': 'searchbox-input', 'location': mapContainer });
+    var acValue, acCtrl = new BMap.Autocomplete({ 'input': 'searchbox-input', 'location': '上海市' });
 
     acCtrl.addEventListener("onhighlight", function (e) {
         var str = "", value = "";
@@ -136,6 +136,7 @@ $(document).ready(function () {
     (new BMap.LocalCity()).get(function (result) {
         var cityName = result.name;
         mapContainer.centerAndZoom(cityName, 11);
+        acCtrl.setLocation(cityName);
     });
 
     //范围变化，重新请求标记

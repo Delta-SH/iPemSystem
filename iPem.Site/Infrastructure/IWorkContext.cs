@@ -1,11 +1,12 @@
-﻿using MsDomain = iPem.Core.Domain.Master;
-using RsDomain = iPem.Core.Domain.Resource;
+﻿using iPem.Core;
+using iPem.Core.Domain.Cs;
+using iPem.Core.Domain.Rs;
+using iPem.Core.Domain.Sc;
+using iPem.Core.Enum;
+using iPem.Site.Models;
+using iPem.Site.Models.Organization;
 using System;
 using System.Collections.Generic;
-using iPem.Site.Models;
-using iPem.Site.Extensions;
-using iPem.Core.Enum;
-using iPem.Core;
 
 namespace iPem.Site.Infrastructure {
     /// <summary>
@@ -30,123 +31,80 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets or sets the current role
         /// </summary>
-        MsDomain.Role CurrentRole { get; }
+        Role Role { get; }
 
         /// <summary>
         /// Gets or sets the current user
         /// </summary>
-        MsDomain.User CurrentUser { get; }
+        User User { get; }
+
+        /// <summary>
+        /// Gets or sets the current employee
+        /// </summary>
+        Employee Employee { get; }
 
         /// <summary>
         /// Gets or sets the current user profile
         /// </summary>
-        ProfileValues CurrentProfile { get; set; }
+        ProfileValues Profile { get; set; }
 
         /// <summary>
         /// Gets or sets the current webservice values
         /// </summary>
-        WsValues CurrentWsValues { get; set; }
+        WsValues WsValues { get; set; }
 
         /// <summary>
-        /// Gets or sets the associated employee
+        /// Gets or sets the current menus
         /// </summary>
-        RsDomain.Employee AssociatedEmployee { get; }
+        List<Menu> Menus { get; }
 
         /// <summary>
-        /// Gets or sets the associated areas
+        /// Gets or sets the current operations
         /// </summary>
-        List<RsDomain.Area> AssociatedAreas { get; }
+        HashSet<EnmOperation> Operations { get; }
 
-        /// <summary>
-        /// Gets or sets the associated stations
-        /// </summary>
-        List<RsDomain.Station> AssociatedStations { get; }
+        List<LogicType> LogicTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated rooms
-        /// </summary>
-        List<RsDomain.Room> AssociatedRooms { get; }
+        List<SubLogicType> SubLogicTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated devices
-        /// </summary>
-        List<RsDomain.Device> AssociatedDevices { get; }
+        List<DeviceType> DeviceTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated fsus
-        /// </summary>
-        List<RsDomain.Fsu> AssociatedFsus { get; }
+        List<SubDeviceType> SubDeviceTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated menus
-        /// </summary>
-        List<MsDomain.Menu> AssociatedMenus { get; }
+        List<RoomType> RoomTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated operations
-        /// </summary>
-        Dictionary<EnmOperation, string> AssociatedOperations { get; }
+        List<StationType> StationTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated area attributes
-        /// </summary>
-        Dictionary<string, AreaAttributes> AssociatedAreaAttributes { get; }
+        List<EnumMethods> AreaTypes { get; }
 
-        /// <summary>
-        /// Gets or sets the associated station attributes
-        /// </summary>
-        Dictionary<string, StationAttributes> AssociatedStationAttributes { get; }
+        List<Point> Points { get; }
 
-        /// <summary>
-        /// Gets or sets the associated room attributes
-        /// </summary>
-        Dictionary<string, RoomAttributes> AssociatedRoomAttributes { get; }
+        List<OrgProtocol> Protocols { get; }
 
-        /// <summary>
-        /// Gets or sets the associated device attributes
-        /// </summary>
-        Dictionary<string, DeviceAttributes> AssociatedDeviceAttributes { get; }
+        List<OrgDevice> Devices { get; }
 
-        /// <summary>
-        /// Gets or sets the associated point attributes
-        /// </summary>
-        Dictionary<string, PointAttributes> AssociatedPointAttributes { get; }
+        List<OrgFsu> Fsus { get; }
 
-        /// <summary>
-        /// Gets or sets the associated rss points
-        /// </summary>
-        List<IdValuePair<DeviceAttributes, PointAttributes>> AssociatedRssPoints { get; }
+        List<OrgRoom> Rooms { get; }
 
-        /// <summary>
-        /// Gets the parent areas
-        /// </summary>
-        /// <param name="current">current area</param>
-        /// <param name="include">include</param>
-        /// <returns></returns>
-        List<RsDomain.Area> GetParentsInArea(RsDomain.Area current, bool include = true);
+        List<OrgStation> Stations { get; }
 
-        /// <summary>
-        /// Gets the parent areas
-        /// </summary>
-        /// <param name="id">current area identifier</param>
-        /// <param name="include">include</param>
-        /// <returns></returns>
-        List<RsDomain.Area> GetParentsInArea(string id, bool include = true);
+        List<OrgArea> Areas { get; }
 
-        /// <summary>
-        /// Gets the parent stations
-        /// </summary>
-        /// <param name="current">current station</param>
-        /// <param name="include">include</param>
-        /// <returns></returns>
-        List<RsDomain.Station> GetParentsInStation(RsDomain.Station current, bool include = true);
+        List<OrgArea> RoleAreas { get; }
 
-        /// <summary>
-        /// Gets the parent stations
-        /// </summary>
-        /// <param name="id">current station identifier</param>
-        /// <param name="include">include</param>
-        /// <returns></returns>
-        List<RsDomain.Station> GetParentsInStation(string id, bool include = true);
+        List<OrgStation> RoleStations { get; }
+
+        List<OrgRoom> RoleRooms { get; }
+
+        List<OrgFsu> RoleFsus { get; }
+
+        List<OrgDevice> RoleDevices { get; }
+
+        List<AlmStore<ActAlm>> ActAlmStore { get; }
+
+        List<AlmStore<ActAlm>> GetActAlmStore(List<ActAlm> alarms);
+
+        List<AlmStore<HisAlm>> GetHisAlmStore(List<HisAlm> alarms, DateTime start, DateTime end);
     }
 }
