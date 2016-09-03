@@ -2,7 +2,7 @@
 * Web Default Data Sql Script Library v1.0.0
 * Copyright 2016, Delta
 * Author: Steven
-* Date: 2016/08/18
+* Date: 2016/09/02
 */
 
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
@@ -82,6 +82,7 @@ CREATE TABLE [dbo].[H_ExtendAlms](
 	[Id] [varchar](100) NOT NULL,
 	[FsuId] [varchar](100) NOT NULL,
 	[Start] [datetime] NOT NULL,
+	[End] [datetime] NULL,
 	[ProjectId] [varchar](100) NULL,
 	[Confirmed] [int] NULL,
 	[Confirmer] [varchar](100) NULL,

@@ -105,9 +105,9 @@
     }
 
     /// <summary>
-    /// Represents the alarm confirm status enumeration
+    /// Represents the alarm confirm enumeration
     /// </summary>
-    public enum EnmConfirmStatus {
+    public enum EnmConfirm {
         Unconfirmed,
         Confirmed
     }
@@ -118,6 +118,15 @@
     public enum EnmHR {
         Department,
         Employee
+    }
+
+    /// <summary>
+    /// Represents the device logic enumeration
+    /// </summary>
+    public enum EnmDevLogic {
+        DevType,
+        Logic,
+        SubLogic,
     }
 
     /// <summary>

@@ -22,7 +22,7 @@
                     detail: {
                         offsetCenter: [0, 30],
                         textStyle: {
-                            fontSize: 20
+                            fontSize: 18
                         }
                     },
                     data: [{ value: 0, name: 'kW·h' }]
@@ -69,6 +69,8 @@
         };
 
     var resetChart = function () {
+        gaugeOption.series[0].min = 0;
+        gaugeOption.series[0].max = 100;
         gaugeOption.series[0].data[0].value = 0;
         gaugeOption.series[0].data[0].name = 'kW·h';
         gaugeChart.setOption(gaugeOption, true);
@@ -86,43 +88,41 @@
                 value = record.get('value'),
                 unit = record.get('unit');
 
-            if (Math.abs(value) > 10000) return;
-
-            //if (value >= 0) {
-            //    if (value <= 100) {
-            //        gaugeOption.series[0].min = 0;
-            //        gaugeOption.series[0].max = 100;
-            //    } else if (value > 100 && value <= 500) {
-            //        gaugeOption.series[0].min = 0;
-            //        gaugeOption.series[0].max = 500;
-            //    } else if (value > 500 && value <= 1000) {
-            //        gaugeOption.series[0].min = 0;
-            //        gaugeOption.series[0].max = 1000;
-            //    } else if (value > 1000 && value <= 5000) {
-            //        gaugeOption.series[0].min = 0;
-            //        gaugeOption.series[0].max = 5000;
-            //    } else {
-            //        gaugeOption.series[0].min = 0;
-            //        gaugeOption.series[0].max = 10000;
-            //    }
-            //} else {
-            //    if (value >= -100) {
-            //        gaugeOption.series[0].min = -100;
-            //        gaugeOption.series[0].max = 0;
-            //    } else if (value < -100 && value >= -500) {
-            //        gaugeOption.series[0].min = -500;
-            //        gaugeOption.series[0].max = 0;
-            //    } else if (value < -500 && value >= -1000) {
-            //        gaugeOption.series[0].min = -1000;
-            //        gaugeOption.series[0].max = 0;
-            //    } else if (value < -1000 && value >= -5000) {
-            //        gaugeOption.series[0].min = -5000;
-            //        gaugeOption.series[0].max = 0;
-            //    } else {
-            //        gaugeOption.series[0].min = -10000;
-            //        gaugeOption.series[0].max = 0;
-            //    }
-            //}
+            if (value >= 0) {
+                if (value <= 100) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 100;
+                } else if (value > 100 && value <= 500) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 500;
+                } else if (value > 500 && value <= 1000) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 1000;
+                } else if (value > 1000 && value <= 5000) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 5000;
+                } else {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 10000;
+                }
+            } else {
+                if (value >= -100) {
+                    gaugeOption.series[0].min = -100;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -100 && value >= -500) {
+                    gaugeOption.series[0].min = -500;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -500 && value >= -1000) {
+                    gaugeOption.series[0].min = -1000;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -1000 && value >= -5000) {
+                    gaugeOption.series[0].min = -5000;
+                    gaugeOption.series[0].max = 0;
+                } else {
+                    gaugeOption.series[0].min = -10000;
+                    gaugeOption.series[0].max = 0;
+                }
+            }
 
             gaugeOption.series[0].data[0].name = unit;
             gaugeOption.series[0].data[0].value = value;

@@ -633,7 +633,7 @@
                             },
                             {
                                 id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiCombo',
+                                xtype: 'LogicTypeMultiPicker',
                                 emptyText: '默认全部'
                             },
                             {

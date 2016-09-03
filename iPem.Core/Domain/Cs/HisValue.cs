@@ -17,7 +17,7 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// Gets or sets the type
         /// </summary>
-        public int Type { get; set; }
+        public EnmPoint Type { get; set; }
 
         /// <summary>
         /// Gets or sets the value

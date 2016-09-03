@@ -275,11 +275,11 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetConfirmStatusDisplay(EnmConfirmStatus status) {
+        public static string GetConfirmStatusDisplay(EnmConfirm status) {
             switch(status) {
-                case EnmConfirmStatus.Confirmed:
+                case EnmConfirm.Confirmed:
                     return "已确认";
-                case EnmConfirmStatus.Unconfirmed:
+                case EnmConfirm.Unconfirmed:
                     return "未确认";
                 default:
                     return "未定义";
@@ -291,9 +291,9 @@ namespace iPem.Site.Infrastructure {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
                     var result = string.Empty;
-                    var units = (unit ?? string.Empty).Split(new char[] { ';' },StringSplitOptions.RemoveEmptyEntries);
+                    var units = (unit ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach(var u in units) {
-                        var vs = u.Split(new char[] { '&' },StringSplitOptions.RemoveEmptyEntries);
+                        var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
                         if(vs.Length != 2) continue;
 
                         var flag = ((int)value).ToString();
@@ -406,7 +406,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string JoinKeys(params object[] keys) {
-            if(keys == null || keys.Length == 0) 
+            if(keys == null || keys.Length == 0)
                 return string.Empty;
 
             return string.Join(GlobalSeparator, keys);
@@ -433,21 +433,6 @@ namespace iPem.Site.Infrastructure {
                 }
             }
             return false;
-        }
-
-        public static EnmBIType ConvertEnmPoint(EnmPoint type) {
-            switch(type) {
-                case EnmPoint.AI:
-                    return EnmBIType.AI;
-                case EnmPoint.AO:
-                    return EnmBIType.AO;
-                case EnmPoint.DI:
-                    return EnmBIType.DI;
-                case EnmPoint.DO:
-                    return EnmBIType.DO;
-                default:
-                    return EnmBIType.AREA;
-            }
         }
     }
 }

@@ -23,6 +23,11 @@ namespace iPem.Core.Domain.Sc {
         public DateTime Start { get; set; }
 
         /// <summary>
+        /// Gets or sets the end datetime
+        /// </summary>
+        public DateTime? End { get; set; }
+
+        /// <summary>
         /// Gets or sets the project identifier
         /// </summary>
         public string ProjectId { get; set; }
@@ -30,7 +35,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// Gets or sets the confirmed status
         /// </summary>
-        public EnmConfirmStatus Confirmed { get; set; }
+        public EnmConfirm Confirmed { get; set; }
 
         /// <summary>
         /// Gets or sets the confirmer

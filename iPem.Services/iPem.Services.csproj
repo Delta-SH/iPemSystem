@@ -56,17 +56,13 @@
     <Compile Include="Cs\Interface\IHisStaticService.cs" />
     <Compile Include="Cs\Interface\IHisValueService.cs" />
     <Compile Include="Sc\Class\AppointmentService.cs" />
-    <Compile Include="Cs\Class\AreaKeyService.cs" />
     <Compile Include="Sc\Class\AreasInRoleService.cs" />
-    <Compile Include="Cs\Class\DeviceKeyService.cs" />
     <Compile Include="Sc\Class\DictionaryService.cs" />
     <Compile Include="Sc\Class\NodesInAppointmentService.cs" />
     <Compile Include="Sc\Class\ProfileService.cs" />
     <Compile Include="Sc\Class\ProjectsService.cs" />
     <Compile Include="Sc\Interface\IAppointmentService.cs" />
-    <Compile Include="Cs\Interface\IAreaKeyService.cs" />
     <Compile Include="Sc\Interface\IAreasInRoleService.cs" />
-    <Compile Include="Cs\Interface\IDeviceKeyService.cs" />
     <Compile Include="Sc\Interface\IDictionaryService.cs" />
     <Compile Include="Sc\Interface\IMenuService.cs" />
     <Compile Include="Sc\Interface\IMenusInRoleService.cs" />
@@ -79,8 +75,6 @@
     <Compile Include="Sc\Interface\IProjectService.cs" />
     <Compile Include="Rs\Interface\IProtocolService.cs" />
     <Compile Include="Sc\Interface\IRoleService.cs" />
-    <Compile Include="Cs\Interface\IRoomKeyService.cs" />
-    <Compile Include="Cs\Interface\IStationKeyService.cs" />
     <Compile Include="Sc\Interface\IUserService.cs" />
     <Compile Include="Sc\Interface\IWebLogger.cs" />
     <Compile Include="Sc\Class\MenuService.cs" />
@@ -91,8 +85,6 @@
     <Compile Include="Rs\Class\PointService.cs" />
     <Compile Include="Rs\Class\ProtocolService.cs" />
     <Compile Include="Sc\Class\RoleService.cs" />
-    <Compile Include="Cs\Class\RoomKeyService.cs" />
-    <Compile Include="Cs\Class\StationKeyService.cs" />
     <Compile Include="Sc\Class\UserService.cs" />
     <Compile Include="Sc\Class\WebLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

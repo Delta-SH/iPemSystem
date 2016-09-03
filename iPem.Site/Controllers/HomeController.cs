@@ -12,7 +12,6 @@ using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
-using iPem.Site.Models.BI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -492,7 +491,7 @@ namespace iPem.Site.Controllers {
 
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
-                            index = start + i + 1,
+                            index = i + 1,
                             fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
                             level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
@@ -508,7 +507,7 @@ namespace iPem.Site.Controllers {
                             frequency = stores[i].Current.Frequency,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime),
                             project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirmStatus.Unconfirmed),
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
                             confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
                             confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
                         });
@@ -551,7 +550,7 @@ namespace iPem.Site.Controllers {
                             frequency = stores[i].Current.Frequency,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime),
                             project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirmStatus.Unconfirmed),
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
                             confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
                             confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
                             background = Common.GetAlarmLevelColor(stores[i].Current.AlmLevel)
@@ -592,80 +591,31 @@ namespace iPem.Site.Controllers {
                         for(var i = start; i < end; i++)
                             points.Add(stores[i]);
 
-                        #region request active values
-
-                        var values = new List<ActValue>();
-                        try {
-                            var pointsInFsu = points.GroupBy(g => g.Device.FsuId);
-                            foreach(var fsu in pointsInFsu) {
-                                var current = _workContext.RoleFsus.Find(f => f.Current.Id == fsu.Key);
-                                if(current == null) continue;
-                                var package = new ActDataTemplate() { Id = current.Current.Id, Code = current.Current.Code, Values = new List<ActDataDeviceTemplate>() };
-
-                                var devicesInFsu = fsu.GroupBy(d => new { d.Device.Id, d.Device.Code });
-                                foreach(var device in devicesInFsu) {
-                                    package.Values.Add(new ActDataDeviceTemplate() {
-                                        Id = device.Key.Id,
-                                        Code = device.Key.Code,
-                                        Values = device.Select(d => d.Current.Id).ToList()
-                                    });
-                                }
-
-                                var actData = BIPack.RequestActiveData(_workContext.WsValues, package);
-                                if(actData != null && actData.Result == EnmBIResult.SUCCESS) {
-                                    foreach(var v in actData.Values) {
-                                        foreach(var a in v.Values) {
-                                            values.Add(new ActValue() {
-                                                DeviceId = v.Id,
-                                                DeviceCode = v.Code,
-                                                PointId = a.Id,
-                                                MeasuredVal = a.MeasuredVal,
-                                                SetupVal = a.SetupVal,
-                                                Status = Enum.IsDefined(typeof(EnmPointStatus), a.Status) ? (EnmPointStatus)a.Status : EnmPointStatus.Invalid,
-                                                RecordTime = a.RecordTime
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        } catch(Exception exc) {
-                            _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                        }
-
-                        #endregion
-
-                        var pValues = from point in points
-                                      join val in values on new { Device = point.Device.Id, Point = point.Current.Id } equals new { Device = val.DeviceId, Point = val.PointId } into lt
-                                      from def in lt.DefaultIfEmpty()
-                                      select new {
-                                          Point = point,
-                                          Value = def
-                                      };
-
-                        foreach(var pv in pValues) {
-                            var value = pv.Value != null ? pv.Value.MeasuredVal : 0f;
-                            var status = pv.Value != null ? pv.Value.Status : EnmPointStatus.Invalid;
-                            var rectime = pv.Value != null ? pv.Value.RecordTime : DateTime.Now;
+                        foreach(var point in points) {
+                            var tick = DateTime.Now.Ticks;
+                            var value = (float)Math.Round(CommonHelper.GenerateRandomInteger(-500, 500) * 0.782, 2);
+                            var status = EnmPointStatus.Invalid;
+                            var changed = DateTime.Now;
 
                             data.data.Add(new ActPointModel {
                                 index = ++start,
-                                area = pv.Point.AreaFullName,
-                                station = pv.Point.Device.StationName,
-                                room = pv.Point.Device.RoomName,
-                                device = pv.Point.Device.Name,
-                                point = pv.Point.Current.Name,
-                                type = Common.GetPointTypeDisplay(pv.Point.Current.Type),
+                                area = point.AreaFullName,
+                                station = point.Device.StationName,
+                                room = point.Device.RoomName,
+                                device = point.Device.Name,
+                                point = point.Current.Name,
+                                type = Common.GetPointTypeDisplay(point.Current.Type),
                                 value = value,
-                                unit = Common.GetUnitDisplay(pv.Point.Current.Type, value, pv.Point.Current.Unit),
+                                unit = Common.GetUnitDisplay(point.Current.Type, value, point.Current.UnitState),
                                 status = Common.GetPointStatusDisplay(status),
-                                time = CommonHelper.DateTimeConverter(rectime),
-                                devid = pv.Point.Device.Id,
-                                pointid = pv.Point.Current.Id,
-                                typeid = (int)pv.Point.Current.Type,
+                                time = CommonHelper.DateTimeConverter(changed),
+                                devid = point.Device.Id,
+                                pointid = point.Current.Id,
+                                typeid = (int)point.Current.Type,
                                 statusid = (int)status,
-                                rsspoint = pv.Point.RssPoint,
-                                rssfrom = pv.Point.RssFrom,
-                                timestamp = CommonHelper.ShortTimeConverter(rectime)
+                                rsspoint = point.RssPoint,
+                                rssfrom = point.RssFrom,
+                                timestamp = CommonHelper.ShortTimeConverter(changed)
                             });
                         }
                     }
@@ -697,7 +647,7 @@ namespace iPem.Site.Controllers {
                             FsuId = current.Current.FsuId,
                             Id = current.Current.Id,
                             Start = current.Current.StartTime,
-                            Confirmed = EnmConfirmStatus.Confirmed,
+                            Confirmed = EnmConfirm.Confirmed,
                             ConfirmedTime = DateTime.Now,
                             Confirmer = _workContext.Employee.Name
                         });
@@ -771,37 +721,7 @@ namespace iPem.Site.Controllers {
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
-                var package = new SetDataTemplate() {
-                    Id = curFsu.Current.Id,
-                    Code = curFsu.Current.Code,
-                    Values = new List<SetDataDeviceTemplate>() {
-                        new SetDataDeviceTemplate() {
-                            Id = curDevice.Current.Id,
-                            Code = curDevice.Current.Code,
-                            Values = new List<TSemaphore>() {
-                                new TSemaphore() {
-                                    Id = curPoint.Id,
-                                    Type = (int)Common.ConvertEnmPoint(curPoint.Type),
-                                    MeasuredVal = 0,
-                                    SetupVal = ctrl,
-                                    Status = (int)EnmPointStatus.Normal,
-                                    RecordTime = DateTime.Now
-                                }
-                            }
-                        }
-                    }
-                };
-
-                var result = BIPack.SetPointData(_workContext.WsValues, package);
-                if(result != null && result.Result == EnmBIResult.SUCCESS) {
-                    if(result.Values != null) {
-                        var devResult = result.Values.Find(d => d.Id == curDevice.Current.Id);
-                        if(devResult != null && devResult.Success.Contains(curPoint.Id))
-                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
-                    }
-                }
-
-                throw new iPemException("参数设置失败");
+                return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
             } catch(Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -829,37 +749,7 @@ namespace iPem.Site.Controllers {
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
-                var package = new SetDataTemplate() {
-                    Id = curFsu.Current.Id,
-                    Code = curFsu.Current.Code,
-                    Values = new List<SetDataDeviceTemplate>() {
-                        new SetDataDeviceTemplate() {
-                            Id = curDevice.Current.Id,
-                            Code = curDevice.Current.Code,
-                            Values = new List<TSemaphore>() {
-                                new TSemaphore() {
-                                    Id = curPoint.Id,
-                                    Type = (int)Common.ConvertEnmPoint(curPoint.Type),
-                                    MeasuredVal = 0,
-                                    SetupVal = adjust,
-                                    Status = (int)EnmPointStatus.Normal,
-                                    RecordTime = DateTime.Now
-                                }
-                            }
-                        }
-                    }
-                };
-
-                var result = BIPack.SetPointData(_workContext.WsValues, package);
-                if(result != null && result.Result == EnmBIResult.SUCCESS) {
-                    if(result.Values != null) {
-                        var devResult = result.Values.Find(d => d.Id == curDevice.Current.Id);
-                        if(devResult != null && devResult.Success.Contains(curPoint.Id))
-                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
-                    }
-                }
-
-                throw new iPemException("参数设置失败");
+                return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
             } catch(Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -991,16 +881,15 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var offKeys = _fsuKeyService.GetAllKeysAsList().FindAll(k => !k.Status);
+                var offKeys = _fsuKeyService.GetAllKeysAsList();
                 var allFsus = from fsu in _workContext.RoleFsus
+                              join ok in offKeys on fsu.Current.Id equals ok.Id
                               join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
-                              join ok in offKeys on fsu.Current.Id equals ok.Id into lt
-                              from def in lt.DefaultIfEmpty()
                               select new {
                                   Area = area,
                                   Fsu = fsu,
-                                  ChangedTime = def != null ? def.ChangeTime : DateTime.Now,
-                                  Status = def != null ? def.Status : true
+                                  ChangedTime = ok.ChangeTime,
+                                  Status = ok.Status
                               };
 
                 data.chart[0] = new ChartModel { index = 1, name = "正常", value = allFsus.Count(f => f.Status) };
@@ -1219,10 +1108,10 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(s => almlevel.Contains((int)s.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirmStatus.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirmStatus.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
                 stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));

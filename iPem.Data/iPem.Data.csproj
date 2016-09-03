@@ -62,17 +62,13 @@
     <Compile Include="Repository\Cs\Interface\IHisStaticRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisValueRepository.cs" />
     <Compile Include="Repository\Sc\Class\AppointmentRepository.cs" />
-    <Compile Include="Repository\Cs\Class\AreaKeyRepository.cs" />
     <Compile Include="Repository\Sc\Class\AreasInRoleRepository.cs" />
-    <Compile Include="Repository\Cs\Class\DeviceKeyRepository.cs" />
     <Compile Include="Repository\Sc\Class\DictionaryRepository.cs" />
     <Compile Include="Repository\Sc\Class\NodesInAppointmentRepository.cs" />
     <Compile Include="Repository\Sc\Class\ProfileRepository.cs" />
     <Compile Include="Repository\Sc\Class\ProjectRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IAppointmentRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IAreaKeyRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IAreasInRoleRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IDeviceKeyRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IDictionaryRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IMenuRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IMenusInRoleRepository.cs" />
@@ -85,8 +81,6 @@
     <Compile Include="Repository\Sc\Interface\IProjectRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IProtocolRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IRoleRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IRoomKeyRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IStationKeyRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IUserRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IWebEventRepository.cs" />
     <Compile Include="Repository\Sc\Class\MenuRepository.cs" />
@@ -97,8 +91,6 @@
     <Compile Include="Repository\Rs\Class\PointRepository.cs" />
     <Compile Include="Repository\Rs\Class\ProtocolRepository.cs" />
     <Compile Include="Repository\Sc\Class\RoleRepository.cs" />
-    <Compile Include="Repository\Cs\Class\RoomKeyRepository.cs" />
-    <Compile Include="Repository\Cs\Class\StationKeyRepository.cs" />
     <Compile Include="Repository\Sc\Class\UserRepository.cs" />
     <Compile Include="Repository\Sc\Class\WebEventRepository.cs" />
     <Compile Include="Repository\Rs\Class\AreaRepository.cs" />

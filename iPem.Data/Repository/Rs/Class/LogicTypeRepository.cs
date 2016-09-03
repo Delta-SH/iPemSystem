@@ -34,6 +34,7 @@ namespace iPem.Data.Repository.Rs {
                     entity = new LogicType();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
                 }
             }
             return entity;
@@ -62,6 +63,7 @@ namespace iPem.Data.Repository.Rs {
                     var entity = new LogicType();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.DeviceTypeId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]);
                     entities.Add(entity);
                 }
             }

@@ -19,12 +19,12 @@ namespace iPem.Core.Domain.Rs {
         /// <summary>
         /// Gets or sets the device type
         /// </summary>
-        public string DeviceTypeId { get; set; }
+        public DeviceType DeviceType { get; set; }
 
         /// <summary>
         /// Gets or sets the sub device type
         /// </summary>
-        public string SubDevTypeId { get; set; }
+        public SubDeviceType SubDeviceType { get; set; }
 
         /// <summary>
         /// Gets or sets the comment

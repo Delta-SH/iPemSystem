@@ -37,11 +37,12 @@ namespace iPem.Data.Repository.Rs {
                 if(rdr.Read()) {
                     entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
+                    entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
-                    entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
                     entity.Length = SqlTypeConverter.DBNullStringHandler(rdr["Length"]);
                     entity.Width = SqlTypeConverter.DBNullStringHandler(rdr["Width"]);
                     entity.Heigth = SqlTypeConverter.DBNullStringHandler(rdr["Heigth"]);
@@ -77,11 +78,12 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
-                    entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyID"]);
-                    entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
+                    entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
+                    entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Length = SqlTypeConverter.DBNullStringHandler(rdr["Length"]);
                     entity.Width = SqlTypeConverter.DBNullStringHandler(rdr["Width"]);
                     entity.Heigth = SqlTypeConverter.DBNullStringHandler(rdr["Heigth"]);
@@ -115,11 +117,12 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Room();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
-                    entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyID"]);
-                    entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
+                    entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
+                    entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
                     entity.Length = SqlTypeConverter.DBNullStringHandler(rdr["Length"]);
                     entity.Width = SqlTypeConverter.DBNullStringHandler(rdr["Width"]);
                     entity.Heigth = SqlTypeConverter.DBNullStringHandler(rdr["Heigth"]);

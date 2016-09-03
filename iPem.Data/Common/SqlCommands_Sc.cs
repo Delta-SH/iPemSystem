@@ -12,7 +12,7 @@ namespace iPem.Data.Common {
         UPDATE [dbo].[H_ExtendAlms] SET [ProjectId]=ISNULL(@ProjectId,[ProjectId]),[Confirmed]=@Confirmed,[Confirmer]=@Confirmer,[ConfirmedTime]=@ConfirmedTime WHERE [Id]=@Id AND [FsuId]=@FsuId;
         IF(@@ROWCOUNT = 0)
         BEGIN
-	        INSERT INTO [dbo].[H_ExtendAlms]([Id],[FsuId],[Start],[ProjectId],[Confirmed],[Confirmer],[ConfirmedTime]) VALUES(@Id,@FsuId,@Start,@ProjectId,@Confirmed,@Confirmer,@ConfirmedTime);
+	        INSERT INTO [dbo].[H_ExtendAlms]([Id],[FsuId],[Start],[End],[ProjectId],[Confirmed],[Confirmer],[ConfirmedTime]) VALUES(@Id,@FsuId,@Start,NULL,@ProjectId,@Confirmed,@Confirmer,@ConfirmedTime);
         END";
 
         //notice repository

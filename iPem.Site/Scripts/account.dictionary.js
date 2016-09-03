@@ -273,7 +273,7 @@
                                             },
                                             {
                                                 name: 'logictypes',
-                                                xtype: 'LogicTypeMultiCombo',
+                                                xtype: 'LogicTypeMultiPicker',
                                                 emptyText: '默认全部'
                                             },
                                             {

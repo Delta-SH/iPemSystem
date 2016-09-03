@@ -37,6 +37,7 @@ namespace iPem.Data.Repository.Rs {
                 if(rdr.Read()) {
                     entity = new Area();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
@@ -53,6 +54,7 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Area();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);

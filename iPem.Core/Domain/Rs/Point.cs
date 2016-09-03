@@ -10,6 +10,11 @@ namespace iPem.Core.Domain.Rs {
         public string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the code
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
         /// Gets or sets the name
         /// </summary>
         public string Name { get; set; }
@@ -20,9 +25,29 @@ namespace iPem.Core.Domain.Rs {
         public EnmPoint Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the sub logic type
+        /// Gets or sets the unit or state
         /// </summary>
-        public SubLogicType SubLogicType { get; set; }
+        public string UnitState { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number
+        /// </summary>
+        public string Number { get; set; }
+
+        /// <summary>
+        /// Gets or sets the station type
+        /// </summary>
+        public StationType StationType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device type
+        /// </summary>
+        public DeviceType DeviceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sub device type
+        /// </summary>
+        public SubDeviceType SubDeviceType { get; set; }
 
         /// <summary>
         /// Gets or sets the logic type
@@ -30,9 +55,9 @@ namespace iPem.Core.Domain.Rs {
         public LogicType LogicType { get; set; }
 
         /// <summary>
-        /// Gets or sets the unit
+        /// Gets or sets the sub logic type
         /// </summary>
-        public string Unit { get; set; }
+        public SubLogicType SubLogicType { get; set; }
 
         /// <summary>
         /// Gets or sets the alarm description

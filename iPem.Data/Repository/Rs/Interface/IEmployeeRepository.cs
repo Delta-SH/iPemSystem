@@ -8,7 +8,7 @@ namespace iPem.Data.Repository.Rs {
 
         Employee GetEntityByCode(string code);
 
-        List<Employee> GetEntities(string dept);
+        List<Employee> GetEntitiesByDept(string dept);
 
         List<Employee> GetEntities();
     }

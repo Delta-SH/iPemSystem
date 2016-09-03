@@ -254,10 +254,10 @@ namespace iPem.Data.Common {
         }
 
         /// <summary>
-        /// DBNull Node Handler
+        /// DBNull Point Type Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmPoint DBNullEnmNodeHandler(object val) {
+        public static EnmPoint DBNullEnmPointHandler(object val) {
             if(val == DBNull.Value) { return EnmPoint.AI; }
 
             var v = (Int32)val;
@@ -290,11 +290,11 @@ namespace iPem.Data.Common {
         /// DBNull Confirm Status Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmConfirmStatus DBNullEnmConfirmStatusHandler(object val) {
-            if(val == DBNull.Value) { return EnmConfirmStatus.Unconfirmed; }
+        public static EnmConfirm DBNullEnmConfirmStatusHandler(object val) {
+            if(val == DBNull.Value) { return EnmConfirm.Unconfirmed; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmConfirmStatus), v) ? (EnmConfirmStatus)v : EnmConfirmStatus.Unconfirmed;
+            return Enum.IsDefined(typeof(EnmConfirm), v) ? (EnmConfirm)v : EnmConfirm.Unconfirmed;
         }
 
         /// <summary>

@@ -9,7 +9,6 @@ namespace iPem.Services.Common {
         public const string Sc_MenusRepository = "ipems:global:sc-menus@repository";
 
         //rs repository
-        public const string Rs_AreasRepository = "ipems:global:rs-areas@repository";
         public const string Rs_LogicTypesRepository = "ipems:global:rs-logic-types@repository";
         public const string Rs_SubLogicTypesRepository = "ipems:global:rs-sub-logic-types@repository";
         public const string Rs_DeviceTypeRepository = "ipems:global:rs-device-type@repository";

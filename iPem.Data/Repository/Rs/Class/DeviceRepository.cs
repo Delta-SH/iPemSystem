@@ -39,10 +39,10 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
+                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
+                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
                     entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
@@ -78,10 +78,10 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
+                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
+                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
                     entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
@@ -115,10 +115,10 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
+                    entity.Type = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
+                    entity.SubType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
                     entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);

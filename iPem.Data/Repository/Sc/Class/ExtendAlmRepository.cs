@@ -35,6 +35,7 @@ namespace iPem.Data.Repository.Sc {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.Start = SqlTypeConverter.DBNullDateTimeHandler(rdr["Start"]);
+                    entity.End = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["End"]);
                     entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);

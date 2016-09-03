@@ -24,7 +24,7 @@
                 if (data.success) {
                     var bil = Ext.getCmp('base-info-left'),
                         bir = Ext.getCmp('base-info-right'),
-                        cfm = Ext.getCmp('changeForm');
+                        cfm = Ext.getCmp('changePassword');
 
                     var result = data.data;
                     if (!Ext.isEmpty(result) && Ext.isObject(result)) {
@@ -147,8 +147,8 @@
             title: '修改密码',
             glyph: 0xf022,
             items: [{
+                id: 'changePassword',
                 xtype: 'form',
-                id: 'changeForm',
                 border: false,
                 defaultType: 'textfield',
                 fieldDefaults: {
@@ -203,7 +203,7 @@
                     text: '保存密码',
                     cls: 'custom-button custom-success',
                     handler: function () {
-                        var form = Ext.getCmp('changeForm'),
+                        var form = Ext.getCmp('changePassword'),
                             basic = form.getForm(),
                             id = form.getComponent('id').getValue(),
                             result = Ext.getCmp('changeResult');

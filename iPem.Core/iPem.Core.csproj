@@ -119,7 +119,6 @@
   <ItemGroup>
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\ActAlm.cs" />
-    <Compile Include="Domain\Cs\ActValue.cs" />
     <Compile Include="Domain\Cs\FsuKey.cs" />
     <Compile Include="Domain\Sc\ExtAlm.cs" />
     <Compile Include="Domain\Cs\HisAlm.cs" />
@@ -127,19 +126,15 @@
     <Compile Include="Domain\Cs\HisStatic.cs" />
     <Compile Include="Domain\Cs\HisValue.cs" />
     <Compile Include="Domain\Sc\Appointment.cs" />
-    <Compile Include="Domain\Cs\DeviceKey.cs" />
     <Compile Include="Domain\Sc\Dictionary.cs" />
     <Compile Include="Domain\Sc\NodesInAppointment.cs" />
     <Compile Include="Domain\Rs\Point.cs" />
     <Compile Include="Domain\Sc\Project.cs" />
     <Compile Include="Domain\Rs\Protocol.cs" />
-    <Compile Include="Domain\Cs\RoomKey.cs" />
-    <Compile Include="Domain\Cs\AreaKey.cs" />
     <Compile Include="Domain\Sc\MenusInRole.cs" />
     <Compile Include="Domain\Sc\Notice.cs" />
     <Compile Include="Domain\Sc\NoticesInUsers.cs" />
     <Compile Include="Domain\Sc\OperateInRole.cs" />
-    <Compile Include="Domain\Cs\StationKey.cs" />
     <Compile Include="Domain\Sc\UserProfile.cs" />
     <Compile Include="Domain\Rs\Area.cs" />
     <Compile Include="Domain\Rs\Brand.cs" />
@@ -161,7 +156,6 @@
     <Compile Include="Domain\Rs\SubLogicType.cs" />
     <Compile Include="Domain\Rs\Supplier.cs" />
     <Compile Include="Domain\Rs\Unit.cs" />
-    <Compile Include="Enum\EnmBI.cs" />
     <Compile Include="Enum\EnmDictionary.cs" />
     <Compile Include="Enum\EnmMethodType.cs" />
     <Compile Include="Enum\EnmSite.cs" />

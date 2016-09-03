@@ -1222,7 +1222,7 @@ namespace iPem.Site.Controllers {
                         if(keys.Length == 2
                             && ((int)EnmHR.Department).ToString().Equals(keys[0])
                             && !string.IsNullOrWhiteSpace(keys[1])) {
-                            var children = _employeeService.GetEmployeesAsList(keys[1]);
+                            var children = _employeeService.GetEmployeesByDeptAsList(keys[1]);
                             if(children.Count > 0) {
                                 data.success = true;
                                 data.message = "200 Ok";
@@ -1301,6 +1301,133 @@ namespace iPem.Site.Controllers {
                     var matchs = employees.FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmHR.Department, match.DeptId), match.Id });
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetLogicTree(string node, bool? multiselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(node)) {
+                    if(node == "root") {
+                        var roots = _workContext.DeviceTypes;
+                        if(roots.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = roots.Count;
+                            for(var i = 0; i < roots.Count; i++) {
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmDevLogic.DevType, roots[i].Id),
+                                    text = roots[i].Name,
+                                    icon = Icons.Device,
+                                    expanded = false,
+                                    leaf = false
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                    } else {
+                        var keys = Common.SplitKeys(node);
+                        if(keys.Length == 2
+                            && ((int)EnmDevLogic.DevType).ToString().Equals(keys[0])
+                            && !string.IsNullOrWhiteSpace(keys[1])) {
+                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == keys[1]);
+                            if(children.Count > 0) {
+                                data.success = true;
+                                data.message = "200 Ok";
+                                data.total = children.Count;
+                                for(var i = 0; i < children.Count; i++) {
+                                    var child = new TreeModel {
+                                        id = children[i].Id,
+                                        text = children[i].Name,
+                                        icon = Icons.Category,
+                                        leaf = true
+                                    };
+
+                                    if(multiselect.HasValue && multiselect.Value)
+                                        child.selected = false;
+
+                                    data.data.Add(child);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetLogicTreePath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach(var node in nodes) {
+                    var current = _workContext.LogicTypes.Find(l => l.Id == node);
+                    if(current != null) {
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDevLogic.DevType, current.DeviceTypeId), current.Id });
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult FilterLogicTreePath(string text) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(text)) {
+                    text = text.Trim().ToLower();
+
+                    var matchs = _workContext.LogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
+                    foreach(var match in matchs) {
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDevLogic.DevType, match.DeviceTypeId), match.Id });
                     }
                 }
 

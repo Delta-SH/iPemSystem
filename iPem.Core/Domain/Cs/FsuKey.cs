@@ -29,18 +29,13 @@ namespace iPem.Core.Domain.Cs {
         public DateTime LastTime { get; set; }
 
         /// <summary>
-        /// Gets or sets the status
-        /// </summary>
-        public bool Status { get; set; }
-
-        /// <summary>
         ///  Gets or sets the comment
         /// </summary>
         public string Comment { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the entity is enabled.
+        /// Gets or sets the status
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Status { get; set; }
     }
 }

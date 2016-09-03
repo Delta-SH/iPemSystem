@@ -9,12 +9,12 @@ namespace iPem.Services.Rs {
 
         Employee GetEmpolyeeByCode(string code);
 
+        IPagedList<Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<Employee> GetEmployeesByDeptAsList(string dept);
+
         IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue);
 
         List<Employee> GetAllEmployeesAsList();
-
-        IPagedList<Employee> GetEmployees(string dept, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        List<Employee> GetEmployeesAsList(string dept);
     }
 }

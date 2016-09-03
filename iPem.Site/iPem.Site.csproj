@@ -51,10 +51,6 @@
       <HintPath>..\packages\Autofac.Mvc4.3.1.0\lib\net40\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FsuService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Resources\services\FsuService.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -181,7 +177,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Extensions\AjaxAuthorizeAttribute.cs" />
-    <Compile Include="Infrastructure\BIPack.cs" />
     <Compile Include="Infrastructure\Common.cs" />
     <Compile Include="Infrastructure\EngineContext.cs" />
     <Compile Include="Infrastructure\Icons.cs" />
@@ -199,15 +194,6 @@
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
-    <Compile Include="Models\BI\ActDataAckTemplate.cs" />
-    <Compile Include="Models\BI\ActDataDeviceAckTemplate.cs" />
-    <Compile Include="Models\BI\ActDataDeviceTemplate .cs" />
-    <Compile Include="Models\BI\ActDataTemplate.cs" />
-    <Compile Include="Models\BI\SetDataAckTemplate.cs" />
-    <Compile Include="Models\BI\SetDataDeviceAckTemplate.cs" />
-    <Compile Include="Models\BI\SetDataDeviceTemplate.cs" />
-    <Compile Include="Models\BI\SetDataTemplate.cs" />
-    <Compile Include="Models\BI\TSemaphore.cs" />
     <Compile Include="Models\HomeAlmModel.cs" />
     <Compile Include="Models\HomeAreaAlmModel.cs" />
     <Compile Include="Models\HomeOffModel.cs" />
@@ -369,7 +355,6 @@
     <Content Include="Resources\install\upgrade\update_sc_database.sql" />
     <Content Include="Resources\install\upgrade\update_rs_data.sql" />
     <Content Include="Resources\install\upgrade\update_rs_database.sql" />
-    <Content Include="Resources\services\FsuService.dll" />
     <Content Include="Scripts\account.dictionary.js" />
     <Content Include="Scripts\account.events.js" />
     <Content Include="Scripts\account.login.js" />

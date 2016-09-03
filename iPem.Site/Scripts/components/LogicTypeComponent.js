@@ -39,3 +39,47 @@ Ext.define("Ext.ux.LogicTypeComboBox", {
         me.store.load();
     }
 });
+
+Ext.define("Ext.ux.LogicTypeMultiTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "LogicTypeMultiPicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: true,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetLogicTree';
+        me.searchUrl = '/Component/FilterLogicTreePath';
+        me.queryUrl = '/Component/GetLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.LogicTypeTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "LogicTypePicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: false,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetLogicTree';
+        me.searchUrl = '/Component/FilterLogicTreePath';
+        me.queryUrl = '/Component/GetLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});

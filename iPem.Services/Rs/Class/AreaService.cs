@@ -38,7 +38,12 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public Area GetArea(string id) {
-            return _areaRepository.GetEntity(id);
+            var current = _areaRepository.GetEntity(id);
+            if(current != null) {
+                var type = _methodsService.GetValue(current.Type.Id);
+                if(type != null) current.Type.Value = type.Name;
+            }
+            return current;
         }
 
         public IPagedList<Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -46,22 +51,14 @@ namespace iPem.Services.Rs {
         }
 
         public List<Area> GetAreasAsList() {
-            List<Area> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_AreasRepository)) {
-                result = _cacheManager.Get<List<Area>>(GlobalCacheKeys.Rs_AreasRepository);
-            } else {
-                result = _areaRepository.GetEntities();
-                var types = _methodsService.GetValuesAsList(EnmMethodType.Area, "类型");
-                for(var i = 0; i < result.Count; i++) {
-                    var current = result[i];
-                    var type = types.Find(t => t.Id == current.Type.Id);
-                    if(type == null) continue;
-                    current.Type.Value = type.Name;
-                }
-
-                _cacheManager.Set<List<Area>>(GlobalCacheKeys.Rs_AreasRepository, result);
+            var result = _areaRepository.GetEntities();
+            var types = _methodsService.GetValuesAsList(EnmMethodType.Area, "类型");
+            for(var i = 0; i < result.Count; i++) {
+                var current = result[i];
+                var type = types.Find(t => t.Id == current.Type.Id);
+                if(type == null) continue;
+                current.Type.Value = type.Name;
             }
-
             return result;
         }
 

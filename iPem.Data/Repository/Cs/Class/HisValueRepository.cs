@@ -43,7 +43,7 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new HisValue();
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
@@ -71,7 +71,7 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new HisValue();
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
@@ -99,7 +99,7 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new HisValue();
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
@@ -123,7 +123,7 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new HisValue();
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);

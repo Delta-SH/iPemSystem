@@ -43,11 +43,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IStationService _stationService;
         private readonly IStationTypeService _stationTypeService;
         //cs repository
-        private readonly IAreaKeyService _areaKeyService;
-        private readonly IStationKeyService _stationKeyService;
-        private readonly IRoomKeyService _roomKeyService;
         private readonly IFsuKeyService _fsuKeyService;
-        private readonly IDeviceKeyService _deviceKeyService;
         private readonly IActAlmService _actAlmService;
         //sc repository
         private readonly IAreasInRoleService _areasInRoleService;
@@ -112,11 +108,7 @@ namespace iPem.Site.Infrastructure {
         IStationService stationService,
         IStationTypeService stationTypeService,
         //cs repository
-        IAreaKeyService areaKeyService,
-        IStationKeyService stationKeyService,
-        IRoomKeyService roomKeyService,
         IFsuKeyService fsuKeyService,
-        IDeviceKeyService deviceKeyService,
         IActAlmService actAlmService,
         //sc repository
         IAreasInRoleService areasInRoleService,
@@ -144,11 +136,7 @@ namespace iPem.Site.Infrastructure {
             this._stationService = stationService;
             this._stationTypeService = stationTypeService;
             //cs repository
-            this._areaKeyService = areaKeyService;
-            this._stationKeyService = stationKeyService;
-            this._roomKeyService = roomKeyService;
             this._fsuKeyService = fsuKeyService;
-            this._deviceKeyService = deviceKeyService;
             this._actAlmService = actAlmService;
             //sc repository
             this._areasInRoleService = areasInRoleService;
@@ -477,9 +465,7 @@ namespace iPem.Site.Infrastructure {
                     return _cachedDevices = _cacheManager.Get<List<OrgDevice>>(GlobalCacheKeys.Og_Devices);
 
                 var devices = _deviceService.GetAllDevicesAsList();
-                var keys = _deviceKeyService.GetAllKeysAsList();
                 _cachedDevices = (from device in devices
-                                  join key in keys on device.Id equals key.Id
                                   join protocol in this.Protocols on device.ProtocolId equals protocol.Current.Id
                                   select new OrgDevice {
                                       Current = device,
@@ -529,7 +515,6 @@ namespace iPem.Site.Infrastructure {
                     return _cachedRooms = _cacheManager.Get<List<OrgRoom>>(GlobalCacheKeys.Og_Rooms);
 
                 var rooms = _roomService.GetAllRoomsAsList();
-                var keys = _roomKeyService.GetAllKeysAsList();
                 var dsets = from device in this.Devices
                             group device by device.Current.RoomId into g
                             select new {
@@ -545,7 +530,6 @@ namespace iPem.Site.Infrastructure {
                             };
 
                 _cachedRooms = (from room in rooms
-                                join key in keys on room.Id equals key.Id
                                 join ds in dsets on room.Id equals ds.Id into lt1
                                 from def1 in lt1.DefaultIfEmpty()
                                 join fs in fsets on room.Id equals fs.Id into lt2
@@ -570,7 +554,6 @@ namespace iPem.Site.Infrastructure {
                     return _cachedStations = _cacheManager.Get<List<OrgStation>>(GlobalCacheKeys.Og_Stations);
 
                 var stations = _stationService.GetAllStationsAsList();
-                var keys = _stationKeyService.GetAllKeysAsList();
                 var rsets = from room in this.Rooms
                             group room by room.Current.StationId into g
                             select new {
@@ -579,7 +562,6 @@ namespace iPem.Site.Infrastructure {
                             };
 
                 _cachedStations = (from station in stations
-                                   join key in keys on station.Id equals key.Id
                                    join rs in rsets on station.Id equals rs.Id into lt
                                    from def in lt.DefaultIfEmpty()
                                    select new OrgStation {
@@ -601,7 +583,6 @@ namespace iPem.Site.Infrastructure {
                     return _cachedAreas = _cacheManager.Get<List<OrgArea>>(GlobalCacheKeys.Og_Areas);
 
                 var areas = _areaService.GetAreasAsList();
-                var keys = _areaKeyService.GetAllKeysAsList();
                 var ssets = from station in this.Stations
                             group station by station.Current.AreaId into g
                             select new {
@@ -610,7 +591,6 @@ namespace iPem.Site.Infrastructure {
                             };
 
                 _cachedAreas = (from area in areas
-                                join key in keys on area.Id equals key.Id
                                 join ss in ssets on area.Id equals ss.Id into lt
                                 from def in lt.DefaultIfEmpty()
                                 select new OrgArea {

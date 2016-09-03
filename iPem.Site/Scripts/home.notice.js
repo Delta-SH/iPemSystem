@@ -65,6 +65,9 @@
             xtype: 'label',
             text: ''
         }, {
+            xtype: 'component',
+            height: 5
+        }, {
             itemId: 'notice-created',
             xtype: 'label',
             text: ''

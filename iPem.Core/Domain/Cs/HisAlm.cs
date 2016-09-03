@@ -10,11 +10,6 @@ namespace iPem.Core.Domain.Cs {
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the fsu identifier
-        /// </summary>
-        public string FsuId { get; set; }
-
-        /// <summary>
         /// Gets or sets the area identifier
         /// </summary>
         public string AreaId { get; set; }
@@ -28,6 +23,11 @@ namespace iPem.Core.Domain.Cs {
         /// Gets or sets the room identifier
         /// </summary>
         public string RoomId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fsu identifier
+        /// </summary>
+        public string FsuId { get; set; }
 
         /// <summary>
         /// Gets or sets the device identifier

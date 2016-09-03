@@ -28,11 +28,6 @@ namespace iPem.Data.Repository.Rs {
 
         #region Methods
 
-        /// <summary>
-        /// Gets entities from the repository by the specific device
-        /// </summary>
-        /// <param name="device">the device identifier</param>
-        /// <returns>the point list</returns>
         public List<Point> GetEntitiesByDevice(string device) {
             SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar,100) };
             parms[0].Value = device;
@@ -42,11 +37,16 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Point();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
-                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
+                    entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubLogicType = new SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
+                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
                     entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
@@ -71,11 +71,6 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
-        /// <summary>
-        /// Gets entities from the repository by the specific protocol
-        /// </summary>
-        /// <param name="protocol">the protocol</param>
-        /// <returns>the point list</returns>
         public List<Point> GetEntitiesByProtocol(string protocol) {
             SqlParameter[] parms = { new SqlParameter("@ProtocolId", SqlDbType.VarChar, 100) };
             parms[0].Value = protocol;
@@ -85,11 +80,16 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Point();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
-                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
+                    entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubLogicType = new SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
+                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
                     entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
@@ -114,21 +114,22 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
-        /// <summary>
-        /// Gets all entities from the repository
-        /// </summary>
-        /// <returns>the point list</returns>
         public List<Point> GetEntities() {
             var entities = new List<Point>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_Point_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
                     var entity = new Point();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmNodeHandler(rdr["Type"]);
-                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
+                    entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubLogicType = new SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Unit = SqlTypeConverter.DBNullStringHandler(rdr["Unit"]);
+                    entity.LogicType = new LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
                     entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);

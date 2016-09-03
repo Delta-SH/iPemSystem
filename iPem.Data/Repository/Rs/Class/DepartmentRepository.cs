@@ -36,8 +36,8 @@ namespace iPem.Data.Repository.Rs {
                 if(rdr.Read()) {
                     entity = new Department();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -55,8 +55,8 @@ namespace iPem.Data.Repository.Rs {
                 if(rdr.Read()) {
                     entity = new Department();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -71,8 +71,8 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Department();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);

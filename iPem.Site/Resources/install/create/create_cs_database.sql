@@ -2,7 +2,7 @@
 * Web Default Data Sql Script Library v1.0.0
 * Copyright 2016, Delta
 * Author: Steven
-* Date: 2016/08/18
+* Date: 2016/09/02
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -24,7 +24,6 @@ CREATE TABLE [dbo].[A_Act](
 	[StationId] [varchar](100) NOT NULL,
 	[RoomId] [varchar](100) NOT NULL,
 	[FsuId] [varchar](100) NOT NULL,
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[AlmFlag] [int] NOT NULL,
@@ -38,9 +37,10 @@ CREATE TABLE [dbo].[A_Act](
 	[EndValue] [float] NOT NULL,
 	[ValueUnit] [varchar](20) NOT NULL,
 	[EndType] [int] NOT NULL,
-CONSTRAINT [PK_A_Act] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_A_Act] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[Id] ASC,
+	[FsuId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -67,7 +67,6 @@ CREATE TABLE [dbo].[A_Hist](
 	[StationId] [varchar](100) NOT NULL,
 	[RoomId] [varchar](100) NOT NULL,
 	[FsuId] [varchar](100) NOT NULL,
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[AlmLevel] [int] NOT NULL,
@@ -80,9 +79,10 @@ CREATE TABLE [dbo].[A_Hist](
 	[EndValue] [float] NOT NULL,
 	[ValueUnit] [varchar](20) NOT NULL,
 	[EndType] [int] NOT NULL,
-CONSTRAINT [PK_A_Hist] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_A_Hist] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[Id] ASC,
+	[FsuId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -122,61 +122,6 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[M_Area]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Area]') AND type in (N'U'))
-DROP TABLE [dbo].[M_Area]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[M_Area](
-	[Id] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
- CONSTRAINT [PK_M_Area] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[M_Device]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Device]') AND type in (N'U'))
-DROP TABLE [dbo].[M_Device]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[M_Device](
-	[Id] [varchar](100) NOT NULL,
-	[Code] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
- CONSTRAINT [PK_M_Device] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[M_Fsu]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Fsu]') AND type in (N'U'))
 DROP TABLE [dbo].[M_Fsu]
@@ -197,62 +142,7 @@ CREATE TABLE [dbo].[M_Fsu](
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
  CONSTRAINT [PK_M_Fsu] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[M_Room]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Room]') AND type in (N'U'))
-DROP TABLE [dbo].[M_Room]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[M_Room](
-	[Id] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
- CONSTRAINT [PK_M_Room] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[M_Station]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Station]') AND type in (N'U'))
-DROP TABLE [dbo].[M_Station]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[M_Station](
-	[Id] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
- CONSTRAINT [PK_M_Station] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -276,7 +166,6 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Alm](
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[StartTime] [datetime] NOT NULL,
@@ -302,7 +191,6 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Bat](
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[StartTime] [datetime] NOT NULL,
@@ -328,7 +216,6 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Hist](
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[Type] [int] NOT NULL,
@@ -356,7 +243,6 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Static](
-	[DeviceCode] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[BeginTime] [datetime] NOT NULL,

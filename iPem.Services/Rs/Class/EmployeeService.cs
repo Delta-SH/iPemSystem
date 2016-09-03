@@ -40,20 +40,20 @@ namespace iPem.Services.Rs {
             return _employeeRepository.GetEntityByCode(code);
         }
 
+        public IPagedList<Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<Employee>(this.GetEmployeesByDeptAsList(dept), pageIndex, pageSize);
+        }
+
+        public List<Employee> GetEmployeesByDeptAsList(string dept) {
+            return _employeeRepository.GetEntitiesByDept(dept);
+        }
+
         public IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<Employee>(this.GetAllEmployeesAsList(), pageIndex, pageSize);
         }
 
         public List<Employee> GetAllEmployeesAsList() {
             return _employeeRepository.GetEntities();
-        }
-
-        public IPagedList<Employee> GetEmployees(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Employee>(this.GetEmployeesAsList(dept), pageIndex, pageSize);
-        }
-
-        public List<Employee> GetEmployeesAsList(string dept) {
-            return _employeeRepository.GetEntities(dept);
         }
 
         #endregion

@@ -36,6 +36,7 @@ namespace iPem.Data.Repository.Rs {
                 if(rdr.Read()) {
                     entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
@@ -68,6 +69,7 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
@@ -98,6 +100,7 @@ namespace iPem.Data.Repository.Rs {
                 while(rdr.Read()) {
                     var entity = new Station();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);

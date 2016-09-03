@@ -336,7 +336,7 @@ namespace iPem.Site.Controllers {
 
                     for(int i = start; i < end; i++) {
                         data.data.Add(new AppointmentModel {
-                            index = start + i + 1,
+                            index = i + 1,
                             id = result[i].Appointment.Id.ToString(),
                             startTime = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
                             endTime = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),

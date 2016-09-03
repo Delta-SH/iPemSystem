@@ -131,27 +131,19 @@ namespace iPem.Site.Infrastructure {
 
                 //register repository
                 builder.Register<IActAlmRepository>(c => new ActAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IAreaKeyRepository>(c => new AreaKeyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IDeviceKeyRepository>(c => new DeviceKeyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IFsuKeyRepository>(c => new FsuKeyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisAlmRepository>(c => new HisAlmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisBatRepository>(c => new HisBatRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisStaticRepository>(c => new HisStaticRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisValueRepository>(c => new HisValueRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IRoomKeyRepository>(c => new RoomKeyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IStationKeyRepository>(c => new StationKeyRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();
-                builder.RegisterType<AreaKeyService>().As<IAreaKeyService>().InstancePerLifetimeScope();
-                builder.RegisterType<DeviceKeyService>().As<IDeviceKeyService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuKeyService>().As<IFsuKeyService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisAlmService>().As<IHisAlmService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisBatService>().As<IHisBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisStaticService>().As<IHisStaticService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisValueService>().As<IHisValueService>().InstancePerLifetimeScope();
-                builder.RegisterType<RoomKeyService>().As<IRoomKeyService>().InstancePerLifetimeScope();
-                builder.RegisterType<StationKeyService>().As<IStationKeyService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDbType.Sc)) {

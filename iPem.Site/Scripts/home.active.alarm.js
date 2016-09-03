@@ -187,7 +187,7 @@
         me.proxy.extraParams.roomtype = Ext.getCmp('room-type-multicombo').getSelectedValues();
         me.proxy.extraParams.devtype = Ext.getCmp('device-type-multicombo').getSelectedValues();
         me.proxy.extraParams.almlevel = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
-        me.proxy.extraParams.logictype = Ext.getCmp('logic-type-multicombo').getSelectedValues();
+        me.proxy.extraParams.logictype = Ext.getCmp('logic-type-multipicker').getValue();
         me.proxy.extraParams.pointname = Ext.getCmp('point-name-textfield').getRawValue();
 
         me.proxy.extraParams.confirm = 'all';
@@ -790,14 +790,10 @@
                             border: false,
                             items: [
                                 {
-                                    id: 'alarm-level-multicombo',
-                                    xtype: 'AlarmLevelMultiCombo',
-                                    emptyText: '默认全部'
-                                },
-                                {
-                                    id: 'logic-type-multicombo',
-                                    xtype: 'LogicTypeMultiCombo',
-                                    emptyText: '默认全部'
+                                    id: 'logic-type-multipicker',
+                                    xtype: 'LogicTypeMultiPicker',
+                                    emptyText: '默认全部',
+                                    width: 220
                                 },
                                 {
                                     id: 'point-name-textfield',
@@ -806,6 +802,11 @@
                                     emptyText: '多条件请以;分隔，例: A;B;C',
                                     labelWidth: 60,
                                     width: 220
+                                },
+                                {
+                                    id: 'alarm-level-multicombo',
+                                    xtype: 'AlarmLevelMultiCombo',
+                                    emptyText: '默认全部'
                                 },
                                 {
                                     id: 'other-option-button',

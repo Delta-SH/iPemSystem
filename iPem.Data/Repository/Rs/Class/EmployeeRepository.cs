@@ -109,7 +109,7 @@ namespace iPem.Data.Repository.Rs {
             return entity;
         }
 
-        public List<Employee> GetEntities(string dept) {
+        public List<Employee> GetEntitiesByDept(string dept) {
             SqlParameter[] parms = { new SqlParameter("@DeptId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(dept);
 

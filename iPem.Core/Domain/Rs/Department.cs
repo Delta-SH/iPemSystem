@@ -12,14 +12,14 @@ namespace iPem.Core.Domain.Rs {
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the department name
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// Gets or sets the department code
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Gets or sets the department name
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the parent identifier

@@ -41,10 +41,10 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
@@ -77,10 +77,10 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
@@ -113,10 +113,10 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
@@ -149,10 +149,10 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
@@ -183,10 +183,10 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);

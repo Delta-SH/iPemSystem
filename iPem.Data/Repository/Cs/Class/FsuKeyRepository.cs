@@ -39,7 +39,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
                     entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
             }

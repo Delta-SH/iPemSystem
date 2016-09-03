@@ -186,25 +186,13 @@ namespace iPem.Data.Common {
 		        (
 			        ' + @SQL + N'
 		        )
-		        SELECT HA.*,[ProjectId],[ConfirmedStatus],[ConfirmedTime],[Confirmer] FROM HisAlm HA LEFT OUTER JOIN [dbo].[A_Extend] AE ON HA.[Id] = AE.[Id];'
+		        SELECT * FROM HisAlm;'
         END
 
         EXECUTE sp_executesql @SQL;";
 
-        //areas repository
-        public const string Sql_AreaKey_Repository_GetEntities = @"SELECT [ID],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Area];";
-
-        //station repository
-        public const string Sql_StationKey_Repository_GetEntities = @"SELECT [Id],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Station];";
-
-        //room repository
-        public const string Sql_RoomKey_Repository_GetEntities = @"SELECT [Id],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Room];";
-
         //fsu repository
-        public const string Sql_FsuKey_Repository_GetEntities = @"SELECT [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Fsu];";
-
-        //device repository
-        public const string Sql_DeviceKey_Repository_GetEntities = @"SELECT [Id],[Desc] AS [Comment],[Enabled] FROM [dbo].[M_Device];";
+        public const string Sql_FsuKey_Repository_GetEntities = @"SELECT [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment] FROM [dbo].[M_Fsu];";
 
         //history value repository
         public const string Sql_HisValue_Repository_GetEntitiesByDevice = @"
