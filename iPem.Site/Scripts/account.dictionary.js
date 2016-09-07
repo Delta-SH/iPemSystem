@@ -63,8 +63,8 @@
                             allowBlank: false
                         },
                         {
-                            itemId: 'pwd',
-                            name: 'pwd',
+                            itemId: 'password',
+                            name: 'password',
                             xtype: 'textfield',
                             fieldLabel: 'WebService 登录密码',
                             allowBlank: false
@@ -85,16 +85,16 @@
                     },
                     items: [
                         {
-                            itemId: 'data',
-                            name: 'data',
+                            itemId: 'dataPath',
+                            name: 'dataPath',
                             xtype: 'textfield',
                             fieldLabel: '实时数据 访问路径',
                             emptyText: '示例： /Services/GetData',
                             allowBlank: false
                         },
                         {
-                            itemId: 'order',
-                            name: 'order',
+                            itemId: 'orderPath',
+                            name: 'orderPath',
                             xtype: 'textfield',
                             fieldLabel: '远程控制 访问路径',
                             emptyText: '示例： /Services/SetOrder',
@@ -189,10 +189,10 @@
                                         xtype: 'checkboxgroup',
                                         columns:2,
                                         items: [
-                                            { boxLabel: '一级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level1 },
-                                            { boxLabel: '二级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level2 },
-                                            { boxLabel: '三级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level3 },
-                                            { boxLabel: '四级告警', name: 'level', inputValue: $$iPems.AlmLevel.Level4 }
+                                            { boxLabel: '一级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level1 },
+                                            { boxLabel: '二级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level2 },
+                                            { boxLabel: '三级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level3 },
+                                            { boxLabel: '四级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level4 }
                                         ]
                                     }
                                 ]
@@ -213,14 +213,14 @@
                             xtype: 'checkboxgroup',
                             columns: 4,
                             items: [
-                                { boxLabel: '所属区域', name: 'content', inputValue: 1 },
-                                { boxLabel: '所属站点', name: 'content', inputValue: 2 },
-                                { boxLabel: '所属机房', name: 'content', inputValue: 3 },
-                                { boxLabel: '所属设备', name: 'content', inputValue: 4 },
-                                { boxLabel: '所属信号', name: 'content', inputValue: 5 },
-                                { boxLabel: '告警时间', name: 'content', inputValue: 6 },
-                                { boxLabel: '告警等级', name: 'content', inputValue: 7 },
-                                { boxLabel: '告警描述', name: 'content', inputValue: 8 }
+                                { boxLabel: '所属区域', name: 'contents', inputValue: 1 },
+                                { boxLabel: '所属站点', name: 'contents', inputValue: 2 },
+                                { boxLabel: '所属机房', name: 'contents', inputValue: 3 },
+                                { boxLabel: '所属设备', name: 'contents', inputValue: 4 },
+                                { boxLabel: '所属信号', name: 'contents', inputValue: 5 },
+                                { boxLabel: '告警时间', name: 'contents', inputValue: 6 },
+                                { boxLabel: '告警等级', name: 'contents', inputValue: 7 },
+                                { boxLabel: '告警描述', name: 'contents', inputValue: 8 }
                             ]
                         }]
                     },
@@ -245,19 +245,20 @@
                                         layout: 'anchor',
                                         items: [
                                             {
-                                                name: 'stationtypes',
+                                                name: 'stationTypes',
                                                 xtype: 'StationTypeMultiCombo',
                                                 emptyText: '默认全部'
                                             },
                                             {
-                                                name: 'devicetypes',
+                                                name: 'deviceTypes',
                                                 xtype: 'DeviceTypeMultiCombo',
                                                 emptyText: '默认全部'
                                             },
                                             {
-                                                name: 'pointtypes',
-                                                xtype: 'PointTypeMultiCombo',
-                                                emptyText: '默认全部'
+                                                name: 'pointNames',
+                                                xtype: 'textfield',
+                                                fieldLabel: '信号名称',
+                                                emptyText: '多条件请以;分隔，例: A;B;C'
                                             }
                                         ]
                                     },
@@ -267,19 +268,19 @@
                                         layout: 'anchor',
                                         items: [
                                             {
-                                                name: 'roomtypes',
+                                                name: 'roomTypes',
                                                 xtype: 'RoomTypeMultiCombo',
                                                 emptyText: '默认全部'
                                             },
                                             {
-                                                name: 'logictypes',
+                                                name: 'logicTypes',
                                                 xtype: 'LogicTypeMultiPicker',
                                                 emptyText: '默认全部'
                                             },
                                             {
-                                                name: 'pointnames',
+                                                name: 'pointExtset',
                                                 xtype: 'textfield',
-                                                fieldLabel: '信号名称',
+                                                fieldLabel: '信号标识',
                                                 emptyText: '多条件请以;分隔，例: A;B;C'
                                             }
                                         ]
@@ -364,10 +365,7 @@
                                             url: '/Account/ClearCache',
                                             success: function (response, options) {
                                                 var data = Ext.decode(response.responseText, true);
-                                                if (data.success)
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
-                                                else
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                                if (data) cacheResult.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');
                                             }
                                         });
                                     }
@@ -388,10 +386,7 @@
                                             url: '/Account/ClearGlobalCache',
                                             success: function (response, options) {
                                                 var data = Ext.decode(response.responseText, true);
-                                                if (data.success)
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
-                                                else
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                                if (data) cacheResult.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error' );
                                             }
                                         });
                                     }
@@ -412,10 +407,7 @@
                                             url: '/Account/ClearUserCache',
                                             success: function (response, options) {
                                                 var data = Ext.decode(response.responseText, true);
-                                                if (data.success)
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-accept');
-                                                else
-                                                    cacheResult.setTextWithIcon(data.message, 'x-icon-error');
+                                                if (data) cacheResult.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');
                                             }
                                         });
                                     }
@@ -437,7 +429,7 @@
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
-                            labelWidth: 80,
+                            labelWidth: 100,
                             labelAlign: 'left',
                             margin: 15
                         },
@@ -452,18 +444,18 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'chaopin',
+                                        name: 'chaoPin',
                                         xtype: 'numberfield',
-                                        fieldLabel: '超频告警',
+                                        fieldLabel: '超频告警阈值',
                                         allowBlank: false,
                                         allowDecimals: false,
                                         emptyText: '统计时间内告警次数阈值',
                                         value: 1,
                                         minValue: 1
                                     }, {
-                                        name: 'chaochang',
+                                        name: 'chaoChang',
                                         xtype: 'numberfield',
-                                        fieldLabel: '超长告警',
+                                        fieldLabel: '超长告警阈值',
                                         allowBlank: false,
                                         emptyText: '告警历时的最小时间阈值',
                                         value: 1,
@@ -474,7 +466,7 @@
                                     layout: 'anchor',
                                     items: [{
                                         xtype: 'displayfield',
-                                        value: '次数',
+                                        value: '次数/时段',
                                         margin: '15 15 15 0'
                                     }, {
                                         xtype: 'displayfield',
@@ -486,9 +478,9 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'chaoduan',
+                                        name: 'chaoDuan',
                                         xtype: 'numberfield',
-                                        fieldLabel: '超短告警',
+                                        fieldLabel: '超短告警阈值',
                                         allowBlank: false,
                                         emptyText: '告警历时的最大时间阈值',
                                         value: 1,
@@ -528,7 +520,7 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'weitingdian',
+                                        name: 'weiTingDian',
                                         xtype: 'numberfield',
                                         fieldLabel: '正常测值',
                                         allowBlank: false,
@@ -537,7 +529,7 @@
                                         value: 0,
                                         minValue: 0
                                     }, {
-                                        name: 'tingdianxinhao',
+                                        name: 'tingDianXinHao',
                                         xtype: 'LogicPointMultiPicker',
                                         fieldLabel: '停电信号',
                                         allowBlank: false
@@ -547,7 +539,7 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'tingdian',
+                                        name: 'tingDian',
                                         xtype: 'numberfield',
                                         fieldLabel: '停电测值',
                                         allowBlank: false,
@@ -582,7 +574,7 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'weifadian',
+                                        name: 'weiFaDian',
                                         xtype: 'numberfield',
                                         fieldLabel: '正常测值',
                                         allowBlank: false,
@@ -591,7 +583,7 @@
                                         value: 0,
                                         minValue: 0
                                     }, {
-                                        name: 'fadianxinhao',
+                                        name: 'faDianXinHao',
                                         xtype: 'LogicPointMultiPicker',
                                         fieldLabel: '发电信号',
                                         allowBlank: false
@@ -601,7 +593,7 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'fadian',
+                                        name: 'faDian',
                                         xtype: 'numberfield',
                                         fieldLabel: '发电测值',
                                         allowBlank: false,
@@ -632,7 +624,7 @@
                                 layout: 'hbox',
                                 margin: 15,
                                 items: [{
-                                    name: 'whlinterval',
+                                    name: 'whlHuLue',
                                     xtype: 'numberfield',
                                     fieldLabel: '忽略告警',
                                     allowBlank: false,
@@ -666,7 +658,7 @@
                                 layout: 'hbox',
                                 margin: '15 15 0 15',
                                 items: [{
-                                    name: 'jslguiding',
+                                    name: 'jslGuiDing',
                                     xtype: 'numberfield',
                                     fieldLabel: '处理时长',
                                     allowBlank: false,
@@ -686,7 +678,7 @@
                                 layout: 'hbox',
                                 margin: '15 15 15 15',
                                 items: [{
-                                    name: 'jslhulue',
+                                    name: 'jslHuLue',
                                     xtype: 'numberfield',
                                     fieldLabel: '忽略告警',
                                     allowBlank: false,

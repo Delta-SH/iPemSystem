@@ -119,7 +119,7 @@ namespace iPem.Services.Sc {
                 return EnmLoginResults.NotExist;
             if(!user.Enabled)
                 return EnmLoginResults.NotEnabled;
-            if(user.LimitDate < DateTime.Today)
+            if(user.LimitedDate < DateTime.Today)
                 return EnmLoginResults.Expired;
             if(user.IsLockedOut)
                 return EnmLoginResults.Locked;

@@ -4,20 +4,20 @@ namespace iPem.Site.Models {
     public class TsValues {
         public int[] basic { get; set; }
 
-        public int[] level { get; set; }
+        public int[] levels { get; set; }
 
-        public int[] content { get; set; }
+        public int[] contents { get; set; }
 
-        public string[] stationtypes { get; set; }
+        public string[] stationTypes { get; set; }
 
-        public string[] roomtypes { get; set; }
+        public string[] roomTypes { get; set; }
 
-        public string[] devicetypes { get; set; }
+        public string[] deviceTypes { get; set; }
 
-        public string[] logictypes { get; set; }
+        public string[] logicTypes { get; set; }
 
-        public int[] pointtypes { get; set; }
+        public string pointNames { get; set; }
 
-        public string pointnames { get; set; }
+        public string pointExtset { get; set; }
     }
 }

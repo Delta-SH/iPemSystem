@@ -15,12 +15,12 @@ namespace iPem.Services.Sc {
 
         List<Appointment> GetAllAppointmentsAsList();
 
-        void AddAppointment(Appointment entity);
+        void Add(Appointment entity);
 
-        void AddAppointments(List<Appointment> entities);
+        void AddRange(List<Appointment> entities);
 
-        void UpdateAppointment(Appointment entity);
+        void Update(Appointment entity);
 
-        void DeleteAppointment(Appointment entity);
+        void Delete(Appointment entity);
     }
 }

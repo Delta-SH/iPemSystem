@@ -17,6 +17,27 @@
         idProperty: 'id'
     });
 
+    var query = function (store) {
+        var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
+            types = Ext.getCmp('types-multicombo').getSelectedValues(),
+            startDate = Ext.getCmp('begin-datefield').getRawValue(),
+            endDate = Ext.getCmp('end-datefield').getRawValue();
+
+        store.getProxy().extraParams.levels = levels;
+        store.getProxy().extraParams.types = types;
+        store.getProxy().extraParams.startDate = startDate;
+        store.getProxy().extraParams.endDate = endDate;
+        store.loadPage(1);
+    };
+
+    var download = function (store) {
+        var params = store.getProxy().extraParams;
+        $$iPems.download({
+            url: '/Account/DownloadEvents',
+            params: params
+        });
+    };
+
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
@@ -224,31 +245,19 @@
                         width: 250,
                         store: comboTypeStore
                     }), {
+                        id: 'query',
                         xtype: 'button',
                         glyph: 0xf005,
                         text: '数据查询',
                         handler: function (el, e) {
-                            var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
-                                types = Ext.getCmp('types-multicombo').getSelectedValues(),
-                                startDate = Ext.getCmp('begin-datefield').getRawValue(),
-                                endDate = Ext.getCmp('end-datefield').getRawValue();
-
-                            currentStore.getProxy().extraParams.levels = levels;
-                            currentStore.getProxy().extraParams.types = types;
-                            currentStore.getProxy().extraParams.startDate = startDate;
-                            currentStore.getProxy().extraParams.endDate = endDate;
-                            currentStore.loadPage(1);
+                            query(currentStore);
                         }
                     }, '-', {
                         xtype: 'button',
                         glyph: 0xf010,
                         text: '数据导出',
                         handler: function (el, e) {
-                            var params = currentStore.getProxy().extraParams;
-                            $$iPems.download({
-                                url: '/Account/DownloadEvents',
-                                params: params
-                            });
+                            download(currentStore);
                         }
                     }]
                 }),
@@ -307,9 +316,9 @@
             pageContentPanel.add(currentGridPanel);
 
             //load store data
-            currentStore.load();
             comboLevelStore.load();
             comboTypeStore.load();
+            query(currentStore);
         }
     });
 })();

@@ -1335,7 +1335,7 @@ namespace iPem.Site.Controllers {
                             data.total = roots.Count;
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
-                                    id = Common.JoinKeys((int)EnmDevLogic.DevType, roots[i].Id),
+                                    id = Common.JoinKeys((int)EnmLogicPoint.DevType, roots[i].Id),
                                     text = roots[i].Name,
                                     icon = Icons.Device,
                                     expanded = false,
@@ -1348,7 +1348,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         var keys = Common.SplitKeys(node);
                         if(keys.Length == 2
-                            && ((int)EnmDevLogic.DevType).ToString().Equals(keys[0])
+                            && ((int)EnmLogicPoint.DevType).ToString().Equals(keys[0])
                             && !string.IsNullOrWhiteSpace(keys[1])) {
                                 var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == keys[1]);
                             if(children.Count > 0) {
@@ -1396,7 +1396,7 @@ namespace iPem.Site.Controllers {
                 foreach(var node in nodes) {
                     var current = _workContext.LogicTypes.Find(l => l.Id == node);
                     if(current != null) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDevLogic.DevType, current.DeviceTypeId), current.Id });
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, current.DeviceTypeId), current.Id });
                     }
                 }
 
@@ -1427,7 +1427,7 @@ namespace iPem.Site.Controllers {
 
                     var matchs = _workContext.LogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDevLogic.DevType, match.DeviceTypeId), match.Id });
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, match.DeviceTypeId), match.Id });
                     }
                 }
 
@@ -1455,16 +1455,16 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _workContext.LogicTypes;
+                        var roots = _workContext.DeviceTypes;
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
                             data.total = roots.Count;
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
-                                    id = Common.JoinKeys((int)EnmLogicPoint.Logic, roots[i].Id),
+                                    id = Common.JoinKeys((int)EnmLogicPoint.DevType, roots[i].Id),
                                     text = roots[i].Name,
-                                    icon = Icons.Category,
+                                    icon = Icons.Device,
                                     expanded = false,
                                     leaf = false
                                 };
@@ -1474,24 +1474,44 @@ namespace iPem.Site.Controllers {
                         }
                     } else {
                         var keys = Common.SplitKeys(node);
-                        if(keys.Length == 2 && ((int)EnmLogicPoint.Logic).ToString().Equals(keys[0]) && !string.IsNullOrWhiteSpace(keys[1])) {
-                            var points = _workContext.Points.FindAll(p => p.LogicType.Id == keys[1]);
-                            if(points.Count > 0) {
-                                data.success = true;
-                                data.message = "200 Ok";
-                                data.total = points.Count;
-                                foreach(var point in points) {
-                                    var child = new TreeModel {
-                                        id = point.Id,
-                                        text = point.Name,
-                                        icon = Icons.Signal,
-                                        leaf = true
-                                    };
+                        if(keys.Length == 2) {
+                            if(((int)EnmLogicPoint.DevType).ToString().Equals(keys[0])) {
+                                var logics = _workContext.LogicTypes.FindAll(l=>l.DeviceTypeId == keys[1]);
+                                if(logics.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = logics.Count;
+                                    for(var i = 0; i < logics.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmLogicPoint.Logic, logics[i].Id),
+                                            text = logics[i].Name,
+                                            icon = Icons.Category,
+                                            expanded = false,
+                                            leaf = false
+                                        };
 
-                                    if(multiselect.HasValue && multiselect.Value)
-                                        child.selected = false;
+                                        data.data.Add(child);
+                                    }
+                                }
+                            } else if(((int)EnmLogicPoint.Logic).ToString().Equals(keys[0])) {
+                                var points = _workContext.Points.FindAll(p => p.LogicType.Id == keys[1]);
+                                if(points.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = points.Count;
+                                    foreach(var point in points) {
+                                        var child = new TreeModel {
+                                            id = point.Id,
+                                            text = point.Name,
+                                            icon = Icons.Signal,
+                                            leaf = true
+                                        };
 
-                                    data.data.Add(child);
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            child.selected = false;
+
+                                        data.data.Add(child);
+                                    }
                                 }
                             }
                         }
@@ -1521,7 +1541,10 @@ namespace iPem.Site.Controllers {
                 foreach(var node in nodes) {
                     var current = _workContext.Points.Find(p => p.Id == node);
                     if(current != null) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, current.LogicType.Id), current.Id });
+                        var parent = _workContext.LogicTypes.Find(l => l.Id == current.LogicType.Id);
+                        if(parent != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicPoint.Logic, current.LogicType.Id), current.Id });
+                        }
                     }
                 }
 
@@ -1552,7 +1575,10 @@ namespace iPem.Site.Controllers {
 
                     var matchs = _workContext.Points.FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.Logic, match.LogicType.Id), match.Id });
+                        var parent = _workContext.LogicTypes.Find(l => l.Id == match.LogicType.Id);
+                        if(parent != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicPoint.Logic, match.LogicType.Id), match.Id });
+                        }
                     }
                 }
 

@@ -35,7 +35,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             User entity = null;
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntity1, parms)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntityById, parms)) {
                 if (rdr.Read()) {
                     entity = new User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
@@ -44,8 +44,8 @@ namespace iPem.Data.Repository.Sc {
                     entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
                     entity.PasswordFormat = SqlTypeConverter.DBNullEnmPasswordFormatHandler(rdr["PasswordFormat"]);
                     entity.PasswordSalt = SqlTypeConverter.DBNullStringHandler(rdr["PasswordSalt"]);
-                    entity.CreateDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreateDate"]);
-                    entity.LimitDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitDate"]);
+                    entity.CreatedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedDate"]);
+                    entity.LimitedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitedDate"]);
                     entity.LastLoginDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastLoginDate"]);
                     entity.LastPasswordChangedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastPasswordChangedDate"]);
                     entity.FailedPasswordAttemptCount = SqlTypeConverter.DBNullInt32Handler(rdr["FailedPasswordAttemptCount"]);
@@ -65,7 +65,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullStringHandler(name);
 
             User entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntity2, parms)) {
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntityByName, parms)) {
                 if(rdr.Read()) {
                     entity = new User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
@@ -74,8 +74,8 @@ namespace iPem.Data.Repository.Sc {
                     entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
                     entity.PasswordFormat = SqlTypeConverter.DBNullEnmPasswordFormatHandler(rdr["PasswordFormat"]);
                     entity.PasswordSalt = SqlTypeConverter.DBNullStringHandler(rdr["PasswordSalt"]);
-                    entity.CreateDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreateDate"]);
-                    entity.LimitDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitDate"]);
+                    entity.CreatedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedDate"]);
+                    entity.LimitedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitedDate"]);
                     entity.LastLoginDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastLoginDate"]);
                     entity.LastPasswordChangedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastPasswordChangedDate"]);
                     entity.FailedPasswordAttemptCount = SqlTypeConverter.DBNullInt32Handler(rdr["FailedPasswordAttemptCount"]);
@@ -92,7 +92,7 @@ namespace iPem.Data.Repository.Sc {
 
         public virtual List<User> GetEntities() {
             var entities = new List<User>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntities1, null)) {
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
                     var entity = new User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
@@ -101,8 +101,8 @@ namespace iPem.Data.Repository.Sc {
                     entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
                     entity.PasswordFormat = SqlTypeConverter.DBNullEnmPasswordFormatHandler(rdr["PasswordFormat"]);
                     entity.PasswordSalt = SqlTypeConverter.DBNullStringHandler(rdr["PasswordSalt"]);
-                    entity.CreateDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreateDate"]);
-                    entity.LimitDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitDate"]);
+                    entity.CreatedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedDate"]);
+                    entity.LimitedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitedDate"]);
                     entity.LastLoginDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastLoginDate"]);
                     entity.LastPasswordChangedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastPasswordChangedDate"]);
                     entity.FailedPasswordAttemptCount = SqlTypeConverter.DBNullInt32Handler(rdr["FailedPasswordAttemptCount"]);
@@ -123,7 +123,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             var entities = new List<User>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntities2, parms)) {
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntitiesByRole, parms)) {
                 while(rdr.Read()) {
                     var entity = new User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
@@ -132,8 +132,8 @@ namespace iPem.Data.Repository.Sc {
                     entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
                     entity.PasswordFormat = SqlTypeConverter.DBNullEnmPasswordFormatHandler(rdr["PasswordFormat"]);
                     entity.PasswordSalt = SqlTypeConverter.DBNullStringHandler(rdr["PasswordSalt"]);
-                    entity.CreateDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreateDate"]);
-                    entity.LimitDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitDate"]);
+                    entity.CreatedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedDate"]);
+                    entity.LimitedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitedDate"]);
                     entity.LastLoginDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastLoginDate"]);
                     entity.LastPasswordChangedDate = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastPasswordChangedDate"]);
                     entity.FailedPasswordAttemptCount = SqlTypeConverter.DBNullInt32Handler(rdr["FailedPasswordAttemptCount"]);
@@ -160,8 +160,8 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Password", SqlDbType.VarChar,128),
                                      new SqlParameter("@PasswordFormat", SqlDbType.Int),
                                      new SqlParameter("@PasswordSalt", SqlDbType.VarChar,128),
-                                     new SqlParameter("@CreateDate", SqlDbType.DateTime),
-                                     new SqlParameter("@LimitDate", SqlDbType.DateTime),
+                                     new SqlParameter("@CreatedDate", SqlDbType.DateTime),
+                                     new SqlParameter("@LimitedDate", SqlDbType.DateTime),
                                      new SqlParameter("@LastLoginDate", SqlDbType.DateTime),
                                      new SqlParameter("@LastPasswordChangedDate", SqlDbType.DateTime),
                                      new SqlParameter("@FailedPasswordAttemptCount", SqlDbType.Int),
@@ -183,8 +183,8 @@ namespace iPem.Data.Repository.Sc {
                         parms[3].Value = SqlTypeConverter.DBNullStringChecker(entity.Password);
                         parms[4].Value = entity.PasswordFormat;
                         parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.PasswordSalt);
-                        parms[6].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreateDate);
-                        parms[7].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LimitDate);
+                        parms[6].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreatedDate);
+                        parms[7].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LimitedDate);
                         parms[8].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LastLoginDate);
                         parms[9].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LastPasswordChangedDate);
                         parms[10].Value = SqlTypeConverter.DBNullInt32Checker(entity.FailedPasswordAttemptCount);
@@ -212,8 +212,8 @@ namespace iPem.Data.Repository.Sc {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Uid", SqlDbType.VarChar,100),
-                                     new SqlParameter("@CreateDate", SqlDbType.DateTime),
-                                     new SqlParameter("@LimitDate", SqlDbType.DateTime),
+                                     new SqlParameter("@CreatedDate", SqlDbType.DateTime),
+                                     new SqlParameter("@LimitedDate", SqlDbType.DateTime),
                                      new SqlParameter("@LastLoginDate", SqlDbType.DateTime),
                                      new SqlParameter("@FailedPasswordAttemptCount", SqlDbType.Int),
                                      new SqlParameter("@FailedPasswordDate", SqlDbType.DateTime),
@@ -231,8 +231,8 @@ namespace iPem.Data.Repository.Sc {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.RoleId);
                         parms[1].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Uid);
-                        parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreateDate);
-                        parms[4].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LimitDate);
+                        parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreatedDate);
+                        parms[4].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LimitedDate);
                         parms[5].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.LastLoginDate);
                         parms[6].Value = SqlTypeConverter.DBNullInt32Checker(entity.FailedPasswordAttemptCount);
                         parms[7].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.FailedPasswordDate);
@@ -283,7 +283,7 @@ namespace iPem.Data.Repository.Sc {
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
                     parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(lastDate);
-                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_Set_LastLoginDate, parms);
+                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_SetLastLoginDate, parms);
                     trans.Commit();
                 } catch {
                     trans.Rollback();
@@ -302,7 +302,7 @@ namespace iPem.Data.Repository.Sc {
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
                     parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(failedDate);
-                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_Set_FailedPasswordDate, parms);
+                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_SetFailedPasswordDate, parms);
                     trans.Commit();
                 } catch {
                     trans.Rollback();
@@ -323,7 +323,7 @@ namespace iPem.Data.Repository.Sc {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
                     parms[1].Value = isLockedOut;
                     parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(lastLockoutDate);
-                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_Set_LockedOut, parms);
+                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_SetLockedOut, parms);
                     trans.Commit();
                 } catch {
                     trans.Rollback();
@@ -357,7 +357,7 @@ namespace iPem.Data.Repository.Sc {
                     parms[1].Value = nPwd;
                     parms[2].Value = nFormat;
                     parms[3].Value = nSalt;
-                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_ChangePwd, parms);
+                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_ChangePassword, parms);
                     trans.Commit();
                 } catch {
                     trans.Rollback();

@@ -21,12 +21,12 @@ namespace iPem.Site.Models {
         public bool enabled { get; set; }
 
         [ExcelIgnore]
-        public string[] menuIds { get; set; }
+        public string[] menus { get; set; }
 
         [ExcelIgnore]
-        public string[] areaIds { get; set; }
+        public string[] areas { get; set; }
 
         [ExcelIgnore]
-        public string[] operateIds { get; set; }
+        public string[] operates { get; set; }
     }
 }

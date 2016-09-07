@@ -26,6 +26,11 @@
                 totalProperty: 'total',
                 root: 'data'
             },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
             extraParams: {
                 listModel: 'all' //all,readed,unread
             },

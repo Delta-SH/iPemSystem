@@ -1,6 +1,12 @@
-﻿Ext.ns('Ext.app');
-Ext.app.REMOTING_API = { url: '/Account/Router', type: 'remoting', actions: { user: [{ name: 'query', len: 0 }] } };
-Ext.direct.Manager.addProvider(Ext.app.REMOTING_API);
+﻿Ext.apply(Ext.form.VTypes, {
+    password: function (val, field) {
+        if (field.confirmTo) {
+            var pwd = Ext.getCmp(field.confirmTo);
+            return (val == pwd.getValue());
+        }
+        return true;
+    }
+});
 
 Ext.define('UserModel', {
     extend: 'Ext.data.Model',
@@ -45,8 +51,13 @@ var currentStore = Ext.create('Ext.data.Store', {
             root: 'data'
         },
         extraParams: {
-            rids: [],
+            roles: [],
             names: []
+        },
+        listeners: {
+            exception: function (proxy, response, operation) {
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+            }
         },
         simpleSortMode: true
     }
@@ -95,16 +106,6 @@ var multiComboRoleStore = Ext.create('Ext.data.Store', {
 });
 
 var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
-
-Ext.apply(Ext.form.VTypes, {
-    password: function (val, field) { 
-        if (field.confirmTo) {
-            var pwd = Ext.getCmp(field.confirmTo);
-            return (val == pwd.getValue());
-        }
-        return true;
-    }
-});
 
 var saveWnd = Ext.create('Ext.window.Window', {
     title: 'User',
@@ -420,6 +421,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
         waitTitle: '系统提示',
         success: function (form, action) {
             form.clearInvalid();
+            Ext.getCmp('saveResult').setTextWithIcon('', '');
 
             var uid = Ext.getCmp('uid'),
                 password = Ext.getCmp('password'),
@@ -431,7 +433,6 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             confirmPassword.disable();
             confirmPassword.hide();
 
-            Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
             saveWnd.setTitle('编辑用户');
             saveWnd.opaction = $$iPems.Action.Edit;
@@ -627,6 +628,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                     waitTitle: '系统提示',
                     success: function (form, action) {
                         form.clearInvalid();
+                        Ext.getCmp('saveResult').setTextWithIcon('', '');
 
                         var uid = Ext.getCmp('uid'),
                             password = Ext.getCmp('password'),
@@ -635,10 +637,10 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                         uid.setReadOnly(false);
                         password.enable();
                         password.show();
+                        confirmPassword.reset();
                         confirmPassword.enable();
                         confirmPassword.show();
 
-                        Ext.getCmp('saveResult').setTextWithIcon('', '');
                         saveWnd.setGlyph(0xf001);
                         saveWnd.setTitle('新增用户');
                         saveWnd.opaction = $$iPems.Action.Add;
@@ -647,7 +649,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                 });
             }
         }, '-', Ext.create('Ext.ux.MultiCombo', {
-            id: 'rids-multicombo',
+            id: 'roles-multicombo',
             fieldLabel: '角色名称',
             valueField: 'id',
             displayField: 'text',
@@ -673,35 +675,26 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             text: '数据查询',
             glyph: 0xf005,
             handler: function (el, e) {
-                var ridsfield = Ext.getCmp('rids-multicombo');
-                if (!ridsfield.isValid()) return false;
-                var namesfield = Ext.getCmp('names-textbox');
-                if (!namesfield.isValid()) return false;
+                var rolesfield = Ext.getCmp('roles-multicombo'),
+                    namesfield = Ext.getCmp('names-textbox');
+                if (rolesfield.isValid() && namesfield.isValid()) {
+                    var roles = rolesfield.getSelectedValues(),
+                        raw = namesfield.getRawValue(),
+                        names = !Ext.isEmpty(raw) ? raw.split($$iPems.Delimiter) : [];
 
-                user.query(function (result, event, success) {
-                    if (success) {
-                        var rids = ridsfield.getSelectedValues(),
-                            raw = namesfield.getRawValue(),
-                            names = !Ext.isEmpty(raw) ? raw.split($$iPems.Delimiter) : [];
-
-                        currentStore.getProxy().extraParams.rids = rids;
-                        currentStore.getProxy().extraParams.names = names;
-                        currentStore.loadPage(1);
-                    }
-                });
+                    currentStore.getProxy().extraParams.roles = roles;
+                    currentStore.getProxy().extraParams.names = names;
+                    currentStore.loadPage(1);
+                }
             }
         }, '-', {
             xtype: 'button',
             text: '数据导出',
             glyph: 0xf010,
             handler: function (el, e) {
-                var params = currentStore.getProxy().extraParams;
                 $$iPems.download({
                     url: '/Account/DownloadUsers',
-                    params: {
-                        rids: params.rids,
-                        names: params.names
-                    }
+                    params: currentStore.getProxy().extraParams
                 });
             }
         }]

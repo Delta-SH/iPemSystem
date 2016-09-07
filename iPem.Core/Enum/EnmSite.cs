@@ -121,18 +121,10 @@
     }
 
     /// <summary>
-    /// Represents the device logic enumeration
-    /// </summary>
-    public enum EnmDevLogic {
-        DevType,
-        Logic,
-        SubLogic,
-    }
-
-    /// <summary>
     /// Represents the logic point enumeration
     /// </summary>
     public enum EnmLogicPoint {
+        DevType,
         Logic,
         SubLogic,
         Point

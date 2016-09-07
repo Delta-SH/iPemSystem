@@ -5,8 +5,6 @@ namespace iPem.Site.Models {
     public class ProfileValues {
         public List<RssPoint> RssPoints { get; set; }
 
-        public TsValues Speech { get; set; }
-
         public HashSet<string> ToRssHashSet() {
             var hashset = new HashSet<string>();
             foreach(var rss in this.RssPoints) {

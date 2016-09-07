@@ -51,7 +51,7 @@ namespace iPem.Services.Sc {
         }
 
         public virtual List<Role> GetAllRolesAsList() {
-            return _roleRepository.GetEntities();
+            return _roleRepository.GetEntities().FindAll(r=>r.Id != Role.SuperId);
         }
 
         public virtual IPagedList<Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -70,7 +70,7 @@ namespace iPem.Services.Sc {
 
         public virtual List<Role> GetRolesAsList(string[] names) {
             var roles = _roleRepository.GetEntities();
-            var result = roles.FindAll(r => CommonHelper.ConditionContain(r.Name, names));
+            var result = roles.FindAll(r => r.Id != Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
             return result;
         }
 

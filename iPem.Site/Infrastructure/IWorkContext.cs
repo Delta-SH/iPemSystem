@@ -14,52 +14,62 @@ namespace iPem.Site.Infrastructure {
     /// </summary>
     public interface IWorkContext {
         /// <summary>
-        /// Gets or sets whether the user has been authenticated
+        /// Gets whether the user has been authenticated
         /// </summary>
         Boolean IsAuthenticated { get; }
         
         /// <summary>
-        /// Gets or sets the current identifier
+        /// Gets the current identifier
         /// </summary>
         Guid Identifier { get; }
 
         /// <summary>
-        /// Gets or sets the current store
+        /// Gets the current store
         /// </summary>
         Store Store { get; }
 
         /// <summary>
-        /// Gets or sets the current role
+        /// Gets the current role
         /// </summary>
         Role Role { get; }
 
         /// <summary>
-        /// Gets or sets the current user
+        /// Gets the current user
         /// </summary>
         User User { get; }
 
         /// <summary>
-        /// Gets or sets the current employee
+        /// Gets the current employee
         /// </summary>
         Employee Employee { get; }
 
         /// <summary>
-        /// Gets or sets the current user profile
+        /// Gets the current user profile
         /// </summary>
-        ProfileValues Profile { get; set; }
+        ProfileValues Profile { get; }
 
         /// <summary>
-        /// Gets or sets the current webservice values
+        /// Gets the current webservice values
         /// </summary>
-        WsValues WsValues { get; set; }
+        WsValues WsValues { get; }
 
         /// <summary>
-        /// Gets or sets the current menus
+        /// Gets the current speech values
+        /// </summary>
+        TsValues TsValues { get; }
+
+        /// <summary>
+        /// Gets the current report values
+        /// </summary>
+        RtValues RtValues { get; }
+
+        /// <summary>
+        /// Gets the current menus
         /// </summary>
         List<Menu> Menus { get; }
 
         /// <summary>
-        /// Gets or sets the current operations
+        /// Gets the current operations
         /// </summary>
         HashSet<EnmOperation> Operations { get; }
 

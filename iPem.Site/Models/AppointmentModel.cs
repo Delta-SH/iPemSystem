@@ -11,10 +11,10 @@ namespace iPem.Site.Models {
         public string id { get; set; }
 
         [ExcelDisplayName("开始时间")]
-        public string startTime { get; set; }
+        public string startDate { get; set; }
 
         [ExcelDisplayName("结束时间")]
-        public string endTime { get; set; }
+        public string endDate { get; set; }
 
         [ExcelIgnore]
         [ExcelDisplayName("工程编号")]

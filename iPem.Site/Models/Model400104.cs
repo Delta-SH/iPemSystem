@@ -10,9 +10,6 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("编号")]
         public string id { get; set; }
 
-        [ExcelDisplayName("编码")]
-        public string code { get; set; }
-
         [ExcelDisplayName("名称")]
         public string name { get; set; }
 

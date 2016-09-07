@@ -128,18 +128,17 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var dic = _dictionaryService.GetDictionary((int)EnmDictionary.Ts);
-                if(dic == null || string.IsNullOrWhiteSpace(dic.ValuesJson))
+                var config = _workContext.TsValues;
+                if(config == null)
                     return Json(data, JsonRequestBehavior.AllowGet);
 
-                var config = JsonConvert.DeserializeObject<TsValues>(dic.ValuesJson);
                 if(config.basic == null || !config.basic.Contains(1))
                     return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.level == null || config.level.Length == 0)
+                if(config.levels == null || config.levels.Length == 0)
                     return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.content == null || config.content.Length == 0)
+                if(config.contents == null || config.contents.Length == 0)
                     return Json(data, JsonRequestBehavior.AllowGet);
 
                 var start = DateTime.Now.AddSeconds(-30); 
@@ -149,56 +148,59 @@ namespace iPem.Site.Controllers {
                 else
                     start = new DateTime(Convert.ToInt64(Session["SpeechScanTime"]));
 
-                var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.level.Contains((int)a.AlmLevel));
+                var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.levels.Contains((int)a.AlmLevel));
                 var stores = _workContext.GetActAlmStore(alarms);
                 if(config.basic.Contains(3))
                     stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
 
-                if(config.stationtypes != null && config.stationtypes.Length > 0)
-                    stores = stores.FindAll(a => config.stationtypes.Contains(a.Station.Type.Id));
+                if(config.stationTypes != null && config.stationTypes.Length > 0)
+                    stores = stores.FindAll(a => config.stationTypes.Contains(a.Station.Type.Id));
 
-                if(config.roomtypes != null && config.roomtypes.Length > 0)
-                    stores = stores.FindAll(a => config.roomtypes.Contains(a.Room.Type.Id));
+                if(config.roomTypes != null && config.roomTypes.Length > 0)
+                    stores = stores.FindAll(a => config.roomTypes.Contains(a.Room.Type.Id));
 
-                if(config.devicetypes != null && config.devicetypes.Length > 0)
-                    stores = stores.FindAll(a => config.devicetypes.Contains(a.Device.Type.Id));
+                if(config.deviceTypes != null && config.deviceTypes.Length > 0)
+                    stores = stores.FindAll(a => config.deviceTypes.Contains(a.Device.Type.Id));
 
-                if(config.pointtypes != null && config.pointtypes.Length > 0)
-                    stores = stores.FindAll(a => config.pointtypes.Contains((int)a.Point.Type));
+                if(config.logicTypes != null && config.logicTypes.Length > 0)
+                    stores = stores.FindAll(a => config.logicTypes.Contains(a.Point.LogicType.Id));
 
-                if(config.logictypes != null && config.logictypes.Length > 0)
-                    stores = stores.FindAll(a => config.logictypes.Contains(a.Point.LogicType.Id));
-
-                if(!string.IsNullOrWhiteSpace(config.pointnames)) {
-                    var names = Common.SplitCondition(config.pointnames);
+                if(!string.IsNullOrWhiteSpace(config.pointNames)) {
+                    var names = Common.SplitCondition(config.pointNames);
                     if(names.Length > 0)
                         stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, names));
                 }
 
+                if(!string.IsNullOrWhiteSpace(config.pointExtset)) {
+                    var extsets = Common.SplitCondition(config.pointExtset);
+                    if(extsets.Length > 0)
+                        stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.ExtSet1, extsets));
+                }
+
                 foreach(var store in stores) {
                     var contents = new List<string>();
-                    if(config.content.Contains(1))
+                    if(config.contents.Contains(1))
                         contents.Add(store.AreaFullName);
 
-                    if(config.content.Contains(2))
+                    if(config.contents.Contains(2))
                         contents.Add(store.Station.Name);
 
-                    if(config.content.Contains(3))
+                    if(config.contents.Contains(3))
                         contents.Add(store.Room.Name);
 
-                    if(config.content.Contains(4))
+                    if(config.contents.Contains(4))
                         contents.Add(store.Device.Name);
 
-                    if(config.content.Contains(5))
+                    if(config.contents.Contains(5))
                         contents.Add(store.Point.Name);
 
-                    if(config.content.Contains(6))
+                    if(config.contents.Contains(6))
                         contents.Add(CommonHelper.DateTimeConverter(store.Current.StartTime));
 
-                    if(config.content.Contains(7))
+                    if(config.contents.Contains(7))
                         contents.Add(string.Format("发生{0}", Common.GetAlarmLevelDisplay(store.Current.AlmLevel)));
 
-                    if(config.content.Contains(8) && !string.IsNullOrWhiteSpace(store.Current.AlmDesc))
+                    if(config.contents.Contains(8) && !string.IsNullOrWhiteSpace(store.Current.AlmDesc))
                         contents.Add(store.Current.AlmDesc);
 
                     data.data.Add(string.Join("，", contents));
@@ -683,8 +685,8 @@ namespace iPem.Site.Controllers {
                 var project = _projectsService.GetProject(appointment.ProjectId);
 
                 data.data.id = appointment.Id.ToString();
-                data.data.startTime = CommonHelper.DateTimeConverter(appointment.StartTime);
-                data.data.endTime = CommonHelper.DateTimeConverter(appointment.EndTime);
+                data.data.startDate = CommonHelper.DateTimeConverter(appointment.StartTime);
+                data.data.endDate = CommonHelper.DateTimeConverter(appointment.EndTime);
                 data.data.projectId = appointment.ProjectId.ToString();
                 data.data.projectName = project != null ? project.Name : data.data.projectId;
                 data.data.creator = appointment.Creator;
@@ -758,7 +760,7 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult AddRssPoint(string device, string point) {
             try {
-                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>(), Speech = null };
+                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>() };
                 if(!profile.RssPoints.Any(p => p.device == device && p.point == point)) {
                     profile.RssPoints.Add(new RssPoint { device = device, point = point });
                     _profileService.Save(new UserProfile {
@@ -767,7 +769,7 @@ namespace iPem.Site.Controllers {
                         ValuesBinary = null,
                         LastUpdatedDate = DateTime.Now
                     });
-                    _workContext.Profile = profile;
+                    _workContext.Store.Profile  = null;
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "关注成功" }, JsonRequestBehavior.AllowGet);
@@ -780,7 +782,7 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult RemoveRssPoint(string device, string point) {
             try {
-                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>(), Speech = null };
+                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>() };
                 var current = profile.RssPoints.Find(p => p.device == device && p.point == point);
                 if(current != null) {
                     profile.RssPoints.Remove(current);
@@ -790,7 +792,7 @@ namespace iPem.Site.Controllers {
                         ValuesBinary = null,
                         LastUpdatedDate = DateTime.Now
                     });
-                    _workContext.Profile = profile;
+                    _workContext.Store.Profile = null;
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "已取消关注" }, JsonRequestBehavior.AllowGet);
@@ -964,10 +966,6 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        /**
-         *TODO:虚拟数据
-         *此处需要修改为实际的逻辑，现在呈现的是虚拟数据
-         */
         [AjaxAuthorize]
         public JsonResult RequestHomeUnconnected(int start, int limit) {
             var data = new AjaxChartModel<List<HomeUnconnectedModel>, ChartModel[]> {
@@ -979,15 +977,29 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var unmatchs = new string[] { "03", "06", "09", "10" };
-                var nmStations = _workContext.RoleStations.FindAll(s => !unmatchs.Contains(s.Current.Id));
-                var unStations = _workContext.RoleStations.FindAll(s => unmatchs.Contains(s.Current.Id));
+                var offKeys = _fsuKeyService.GetAllKeysAsList();
+                var allFsus = from fsu in _workContext.RoleFsus
+                              join ok in offKeys on fsu.Current.Id equals ok.Id
+                              select new { Fsu = fsu, Ok = ok };
 
-                data.chart[0] = new ChartModel { index = 1, name = "正常", value = nmStations.Count };
+                var unStations = new List<IdValuePair<Station, DateTime>>();
+                foreach(var station in _workContext.RoleStations) {
+                    if(!allFsus.Any(f => f.Fsu.Current.StationId == station.Current.Id && f.Ok.Status)) {
+                        var staFsus = allFsus.Where(f => f.Fsu.Current.StationId == station.Current.Id);
+                        if(staFsus.Any()) {
+                            unStations.Add(new IdValuePair<Station, DateTime> {
+                                Id = station.Current,
+                                Value = staFsus.Max(f => f.Ok.ChangeTime)
+                            });
+                        }
+                    }
+                }
+
+                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.RoleStations.Count - unStations.Count };
                 data.chart[1] = new ChartModel { index = 2, name = "断站", value = unStations.Count };
 
                 var stations = (from station in unStations
-                                join area in _workContext.RoleAreas on station.Current.AreaId equals area.Current.Id
+                                join area in _workContext.RoleAreas on station.Id.AreaId equals area.Current.Id
                                 select new {
                                     Station = station,
                                     Area = area
@@ -1005,9 +1017,9 @@ namespace iPem.Site.Controllers {
                         data.data.Add(new HomeUnconnectedModel {
                             index = i + 1,
                             area = stations[i].Area.ToString(),
-                            station = stations[i].Station.Current.Name,
-                            time = CommonHelper.DateTimeConverter(DateTime.Now.AddMinutes(-98)),
-                            interval = CommonHelper.IntervalConverter(DateTime.Now.AddMinutes(-98))
+                            station = stations[i].Station.Id.Name,
+                            time = CommonHelper.DateTimeConverter(stations[i].Station.Value),
+                            interval = CommonHelper.IntervalConverter(stations[i].Station.Value)
                         });
                     }
                 }
@@ -1020,20 +1032,30 @@ namespace iPem.Site.Controllers {
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        /**
-         *TODO:虚拟数据
-         *此处需要修改为实际的逻辑，现在呈现的是虚拟数据
-         */
         [HttpPost]
         [Authorize]
         public ActionResult DownloadHomeUnconnected() {
             try {
-                var unmatchs = new string[] { "03", "06", "09", "10" };
-                var nmStations = _workContext.RoleStations.FindAll(s => !unmatchs.Contains(s.Current.Id));
-                var unStations = _workContext.RoleStations.FindAll(s => unmatchs.Contains(s.Current.Id));
+                var offKeys = _fsuKeyService.GetAllKeysAsList();
+                var allFsus = from fsu in _workContext.RoleFsus
+                              join ok in offKeys on fsu.Current.Id equals ok.Id
+                              select new { Fsu = fsu, Ok = ok };
+
+                var unStations = new List<IdValuePair<Station, DateTime>>();
+                foreach(var station in _workContext.RoleStations) {
+                    if(!allFsus.Any(f => f.Fsu.Current.StationId == station.Current.Id && f.Ok.Status)) {
+                        var staFsus = allFsus.Where(f => f.Fsu.Current.StationId == station.Current.Id);
+                        if(staFsus.Any()) {
+                            unStations.Add(new IdValuePair<Station, DateTime> {
+                                Id = station.Current,
+                                Value = staFsus.Max(f => f.Ok.ChangeTime)
+                            });
+                        }
+                    }
+                }
 
                 var stations = (from station in unStations
-                                join area in _workContext.RoleAreas on station.Current.AreaId equals area.Current.Id
+                                join area in _workContext.RoleAreas on station.Id.AreaId equals area.Current.Id
                                 select new {
                                     Station = station,
                                     Area = area
@@ -1044,9 +1066,9 @@ namespace iPem.Site.Controllers {
                     models.Add(new HomeUnconnectedModel {
                         index = i + 1,
                         area = stations[i].Area.ToString(),
-                        station = stations[i].Station.Current.Name,
-                        time = CommonHelper.DateTimeConverter(DateTime.Now.AddMinutes(-98)),
-                        interval = CommonHelper.IntervalConverter(DateTime.Now.AddMinutes(-98))
+                        station = stations[i].Station.Id.Name,
+                        time = CommonHelper.DateTimeConverter(stations[i].Station.Value),
+                        interval = CommonHelper.IntervalConverter(stations[i].Station.Value)
                     });
                 }
 
@@ -1243,7 +1265,7 @@ namespace iPem.Site.Controllers {
                         if(current != null && current.Protocol != null) {
                             var area = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
                             if(area != null) {
-                                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>(), Speech = null };
+                                var profile = _workContext.Profile ?? new ProfileValues() { RssPoints = new List<RssPoint>() };
                                 var matchs = profile.ToRssHashSet();
                                 foreach(var point in current.Protocol.Points) {
                                     var key = string.Format("{0}-{1}", current.Current.Id, point.Id);

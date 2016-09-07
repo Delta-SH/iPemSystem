@@ -123,7 +123,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestBase400101(string parent, int[] types, int start, int limit) {
+        public JsonResult RequestBase400101(int start, int limit, string parent, int[] types) {
             var data = new AjaxChartModel<List<Model400101>, List<ChartModel>> {
                 success = true,
                 message = "无数据",
@@ -1659,7 +1659,9 @@ namespace iPem.Site.Controllers {
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 #region root
                 var areas = _workContext.RoleAreas;
-                if(types.Length > 0) areas = areas.FindAll(a => types.Contains(a.Current.Type.Id));
+                if(types != null && types.Length > 0) 
+                    areas = areas.FindAll(a => types.Contains(a.Current.Type.Id));
+
                 var ordered = areas.OrderBy(a => a.Current.Type.Id);
                 foreach(var current in ordered) {
                     result.Add(new Model400101 {
@@ -1880,7 +1882,6 @@ namespace iPem.Site.Controllers {
                 result.Add(new Model400104 {
                     index = ++index,
                     id = store.Device.Id,
-                    code = store.Device.Code,
                     name = store.Device.Name,
                     type = store.Device.Type.Name,
                     subType = store.Device.SubType.Name,
@@ -2215,18 +2216,18 @@ namespace iPem.Site.Controllers {
                                         timeout = timeout,
                                         rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                         projects = proDetail.Select(p => new ProjectModel {
-                                            Index = 0,
-                                            Id = p.Project.Id.ToString(),
-                                            Name = p.Project.Name,
-                                            StartTime = CommonHelper.DateConverter(p.Project.StartTime),
-                                            EndTime = CommonHelper.DateConverter(p.Project.EndTime),
-                                            Responsible = p.Project.Responsible,
-                                            ContactPhone = p.Project.ContactPhone,
-                                            Company = p.Project.Company,
-                                            Creator = p.Project.Creator,
-                                            CreatedTime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
-                                            Comment = p.Project.Comment,
-                                            Enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
+                                            index = 0,
+                                            id = p.Project.Id.ToString(),
+                                            name = p.Project.Name,
+                                            start = CommonHelper.DateConverter(p.Project.StartTime),
+                                            end = CommonHelper.DateConverter(p.Project.EndTime),
+                                            responsible = p.Project.Responsible,
+                                            contact = p.Project.ContactPhone,
+                                            company = p.Project.Company,
+                                            creator = p.Project.Creator,
+                                            createdtime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
+                                            comment = p.Project.Comment,
+                                            enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
                                         }).ToList()
                                     });
                                 }
@@ -2274,18 +2275,18 @@ namespace iPem.Site.Controllers {
                                         timeout = timeout,
                                         rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                         projects = proDetail.Select(p => new ProjectModel {
-                                            Index = 0,
-                                            Id = p.Project.Id.ToString(),
-                                            Name = p.Project.Name,
-                                            StartTime = CommonHelper.DateConverter(p.Project.StartTime),
-                                            EndTime = CommonHelper.DateConverter(p.Project.EndTime),
-                                            Responsible = p.Project.Responsible,
-                                            ContactPhone = p.Project.ContactPhone,
-                                            Company = p.Project.Company,
-                                            Creator = p.Project.Creator,
-                                            CreatedTime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
-                                            Comment = p.Project.Comment,
-                                            Enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
+                                            index = 0,
+                                            id = p.Project.Id.ToString(),
+                                            name = p.Project.Name,
+                                            start = CommonHelper.DateConverter(p.Project.StartTime),
+                                            end = CommonHelper.DateConverter(p.Project.EndTime),
+                                            responsible = p.Project.Responsible,
+                                            contact = p.Project.ContactPhone,
+                                            company = p.Project.Company,
+                                            creator = p.Project.Creator,
+                                            createdtime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
+                                            comment = p.Project.Comment,
+                                            enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
                                         }).ToList()
                                     });
                                 }
@@ -2340,18 +2341,18 @@ namespace iPem.Site.Controllers {
                                     timeout = timeout,
                                     rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                     projects = proDetail.Select(p => new ProjectModel {
-                                        Index = 0,
-                                        Id = p.Project.Id.ToString(),
-                                        Name = p.Project.Name,
-                                        StartTime = CommonHelper.DateConverter(p.Project.StartTime),
-                                        EndTime = CommonHelper.DateConverter(p.Project.EndTime),
-                                        Responsible = p.Project.Responsible,
-                                        ContactPhone = p.Project.ContactPhone,
-                                        Company = p.Project.Company,
-                                        Creator = p.Project.Creator,
-                                        CreatedTime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
-                                        Comment = p.Project.Comment,
-                                        Enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
+                                        index = 0,
+                                        id = p.Project.Id.ToString(),
+                                        name = p.Project.Name,
+                                        start = CommonHelper.DateConverter(p.Project.StartTime),
+                                        end = CommonHelper.DateConverter(p.Project.EndTime),
+                                        responsible = p.Project.Responsible,
+                                        contact = p.Project.ContactPhone,
+                                        company = p.Project.Company,
+                                        creator = p.Project.Creator,
+                                        createdtime = CommonHelper.DateTimeConverter(p.Project.CreatedTime),
+                                        comment = p.Project.Comment,
+                                        enabled = (p.AppointMaxTime > p.Project.EndTime || p.AppointMinTime < p.Project.StartTime)
                                     }).ToList()
                                 });
                             }
@@ -2400,8 +2401,8 @@ namespace iPem.Site.Controllers {
                                                    select new AppointmentModel {
                                                        index = 0,
                                                        id = app.Id.ToString(),
-                                                       startTime = CommonHelper.DateTimeConverter(app.StartTime),
-                                                       endTime = CommonHelper.DateTimeConverter(app.EndTime),
+                                                       startDate = CommonHelper.DateTimeConverter(app.StartTime),
+                                                       endDate = CommonHelper.DateTimeConverter(app.EndTime),
                                                        projectName = pro.Name,
                                                        creator = app.Creator,
                                                        createdTime = CommonHelper.DateTimeConverter(app.CreatedTime),
@@ -2439,8 +2440,8 @@ namespace iPem.Site.Controllers {
                                                    select new AppointmentModel {
                                                        index = 0,
                                                        id = app.Id.ToString(),
-                                                       startTime = CommonHelper.DateTimeConverter(app.StartTime),
-                                                       endTime = CommonHelper.DateTimeConverter(app.EndTime),
+                                                       startDate = CommonHelper.DateTimeConverter(app.StartTime),
+                                                       endDate = CommonHelper.DateTimeConverter(app.EndTime),
                                                        projectName = pro.Name,
                                                        creator = app.Creator,
                                                        createdTime = CommonHelper.DateTimeConverter(app.CreatedTime),
@@ -2484,8 +2485,8 @@ namespace iPem.Site.Controllers {
                                                select new AppointmentModel {
                                                    index = 0,
                                                    id = app.Id.ToString(),
-                                                   startTime = CommonHelper.DateTimeConverter(app.StartTime),
-                                                   endTime = CommonHelper.DateTimeConverter(app.EndTime),
+                                                   startDate = CommonHelper.DateTimeConverter(app.StartTime),
+                                                   endDate = CommonHelper.DateTimeConverter(app.EndTime),
                                                    projectName = pro.Name,
                                                    creator = app.Creator,
                                                    createdTime = CommonHelper.DateTimeConverter(app.CreatedTime),
@@ -2806,13 +2807,10 @@ namespace iPem.Site.Controllers {
         private List<ShiDianModel> GetTingDianValues(DateTime start, DateTime end) {
             var models = new List<ShiDianModel>();
 
-            var parms = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
-            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson)) return models;
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null || rtValues.tingDianXinHao == null || rtValues.tingDianXinHao.Length == 0) return models;
 
-            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
-            if(limit.tingdianxinhao.Length == 0) return models;
-
-            var values = _hisValueService.GetValuesAsList(limit.tingdianxinhao, start, end);
+            var values = _hisValueService.GetValuesAsList(rtValues.tingDianXinHao, start, end);
             var groups = from val in values
                          group val by new { val.DeviceId, val.PointId } into g
                          select new {
@@ -2826,9 +2824,9 @@ namespace iPem.Site.Controllers {
                 var pValues = group.Values.OrderBy(v => v.Time);
 
                 foreach(var pv in pValues) {
-                    if(pv.Value == limit.tingdian && !onetime.HasValue) {
+                    if(pv.Value == rtValues.tingDian && !onetime.HasValue) {
                         onetime = pv.Time;
-                    } else if(pv.Value == limit.weitingdian && onetime.HasValue) {
+                    } else if(pv.Value == rtValues.weiTingDian && onetime.HasValue) {
                         models.Add(new ShiDianModel {
                             DeviceId = group.DeviceId,
                             PointId = group.PointId,
@@ -2858,13 +2856,10 @@ namespace iPem.Site.Controllers {
         private List<ShiDianModel> GetFaDianValues(DateTime start, DateTime end) {
             var models = new List<ShiDianModel>();
 
-            var parms = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
-            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson)) return models;
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null || rtValues.faDianXinHao == null || rtValues.faDianXinHao.Length == 0) return models;
 
-            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
-            if(limit.fadianxinhao.Length == 0) return models;
-
-            var values = _hisValueService.GetValuesAsList(limit.fadianxinhao, start, end);
+            var values = _hisValueService.GetValuesAsList(rtValues.faDianXinHao, start, end);
             var groups = from val in values
                          group val by new { val.DeviceId, val.PointId } into g
                          select new {
@@ -2878,9 +2873,9 @@ namespace iPem.Site.Controllers {
                 var pValues = group.Values.OrderBy(v => v.Time);
 
                 foreach(var pv in pValues) {
-                    if(pv.Value == limit.fadian && !onetime.HasValue) {
+                    if(pv.Value == rtValues.faDian && !onetime.HasValue) {
                         onetime = pv.Time;
-                    } else if(pv.Value == limit.weifadian && onetime.HasValue) {
+                    } else if(pv.Value == rtValues.weiFaDian && onetime.HasValue) {
                         models.Add(new ShiDianModel {
                             DeviceId = group.DeviceId,
                             PointId = group.PointId,
@@ -2908,11 +2903,9 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HisAlm>> GetCustom400401(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            var parms = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
-            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson)) return new List<AlmStore<HisAlm>>();
-
             endtime = endtime.AddSeconds(86399);
-            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -2938,7 +2931,7 @@ namespace iPem.Site.Controllers {
 
             alarms = (from alarm in alarms
                       group alarm by new { alarm.DeviceId, alarm.PointId } into g
-                      where g.Count() >= limit.chaopin
+                      where g.Count() >= rtValues.chaoPin
                       select new { G = g }).SelectMany(a => a.G).ToList();
 
             var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);
@@ -2980,11 +2973,9 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HisAlm>> GetCustom400402(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            var parms = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
-            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson)) return new List<AlmStore<HisAlm>>();
-
             endtime = endtime.AddSeconds(86399);
-            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -3008,7 +2999,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var seconds = limit.chaoduan * 60;
+            var seconds = rtValues.chaoDuan * 60;
             alarms = alarms.FindAll(a => Math.Abs(a.EndTime.Subtract(a.StartTime).TotalSeconds) <= seconds);
 
             var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);
@@ -3050,11 +3041,9 @@ namespace iPem.Site.Controllers {
         }
 
         private List<AlmStore<HisAlm>> GetCustom400403(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            var parms = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
-            if(parms == null || string.IsNullOrWhiteSpace(parms.ValuesJson)) return new List<AlmStore<HisAlm>>();
-
             endtime = endtime.AddSeconds(86399);
-            var limit = JsonConvert.DeserializeObject<RtValues>(parms.ValuesJson);
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -3078,7 +3067,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var seconds = limit.chaochang * 60;
+            var seconds = rtValues.chaoChang * 60;
             alarms = alarms.FindAll(a => a.EndTime.Subtract(a.StartTime).TotalSeconds >= seconds);
 
             var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);

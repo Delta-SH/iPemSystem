@@ -12,6 +12,15 @@
 		idProperty: 'id'
 	});
 
+	var query = function(store){
+	    var startDate = Ext.getCmp('begin-datefield').getRawValue(),
+            endDate = Ext.getCmp('end-datefield').getRawValue();
+
+	    store.getProxy().extraParams.startDate = startDate;
+	    store.getProxy().extraParams.endDate = endDate;
+	    store.loadPage(1);
+	};
+
 	var currentStore = Ext.create('Ext.data.Store', {
 		autoLoad: false,
 		pageSize: 20,
@@ -26,14 +35,14 @@
 				totalProperty: 'total',
 				root: 'data'
 			},
+			extraParams: {
+				startDate: '',
+				endDate: ''
+			},
 			listeners: {
 			    exception: function (proxy, response, operation) {
 			        Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
 			    }
-			},
-			extraParams: {
-				begin: '',
-				end: ''
 			},
 			simpleSortMode: true
 		}
@@ -200,8 +209,8 @@
 			waitTitle: '系统提示',
 			success: function (form, action) {
 			    form.clearInvalid();
+			    Ext.getCmp('saveResult').setTextWithIcon('', '');
 
-				Ext.getCmp('saveResult').setTextWithIcon('', '');
 				saveWnd.setTitle('编辑消息');
 				saveWnd.opaction = $$iPems.Action.Edit;
 				saveWnd.show();
@@ -316,8 +325,8 @@
 						waitTitle: '系统提示',
 						success: function (form, action) {
 						    form.clearInvalid();
+						    Ext.getCmp('saveResult').setTextWithIcon('', '');
 
-							Ext.getCmp('saveResult').setTextWithIcon('', '');
 							saveWnd.setTitle('新增消息');
 							saveWnd.opaction = $$iPems.Action.Add;
 							saveWnd.show();
@@ -343,19 +352,11 @@
 				editable: false,
 				allowBlank: false
 			}, {
-				id: 'query',
 				xtype: 'button',
 				text: '数据查询',
 				glyph: 0xf005,
-				listeners: {
-					'click' : function(el, e) {
-						var begin = Ext.getCmp('begin-datefield').getRawValue(),
-							end = Ext.getCmp('end-datefield').getRawValue();
-
-						currentStore.getProxy().extraParams.begin = begin;
-						currentStore.getProxy().extraParams.end = end;
-						currentStore.loadPage(1);
-					}
+				handler: function (el, e) {
+				    query(currentStore);
 				}
 			}]
 		}),
@@ -369,8 +370,8 @@
 			pageContentPanel.add(currentGridPanel);
 
 			//load store data
-			Ext.getCmp('query').fireEvent('click');
 			noticeRoleStore.load();
+			query(currentStore);
 		}
 	});
 })();

@@ -1,21 +1,40 @@
 ﻿Ext.define('ProjectModel', {
     extend: 'Ext.data.Model',
     fields: [
-        { name: 'Index', type: 'int' },
-        { name: 'Id', type: 'string' },
-        { name: 'Name', type: 'string' },
-        { name: 'StartTime', type: 'string' },
-        { name: 'EndTime', type: 'string' },
-        { name: 'Responsible', type: 'string' },
-        { name: 'ContactPhone', type: 'string' },
-        { name: 'Company', type: 'string' },
-        { name: 'Creator', type: 'string' },
-        { name: 'CreatedTime', type: 'string' },
-        { name: 'Comment', type: 'string' },
-        { name: 'Enabled', type: 'boolean' }
+        { name: 'index', type: 'int' },
+        { name: 'id', type: 'string' },
+        { name: 'name', type: 'string' },
+        { name: 'start', type: 'string' },
+        { name: 'end', type: 'string' },
+        { name: 'responsible', type: 'string' },
+        { name: 'contact', type: 'string' },
+        { name: 'company', type: 'string' },
+        { name: 'creator', type: 'string' },
+        { name: 'createdtime', type: 'string' },
+        { name: 'comment', type: 'string' },
+        { name: 'enabled', type: 'boolean' }
     ],
     idProperty: 'id'
 });
+
+var query = function (store) {
+    var namesfield = Ext.getCmp('names-textfield'),
+        startDate = Ext.getCmp('start-datefield'),
+        endDate = Ext.getCmp('end-datefield');
+
+    store.getProxy().extraParams.name = namesfield.getRawValue();
+    store.getProxy().extraParams.startDate = startDate.getRawValue();
+    store.getProxy().extraParams.endDate = endDate.getRawValue();
+    store.loadPage(1);
+};
+
+var download = function (store) {
+    var params = store.getProxy().extraParams;
+    $$iPems.download({
+        url: '/Project/DownloadProjects',
+        params: params
+    });
+};
 
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
@@ -30,6 +49,11 @@ var currentStore = Ext.create('Ext.data.Store', {
             messageProperty: 'message',
             totalProperty: 'total',
             root: 'data'
+        },
+        listeners: {
+            exception: function (proxy, response, operation) {
+                Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+            }
         },
         simpleSortMode: true
     }
@@ -68,31 +92,27 @@ var saveWnd = Ext.create('Ext.window.Window', {
                         layout: 'anchor',
                         items: [
                             {
-                                id: 'Id',
-                                name: 'Id',
+                                name: 'id',
                                 xtype: 'textfield',
                                 fieldLabel: '工程标识',
                                 allowBlank: false,
                                 readOnly: true
                             },
                             {
-                                id: 'StartTime',
-                                name: 'StartTime',
+                                name: 'start',
                                 xtype: 'datefield',
                                 fieldLabel: '开始时间',
                                 allowBlank: false,
                                 editable: false
                             },
                             {
-                                id: 'Responsible',
-                                name: 'Responsible',
+                                name: 'responsible',
                                 xtype: 'textfield',
                                 fieldLabel: '负责人员',
                                 allowBlank: false
                             },
                             {
-                                id: 'Comment',
-                                name: 'Comment',
+                                name: 'comment',
                                 xtype: 'textareafield',
                                 fieldLabel: '备注信息',
                                 height: 100
@@ -105,37 +125,33 @@ var saveWnd = Ext.create('Ext.window.Window', {
                         layout: 'anchor',
                         items: [
                             {
-                                id: 'Name',
-                                name: 'Name',
+                                id: 'name',
+                                name: 'name',
                                 xtype: 'textfield',
                                 fieldLabel: '工程名称',
                                 allowBlank: false
                             },
                             {
-                                id: 'EndTime',
-                                name: 'EndTime',
+                                name: 'end',
                                 xtype: 'datefield',
                                 fieldLabel: '结束时间',
                                 allowBlank: false,
                                 editable: false
                             },
                             {
-                                id: 'ContactPhone',
-                                name: 'ContactPhone',
+                                name: 'contact',
                                 xtype: 'textfield',
                                 fieldLabel: '联系电话',
                                 allowBlank: false
                             },
                             {
-                                id: 'Company',
-                                name: 'Company',
+                                name: 'company',
                                 xtype: 'textfield',
                                 fieldLabel: '施工公司',
                                 allowBlank: false
                             },
                             {
-                                id: 'Enabled',
-                                name: 'Enabled',
+                                name: 'enabled',
                                 xtype: 'checkboxfield',
                                 fieldLabel: '工程状态',
                                 boxLabel: '(勾选表示启用)',
@@ -201,12 +217,14 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
     Ext.getCmp('saveForm').getForm().load({
         url: '/Project/GetProject',
-        params: { id: record.raw.Id, action: $$iPems.Action.Edit },
+        params: { id: record.raw.id, action: $$iPems.Action.Edit },
         waitMsg: '正在处理，请稍后...',
         waitTitle: '系统提示',
         success: function (form, action) {
-            Ext.getCmp('Name').setReadOnly(true);
+            form.clearInvalid();
+            Ext.getCmp('name').setReadOnly(true);
             Ext.getCmp('saveResult').setTextWithIcon('', '');
+
             saveWnd.setGlyph(0xf002);
             saveWnd.setTitle('编辑工程');
             saveWnd.opaction = $$iPems.Action.Edit;
@@ -234,75 +252,63 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     },
     columns: [{
         text: '序号',
-        dataIndex: 'Index',
+        dataIndex: 'index',
         width: 60,
         align: 'left',
         sortable: true
     }, {
         text: '工程标识',
-        name: 'Id',
-        dataIndex: 'Id',
-        width: 100,
+        dataIndex: 'id',
         align: 'left',
         sortable: false
     }, {
         text: '工程名称',
-        dataIndex: 'Name',
-        width: 100,
+        dataIndex: 'name',
         align: 'left',
         sortable: false
     }, {
         text: '开始时间',
-        dataIndex: 'StartTime',
-        width: 100,
+        dataIndex: 'start',
         align: 'center',
         sortable: true
     }, {
         text: '结束时间',
-        dataIndex: 'EndTime',
-        width: 100,
+        dataIndex: 'end',
         align: 'center',
         sortable: true
     }, {
         text: '负责人员',
-        dataIndex: 'Responsible',
-        width: 100,
+        dataIndex: 'responsible',
         align: 'left',
         sortable: true
     }, {
         text: '联系电话',
-        dataIndex: 'ContactPhone',
-        width: 100,
+        dataIndex: 'contact',
         align: 'left',
         sortable: true
     }, {
         text: '施工公司',
-        dataIndex: 'Company',
-        width: 100,
+        dataIndex: 'company',
         align: 'left',
         sortable: true
     }, {
         text: '创建人员',
-        dataIndex: 'Creator',
-        width: 100,
+        dataIndex: 'creator',
         align: 'left',
         sortable: true
     }, {
         text: '创建时间',
-        dataIndex: 'CreatedTime',
-        width: 100,
+        dataIndex: 'createdtime',
         align: 'left',
         sortable: true
     }, {
         text: '备注信息',
-        dataIndex: 'Comment',
-        width: 100,
+        dataIndex: 'comment',
         align: 'left',
         sortable: true
     }, {
         text: '工程状态',
-        dataIndex: 'Enabled',
-        width: 60,
+        dataIndex: 'enabled',
         align: 'left',
         sortable: true,
         renderer: function (value) {
@@ -317,14 +323,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '操作',
         items: [{
             getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                return (r.get('Creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
             },
             handler: function (grid, rowIndex, colIndex) {
                 var record = grid.getStore().getAt(rowIndex);
                 if (Ext.isEmpty(record)) return false;
 
-                if (record.raw.Creator === $$iPems.currentEmployee)
-                    editCellClick(grid, rowIndex, colIndex);
+                editCellClick(grid, rowIndex, colIndex);
             }
         }]
     }],
@@ -346,28 +351,21 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     text: '数据查询',
                     glyph: 0xf005,
                     handler: function (el, e) {
-                        var namesfield = Ext.getCmp('names-textfield');
-                        var startTime = Ext.getCmp('begin-datefield');
-                        var endTime = Ext.getCmp('end-datefield');
-
-                        currentStore.getProxy().extraParams.name = namesfield.getRawValue();
-                        currentStore.getProxy().extraParams.startTime = startTime.getRawValue();
-                        currentStore.getProxy().extraParams.endTime = endTime.getRawValue();
-                        currentStore.loadPage(1);
+                        query(currentStore);
                     }
                 }, '-', {
                     xtype: 'button',
                     text: '数据导出',
                     glyph: 0xf010,
                     handler: function (el, e) {
-                        $$iPems.download({ url: '/Project/DownloadProjects', params: { Name: currentStore.getProxy().extraParams.Name, StartTime: currentStore.getProxy().extraParams.StartTime, endTime: currentStore.getProxy().extraParams.endTime } });
+                        download(currentStore);
                     }
                 }]
             }),
             Ext.create('Ext.toolbar.Toolbar', {
                 border: false,
                 items: [{
-                    id: 'begin-datefield',
+                    id: 'start-datefield',
                     xtype: 'datefield',
                     fieldLabel: '开始时间',
                     labelWidth: 60,
@@ -396,7 +394,9 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                             waitMsg: '正在处理，请稍后...',
                             waitTitle: '系统提示',
                             success: function (form, action) {
+                                form.clearInvalid();
                                 Ext.getCmp('saveResult').setTextWithIcon('', '');
+
                                 saveWnd.setGlyph(0xf001);
                                 saveWnd.setTitle('新增工程');
                                 saveWnd.opaction = $$iPems.Action.Add;
@@ -415,6 +415,8 @@ Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
-        currentStore.load();
+
+        //load data
+        query(currentStore);
     }
 });

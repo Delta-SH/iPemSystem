@@ -51,28 +51,28 @@ namespace iPem.Services.Sc {
             return _appointmentRepository.GetEntities();
         }
 
-        public void AddAppointment(Appointment entity) {
+        public void Add(Appointment entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 
             _appointmentRepository.Insert(entity);
         }
 
-        public void AddAppointments(List<Appointment> entities) {
+        public void AddRange(List<Appointment> entities) {
             if(entities == null)
                 throw new ArgumentNullException("entities");
 
             _appointmentRepository.Insert(entities);
         }
 
-        public void UpdateAppointment(Appointment entity) {
+        public void Update(Appointment entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 
             _appointmentRepository.Update(entity);
         }
 
-        public void DeleteAppointment(Appointment entity) {
+        public void Delete(Appointment entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 

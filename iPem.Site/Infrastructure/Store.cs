@@ -36,11 +36,6 @@ namespace iPem.Site.Infrastructure {
         public ProfileValues Profile { get; set; }
 
         /// <summary>
-        /// Gets or sets the webservice values
-        /// </summary>
-        public WsValues WsValues { get; set; }
-
-        /// <summary>
         /// Gets or sets the expire utc time
         /// </summary>
         public DateTime ExpireUtc { get; set; }

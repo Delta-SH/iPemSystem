@@ -45,7 +45,7 @@ namespace iPem.Services.Sc {
         }
 
         public virtual IPagedList<Project> GetProjects(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Project>(this.GetProjects(start, end), pageIndex, pageSize);
+            return new PagedList<Project>(this.GetProjectsAsList(start, end), pageIndex, pageSize);
         }
 
         public virtual List<Project> GetProjectsAsList(DateTime start, DateTime end) {

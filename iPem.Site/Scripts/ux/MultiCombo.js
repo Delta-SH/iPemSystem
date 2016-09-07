@@ -3,6 +3,7 @@
     xtype: "multicombo",
     selectionMode: "checkbox",
     storeUrl: null,
+    idType:1,
     multiSelect: true,
     assertValue: function () {
         this.collapse();
@@ -68,7 +69,7 @@
             me.store = Ext.create('Ext.data.Store', {
                 pageSize: 1024,
                 fields: [
-                    { name: 'id', type: 'int' },
+                    { name: 'id', type: 'auto' },
                     { name: 'text', type: 'string' },
                     { name: 'comment', type: 'string' }
                 ],

@@ -61,6 +61,8 @@ namespace iPem.Site.Infrastructure {
         private Employee _cachedEmployee;
         private ProfileValues _cachedProfile;
         private WsValues _cachedWsValues;
+        private TsValues _cachedTsValues;
+        private RtValues _cachedRtValues;
         private List<Menu> _cachedMenus;
         private HashSet<EnmOperation> _cachedOperations;
 
@@ -284,15 +286,10 @@ namespace iPem.Site.Infrastructure {
                 }
 
                 var _profile = _profileService.GetProfile(User.Id);
-                if(_profile != null && !string.IsNullOrWhiteSpace(_profile.ValuesJson)) {
+                if(_profile != null && !string.IsNullOrWhiteSpace(_profile.ValuesJson))
                     Store.Profile = _cachedProfile = JsonConvert.DeserializeObject<ProfileValues>(_profile.ValuesJson);
-                }
 
                 return _cachedProfile;
-            }
-
-            set {
-                _cachedProfile = Store.Profile = value;
             }
         }
 
@@ -301,21 +298,37 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedWsValues != null)
                     return _cachedWsValues;
 
-                if(Store.WsValues != null) {
-                    _cachedWsValues = Store.WsValues;
-                    return _cachedWsValues;
-                }
-
                 var ws = _dictionaryService.GetDictionary((int)EnmDictionary.Ws);
                 if(ws != null && !string.IsNullOrWhiteSpace(ws.ValuesJson))
-                    Store.WsValues = _cachedWsValues = JsonConvert.DeserializeObject<WsValues>(ws.ValuesJson);
+                    _cachedWsValues = JsonConvert.DeserializeObject<WsValues>(ws.ValuesJson);
 
                 return _cachedWsValues;
             }
+        }
 
-            set {
-                _cachedWsValues = value;
-                Store.WsValues = value;
+        public TsValues TsValues {
+            get {
+                if(_cachedTsValues != null)
+                    return _cachedTsValues;
+
+                var ts = _dictionaryService.GetDictionary((int)EnmDictionary.Ts);
+                if(ts != null && !string.IsNullOrWhiteSpace(ts.ValuesJson))
+                    _cachedTsValues = JsonConvert.DeserializeObject<TsValues>(ts.ValuesJson);
+
+                return _cachedTsValues;
+            }
+        }
+
+        public RtValues RtValues {
+            get {
+                if(_cachedRtValues != null)
+                    return _cachedRtValues;
+
+                var rt = _dictionaryService.GetDictionary((int)EnmDictionary.Report);
+                if(rt != null && !string.IsNullOrWhiteSpace(rt.ValuesJson))
+                    _cachedRtValues = JsonConvert.DeserializeObject<RtValues>(rt.ValuesJson);
+
+                return _cachedRtValues;
             }
         }
 

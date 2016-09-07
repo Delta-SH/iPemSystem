@@ -397,7 +397,8 @@ window.$$iPems.clonePagingToolbar = function (store) {
                         { id: 20, text: '20', comment: '20' },
                         { id: 50, text: '50', comment: '50' },
                         { id: 100, text: '100', comment: '100' },
-                        { id: 200, text: '200', comment: '200' }
+                        { id: 200, text: '200', comment: '200' },
+                        { id: 500, text: '500', comment: '500' }
                     ]
                 }),
                 xtype: 'combobox',

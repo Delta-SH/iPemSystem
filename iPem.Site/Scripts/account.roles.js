@@ -46,7 +46,7 @@ var menuStore = Ext.create('Ext.data.TreeStore',{
     },
     proxy: {
         type: 'ajax',
-        url: '/Account/GetMenusInRole',
+        url: '/Account/GetAllMenus',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -67,7 +67,7 @@ var areaStore = Ext.create('Ext.data.TreeStore',{
     },
     proxy: {
         type: 'ajax',
-        url: '/Account/GetAreasInRole',
+        url: '/Account/GetAllAreas',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -88,7 +88,7 @@ var operateStore = Ext.create('Ext.data.TreeStore', {
     },
     proxy: {
         type: 'ajax',
-        url: '/Account/GetOperateInRole',
+        url: '/Account/GetAllOperates',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -287,9 +287,9 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       preventWindow: true,
                       url: '/Account/SaveRole',
                       params: {
-                          menuIds: menuIds,
-                          areaIds: areaIds,
-                          operateIds: operateIds,
+                          menus: menuIds,
+                          areas: areaIds,
+                          operates: operateIds,
                           action: saveWnd.opaction
                       },
                       success: function (form, action) {
@@ -335,18 +335,19 @@ var editCellClick = function (grid, rowIndex, colIndex) {
         success: function (form, action) {
             form.clearInvalid();
             Ext.getCmp('name').setReadOnly(true);
+            Ext.getCmp('saveResult').setTextWithIcon('', '');
 
             var menuIds = [];
-            if(!Ext.isEmpty(action.result.data.menuIds))
-                menuIds = action.result.data.menuIds;
+            if(!Ext.isEmpty(action.result.data.menus))
+                menuIds = action.result.data.menus;
 
             var areaIds = [];
-            if (!Ext.isEmpty(action.result.data.areaIds))
-                areaIds = action.result.data.areaIds;
+            if (!Ext.isEmpty(action.result.data.areas))
+                areaIds = action.result.data.areas;
 
             var operateIds = [];
-            if (!Ext.isEmpty(action.result.data.operateIds))
-                operateIds = action.result.data.operateIds;
+            if (!Ext.isEmpty(action.result.data.operates))
+                operateIds = action.result.data.operates;
 
             var root1 = Ext.getCmp('treeMenus').getRootNode();
             if (root1.hasChildNodes()) {
@@ -378,7 +379,6 @@ var editCellClick = function (grid, rowIndex, colIndex) {
                 });
             }
 
-            Ext.getCmp('saveResult').setTextWithIcon('', '');
             saveWnd.setGlyph(0xf002);
             saveWnd.setTitle('编辑角色');
             saveWnd.opaction = $$iPems.Action.Edit;
@@ -492,19 +492,51 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                     waitTitle: '系统提示',
                     success: function (form, action) {
                         form.clearInvalid();
-
                         Ext.getCmp('name').setReadOnly(false);
-                        var root = Ext.getCmp('treeMenus').getRootNode();
-                        if (root.hasChildNodes()) {
-                            root.eachChild(function (c) {
+                        Ext.getCmp('saveResult').setTextWithIcon('', '');
+
+                        var menuIds = [];
+                        if (!Ext.isEmpty(action.result.data.menus))
+                            menuIds = action.result.data.menus;
+
+                        var areaIds = [];
+                        if (!Ext.isEmpty(action.result.data.areas))
+                            areaIds = action.result.data.areas;
+
+                        var operateIds = [];
+                        if (!Ext.isEmpty(action.result.data.operates))
+                            operateIds = action.result.data.operates;
+
+                        var root1 = Ext.getCmp('treeMenus').getRootNode();
+                        if (root1.hasChildNodes()) {
+                            root1.eachChild(function (c) {
                                 c.cascadeBy(function (n) {
-                                    var checked = Ext.Array.contains(action.result.data.menuIds, n.data.id);
+                                    var checked = Ext.Array.contains(menuIds, n.data.id);
                                     n.set('checked', checked);
                                 });
                             });
                         }
 
-                        Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        var root2 = Ext.getCmp('areaMenus').getRootNode();
+                        if (root2.hasChildNodes()) {
+                            root2.eachChild(function (c) {
+                                c.cascadeBy(function (n) {
+                                    var checked = Ext.Array.contains(areaIds, n.data.id);
+                                    n.set('checked', checked);
+                                });
+                            });
+                        }
+
+                        var root3 = Ext.getCmp('operateMenus').getRootNode();
+                        if (root3.hasChildNodes()) {
+                            root3.eachChild(function (c) {
+                                c.cascadeBy(function (n) {
+                                    var checked = Ext.Array.contains(operateIds, n.data.id);
+                                    n.set('checked', checked);
+                                });
+                            });
+                        }
+
                         saveWnd.setGlyph(0xf001);
                         saveWnd.setTitle('新增角色');
                         saveWnd.opaction = $$iPems.Action.Add;

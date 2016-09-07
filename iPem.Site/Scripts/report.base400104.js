@@ -1,10 +1,46 @@
 ﻿(function () {
+    var barChart = null,
+        barOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{a} <br/>{b}: {c}",
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: 15,
+                left: 0,
+                right: 5,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '设备分类',
+                    type: 'bar',
+                    data: []
+                }
+            ]
+        };
+
     Ext.define('ReportModel', {
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
             { name: 'id', type: 'string' },
-            { name: 'code', type: 'string' },
             { name: 'name', type: 'string' },
             { name: 'type', type: 'string' },
             { name: 'subType', type: 'string' },
@@ -25,130 +61,24 @@
         idProperty: 'id'
     });
 
+    var query = function (store) {
+        var roomfield = Ext.getCmp('roomfield'),
+            typesfield = Ext.getCmp('typesfield'),
+            parent = roomfield.getValue(),
+            types = typesfield.getValue();
+
+        var proxy = store.getProxy();
+        proxy.extraParams.parent = parent;
+        proxy.extraParams.types = types;
+        store.loadPage(1);
+    };
+
     var print = function (store) {
         $$iPems.download({
-            url: '/Report/DownloadBase400101',
+            url: '/Report/DownloadBase400104',
             params: store.proxy.extraParams
         });
     };
-
-    var chartPie = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '设备总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '类型占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
-    var chartColumn = Ext.create('Ext.chart.Chart', {
-        id: 'chartColumn',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 2,
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['value'],
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: ['name']
-        }],
-        series: [{
-            type: 'column',
-            axis: 'left',
-            highlight: true,
-            highlightCfg: {
-                lineWidth: 0
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '设备总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '类型占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            },
-            label: {
-                display: 'outside',
-                'text-anchor': 'middle',
-                field: 'value',
-                renderer: Ext.util.Format.numberRenderer('0'),
-                orientation: 'horizontal',
-                color: '#333'
-            },
-            xField: 'name',
-            yField: 'value'
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
 
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
@@ -167,22 +97,31 @@
                 totalProperty: 'total',
                 root: 'data'
             },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
             simpleSortMode: true
         },
         listeners: {
             load: function (me, records, successful) {
-                if (successful) {
+                if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    var chartDataPie = $$iPems.ChartEmptyDataPie;
-                    var chartDataColumn = $$iPems.ChartEmptyDataColumn;
                     if (!Ext.isEmpty(data)
                         && !Ext.isEmpty(data.chart)
                         && Ext.isArray(data.chart)
-                        && data.chart.length > 0)
-                        chartDataPie = chartDataColumn = data.chart;
+                        && data.chart.length > 0) {
+                        var xaxis = [], series = [];
+                        Ext.Array.each(data.chart, function (item, index) {
+                            xaxis.push(item.name);
+                            series.push(item.value);
+                        });
 
-                    chartPie.getStore().loadData(chartDataPie, false);
-                    chartColumn.getStore().loadData(chartDataColumn, false);
+                        barOption.xAxis[0].data = xaxis;
+                        barOption.series[0].data = series;
+                        barChart.setOption(barOption);
+                    }
                 }
             }
         }
@@ -197,7 +136,8 @@
             border: false,
             layout: {
                 type: 'vbox',
-                align: 'stretch'
+                align: 'stretch',
+                pack: 'start'
             },
             dockedItems: [{
                 xtype: 'panel',
@@ -223,17 +163,7 @@
                         text: '数据查询',
                         glyph: 0xf005,
                         handler: function (el, e) {
-                            var roomfield = Ext.getCmp('roomfield'),
-                                typesfield = Ext.getCmp('typesfield'),
-                                parent = roomfield.getValue(),
-                                types = typesfield.getValue();
-
-                            if (!Ext.isEmpty(parent)) {
-                                var proxy = currentStore.getProxy();
-                                proxy.extraParams.parent = parent;
-                                proxy.extraParams.types = types;
-                                currentStore.loadPage(1);
-                            }
+                            query(currentStore);
                         }
                     }, '-', {
                         xtype: 'button',
@@ -248,17 +178,22 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: '设备分类占比',
+                title: '设备统计图表',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 1,
                 layout: {
                     type: 'hbox',
                     align: 'stretch',
                     pack: 'start'
                 },
-                items: [chartPie, { xtype: 'component', width: 20 }, chartColumn]
+                items: [
+                    {
+                        xtype: 'container',
+                        flex: 1,
+                        contentEl: 'bar-chart'
+                    }
+                ]
             }, {
                 xtype: 'gridpanel',
                 glyph: 0xf029,
@@ -301,12 +236,6 @@
                 }, {
                     text: '编号',
                     dataIndex: 'id',
-                    width: 100,
-                    align: 'left',
-                    sortable: true
-                }, {
-                    text: '编码',
-                    dataIndex: 'code',
                     width: 100,
                     align: 'left',
                     sortable: true
@@ -419,7 +348,16 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-            currentStore.loadPage(1);
+            
+            //load data
+            query(currentStore);
         }
+    });
+
+    Ext.onReady(function () {
+        barChart = echarts.init(document.getElementById("bar-chart"), 'shine');
+
+        //init charts
+        barChart.setOption(barOption);
     });
 })();

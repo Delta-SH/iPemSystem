@@ -62,7 +62,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetProjects(int start, int limit, string name, DateTime? startTime, DateTime? endTime) {
+        public JsonResult GetProjects(int start, int limit, string name, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<ProjectModel>> {
                 success = true,
                 message = "无数据",
@@ -71,35 +71,31 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var bom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-                var eom = bom.AddMonths(1).AddSeconds(-1);
-
-                if(!startTime.HasValue)
-                    startTime = bom;
-                if(!endTime.HasValue)
-                    endTime = eom;
-                else
-                    endTime.Value.AddSeconds(86399);
+                startDate = startDate.Date;
+                endDate = endDate.Date.AddSeconds(86399);
                 
                 var names = Common.SplitCondition(name);
-                var projects = names.Length > 0 ? _projectsService.GetProjects(names, startTime.Value, endTime.Value, start / limit, limit) : _projectsService.GetProjects(startTime.Value, endTime.Value, start / limit, limit);
+                var projects = names.Length > 0 ? 
+                    _projectsService.GetProjects(names, startDate, endDate, start / limit, limit) : 
+                    _projectsService.GetProjects(startDate, endDate, start / limit, limit);
+
                 if(projects.TotalCount > 0) {
                     data.message = "200 Ok";
                     data.total = projects.TotalCount;
                     for(var i = 0; i < projects.Count; i++) {
                         data.data.Add(new ProjectModel {
-                            Index = start + i + 1,
-                            Id = projects[i].Id.ToString(),
-                            Name = projects[i].Name,
-                            StartTime = CommonHelper.DateConverter(projects[i].StartTime),
-                            EndTime = CommonHelper.DateConverter(projects[i].EndTime),
-                            Responsible = projects[i].Responsible,
-                            ContactPhone = projects[i].ContactPhone,
-                            Company = projects[i].Company,
-                            Creator = projects[i].Creator,
-                            CreatedTime = CommonHelper.DateTimeConverter(projects[i].CreatedTime),
-                            Comment = projects[i].Comment,
-                            Enabled = projects[i].Enabled
+                            index = start + i + 1,
+                            id = projects[i].Id.ToString(),
+                            name = projects[i].Name,
+                            start = CommonHelper.DateConverter(projects[i].StartTime),
+                            end = CommonHelper.DateConverter(projects[i].EndTime),
+                            responsible = projects[i].Responsible,
+                            contact = projects[i].ContactPhone,
+                            company = projects[i].Company,
+                            creator = projects[i].Creator,
+                            createdtime = CommonHelper.DateTimeConverter(projects[i].CreatedTime),
+                            comment = projects[i].Comment,
+                            enabled = projects[i].Enabled
                         });
                     }
                 }
@@ -116,7 +112,20 @@ namespace iPem.Site.Controllers {
                 success = true,
                 message = "200 Ok",
                 total = 0,
-                data = new ProjectModel { Index = 1, Id = Guid.NewGuid().ToString(), Name = "", StartTime = CommonHelper.DateConverter(DateTime.Today), EndTime = CommonHelper.DateConverter(DateTime.Today.AddDays(7)), Responsible = "", ContactPhone = "", Company = "", Creator = "", CreatedTime = CommonHelper.DateConverter(DateTime.Now), Comment = "", Enabled = true }
+                data = new ProjectModel { 
+                    index = 1, 
+                    id = Guid.NewGuid().ToString(), 
+                    name = "", 
+                    start = CommonHelper.DateConverter(DateTime.Today), 
+                    end = CommonHelper.DateConverter(DateTime.Today.AddDays(7)), 
+                    responsible = "", 
+                    contact = "", 
+                    company = "", 
+                    creator = "", 
+                    createdtime = CommonHelper.DateConverter(DateTime.Now), 
+                    comment = "", 
+                    enabled = true 
+                }
             };
             
             try {
@@ -133,15 +142,15 @@ namespace iPem.Site.Controllers {
                 if(project == null)
                     throw new iPemException("未找到数据对象");
 
-                data.data.Id = project.Id.ToString();
-                data.data.Name = project.Name;
-                data.data.StartTime = CommonHelper.DateConverter(project.StartTime);
-                data.data.EndTime = CommonHelper.DateConverter(project.EndTime);
-                data.data.Responsible = project.Responsible;
-                data.data.ContactPhone = project.ContactPhone;
-                data.data.Company = project.Company;
-                data.data.Comment = project.Comment;
-                data.data.Enabled = project.Enabled;
+                data.data.id = project.Id.ToString();
+                data.data.name = project.Name;
+                data.data.start = CommonHelper.DateConverter(project.StartTime);
+                data.data.end = CommonHelper.DateConverter(project.EndTime);
+                data.data.responsible = project.Responsible;
+                data.data.contact = project.ContactPhone;
+                data.data.company = project.Company;
+                data.data.comment = project.Comment;
+                data.data.enabled = project.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -159,36 +168,36 @@ namespace iPem.Site.Controllers {
 
                 if(action == (int)EnmAction.Add) {
                     var newOne = new Project {
-                        Id = new Guid(project.Id),
-                        Name = project.Name,
-                        StartTime = Convert.ToDateTime(project.StartTime),
-                        EndTime = Convert.ToDateTime(project.EndTime).AddDays(1).AddSeconds(-1),
-                        Responsible = project.Responsible,
-                        ContactPhone = project.ContactPhone,
-                        Company = project.Company,
+                        Id = new Guid(project.id),
+                        Name = project.name,
+                        StartTime = Convert.ToDateTime(project.start),
+                        EndTime = Convert.ToDateTime(project.end).AddDays(1).AddSeconds(-1),
+                        Responsible = project.responsible,
+                        ContactPhone = project.contact,
+                        Company = project.company,
                         Creator = _workContext.Employee.Name,
                         CreatedTime = DateTime.Now,
-                        Comment = project.Comment,
-                        Enabled = project.Enabled
+                        Comment = project.comment,
+                        Enabled = project.enabled
                     };
 
                     _projectsService.Add(newOne);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增工程[{0}]", project.Name), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增工程[{0}]", project.name), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
-                    var existedOne = _projectsService.GetProject(new Guid(project.Id));
+                    var existedOne = _projectsService.GetProject(new Guid(project.id));
                     if(existedOne == null)
                         throw new iPemException("工程不存在，保存失败。");
 
                     //existedOne.Id = projectId;
-                    existedOne.Name = project.Name;
-                    existedOne.StartTime = Convert.ToDateTime(project.StartTime);
-                    existedOne.EndTime = Convert.ToDateTime(project.EndTime).AddDays(1).AddSeconds(-1);
-                    existedOne.Responsible = project.Responsible;
-                    existedOne.ContactPhone = project.ContactPhone;
-                    existedOne.Company = project.Company;
-                    existedOne.Comment = project.Comment;
-                    existedOne.Enabled = project.Enabled;
+                    existedOne.Name = project.name;
+                    existedOne.StartTime = Convert.ToDateTime(project.start);
+                    existedOne.EndTime = Convert.ToDateTime(project.end).AddDays(1).AddSeconds(-1);
+                    existedOne.Responsible = project.responsible;
+                    existedOne.ContactPhone = project.contact;
+                    existedOne.Company = project.company;
+                    existedOne.Comment = project.comment;
+                    existedOne.Enabled = project.enabled;
 
                     _projectsService.Update(existedOne);
                     _webLogger.Information(EnmEventType.Operating, string.Format("更新工程[{0}]", existedOne.Name), null, _workContext.User.Id);
@@ -203,36 +212,31 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadProjects(string name, DateTime? startTime, DateTime? endTime) {
+        public ActionResult DownloadProjects(string name, DateTime startDate, DateTime endDate) {
             try {
-                var bom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-                var eom = bom.AddMonths(1).AddSeconds(-1);
-
-                if(!startTime.HasValue)
-                    startTime = bom;
-                if(!endTime.HasValue)
-                    endTime = eom;
-                else
-                    endTime.Value.AddSeconds(86399);
+                startDate = startDate.Date;
+                endDate = endDate.Date.AddSeconds(86399);
 
                 var names = Common.SplitCondition(name);
-                var projects = names.Length > 0 ? _projectsService.GetProjectsAsList(names, startTime.Value, endTime.Value) : _projectsService.GetProjectsAsList(startTime.Value, endTime.Value);
+                var projects = names.Length > 0 ? 
+                    _projectsService.GetProjectsAsList(names, startDate, endDate) : 
+                    _projectsService.GetProjectsAsList(startDate, endDate);
 
                 var models = new List<ProjectModel>();
                 for(var i = 0; i < projects.Count; i++) {
                     models.Add(new ProjectModel {
-                        Index = i + 1,
-                        Id = projects[i].Id.ToString(),
-                        Name = projects[i].Name,
-                        StartTime = CommonHelper.DateConverter(projects[i].StartTime),
-                        EndTime = CommonHelper.DateConverter(projects[i].EndTime),
-                        Responsible = projects[i].Responsible,
-                        ContactPhone = projects[i].ContactPhone,
-                        Company = projects[i].Company,
-                        Creator = projects[i].Creator,
-                        CreatedTime = CommonHelper.DateTimeConverter(projects[i].CreatedTime),
-                        Comment = projects[i].Comment,
-                        Enabled = projects[i].Enabled
+                        index = i + 1,
+                        id = projects[i].Id.ToString(),
+                        name = projects[i].Name,
+                        start = CommonHelper.DateConverter(projects[i].StartTime),
+                        end = CommonHelper.DateConverter(projects[i].EndTime),
+                        responsible = projects[i].Responsible,
+                        contact = projects[i].ContactPhone,
+                        company = projects[i].Company,
+                        creator = projects[i].Creator,
+                        createdtime = CommonHelper.DateTimeConverter(projects[i].CreatedTime),
+                        comment = projects[i].Comment,
+                        enabled = projects[i].Enabled
                     });
                 }
 
@@ -246,7 +250,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAppointments(int start, int limit, DateTime? startTime, DateTime? endTime, int? type, string keyWord) {
+        public JsonResult GetAppointments(int start, int limit, DateTime startDate, DateTime endDate, int type, string keyWord) {
             var data = new AjaxDataModel<List<AppointmentModel>> {
                 success = true,
                 message = "无数据",
@@ -255,15 +259,11 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(!startTime.HasValue)
-                    startTime = DateTime.Today.AddDays(-7);
-                if(!endTime.HasValue)
-                    endTime = DateTime.Today.AddDays(7);
+                startDate = startDate.Date;
+                endDate = endDate.Date.AddSeconds(86399);
 
-                endTime = endTime.Value.AddSeconds(86399);
-
-                var appointments = _appointmentService.GetAppointments(startTime.Value, endTime.Value);
-                var projects = _projectsService.GetAllProjects();
+                var appointments = _appointmentService.GetAppointmentsAsList(startDate, endDate);
+                var projects = _projectsService.GetAllProjectsAsList();
                 var result = (from app in appointments
                               join pro in projects on app.ProjectId equals pro.Id
                               select new {
@@ -274,7 +274,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
                     if(type == (int)EnmOrganization.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Area);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Area);
                         var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
@@ -286,7 +286,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Device);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Device);
                         var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
@@ -298,7 +298,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Room);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Room);
                         var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
@@ -310,7 +310,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Station);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Station);
                         var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
@@ -326,7 +326,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                if(result != null && result.Count > 0) {
+                if(result.Count > 0) {
                     data.message = "200 Ok";
                     data.total = result.Count;
 
@@ -338,8 +338,8 @@ namespace iPem.Site.Controllers {
                         data.data.Add(new AppointmentModel {
                             index = i + 1,
                             id = result[i].Appointment.Id.ToString(),
-                            startTime = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
+                            startDate = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
                             projectName = result[i].Project.Name,
                             creator = result[i].Appointment.Creator,
                             createdTime = CommonHelper.DateTimeConverter(result[i].Appointment.CreatedTime),
@@ -365,8 +365,8 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _projectsService.GetAllProjects().AsQueryable().Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
-                var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit);
+                var models = _projectsService.GetAllProjectsAsList().Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
+                var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit, models.Count());
                 if(result.Count > 0) {
                     data.message = "200 Ok";
                     data.total = result.TotalCount;
@@ -392,8 +392,8 @@ namespace iPem.Site.Controllers {
                 data = new AppointmentModel {
                     index = 1,
                     id = Guid.NewGuid().ToString(),
-                    startTime = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(2100)),
-                    endTime = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(88500)),
+                    startDate = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(2100)),
+                    endDate = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(88500)),
                     comment = "",
                     enabled = true,
                     nodes = new string[] { }
@@ -416,8 +416,8 @@ namespace iPem.Site.Controllers {
 
                 var nodes = _nodesInAppointmentService.GetNodes(appointment.Id);
                 data.data.id = appointment.Id.ToString();
-                data.data.startTime = CommonHelper.DateTimeConverter(appointment.StartTime);
-                data.data.endTime = CommonHelper.DateTimeConverter(appointment.EndTime);
+                data.data.startDate = CommonHelper.DateTimeConverter(appointment.StartTime);
+                data.data.endDate = CommonHelper.DateTimeConverter(appointment.EndTime);
                 data.data.projectId = appointment.ProjectId.ToString();
                 data.data.creator = appointment.Creator;
                 data.data.createdTime = CommonHelper.DateTimeConverter(appointment.CreatedTime);
@@ -499,20 +499,20 @@ namespace iPem.Site.Controllers {
                 if(appointment == null)
                     throw new ArgumentException("参数无效 appointment");
 
-                var startTime = DateTime.Parse(appointment.startTime);
-                var endTime = DateTime.Parse(appointment.endTime);
-                var start_end = endTime.Subtract(startTime);
-                if(start_end.TotalSeconds < 0)
+                var startTime = DateTime.Parse(appointment.startDate);
+                var endTime = DateTime.Parse(appointment.endDate);
+                var interval = endTime.Subtract(startTime);
+                if(interval.TotalSeconds < 0)
                     throw new ArgumentException("预约结束时间不能早于预约开始时间！");
 
-                if(start_end.TotalSeconds > 86400)
+                if(interval.TotalSeconds > 86400)
                     throw new ArgumentException("预约总时长不能超过24个小时！");
 
                 if(appointment.nodes == null || appointment.nodes.Length == 0)
                     throw new ArgumentException("未勾选需要预约的监控点！");
 
                 if(action == (int)EnmAction.Add) {
-                    var newAppointment = new Appointment {
+                    var newOne = new Appointment {
                         Id = Guid.NewGuid(),
                         StartTime = startTime,
                         EndTime = endTime,
@@ -529,16 +529,16 @@ namespace iPem.Site.Controllers {
                          if(keys.Length == 2) {
                              var type = int.Parse(keys[0]);
                              nodes.Add(new NodesInAppointment {
-                                  AppointmentId = newAppointment.Id,
+                                  AppointmentId = newOne.Id,
                                   NodeId = keys[1],
                                   NodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area
                              });
                          }
                     }
 
-                    _appointmentService.AddAppointment(newAppointment);
+                    _appointmentService.Add(newOne);
                     _nodesInAppointmentService.Add(nodes);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newAppointment.Id), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功！" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _appointmentService.GetAppointment(new Guid(appointment.id));
@@ -564,7 +564,7 @@ namespace iPem.Site.Controllers {
                         }
                     }
 
-                    _appointmentService.UpdateAppointment(existed);
+                    _appointmentService.Update(existed);
                     _nodesInAppointmentService.Remove(existed.Id);
                     _nodesInAppointmentService.Add(nodes);
                     _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", appointment.id), null, _workContext.User.Id);
@@ -593,7 +593,7 @@ namespace iPem.Site.Controllers {
                 if(appointment == null)
                     throw new iPemException("预约不存在，删除失败！");
 
-                _appointmentService.DeleteAppointment(appointment);
+                _appointmentService.Delete(appointment);
                 _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", appointment.Id), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功！" });
             } catch(Exception exc) {
@@ -604,17 +604,13 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadAppointments(DateTime? startTime, DateTime? endTime, int? type, string keyWord) {
+        public ActionResult DownloadAppointments(DateTime startDate, DateTime endDate, int type, string keyWord) {
             try {
-                if(!startTime.HasValue)
-                    startTime = DateTime.Today.AddDays(-7);
-                if(!endTime.HasValue)
-                    endTime = DateTime.Today.AddDays(7);
+                startDate = startDate.Date;
+                endDate = endDate.Date.AddSeconds(86399);
 
-                endTime = endTime.Value.AddSeconds(86399);
-
-                var appointments = _appointmentService.GetAppointments(startTime.Value, endTime.Value);
-                var projects = _projectsService.GetAllProjects();
+                var appointments = _appointmentService.GetAppointmentsAsList(startDate, endDate);
+                var projects = _projectsService.GetAllProjectsAsList();
                 var result = (from app in appointments
                               join pro in projects on app.ProjectId equals pro.Id
                               select new {
@@ -624,9 +620,8 @@ namespace iPem.Site.Controllers {
 
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
-
                     if(type == (int)EnmOrganization.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Area);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Area);
                         var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
@@ -638,7 +633,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Device);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Device);
                         var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
@@ -650,7 +645,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Room);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Room);
                         var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
@@ -662,7 +657,7 @@ namespace iPem.Site.Controllers {
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
                     } else if(type == (int)EnmOrganization.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodes(EnmOrganization.Station);
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Station);
                         var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
@@ -679,14 +674,13 @@ namespace iPem.Site.Controllers {
                 }
 
                 var models = new List<AppointmentModel>();
-
-                if(result != null && result.Count > 0) {
+                if(result.Count > 0) {
                     for(int i = 0; i < result.Count; i++) {
                         models.Add(new AppointmentModel {
                             index = i + 1,
                             id = result[i].Appointment.Id.ToString(),
-                            startTime = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
+                            startDate = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
                             projectName = result[i].Project.Name,
                             creator = result[i].Appointment.Creator,
                             createdTime = CommonHelper.DateTimeConverter(result[i].Appointment.CreatedTime),
@@ -695,8 +689,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-                using(var ms = _excelManager.Export<AppointmentModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
 
+                using(var ms = _excelManager.Export<AppointmentModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {

@@ -55,7 +55,7 @@ namespace iPem.Core.NPOI {
             }
 
             var ttrow = worksheet.CreateRow(0); 
-                ttrow.HeightInPoints = 35;
+                ttrow.HeightInPoints = 30;
             for(var i = 0; i < dataAttributes.Count; i++) {
                 var ttcell = ttrow.CreateCell(i);
 
@@ -82,12 +82,12 @@ namespace iPem.Core.NPOI {
                 cell.CellStyle = converter.CellTitle;
 
                 //set cell column width
-                worksheet.SetColumnWidth(i, 25 * 256);
+                worksheet.SetColumnWidth(i, 25 * 150);
             }
 
             for(int k = 0; k < data.Count; k++) {
                 var row = (XSSFRow)worksheet.CreateRow(3 + k); 
-                    row.HeightInPoints = 20;
+                    row.HeightInPoints = 18;
 
                 var background = Color.Empty;
                 if(backgroundAttribute != null) 

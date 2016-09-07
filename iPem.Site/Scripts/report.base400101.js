@@ -1,4 +1,82 @@
 ﻿(function () {
+    var pieChart = null,
+        barChart = null,
+        pieOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                y: 'center',
+                data: []
+            },
+            series: [
+                {
+                    name: '区域分类',
+                    type: 'pie',
+                    radius: ['45%', '85%'],
+                    center: ['60%', '50%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '13',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: []
+                }
+            ]
+        },
+        barOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: "{a} <br/>{b}: {c}",
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: 15,
+                left: 0,
+                right: 5,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '区域分类',
+                    type: 'bar',
+                    data: []
+                }
+            ]
+        };
+
     Ext.define('ReportModel', {
         extend: 'Ext.data.Model',
         fields: [
@@ -12,130 +90,24 @@
         idProperty: 'id'
     });
 
+    var query = function (store) {
+        var areasfield = Ext.getCmp('areasfield'),
+            typesfield = Ext.getCmp('typesfield'),
+            parent = areasfield.getValue(),
+            types = typesfield.getValue();
+
+        var proxy = store.getProxy();
+        proxy.extraParams.parent = parent;
+        proxy.extraParams.types = types;
+        store.loadPage(1);
+    };
+
     var print = function (store) {
         $$iPems.download({
             url: '/Report/DownloadBase400101',
             params: store.proxy.extraParams
         });
     };
-
-    var chartPie = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '区域总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '类型占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
-    var chartColumn = Ext.create('Ext.chart.Chart', {
-        id: 'chartColumn',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 2,
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['value'],
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: ['name']
-        }],
-        series: [{
-            type: 'column',
-            axis: 'left',
-            highlight: true,
-            highlightCfg:{
-                lineWidth: 0
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '区域总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '类型占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            },
-            label: {
-                display: 'outside',
-                'text-anchor': 'middle',
-                field: 'value',
-                renderer: Ext.util.Format.numberRenderer('0'),
-                orientation: 'horizontal',
-                color: '#333'
-            },
-            xField: 'name',
-            yField: 'value'
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
 
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
@@ -155,22 +127,41 @@
                 totalProperty: 'total',
                 root: 'data'
             },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
             simpleSortMode: true
         },
         listeners: {
             load: function (me, records, successful) {
-                if (successful) {
+                if (successful && pieChart && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    var chartDataPie = $$iPems.ChartEmptyDataPie;
-                    var chartDataColumn = $$iPems.ChartEmptyDataColumn;
                     if (!Ext.isEmpty(data)
                         && !Ext.isEmpty(data.chart)
                         && Ext.isArray(data.chart)
-                        && data.chart.length > 0)
-                        chartDataPie = chartDataColumn = data.chart;
+                        && data.chart.length > 0) {
+                        var legend = [], pseries = [], xaxis = [], bseries = [];
+                        Ext.Array.each(data.chart, function (item, index) {
+                            legend.push(item.name);
+                            pseries.push({
+                                value: item.value,
+                                name: item.name
+                            });
+                            xaxis.push(item.name);
+                            bseries.push(item.value);
+                        });
 
-                    chartPie.getStore().loadData(chartDataPie, false);
-                    chartColumn.getStore().loadData(chartDataColumn, false);
+                        pieOption.legend.data = legend;
+                        pieOption.series[0].data = pseries;
+
+                        barOption.xAxis[0].data = xaxis;
+                        barOption.series[0].data = bseries;
+
+                        pieChart.setOption(pieOption);
+                        barChart.setOption(barOption);
+                    }
                 }
             }
         }
@@ -185,7 +176,8 @@
             border: false,
             layout: {
                 type: 'vbox',
-                align: 'stretch'
+                align: 'stretch',
+                pack: 'start'
             },
             dockedItems: [
                 {
@@ -212,17 +204,7 @@
                             text: '数据查询',
                             glyph: 0xf005,
                             handler: function (el, e) {
-                                var areasfield = Ext.getCmp('areasfield'),
-                                    typesfield = Ext.getCmp('typesfield'),
-                                    parent = areasfield.getValue(),
-                                    types = typesfield.getValue();
-
-                                if (!Ext.isEmpty(parent)) {
-                                    var proxy = currentStore.getProxy();
-                                    proxy.extraParams.parent = parent;
-                                    proxy.extraParams.types = types;
-                                    currentStore.loadPage(1);
-                                }
+                                query(currentStore);
                             }
                         }, '-', {
                             xtype: 'button',
@@ -239,21 +221,30 @@
                 {
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: '区域分类占比',
+                    title: '区域统计图表',
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
-                    flex: 1,
                     layout: {
                         type: 'hbox',
                         align: 'stretch',
                         pack: 'start'
                     },
-                    items: [chartPie, {xtype: 'component',width: 20}, chartColumn]
+                    items: [
+                        {
+                            xtype: 'container',
+                            flex: 1,
+                            contentEl: 'pie-chart'
+                        }, {
+                            xtype: 'container',
+                            flex: 2,
+                            contentEl: 'bar-chart'
+                        }
+                    ]
                 }, {
                     xtype: 'gridpanel',
                     glyph: 0xf029,
-                    flex: 2,
+                    flex: 1,
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,
@@ -332,7 +323,18 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-            currentStore.loadPage(1);
+
+            //load data
+            query(currentStore);
         }
+    });
+
+    Ext.onReady(function () {
+        pieChart = echarts.init(document.getElementById("pie-chart"), 'shine');
+        barChart = echarts.init(document.getElementById("bar-chart"), 'shine');
+
+        //init charts
+        pieChart.setOption(pieOption);
+        barChart.setOption(barOption);
     });
 })();

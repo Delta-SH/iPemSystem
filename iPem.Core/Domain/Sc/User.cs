@@ -40,12 +40,12 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// Gets or sets the created date
         /// </summary>
-        public DateTime CreateDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         /// <summary>
-        /// Gets or sets the limit date
+        /// Gets or sets the limited date
         /// </summary>
-        public DateTime LimitDate { get; set; }
+        public DateTime LimitedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the last login date
