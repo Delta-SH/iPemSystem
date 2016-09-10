@@ -1,4 +1,11 @@
-﻿window.$$iPems.icons = {
+﻿
+/* ========================================================================
+ * Global: icons.js
+ * /Scripts/global/icons.js
+ * ========================================================================
+ */
+
+window.$$iPems.icons = {
     Add: '/content/themes/icons/add.png',
     Cancel: '/content/themes/icons/cancel.png',
     Clear: '/content/themes/icons/clear.png',

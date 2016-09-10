@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.EmployeeMultiTreePanel", {
+﻿
+/* ========================================================================
+ * Components: EmployeeComponent.js
+ * /Scripts/components/EmployeeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.EmployeeMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "EmployeeMultiPicker",
     fieldLabel: '隶属员工',

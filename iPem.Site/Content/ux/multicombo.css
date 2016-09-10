@@ -1,4 +1,10 @@
-﻿.x-mcombo-item-checked {
+﻿
+/*!
+ * multicombo.css
+ * /Content/ux/multicombo.css
+ */
+
+.x-mcombo-item-checked {
     background-image: url(images/checked.png);
     background-position: 0 3px;
     background-repeat: no-repeat;

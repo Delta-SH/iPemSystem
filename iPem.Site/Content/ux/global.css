@@ -1,4 +1,10 @@
-﻿.x-panel-body-default {
+﻿
+/*!
+ * global.css
+ * /Content/ux/global.css
+ */
+
+.x-panel-body-default {
     border: 1px solid #c0c0c0;
     border-top: none;
 }

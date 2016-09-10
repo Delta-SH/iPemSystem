@@ -1,4 +1,11 @@
-﻿Ext.onReady(function () {
+﻿
+/* ========================================================================
+ * Global: template.js
+ * /Scripts/global/template.js
+ * ========================================================================
+ */
+
+Ext.onReady(function () {
     Ext.tip.QuickTipManager.init();
 
     //start tasks

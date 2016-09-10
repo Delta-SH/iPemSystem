@@ -14,10 +14,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
-    @Styles.Render("~/bundles/bootstrap/css")
-    @Styles.Render("~/bundles/steps/css")
-    @Styles.Render("~/bundles/icheck/css")
-    @Styles.Render("~/bundles/install/css")
+    <link href="@Url.Content("~/Content/framework/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/framework/jquery.steps.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/framework/icheck-1.0.2/skins/line/blue.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/framework/icheck-1.0.2/skins/flat/blue.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/css/install.css")" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <div class="container">
@@ -588,12 +589,14 @@
     </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/validation")
-    @Scripts.Render("~/bundles/cookie")
-    @Scripts.Render("~/bundles/steps")
-    @Scripts.Render("~/bundles/icheck")
-    @Scripts.Render("~/bundles/install")
+    <script src="@Url.Content("~/Scripts/framework/jquery-1.11.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/bootstrap-3.3.5.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/additional-methods.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/localization/messages_zh.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.cookie-1.4.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.steps-1.1.0.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/icheck-1.0.2.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/install.min.js")" type="text/javascript"></script>
 </body>
 </html>

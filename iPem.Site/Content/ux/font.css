@@ -1,10 +1,16 @@
-﻿@font-face {
+﻿
+/*!
+ * font.css
+ * /Content/ux/font.css
+ */
+
+@font-face {
 	font-family: 'top-nav-font';
-	src: url('fonts/topbar.eot');
-	src: url('fonts/topbar.eot?#iefix') format('embedded-opentype'),
-		 url('fonts/topbar.ttf') format('truetype'),
-		 url('fonts/topbar.woff') format('woff'),
-		 url('fonts/topbar.svg?#top-nav-font') format('svg');
+	src: url('/Content/ux/fonts/topbar.eot');
+	src: url('/Content/ux/fonts/topbar.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/topbar.ttf') format('truetype'),
+		 url('/Content/ux/fonts/topbar.woff') format('woff'),
+		 url('/Content/ux/fonts/topbar.svg?#top-nav-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;

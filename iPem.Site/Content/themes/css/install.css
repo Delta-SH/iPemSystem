@@ -19,7 +19,7 @@ body {
 }
 
 .navbar-brand {
-    background-image: url('images/logo.png');
+    background-image: url('/Content/themes/images/install.png');
     background-repeat: no-repeat;
     background-position: 0px 0px;
     width: 116px;

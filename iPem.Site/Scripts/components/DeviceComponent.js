@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.DeviceMultiTreePanel", {
+﻿
+/* ========================================================================
+ * Components: DeviceComponent.js
+ * /Scripts/components/DeviceComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.DeviceMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "DeviceMultiPicker",
     fieldLabel: '设备名称',

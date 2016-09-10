@@ -1,60 +1,129 @@
 ﻿(function () {
+    var barChart = null,
+        barOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                top: 15,
+                left: 0,
+                right: 5,
+                bottom: 0,
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [],
+                    splitLine: { show: false }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '一级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f04b51'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '二级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#efa91f'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '三级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#f5d313'
+                        }
+                    },
+                    data: []
+                },
+                {
+                    name: '四级告警',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: '#0892cd'
+                        }
+                    },
+                    data: []
+                }
+            ]
+        };
+
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
+            { name: 'fsuid', type: 'string' },
 			{ name: 'id', type: 'string' },
+            { name: 'level', type: 'string' },
+            { name: 'levelid', type: 'int' },
+            { name: 'startDate', type: 'string' },
+            { name: 'endDate', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
 			{ name: 'room', type: 'string' },
-            { name: 'devType', type: 'string' },
             { name: 'device', type: 'string' },
-            { name: 'logic', type: 'string' },
+            { name: 'deviceType', type: 'string' },
             { name: 'point', type: 'string' },
-            { name: 'levelValue', type: 'int' },
-            { name: 'levelDisplay', type: 'string' },
-            { name: 'startTime', type: 'string' },
-            { name: 'endTime', type: 'string' },
             { name: 'startValue', type: 'string' },
             { name: 'endValue', type: 'string' },
-            { name: 'almComment', type: 'string' },
-            { name: 'normalComment', type: 'string' },
+            { name: 'comment', type: 'string' },
             { name: 'frequency', type: 'int' },
+            { name: 'interval', type: 'string' },
             { name: 'endType', type: 'string' },
-            { name: 'project', type: 'string' },
-            { name: 'confirmedStatus', type: 'string' },
-            { name: 'confirmedTime', type: 'string' },
-            { name: 'confirmer', type: 'string' }
+            { name: 'confirmed', type: 'string' },
+            { name: 'confirmer', type: 'string' },
+            { name: 'confirmedtime', type: 'string' },
+            { name: 'project', type: 'string' }
         ],
-        idProperty: 'id'
+        idProperty: 'index'
     });
 
-    var query = function (pagingtoolbar) {
-        var me = pagingtoolbar.store;
+    var query = function (store) {
+        store.proxy.extraParams.parent = Ext.getCmp('rangePicker').getValue();
+        store.proxy.extraParams.startDate = Ext.getCmp('startField').getRawValue();
+        store.proxy.extraParams.endDate = Ext.getCmp('endField').getRawValue();
+        store.proxy.extraParams.staTypes = Ext.getCmp('station-type-multicombo').getSelectedValues();
+        store.proxy.extraParams.roomTypes = Ext.getCmp('room-type-multicombo').getSelectedValues();
+        store.proxy.extraParams.devTypes = Ext.getCmp('device-type-multicombo').getSelectedValues();
+        store.proxy.extraParams.levels = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
+        store.proxy.extraParams.logicTypes = Ext.getCmp('logic-type-multicombo').getValue();
+        store.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
 
-        me.proxy.extraParams.parent = Ext.getCmp('rangePicker').getValue();
-        me.proxy.extraParams.starttime = Ext.getCmp('startField').getRawValue();
-        me.proxy.extraParams.endtime = Ext.getCmp('endField').getRawValue();
-        me.proxy.extraParams.statypes = Ext.getCmp('station-type-multicombo').getSelectedValues();
-        me.proxy.extraParams.roomtypes = Ext.getCmp('room-type-multicombo').getSelectedValues();
-        me.proxy.extraParams.devtypes = Ext.getCmp('device-type-multicombo').getSelectedValues();
-        me.proxy.extraParams.almlevels = Ext.getCmp('alarm-level-multicombo').getSelectedValues();
-        me.proxy.extraParams.logictypes = Ext.getCmp('logic-type-multicombo').getSelectedValues();
-        me.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
-
-        me.proxy.extraParams.confirm = 'all';
+        store.proxy.extraParams.confirm = 'all';
         if (Ext.getCmp('show-confirm-menu').checked)
-            me.proxy.extraParams.confirm = 'confirm';
+            store.proxy.extraParams.confirm = 'confirm';
         if (Ext.getCmp('show-unconfirm-menu').checked)
-            me.proxy.extraParams.confirm = 'unconfirm';
+            store.proxy.extraParams.confirm = 'unconfirm';
 
-        me.proxy.extraParams.project = 'all';
+        store.proxy.extraParams.project = 'all';
         if (Ext.getCmp('show-project-menu').checked)
-            me.proxy.extraParams.project = 'project';
+            store.proxy.extraParams.project = 'project';
         if (Ext.getCmp('show-unproject-menu').checked)
-            me.proxy.extraParams.project = 'unproject';
+            store.proxy.extraParams.project = 'unproject';
 
-        me.loadPage(1);
+        store.loadPage(1);
     };
 
     var print = function (store) {
@@ -115,129 +184,11 @@
         }]
     });
 
-    var chartPie = Ext.create('Ext.chart.Chart', {
-        id: 'chartPie',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 1,
-        insetPadding: 5,
-        theme: 'Base:gradients',
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        series: [{
-            type: 'pie',
-            field: 'value',
-            showInLegend: true,
-            donut: false,
-            highlight: true,
-            highlightCfg: {
-                segment: { margin: 5 }
-            },
-            label: {
-                display: 'rotate',
-                field: 'name',
-                contrast: true
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '告警总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '告警占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
-    var chartColumn = Ext.create('Ext.chart.Chart', {
-        id: 'chartColumn',
-        xtype: 'chart',
-        animate: true,
-        shadow: false,
-        flex: 2,
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['value'],
-            grid: true,
-            minimum: 0
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: ['name']
-        }],
-        series: [{
-            type: 'column',
-            axis: 'left',
-            highlight: true,
-            highlightCfg: {
-                lineWidth: 0
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 120,
-                minHeight: 60,
-                renderer: function (storeItem, item) {
-                    var total = 0;
-                    chartPie.store.each(function (rec) {
-                        total += rec.get('value');
-                    });
-
-                    this.update(
-                        Ext.String.format('{0}: {1}<br/>{2}: {3}<br/>{4}: {5}%',
-                        '告警总量',
-                        total,
-                        storeItem.get('name'),
-                        storeItem.get('value'),
-                        '告警占比',
-                        (storeItem.get('value') / total * 100).toFixed(2))
-                    );
-                }
-            },
-            label: {
-                display: 'outside',
-                'text-anchor': 'middle',
-                field: 'value',
-                renderer: Ext.util.Format.numberRenderer('0'),
-                orientation: 'horizontal',
-                color: '#333'
-            },
-            xField: 'name',
-            yField: 'value'
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['name', 'value', 'comment']
-        })
-    });
-
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
         model: 'AlarmModel',
-        groupField: 'devType',
+        groupField: 'deviceType',
         //禁用自动排序，使用后台的排序方式
         groupDir: 'undefined',
         sortOnLoad: false,
@@ -257,22 +208,63 @@
                 totalProperty: 'total',
                 root: 'data'
             },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
             simpleSortMode: true
         },
         listeners: {
             load: function (me, records, successful) {
                 if (successful) {
                     var data = me.proxy.reader.jsonData;
-                    var chartDataPie = $$iPems.ChartEmptyDataPie;
-                    var chartDataColumn = $$iPems.ChartEmptyDataColumn;
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)
-                        && data.chart.length > 0)
-                        chartDataPie = chartDataColumn = data.chart;
+                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                        var xaxis = [],
+                            series1 = [],
+                            series2 = [],
+                            series3 = [],
+                            series4 = [],
+                            groups = {};
 
-                    chartPie.getStore().loadData(chartDataPie, false);
-                    chartColumn.getStore().loadData(chartDataColumn, false);
+                        Ext.Array.each(data.chart, function (item, index) {
+                            if (!groups[item.name]) {
+                                groups[item.name] = {
+                                    Key: item.name,
+                                    L1: 0,
+                                    L2: 0,
+                                    L3: 0,
+                                    L4: 0
+                                };
+                            }
+
+                            if (item.index == $$iPems.AlmLevel.Level1)
+                                groups[item.name].L1 = item.value;
+                            else if (item.index == $$iPems.AlmLevel.Level2)
+                                groups[item.name].L2 = item.value;
+                            else if (item.index == $$iPems.AlmLevel.Level3)
+                                groups[item.name].L3 = item.value;
+                            else if (item.index == $$iPems.AlmLevel.Level4)
+                                groups[item.name].L4 = item.value;
+                        });
+
+                        for (var x in groups) {
+                            if (Object.prototype.hasOwnProperty.call(groups, x)) {
+                                xaxis.push(groups[x].Key);
+                                series1.push(groups[x].L1);
+                                series2.push(groups[x].L2);
+                                series3.push(groups[x].L3);
+                                series4.push(groups[x].L4);
+                            }
+                        }
+
+                        barOption.xAxis[0].data = xaxis;
+                        barOption.series[0].data = series1;
+                        barOption.series[1].data = series2;
+                        barOption.series[2].data = series3;
+                        barOption.series[3].data = series4;
+                        barChart.setOption(barOption);
+                    }
                 }
             }
         }
@@ -298,13 +290,18 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 1,
                 layout: {
                     type: 'hbox',
                     align: 'stretch',
                     pack: 'start'
                 },
-                items: [chartPie, { xtype: 'component', width: 20 }, chartColumn]
+                items: [
+                    {
+                        xtype: 'container',
+                        flex: 1,
+                        contentEl: 'bar-chart'
+                    }
+                ]
             }, {
                 id: 'history-alarm-grid',
                 xtype: 'grid',
@@ -313,7 +310,7 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 2,
+                flex: 1,
                 store: currentStore,
                 loadMask: true,
                 tools: [{
@@ -384,6 +381,20 @@
                         width: 60
                     },
                     {
+                        text: '告警级别',
+                        dataIndex: 'level',
+                        align: 'center',
+                        tdCls: 'x-level-cell'
+                    },
+                    {
+                        text: '开始时间',
+                        dataIndex: 'startDate'
+                    },
+                    {
+                        text: '结束时间',
+                        dataIndex: 'endDate'
+                    },
+                    {
                         text: '所属区域',
                         dataIndex: 'area'
                     },
@@ -396,32 +407,16 @@
                         dataIndex: 'room'
                     },
                     {
-                        text: '设备类型',
-                        dataIndex: 'devType'
-                    },
-                    {
-                        text: '设备名称',
+                        text: '所属设备',
                         dataIndex: 'device'
                     },
                     {
-                        text: '逻辑分类',
-                        dataIndex: 'logic'
+                        text: '设备类型',
+                        dataIndex: 'deviceType'
                     },
                     {
                         text: '信号名称',
                         dataIndex: 'point'
-                    },
-                    {
-                        text: '告警级别',
-                        dataIndex: 'levelDisplay'
-                    },
-                    {
-                        text: '开始时间',
-                        dataIndex: 'startTime'
-                    },
-                    {
-                        text: '结束时间',
-                        dataIndex: 'endTime'
                     },
                     {
                         text: '触发值',
@@ -433,19 +428,31 @@
                     },
                     {
                         text: '告警描述',
-                        dataIndex: 'almComment'
-                    },
-                    {
-                        text: '正常描述',
-                        dataIndex: 'normalComment'
+                        dataIndex: 'comment'
                     },
                     {
                         text: '触发频次',
                         dataIndex: 'frequency'
                     },
                     {
+                        text: '告警历时',
+                        dataIndex: 'interval'
+                    },
+                    {
                         text: '结束方式',
                         dataIndex: 'endType'
+                    },
+                    {
+                        text: '确认状态',
+                        dataIndex: 'confirmed'
+                    },
+                    {
+                        text: '确认人员',
+                        dataIndex: 'confirmer'
+                    },
+                    {
+                        text: '确认时间',
+                        dataIndex: 'confirmedtime'
                     },
                     {
                         text: '工程预约',
@@ -453,18 +460,6 @@
                         renderer: function (value, p, record) {
                             return Ext.String.format('<a href="javascript:void(0)" style="color:#157fcc;">{0}</a>', value);
                         }
-                    },
-                    {
-                        text: '确认状态',
-                        dataIndex: 'confirmedStatus'
-                    },
-                    {
-                        text: '确认时间',
-                        dataIndex: 'confirmedTime'
-                    },
-                    {
-                        text: '确认人员',
-                        dataIndex: 'confirmer'
                     }
                 ],
                 bbar: currentPagingToolbar,
@@ -514,7 +509,7 @@
                                 glyph: 0xf005,
                                 text: '数据查询',
                                 handler: function (me, event) {
-                                    query(currentPagingToolbar);
+                                    query(currentStore);
                                 }
                             }
                         ]
@@ -552,14 +547,11 @@
                         xtype: 'toolbar',
                         border: false,
                         items: [
-                            {
-                                id: 'alarm-level-multicombo',
-                                xtype: 'AlarmLevelMultiCombo',
-                                emptyText: '默认全部'
-                            },
+                            
                             {
                                 id: 'logic-type-multicombo',
                                 xtype: 'LogicTypeMultiPicker',
+                                width: 220,
                                 emptyText: '默认全部'
                             },
                             {
@@ -569,6 +561,11 @@
                                 emptyText: '多条件请以;分隔，例: A;B;C',
                                 labelWidth: 60,
                                 width: 220
+                            },
+                            {
+                                id: 'alarm-level-multicombo',
+                                xtype: 'AlarmLevelMultiCombo',
+                                emptyText: '默认全部'
                             },
                             {
                                 id: 'other-option-button',
@@ -632,7 +629,16 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-            query(currentPagingToolbar);
+            
+            //load data
+            query(currentStore);
         }
+    });
+
+    Ext.onReady(function () {
+        barChart = echarts.init(document.getElementById("bar-chart"), 'shine');
+
+        //init charts
+        barChart.setOption(barOption);
     });
 })();

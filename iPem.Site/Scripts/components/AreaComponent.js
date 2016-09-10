@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.AreaMultiTreePanel", {
+﻿
+/* ========================================================================
+ * Components: AreaComponent.js
+ * /Scripts/components/AreaComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.AreaMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "AreaMultiPicker",
     fieldLabel: '所属区域',

@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.PointTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: PointTypeComponent.js
+ * /Scripts/components/PointTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.PointTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "PointTypeMultiCombo",
     fieldLabel: '信号类型',

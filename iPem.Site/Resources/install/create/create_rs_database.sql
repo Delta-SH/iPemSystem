@@ -543,7 +543,7 @@ CREATE TABLE [dbo].[P_Point](
 	[Type] [int] NOT NULL,
 	[UnitState] [varchar](160) NULL,
 	[Number] [varchar](20) NOT NULL,
-	[RoomTypeId] [varchar](100) NOT NULL,
+	[StationTypeId] [varchar](100) NOT NULL,
 	[SubDeviceTypeId] [varchar](100) NOT NULL,
 	[SubLogicTypeId] [varchar](100) NOT NULL,
 	[AlarmTimeDesc] [varchar](40) NULL,

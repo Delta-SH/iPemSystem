@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.AlarmLevelMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: AlarmLevelComponent.js
+ * /Scripts/components/AlarmLevelComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.AlarmLevelMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "AlarmLevelMultiCombo",
     fieldLabel: '告警级别',

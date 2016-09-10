@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.SingleCombo", {
+﻿
+/* ========================================================================
+ * Ux: SingleCombo.js
+ * /Scripts/ux/SingleCombo.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.SingleCombo", {
     extend: "Ext.form.field.ComboBox",
     xtype: "singlecombo",
     storeUrl: null,

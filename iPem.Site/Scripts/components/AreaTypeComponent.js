@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.AreaTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: AreaTypeComponent.js
+ * /Scripts/components/AreaTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.AreaTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "AreaTypeMultiCombo",
     fieldLabel: '区域类型',

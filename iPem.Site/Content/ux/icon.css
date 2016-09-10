@@ -1,4 +1,10 @@
-﻿.x-icon-accept {
+﻿
+/*!
+ * icon.css
+ * /Content/ux/icon.css
+ */
+
+.x-icon-accept {
     background-image: url("../themes/icons/tick.png") !important;
     background-repeat: no-repeat;
 }

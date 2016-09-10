@@ -346,18 +346,12 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedOperations != null)
                     return _cachedOperations;
 
-                var key = string.Format(GlobalCacheKeys.Rl_OperationsResultPattern, Role.Id);
-                if(_cacheManager.IsSet(key))
-                    return _cacheManager.Get<HashSet<EnmOperation>>(key);
-
                 var operations = _operateService.GetOperates(Role.Id);
                 _cachedOperations = new HashSet<EnmOperation>();
                 foreach(var entity in operations.Operates) {
-                    if(!_cachedOperations.Contains(entity))
-                        _cachedOperations.Add(entity);
+                    _cachedOperations.Add(entity);
                 }
 
-                _cacheManager.Set<HashSet<EnmOperation>>(key, _cachedOperations, CachedIntervals.Global_Intervals);
                 return _cachedOperations;
             }
         }

@@ -46,7 +46,14 @@ namespace iPem.Services.Sc {
                 return operations;
             }
 
-            return _operateRepository.GetEntity(role);
+            var key = string.Format(GlobalCacheKeys.Rl_OperationsResultPattern, role);
+            if(_cacheManager.IsSet(key))
+                return _cacheManager.Get<OperateInRole>(key);
+
+            var result = _operateRepository.GetEntity(role);
+            _cacheManager.Set<OperateInRole>(key, result, CachedIntervals.Global_Intervals);
+
+            return result;
         }
 
         public void Add(OperateInRole operation) {

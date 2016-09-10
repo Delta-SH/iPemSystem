@@ -1,4 +1,11 @@
-﻿Ext.ux.DateTime = new function () {
+﻿
+/* ========================================================================
+ * Ux: DateTimePicker.js
+ * /Scripts/ux/DateTimePicker.js
+ * ========================================================================
+ */
+
+Ext.ux.DateTime = new function () {
     Ext.apply(this, {
         defaultFormat: 'Y-m-d H:i:s',
         dateFormat: 'Y-m-d',

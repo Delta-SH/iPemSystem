@@ -1,4 +1,11 @@
-﻿Ext.define('Ext.ux.ImageExporter', {
+﻿
+/* ========================================================================
+ * Components: ImageExporterComponent.js
+ * /Scripts/components/ImageExporterComponent.js
+ * ========================================================================
+ */
+
+Ext.define('Ext.ux.ImageExporter', {
 
     singleton: true,
 

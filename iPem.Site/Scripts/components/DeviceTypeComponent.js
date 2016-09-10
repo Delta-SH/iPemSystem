@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.DeviceTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: DeviceTypeComponent.js
+ * /Scripts/components/DeviceTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.DeviceTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "DeviceTypeMultiCombo",
     fieldLabel: '设备类型',

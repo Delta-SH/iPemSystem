@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.Label", {
+﻿
+/* ========================================================================
+ * Ux: Label.js
+ * /Scripts/ux/Label.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.Label", {
     extend: "Ext.form.Label",
     xtype: 'iconlabel',
     requires: ['Ext.XTemplate'],

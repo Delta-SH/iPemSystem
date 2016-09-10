@@ -6,7 +6,7 @@
         IPv4Text: 'IPv4地址格式错误',
         IPv4Mask: /[\d\.]/i
     });
-
+    
     var layout = Ext.create('Ext.tab.Panel', {
         region: 'center',
         border: true,

@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.RoomTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: RoomTypeComponent.js
+ * /Scripts/components/RoomTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.RoomTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "RoomTypeMultiCombo",
     fieldLabel: '机房类型',

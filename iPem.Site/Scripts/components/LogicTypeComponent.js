@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.LogicTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: LogicTypeComponent.js
+ * /Scripts/components/LogicTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.LogicTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "LogicTypeMultiCombo",
     fieldLabel: '逻辑分类',

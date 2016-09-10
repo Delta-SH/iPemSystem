@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.MultiCombo", {
+﻿
+/* ========================================================================
+ * Ux: MultiCombo.js
+ * /Scripts/ux/MultiCombo.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.MultiCombo", {
     extend: "Ext.form.field.ComboBox",
     xtype: "multicombo",
     selectionMode: "checkbox",

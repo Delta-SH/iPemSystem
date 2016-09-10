@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.StationMultiTreePanel", {
+﻿
+/* ========================================================================
+ * Components: StationComponent.js
+ * /Scripts/components/StationComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.StationMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "StationMultiPicker",
     fieldLabel: '所属站点',

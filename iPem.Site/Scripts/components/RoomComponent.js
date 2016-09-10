@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.RoomMultiTreePanel", {
+﻿
+/* ========================================================================
+ * Components: RoomComponent.js
+ * /Scripts/components/RoomComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.RoomMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "RoomMultiPicker",
     fieldLabel: '所属机房',

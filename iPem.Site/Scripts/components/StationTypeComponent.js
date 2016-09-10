@@ -1,4 +1,11 @@
-﻿Ext.define("Ext.ux.StationTypeMultiCombo", {
+﻿
+/* ========================================================================
+ * Components: StationTypeComponent.js
+ * /Scripts/components/StationTypeComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.StationTypeMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "StationTypeMultiCombo",
     fieldLabel: '站点类型',

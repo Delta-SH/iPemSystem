@@ -1,4 +1,11 @@
-﻿Ext.define('Ext.ux.TreePicker', {
+﻿
+/* ========================================================================
+ * Ux: TreePicker.js
+ * /Scripts/ux/TreePicker.js
+ * ========================================================================
+ */
+
+Ext.define('Ext.ux.TreePicker', {
     extend: 'Ext.form.field.Picker',
     requires: ['Ext.tree.Panel'],
     xtype: 'treepicker',
