@@ -1,5 +1,4 @@
-﻿
-/*!
+﻿/*!
  * global.css
  * /Content/ux/global.css
  */
@@ -114,33 +113,33 @@
 }
 
 .x-layout-split-left {
-  background-image: url('images/util/splitter/mini-left.png');
+  background-image: url('images/mini-left.png');
 }
 
 .x-layout-split-right {
-  background-image: url('images/util/splitter/mini-right.png');
+  background-image: url('images/mini-right.png');
 }
 
 .x-layout-split-top {
-  background-image: url('images/util/splitter/mini-top.png');
+  background-image: url('images/mini-top.png');
 }
 
 .x-layout-split-bottom {
-  background-image: url('images/util/splitter/mini-bottom.png');
+  background-image: url('images/mini-bottom.png');
 }
 
 .x-splitter-collapsed .x-layout-split-left {
-  background-image: url('images/util/splitter/mini-right.png');
+  background-image: url('images/mini-right.png');
 }
 
 .x-splitter-collapsed .x-layout-split-right {
-  background-image: url('images/util/splitter/mini-left.png');
+  background-image: url('images/mini-left.png');
 }
 
 .x-splitter-collapsed .x-layout-split-top {
-  background-image: url('images/util/splitter/mini-bottom.png');
+  background-image: url('images/mini-bottom.png');
 }
 
 .x-splitter-collapsed .x-layout-split-bottom {
-  background-image: url('images/util/splitter/mini-top.png');
+  background-image: url('images/mini-top.png');
 }

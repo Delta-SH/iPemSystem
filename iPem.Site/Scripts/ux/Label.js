@@ -1,5 +1,4 @@
-﻿
-/* ========================================================================
+﻿/* ========================================================================
  * Ux: Label.js
  * /Scripts/ux/Label.js
  * ========================================================================
@@ -79,14 +78,14 @@ Ext.define("Ext.ux.Label", {
     },
 
     getText: function (encode) {
-        return this.rendered ? encode === true ? Ext.util.Format.htmlEncode(this.textEl.dom.innerHTML) : this.textEl.dom.innerHTML : this.text;
+        return this.rendered ? encode === true ? Ext.String.htmlEncode(this.textEl.dom.innerHTML) : this.textEl.dom.innerHTML : this.text;
     },
 
     getDisplayText: function (text, encode) {
         var t = text || this.text || this.html || "",
-            x = encode !== false ? Ext.util.Format.htmlEncode(t) : t;
+            x = encode !== false ? Ext.String.htmlEncode(t) : t;
 
-        return (Ext.isEmpty(t) && !Ext.isEmpty(this.emptyText)) ? this.emptyText : !Ext.isEmpty(this.format) ? Ext.net.StringUtils.format(this.format, x) : x
+        return (Ext.isEmpty(t) && !Ext.isEmpty(this.emptyText)) ? this.emptyText : !Ext.isEmpty(this.format) ? Ext.String.format(this.format, x) : x
     },
 
     setText: function (text, encode) {
@@ -124,17 +123,10 @@ Ext.define("Ext.ux.Label", {
         this.setText(text, encode);
     },
 
-    // Appends the specified string to the label's innerHTML.
-    // Options:
-    //      text - a string to append.
-    //      (optional) appendLine - appends a new line if true. Defaults to false.
     append: function (text, appendLine) {
         this.setText([this.getText(), text, appendLine === true ? "<br/>" : ""].join(""), false);
     },
 
-    // Appends the specified string and a new line to the label's innerHTML.
-    // Options:
-    //      text - a string to append.
     appendLine: function (text) {
         this.append(text, true);
     }
