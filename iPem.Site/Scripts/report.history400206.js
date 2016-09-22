@@ -23,7 +23,7 @@ Ext.define('ReportModel', {
         { name: 'type', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'count', type: 'int' },
-        { name: 'interval', type: 'float' },
+        { name: 'interval', type: 'string' },
         { name: 'appointments', type: 'auto' }
     ]
 });
@@ -138,11 +138,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '预约数量',
         dataIndex: 'count',
         align: 'left',
+        width: 150,
         sortable: true
     },{
-        text: '预约时长(分钟)',
+        text: '预约时长',
         dataIndex: 'interval',
         align: 'left',
+        width: 150,
         sortable: true
     }],
     dockedItems: [{

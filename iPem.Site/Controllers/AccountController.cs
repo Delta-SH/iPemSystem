@@ -1522,10 +1522,10 @@ namespace iPem.Site.Controllers {
                     chaoChang = 1,
                     weiTingDian = 0,
                     tingDian = 1,
-                    tingDianXinHao = new string[] { },
+                    tingDianXinHao = null,
                     weiFaDian = 0,
                     faDian = 1,
-                    faDianXinHao = new string[] { },
+                    faDianXinHao = null,
                     whlHuLue = 0,
                     jslGuiDing = 0,
                     jslHuLue = 0

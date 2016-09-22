@@ -780,7 +780,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400205(string parent, DateTime starttime, DateTime endtime, int start, int limit) {
+        public JsonResult RequestHistory400205(int start, int limit, string parent, DateTime starttime, DateTime endtime) {
             var data = new AjaxDataModel<List<Model400205>> {
                 success = true,
                 message = "无数据",
@@ -826,7 +826,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400206(string parent, DateTime starttime, DateTime endtime, int start, int limit) {
+        public JsonResult RequestHistory400206(int start, int limit, string parent, DateTime starttime, DateTime endtime) {
             var data = new AjaxDataModel<List<Model400206>> {
                 success = true,
                 message = "无数据",
@@ -964,13 +964,12 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestChart400301(string device, string point, DateTime starttime, DateTime endtime, int start, int limit) {
-            var data = new AjaxChartModel<List<Model400301>, List<ChartModel>> {
+        public JsonResult RequestChart400301(string device, string point, DateTime starttime, DateTime endtime) {
+            var data = new AjaxDataModel<List<ChartModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<Model400301>(),
-                chart = new List<ChartModel>()
+                data = new List<ChartModel>()
             };
 
             try {
@@ -984,32 +983,17 @@ namespace iPem.Site.Controllers {
                         if(curDevice != null) {
                             var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                             if(curPoint != null) {
-                                var models = _hisValueService.GetValuesAsList(curDevice.Current.Id, curPoint.Id, starttime, endtime);
+                                var models = _hisValueService.GetValuesByPointAsList(curDevice.Current.Id, curPoint.Id, starttime, endtime);
                                 if(models.Count > 0) {
                                     data.message = "200 Ok";
                                     data.total = models.Count;
 
-                                    var end = start + limit;
-                                    if(end > models.Count)
-                                        end = models.Count;
-
-                                    for(int i = start; i < end; i++) {
-                                        data.data.Add(new Model400301 {
-                                            index = i + 1,
-                                            value = Common.GetValueDisplay(curPoint.Type, models[i].Value, curPoint.UnitState),
-                                            time = CommonHelper.DateTimeConverter(models[i].Time),
-                                            threshold = Common.GetValueDisplay(curPoint.Type, models[i].Threshold, curPoint.UnitState),
-                                            state = (int)models[i].State,
-                                            stateDisplay = Common.GetPointStatusDisplay(models[i].State)
-                                        });
-                                    }
-
-                                    for(var i = 0; i < models.Count; i++) {
-                                        data.chart.Add(new ChartModel {
+                                    for(int i = 0; i < models.Count; i++) {
+                                        data.data.Add(new ChartModel {
                                             index = i + 1,
                                             name = CommonHelper.DateTimeConverter(models[i].Time),
                                             value = models[i].Value,
-                                            comment = Common.GetValueDisplay(curPoint.Type, models[i].Value, curPoint.UnitState)
+                                            comment = curPoint.UnitState
                                         });
                                     }
                                 }
@@ -1026,60 +1010,13 @@ namespace iPem.Site.Controllers {
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [Authorize]
-        public ActionResult DownloadChart400301(string device, string point, DateTime starttime, DateTime endtime) {
-            try {
-                var title = "信号测值列表";
-                var models = new List<Model400301>();
-
-                var keys = Common.SplitKeys(device);
-                if(keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Device) {
-                        var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == id);
-                        if(curDevice != null) {
-                            var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
-                            if(curPoint != null) {
-                                title = string.Format("{0} - {1}", curPoint.Name, title);
-                                var values = _hisValueService.GetValuesAsList(curDevice.Current.Id, curPoint.Id, starttime, endtime);
-                                if(values.Count > 0) {
-                                    for(int i = 0; i < values.Count; i++) {
-                                        models.Add(new Model400301 {
-                                            index = i + 1,
-                                            value = Common.GetValueDisplay(curPoint.Type, values[i].Value, curPoint.UnitState),
-                                            time = CommonHelper.DateTimeConverter(values[i].Time),
-                                            threshold = Common.GetValueDisplay(curPoint.Type, values[i].Threshold, curPoint.UnitState),
-                                            state = (int)values[i].State,
-                                            stateDisplay = Common.GetPointStatusDisplay(values[i].State),
-                                            background = Common.GetPointStatusColor(values[i].State)
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                using(var ms = _excelManager.Export<Model400301>(models, title, string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
-                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
         [AjaxAuthorize]
-        public JsonResult RequestChart400302(string device, string point, DateTime starttime, DateTime endtime, int start, int limit) {
-            var data = new AjaxChartModel<List<Model400302>, List<Model400302>> {
+        public JsonResult RequestChart400302(string device, string point, DateTime starttime, DateTime endtime) {
+            var data = new AjaxDataModel<List<ChartsModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<Model400302>(),
-                chart = new List<Model400302>()
+                data = new List<ChartsModel>()
             };
 
             try {
@@ -1098,151 +1035,17 @@ namespace iPem.Site.Controllers {
                                     data.message = "200 Ok";
                                     data.total = models.Count;
 
-                                    var end = start + limit;
-                                    if(end > models.Count)
-                                        end = models.Count;
+                                    for(int i = 0; i < models.Count; i++) {
+                                        var values = new List<ChartModel>();
+                                        values.Add(new ChartModel { index = 1, name = CommonHelper.DateTimeConverter(models[i].MaxTime), value = models[i].MaxValue, comment = curPoint.UnitState });
+                                        values.Add(new ChartModel { index = 2, name = "--", value = models[i].AvgValue, comment = curPoint.UnitState });
+                                        values.Add(new ChartModel { index = 3, name = CommonHelper.DateTimeConverter(models[i].MinTime), value = models[i].MinValue, comment = curPoint.UnitState });
 
-                                    for(int i = start; i < end; i++) {
-                                        data.data.Add(new Model400302 {
+                                        data.data.Add(new ChartsModel {
                                             index = i + 1,
-                                            start = CommonHelper.DateTimeConverter(models[i].BeginTime),
-                                            end = CommonHelper.DateTimeConverter(models[i].EndTime),
-                                            maxvalue = models[i].MaxValue,
-                                            maxdisplay = Common.GetValueDisplay(curPoint.Type, models[i].MaxValue, curPoint.UnitState),
-                                            maxtime = CommonHelper.DateTimeConverter(models[i].MaxTime),
-                                            minvalue = models[i].MinValue,
-                                            mindisplay = Common.GetValueDisplay(curPoint.Type, models[i].MinValue, curPoint.UnitState),
-                                            mintime = CommonHelper.DateTimeConverter(models[i].MinTime),
-                                            avgvalue = models[i].AvgValue,
-                                            avgdisplay = Common.GetValueDisplay(curPoint.Type, models[i].AvgValue, curPoint.UnitState),
-                                            total = models[i].Total
-                                        });
-                                    }
-
-                                    for(var i = 0; i < models.Count; i++) {
-                                        data.chart.Add(new Model400302 {
-                                            index = i + 1,
-                                            start = CommonHelper.DateTimeConverter(models[i].BeginTime),
-                                            end = CommonHelper.DateTimeConverter(models[i].EndTime),
-                                            maxvalue = models[i].MaxValue,
-                                            maxdisplay = Common.GetValueDisplay(curPoint.Type, models[i].MaxValue, curPoint.UnitState),
-                                            maxtime = CommonHelper.DateTimeConverter(models[i].MaxTime),
-                                            minvalue = models[i].MinValue,
-                                            mindisplay = Common.GetValueDisplay(curPoint.Type, models[i].MinValue, curPoint.UnitState),
-                                            mintime = CommonHelper.DateTimeConverter(models[i].MinTime),
-                                            avgvalue = models[i].AvgValue,
-                                            avgdisplay = Common.GetValueDisplay(curPoint.Type, models[i].AvgValue, curPoint.UnitState),
-                                            total = models[i].Total
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public ActionResult DownloadChart400302(string device, string point, DateTime starttime, DateTime endtime) {
-            try {
-                var title = "信号测值统计列表";
-                var models = new List<Model400302>();
-
-                var keys = Common.SplitKeys(device);
-                if(keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Device) {
-                        var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == id);
-                        if(curDevice != null) {
-                            var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
-                            if(curPoint != null) {
-                                title = string.Format("{0} - {1}", curPoint.Name, title);
-                                var values = _hisStaticService.GetValuesAsList(curDevice.Current.Id, curPoint.Id, starttime, endtime);
-                                if(values != null && values.Count > 0) {
-                                    for(int i = 0; i < values.Count; i++) {
-                                        models.Add(new Model400302 {
-                                            index = i + 1,
-                                            start = CommonHelper.DateTimeConverter(values[i].BeginTime),
-                                            end = CommonHelper.DateTimeConverter(values[i].EndTime),
-                                            maxvalue = values[i].MaxValue,
-                                            maxdisplay = Common.GetValueDisplay(curPoint.Type, values[i].MaxValue, curPoint.UnitState),
-                                            maxtime = CommonHelper.DateTimeConverter(values[i].MaxTime),
-                                            minvalue = values[i].MinValue,
-                                            mindisplay = Common.GetValueDisplay(curPoint.Type, values[i].MinValue, curPoint.UnitState),
-                                            mintime = CommonHelper.DateTimeConverter(values[i].MinTime),
-                                            avgvalue = values[i].AvgValue,
-                                            avgdisplay = Common.GetValueDisplay(curPoint.Type, values[i].AvgValue, curPoint.UnitState),
-                                            total = values[i].Total
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                using(var ms = _excelManager.Export<Model400302>(models, title, string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
-                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
-                }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult RequestData400303(string device, string[] points, DateTime starttime, DateTime endtime, int start, int limit) {
-            var data = new AjaxDataModel<List<Model400303>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<Model400303>()
-            };
-
-            try {
-                var keys = Common.SplitKeys(device);
-                if(keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Device) {
-                        var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == id);
-                        if(curDevice != null) {
-                            var curPoints = curDevice.Protocol.Points.FindAll(p => points.Contains(p.Id));
-                            if(curPoints.Count > 0) {
-                                var models = new List<IdValuePair<Point, HisBat>>();
-                                foreach(var current in curPoints) {
-                                    var values = _hisBatService.GetHisBatsAsList(curDevice.Current.Id, current.Id, starttime, endtime);
-                                    foreach(var val in values) {
-                                        models.Add(new IdValuePair<Point, HisBat>(current, val));
-                                    }
-                                }
-
-                                if(models.Count > 0) {
-                                    data.message = "200 Ok";
-                                    data.total = models.Count;
-
-                                    var end = start + limit;
-                                    if(end > models.Count)
-                                        end = models.Count;
-
-                                    for(int i = start; i < end; i++) {
-                                        data.data.Add(new Model400303 {
-                                            index = i + 1,
-                                            point = models[i].Id.Name,
-                                            start = CommonHelper.DateTimeConverter(models[i].Value.StartTime),
-                                            value = Common.GetValueDisplay(models[i].Id.Type, models[i].Value.Value, models[i].Id.UnitState),
-                                            time = CommonHelper.DateTimeConverter(models[i].Value.ValueTime)
+                                            name = CommonHelper.DateTimeConverter(models[i].BeginTime),
+                                            models = values,
+                                            comment = CommonHelper.DateTimeConverter(models[i].EndTime)
                                         });
                                     }
                                 }
@@ -1261,21 +1064,14 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult RequestChart400303(string device, string[] points, DateTime starttime, DateTime endtime) {
-            var data = new AjaxDataModel<string> {
+            var data = new AjaxDataModel<List<ChartsModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = string.Empty
+                data = new List<ChartsModel>()
             };
 
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public ActionResult DownloadData400303(string device, string[] points, DateTime starttime, DateTime endtime) {
             try {
-                var models = new List<Model400303>();
                 var keys = Common.SplitKeys(device);
                 if(keys.Length == 2) {
                     var type = int.Parse(keys[0]);
@@ -1285,50 +1081,48 @@ namespace iPem.Site.Controllers {
                         var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == id);
                         if(curDevice != null) {
                             var curPoints = curDevice.Protocol.Points.FindAll(p => points.Contains(p.Id));
-                            if(curPoints.Count > 0) {
-                                var values = new List<IdValuePair<Point, HisBat>>();
-                                foreach(var current in curPoints) {
-                                    var curValues = _hisBatService.GetHisBatsAsList(curDevice.Current.Id, current.Id, starttime, endtime);
-                                    foreach(var val in curValues) {
-                                        values.Add(new IdValuePair<Point, HisBat>(current, val));
-                                    }
-                                }
-
-                                for(int i = 0; i < values.Count; i++) {
-                                    models.Add(new Model400303 {
-                                        index = i + 1,
-                                        point = values[i].Id.Name,
-                                        start = CommonHelper.DateTimeConverter(values[i].Value.StartTime),
-                                        value = Common.GetValueDisplay(values[i].Id.Type, values[i].Value.Value, values[i].Id.UnitState),
-                                        time = CommonHelper.DateTimeConverter(values[i].Value.ValueTime)
+                            for(var i = 0; i < curPoints.Count; i++) {
+                                var values = _hisBatService.GetHisBatsAsList(curDevice.Current.Id, curPoints[i].Id, starttime, endtime);
+                                var models = new List<ChartModel>();
+                                for(var k = 0; k < values.Count; k++) {
+                                    models.Add(new ChartModel {
+                                        index = k + 1,
+                                        name = Math.Round(values[k].ValueTime.Subtract(values[k].StartTime).TotalMinutes, 2).ToString(),
+                                        value = values[k].Value,
+                                        comment = curPoints[i].UnitState
                                     });
                                 }
+
+                                data.data.Add(new ChartsModel {
+                                    index = i + 1,
+                                    name = curPoints[i].Name,
+                                    models = models
+                                });
                             }
                         }
                     }
                 }
-
-                using(var ms = _excelManager.Export<Model400303>(models, "电池放电测值列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
-                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
-                }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+                data.success = false;
+                data.message = exc.Message;
             }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestCustom400401(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project, int start, int limit) {
-            var data = new AjaxChartModel<List<Model400401>, List<ChartModel>[]> {
+        public JsonResult RequestCustom400401(int start, int limit, string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
+            var data = new AjaxChartModel<List<Model400401>, List<ChartsModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
                 data = new List<Model400401>(),
-                chart = new List<ChartModel>[3]
+                chart = new List<ChartsModel>()
             };
 
             try {
-                var stores = this.GetCustom400401(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400401(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, data.chart);
                 if(stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -1340,36 +1134,29 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new Model400401 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
-                            key = string.Format("{0}.{1}.{2}", stores[i].Room.Name, stores[i].Device.Name, stores[i].Point.Name),
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
-                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime,stores[i].Current.EndTime),
+                            comment = stores[i].Current.AlmDesc,
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
-
-                    //data.chart[0] = this.GetHisAlmChart1(stores);
-                    //data.chart[1] = this.GetHisAlmChart2(stores);
-                    //data.chart[2] = this.GetHisAlmChart2(parent, stores);
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1382,38 +1169,35 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadCustom400401(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+        public ActionResult DownloadCustom400401(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
             try {
                 var models = new List<Model400401>();
-                var stores = this.GetCustom400401(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400401(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, null);
                 if(stores != null && stores.Count > 0) {
                     for(int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400401 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
-                            key = string.Format("{0}.{1}.{2}", stores[i].Room.Name, stores[i].Device.Name, stores[i].Point.Name),
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
+                            comment = stores[i].Current.AlmDesc,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1428,17 +1212,17 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestCustom400402(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project, int start, int limit) {
-            var data = new AjaxChartModel<List<Model400402>, List<ChartModel>[]> {
+        public JsonResult RequestCustom400402(int start, int limit, string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
+            var data = new AjaxChartModel<List<Model400402>, List<ChartsModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
                 data = new List<Model400402>(),
-                chart = new List<ChartModel>[3]
+                chart = new List<ChartsModel>()
             };
 
             try {
-                var stores = this.GetCustom400402(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400402(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, data.chart);
                 if(stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -1450,35 +1234,29 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new Model400402 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
+                            comment = stores[i].Current.AlmDesc,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
-
-                    //data.chart[0] = this.GetHisAlmChart1(stores);
-                    //data.chart[1] = this.GetHisAlmChart2(stores);
-                    //data.chart[2] = this.GetHisAlmChart2(parent, stores);
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1491,37 +1269,35 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadCustom400402(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+        public ActionResult DownloadCustom400402(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
             try {
                 var models = new List<Model400402>();
-                var stores = this.GetCustom400402(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400402(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, null);
                 if(stores != null && stores.Count > 0) {
                     for(int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400402 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
+                            comment = stores[i].Current.AlmDesc,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1536,17 +1312,17 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestCustom400403(int start, int limit, string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            var data = new AjaxChartModel<List<Model400403>, List<ChartModel>[]> {
+        public JsonResult RequestCustom400403(int start, int limit, string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
+            var data = new AjaxChartModel<List<Model400403>, List<ChartsModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
                 data = new List<Model400403>(),
-                chart = new List<ChartModel>[3]
+                chart = new List<ChartsModel>()
             };
 
             try {
-                var stores = this.GetCustom400403(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400403(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, data.chart);
                 if(stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -1558,35 +1334,29 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new Model400403 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
+                            comment = stores[i].Current.AlmDesc,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
-
-                    //data.chart[0] = this.GetHisAlmChart1(stores);
-                    //data.chart[1] = this.GetHisAlmChart2(stores);
-                    //data.chart[2] = this.GetHisAlmChart2(parent, stores);
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1599,37 +1369,35 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadCustom400403(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
+        public ActionResult DownloadCustom400403(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {
             try {
                 var models = new List<Model400403>();
-                var stores = this.GetCustom400403(parent, starttime, endtime, statypes, roomtypes, devtypes, almlevels, logictypes, pointname, confirm, project);
+                var stores = this.GetCustom400403(parent, startDate, endDate, staTypes, roomTypes, devTypes, levels, logicTypes, point, confirm, project, null);
                 if(stores != null && stores.Count > 0) {
                     for(int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400403 {
                             index = i + 1,
+                            fsuid = stores[i].Current.FsuId,
                             id = stores[i].Current.Id,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
+                            levelid = (int)stores[i].Current.AlmLevel,
+                            startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             area = stores[i].AreaFullName,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
-                            devType = stores[i].Device.Type.Name,
                             device = stores[i].Device.Name,
-                            logic = stores[i].Point.LogicType.Name,
                             point = stores[i].Point.Name,
-                            levelValue = (int)stores[i].Current.AlmLevel,
-                            levelDisplay = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            startTime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
-                            endTime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
                             startValue = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
                             endValue = string.Format("{0:F2} {1}", stores[i].Current.EndValue, stores[i].Current.ValueUnit),
-                            almComment = stores[i].Current.AlmDesc,
-                            normalComment = stores[i].Current.NormalDesc,
+                            comment = stores[i].Current.AlmDesc,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
-                            confirmedStatus = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmedTime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
                         });
                     }
                 }
@@ -2152,7 +1920,7 @@ namespace iPem.Site.Controllers {
             endtime = endtime.AddSeconds(86399);
 
             var models = new List<Model400205>();
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+            if(!string.IsNullOrWhiteSpace(parent)) {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
                     var index = 0;
@@ -2191,7 +1959,7 @@ namespace iPem.Site.Controllers {
                                                     select new {
                                                         Project = pro,
                                                         Appointments = ags.Appointments,
-                                                        ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalMinutes,
+                                                        ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalSeconds,
                                                         AppointMaxTime = ags.Appointments.Max(a => a.EndTime),
                                                         AppointMinTime = ags.Appointments.Min(a => a.StartTime)
                                                     };
@@ -2203,7 +1971,7 @@ namespace iPem.Site.Controllers {
                                         type = child.Current.Type.Value,
                                         name = child.ToString(),
                                         count = total,
-                                        interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
+                                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(proDetail.Any() ? proDetail.Average(p => p.ProjectInterval) : 0)),
                                         timeout = timeout,
                                         rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                         projects = proDetail.Select(p => new ProjectModel {
@@ -2250,7 +2018,7 @@ namespace iPem.Site.Controllers {
                                                     select new {
                                                         Project = pro,
                                                         Appointments = ags.Appointments,
-                                                        ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalMinutes,
+                                                        ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalSeconds,
                                                         AppointMaxTime = ags.Appointments.Max(a => a.EndTime),
                                                         AppointMinTime = ags.Appointments.Min(a => a.StartTime)
                                                     };
@@ -2262,7 +2030,7 @@ namespace iPem.Site.Controllers {
                                         type = station.Current.Type.Name,
                                         name = string.Format("{0},{1}", current.ToString(), station.Current.Name),
                                         count = total,
-                                        interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
+                                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(proDetail.Any() ? proDetail.Average(p => p.ProjectInterval) : 0)),
                                         timeout = timeout,
                                         rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                         projects = proDetail.Select(p => new ProjectModel {
@@ -2316,7 +2084,7 @@ namespace iPem.Site.Controllers {
                                                 select new {
                                                     Project = pro,
                                                     Appointments = ags.Appointments,
-                                                    ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalMinutes,
+                                                    ProjectInterval = pro.EndTime.Subtract(pro.StartTime).TotalSeconds,
                                                     AppointMaxTime = ags.Appointments.Max(a => a.EndTime),
                                                     AppointMinTime = ags.Appointments.Min(a => a.StartTime)
                                                 };
@@ -2328,7 +2096,7 @@ namespace iPem.Site.Controllers {
                                     type = room.Current.Type.Name,
                                     name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", current.Current.Name, room.Current.Name),
                                     count = total,
-                                    interval = proDetail.Any() ? Math.Round(proDetail.Average(p => p.ProjectInterval), 2) : 0,
+                                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(proDetail.Any() ? proDetail.Average(p => p.ProjectInterval) : 0)),
                                     timeout = timeout,
                                     rate = string.Format("{0:P2}", total > 0 ? (double)timeout / (double)total : 0),
                                     projects = proDetail.Select(p => new ProjectModel {
@@ -2360,7 +2128,7 @@ namespace iPem.Site.Controllers {
             endtime = endtime.AddSeconds(86399);
 
             var models = new List<Model400206>();
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+            if(!string.IsNullOrWhiteSpace(parent)) {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
                     var index = 0;
@@ -2406,7 +2174,7 @@ namespace iPem.Site.Controllers {
                                         type = child.Current.Type.Value,
                                         name = child.ToString(),
                                         count = details.Count,
-                                        interval = Math.Round(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
+                                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds))),
                                         appointments = details
                                     });
                                 }
@@ -2444,7 +2212,7 @@ namespace iPem.Site.Controllers {
                                         index = ++index,
                                         type = station.Current.Type.Name,
                                         name = string.Format("{0},{1}", current.ToString(), station.Current.Name),
-                                        interval = Math.Round(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
+                                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds))),
                                         count = details.Count,
                                         appointments = details
                                     });
@@ -2489,7 +2257,7 @@ namespace iPem.Site.Controllers {
                                     index = ++index,
                                     type = room.Current.Type.Name,
                                     name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", current.Current.Name, room.Current.Name),
-                                    interval = Math.Round(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalMinutes), 2),
+                                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(appointments.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds))),
                                     count = details.Count,
                                     appointments = details
                                 });
@@ -2507,114 +2275,25 @@ namespace iPem.Site.Controllers {
             endtime = endtime.AddSeconds(86399);
 
             var models = new List<Model400207>();
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
-                var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+            if(!string.IsNullOrWhiteSpace(parent)) {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
                     var index = 0;
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Area) {
-                        var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null) {
-                            var values = this.GetTingDianValues(starttime, endtime);
-                            if(current.HasChildren) {
-                                #region area children
-                                foreach(var child in current.ChildRoot) {
-                                    var devices = _workContext.RoleDevices.FindAll(d => child.Keys.Contains(d.Current.AreaId));
-                                    var details = from value in values
-                                                  join point in _workContext.Points on value.PointId equals point.Id
-                                                  join device in devices on value.DeviceId equals device.Current.Id
-                                                  join room in _workContext.RoleRooms on device.Current.RoomId equals room.Current.Id
-                                                  join station in _workContext.RoleStations on device.Current.StationId equals station.Current.Id
-                                                  join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                                  select new ShiDianDetailModel {
-                                                      area = area.ToString(),
-                                                      station = station.Current.Name,
-                                                      room = room.Current.Name,
-                                                      device = device.Current.Name,
-                                                      point = point.Name,
-                                                      start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                      end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                      interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                                  };
+                    var values = this.GetTingDianValues(starttime, endtime);
+                    var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                    foreach(var station in stations) {
+                        var details = values.FindAll(v => v.device.StationId == station.Current.Id);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                                    models.Add(new Model400207 {
-                                        index = ++index,
-                                        type = child.Current.Type.Value,
-                                        name = child.ToString(),
-                                        count = details.Count(),
-                                        interval = details.Sum(d => d.interval),
-                                        details = details
-                                    });
-                                }
-                                #endregion
-                            } else {
-                                #region station children
-                                foreach(var station in current.Stations) {
-                                    var devices = _workContext.RoleDevices.FindAll(d => d.Current.StationId == station.Current.Id);
-                                    var details = from value in values
-                                                  join point in _workContext.Points on value.PointId equals point.Id
-                                                  join device in devices on value.DeviceId equals device.Current.Id
-                                                  join room in _workContext.RoleRooms on device.Current.RoomId equals room.Current.Id
-                                                  join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                                  select new ShiDianDetailModel {
-                                                      area = area.ToString(),
-                                                      station = station.Current.Name,
-                                                      room = room.Current.Name,
-                                                      device = device.Current.Name,
-                                                      point = point.Name,
-                                                      start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                      end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                      interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                                  };
-
-                                    models.Add(new Model400207 {
-                                        index = ++index,
-                                        type = station.Current.Type.Name,
-                                        name = string.Format("{0},{1}", current.ToString(), station.Current.Name),
-                                        count = details.Count(),
-                                        interval = details.Sum(d => d.interval),
-                                        details = details
-                                    });
-                                }
-                                #endregion
-                            }
-                        }
-                    } else if(nodeType == EnmOrganization.Station) {
-                        #region room children
-                        var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
-                        if(current != null) {
-                            var values = this.GetTingDianValues(starttime, endtime);
-                            var parea = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
-                            foreach(var room in current.Rooms) {
-                                var details = from value in values
-                                              join point in _workContext.Points on value.PointId equals point.Id
-                                              join device in room.Devices on value.DeviceId equals device.Current.Id
-                                              join sta in _workContext.RoleStations on device.Current.StationId equals sta.Current.Id
-                                              join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                              select new ShiDianDetailModel {
-                                                  area = area.ToString(),
-                                                  station = sta.Current.Name,
-                                                  room = room.Current.Name,
-                                                  device = device.Current.Name,
-                                                  point = point.Name,
-                                                  start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                  end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                  interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                              };
-
-                                models.Add(new Model400207 {
-                                    index = ++index,
-                                    type = room.Current.Type.Name,
-                                    name = string.Format("{0},{1},{2}", parea != null ? parea.ToString() : "", current.Current.Name, room.Current.Name),
-                                    count = details.Count(),
-                                    interval = details.Sum(d => d.interval),
-                                    details = details
-                                });
-                            }
-                        }
-                        #endregion
+                        models.Add(new Model400207 {
+                            index = ++index,
+                            area = area != null ? area.ToString(): "",
+                            name = station.Current.Name,
+                            type = station.Current.Type.Name,
+                            count = details.Count(),
+                            interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.interval))),
+                            details = details
+                        });
                     }
                 }
             }
@@ -2626,114 +2305,25 @@ namespace iPem.Site.Controllers {
             endtime = endtime.AddSeconds(86399);
 
             var models = new List<Model400208>();
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
-                var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+            if(!string.IsNullOrWhiteSpace(parent)) {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
                     var index = 0;
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Area) {
-                        var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null) {
-                            var values = this.GetFaDianValues(starttime, endtime);
-                            if(current.HasChildren) {
-                                #region area children
-                                foreach(var child in current.ChildRoot) {
-                                    var devices = _workContext.RoleDevices.FindAll(d => child.Keys.Contains(d.Current.AreaId));
-                                    var details = from value in values
-                                                  join point in _workContext.Points on value.PointId equals point.Id
-                                                  join device in devices on value.DeviceId equals device.Current.Id
-                                                  join room in _workContext.RoleRooms on device.Current.RoomId equals room.Current.Id
-                                                  join station in _workContext.RoleStations on device.Current.StationId equals station.Current.Id
-                                                  join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                                  select new ShiDianDetailModel {
-                                                      area = area.ToString(),
-                                                      station = station.Current.Name,
-                                                      room = room.Current.Name,
-                                                      device = device.Current.Name,
-                                                      point = point.Name,
-                                                      start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                      end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                      interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                                  };
+                    var values = this.GetFaDianValues(starttime, endtime);
+                    var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                    foreach(var station in stations) {
+                        var details = values.FindAll(v => v.device.StationId == station.Current.Id);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                                    models.Add(new Model400208 {
-                                        index = ++index,
-                                        type = child.Current.Type.Value,
-                                        name = child.ToString(),
-                                        count = details.Count(),
-                                        interval = details.Sum(d => d.interval),
-                                        details = details
-                                    });
-                                }
-                                #endregion
-                            } else {
-                                #region station children
-                                foreach(var station in current.Stations) {
-                                    var devices = _workContext.RoleDevices.FindAll(d => d.Current.StationId == station.Current.Id);
-                                    var details = from value in values
-                                                  join point in _workContext.Points on value.PointId equals point.Id
-                                                  join device in devices on value.DeviceId equals device.Current.Id
-                                                  join room in _workContext.RoleRooms on device.Current.RoomId equals room.Current.Id
-                                                  join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                                  select new ShiDianDetailModel {
-                                                      area = area.ToString(),
-                                                      station = station.Current.Name,
-                                                      room = room.Current.Name,
-                                                      device = device.Current.Name,
-                                                      point = point.Name,
-                                                      start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                      end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                      interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                                  };
-
-                                    models.Add(new Model400208 {
-                                        index = ++index,
-                                        type = station.Current.Type.Name,
-                                        name = string.Format("{0},{1}", current.ToString(), station.Current.Name),
-                                        count = details.Count(),
-                                        interval = details.Sum(d => d.interval),
-                                        details = details
-                                    });
-                                }
-                                #endregion
-                            }
-                        }
-                    } else if(nodeType == EnmOrganization.Station) {
-                        #region room children
-                        var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
-                        if(current != null) {
-                            var values = this.GetFaDianValues(starttime, endtime);
-                            var parea = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
-                            foreach(var room in current.Rooms) {
-                                var details = from value in values
-                                              join point in _workContext.Points on value.PointId equals point.Id
-                                              join device in room.Devices on value.DeviceId equals device.Current.Id
-                                              join sta in _workContext.RoleStations on device.Current.StationId equals sta.Current.Id
-                                              join area in _workContext.RoleAreas on device.Current.AreaId equals area.Current.Id
-                                              select new ShiDianDetailModel {
-                                                  area = area.ToString(),
-                                                  station = sta.Current.Name,
-                                                  room = room.Current.Name,
-                                                  device = device.Current.Name,
-                                                  point = point.Name,
-                                                  start = CommonHelper.DateTimeConverter(value.StartTime),
-                                                  end = CommonHelper.DateTimeConverter(value.EndTime),
-                                                  interval = Math.Round(value.EndTime.Subtract(value.StartTime).TotalMinutes, 2)
-                                              };
-
-                                models.Add(new Model400208 {
-                                    index = ++index,
-                                    type = room.Current.Type.Name,
-                                    name = string.Format("{0},{1},{2}", parea != null ? parea.ToString() : "", current.Current.Name, room.Current.Name),
-                                    count = details.Count(),
-                                    interval = details.Sum(d => d.interval),
-                                    details = details
-                                });
-                            }
-                        }
-                        #endregion
+                        models.Add(new Model400208 {
+                            index = ++index,
+                            area = area != null ? area.ToString() : "",
+                            name = station.Current.Name,
+                            type = station.Current.Type.Name,
+                            count = details.Count(),
+                            interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.interval))),
+                            details = details
+                        });
                     }
                 }
             }
@@ -2799,30 +2389,37 @@ namespace iPem.Site.Controllers {
             var models = new List<ShiDianModel>();
 
             var rtValues = _workContext.RtValues;
-            if(rtValues == null || rtValues.tingDianXinHao == null || rtValues.tingDianXinHao.Length == 0) return models;
+            if(rtValues == null || rtValues.tingDianXinHao == null) return models;
 
-            var values = _hisValueService.GetValuesAsList(rtValues.tingDianXinHao, start, end);
-            var groups = from val in values
-                         group val by new { val.DeviceId, val.PointId } into g
-                         select new {
-                             DeviceId = g.Key.DeviceId,
-                             PointId = g.Key.PointId,
-                             Values = g
-                         };
+            var values = _hisValueService.GetValuesByPointAsList(rtValues.tingDianXinHao, start, end);
+            var valuesInDevId = from val in values
+                                group val by new { val.DeviceId } into g
+                                select new {
+                                    DeviceId = g.Key.DeviceId,
+                                    Values = g
+                                };
 
-            foreach(var group in groups) {
+            var valuesInDev = from vid in valuesInDevId
+                              join dev in _workContext.RoleDevices on vid.DeviceId equals dev.Current.Id
+                              select new {
+                                  Device = dev.Current,
+                                  Values = vid.Values
+                              };
+
+            foreach(var vid in valuesInDev) {
                 DateTime? onetime = null;
-                var pValues = group.Values.OrderBy(v => v.Time);
+                var pValues = vid.Values.OrderBy(v => v.Time);
 
                 foreach(var pv in pValues) {
                     if(pv.Value == rtValues.tingDian && !onetime.HasValue) {
                         onetime = pv.Time;
                     } else if(pv.Value == rtValues.weiTingDian && onetime.HasValue) {
                         models.Add(new ShiDianModel {
-                            DeviceId = group.DeviceId,
-                            PointId = group.PointId,
-                            StartTime = onetime.Value,
-                            EndTime = pv.Time
+                            device = vid.Device,
+                            start = CommonHelper.DateTimeConverter( onetime.Value),
+                            end = CommonHelper.DateTimeConverter(pv.Time),
+                            interval = pv.Time.Subtract(onetime.Value).TotalSeconds,
+                            timespan = CommonHelper.IntervalConverter(onetime.Value, pv.Time)
                         });
 
                         onetime = null;
@@ -2831,10 +2428,11 @@ namespace iPem.Site.Controllers {
 
                 if(onetime.HasValue) {
                     models.Add(new ShiDianModel {
-                        DeviceId = group.DeviceId,
-                        PointId = group.PointId,
-                        StartTime = onetime.Value,
-                        EndTime = end
+                        device = vid.Device,
+                        start = CommonHelper.DateTimeConverter(onetime.Value),
+                        end = CommonHelper.DateTimeConverter(end),
+                        interval = end.Subtract(onetime.Value).TotalSeconds,
+                        timespan = CommonHelper.IntervalConverter(onetime.Value, end)
                     });
 
                     onetime = null;
@@ -2848,30 +2446,37 @@ namespace iPem.Site.Controllers {
             var models = new List<ShiDianModel>();
 
             var rtValues = _workContext.RtValues;
-            if(rtValues == null || rtValues.faDianXinHao == null || rtValues.faDianXinHao.Length == 0) return models;
+            if(rtValues == null || rtValues.faDianXinHao == null) return models;
 
-            var values = _hisValueService.GetValuesAsList(rtValues.faDianXinHao, start, end);
-            var groups = from val in values
-                         group val by new { val.DeviceId, val.PointId } into g
-                         select new {
-                             DeviceId = g.Key.DeviceId,
-                             PointId = g.Key.PointId,
-                             Values = g
-                         };
+            var values = _hisValueService.GetValuesByPointAsList(rtValues.faDianXinHao, start, end);
+            var valuesInDevId = from val in values
+                                group val by new { val.DeviceId } into g
+                                select new {
+                                    DeviceId = g.Key.DeviceId,
+                                    Values = g
+                                };
 
-            foreach(var group in groups) {
+            var valuesInDev = from vid in valuesInDevId
+                              join dev in _workContext.RoleDevices on vid.DeviceId equals dev.Current.Id
+                              select new {
+                                  Device = dev.Current,
+                                  Values = vid.Values
+                              };
+
+            foreach(var vid in valuesInDev) {
                 DateTime? onetime = null;
-                var pValues = group.Values.OrderBy(v => v.Time);
+                var pValues = vid.Values.OrderBy(v => v.Time);
 
                 foreach(var pv in pValues) {
                     if(pv.Value == rtValues.faDian && !onetime.HasValue) {
                         onetime = pv.Time;
                     } else if(pv.Value == rtValues.weiFaDian && onetime.HasValue) {
                         models.Add(new ShiDianModel {
-                            DeviceId = group.DeviceId,
-                            PointId = group.PointId,
-                            StartTime = onetime.Value,
-                            EndTime = pv.Time
+                            device = vid.Device,
+                            start = CommonHelper.DateTimeConverter(onetime.Value),
+                            end = CommonHelper.DateTimeConverter(pv.Time),
+                            interval = pv.Time.Subtract(onetime.Value).TotalSeconds,
+                            timespan = CommonHelper.IntervalConverter(onetime.Value, pv.Time)
                         });
 
                         onetime = null;
@@ -2880,10 +2485,11 @@ namespace iPem.Site.Controllers {
 
                 if(onetime.HasValue) {
                     models.Add(new ShiDianModel {
-                        DeviceId = group.DeviceId,
-                        PointId = group.PointId,
-                        StartTime = onetime.Value,
-                        EndTime = end
+                        device = vid.Device,
+                        start = CommonHelper.DateTimeConverter(onetime.Value),
+                        end = CommonHelper.DateTimeConverter(end),
+                        interval = end.Subtract(onetime.Value).TotalSeconds,
+                        timespan = CommonHelper.IntervalConverter(onetime.Value, end)
                     });
 
                     onetime = null;
@@ -2893,14 +2499,15 @@ namespace iPem.Site.Controllers {
             return models;
         }
 
-        private List<AlmStore<HisAlm>> GetCustom400401(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            endtime = endtime.AddSeconds(86399);
+        private List<AlmStore<HisAlm>> GetCustom400401(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project, List<ChartsModel> charts) {
+            endDate = endDate.AddSeconds(86399);
+
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime);
+                alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate);
             } else {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -2909,44 +2516,39 @@ namespace iPem.Site.Controllers {
                     var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                     if(nodeType == EnmOrganization.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => current.Keys.Contains(a.AreaId));
+                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => current.Keys.Contains(a.AreaId));
                     } else if(nodeType == EnmOrganization.Station) {
-                        alarms = _hisAlmService.GetAlmsInStationAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInStationAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Room) {
-                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Device) {
-                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, startDate, endDate);
                     }
                 }
             }
 
-            alarms = (from alarm in alarms
-                      group alarm by new { alarm.DeviceId, alarm.PointId } into g
-                      where g.Count() >= rtValues.chaoPin
-                      select new { G = g }).SelectMany(a => a.G).ToList();
+            var stores = _workContext.GetHisAlmStore(alarms, startDate, endDate);
 
-            var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);
+            if(staTypes != null && staTypes.Length > 0)
+                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
 
-            if(statypes != null && statypes.Length > 0)
-                stores = stores.FindAll(d => statypes.Contains(d.Station.Type.Id));
+            if(roomTypes != null && roomTypes.Length > 0)
+                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
 
-            if(roomtypes != null && roomtypes.Length > 0)
-                stores = stores.FindAll(d => roomtypes.Contains(d.Room.Type.Id));
+            if(devTypes != null && devTypes.Length > 0)
+                stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
-            if(devtypes != null && devtypes.Length > 0)
-                stores = stores.FindAll(d => devtypes.Contains(d.Device.Type.Id));
+            if(logicTypes != null && logicTypes.Length > 0)
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
 
-            if(logictypes != null && logictypes.Length > 0)
-                stores = stores.FindAll(p => logictypes.Contains(p.Point.LogicType.Id));
-
-            if(!string.IsNullOrWhiteSpace(pointname)) {
-                var names = Common.SplitCondition(pointname);
+            if(!string.IsNullOrWhiteSpace(point)) {
+                var names = Common.SplitCondition(point);
                 if(names.Length > 0)
                     stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
             }
 
-            if(almlevels != null && almlevels.Length > 0)
-                stores = stores.FindAll(a => almlevels.Contains((int)a.Current.AlmLevel));
+            if(levels != null && levels.Length > 0)
+                stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
                 stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
@@ -2960,17 +2562,56 @@ namespace iPem.Site.Controllers {
             if(project == "unproject")
                 stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
 
+
+            var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var total2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var total3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var total4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+
+            stores = (from store in stores
+                      group store by new { store.Current.DeviceId, store.Current.PointId } into g
+                      where g.Count() >= rtValues.chaoPin
+                      select g).SelectMany(a => a).ToList();
+
+            var abnormal1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var abnormal2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var abnormal3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var abnormal4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+
+            if(charts != null) {
+                var models1 = new List<ChartModel>();
+                models1.Add(new ChartModel { index = 0, value = abnormal1 });
+                models1.Add(new ChartModel { index = 1, value = total1 - abnormal1 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level1, models = models1 });
+
+                var models2 = new List<ChartModel>();
+                models2.Add(new ChartModel { index = 0, value = abnormal2 });
+                models2.Add(new ChartModel { index = 1, value = total2 - abnormal2 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level2, models = models2 });
+
+                var models3 = new List<ChartModel>();
+                models3.Add(new ChartModel { index = 0, value = abnormal3 });
+                models3.Add(new ChartModel { index = 1, value = total3 - abnormal3 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level3, models = models3 });
+
+                var models4 = new List<ChartModel>();
+                models4.Add(new ChartModel { index = 0, value = abnormal4 });
+                models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level4, models = models4 });
+            }
+
             return stores;
         }
 
-        private List<AlmStore<HisAlm>> GetCustom400402(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            endtime = endtime.AddSeconds(86399);
+        private List<AlmStore<HisAlm>> GetCustom400402(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project, List<ChartsModel> charts) {
+            endDate = endDate.AddSeconds(86399);
+
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime);
+                alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate);
             } else {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -2979,66 +2620,100 @@ namespace iPem.Site.Controllers {
                     var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                     if(nodeType == EnmOrganization.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => current.Keys.Contains(a.AreaId));
+                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => current.Keys.Contains(a.AreaId));
                     } else if(nodeType == EnmOrganization.Station) {
-                        alarms = _hisAlmService.GetAlmsInStationAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInStationAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Room) {
-                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Device) {
-                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, startDate, endDate);
                     }
                 }
             }
+
+            var stores = _workContext.GetHisAlmStore(alarms, startDate, endDate);
+
+            if(staTypes != null && staTypes.Length > 0)
+                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
+
+            if(roomTypes != null && roomTypes.Length > 0)
+                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
+
+            if(devTypes != null && devTypes.Length > 0)
+                stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
+
+            if(logicTypes != null && logicTypes.Length > 0)
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
+
+            if(!string.IsNullOrWhiteSpace(point)) {
+                var names = Common.SplitCondition(point);
+                if(names.Length > 0)
+                    stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
+            }
+
+            if(levels != null && levels.Length > 0)
+                stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
+
+            if(confirm == "confirm")
+                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+
+            if(confirm == "unconfirm")
+                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+
+            if(project == "project")
+                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+
+            if(project == "unproject")
+                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+
+
+            var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var total2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var total3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var total4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
 
             var seconds = rtValues.chaoDuan * 60;
-            alarms = alarms.FindAll(a => Math.Abs(a.EndTime.Subtract(a.StartTime).TotalSeconds) <= seconds);
+            stores = stores.FindAll(a => Math.Abs(a.Current.EndTime.Subtract(a.Current.StartTime).TotalSeconds) <= seconds);
 
-            var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);
+            var abnormal1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var abnormal2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var abnormal3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var abnormal4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
 
-            if(statypes != null && statypes.Length > 0)
-                stores = stores.FindAll(d => statypes.Contains(d.Station.Type.Id));
+            if(charts != null) {
+                var models1 = new List<ChartModel>();
+                models1.Add(new ChartModel { index = 0, value = abnormal1 });
+                models1.Add(new ChartModel { index = 1, value = total1 - abnormal1 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level1, models = models1 });
 
-            if(roomtypes != null && roomtypes.Length > 0)
-                stores = stores.FindAll(d => roomtypes.Contains(d.Room.Type.Id));
+                var models2 = new List<ChartModel>();
+                models2.Add(new ChartModel { index = 0, value = abnormal2 });
+                models2.Add(new ChartModel { index = 1, value = total2 - abnormal2 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level2, models = models2 });
 
-            if(devtypes != null && devtypes.Length > 0)
-                stores = stores.FindAll(d => devtypes.Contains(d.Device.Type.Id));
+                var models3 = new List<ChartModel>();
+                models3.Add(new ChartModel { index = 0, value = abnormal3 });
+                models3.Add(new ChartModel { index = 1, value = total3 - abnormal3 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level3, models = models3 });
 
-            if(logictypes != null && logictypes.Length > 0)
-                stores = stores.FindAll(p => logictypes.Contains(p.Point.LogicType.Id));
-
-            if(!string.IsNullOrWhiteSpace(pointname)) {
-                var names = Common.SplitCondition(pointname);
-                if(names.Length > 0)
-                    stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
+                var models4 = new List<ChartModel>();
+                models4.Add(new ChartModel { index = 0, value = abnormal4 });
+                models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level4, models = models4 });
             }
-
-            if(almlevels != null && almlevels.Length > 0)
-                stores = stores.FindAll(a => almlevels.Contains((int)a.Current.AlmLevel));
-
-            if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
-
-            if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
-
-            if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
-
-            if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
 
             return stores;
         }
 
-        private List<AlmStore<HisAlm>> GetCustom400403(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, int[] almlevels, string[] logictypes, string pointname, string confirm, string project) {
-            endtime = endtime.AddSeconds(86399);
+        private List<AlmStore<HisAlm>> GetCustom400403(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project, List<ChartsModel> charts) {
+            endDate = endDate.AddSeconds(86399);
+
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return new List<AlmStore<HisAlm>>();
 
             var alarms = new List<HisAlm>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime);
+                alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate);
             } else {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -3047,42 +2722,39 @@ namespace iPem.Site.Controllers {
                     var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
                     if(nodeType == EnmOrganization.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => current.Keys.Contains(a.AreaId));
+                        if(current != null) alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => current.Keys.Contains(a.AreaId));
                     } else if(nodeType == EnmOrganization.Station) {
-                        alarms = _hisAlmService.GetAlmsInStationAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInStationAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Room) {
-                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInRoomAsList(id, startDate, endDate);
                     } else if(nodeType == EnmOrganization.Device) {
-                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, starttime, endtime);
+                        alarms = _hisAlmService.GetAlmsInDeviceAsList(id, startDate, endDate);
                     }
                 }
             }
 
-            var seconds = rtValues.chaoChang * 60;
-            alarms = alarms.FindAll(a => a.EndTime.Subtract(a.StartTime).TotalSeconds >= seconds);
+            var stores = _workContext.GetHisAlmStore(alarms, startDate, endDate);
 
-            var stores = _workContext.GetHisAlmStore(alarms, starttime, endtime);
+            if(staTypes != null && staTypes.Length > 0)
+                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
 
-            if(statypes != null && statypes.Length > 0)
-                stores = stores.FindAll(d => statypes.Contains(d.Station.Type.Id));
+            if(roomTypes != null && roomTypes.Length > 0)
+                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
 
-            if(roomtypes != null && roomtypes.Length > 0)
-                stores = stores.FindAll(d => roomtypes.Contains(d.Room.Type.Id));
+            if(devTypes != null && devTypes.Length > 0)
+                stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
-            if(devtypes != null && devtypes.Length > 0)
-                stores = stores.FindAll(d => devtypes.Contains(d.Device.Type.Id));
+            if(logicTypes != null && logicTypes.Length > 0)
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
 
-            if(logictypes != null && logictypes.Length > 0)
-                stores = stores.FindAll(p => logictypes.Contains(p.Point.LogicType.Id));
-
-            if(!string.IsNullOrWhiteSpace(pointname)) {
-                var names = Common.SplitCondition(pointname);
+            if(!string.IsNullOrWhiteSpace(point)) {
+                var names = Common.SplitCondition(point);
                 if(names.Length > 0)
                     stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
             }
 
-            if(almlevels != null && almlevels.Length > 0)
-                stores = stores.FindAll(a => almlevels.Contains((int)a.Current.AlmLevel));
+            if(levels != null && levels.Length > 0)
+                stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
                 stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
@@ -3095,6 +2767,42 @@ namespace iPem.Site.Controllers {
 
             if(project == "unproject")
                 stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+
+
+            var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var total2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var total3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var total4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+
+            var seconds = rtValues.chaoChang * 60;
+            stores = stores.FindAll(a => Math.Abs(a.Current.EndTime.Subtract(a.Current.StartTime).TotalSeconds) >= seconds);
+
+            var abnormal1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
+            var abnormal2 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
+            var abnormal3 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
+            var abnormal4 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+
+            if(charts != null) {
+                var models1 = new List<ChartModel>();
+                models1.Add(new ChartModel { index = 0, value = abnormal1 });
+                models1.Add(new ChartModel { index = 1, value = total1 - abnormal1 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level1, models = models1 });
+
+                var models2 = new List<ChartModel>();
+                models2.Add(new ChartModel { index = 0, value = abnormal2 });
+                models2.Add(new ChartModel { index = 1, value = total2 - abnormal2 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level2, models = models2 });
+
+                var models3 = new List<ChartModel>();
+                models3.Add(new ChartModel { index = 0, value = abnormal3 });
+                models3.Add(new ChartModel { index = 1, value = total3 - abnormal3 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level3, models = models3 });
+
+                var models4 = new List<ChartModel>();
+                models4.Add(new ChartModel { index = 0, value = abnormal4 });
+                models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
+                charts.Add(new ChartsModel { index = (int)EnmAlarmLevel.Level4, models = models4 });
+            }
 
             return stores;
         }

@@ -66,6 +66,7 @@ Ext.define('Ext.ux.DateTimePicker', {
     editable: false,
     minDate: "1900-01-01 00:00:00",
     maxDate: "2099-12-31 23:59:59",
+    doubleCalendar: false,
     triggerCls: Ext.baseCSSPrefix + 'form-date-trigger',
     onTriggerClick: function () {
         var me = this,
@@ -77,7 +78,8 @@ Ext.define('Ext.ux.DateTimePicker', {
             isShowClear: false,
             isShowWeek: true,
             minDate: me.minDate,
-            maxDate: me.maxDate
+            maxDate: me.maxDate,
+            doubleCalendar: me.doubleCalendar
         });
     }
 });

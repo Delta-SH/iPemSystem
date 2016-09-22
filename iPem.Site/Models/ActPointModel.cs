@@ -35,7 +35,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("信号状态")]
         public string status { get; set; }
 
-        [ExcelDisplayName("值变时间")]
+        [ExcelDisplayName("测值时间")]
         public string time { get; set; }
 
         [ExcelIgnore]

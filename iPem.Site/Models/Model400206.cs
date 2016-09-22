@@ -17,8 +17,8 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("预约数量")]
         public int count { get; set; }
 
-        [ExcelDisplayName("预约时长(分钟)")]
-        public double interval { get; set; }
+        [ExcelDisplayName("预约时长")]
+        public string interval { get; set; }
 
         [ExcelIgnore]
         public List<AppointmentModel> appointments { get; set; }

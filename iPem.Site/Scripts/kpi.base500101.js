@@ -5,14 +5,14 @@
         { name: 'type', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'devCount', type: 'int' },
-        { name: 'almTime', type: 'float' },
-        { name: 'cntTime', type: 'float' },
+        { name: 'almTime', type: 'string' },
+        { name: 'cntTime', type: 'string' },
         { name: 'rate', type: 'string' }
     ],
     idProperty: 'index'
 });
 
-var query = function (pagingtoolbar) {
+var query = function (store) {
     var range = Ext.getCmp('rangePicker'),
         type = Ext.getCmp('deviceTypeMulticombo'),
         start = Ext.getCmp('startField'),
@@ -22,12 +22,11 @@ var query = function (pagingtoolbar) {
     if (!start.isValid()) return;
     if (!end.isValid()) return;
 
-    var me = pagingtoolbar.store;
-    me.proxy.extraParams.parent = range.getValue();
-    me.proxy.extraParams.types = type.getValue();
-    me.proxy.extraParams.starttime = start.getRawValue();
-    me.proxy.extraParams.endtime = end.getRawValue();
-    me.loadPage(1);
+    store.proxy.extraParams.parent = range.getValue();
+    store.proxy.extraParams.types = type.getValue();
+    store.proxy.extraParams.startDate = start.getRawValue();
+    store.proxy.extraParams.endDate = end.getRawValue();
+    store.loadPage(1);
 };
 
 var print = function (store) {
@@ -75,8 +74,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-        preserveScrollOnRefresh: true
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
     },
     columns: [{
         text: '序号',
@@ -103,13 +101,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '设备告警时长(分钟)',
+        text: '设备告警时长',
         dataIndex: 'almTime',
         width: 150,
         align: 'left',
         sortable: true
     }, {
-        text: '设备统计时长(分钟)',
+        text: '设备统计时长',
         dataIndex: 'cntTime',
         width: 150,
         align: 'left',
@@ -145,7 +143,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 glyph: 0xf005,
                 text: '数据查询',
                 handler: function (me, event) {
-                    query(currentPagingToolbar);
+                    query(currentStore);
                 }
             }]
         }, {

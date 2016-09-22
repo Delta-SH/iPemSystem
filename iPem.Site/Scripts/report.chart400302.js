@@ -1,24 +1,77 @@
 ﻿(function () {
-    Ext.define('PointModel', {
-        extend: 'Ext.data.Model',
-        fields: [
-            { name: 'index', type: 'int' },
-            { name: 'start', type: 'string' },
-            { name: 'end', type: 'string' },
-            { name: 'maxvalue', type: 'float' },
-            { name: 'maxdisplay', type: 'string' },
-            { name: 'maxtime', type: 'string' },
-            { name: 'mindisplay', type: 'string' },
-			{ name: 'minvalue', type: 'float' },
-            { name: 'mintime', type: 'string' },
-            { name: 'avgdisplay', type: 'string' },
-            { name: 'avgvalue', type: 'float' },
-            { name: 'total', type: 'int' }
-        ],
-        idProperty: 'index'
-    });
+    var lineChart = null,
+        lineOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    var xaxis = lineOption.xAxis[0].data;
+                    if (xaxis.length > 0) {
+                        if (!Ext.isArray(params)) params = [params];
 
-    var query = function (pagingtoolbar) {
+                        var tips = [Ext.String.format('开始时间：{0}<br/>结束时间：{1}', xaxis[params[0].dataIndex].start, xaxis[params[0].dataIndex].end)];
+                        Ext.Array.each(params, function (item, index) {
+                            tips.push(Ext.String.format('<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:{0}"></span>{1}：{2} {3}({4})', item.color, item.seriesName, item.value, item.data.unit, item.data.time));
+                        });
+
+                        return tips.join('<br/>');
+                    }
+
+                    return 'No Data';
+                }
+            },
+            legend: {
+                data: ['最大测值', '平均测值', '最小测值']
+            },
+            grid: {
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: 40,
+                containLabel: true
+            },
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    start: 0,
+                    end: 100
+                }
+            ],
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                splitLine: {show: false},
+                data:[]
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [
+                {
+                    name: '最大测值',
+                    type: 'line',
+                    smooth: true,
+                    data: []
+                }, {
+                    name: '平均测值',
+                    type: 'line',
+                    smooth: true,
+                    data: []
+                }, {
+                    name: '最小测值',
+                    type: 'line',
+                    smooth: true,
+                    data: []
+                }
+            ]
+        };
+
+    var query = function (target) {
         var device = Ext.getCmp('devicePicker'),
             point = Ext.getCmp('pointCombo'),
             start = Ext.getCmp('startField'),
@@ -27,246 +80,58 @@
         if (!device.isValid()) return;
         if (!point.isValid()) return;
 
-        var me = pagingtoolbar.store;
-        me.proxy.extraParams.device = device.getValue();
-        me.proxy.extraParams.point = point.getValue();
-        me.proxy.extraParams.starttime = start.getRawValue();
-        me.proxy.extraParams.endtime = end.getRawValue();
-        me.loadPage(1);
-    };
+        var device = device.getValue(),
+            point = point.getValue(),
+            starttime = start.getRawValue(),
+            endtime = end.getRawValue();
 
-    var print = function (store) {
-        $$iPems.download({
-            url: '/Report/DownloadChart400302',
-            params: store.proxy.extraParams
+        Ext.Ajax.request({
+            url: '/Report/RequestChart400302',
+            params: { device: device, point: point, starttime: starttime, endtime: endtime },
+            mask: new Ext.LoadMask(target, { msg: '正在处理，请稍后...' }),
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    if (lineChart) {
+                        var xaxis = [], series0 = [], series1 = [], series2 = [];
+                        if (data.data && Ext.isArray(data.data)) {
+                            Ext.Array.each(data.data, function (item, index) {
+                                xaxis.push({
+                                    value: item.name.replace(' ', '\n'),
+                                    start: item.name,
+                                    end: item.comment
+                                });
+
+                                series0.push({
+                                    value: item.models[0].value,
+                                    time: item.models[0].name,
+                                    unit: item.models[0].comment
+                                });
+                                series1.push({
+                                    value: item.models[1].value,
+                                    time: item.models[1].name,
+                                    unit: item.models[1].comment
+                                });
+                                series2.push({
+                                    value: item.models[2].value,
+                                    time: item.models[2].name,
+                                    unit: item.models[2].comment
+                                });
+                            });
+                        }
+
+                        lineOption.xAxis[0].data = xaxis;
+                        lineOption.series[0].data = series0;
+                        lineOption.series[1].data = series1;
+                        lineOption.series[2].data = series2;
+                        lineChart.setOption(lineOption, true);
+                    }
+                } else {
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            }
         });
     };
-
-    var chartLine = Ext.create('Ext.chart.Chart', {
-        xtype: 'chart',
-        flex: 1,
-        legend: {
-            position: 'right',
-            itemSpacing: 3,
-            boxStrokeWidth: 1,
-            boxStroke: '#c0c0c0'
-        },
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['maxvalue', 'avgvalue', 'minvalue'],
-            minorTickSteps: 1,
-            title: false,
-            grid: true
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: 'index',
-            title: false,
-            minorTickSteps: 3,
-            label: {
-                rotate: {
-                    degrees: 0
-                }
-            }
-        }],
-        series: [{
-            type: 'line',
-            title: '最大测值',
-            smooth: true,
-            axis: ['left', 'bottom'],
-            xField: 'index',
-            yField: 'maxvalue',
-            highlightLine: false,
-            label: {
-                display: 'under',
-                field: 'maxdisplay'
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 150,
-                minHeight: 50,
-                renderer: function (storeItem, item) {
-                    this.update(
-                        Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}<br/>{7}: {8}',
-                        '时间范围',
-                        storeItem.get('start'),
-                        storeItem.get('end'),
-                        '信号测值',
-                        storeItem.get('maxdisplay'),
-                        '测值时间',
-                        storeItem.get('maxtime'),
-                        '统计数量',
-                        storeItem.get('total'))
-                    );
-                }
-            },
-            style: {
-                fill: '#94AE0A',
-                stroke: '#94AE0A',
-                'stroke-width': 2,
-                opacity: 1
-            },
-            markerConfig: {
-                type: 'circle',
-                size: 3,
-                radius: 3,
-                fill: '#94AE0A',
-                stroke: '#94AE0A',
-                'stroke-width': 2
-            },
-            highlight: {
-                size: 4,
-                radius: 4,
-                'stroke-width': 2
-            }
-        }, {
-            type: 'line',
-            title: '平均测值',
-            smooth: true,
-            axis: ['left', 'bottom'],
-            xField: 'index',
-            yField: 'avgvalue',
-            highlightLine: false,
-            label: {
-                display: 'under',
-                field: 'avgdisplay'
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 150,
-                minHeight: 50,
-                renderer: function (storeItem, item) {
-                    this.update(
-                        Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}',
-                        '时间范围',
-                        storeItem.get('start'),
-                        storeItem.get('end'),
-                        '信号测值',
-                        storeItem.get('avgdisplay'),
-                        '统计数量',
-                        storeItem.get('total'))
-                    );
-                }
-            },
-            style: {
-                fill: '#157fcc',
-                stroke: '#157fcc',
-                'stroke-width': 2,
-                opacity: 1
-            },
-            markerConfig: {
-                type: 'circle',
-                size: 3,
-                radius: 3,
-                fill: '#157fcc',
-                stroke: '#157fcc',
-                'stroke-width': 2
-            },
-            highlight: {
-                size: 4,
-                radius: 4,
-                'stroke-width': 2
-            }
-        }, {
-            type: 'line',
-            title: '最小测值',
-            smooth: true,
-            axis: ['left', 'bottom'],
-            xField: 'index',
-            yField: 'minvalue',
-            highlightLine: false,
-            label: {
-                display: 'under',
-                field: 'mindisplay'
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 150,
-                minHeight: 50,
-                renderer: function (storeItem, item) {
-                    this.update(
-                        Ext.String.format('{0}: {1} - {2}<br/>{3}: {4}<br/>{5}: {6}<br/>{7}: {8}',
-                        '时间范围',
-                        storeItem.get('start'),
-                        storeItem.get('end'),
-                        '信号测值',
-                        storeItem.get('mindisplay'),
-                        '测值时间',
-                        storeItem.get('mintime'),
-                        '统计数量',
-                        storeItem.get('total'))
-                    );
-                }
-            },
-            style: {
-                fill: '#A61120',
-                stroke: '#A61120',
-                'stroke-width': 2,
-                opacity: 1
-            },
-            markerConfig: {
-                type: 'circle',
-                size: 3,
-                radius: 3,
-                fill: '#A61120',
-                stroke: '#A61120',
-                'stroke-width': 2
-            },
-            highlight: {
-                size: 4,
-                radius: 4,
-                'stroke-width': 2
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            pageSize: 1024,
-            model: 'PointModel'
-        })
-    });
-
-    var currentStore = Ext.create('Ext.data.Store', {
-        autoLoad: false,
-        pageSize: 20,
-        model: 'PointModel',
-        proxy: {
-            type: 'ajax',
-            actionMethods: {
-                create: 'POST',
-                read: 'POST',
-                update: 'POST',
-                destroy: 'POST'
-            },
-            url: '/Report/RequestChart400302',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function (me, records, successful) {
-                if (successful) {
-                    var data = me.proxy.reader.jsonData,
-                        chartData = $$iPems.ChartEmptyDataLine;
-
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)) {
-                        chartData = data.chart;
-                    }
-
-                    chartLine.getStore().loadData(chartData, false);
-                }
-            }
-        }
-    });
-
-    var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
@@ -274,11 +139,7 @@
             region: 'center',
             border: false,
             bodyCls: 'x-border-body-panel',
-            layout: {
-                type: 'vbox',
-                align: 'stretch',
-                pack: 'start'
-            },
+            layout: 'fit',
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
@@ -286,89 +147,11 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 1,
-                tools: [
-                    //{
-                    //    type: 'print',
-                    //    tooltip: '数据导出',
-                    //    handler: function (event, toolEl, panelHeader) {
-                    //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
-                    //    }
-                    //}
-                ],
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch',
-                    pack: 'start'
-                },
-                items: [chartLine]
-            }, {
-                xtype: 'grid',
-                glyph: 0xf029,
-                title: '测值统计信息',
-                collapsible: true,
-                collapseFirst: false,
-                margin: '5 0 0 0',
-                flex: 1,
-                store: currentStore,
-                loadMask: true,
-                tools: [{
-                    type: 'print',
-                    tooltip: '数据导出',
-                    handler: function (event, toolEl, panelHeader) {
-                        print(currentStore);
-                    }
-                }],
-                viewConfig: {
-                    loadMask: false,
-                    preserveScrollOnRefresh: true,
-                    stripeRows: true,
-                    trackOver: true,
-                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                    getRowClass: function (record, rowIndex, rowParams, store) {
-                        return $$iPems.GetPointStatusCls(record.get("state"));
-                    }
-                },
-                columns: [
-                    {
-                        text: '序号',
-                        dataIndex: 'index',
-                        width: 60
-                    },
-                    {
-                        text: '开始时间',
-                        dataIndex: 'start'
-                    },
-                    {
-                        text: '结束时间',
-                        dataIndex: 'end'
-                    },
-                    {
-                        text: '最大测值',
-                        dataIndex: 'maxdisplay'
-                    },
-                    {
-                        text: '最大时间',
-                        dataIndex: 'maxtime'
-                    },
-                    {
-                        text: '最小测值',
-                        dataIndex: 'mindisplay'
-                    },
-                    {
-                        text: '最小时间',
-                        dataIndex: 'mintime'
-                    },
-                    {
-                        text: '平均测值',
-                        dataIndex: 'avgdisplay'
-                    },
-                    {
-                        text: '统计数量',
-                        dataIndex: 'total'
-                    }
-                ],
-                bbar: currentPagingToolbar,
+                layout: 'fit',
+                items: [{
+                    xtype: 'container',
+                    contentEl: 'line-chart'
+                }]
             }],
             dockedItems: [{
                 xtype: 'panel',
@@ -412,7 +195,7 @@
                                 glyph: 0xf005,
                                 text: '数据查询',
                                 handler: function (me, event) {
-                                    query(currentPagingToolbar);
+                                    query(currentLayout);
                                 }
                             }
                         ]
@@ -440,14 +223,6 @@
                                 value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
                                 editable: false,
                                 allowBlank: false
-                            },
-                            {
-                                xtype: 'button',
-                                glyph: 0xf010,
-                                text: '数据导出',
-                                handler: function (me, event) {
-                                    print(currentStore);
-                                }
                             }
                         ]
                     }
@@ -460,5 +235,12 @@
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
+    });
+
+    Ext.onReady(function () {
+        lineChart = echarts.init(document.getElementById("line-chart"), 'shine');
+
+        //init charts
+        lineChart.setOption(lineOption);
     });
 })();

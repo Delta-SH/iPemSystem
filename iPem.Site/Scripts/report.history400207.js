@@ -18,10 +18,11 @@ Ext.define('ReportModel', {
     //hasMany: { model: 'DetailModel', name: 'details', associationKey: 'details' },
     fields: [
         { name: 'index', type: 'int' },
-        { name: 'type', type: 'string' },
+        { name: 'area', type: 'string' },
         { name: 'name', type: 'string' },
+        { name: 'type', type: 'string' },
         { name: 'count', type: 'int' },
-        { name: 'interval', type: 'float' },
+        { name: 'interval', type: 'string' },
         { name: 'details', type: 'auto' }
     ]
 });
@@ -92,12 +93,12 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                        '<td>#</td><td>所属区域</td><td>所属站点</td><td>所属机房</td><td>所属设备</td><td>信号名称</td><td>开始时间</td><td>结束时间</td><td>历时(分钟)</td>',
+                        '<td>#</td><td>停电时间</td><td>来电时间</td><td>停电时长</td>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
                     '<tpl for="details">',
-                        '<tr><td>{#}</td><td>{area}</td><td>{station}</td><td>{room}</td><td>{device}</td><td>{point}</td><td>{start}</td><td>{end}</td><td>{interval}</td><tr/>',
+                        '<tr><td>{#}</td><td>{start}</td><td>{end}</td><td>{timespan}</td><tr/>',
                     '</tpl>',
                 '</tbody>',
             '</tpl>',
@@ -122,25 +123,34 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '类型',
-        dataIndex: 'type',
+        text: '所属区域',
+        dataIndex: 'area',
         align: 'left',
+        flex: 1,
         sortable: true
     }, {
-        text: '名称',
+        text: '站点名称',
         dataIndex: 'name',
         align: 'left',
-        flex:1,
+        width: 150,
+        sortable: true
+    }, {
+        text: '站点类型',
+        dataIndex: 'type',
+        align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '停电次数',
         dataIndex: 'count',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
-        text: '停电时长(分钟)',
+        text: '停电时长',
         dataIndex: 'interval',
         align: 'left',
+        width: 150,
         sortable: true
     }],
     dockedItems: [{
@@ -153,7 +163,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 items: [
                     {
                         id: 'rangePicker',
-                        xtype: 'StationPicker',
+                        xtype: 'AreaPicker',
                         selectAll: false,
                         allowBlank: false,
                         emptyText: '请选择查询范围...',

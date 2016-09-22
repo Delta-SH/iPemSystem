@@ -78,7 +78,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500101(int start, int limit, string parent, string[] types, DateTime starttime, DateTime endtime) {
+        public JsonResult Request500101(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<Model500101>> {
                 success = true,
                 message = "无数据",
@@ -87,7 +87,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.Get500101(parent, types, starttime, endtime);
+                var models = this.Get500101(parent, types, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -111,9 +111,9 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500101(string parent, string[] types, DateTime starttime, DateTime endtime) {
+        public ActionResult Download500101(string parent, string[] types, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500101(parent, types, starttime, endtime);
+                var models = this.Get500101(parent, types, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500101>(models, "系统设备完好率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -124,7 +124,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500102(int start, int limit, string parent, string[] types, DateTime starttime, DateTime endtime) {
+        public JsonResult Request500102(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<Model500102>> {
                 success = true,
                 message = "无数据",
@@ -133,7 +133,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.Get500102(parent, types, starttime, endtime);
+                var models = this.Get500102(parent, types, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -157,9 +157,9 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500102(string parent, string[] types, DateTime starttime, DateTime endtime) {
+        public ActionResult Download500102(string parent, string[] types, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500102(parent, types, starttime, endtime);
+                var models = this.Get500102(parent, types, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500102>(models, "故障处理及时率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -169,15 +169,16 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        private List<Model500101> Get500101(string parent, string[] types, DateTime starttime, DateTime endtime) {
+        private List<Model500101> Get500101(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+            
             var result = new List<Model500101>();
             if(types == null) types = new string[] { };
 
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            endtime = endtime.AddSeconds(86399);
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+            if(!string.IsNullOrWhiteSpace(parent)) {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
                     var index = 0;
@@ -187,61 +188,49 @@ namespace iPem.Site.Controllers {
                     if(nodeType == EnmOrganization.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
                         if(current != null) {
-                            var alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.whlHuLue);
-                            var almsInDev = from alm in alarms
-                                            group alm by alm.DeviceId into g
-                                            select new { Id = g.Key, Alarms = g };
-
                             var devices = _workContext.RoleDevices;
-                            if(types != null && types.Length > 0)
-                                devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
+                            if(types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
 
                             if(current.HasChildren) {
                                 #region area children
+                                var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.whlHuLue);
                                 foreach(var child in current.ChildRoot) {
                                     var childDevices = devices.FindAll(d => child.Keys.Contains(d.Current.AreaId));
-                                    var details = from device in childDevices
-                                                  join aid in almsInDev on device.Current.Id equals aid.Id
-                                                  select new {
-                                                      Device = device.Current,
-                                                      Alarms = aid.Alarms
-                                                  };
+                                    var childMatchs = childDevices.Select(d => d.Current.Id);
+                                    var details = alarms.FindAll(a => childMatchs.Contains(a.DeviceId));
 
-                                    var devCount = childDevices.Count();
-                                    var almTime = details.SelectMany(a => a.Alarms).Sum(d => d.EndTime.Subtract(d.StartTime).TotalMinutes);
-                                    var cntTime = devCount * endtime.Subtract(starttime).TotalMinutes;
+                                    var devCount = childDevices.Count;
+                                    var almTime = details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                                    var cntTime = devCount * endDate.Subtract(startDate).TotalSeconds;
                                     result.Add(new Model500101 {
                                         index = ++index,
                                         type = child.Current.Type.Value,
                                         name = child.ToString(),
                                         devCount = devCount,
-                                        almTime = Math.Round(almTime, 2),
-                                        cntTime = Math.Round(cntTime, 2),
+                                        almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                                        cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
                                         rate = string.Format("{0:P2}", cntTime > 0 ? 1 - almTime / cntTime : 1)
                                     });
                                 }
                                 #endregion
                             } else {
                                 #region station children
+                                var alarms = _hisAlmService.GetAlmsInAreaAsList(id, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.whlHuLue);
                                 foreach(var station in current.Stations) {
                                     var childDevices = devices.FindAll(d => d.Current.StationId == station.Current.Id);
-                                    var details = from device in childDevices
-                                                  join aid in almsInDev on device.Current.Id equals aid.Id
-                                                  select new {
-                                                      Device = device.Current,
-                                                      Alarms = aid.Alarms
-                                                  };
+                                    var childMatchs = childDevices.Select(d => d.Current.Id);
+                                    var details = alarms.FindAll(a => childMatchs.Contains(a.DeviceId));
 
-                                    var devCount = devices.Count();
-                                    var almTime = details.SelectMany(a => a.Alarms).Sum(d => d.EndTime.Subtract(d.StartTime).TotalMinutes);
-                                    var cntTime = devCount * endtime.Subtract(starttime).TotalMinutes;
+                                    var devCount = childDevices.Count;
+                                    var almTime = details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                                    var cntTime = devCount * endDate.Subtract(startDate).TotalSeconds;
                                     result.Add(new Model500101 {
                                         index = ++index,
                                         type = station.Current.Type.Name,
                                         name = string.Format("{0},{1}", current.ToString(), station.Current.Name),
                                         devCount = devCount,
-                                        almTime = Math.Round(almTime, 2),
-                                        cntTime = Math.Round(cntTime, 2),
+                                        almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                                        cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
                                         rate = string.Format("{0:P2}", cntTime > 0 ? 1 - almTime / cntTime : 1)
                                     });
                                 }
@@ -252,34 +241,25 @@ namespace iPem.Site.Controllers {
                         #region room children
                         var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
                         if(current != null) {
-                            var alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.whlHuLue);
-                            var almsInDev = from alm in alarms
-                                            group alm by alm.DeviceId into g
-                                            select new { Id = g.Key, Alarms = g };
-
+                            var alarms = _hisAlmService.GetAlmsInStationAsList(id, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.whlHuLue);
                             var area = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
                             foreach(var room in current.Rooms) {
-                                var devices = room.Devices;
-                                if(types != null && types.Length > 0)
-                                    devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
+                                var childDevices = room.Devices;
+                                if(types.Length > 0) childDevices = childDevices.FindAll(d => types.Contains(d.Current.Type.Id));
 
-                                var details = from device in devices
-                                              join dev in almsInDev on device.Current.Id equals dev.Id
-                                              select new {
-                                                  Device = device.Current,
-                                                  Alarms = dev.Alarms
-                                              };
+                                var childMatchs = childDevices.Select(d => d.Current.Id);
+                                var details = alarms.FindAll(a => childMatchs.Contains(a.DeviceId));
 
-                                var devCount = devices.Count();
-                                var almTime = details.SelectMany(a => a.Alarms).Sum(d => d.EndTime.Subtract(d.StartTime).TotalMinutes);
-                                var cntTime = devCount * endtime.Subtract(starttime).TotalMinutes;
+                                var devCount = childDevices.Count;
+                                var almTime = details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                                var cntTime = devCount * endDate.Subtract(startDate).TotalSeconds;
                                 result.Add(new Model500101 {
                                     index = ++index,
                                     type = room.Current.Type.Name,
                                     name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", current.Current.Name, room.Current.Name),
                                     devCount = devCount,
-                                    almTime = Math.Round(almTime, 2),
-                                    cntTime = Math.Round(cntTime, 2),
+                                    almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                                    cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
                                     rate = string.Format("{0:P2}", cntTime > 0 ? 1 - almTime / cntTime : 1)
                                 });
                             }
@@ -292,15 +272,16 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<Model500102> Get500102(string parent, string[] types, DateTime starttime, DateTime endtime) {
+        private List<Model500102> Get500102(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);            
+            
             var result = new List<Model500102>();
             if(types == null) types = new string[] { };
 
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            endtime = endtime.AddSeconds(86399);
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+            if(!string.IsNullOrWhiteSpace(parent)) {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
                     var index = 0;
@@ -310,20 +291,17 @@ namespace iPem.Site.Controllers {
                     if(nodeType == EnmOrganization.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
                         if(current != null) {
-                            var alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslHuLue);
                             var devices = _workContext.RoleDevices;
-                            if(types != null && types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
-
-                            var almWdev = from alarm in alarms
-                                          join device in devices on alarm.DeviceId equals device.Current.Id
-                                          select alarm;
+                            if(types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
+                            var devMatchs = devices.Select(d => d.Current.Id);
 
                             if(current.HasChildren) {
                                 #region area children
+                                var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => devMatchs.Contains(a.DeviceId) && a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslHuLue);
                                 foreach(var child in current.ChildRoot) {
-                                    var filter = almWdev.Where(a => child.Keys.Contains(a.AreaId));
+                                    var filter = alarms.FindAll(a => child.Keys.Contains(a.AreaId));
                                     var count = filter.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
-                                    var total = filter.Count();
+                                    var total = filter.Count;
                                     result.Add(new Model500102 {
                                         index = ++index,
                                         type = child.Current.Type.Value,
@@ -336,10 +314,11 @@ namespace iPem.Site.Controllers {
                                 #endregion
                             } else {
                                 #region station children
+                                var alarms = _hisAlmService.GetAlmsInAreaAsList(id, startDate, endDate).FindAll(a => devMatchs.Contains(a.DeviceId) && a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslHuLue);
                                 foreach(var station in current.Stations) {
-                                    var filter = almWdev.Where(a => a.StationId == station.Current.Id);
+                                    var filter = alarms.FindAll(a => a.StationId == station.Current.Id);
                                     var count = filter.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
-                                    var total = filter.Count();
+                                    var total = filter.Count;
                                     result.Add(new Model500102 {
                                         index = ++index,
                                         type = station.Current.Type.Name,
@@ -356,19 +335,16 @@ namespace iPem.Site.Controllers {
                         #region room children
                         var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
                         if(current != null) {
-                            var alarms = _hisAlmService.GetAllAlmsAsList(starttime, endtime).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslHuLue);
                             var devices = _workContext.RoleDevices;
-                            if(types != null && types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
+                            if(types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
+                            var devMatchs = devices.Select(d => d.Current.Id);
 
-                            var almWdev = from alarm in alarms
-                                          join device in devices on alarm.DeviceId equals device.Current.Id
-                                          select alarm;
-
+                            var alarms = _hisAlmService.GetAlmsInStationAsList(id, startDate, endDate).FindAll(a => devMatchs.Contains(a.DeviceId) && a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslHuLue);
                             var area = _workContext.RoleAreas.Find(a => a.Current.Id == current.Current.AreaId);
                             foreach(var room in current.Rooms) {
-                                var filter = almWdev.Where(a => a.RoomId == room.Current.Id);
+                                var filter = alarms.FindAll(a => a.RoomId == room.Current.Id);
                                 var count = filter.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
-                                var total = filter.Count();
+                                var total = filter.Count;
                                 result.Add(new Model500102 {
                                     index = ++index,
                                     type = room.Current.Type.Name,

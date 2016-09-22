@@ -217,7 +217,7 @@
         },
         listeners: {
             load: function (me, records, successful) {
-                if (successful) {
+                if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
                     if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
                         var xaxis = [],

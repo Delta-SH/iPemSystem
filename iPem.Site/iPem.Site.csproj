@@ -194,6 +194,7 @@
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\HomeAlmModel.cs" />
     <Compile Include="Models\HomeAreaAlmModel.cs" />
     <Compile Include="Models\HomeOffModel.cs" />
@@ -220,9 +221,6 @@
     <Compile Include="Models\Model400206.cs" />
     <Compile Include="Models\Model400207.cs" />
     <Compile Include="Models\Model400208.cs" />
-    <Compile Include="Models\Model400301.cs" />
-    <Compile Include="Models\Model400302.cs" />
-    <Compile Include="Models\Model400303.cs" />
     <Compile Include="Models\Model400401.cs" />
     <Compile Include="Models\Model400402.cs" />
     <Compile Include="Models\Model400403.cs" />
@@ -240,7 +238,6 @@
     <Compile Include="Models\ProfileValues.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RtValues.cs" />
-    <Compile Include="Models\ShiDianDetailModel.cs" />
     <Compile Include="Models\ShiDianModel.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\RoleModel.cs" />

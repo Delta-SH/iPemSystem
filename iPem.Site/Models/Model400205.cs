@@ -17,8 +17,8 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("工程数量")]
         public int count { get; set; }
 
-        [ExcelDisplayName("平均历时(分钟)")]
-        public double interval { get; set; }
+        [ExcelDisplayName("平均历时")]
+        public string interval { get; set; }
 
         [ExcelDisplayName("超时工程数量")]
         public int timeout { get; set; }

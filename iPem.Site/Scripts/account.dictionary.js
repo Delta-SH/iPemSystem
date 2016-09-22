@@ -429,6 +429,81 @@
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'chaoDuan',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '超短告警',
+                                    allowBlank: false,
+                                    value: 1,
+                                    minValue: 1,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '分钟（注：超短告警是指告警历时小于该阈值的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'chaoChang',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '超长告警',
+                                    allowBlank: false,
+                                    value: 1,
+                                    minValue: 1,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '分钟（注：超长告警是指告警历时大于该阈值的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'chaoPin',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '超频告警',
+                                    allowBlank: false,
+                                    allowDecimals: false,
+                                    value: 1,
+                                    minValue: 1,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '次数（注：超频告警是指告警次数小于该阈值的告警）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '市电停电',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
                             labelWidth: 100,
                             labelAlign: 'left',
                             margin: 15
@@ -444,107 +519,34 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
-                                        name: 'chaoPin',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '超频告警阈值',
+                                        name: 'tingDianXinHao',
+                                        xtype: 'LogicPointPicker',
+                                        fieldLabel: '市电状态信号',
                                         allowBlank: false,
-                                        allowDecimals: false,
-                                        emptyText: '统计时间内告警次数阈值',
-                                        value: 1,
-                                        minValue: 1
+                                        emptyText: '请选择市电状态信号...'
                                     }, {
-                                        name: 'chaoChang',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '超长告警阈值',
-                                        allowBlank: false,
-                                        emptyText: '告警历时的最小时间阈值',
-                                        value: 1,
-                                        minValue: 1
-                                    }]
-                                }, {
-                                    xtype: 'container',
-                                    layout: 'anchor',
-                                    items: [{
-                                        xtype: 'displayfield',
-                                        value: '次数/时段',
-                                        margin: '15 15 15 0'
-                                    }, {
-                                        xtype: 'displayfield',
-                                        value: '分钟',
-                                        margin: '15 15 15 0'
-                                    }]
-                                }, {
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
-                                        name: 'chaoDuan',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '超短告警阈值',
-                                        allowBlank: false,
-                                        emptyText: '告警历时的最大时间阈值',
-                                        value: 1,
-                                        minValue: 1
-                                    }]
-                                }, {
-                                    xtype: 'container',
-                                    layout: 'anchor',
-                                    items: [{
-                                        xtype: 'displayfield',
-                                        value: '分钟',
-                                        margin: '15 15 15 0'
-                                    }]
-                                }]
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'fieldset',
-                        title: '市电停电',
-                        margin: '10 35 20 20',
-                        defaultType: 'textfield',
-                        fieldDefaults: {
-                            anchor: '100%',
-                            labelWidth: 80,
-                            labelAlign: 'left',
-                            margin: 15
-                        },
-                        layout: 'anchor',
-                        items: [
-                            {
-                                xtype: 'container',
-                                anchor: '100%',
-                                layout: 'hbox',
-                                items: [{
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
                                         name: 'weiTingDian',
                                         xtype: 'numberfield',
-                                        fieldLabel: '正常测值',
+                                        fieldLabel: '市电正常测值',
                                         allowBlank: false,
                                         allowDecimals: false,
-                                        emptyText: '市电信号正常时所输出的测值',
+                                        emptyText: '市电正常状态时的测值',
                                         value: 0,
                                         minValue: 0
-                                    }, {
-                                        name: 'tingDianXinHao',
-                                        xtype: 'LogicPointMultiPicker',
-                                        fieldLabel: '停电信号',
-                                        allowBlank: false
                                     }]
                                 }, {
                                     xtype: 'container',
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
+                                        xtype: 'displayfield'
+                                    }, {
                                         name: 'tingDian',
                                         xtype: 'numberfield',
-                                        fieldLabel: '停电测值',
+                                        fieldLabel: '市电停电测值',
                                         allowBlank: false,
                                         allowDecimals: false,
-                                        emptyText: '市电信号停电时所输出的测值',
+                                        emptyText: '市电停电状态时的测值',
                                         value: 1,
                                         minValue: 0
                                     }]
@@ -559,7 +561,7 @@
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
-                            labelWidth: 80,
+                            labelWidth: 100,
                             labelAlign: 'left',
                             margin: 15
                         },
@@ -574,31 +576,34 @@
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
+                                        name: 'faDianXinHao',
+                                        xtype: 'LogicPointPicker',
+                                        fieldLabel: '油机状态信号',
+                                        allowBlank: false,
+                                        emptyText: '请选择油机状态信号...'
+                                    }, {
                                         name: 'weiFaDian',
                                         xtype: 'numberfield',
-                                        fieldLabel: '正常测值',
+                                        fieldLabel: '油机停机测值',
                                         allowBlank: false,
                                         allowDecimals: false,
-                                        emptyText: '油机信号正常时所输出的测值',
+                                        emptyText: '油机停机状态时的测值',
                                         value: 0,
                                         minValue: 0
-                                    }, {
-                                        name: 'faDianXinHao',
-                                        xtype: 'LogicPointMultiPicker',
-                                        fieldLabel: '发电信号',
-                                        allowBlank: false
                                     }]
                                 }, {
                                     xtype: 'container',
                                     flex: 1,
                                     layout: 'anchor',
                                     items: [{
+                                        xtype: 'displayfield'
+                                    }, {
                                         name: 'faDian',
                                         xtype: 'numberfield',
-                                        fieldLabel: '发电测值',
+                                        fieldLabel: '油机工作测值',
                                         allowBlank: false,
                                         allowDecimals: false,
-                                        emptyText: '油机信号发电时所输出的测值',
+                                        emptyText: '油机工作状态时的测值',
                                         value: 1,
                                         minValue: 0
                                     }]
@@ -633,7 +638,7 @@
                                     flex: 1
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该值的告警）',
+                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该阈值的告警）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -687,7 +692,7 @@
                                     flex: 1
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该值的告警）',
+                                    value: '分钟（注：为了规避频繁告警，报表统计时将忽略告警历时小于该阈值的告警）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]

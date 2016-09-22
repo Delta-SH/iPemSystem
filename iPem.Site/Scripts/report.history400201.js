@@ -150,8 +150,9 @@
                         tdCls: 'x-status-cell'
                     },
                     {
-                        text: '值变时间',
-                        dataIndex: 'time'
+                        text: '测值时间',
+                        dataIndex: 'time',
+                        width: 150
                     }
                 ],
                 bbar: currentPagingToolbar,

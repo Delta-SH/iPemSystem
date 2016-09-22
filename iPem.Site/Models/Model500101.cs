@@ -16,11 +16,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("设备数量")]
         public int devCount { get; set; }
 
-        [ExcelDisplayName("设备告警时长(分钟)")]
-        public double almTime { get; set; }
+        [ExcelDisplayName("设备告警时长")]
+        public string almTime { get; set; }
 
-        [ExcelDisplayName("设备统计时长(分钟)")]
-        public double cntTime { get; set; }
+        [ExcelDisplayName("设备统计时长")]
+        public string cntTime { get; set; }
 
         [ExcelDisplayName("设备完好率")]
         public string rate { get; set; }

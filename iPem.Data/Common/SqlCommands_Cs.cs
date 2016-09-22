@@ -230,6 +230,76 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+        public const string Sql_HisValue_Repository_GetEntitiesByPoint1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Hist'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [Time] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH HisValue AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM HisValue ORDER BY [Time];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_HisValue_Repository_GetEntitiesByPoint2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Hist'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ' + @PointId + N' AND [Time] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH HisValue AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM HisValue ORDER BY [Time];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
         public const string Sql_HisValue_Repository_GetEntitiesByPoints = @"
         DECLARE @Current [varchar](max) = '',@Pos INT;
         SET @Pos = CHARINDEX(@Delimiter, @Points);
@@ -285,41 +355,6 @@ namespace iPem.Data.Common {
 			        ' + @Current + N'
 		        )
 		        SELECT HV.* FROM HisValue HV INNER JOIN Matchs ST ON HV.[PointId] = ST.[Id] ORDER BY HV.[Time];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_HisValue_Repository_GetEntitiesByPoint = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Hist'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [Time] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [Time];'
         END
 
         EXECUTE sp_executesql @SQL;";

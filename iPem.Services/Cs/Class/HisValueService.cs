@@ -31,28 +31,36 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisValue> GetValues(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisValue>(this.GetValuesAsList(device, start, end), pageIndex, pageSize);
+        public IPagedList<HisValue> GetValuesByDevice(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByDeviceAsList(device, start, end), pageIndex, pageSize);
         }
 
-        public List<HisValue> GetValuesAsList(string device, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, start, end);
+        public List<HisValue> GetValuesByDeviceAsList(string device, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByDevice(device, start, end);
         }
 
-        public IPagedList<HisValue> GetValues(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisValue>(this.GetValuesAsList(device, point, start, end), pageIndex, pageSize);
+        public IPagedList<HisValue> GetValuesByPoint(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByPointAsList(device, point, start, end), pageIndex, pageSize);
         }
 
-        public List<HisValue> GetValuesAsList(string device, string point, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, point, start, end);
+        public List<HisValue> GetValuesByPointAsList(string device, string point, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByPoint(device, point, start, end);
         }
 
-        public IPagedList<HisValue> GetValues(string[] points, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisValue>(this.GetValuesAsList(points, start, end), pageIndex, pageSize);
+        public IPagedList<HisValue> GetValuesByPoint(string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByPointAsList(point, start, end), pageIndex, pageSize);
         }
 
-        public List<HisValue> GetValuesAsList(string[] points, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(points, start, end);
+        public List<HisValue> GetValuesByPointAsList(string point, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByPoint(point, start, end);
+        }
+
+        public IPagedList<HisValue> GetValuesByPoint(string[] points, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByPointAsList(points, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisValue> GetValuesByPointAsList(string[] points, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByPoint(points, start, end);
         }
 
         public IPagedList<HisValue> GetValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {

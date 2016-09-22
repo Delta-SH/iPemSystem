@@ -283,6 +283,14 @@ namespace iPem.Core {
         }
 
         /// <summary>
+        /// Interval Converter
+        /// </summary>
+        /// <param name="ts">TimeSpan</param>
+        public static string IntervalConverter(TimeSpan ts) {
+            return String.Format("{0:0000}.{1:00}:{2:00}:{3:00}", ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
+        }
+
+        /// <summary>
         /// Create a string hash
         /// </summary>
         /// <param name="plainText">Text to encrypt</param>

@@ -25,7 +25,7 @@ Ext.define('ReportModel', {
         { name: 'type', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'count', type: 'int' },
-        { name: 'interval', type: 'float' },
+        { name: 'interval', type: 'string' },
         { name: 'timeout', type: 'int' },
         { name: 'rate', type: 'string' },
         { name: 'projects', type: 'auto' }
@@ -88,6 +88,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     columnLines: true,
     disableSelection: false,
     loadMask: true,
+    forceFit: false,
     cls: 'x-grid-expander',
     plugins: [{
         ptype: 'rowexpander',
@@ -118,11 +119,9 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
             })
     }],
     viewConfig: {
-        forceFit: false,
         trackOver: true,
         stripeRows: true,
-        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-        preserveScrollOnRefresh: true
+        emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
     },
     columns: [{
         text: '序号',
@@ -147,19 +146,22 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '平均历时(分钟)',
+        text: '平均历时',
         dataIndex: 'interval',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '超时工程数量',
         dataIndex: 'timeout',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '超时工程占比',
         dataIndex: 'rate',
         align: 'left',
+        width: 150,
         sortable: true
     }],
     dockedItems: [{

@@ -759,3 +759,765 @@
     background-color: transparent;
     padding-left: 18px;
 }
+
+/*!
+ * font.css
+ * /Content/ux/font.css
+ */
+
+@font-face {
+	font-family: 'top-nav-font';
+	src: url('/Content/ux/fonts/topbar.eot');
+	src: url('/Content/ux/fonts/topbar.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/topbar.ttf') format('truetype'),
+		 url('/Content/ux/fonts/topbar.woff') format('woff'),
+		 url('/Content/ux/fonts/topbar.svg?#top-nav-font') format('svg');
+
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'ipems-icon-font';
+	src: url('//at.alicdn.com/t/font_1461429736_2898858.eot');
+	src: url('//at.alicdn.com/t/font_1461429736_2898858.eot?#iefix') format('embedded-opentype'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.ttf') format('truetype'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.woff') format('woff'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.svg?#ipems-icon-font') format('svg');
+
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-topbar-"], [class*=" icon-topbar-"] {
+	font-family: 'top-nav-font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+[class^="ipems-icon-font-"], [class*=" ipems-icon-font-"] {
+	font-family: 'ipems-icon-font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-topbar-home:before {
+    content: "\e900";
+}
+.icon-topbar-book:before {
+    content: "\e91f";
+}
+.icon-topbar-location:before {
+    content: "\e908";
+}
+.icon-topbar-alarm:before {
+    content: "\e950";
+}
+.icon-topbar-bell:before {
+    content: "\e902";
+}
+.icon-topbar-calendar:before {
+    content: "\e953";
+}
+.icon-topbar-printer:before {
+    content: "\e954";
+}
+.icon-topbar-database:before {
+    content: "\e964";
+}
+.icon-topbar-spinner:before {
+    content: "\e97d";
+}
+.icon-topbar-binoculars:before {
+    content: "\e985";
+}
+.icon-topbar-search:before {
+    content: "\e986";
+}
+.icon-topbar-pie:before {
+    content: "\e99a";
+}
+.icon-topbar-dot:before {
+    content: "\e99b";
+}
+.icon-topbar-bar:before {
+    content: "\e99c";
+}
+.icon-topbar-meter:before {
+    content: "\e901";
+}
+.icon-topbar-power:before {
+    content: "\e9b5";
+}
+.icon-topbar-bookmark:before {
+    content: "\e905";
+}
+.icon-topbar-notification:before {
+    content: "\ea08";
+}
+.icon-topbar-question:before {
+    content: "\e904";
+}
+.icon-topbar-mail:before {
+    content: "\e903";
+}
+
+/*!
+ * global.css
+ * /Content/ux/global.css
+ */
+
+.x-panel-body-default {
+    border: 1px solid #c0c0c0;
+    border-top: none;
+}
+
+.x-grid-body {
+    border-top: 1px solid #c0c0c0;
+}
+
+.x-docked-top-with-bottom {
+    border-bottom-width:1px !important
+}
+
+.x-panel-header-default .x-panel-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-btn-default-toolbar-small .x-btn-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-window-header-default .x-window-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-tab-default .x-tab-glyph {
+    opacity: 0.8;
+}
+
+.x-menu-item-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-border-layout-ct {
+    background-color: #fff;
+}
+
+.x-grid-locked .x-grid-inner-locked {
+    border-color: #c0c0c0;
+}
+
+.x-grid-expander .x-grid-rowbody {
+    background-color: #f8f8f8;
+    color: #666;
+    font: 12px/15px helvetica,arial,verdana,sans-serif;
+    padding: 5px 10px;
+}
+
+.x-grid-expander .row-table td {
+    padding: 5px 5px 5px 0;
+}
+
+.x-cell-icon {
+    margin:0 5px;
+}
+
+.x-danger-panel .x-tool-img {
+    background-color: #df3e3e;
+}
+
+.x-danger-panel .x-panel-header-default {
+    line-height: 18px;
+    opacity: 1;
+
+    background-color: #df3e3e;
+    background-image: none;
+    border: 1px solid #df3e3e;
+}
+
+.x-border-body-panel {
+    border: 1px solid #c0c0c0;
+}
+
+.x-tip-default {
+  border-radius: 4px;
+  border: 0px solid rgb(51, 51, 51);
+  background-color: rgba(50, 50, 50, 0.5)
+}
+
+.x-tip-header-text-container-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default a {
+  color: rgb(255, 255, 255);
+}
+
+.x-custom-tool .x-tool-print {
+    background-image: url('../themes/icons/print.png');
+}
+
+.x-toolbar-footer {
+    background: #f8f8f8 none repeat scroll 0 0;
+    border-top: 1px solid #c0c0c0 !important;
+    border-right: 0 none;
+    border-bottom: 0 none;
+    border-left: 0 none;
+    margin: 0;
+    padding: 6px 0 6px 6px;
+}
+
+.x-layout-split-left {
+  background-image: url('images/mini-left.png');
+}
+
+.x-layout-split-right {
+  background-image: url('images/mini-right.png');
+}
+
+.x-layout-split-top {
+  background-image: url('images/mini-top.png');
+}
+
+.x-layout-split-bottom {
+  background-image: url('images/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-left {
+  background-image: url('images/mini-right.png');
+}
+
+.x-splitter-collapsed .x-layout-split-right {
+  background-image: url('images/mini-left.png');
+}
+
+.x-splitter-collapsed .x-layout-split-top {
+  background-image: url('images/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-bottom {
+  background-image: url('images/mini-top.png');
+}
+
+/*!
+ * icon.css
+ * /Content/ux/icon.css
+ */
+
+.x-icon-accept {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-error {
+    background-image: url("../themes/icons/error.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-hidden {
+    display:none;
+}
+
+.x-icon-loading {
+    background-image: url("../themes/icons/loading.gif") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tips {
+    background-image: url("../themes/icons/tips.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-edit {
+    background-image: url("../themes/icons/edit.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-add {
+    background-image: url("../themes/icons/add.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tick {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-delete {
+    background-image: url("../themes/icons/delete.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-password {
+    background-image: url("../themes/icons/password.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-detail {
+    background-image: url("../themes/icons/detail.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-control {
+    background-image: url("../themes/icons/control.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-setting {
+    background-image: url("../themes/icons/junheng.png") !important;
+    background-repeat: no-repeat;
+}
+
+/*!
+ * label.css
+ * /Content/ux/label.css
+ */
+
+.x-label {
+    height : 16px;
+}
+
+.x-label-value {
+    vertical-align : middle;
+}
+
+.x-label-icon {
+    border: 0 none !important;
+    height: 16px;
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+.x-label-header {
+    color:#fff;
+    font-weight:bold;
+}
+
+/*!
+ * multicombo.css
+ * /Content/ux/multicombo.css
+ */
+
+.x-mcombo-item-checked {
+    background-image: url(images/checked.png);
+    background-position: 0 3px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
+}
+
+.x-mcombo-item-unchecked {
+    background-image: url(images/unchecked.png);
+    background-position: 0 3px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
+}
+
+/*!
+ * font.css
+ * /Content/ux/font.css
+ */
+
+@font-face {
+	font-family: 'top-nav-font';
+	src: url('/Content/ux/fonts/topbar.eot');
+	src: url('/Content/ux/fonts/topbar.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/topbar.ttf') format('truetype'),
+		 url('/Content/ux/fonts/topbar.woff') format('woff'),
+		 url('/Content/ux/fonts/topbar.svg?#top-nav-font') format('svg');
+
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'ipems-icon-font';
+	src: url('//at.alicdn.com/t/font_1461429736_2898858.eot');
+	src: url('//at.alicdn.com/t/font_1461429736_2898858.eot?#iefix') format('embedded-opentype'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.ttf') format('truetype'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.woff') format('woff'),
+		 url('//at.alicdn.com/t/font_1461429736_2898858.svg?#ipems-icon-font') format('svg');
+
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-topbar-"], [class*=" icon-topbar-"] {
+	font-family: 'top-nav-font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+[class^="ipems-icon-font-"], [class*=" ipems-icon-font-"] {
+	font-family: 'ipems-icon-font';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-topbar-home:before {
+    content: "\e900";
+}
+.icon-topbar-book:before {
+    content: "\e91f";
+}
+.icon-topbar-location:before {
+    content: "\e908";
+}
+.icon-topbar-alarm:before {
+    content: "\e950";
+}
+.icon-topbar-bell:before {
+    content: "\e902";
+}
+.icon-topbar-calendar:before {
+    content: "\e953";
+}
+.icon-topbar-printer:before {
+    content: "\e954";
+}
+.icon-topbar-database:before {
+    content: "\e964";
+}
+.icon-topbar-spinner:before {
+    content: "\e97d";
+}
+.icon-topbar-binoculars:before {
+    content: "\e985";
+}
+.icon-topbar-search:before {
+    content: "\e986";
+}
+.icon-topbar-pie:before {
+    content: "\e99a";
+}
+.icon-topbar-dot:before {
+    content: "\e99b";
+}
+.icon-topbar-bar:before {
+    content: "\e99c";
+}
+.icon-topbar-meter:before {
+    content: "\e901";
+}
+.icon-topbar-power:before {
+    content: "\e9b5";
+}
+.icon-topbar-bookmark:before {
+    content: "\e905";
+}
+.icon-topbar-notification:before {
+    content: "\ea08";
+}
+.icon-topbar-question:before {
+    content: "\e904";
+}
+.icon-topbar-mail:before {
+    content: "\e903";
+}
+
+/*!
+ * global.css
+ * /Content/ux/global.css
+ */
+
+.x-panel-body-default {
+    border: 1px solid #c0c0c0;
+    border-top: none;
+}
+
+.x-grid-body {
+    border-top: 1px solid #c0c0c0;
+}
+
+.x-docked-top-with-bottom {
+    border-bottom-width:1px !important
+}
+
+.x-panel-header-default .x-panel-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-btn-default-toolbar-small .x-btn-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-window-header-default .x-window-header-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-tab-default .x-tab-glyph {
+    opacity: 0.8;
+}
+
+.x-menu-item-glyph {
+    line-height: 18px;
+    opacity: 0.8;
+}
+
+.x-border-layout-ct {
+    background-color: #fff;
+}
+
+.x-grid-locked .x-grid-inner-locked {
+    border-color: #c0c0c0;
+}
+
+.x-grid-expander .x-grid-rowbody {
+    background-color: #f8f8f8;
+    color: #666;
+    font: 12px/15px helvetica,arial,verdana,sans-serif;
+    padding: 5px 10px;
+}
+
+.x-grid-expander .row-table td {
+    padding: 5px 5px 5px 0;
+}
+
+.x-cell-icon {
+    margin:0 5px;
+}
+
+.x-danger-panel .x-tool-img {
+    background-color: #df3e3e;
+}
+
+.x-danger-panel .x-panel-header-default {
+    line-height: 18px;
+    opacity: 1;
+
+    background-color: #df3e3e;
+    background-image: none;
+    border: 1px solid #df3e3e;
+}
+
+.x-border-body-panel {
+    border: 1px solid #c0c0c0;
+}
+
+.x-tip-default {
+  border-radius: 4px;
+  border: 0px solid rgb(51, 51, 51);
+  background-color: rgba(50, 50, 50, 0.5)
+}
+
+.x-tip-header-text-container-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default {
+  color: rgb(255, 255, 255);
+}
+
+.x-tip-body-default a {
+  color: rgb(255, 255, 255);
+}
+
+.x-custom-tool .x-tool-print {
+    background-image: url('../themes/icons/print.png');
+}
+
+.x-toolbar-footer {
+    background: #f8f8f8 none repeat scroll 0 0;
+    border-top: 1px solid #c0c0c0 !important;
+    border-right: 0 none;
+    border-bottom: 0 none;
+    border-left: 0 none;
+    margin: 0;
+    padding: 6px 0 6px 6px;
+}
+
+.x-layout-split-left {
+  background-image: url('images/mini-left.png');
+}
+
+.x-layout-split-right {
+  background-image: url('images/mini-right.png');
+}
+
+.x-layout-split-top {
+  background-image: url('images/mini-top.png');
+}
+
+.x-layout-split-bottom {
+  background-image: url('images/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-left {
+  background-image: url('images/mini-right.png');
+}
+
+.x-splitter-collapsed .x-layout-split-right {
+  background-image: url('images/mini-left.png');
+}
+
+.x-splitter-collapsed .x-layout-split-top {
+  background-image: url('images/mini-bottom.png');
+}
+
+.x-splitter-collapsed .x-layout-split-bottom {
+  background-image: url('images/mini-top.png');
+}
+
+/*!
+ * icon.css
+ * /Content/ux/icon.css
+ */
+
+.x-icon-accept {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-error {
+    background-image: url("../themes/icons/error.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-hidden {
+    display:none;
+}
+
+.x-icon-loading {
+    background-image: url("../themes/icons/loading.gif") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tips {
+    background-image: url("../themes/icons/tips.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-edit {
+    background-image: url("../themes/icons/edit.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-add {
+    background-image: url("../themes/icons/add.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-tick {
+    background-image: url("../themes/icons/tick.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-delete {
+    background-image: url("../themes/icons/delete.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-password {
+    background-image: url("../themes/icons/password.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-detail {
+    background-image: url("../themes/icons/detail.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-control {
+    background-image: url("../themes/icons/control.png") !important;
+    background-repeat: no-repeat;
+}
+
+.x-icon-remote-setting {
+    background-image: url("../themes/icons/junheng.png") !important;
+    background-repeat: no-repeat;
+}
+
+/*!
+ * label.css
+ * /Content/ux/label.css
+ */
+
+.x-label {
+    height : 16px;
+}
+
+.x-label-value {
+    vertical-align : middle;
+}
+
+.x-label-icon {
+    border: 0 none !important;
+    height: 16px;
+    margin-left: 3px;
+    margin-right: 3px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+.x-label-header {
+    color:#fff;
+    font-weight:bold;
+}
+
+/*!
+ * multicombo.css
+ * /Content/ux/multicombo.css
+ */
+
+.x-mcombo-item-checked {
+    background-image: url(images/checked.png);
+    background-position: 0 3px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
+}
+
+.x-mcombo-item-unchecked {
+    background-image: url(images/unchecked.png);
+    background-position: 0 3px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
+}

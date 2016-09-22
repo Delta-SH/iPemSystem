@@ -1,18 +1,58 @@
 ﻿(function () {
-    Ext.define('PointModel', {
-        extend: 'Ext.data.Model',
-        fields: [
-            { name: 'index', type: 'int' },
-            { name: 'value', type: 'string' },
-			{ name: 'threshold', type: 'string' },
-            { name: 'state', type: 'int' },
-            { name: 'stateDisplay', type: 'string' },
-            { name: 'time', type: 'string' }
-        ],
-        idProperty: 'index'
-    });
+    var lineChart = null,
+        lineOption = {
+            tooltip: {
+                trigger: 'axis',
+                formatter: '{b}<br/>{c} {a}'
+            },
+            grid: {
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: 40,
+                containLabel: true
+            },
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    start: 0,
+                    end: 100
+                }
+            ],
+            xAxis: [{
+                type: 'category',
+                boundaryGap: false,
+                splitLine: { show: false },
+                data: []
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [
+                {
+                    name: '',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'none',
+                    sampling: 'average',
+                    itemStyle: {
+                        normal: {
+                            color: '#0892cd'
+                        }
+                    },
+                    areaStyle: { normal: {} },
+                    data: [ ]
+                }
+            ]
+        };
 
-    var query = function (pagingtoolbar) {
+    var query = function (target) {
         var device = Ext.getCmp('devicePicker'),
             point = Ext.getCmp('pointCombo'),
             start = Ext.getCmp('startField'),
@@ -21,130 +61,41 @@
         if (!device.isValid()) return;
         if (!point.isValid()) return;
 
-        var me = pagingtoolbar.store;
-        me.proxy.extraParams.device = device.getValue();
-        me.proxy.extraParams.point = point.getValue();
-        me.proxy.extraParams.starttime = start.getRawValue();
-        me.proxy.extraParams.endtime = end.getRawValue();
-        me.loadPage(1);
-    };
+        var device = device.getValue(),
+            point = point.getValue(),
+            starttime = start.getRawValue(),
+            endtime = end.getRawValue();
 
-    var print = function (store) {
-        $$iPems.download({
-            url: '/Report/DownloadChart400301',
-            params: store.proxy.extraParams
+        Ext.Ajax.request({
+            url: '/Report/RequestChart400301',
+            params: { device: device, point: point, starttime: starttime, endtime: endtime },
+            mask: new Ext.LoadMask(target, { msg: '正在处理，请稍后...' }),
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    if (lineChart) {
+                        var xaxis = [], series = [], unit = '';
+                        if (data.data && Ext.isArray(data.data)) {
+                            Ext.Array.each(data.data, function (item, index) {
+                                xaxis.push(item.name);
+                                series.push(item.value);
+                                unit = item.comment;
+                            });
+                        }
+
+                        lineOption.series[0].name = unit;
+                        lineOption.series[0].data = series;
+                        lineOption.xAxis[0].data = xaxis.map(function (str) {
+                            return str.replace(' ', '\n');
+                        });
+                        lineChart.setOption(lineOption, true);
+                    }
+                } else {
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            }
         });
     };
-
-    var chartLine = Ext.create('Ext.chart.Chart', {
-        xtype: 'chart',
-        flex: 1,
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['value'],
-            minorTickSteps: 1,
-            title: false,
-            grid: true
-        }, {
-            type: 'Category',
-            position: 'bottom',
-            fields: 'index',
-            title: false,
-            minorTickSteps: 3,
-            label: {
-                rotate: {
-                    degrees: 0
-                }
-            }
-        }],
-        series: [{
-            type: 'line',
-            smooth: true,
-            axis: ['left', 'bottom'],
-            xField: 'index',
-            yField: 'value',
-            highlightLine: false,
-            label: {
-                display: 'under',
-                field: 'comment'
-            },
-            tips: {
-                trackMouse: true,
-                minWidth: 150,
-                minHeight: 50,
-                renderer: function (storeItem, item) {
-                    this.setTitle(storeItem.get('name'));
-                    this.update(storeItem.get('comment'));
-                }
-            },
-            style: {
-                fill: '#157fcc',
-                stroke: '#157fcc',
-                'stroke-width': 2,
-                opacity: 1
-            },
-            markerConfig: {
-                type: 'circle',
-                size: 3,
-                radius: 3,
-                fill: '#fff',
-                stroke: '#157fcc',
-                'stroke-width': 2
-            },
-            highlight: {
-                size: 5,
-                radius: 5,
-                'stroke-width': 4
-            }
-        }],
-        store: Ext.create('Ext.data.Store', {
-            autoLoad: false,
-            fields: ['index', 'name', 'value', 'comment']
-        })
-    });
-
-    var currentStore = Ext.create('Ext.data.Store', {
-        autoLoad: false,
-        pageSize: 20,
-        model: 'PointModel',
-        proxy: {
-            type: 'ajax',
-            actionMethods: {
-                create: 'POST',
-                read: 'POST',
-                update: 'POST',
-                destroy: 'POST'
-            },
-            url: '/Report/RequestChart400301',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function (me, records, successful) {
-                if (successful) {
-                    var data = me.proxy.reader.jsonData,
-                        chartData = $$iPems.ChartEmptyDataLine;
-
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)) {
-                        chartData = data.chart;
-                    }
-
-                    chartLine.getStore().loadData(chartData, false);
-                }
-            }
-        }
-    });
-
-    var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
@@ -152,11 +103,7 @@
             region: 'center',
             border: false,
             bodyCls: 'x-border-body-panel',
-            layout: {
-                type: 'vbox',
-                align: 'stretch',
-                pack: 'start'
-            },
+            layout: 'fit',
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
@@ -164,75 +111,11 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 1,
-                tools: [
-                    //{
-                    //    type: 'print',
-                    //    tooltip: '数据导出',
-                    //    handler: function (event, toolEl, panelHeader) {
-                    //        Ext.ux.ImageExporter.save([chartPie1, chartPie2, chartPie3]);
-                    //    }
-                    //}
-                ],
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch',
-                    pack: 'start'
-                },
-                items: [chartLine]
-            }, {
-                xtype: 'grid',
-                glyph: 0xf029,
-                title: '信号测值信息',
-                collapsible: true,
-                collapseFirst: false,
-                margin: '5 0 0 0',
-                flex: 1,
-                store: currentStore,
-                loadMask: true,
-                tools: [{
-                    type: 'print',
-                    tooltip: '数据导出',
-                    handler: function (event, toolEl, panelHeader) {
-                        print(currentStore);
-                    }
-                }],
-                viewConfig: {
-                    loadMask: false,
-                    preserveScrollOnRefresh: true,
-                    stripeRows: true,
-                    trackOver: true,
-                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                    getRowClass: function (record, rowIndex, rowParams, store) {
-                        return $$iPems.GetPointStatusCls(record.get("state"));
-                    }
-                },
-                columns: [
-                    {
-                        text: '序号',
-                        dataIndex: 'index',
-                        width: 60
-                    },
-                    {
-                        text: '信号测值',
-                        dataIndex: 'value'
-                    },
-                    {
-                        text: '测值时间',
-                        dataIndex: 'time',
-                        width: 150
-                    },
-                    {
-                        text: '信号阈值',
-                        dataIndex: 'threshold'
-                    },
-                    {
-                        text: '信号状态',
-                        dataIndex: 'stateDisplay',
-                        tdCls: 'x-status-cell'
-                    }
-                ],
-                bbar: currentPagingToolbar,
+                layout: 'fit',
+                items: [{
+                    xtype: 'container',
+                    contentEl: 'line-chart'
+                }]
             }],
             dockedItems: [{
                 xtype: 'panel',
@@ -276,7 +159,7 @@
                                 glyph: 0xf005,
                                 text: '数据查询',
                                 handler: function (me, event) {
-                                    query(currentPagingToolbar);
+                                    query(currentLayout);
                                 }
                             }
                         ]
@@ -304,14 +187,6 @@
                                 value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
                                 editable: false,
                                 allowBlank: false
-                            },
-                            {
-                                xtype: 'button',
-                                glyph: 0xf010,
-                                text: '数据导出',
-                                handler: function (me, event) {
-                                    print(currentStore);
-                                }
                             }
                         ]
                     }
@@ -324,5 +199,12 @@
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
+    });
+
+    Ext.onReady(function () {
+        lineChart = echarts.init(document.getElementById("line-chart"), 'shine');
+
+        //init charts
+        lineChart.setOption(lineOption);
     });
 })();

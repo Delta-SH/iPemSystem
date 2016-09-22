@@ -12,13 +12,13 @@ namespace iPem.Site.Models {
 
         public int tingDian { get; set; }
 
-        public string[] tingDianXinHao { get; set; }
+        public string tingDianXinHao { get; set; }
 
         public int weiFaDian { get; set; }
 
         public int faDian { get; set; }
 
-        public string[] faDianXinHao { get; set; }
+        public string faDianXinHao { get; set; }
 
         public double whlHuLue { get; set; }
 

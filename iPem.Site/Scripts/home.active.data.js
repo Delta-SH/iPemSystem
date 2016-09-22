@@ -626,7 +626,7 @@
                                 { text: '信号测值', dataIndex: 'value' },
                                 { text: '单位/描述', dataIndex: 'unit' },
                                 { text: '信号状态', dataIndex: 'status', tdCls: 'x-status-cell', align: 'center' },
-                                { text: '值变时间', dataIndex: 'time' },
+                                { text: '测值时间', dataIndex: 'time', width: 150 },
                                 {
                                     xtype: 'actioncolumn',
                                     width: 100,
