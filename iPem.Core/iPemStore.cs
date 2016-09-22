@@ -24,7 +24,7 @@ namespace iPem.Core {
         /// Gets or sets the application version
         /// </summary>
         public string Version {
-            get { return "V1.0.0 Build160301"; }
+            get { return "V1.0.0 Build161001"; }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace iPem.Core {
         /// Gets or sets the browser requirements
         /// </summary>
         public string Requirements {
-            get { return "浏览器要求：IE10+、Firefox、Chrome"; }
+            get { return "浏览器：IE10+、Firefox、Chrome"; }
         }
 
         /// <summary>
