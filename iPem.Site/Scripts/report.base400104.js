@@ -201,7 +201,7 @@
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,
-                title: '设备统计列表',
+                title: '设备统计信息',
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,

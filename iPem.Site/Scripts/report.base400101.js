@@ -248,7 +248,7 @@
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,
-                    title: '区域统计列表',
+                    title: '区域统计信息',
                     store: currentStore,
                     columnLines: true,
                     disableSelection: false,

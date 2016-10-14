@@ -360,7 +360,7 @@ CREATE TABLE [dbo].[U_Menus](
 	[Name] [varchar](100) NOT NULL,
 	[Icon] [varchar](512) NULL,
 	[Url] [varchar](512) NULL,
-	[Comment] [varchar](512) NULL,
+	[Comment] [varchar](MAX) NULL,
 	[Index] [int] NULL,
 	[LastId] [int] NOT NULL,
 	[Enabled] [bit] NOT NULL,

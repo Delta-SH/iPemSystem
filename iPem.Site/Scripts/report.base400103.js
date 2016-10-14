@@ -266,7 +266,7 @@
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,
-                    title: '机房统计列表',
+                    title: '机房统计信息',
                     store: currentStore,
                     columnLines: true,
                     disableSelection: false,

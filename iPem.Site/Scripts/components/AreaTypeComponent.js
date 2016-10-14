@@ -42,6 +42,12 @@ Ext.define("Ext.ux.AreaTypeComboBox", {
         var me = this;
         me.storeUrl = '/Component/GetAreaTypes';
         me.callParent(arguments);
-        me.store.load();
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
     }
 });

@@ -15,7 +15,7 @@ Ext.define("Ext.ux.SingleCombo", {
             me.store = Ext.create('Ext.data.Store', {
                 pageSize: 1024,
                 fields: [
-                    { name: 'id', type: 'int' },
+                    { name: 'id', type: 'string' },
                     { name: 'text', type: 'string' },
                     { name: 'comment', type: 'string' }
                 ],

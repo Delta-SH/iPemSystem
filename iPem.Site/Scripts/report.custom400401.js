@@ -309,7 +309,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: '告警异常占比',
+                title: '超频告警占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -341,7 +341,7 @@
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '告警详细信息',
+                title: '超频告警信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',

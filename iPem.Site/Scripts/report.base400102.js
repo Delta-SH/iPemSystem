@@ -258,7 +258,7 @@
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,
-                title: '站点统计列表',
+                title: '站点统计信息',
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,

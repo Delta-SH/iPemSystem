@@ -127,6 +127,7 @@
     <Compile Include="Domain\Cs\HisValue.cs" />
     <Compile Include="Domain\Sc\Appointment.cs" />
     <Compile Include="Domain\Sc\Dictionary.cs" />
+    <Compile Include="Domain\Sc\Formula.cs" />
     <Compile Include="Domain\Sc\NodesInAppointment.cs" />
     <Compile Include="Domain\Rs\Point.cs" />
     <Compile Include="Domain\Sc\Project.cs" />

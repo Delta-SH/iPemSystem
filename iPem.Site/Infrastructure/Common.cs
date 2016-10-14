@@ -168,7 +168,7 @@ namespace iPem.Site.Infrastructure {
                 case EnmDictionary.Ts:
                     return "语音播报";
                 case EnmDictionary.Pue:
-                    return "能耗分类";
+                    return "能耗公式";
                 case EnmDictionary.Report:
                     return "报表参数";
                 default:

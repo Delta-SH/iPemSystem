@@ -25,5 +25,7 @@ namespace iPem.Site.Models {
         public double jslGuiDing { get; set; }
 
         public double jslHuLue { get; set; }
+
+        public double jslQueRen { get; set; }
     }
 }

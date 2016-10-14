@@ -120,7 +120,7 @@ namespace iPem.Data.Common {
 
         //menu repository
         public const string Sql_Menu_Repository_GetEntity = @"SELECT [Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled] FROM [dbo].[U_Menus] WHERE [Id] = @Id;";
-        public const string Sql_Menu_Repository_GetEntities = @"SELECT [Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled] FROM [dbo].[U_Menus] ORDER BY [LastId],[Index];";
+        public const string Sql_Menu_Repository_GetEntities = @"SELECT [Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled] FROM [dbo].[U_Menus] WHERE [Enabled]=1 ORDER BY [LastId],[Index];";
         public const string Sql_Menu_Repository_Insert = @"INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(@Id,@Name,@Icon,@Url,@Comment,@Index,@LastId,@Enabled);";
         public const string Sql_Menu_Repository_Update = @"UPDATE [dbo].[U_Menus] SET [Name] = @Name,[Icon] = @Icon,[Url] = @Url,[Comment] = @Comment,[Index] = @Index,[LastId] = @LastId,[Enabled] = @Enabled WHERE [Id] = @Id;";
         public const string Sql_Menu_Repository_Delete = @"DELETE FROM [dbo].[U_Menus] WHERE [Id]=@Id;";
@@ -128,7 +128,7 @@ namespace iPem.Data.Common {
         //menus in role repository
         public const string Sql_MenusInRole_Repository_GetEntities = @"
         SELECT UM.[Id],UM.[Name],UM.[Icon],UM.[Url],UM.[Comment],UM.[Index],UM.[LastId],UM.[Enabled] FROM [dbo].[U_Menus] UM 
-        INNER JOIN [dbo].[U_MenusInRoles] MIR ON UM.[Id] = MIR.[MenuId] WHERE MIR.[RoleId]=@RoleId;";
+        INNER JOIN [dbo].[U_MenusInRoles] MIR ON UM.[Id] = MIR.[MenuId] WHERE UM.[Enabled]=1 AND MIR.[RoleId]=@RoleId;";
         public const string Sql_MenusInRole_Repository_Insert = @"INSERT INTO [dbo].[U_MenusInRoles]([RoleId],[MenuId]) VALUES(@RoleId,@MenuId);";
         public const string Sql_MenusInRole_Repository_Delete = @"DELETE FROM [dbo].[U_MenusInRoles] WHERE [RoleId] = @RoleId;";
         
@@ -136,5 +136,16 @@ namespace iPem.Data.Common {
         public const string Sql_OperateInRole_Repository_GetEntities = @"SELECT [RoleId],[OperateId] FROM [dbo].[U_OperateInRoles] WHERE [RoleId]=@RoleId;";
         public const string Sql_OperateInRole_Repository_Insert = @"INSERT INTO [dbo].[U_OperateInRoles]([RoleId],[OperateId]) VALUES(@RoleId,@OperateId);";
         public const string Sql_OperateInRole_Repository_Delete = @"DELETE FROM [dbo].[U_OperateInRoles] WHERE [RoleId]=@RoleId;";
+
+        //formula repository
+        public const string Sql_Formula_Repository_GetEntity = @"SELECT [Id],[Type],[FormulaType],[Formula],[Comment],[CreatedTime] FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;";
+        public const string Sql_Formula_Repository_GetEntities = @"SELECT [Id],[Type],[FormulaType],[Formula],[Comment],[CreatedTime] FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type;";
+        public const string Sql_Formula_Repository_GetAllEntities = @"SELECT [Id],[Type],[FormulaType],[Formula],[Comment],[CreatedTime] FROM [dbo].[M_Formulas];";
+        public const string Sql_Formula_Repository_SaveEntities = @"
+        UPDATE [dbo].[M_Formulas] SET [Formula]=@Formula,[Comment]=@Comment,[CreatedTime]=@CreatedTime WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;
+        IF(@@ROWCOUNT = 0)
+        BEGIN
+	        INSERT INTO [dbo].[M_Formulas]([Id],[Type],[FormulaType],[Formula],[Comment],[CreatedTime]) VALUES(@Id,@Type,@FormulaType,@Formula,@Comment,@CreatedTime);
+        END";
     }
 }

@@ -50,6 +50,7 @@
     <Compile Include="Cs\Class\HisStaticService.cs" />
     <Compile Include="Cs\Class\HisValueService.cs" />
     <Compile Include="Cs\Interface\IActAlmService.cs" />
+    <Compile Include="Sc\Class\FormulaService.cs" />
     <Compile Include="Sc\Interface\IExtendAlmService.cs" />
     <Compile Include="Cs\Interface\IHisAlmService.cs" />
     <Compile Include="Cs\Interface\IHisBatService.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Sc\Interface\IAppointmentService.cs" />
     <Compile Include="Sc\Interface\IAreasInRoleService.cs" />
     <Compile Include="Sc\Interface\IDictionaryService.cs" />
+    <Compile Include="Sc\Interface\IFormulaService.cs" />
     <Compile Include="Sc\Interface\IMenuService.cs" />
     <Compile Include="Sc\Interface\IMenusInRoleService.cs" />
     <Compile Include="Sc\Interface\INodesInAppointmentService.cs" />

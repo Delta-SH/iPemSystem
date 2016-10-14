@@ -329,5 +329,16 @@ namespace iPem.Data.Common {
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmAlarmEndType), v) ? (EnmAlarmEndType)v : EnmAlarmEndType.Normal;
         }
+
+        /// <summary>
+        /// DBNull EnmFormula Handler
+        /// </summary>
+        /// <param name="val">val</param>
+        public static EnmFormula DBNullEnmFormulaHandler(object val) {
+            if(val == DBNull.Value) { return EnmFormula.KT; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmFormula), v) ? (EnmFormula)v : EnmFormula.KT;
+        }
     }
 }

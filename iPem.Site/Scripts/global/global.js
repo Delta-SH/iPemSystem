@@ -480,6 +480,146 @@ window.$$iPems.animateNumber = function (target, now) {
     }, int_speed);
 }
 
+window.$$iPems.formulaResults = {
+    Success: '验证成功',
+    Failure: '验证失败',
+    E01: '不允许连续的运算符',
+    E02: '不允许空括号',
+    E03: '括号配对失败',
+    E04: '变量格式错误({0})',
+    E05: '变量存在多个特殊字符"@"({0})',
+    E06: '变量存在多个特殊字符">>"({0})',
+    E07: '"("后面不允许直接是运算符',
+    E08: '")"前面不允许直接是运算符',
+    E09: '"("前面仅允许是运算符或"("',
+    E10: '")"后面仅允许是运算符或")"'
+};
+
+window.$$iPems.validateFormula = function (formula, allowEmpty) {
+    result = $$iPems.formulaResults.Success
+    formula = formula.replace(/\s+/g, '');
+
+    // 空字符串,直接返回
+    if ('' === formula)
+        return (allowEmpty || true) ? $$iPems.formulaResults.Success : $$iPems.formulaResults.Failure;
+
+    // 运算符连续
+    if (/[\+\-\*\/]{2,}/.test(formula))
+        return $$iPems.formulaResults.E01;
+
+    // 空括号
+    if (/\(\)/.test(formula))
+        return $$iPems.formulaResults.E02;
+
+    // 括号不配对
+    var stack = [];
+    for (var i = 0, item; i < formula.length; i++) {
+        item = formula.charAt(i);
+        if ('(' === item)
+            stack.push('(');
+        else if (')' === item) {
+            if (0 === stack.length) {
+                result = $$iPems.formulaResults.E03;
+                return false;
+            }
+
+            stack.pop();
+        }
+    }
+
+    if ($$iPems.formulaResults.Success !== result)
+        return result;
+
+    if (0 !== stack.length)
+        return $$iPems.formulaResults.E03;
+
+    // (后面是运算符
+    if (/\([\+\-\*\/]/.test(formula))
+        return $$iPems.formulaResults.E07;
+
+    // )前面是运算符
+    if (/[\+\-\*\/]\)/.test(formula))
+        return $$iPems.formulaResults.E08;
+
+    // (前面不是运算符和(
+    if (/[^\+\-\*\/\(]\(/.test(formula))
+        return $$iPems.formulaResults.E09;
+
+    // )后面不是运算符和)
+    if (/\)[^\+\-\*\/\)]/.test(formula))
+        return $$iPems.formulaResults.E10;
+
+    var variables = $$iPems.SplitKeys(formula.replace(/\(|\)/g, '').replace(/[\+\-\*\/]/g, $$iPems.Separator));
+    Ext.Array.each(variables, function (item, index) {
+        if (!/^@.+>>.+$/.test(item)) {
+            result = Ext.String.format($$iPems.formulaResults.E04, item);
+            return false;
+        }
+
+        var starts = item.match(/@/g);
+        if (starts.length > 1) {
+            result = Ext.String.format($$iPems.formulaResults.E05, item);
+            return false;
+        }
+
+        var separators = item.match(/>>/g);
+        if (separators.length > 1) {
+            result = Ext.String.format($$iPems.formulaResults.E06, item);
+            return false;
+        }
+    });
+
+    return result;
+};
+
+window.$$iPems.insertAtCursor = function (target, text) {
+    var me = target.inputEl.dom,
+        val = target.getValue();
+
+    target.focus();
+    if (document.selection) {
+        var sel = document.selection.createRange();
+        sel.text = text;
+    } else if (typeof me.selectionStart === 'number' && typeof me.selectionEnd === 'number') {
+        var startPos = me.selectionStart,
+            endPos = me.selectionEnd,
+            cursorPos = startPos;
+
+        target.setValue(val.substring(0, startPos) + text + val.substring(endPos, val.length));
+        cursorPos += text.length;
+        me.selectionStart = me.selectionEnd = cursorPos;
+    } else {
+        target.setValue(val + text);
+    }
+};
+
+window.$$iPems.deleteAtCursor = function (target) {
+    var me = target.inputEl.dom,
+        val = target.getValue();
+
+    target.focus();
+    if (document.selection) {
+        var sel = document.selection.createRange();
+        if (sel.text.length > 0) {
+            document.selection.clear();
+        } else {
+            sel.moveStart('character', -1);
+            document.selection.clear();
+        }
+    } else if (typeof me.selectionStart === 'number' && typeof me.selectionEnd === 'number') {
+        var startPos = me.selectionStart,
+            endPos = me.selectionEnd;
+
+        if (startPos === endPos)
+            startPos = (startPos >= 1 ? startPos - 1 : 0);
+
+        target.setValue(val.substring(0, startPos) + val.substring(endPos, val.length));
+        me.selectionStart = me.selectionEnd = startPos;
+    } else {
+        target.setValue(val.substring(0, val.length - 1));
+    }
+};
+
 //global tasks
 window.$$iPems.Tasks = {
     noticeTask: Ext.util.TaskManager.newTask({

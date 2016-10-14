@@ -19,27 +19,7 @@ Ext.define("Ext.ux.PointMultiCombo", {
     width: 220,
     initComponent: function () {
         var me = this;
-
-        me.store = Ext.create('Ext.data.Store', {
-            pageSize: 1024,
-            fields: [
-                { name: 'id', type: 'string' },
-                { name: 'text', type: 'string' },
-                { name: 'comment', type: 'string' }
-            ],
-            proxy: {
-                type: 'ajax',
-                url: '/Component/GetPoints',
-                reader: {
-                    type: 'json',
-                    successProperty: 'success',
-                    messageProperty: 'message',
-                    totalProperty: 'total',
-                    root: 'data'
-                }
-            }
-        });
-
+        me.storeUrl = '/Component/GetPoints';
         me.callParent(arguments);
         me.store.load();
     },
@@ -71,29 +51,15 @@ Ext.define("Ext.ux.PointComboBox", {
     width: 220,
     initComponent: function () {
         var me = this;
-
-        me.store = Ext.create('Ext.data.Store', {
-            pageSize: 1024,
-            fields: [
-                { name: 'id', type: 'string' },
-                { name: 'text', type: 'string' },
-                { name: 'comment', type: 'string' }
-            ],
-            proxy: {
-                type: 'ajax',
-                url: '/Component/GetPoints',
-                reader: {
-                    type: 'json',
-                    successProperty: 'success',
-                    messageProperty: 'message',
-                    totalProperty: 'total',
-                    root: 'data'
-                }
+        me.storeUrl = '/Component/GetPoints';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
             }
         });
-
-        me.callParent(arguments);
-        me.store.load();
     },
     bind: function (device, AI, AO, DI, DO) {
         var me = this;
@@ -107,11 +73,8 @@ Ext.define("Ext.ux.PointComboBox", {
         me.store.load({
             scope: me,
             callback: function (records, operation, success) {
-                if (success) {
-                    if (records.length > 0) {
-                        me.select(records[0]);
-                    }
-                }
+                if (success && records.length > 0)
+                    me.select(records[0]);
             }
         });
     }

@@ -143,3 +143,7 @@
 .x-splitter-collapsed .x-layout-split-bottom {
   background-image: url('images/mini-top.png');
 }
+
+.x-fx-trigger {
+  background-image: url('images/fx-trigger.png');
+}

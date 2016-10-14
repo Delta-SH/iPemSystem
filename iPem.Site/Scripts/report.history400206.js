@@ -78,7 +78,7 @@ var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf045,
-    title: '工程预约统计信息',
+    title: '工程预约统计',
     region: 'center',
     store: currentStore,
     columnLines: true,

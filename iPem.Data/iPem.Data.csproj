@@ -56,6 +56,7 @@
     <Compile Include="Repository\Cs\Class\HisStaticRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisValueRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IActAlmRepository.cs" />
+    <Compile Include="Repository\Sc\Class\FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IExtendAlmRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisAlmRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisBatRepository.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Repository\Sc\Interface\IAppointmentRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IAreasInRoleRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IDictionaryRepository.cs" />
+    <Compile Include="Repository\Sc\Interface\IFormulaRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IMenuRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IMenusInRoleRepository.cs" />
     <Compile Include="Repository\Sc\Interface\INodesInAppointmentRepository.cs" />

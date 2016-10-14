@@ -29,9 +29,10 @@ namespace iPem.Site.Controllers {
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
         private readonly IWebLogger _webLogger;
-        private readonly IEmployeeService _employeeService;
         private readonly IAreasInRoleService _areaInRoleService;
         private readonly IDictionaryService _dictionaryService;
+        private readonly IEmployeeService _employeeService;
+        private readonly IFormulaService _formulaService;
         private readonly IMenuService _menuService;
         private readonly IMenusInRoleService _menusInRoleService;
         private readonly INoticeService _noticeService;
@@ -50,9 +51,10 @@ namespace iPem.Site.Controllers {
             ICacheManager cacheManager,
             IWorkContext workContext,
             IWebLogger webLogger,
-            IEmployeeService employeeService,
             IAreasInRoleService areaInRoleService,
             IDictionaryService dictionaryService,
+            IEmployeeService employeeService,
+            IFormulaService formulaService,
             IMenuService menuService,
             IMenusInRoleService menusInRoleService,
             INoticeService noticeService,
@@ -64,9 +66,10 @@ namespace iPem.Site.Controllers {
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
-            this._employeeService = employeeService;
             this._areaInRoleService = areaInRoleService;
             this._dictionaryService = dictionaryService;
+            this._employeeService = employeeService;
+            this._formulaService = formulaService;
             this._menuService = menuService;
             this._menusInRoleService = menusInRoleService;
             this._noticeService = noticeService;
@@ -1528,7 +1531,8 @@ namespace iPem.Site.Controllers {
                     faDianXinHao = null,
                     whlHuLue = 0,
                     jslGuiDing = 0,
-                    jslHuLue = 0
+                    jslHuLue = 0,
+                    jslQueRen = 0
                 }
             };
 
@@ -1565,6 +1569,318 @@ namespace iPem.Site.Controllers {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFormula(string current) {
+            var data = new AjaxDataModel<FormulaModel> {
+                success = true,
+                message = "200 OK",
+                total = 0,
+                data = new FormulaModel()
+            };
+
+            try {
+                var keys = Common.SplitKeys(current);
+                if(keys.Length == 2) {
+                    var type = int.Parse(keys[0]);
+                    var id = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                    if (nodeType == EnmOrganization.Station || nodeType == EnmOrganization.Room){
+                        var formulas = _formulaService.GetFormulasAsList(id, nodeType);
+                        foreach(var formula in formulas) {
+                            switch(formula.FormulaType) {
+                                case EnmFormula.KT:
+                                    data.data.ktFormulas = formula.FormulaText;
+                                    data.data.ktRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.ZM:
+                                    data.data.zmFormulas = formula.FormulaText;
+                                    data.data.zmRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.BG:
+                                    data.data.bgFormulas = formula.FormulaText;
+                                    data.data.bgRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.SB:
+                                    data.data.sbFormulas = formula.FormulaText;
+                                    data.data.sbRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.KGDY:
+                                    data.data.kgdyFormulas = formula.FormulaText;
+                                    data.data.kgdyRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.UPS:
+                                    data.data.upsFormulas = formula.FormulaText;
+                                    data.data.upsRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.QT:
+                                    data.data.qtFormulas = formula.FormulaText;
+                                    data.data.qtRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.ZL:
+                                    data.data.zlFormulas = formula.FormulaText;
+                                    data.data.zlRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.PUE:
+                                    data.data.pueFormulas = formula.FormulaText;
+                                    data.data.pueRemarks = formula.Comment;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /**
+         *TODO:判断变量中设备和信号的有效性
+         *在保存公式之前，需要判断每个公式中变量里的设备、信号是否存在
+         */
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveFormula(string current, FormulaModel formula) {
+            try {
+                var keys = Common.SplitKeys(current);
+                if(keys.Length != 2)
+                    throw new ArgumentException("参数无效 current");
+
+                if(formula == null)
+                    throw new ArgumentException("参数无效 formula");
+
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                if(nodeType != EnmOrganization.Station && nodeType != EnmOrganization.Room)
+                    throw new ArgumentException("能耗对象仅支持站点、机房");
+
+                var formulas = new List<Formula>();
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.PUE, FormulaText = formula.pueFormulas, Comment = formula.pueRemarks, CreatedTime = DateTime.Now });
+                
+                _formulaService.SaveRange(formulas);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        /**
+         *TODO:判断变量中设备和信号的有效性
+         *在保存公式之前，需要判断每个公式中变量里的设备、信号是否存在
+         */
+        [AjaxAuthorize]
+        public JsonResult PasteFormula(string source, string target) {
+            try {
+                var srcKeys = Common.SplitKeys(source);
+                if(srcKeys.Length != 2)
+                    throw new ArgumentException("参数无效 source");
+
+                var tgtKeys = Common.SplitKeys(target);
+                if(tgtKeys.Length != 2)
+                    throw new ArgumentException("参数无效 target");
+
+                var srcType = int.Parse(srcKeys[0]);
+                var srcId = srcKeys[1];
+                var srcEnmType = Enum.IsDefined(typeof(EnmOrganization), srcType) ? (EnmOrganization)srcType : EnmOrganization.Area;
+                if(srcEnmType != EnmOrganization.Station && srcEnmType != EnmOrganization.Room)
+                    throw new ArgumentException("能耗对象仅支持站点、机房");
+
+                var tgtType = int.Parse(tgtKeys[0]);
+                var tgtId = tgtKeys[1];
+                var tgtEnmType = Enum.IsDefined(typeof(EnmOrganization), tgtType) ? (EnmOrganization)tgtType : EnmOrganization.Area;
+                if(tgtEnmType != EnmOrganization.Station && tgtEnmType != EnmOrganization.Room)
+                    throw new ArgumentException("能耗对象仅支持站点、机房");
+
+                if(srcEnmType != tgtEnmType)
+                    throw new ArgumentException("能耗对象类型不匹配");
+
+                var formulas = _formulaService.GetFormulasAsList(srcId, srcEnmType);
+                if(formulas.Count == 0)
+                    throw new ArgumentException("复制的能耗对象未配置公式");
+
+                for(var i = 0; i < formulas.Count; i++) {
+                    formulas[i].Id = tgtId;
+                }
+                
+                _formulaService.SaveRange(formulas);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "粘贴成功" });
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetFormulaDevices(string node, string[] devTypes) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(node)) {
+                    var keys = Common.SplitKeys(node);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Area) {
+                            #region area organization
+                            var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                            if(current != null) {
+                                if(current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.ChildRoot.Count;
+                                    for(var i = 0; i < current.ChildRoot.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.ChildRoot[i].Current.Id),
+                                            text = current.ChildRoot[i].Current.Name,
+                                            icon = Icons.Diqiu,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    if(current.Stations.Count > 0) {
+                                        data.success = true;
+                                        data.message = "200 Ok";
+                                        data.total = current.Stations.Count;
+                                        for(var i = 0; i < current.Stations.Count; i++) {
+                                            var root = new TreeModel {
+                                                id = Common.JoinKeys((int)EnmOrganization.Station, current.Stations[i].Current.Id),
+                                                text = current.Stations[i].Current.Name,
+                                                icon = Icons.Juzhan,
+                                                expanded = false,
+                                                leaf = false
+                                            };
+
+                                            data.data.Add(root);
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Station) {
+                            #region station organization
+                            var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
+                            if(current != null) {
+                                if(current.Rooms.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.Rooms.Count;
+                                    for(var i = 0; i < current.Rooms.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Room, current.Rooms[i].Current.Id),
+                                            text = current.Rooms[i].Current.Name,
+                                            icon = Icons.Room,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        data.data.Add(root);
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if(nodeType == EnmOrganization.Room) {
+                            #region room organization
+                            var current = _workContext.RoleRooms.Find(d => d.Current.Id == id);
+                            if(current != null) {
+                                if(current.Devices.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.Devices.Count;
+                                    for(var i = 0; i < current.Devices.Count; i++) {
+                                        if(devTypes != null && devTypes.Length > 0 && !devTypes.Contains(current.Devices[i].Current.Type.Id))
+                                            continue;
+
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmOrganization.Device, current.Devices[i].Current.Id),
+                                            text = current.Devices[i].Current.Name,
+                                            icon = Icons.Device,
+                                            expanded = false,
+                                            leaf = true
+                                        };
+
+                                        data.data.Add(root);
+                                    }
+                                }
+                            }
+                            #endregion
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFormulaPoints(int start, int limit, string parent, string[] logicTypes) {
+            var data = new AjaxDataModel<List<IdValuePair<int,string>>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<IdValuePair<int, string>>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(parent)) {
+                    var keys = Common.SplitKeys(parent);
+                    if(keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
+                        if(nodeType == EnmOrganization.Device) {
+                            var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
+                            if(current != null && current.Protocol != null) {
+                                var points = current.Protocol.Points.FindAll(p => p.Type == EnmPoint.AI);
+                                if(logicTypes != null && logicTypes.Length > 0) points = points.FindAll(p => logicTypes.Contains(p.LogicType.Id));
+                                for(var i = 0; i < points.Count; i++) {
+                                    data.data.Add(new IdValuePair<int, string> {
+                                        Id = i + 1,
+                                        Value = string.Format("@{0}>>{1}", current.Current.Name, points[i].Name)
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]

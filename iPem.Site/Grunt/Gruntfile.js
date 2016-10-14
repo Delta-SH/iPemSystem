@@ -6,6 +6,20 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    clean: {
+      options: {
+        force: true
+      },
+      init: {
+        src: [
+        '../Scripts/ux/all.js',
+        '../Scripts/global/all.js',
+        '../Scripts/components/all.js',
+        '../Scripts/all.js',
+        '../Content/ux/all.css'
+        ]
+      }
+    },
     concat: {
       options: {
         separator: '\n\n'
@@ -34,5 +48,5 @@ module.exports = function (grunt) {
   });
 
   // 默认任务
-  grunt.registerTask('default', ['concat']);
+  grunt.registerTask('default', ['clean', 'concat']);
 };
