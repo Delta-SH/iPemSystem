@@ -421,7 +421,6 @@
                 margin: '5 0 0 0',
                 flex: 2,
                 store: currentStore,
-                loadMask: true,
                 tools:[{
                     type: 'print',
                     tooltip: '数据导出',
@@ -430,8 +429,7 @@
                     }
                 }],
                 viewConfig: {
-                    loadMask: false,
-                    preserveScrollOnRefresh: true,
+                    loadMask: true,
                     stripeRows: true,
                     trackOver: true,
                     emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
@@ -651,7 +649,7 @@
                         items: [
                             {
                                 id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiPicker',
+                                xtype: 'SubLogicTypeMultiPicker',
                                 width: 220,
                                 emptyText: '默认全部'
                             },

@@ -20,10 +20,5 @@ namespace iPem.Core.Domain.Rs {
         ///Gets or sets type of the device
         /// </summary>
         public string DeviceTypeId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the comment
-        /// </summary>
-        public string Comment { get; set; }
     }
 }

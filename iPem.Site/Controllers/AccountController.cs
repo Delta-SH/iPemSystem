@@ -1844,7 +1844,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetFormulaPoints(int start, int limit, string parent, string[] logicTypes) {
+        public JsonResult GetFormulaPoints(int start, int limit, string parent) {
             var data = new AjaxDataModel<List<IdValuePair<int,string>>> {
                 success = true,
                 message = "无数据",
@@ -1863,7 +1863,6 @@ namespace iPem.Site.Controllers {
                             var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
                             if(current != null && current.Protocol != null) {
                                 var points = current.Protocol.Points.FindAll(p => p.Type == EnmPoint.AI);
-                                if(logicTypes != null && logicTypes.Length > 0) points = points.FindAll(p => logicTypes.Contains(p.LogicType.Id));
                                 for(var i = 0; i < points.Count; i++) {
                                     data.data.Add(new IdValuePair<int, string> {
                                         Id = i + 1,

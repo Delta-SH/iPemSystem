@@ -51,3 +51,47 @@ Ext.define("Ext.ux.DeviceTypeComboBox", {
         });
     }
 });
+
+Ext.define("Ext.ux.SubDeviceTypeMultiTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubDeviceTypeMultiPicker",
+    fieldLabel: '设备类型',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: true,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubDeviceTypes';
+        me.searchUrl = '/Component/FilterSubDeviceTypesPath';
+        me.queryUrl = '/Component/GetSubDeviceTypesPath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.SubDeviceTypeTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubDeviceTypePicker",
+    fieldLabel: '设备类型',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: false,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubDeviceTypes';
+        me.searchUrl = '/Component/FilterSubDeviceTypesPath';
+        me.queryUrl = '/Component/GetSubDeviceTypesPath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});

@@ -87,7 +87,6 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     store: currentStore,
     columnLines: true,
     disableSelection: false,
-    loadMask: true,
     forceFit: false,
     cls: 'x-grid-expander',
     plugins: [{
@@ -119,6 +118,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
             })
     }],
     viewConfig: {
+        loadMask: true,
         trackOver: true,
         stripeRows: true,
         emptyText: '<h1 style="margin:20px">没有数据记录</h1>'

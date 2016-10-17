@@ -276,6 +276,50 @@ Ext.define("Ext.ux.DeviceTypeComboBox", {
     }
 });
 
+Ext.define("Ext.ux.SubDeviceTypeMultiTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubDeviceTypeMultiPicker",
+    fieldLabel: '设备类型',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: true,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubDeviceTypes';
+        me.searchUrl = '/Component/FilterSubDeviceTypesPath';
+        me.queryUrl = '/Component/GetSubDeviceTypesPath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.SubDeviceTypeTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubDeviceTypePicker",
+    fieldLabel: '设备类型',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: false,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubDeviceTypes';
+        me.searchUrl = '/Component/FilterSubDeviceTypesPath';
+        me.queryUrl = '/Component/GetSubDeviceTypesPath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
 /* ========================================================================
  * Components: EmployeeComponent.js
  * /Scripts/components/EmployeeComponent.js
@@ -454,6 +498,50 @@ Ext.define("Ext.ux.LogicTypeTreePanel", {
     }
 });
 
+Ext.define("Ext.ux.SubLogicTypeMultiTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubLogicTypeMultiPicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: true,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubLogicTree';
+        me.searchUrl = '/Component/FilterSubLogicTreePath';
+        me.queryUrl = '/Component/GetSubLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.SubLogicTypeTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubLogicTypePicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: false,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubLogicTree';
+        me.searchUrl = '/Component/FilterSubLogicTreePath';
+        me.queryUrl = '/Component/GetSubLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
 /* ========================================================================
  * Components: PointComponent.js
  * /Scripts/components/PointComponent.js
@@ -536,9 +624,9 @@ Ext.define("Ext.ux.PointComboBox", {
     }
 });
 
-Ext.define("Ext.ux.LogicPointMultiTreePanel", {
+Ext.define("Ext.ux.PointMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "LogicPointMultiPicker",
+    xtype: "PointMultiPicker",
     fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
@@ -549,18 +637,18 @@ Ext.define("Ext.ux.LogicPointMultiTreePanel", {
     initComponent: function () {
         var me = this;
 
-        me.storeUrl = '/Component/GetLogicPoints';
-        me.searchUrl = '/Component/FilterLogicPointPath';
-        me.queryUrl = '/Component/GetLogicPointPath';
+        me.storeUrl = '/Component/GetPointTree';
+        me.searchUrl = '/Component/FilterPointTreePath';
+        me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
         me.store.load();
     }
 });
 
-Ext.define("Ext.ux.LogicPointTreePanel", {
+Ext.define("Ext.ux.PointTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "LogicPointPicker",
+    xtype: "PointPicker",
     fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
@@ -571,9 +659,9 @@ Ext.define("Ext.ux.LogicPointTreePanel", {
     initComponent: function () {
         var me = this;
 
-        me.storeUrl = '/Component/GetLogicPoints';
-        me.searchUrl = '/Component/FilterLogicPointPath';
-        me.queryUrl = '/Component/GetLogicPointPath';
+        me.storeUrl = '/Component/GetPointTree';
+        me.searchUrl = '/Component/FilterPointTreePath';
+        me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
         me.store.load();

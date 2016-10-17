@@ -163,7 +163,7 @@ namespace iPem.Site.Controllers {
                     stores = stores.FindAll(a => config.deviceTypes.Contains(a.Device.Type.Id));
 
                 if(config.logicTypes != null && config.logicTypes.Length > 0)
-                    stores = stores.FindAll(a => config.logicTypes.Contains(a.Point.LogicType.Id));
+                    stores = stores.FindAll(a => config.logicTypes.Contains(a.Point.SubLogicType.Id));
 
                 if(!string.IsNullOrWhiteSpace(config.pointNames)) {
                     var names = Common.SplitCondition(config.pointNames);
@@ -174,7 +174,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(config.pointExtset)) {
                     var extsets = Common.SplitCondition(config.pointExtset);
                     if(extsets.Length > 0)
-                        stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.ExtSet1, extsets));
+                        stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.ExtSet1, extsets) || CommonHelper.ConditionContain(a.Point.ExtSet2, extsets));
                 }
 
                 foreach(var store in stores) {
@@ -1118,7 +1118,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(s => devtype.Contains(s.Device.Type.Id));
 
             if(logictype != null && logictype.Length > 0)
-                stores = stores.FindAll(s => logictype.Contains(s.Point.LogicType.Id));
+                stores = stores.FindAll(s => logictype.Contains(s.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(pointname)) {
                 var names = Common.SplitCondition(pointname);

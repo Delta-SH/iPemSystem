@@ -205,26 +205,6 @@
                         itemId: 'formulaVariables',
                         xtype: 'grid',
                         flex: 1,
-                        tbar: [
-                            {
-                                id: 'formulaLogicType',
-                                xtype: 'LogicTypeMultiPicker',
-                                emptyText: '信号筛选，默认全部',
-                                fieldLabel: null,
-                                flex: 1,
-                                listeners: {
-                                    checkchange: function (me, record) {
-                                        var cttPanel = formulaWin.getComponent('formulaContentPanel'),
-                                        pointPanel = cttPanel.getComponent('formulaVariables'),
-                                        logicTypes = Ext.getCmp('formulaLogicType'),
-                                        store = pointPanel.getStore();
-
-                                        store.proxy.extraParams.logicTypes = logicTypes.getValue();
-                                        store.loadPage(1);
-                                    }
-                                }
-                            }
-                        ],
                         store: Ext.create('Ext.data.Store', {
                             autoLoad: false,
                             pageSize: 20,
@@ -266,7 +246,7 @@
                         itemId: 'formulaField',
                         xtype: 'textareafield',
                         height: 100,
-                        fieldLabel: '公式',
+                        fieldLabel: '能耗公式',
                         labelAlign: 'top',
                         vtype: 'Formula'
                     }, {
@@ -661,7 +641,7 @@
                                             },
                                             {
                                                 name: 'logicTypes',
-                                                xtype: 'LogicTypeMultiPicker',
+                                                xtype: 'SubLogicTypeMultiPicker',
                                                 emptyText: '默认全部'
                                             },
                                             {
@@ -1375,7 +1355,7 @@
                                     layout: 'anchor',
                                     items: [{
                                         name: 'tingDianXinHao',
-                                        xtype: 'LogicPointPicker',
+                                        xtype: 'PointPicker',
                                         fieldLabel: '市电状态信号',
                                         allowBlank: false,
                                         emptyText: '请选择市电状态信号...'
@@ -1432,7 +1412,7 @@
                                     layout: 'anchor',
                                     items: [{
                                         name: 'faDianXinHao',
-                                        xtype: 'LogicPointPicker',
+                                        xtype: 'PointPicker',
                                         fieldLabel: '油机状态信号',
                                         allowBlank: false,
                                         emptyText: '请选择油机状态信号...'

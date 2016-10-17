@@ -91,8 +91,8 @@ namespace iPem.Data.Common {
         //device type repository
         public const string Sql_DeviceType_Repository_GetEntity = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceType] WHERE [Id] = @Id;";
         public const string Sql_DeviceType_Repository_GetEntities = @"SELECT [Id],[Name],[Desc] AS [Comment] FROM [dbo].[C_DeviceType] ORDER BY [Id];";
-        public const string Sql_DeviceType_Repository_GetSubEntity = @"SELECT [Id],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_SubDeviceType] WHERE [Id]=@Id;";
-        public const string Sql_DeviceType_Repository_GetSubEntities = @"SELECT [Id],[Name],[DeviceTypeId],[Desc] AS [Comment] FROM [dbo].[C_SubDeviceType] ORDER BY [Id];";
+        public const string Sql_DeviceType_Repository_GetSubEntity = @"SELECT [Id],[Name],[DeviceTypeId] FROM [dbo].[C_SubDeviceType] WHERE [Id]=@Id;";
+        public const string Sql_DeviceType_Repository_GetSubEntities = @"SELECT [Id],[Name],[DeviceTypeId] FROM [dbo].[C_SubDeviceType] ORDER BY [Id];";
 
         //duty repository
         public const string Sql_Duty_Repository_GetEntity = @"SELECT [Id],[Name],[Level],[Desc] AS [Comment],[Enabled] FROM [dbo].[C_Duty] WHERE [Enabled] = 1 AND [Id] = @Id;";

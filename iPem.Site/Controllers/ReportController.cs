@@ -363,7 +363,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string[] logictypes, string point, int start, int limit) {
+        public JsonResult RequestHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string point, int start, int limit) {
             var data = new AjaxDataModel<List<Model400201>> {
                 success = true,
                 message = "无数据",
@@ -372,7 +372,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var stores = this.GetHistory400201(parent, starttime, endtime, statypes, roomtypes, devtypes, logictypes, point);
+                var stores = this.GetHistory400201(parent, starttime, endtime, statypes, roomtypes, devtypes, point);
                 if(stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -409,10 +409,10 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string[] logictypes, string point) {
+        public ActionResult DownloadHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string point) {
             try {
                 var models = new List<Model400201>();
-                var stores = this.GetHistory400201(parent, starttime, endtime, statypes, roomtypes, devtypes, logictypes, point);
+                var stores = this.GetHistory400201(parent, starttime, endtime, statypes, roomtypes, devtypes, point);
                 if(stores != null && stores.Count > 0) {
                     for(int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400201 {
@@ -1663,7 +1663,7 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<ValStore<HisValue>> GetHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string[] logictypes, string point) {
+        private List<ValStore<HisValue>> GetHistory400201(string parent, DateTime starttime, DateTime endtime, string[] statypes, string[] roomtypes, string[] devtypes, string point) {
             endtime = endtime.AddSeconds(86399);
 
             var stations = _workContext.RoleStations.AsEnumerable();
@@ -1676,11 +1676,11 @@ namespace iPem.Site.Controllers {
 
             var devices = rooms.SelectMany(r=>r.Devices);
             if(devtypes != null && devtypes.Length > 0)
-                devices = devices.Where(d => devtypes.Contains(d.Current.Type.Id));
+                devices = devices.Where(d => devtypes.Contains(d.Current.SubType.Id));
 
             var points = _workContext.Points;
-            if(logictypes != null && logictypes.Length > 0)
-                points = points.FindAll(p => logictypes.Contains(p.LogicType.Id));
+            if(devtypes != null && devtypes.Length > 0)
+                points = points.FindAll(p => devtypes.Contains(p.SubDeviceType.Id));
 
             if(!string.IsNullOrWhiteSpace(point)) {
                 var names = Common.SplitCondition(point);
@@ -1764,7 +1764,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
             if(logicTypes != null && logicTypes.Length > 0)
-                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(point)) {
                 var names = Common.SplitCondition(point);
@@ -1827,7 +1827,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devtypes.Contains(d.Device.Type.Id));
 
             if(logictypes != null && logictypes.Length > 0)
-                stores = stores.FindAll(p => logictypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logictypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(pointname)) {
                 var names = Common.SplitCondition(pointname);
@@ -1890,7 +1890,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devtypes.Contains(d.Device.Type.Id));
 
             if(logictypes != null && logictypes.Length > 0)
-                stores = stores.FindAll(p => logictypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logictypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(pointname)) {
                 var names = Common.SplitCondition(pointname);
@@ -2539,7 +2539,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
             if(logicTypes != null && logicTypes.Length > 0)
-                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(point)) {
                 var names = Common.SplitCondition(point);
@@ -2643,7 +2643,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
             if(logicTypes != null && logicTypes.Length > 0)
-                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(point)) {
                 var names = Common.SplitCondition(point);
@@ -2745,7 +2745,7 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(d => devTypes.Contains(d.Device.Type.Id));
 
             if(logicTypes != null && logicTypes.Length > 0)
-                stores = stores.FindAll(p => logicTypes.Contains(p.Point.LogicType.Id));
+                stores = stores.FindAll(p => logicTypes.Contains(p.Point.SubLogicType.Id));
 
             if(!string.IsNullOrWhiteSpace(point)) {
                 var names = Common.SplitCondition(point);

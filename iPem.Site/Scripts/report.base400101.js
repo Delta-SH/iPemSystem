@@ -252,8 +252,6 @@
                     store: currentStore,
                     columnLines: true,
                     disableSelection: false,
-                    loadMask: true,
-                    forceFit: false,
                     tools: [{
                         type: 'print',
                         tooltip: '数据导出',
@@ -262,11 +260,10 @@
                         }
                     }],
                     viewConfig: {
-                        forceFit: true,
+                        loadMask: true,
                         trackOver: true,
                         stripeRows: true,
-                        emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                        preserveScrollOnRefresh: true
+                        emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
                     },
                     features: [{
                         ftype: 'grouping',

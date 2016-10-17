@@ -95,3 +95,47 @@ Ext.define("Ext.ux.LogicTypeTreePanel", {
         me.store.load();
     }
 });
+
+Ext.define("Ext.ux.SubLogicTypeMultiTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubLogicTypeMultiPicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: true,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubLogicTree';
+        me.searchUrl = '/Component/FilterSubLogicTreePath';
+        me.queryUrl = '/Component/GetSubLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.SubLogicTypeTreePanel", {
+    extend: "Ext.ux.TreePicker",
+    xtype: "SubLogicTypePicker",
+    fieldLabel: '逻辑分类',
+    displayField: 'text',
+    labelWidth: 60,
+    width: 280,
+    selectOnLeaf: true,
+    multiSelect: false,
+    searchVisible: true,
+    initComponent: function () {
+        var me = this;
+
+        me.storeUrl = '/Component/GetSubLogicTree';
+        me.searchUrl = '/Component/FilterSubLogicTreePath';
+        me.queryUrl = '/Component/GetSubLogicTreePath';
+
+        me.callParent(arguments);
+        me.store.load();
+    }
+});

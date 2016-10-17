@@ -80,9 +80,9 @@ Ext.define("Ext.ux.PointComboBox", {
     }
 });
 
-Ext.define("Ext.ux.LogicPointMultiTreePanel", {
+Ext.define("Ext.ux.PointMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "LogicPointMultiPicker",
+    xtype: "PointMultiPicker",
     fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
@@ -93,18 +93,18 @@ Ext.define("Ext.ux.LogicPointMultiTreePanel", {
     initComponent: function () {
         var me = this;
 
-        me.storeUrl = '/Component/GetLogicPoints';
-        me.searchUrl = '/Component/FilterLogicPointPath';
-        me.queryUrl = '/Component/GetLogicPointPath';
+        me.storeUrl = '/Component/GetPointTree';
+        me.searchUrl = '/Component/FilterPointTreePath';
+        me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
         me.store.load();
     }
 });
 
-Ext.define("Ext.ux.LogicPointTreePanel", {
+Ext.define("Ext.ux.PointTreePanel", {
     extend: "Ext.ux.TreePicker",
-    xtype: "LogicPointPicker",
+    xtype: "PointPicker",
     fieldLabel: '信号名称',
     displayField: 'text',
     labelWidth: 60,
@@ -115,9 +115,9 @@ Ext.define("Ext.ux.LogicPointTreePanel", {
     initComponent: function () {
         var me = this;
 
-        me.storeUrl = '/Component/GetLogicPoints';
-        me.searchUrl = '/Component/FilterLogicPointPath';
-        me.queryUrl = '/Component/GetLogicPointPath';
+        me.storeUrl = '/Component/GetPointTree';
+        me.searchUrl = '/Component/FilterPointTreePath';
+        me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
         me.store.load();

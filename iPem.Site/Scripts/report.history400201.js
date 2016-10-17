@@ -24,8 +24,7 @@
         store.proxy.extraParams.endtime = Ext.getCmp('endField').getRawValue();
         store.proxy.extraParams.statypes = Ext.getCmp('station-type-multicombo').getSelectedValues();
         store.proxy.extraParams.roomtypes = Ext.getCmp('room-type-multicombo').getSelectedValues();
-        store.proxy.extraParams.devtypes = Ext.getCmp('device-type-multicombo').getSelectedValues();
-        store.proxy.extraParams.logictypes = Ext.getCmp('logic-type-multicombo').getValue();
+        store.proxy.extraParams.devtypes = Ext.getCmp('device-type-multipicker').getValue();
         store.proxy.extraParams.point = Ext.getCmp('point-name-textfield').getRawValue();
         store.loadPage(1);
     };
@@ -88,7 +87,6 @@
                 margin: '5 0 0 0',
                 flex: 2,
                 store: currentStore,
-                loadMask: true,
                 tools: [{
                     type: 'print',
                     tooltip: '数据导出',
@@ -97,8 +95,7 @@
                     }
                 }],
                 viewConfig: {
-                    loadMask: false,
-                    preserveScrollOnRefresh: true,
+                    loadMask: true,
                     stripeRows: true,
                     trackOver: true,
                     emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
@@ -222,9 +219,10 @@
                                 emptyText: '默认全部'
                             },
                             {
-                                id: 'device-type-multicombo',
-                                xtype: 'DeviceTypeMultiCombo',
-                                emptyText: '默认全部'
+                                id: 'device-type-multipicker',
+                                xtype: 'SubDeviceTypeMultiPicker',
+                                emptyText: '默认全部',
+                                width: 220
                             },
                             {
                                 xtype: 'button',
@@ -241,18 +239,12 @@
                         border: false,
                         items: [
                             {
-                                id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiPicker',
-                                width: 220,
-                                emptyText: '默认全部'
-                            },
-                            {
                                 id: 'point-name-textfield',
                                 xtype: 'textfield',
                                 fieldLabel: '信号名称',
                                 emptyText: '多条件请以;分隔，例: A;B;C',
                                 labelWidth: 60,
-                                width: 450
+                                width: 676
                             }
                         ]
                     }

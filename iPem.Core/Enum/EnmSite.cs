@@ -121,12 +121,28 @@
     }
 
     /// <summary>
-    /// Represents the logic point enumeration
+    /// Represents the device type tree enumeration
     /// </summary>
-    public enum EnmLogicPoint {
+    public enum EnmDeviceTypeTree {
+        DevType,
+        SubDevType
+    }
+
+    /// <summary>
+    /// Represents the logic tree enumeration
+    /// </summary>
+    public enum EnmLogicTree {
         DevType,
         Logic,
-        SubLogic,
+        SubLogic
+    }
+
+    /// <summary>
+    /// Represents the point tree enumeration
+    /// </summary>
+    public enum EnmPointTree {
+        DevType,
+        SubDevType,
         Point
     }
 }

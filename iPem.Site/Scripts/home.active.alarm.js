@@ -791,7 +791,7 @@
                             items: [
                                 {
                                     id: 'logic-type-multipicker',
-                                    xtype: 'LogicTypeMultiPicker',
+                                    xtype: 'SubLogicTypeMultiPicker',
                                     emptyText: '默认全部',
                                     width: 220
                                 },

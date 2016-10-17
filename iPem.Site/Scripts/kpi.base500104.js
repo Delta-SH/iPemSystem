@@ -15,7 +15,7 @@
 var query = function (store) {
     var range = Ext.getCmp('rangePicker'),
         types = Ext.getCmp('stationTypeMultiCombo'),
-        points = Ext.getCmp('logicPointMultiPicker'),
+        points = Ext.getCmp('pointMultiPicker'),
         start = Ext.getCmp('startField'),
         end = Ext.getCmp('endField');
 
@@ -153,8 +153,8 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 emptyText: '默认全部',
                 width: 280
             }, {
-                id: 'logicPointMultiPicker',
-                xtype: 'LogicPointMultiPicker',
+                id: 'pointMultiPicker',
+                xtype: 'PointMultiPicker',
                 emptyText: '请选择设备中断告警信号...',
                 fieldLabel: '告警信号',
                 allowBlank: false,

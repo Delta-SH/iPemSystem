@@ -1219,26 +1219,28 @@ namespace iPem.Site.Controllers {
                         }
                     } else {
                         var keys = Common.SplitKeys(node);
-                        if(keys.Length == 2
-                            && ((int)EnmHR.Department).ToString().Equals(keys[0])
-                            && !string.IsNullOrWhiteSpace(keys[1])) {
-                            var children = _employeeService.GetEmployeesByDeptAsList(keys[1]);
-                            if(children.Count > 0) {
-                                data.success = true;
-                                data.message = "200 Ok";
-                                data.total = children.Count;
-                                for(var i = 0; i < children.Count; i++) {
-                                    var child = new TreeModel {
-                                        id = children[i].Id,
-                                        text = children[i].Name,
-                                        icon = Icons.Employee,
-                                        leaf = true
-                                    };
+                        if(keys.Length == 2) {
+                            var type = int.Parse(keys[0]);
+                            var key = keys[1];
+                            if((int)EnmHR.Department == type) {
+                                var children = _employeeService.GetEmployeesByDeptAsList(key);
+                                if(children.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = children[i].Id,
+                                            text = children[i].Name,
+                                            icon = Icons.Employee,
+                                            leaf = true
+                                        };
 
-                                    if(multiselect.HasValue && multiselect.Value)
-                                        child.selected = false;
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            child.selected = false;
 
-                                    data.data.Add(child);
+                                        data.data.Add(child);
+                                    }
                                 }
                             }
                         }
@@ -1335,7 +1337,7 @@ namespace iPem.Site.Controllers {
                             data.total = roots.Count;
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
-                                    id = Common.JoinKeys((int)EnmLogicPoint.DevType, roots[i].Id),
+                                    id = Common.JoinKeys((int)EnmLogicTree.DevType, roots[i].Id),
                                     text = roots[i].Name,
                                     icon = Icons.Device,
                                     expanded = false,
@@ -1347,26 +1349,28 @@ namespace iPem.Site.Controllers {
                         }
                     } else {
                         var keys = Common.SplitKeys(node);
-                        if(keys.Length == 2
-                            && ((int)EnmLogicPoint.DevType).ToString().Equals(keys[0])
-                            && !string.IsNullOrWhiteSpace(keys[1])) {
-                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == keys[1]);
-                            if(children.Count > 0) {
-                                data.success = true;
-                                data.message = "200 Ok";
-                                data.total = children.Count;
-                                for(var i = 0; i < children.Count; i++) {
-                                    var child = new TreeModel {
-                                        id = children[i].Id,
-                                        text = children[i].Name,
-                                        icon = Icons.Category,
-                                        leaf = true
-                                    };
+                        if(keys.Length == 2) {
+                            var type = int.Parse(keys[0]);
+                            var key = keys[1];
+                            if((int)EnmLogicTree.DevType == type) {
+                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == key);
+                                if(children.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = children[i].Id,
+                                            text = children[i].Name,
+                                            icon = Icons.Category,
+                                            leaf = true
+                                        };
 
-                                    if(multiselect.HasValue && multiselect.Value)
-                                        child.selected = false;
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            child.selected = false;
 
-                                    data.data.Add(child);
+                                        data.data.Add(child);
+                                    }
                                 }
                             }
                         }
@@ -1396,7 +1400,7 @@ namespace iPem.Site.Controllers {
                 foreach(var node in nodes) {
                     var current = _workContext.LogicTypes.Find(l => l.Id == node);
                     if(current != null) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, current.DeviceTypeId), current.Id });
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicTree.DevType, current.DeviceTypeId), current.Id });
                     }
                 }
 
@@ -1427,7 +1431,7 @@ namespace iPem.Site.Controllers {
 
                     var matchs = _workContext.LogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, match.DeviceTypeId), match.Id });
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicTree.DevType, match.DeviceTypeId), match.Id });
                     }
                 }
 
@@ -1444,7 +1448,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetLogicPoints(string node, bool? multiselect) {
+        public JsonNetResult GetSubLogicTree(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1462,7 +1466,7 @@ namespace iPem.Site.Controllers {
                             data.total = roots.Count;
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
-                                    id = Common.JoinKeys((int)EnmLogicPoint.DevType, roots[i].Id),
+                                    id = Common.JoinKeys((int)EnmLogicTree.DevType, roots[i].Id),
                                     text = roots[i].Name,
                                     icon = Icons.Device,
                                     expanded = false,
@@ -1475,16 +1479,18 @@ namespace iPem.Site.Controllers {
                     } else {
                         var keys = Common.SplitKeys(node);
                         if(keys.Length == 2) {
-                            if(((int)EnmLogicPoint.DevType).ToString().Equals(keys[0])) {
-                                var logics = _workContext.LogicTypes.FindAll(l=>l.DeviceTypeId == keys[1]);
-                                if(logics.Count > 0) {
+                            var type = int.Parse(keys[0]);
+                            var key = keys[1];
+                            if((int)EnmLogicTree.DevType == type) {
+                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == key);
+                                if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = logics.Count;
-                                    for(var i = 0; i < logics.Count; i++) {
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmLogicPoint.Logic, logics[i].Id),
-                                            text = logics[i].Name,
+                                            id = Common.JoinKeys((int)EnmLogicTree.Logic, children[i].Id),
+                                            text = children[i].Name,
                                             icon = Icons.Category,
                                             expanded = false,
                                             leaf = false
@@ -1493,16 +1499,169 @@ namespace iPem.Site.Controllers {
                                         data.data.Add(child);
                                     }
                                 }
-                            } else if(((int)EnmLogicPoint.Logic).ToString().Equals(keys[0])) {
-                                var points = _workContext.Points.FindAll(p => p.LogicType.Id == keys[1]);
-                                if(points.Count > 0) {
+                            } else if((int)EnmLogicTree.Logic == type) {
+                                var children = _workContext.SubLogicTypes.FindAll(l => l.LogicTypeId == key);
+                                if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
-                                    data.total = points.Count;
-                                    foreach(var point in points) {
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
-                                            id = point.Id,
-                                            text = point.Name,
+                                            id = children[i].Id,
+                                            text = children[i].Name,
+                                            icon = Icons.Category,
+                                            leaf = true
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            child.selected = false;
+
+                                        data.data.Add(child);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetSubLogicTreePath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach(var node in nodes) {
+                    var current = _workContext.SubLogicTypes.Find(l => l.Id == node);
+                    if(current != null) {
+                        var parent = _workContext.LogicTypes.Find(l => l.Id == current.LogicTypeId);
+                        if(parent != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicTree.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicTree.Logic, parent.Id), current.Id });
+                        }
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult FilterSubLogicTreePath(string text) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(text)) {
+                    text = text.Trim().ToLower();
+
+                    var matchs = _workContext.SubLogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
+                    foreach(var match in matchs) {
+                        var parent = _workContext.LogicTypes.Find(l => l.Id == match.LogicTypeId);
+                        if(parent != null) {
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicTree.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicTree.Logic, parent.Id), match.Id });
+                        }
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetPointTree(string node, bool? multiselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(node)) {
+                    if(node == "root") {
+                        var roots = _workContext.DeviceTypes;
+                        if(roots.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = roots.Count;
+                            for(var i = 0; i < roots.Count; i++) {
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmPointTree.DevType, roots[i].Id),
+                                    text = roots[i].Name,
+                                    icon = Icons.Category,
+                                    expanded = false,
+                                    leaf = false
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                    } else {
+                        var keys = Common.SplitKeys(node);
+                        if(keys.Length == 2) {
+                            var type = int.Parse(keys[0]);
+                            var key = keys[1];
+                            if((int)EnmPointTree.DevType == type) {
+                                var children = _workContext.SubDeviceTypes.FindAll(l => l.DeviceTypeId == key);
+                                if(children.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmPointTree.SubDevType, children[i].Id),
+                                            text = children[i].Name,
+                                            icon = Icons.Category,
+                                            expanded = false,
+                                            leaf = false
+                                        };
+
+                                        data.data.Add(child);
+                                    }
+                                }
+                            } else if((int)EnmPointTree.SubDevType == type) {
+                                var children = _workContext.Points.FindAll(p => p.SubDeviceType.Id == key);
+                                if(children.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = children[i].Id,
+                                            text = children[i].Name,
                                             icon = Icons.Signal,
                                             leaf = true
                                         };
@@ -1529,7 +1688,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetLogicPointPath(string[] nodes) {
+        public JsonResult GetPointTreePath(string[] nodes) {
             var data = new AjaxDataModel<List<string[]>> {
                 success = true,
                 message = "No data",
@@ -1541,9 +1700,9 @@ namespace iPem.Site.Controllers {
                 foreach(var node in nodes) {
                     var current = _workContext.Points.Find(p => p.Id == node);
                     if(current != null) {
-                        var parent = _workContext.LogicTypes.Find(l => l.Id == current.LogicType.Id);
+                        var parent = _workContext.SubDeviceTypes.Find(s => s.Id == current.SubDeviceType.Id);
                         if(parent != null) {
-                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicPoint.Logic, current.LogicType.Id), current.Id });
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmPointTree.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmPointTree.SubDevType, parent.Id), current.Id });
                         }
                     }
                 }
@@ -1561,7 +1720,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult FilterLogicPointPath(string text) {
+        public JsonResult FilterPointTreePath(string text) {
             var data = new AjaxDataModel<List<string[]>> {
                 success = true,
                 message = "No data",
@@ -1575,10 +1734,139 @@ namespace iPem.Site.Controllers {
 
                     var matchs = _workContext.Points.FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        var parent = _workContext.LogicTypes.Find(l => l.Id == match.LogicType.Id);
+                        var parent = _workContext.SubDeviceTypes.Find(s => s.Id == match.SubDeviceType.Id);
                         if(parent != null) {
-                            data.data.Add(new string[] { Common.JoinKeys((int)EnmLogicPoint.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLogicPoint.Logic, match.LogicType.Id), match.Id });
+                            data.data.Add(new string[] { Common.JoinKeys((int)EnmPointTree.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmPointTree.SubDevType, parent.Id), match.Id });
                         }
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetSubDeviceTypes(string node, bool? multiselect) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(node)) {
+                    if(node == "root") {
+                        var roots = _workContext.DeviceTypes;
+                        if(roots.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = roots.Count;
+                            for(var i = 0; i < roots.Count; i++) {
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmDeviceTypeTree.DevType, roots[i].Id),
+                                    text = roots[i].Name,
+                                    icon = Icons.Category,
+                                    expanded = false,
+                                    leaf = false
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                    } else {
+                        var keys = Common.SplitKeys(node);
+                        if(keys.Length == 2) {
+                            var type = int.Parse(keys[0]);
+                            var key = keys[1];
+                            if((int)EnmDeviceTypeTree.DevType == type) {
+                                var children = _workContext.SubDeviceTypes.FindAll(l => l.DeviceTypeId == key);
+                                if(children.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = children.Count;
+                                    for(var i = 0; i < children.Count; i++) {
+                                        var child = new TreeModel {
+                                            id = children[i].Id,
+                                            text = children[i].Name,
+                                            icon = Icons.Category,
+                                            leaf = true
+                                        };
+
+                                        if(multiselect.HasValue && multiselect.Value)
+                                            child.selected = false;
+
+                                        data.data.Add(child);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetSubDeviceTypesPath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach(var node in nodes) {
+                    var current = _workContext.SubDeviceTypes.Find(s => s.Id == node);
+                    if(current != null) {
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDeviceTypeTree.DevType, current.DeviceTypeId), current.Id });
+                    }
+                }
+
+                if(data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult FilterSubDeviceTypesPath(string text) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                if(!string.IsNullOrWhiteSpace(text)) {
+                    text = text.Trim().ToLower();
+
+                    var matchs = _workContext.SubDeviceTypes.FindAll(s => s.Name.ToLower().Contains(text));
+                    foreach(var match in matchs) {
+                        data.data.Add(new string[] { Common.JoinKeys((int)EnmDeviceTypeTree.DevType, match.DeviceTypeId), match.Id });
                     }
                 }
 

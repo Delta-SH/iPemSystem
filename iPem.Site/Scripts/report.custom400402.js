@@ -573,7 +573,7 @@
                         items: [
                             {
                                 id: 'logic-type-multicombo',
-                                xtype: 'LogicTypeMultiPicker',
+                                xtype: 'SubLogicTypeMultiPicker',
                                 width: 220,
                                 emptyText: '默认全部'
                             },
