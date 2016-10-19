@@ -1977,6 +1977,12 @@ window.$$iPems.Tasks = {
             interval: 5000,
             repeat: 1
         }),
+        energyTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 300000,
+            repeat: 1
+        }),
         unconnectedTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,

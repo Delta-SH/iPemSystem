@@ -194,10 +194,12 @@
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\Chart500301.cs" />
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\FormulaModel.cs" />
     <Compile Include="Models\HomeAlmModel.cs" />
     <Compile Include="Models\HomeAreaAlmModel.cs" />
+    <Compile Include="Models\HomeEnergyModel.cs" />
     <Compile Include="Models\HomeOffModel.cs" />
     <Compile Include="Models\HomeServerModel.cs" />
     <Compile Include="Models\HomeUnconnectedModel.cs" />
@@ -226,6 +228,7 @@
     <Compile Include="Models\Model400402.cs" />
     <Compile Include="Models\Model400403.cs" />
     <Compile Include="Models\Model500103.cs" />
+    <Compile Include="Models\Model500301.cs" />
     <Compile Include="Models\Model500401.cs" />
     <Compile Include="Models\Model500402.cs" />
     <Compile Include="Models\Model500403.cs" />
@@ -955,6 +958,7 @@
     <Content Include="Scripts\kpi.base500101.js" />
     <Content Include="Scripts\home.active.alarm.js" />
     <Content Include="Scripts\account.notice.js" />
+    <Content Include="Scripts\kpi.performance500301.js" />
     <Content Include="Scripts\report.custom400403.js" />
     <Content Include="Content\ux\fonts\topbar.eot" />
     <Content Include="Content\ux\fonts\topbar.ttf" />
@@ -962,6 +966,7 @@
     <Content Include="Scripts\kpi.custom500402.js" />
     <Content Include="Scripts\kpi.custom500403.js" />
     <None Include="Properties\PublishProfiles\iPemDeployConfig.pubxml" />
+    <Content Include="Scripts\kpi.performance500302.js" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.min.js" />
@@ -1087,6 +1092,7 @@
     <Content Include="Views\KPI\base500103.cshtml" />
     <Content Include="Views\KPI\base500102.cshtml" />
     <Content Include="Views\KPI\base500101.cshtml" />
+    <Content Include="Views\KPI\performance500301.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

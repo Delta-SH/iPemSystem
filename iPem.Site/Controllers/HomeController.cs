@@ -40,6 +40,7 @@ namespace iPem.Site.Controllers {
         private readonly IActAlmService _actAlmService;
         private readonly IPointService _pointService;
         private readonly IFsuKeyService _fsuKeyService;
+        private readonly IHisElecService _hisElecService;
 
         #endregion
 
@@ -59,7 +60,8 @@ namespace iPem.Site.Controllers {
             IProjectService projectsService,
             IActAlmService actAlmService,
             IPointService pointService,
-            IFsuKeyService fsuKeyService) {
+            IFsuKeyService fsuKeyService,
+            IHisElecService hisElecService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -74,6 +76,7 @@ namespace iPem.Site.Controllers {
             this._actAlmService = actAlmService;
             this._pointService = pointService;
             this._fsuKeyService = fsuKeyService;
+            this._hisElecService = hisElecService;
         }
 
         #endregion
@@ -862,6 +865,45 @@ namespace iPem.Site.Controllers {
                 model.time = CommonHelper.ShortTimeConverter(DateTime.Now);
                 data.data = model;
                 data.total = 1;
+                data.message = "200 Ok";
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomeEnergies() {
+            var data = new AjaxDataModel<List<HomeEnergyModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HomeEnergyModel>()
+            };
+
+            try {
+                var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), DateTime.Now);
+                var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                foreach(var root in roots) {
+                    var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                    var categories = energies.FindAll(e => children.Contains(e.Id));
+
+                    data.data.Add(new HomeEnergyModel {
+                        name = root.ToString(),
+                        kt = categories.FindAll(c => c.FormulaType == EnmFormula.KT).Sum(c => c.Value),
+                        zm = categories.FindAll(c => c.FormulaType == EnmFormula.ZM).Sum(c => c.Value),
+                        bg = categories.FindAll(c => c.FormulaType == EnmFormula.BG).Sum(c => c.Value),
+                        sb = categories.FindAll(c => c.FormulaType == EnmFormula.SB).Sum(c => c.Value),
+                        kgdy = categories.FindAll(c => c.FormulaType == EnmFormula.KGDY).Sum(c => c.Value),
+                        ups = categories.FindAll(c => c.FormulaType == EnmFormula.UPS).Sum(c => c.Value),
+                        qt = categories.FindAll(c => c.FormulaType == EnmFormula.QT).Sum(c => c.Value)
+                    });
+                }
+
+                data.total = data.data.Count;
                 data.message = "200 Ok";
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);

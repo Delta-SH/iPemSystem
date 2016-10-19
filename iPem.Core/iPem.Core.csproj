@@ -120,6 +120,7 @@
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\ActAlm.cs" />
     <Compile Include="Domain\Cs\FsuKey.cs" />
+    <Compile Include="Domain\Cs\HisElec.cs" />
     <Compile Include="Domain\Sc\ExtAlm.cs" />
     <Compile Include="Domain\Cs\HisAlm.cs" />
     <Compile Include="Domain\Cs\HisBat.cs" />

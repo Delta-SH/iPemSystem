@@ -43,7 +43,9 @@
     <Compile Include="Common\CacheKeys.cs" />
     <Compile Include="Cs\Class\ActAlmService.cs" />
     <Compile Include="Cs\Class\FsuKeyService.cs" />
+    <Compile Include="Cs\Class\HisElecService.cs" />
     <Compile Include="Cs\Interface\IFsuKeyService.cs" />
+    <Compile Include="Cs\Interface\IHisElecService.cs" />
     <Compile Include="Sc\Class\ExtendAlmService.cs" />
     <Compile Include="Cs\Class\HisAlmService.cs" />
     <Compile Include="Cs\Class\HisBatService.cs" />

@@ -45,7 +45,6 @@
                             color: '#f04b51'
                         }
                     },
-                    stack: 'alarm',
                     data: []
                 },
                 {
@@ -56,7 +55,6 @@
                             color: '#efa91f'
                         }
                     },
-                    stack: 'alarm',
                     data: []
                 },
                 {
@@ -67,7 +65,6 @@
                             color: '#f5d313'
                         }
                     },
-                    stack: 'alarm',
                     data: []
                 },
                 {
@@ -78,7 +75,6 @@
                             color: '#0892cd'
                         }
                     },
-                    stack: 'alarm',
                     data: []
                 }
             ]
@@ -194,10 +190,13 @@
                         }
                     },
                     data: [
-                        { value: 895, name: '空调' },
-                        { value: 221, name: '照明' },
-                        { value: 152, name: '办公' },
-                        { value: 335, name: '其他' }
+                        { value: 0, name: '空调' },
+                        { value: 0, name: '照明' },
+                        { value: 0, name: '办公' },
+                        { value: 0, name: '设备' },
+                        { value: 0, name: '开关电源' },
+                        { value: 0, name: 'UPS' },
+                        { value: 0, name: '其他' }
                     ]
                 }
             ]
@@ -210,7 +209,7 @@
                 }
             },
             legend: {
-                data: ['空调', '照明', '办公', '其他'],
+                data: ['空调', '照明', '办公', '设备', '开关电源', 'UPS', '其他'],
                 align: 'left'
             },
             grid: {
@@ -223,7 +222,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: ['北京市', '上海市', '浙江省', '江苏省', '河北省', '广东省', '吉林省'],
+                    data: [],
                     splitLine: { show: false }
                 }
             ],
@@ -236,22 +235,37 @@
                 {
                     name: '空调',
                     type: 'bar',
-                    data: [120, 132, 101, 134, 90, 230, 210]
+                    data: []
                 },
                 {
                     name: '照明',
                     type: 'bar',
-                    data: [220, 182, 191, 234, 290, 330, 310]
+                    data: []
                 },
                 {
                     name: '办公',
                     type: 'bar',
-                    data: [150, 232, 201, 154, 190, 330, 410]
+                    data: []
+                },
+                {
+                    name: '设备',
+                    type: 'bar',
+                    data: []
+                },
+                {
+                    name: '开关电源',
+                    type: 'bar',
+                    data: []
+                },
+                {
+                    name: 'UPS',
+                    type: 'bar',
+                    data: []
                 },
                 {
                     name: '其他',
                     type: 'bar',
-                    data: [220, 182, 191, 234, 290, 330, 310]
+                    data: []
                 }
             ]
         },
@@ -595,7 +609,7 @@
             }, {
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: '区域能耗分布图',
+                title: '本月能耗分布图(kW·h)',
                 collapsible: true,
                 collapseFirst: false,
                 layout: {
@@ -900,6 +914,70 @@
             });
         };
         $$iPems.Tasks.homeTasks.svrTask.start();
+
+        $$iPems.Tasks.homeTasks.energyTask.run = function () {
+            Ext.Ajax.request({
+                url: '/Home/RequestHomeEnergies',
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success) {
+                        if (!Ext.isEmpty(data.data) && Ext.isArray(data.data)) {
+
+                            var xaxis = [], kt = [], zm = [], bg = [], sb = [], kgdy = [], ups = [], qt = []
+                            , ttkt = 0, ttzm = 0, ttbg = 0, ttsb = 0, ttkgdy = 0, ttups = 0, ttqt = 0;
+                            Ext.Array.each(data.data, function (item, index) {
+                                xaxis.push(item.name);
+                                kt.push(item.kt);
+                                ttkt += item.kt;
+
+                                zm.push(item.zm);
+                                ttzm += item.zm;
+
+                                bg.push(item.bg);
+                                ttbg += item.bg;
+
+                                sb.push(item.sb);
+                                ttsb += item.sb;
+
+                                kgdy.push(item.kgdy);
+                                ttkgdy += item.kgdy;
+
+                                ups.push(item.ups);
+                                ttups += item.ups;
+
+                                qt.push(item.qt);
+                                ttqt += item.qt;
+                            });
+
+                            energybarOption.xAxis[0].data = xaxis;
+                            energybarOption.series[0].data = kt;
+                            energybarOption.series[1].data = zm;
+                            energybarOption.series[2].data = bg;
+                            energybarOption.series[3].data = sb;
+                            energybarOption.series[4].data = kgdy;
+                            energybarOption.series[5].data = ups;
+                            energybarOption.series[6].data = qt;
+                            energybarChart.setOption(energybarOption, true);
+
+                            energypieOption.series[0].data[0].value = ttkt;
+                            energypieOption.series[0].data[1].value = ttzm;
+                            energypieOption.series[0].data[2].value = ttbg;
+                            energypieOption.series[0].data[3].value = ttsb;
+                            energypieOption.series[0].data[4].value = ttkgdy;
+                            energypieOption.series[0].data[5].value = ttups;
+                            energypieOption.series[0].data[6].value = ttqt;
+                            energypieChart.setOption(energypieOption, true);
+                        }
+
+                        $$iPems.Tasks.homeTasks.energyTask.fireOnStart = false;
+                        $$iPems.Tasks.homeTasks.energyTask.restart();
+                    } else {
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                }
+            });
+        };
+        $$iPems.Tasks.homeTasks.energyTask.start();
 
         $$iPems.Tasks.homeTasks.offTask.run = function () {
             offPagingToolbar.doRefresh();
