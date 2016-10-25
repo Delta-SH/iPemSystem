@@ -859,7 +859,7 @@ Ext.define('Ext.ux.TreePicker', {
             Ext.Ajax.request({
                 url: me.searchUrl,
                 params: { text: text },
-                mask: new Ext.LoadMask({ target: picker, msg: '正在处理，请稍后...' }),
+                mask: new Ext.LoadMask({ target: picker, msg: '正在处理...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success) {
@@ -1622,6 +1622,14 @@ window.$$iPems.GetAlmLevelCls = function (value) {
     }
 };
 
+/*Period*/
+window.$$iPems.Period = {
+    Year: 0,
+    Month: 1,
+    Week: 2,
+    Day: 3
+};
+
 /*Split Node Keys*/
 window.$$iPems.SplitKeys = function (key) {
     if(Ext.isEmpty(key)) return [];
@@ -2115,7 +2123,7 @@ Ext.onReady(function () {
                     items: [
                         Ext.create('Ext.ux.IFrame', {
                             flex: 1,
-                            loadMask: '正在处理，请稍后...',
+                            loadMask: '正在处理...',
                             src: '/Home/Speech'
                         })
                     ]

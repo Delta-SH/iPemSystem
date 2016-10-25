@@ -221,7 +221,7 @@
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,
-                msg: '正在处理，请稍后...'
+                msg: '正在处理...'
             }),
             params: {
                 notices: [record.raw.id],
@@ -251,7 +251,7 @@
             Method: 'POST',
             mask: Ext.create('Ext.LoadMask', {
                 target: currentGridPanel,
-                msg: '正在处理，请稍后...'
+                msg: '正在处理...'
             }),
             params: {
                 notices: notices,

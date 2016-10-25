@@ -212,7 +212,7 @@
                         if (basic.isValid() && !Ext.isEmpty(id)) {
                             Ext.Msg.confirm('确认对话框', '您确认要修改密码吗？', function (buttonId, text) {
                                 if (buttonId === 'yes') {
-                                    result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                    result.setTextWithIcon('正在处理...', 'x-icon-loading');
                                     var origin = form.getComponent('origin').getValue();
                                     var password = form.getComponent('password').getValue();
                                     basic.submit({

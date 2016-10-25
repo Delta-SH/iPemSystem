@@ -290,7 +290,7 @@
                                 if (buttonId === 'yes') {
                                     Ext.Ajax.request({
                                         url: '/Account/ClearEvents',
-                                        mask: new Ext.LoadMask(currentGridPanel, { msg: '正在处理，请稍后...' }),
+                                        mask: new Ext.LoadMask(currentGridPanel, { msg: '正在处理...' }),
                                         success: function (response, options) {
                                             var data = Ext.decode(response.responseText, true);
                                             if (data.success)

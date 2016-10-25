@@ -46,7 +46,7 @@
                         Ext.Ajax.request({
                             url: '/Account/PasteFormula',
                             params: { source: me.source.data.id, target: me.target.data.id },
-                            mask: new Ext.LoadMask(tree, { msg: '正在处理，请稍后...' }),
+                            mask: new Ext.LoadMask(tree, { msg: '正在处理...' }),
                             success: function (response, options) {
                                 var result = Ext.decode(response.responseText, true);
                                 if (result.success) {
@@ -96,7 +96,7 @@
                         Ext.Ajax.request({
                             url: '/Account/PasteFormula',
                             params: { source: me.source.data.id, target: me.target.data.id },
-                            mask: new Ext.LoadMask(tree, { msg: '正在处理，请稍后...' }),
+                            mask: new Ext.LoadMask(tree, { msg: '正在处理...' }),
                             success: function (response, options) {
                                 var result = Ext.decode(response.responseText, true);
                                 if (result.success) {
@@ -482,7 +482,7 @@
 
                             wsresult.setTextWithIcon('', '');
                             if (wsbasic.isValid()) {
-                                wsresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                wsresult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                 wsbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -670,7 +670,7 @@
 
                             tsresult.setTextWithIcon('', '');
                             if (tsbasic.isValid()) {
-                                tsresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                tsresult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                 tsbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -761,7 +761,7 @@
                                         url: '/Account/GetFormula',
                                         params: { current: id },
                                         waitTitle: '系统提示',
-                                        waitMsg: '正在处理，请稍后...',
+                                        waitMsg: '正在处理...',
                                         success: function (form, action) { }
                                     });
                                 }
@@ -830,7 +830,7 @@
                                             Ext.Ajax.request({
                                                 url: '/Component/FilterRoomPath',
                                                 params: { text: text },
-                                                mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
+                                                mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
                                                 success: function (response, options) {
                                                     var data = Ext.decode(response.responseText, true);
                                                     if (data.success) {
@@ -1143,7 +1143,7 @@
 
                             pueresult.setTextWithIcon('', '');
                             if (puebasic.isValid()) {
-                                pueresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                pueresult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                 puebasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -1195,7 +1195,7 @@
                                 Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
                                     if (buttonId === 'yes') {
                                         var cacheResult = Ext.getCmp('cacheResult');
-                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                        cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                         Ext.Ajax.request({
                                             url: '/Account/ClearCache',
                                             success: function (response, options) {
@@ -1216,7 +1216,7 @@
                                 Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
                                     if (buttonId === 'yes') {
                                         var cacheResult = Ext.getCmp('cacheResult');
-                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                        cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                         Ext.Ajax.request({
                                             url: '/Account/ClearGlobalCache',
                                             success: function (response, options) {
@@ -1237,7 +1237,7 @@
                                 Ext.Msg.confirm('确认对话框', '您确认要清空缓存吗？', function (buttonId, text) {
                                     if (buttonId === 'yes') {
                                         var cacheResult = Ext.getCmp('cacheResult');
-                                        cacheResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                        cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                         Ext.Ajax.request({
                                             url: '/Account/ClearUserCache',
                                             success: function (response, options) {
@@ -1567,6 +1567,206 @@
                                 }]
                             }
                         ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '直流系统可用度(核心站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'hxzlxtkydXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源蓄电池组总电压低"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'hxzlxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源蓄电池组"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '交流不间断系统可用度(核心站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'hxjlxtkydXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"UPS蓄电池组总电压低"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'hxjlxtkydPangLuXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '运行信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"UPS旁路运行"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'hxjlxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"UPS蓄电池组"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '温控系统可用度(核心站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'hxwkxtkydXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"高温告警"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '监控可用度(核心站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'hxjkkydXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"监控系统采集设备中断"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'hxjkkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"采集设备"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
                     }
                 ],
                 buttonAlign: 'left',
@@ -1582,7 +1782,7 @@
 
                             rtresult.setTextWithIcon('', '');
                             if (rtbasic.isValid()) {
-                                rtresult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                                rtresult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                 rtbasic.submit({
                                     submitEmptyText: false,
                                     clientValidation: true,
@@ -1622,7 +1822,7 @@
 
             wsbasic.load({
                 url: '/Account/GetWs',
-                waitMsg: '正在处理，请稍后...',
+                waitMsg: '正在处理...',
                 waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();
@@ -1636,7 +1836,7 @@
 
             tsbasic.load({
                 url: '/Account/GetTs',
-                waitMsg: '正在处理，请稍后...',
+                waitMsg: '正在处理...',
                 waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();
@@ -1650,7 +1850,7 @@
 
             rtbasic.load({
                 url: '/Account/GetRt',
-                waitMsg: '正在处理，请稍后...',
+                waitMsg: '正在处理...',
                 waitTitle: '系统提示',
                 success: function (form, action) {
                     form.clearInvalid();

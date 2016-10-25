@@ -174,7 +174,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (form.isValid()) {
-                  result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                  result.setTextWithIcon('正在处理...', 'x-icon-loading');
                   form.submit({
                       submitEmptyText: false,
                       clientValidation: true,
@@ -218,7 +218,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     Ext.getCmp('saveForm').getForm().load({
         url: '/Project/GetProject',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        waitMsg: '正在处理，请稍后...',
+        waitMsg: '正在处理...',
         waitTitle: '系统提示',
         success: function (form, action) {
             form.clearInvalid();
@@ -391,7 +391,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         form.load({
                             url: '/Project/GetProject',
                             params: { id: '', action: $$iPems.Action.Add },
-                            waitMsg: '正在处理，请稍后...',
+                            waitMsg: '正在处理...',
                             waitTitle: '系统提示',
                             success: function (form, action) {
                                 form.clearInvalid();

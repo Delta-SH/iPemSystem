@@ -3,6 +3,7 @@ using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -136,12 +137,91 @@ namespace iPem.Core.NPOI {
             return ms;
         }
 
-        public T Import<T>(string fullPath) {
-            throw new NotImplementedException();
+        public MemoryStream Export(DataTable data, string title = "No title", string subtitle = "No subtitle") {
+            var converter = new ExcelConverter();
+            var worksheet = converter.CreateSheet();
+
+            var columns = new List<DataColumn>();
+            for(var i = 0; i < data.Columns.Count; i++) {
+                columns.Add(data.Columns[i]);
+            }
+
+            var ttrow = worksheet.CreateRow(0);
+            ttrow.HeightInPoints = 30;
+            for(var i = 0; i < columns.Count; i++) {
+                var ttcell = ttrow.CreateCell(i);
+
+                ttcell.SetCellValue(new XSSFRichTextString(i == 0 ? title : ""));
+                ttcell.CellStyle = converter.Title;
+            }
+            worksheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, columns.Count - 1));
+
+            var strow = worksheet.CreateRow(1);
+            strow.HeightInPoints = 20;
+            for(var i = 0; i < columns.Count; i++) {
+                var stcell = strow.CreateCell(i);
+
+                stcell.SetCellValue(new XSSFRichTextString(i == 0 ? subtitle : ""));
+                stcell.CellStyle = converter.SubTitle;
+            }
+            worksheet.AddMergedRegion(new CellRangeAddress(1, 1, 0, columns.Count - 1));
+
+            var ctrow = worksheet.CreateRow(2);
+            ctrow.HeightInPoints = 20;
+            for(var i = 0; i < columns.Count; i++) {
+                var cell = ctrow.CreateCell(i);
+                cell.SetCellValue(columns[i].ColumnName);
+                cell.CellStyle = converter.CellTitle;
+
+                //set cell column width
+                worksheet.SetColumnWidth(i, 25 * 150);
+            }
+
+            for(int k = 0; k < data.Rows.Count; k++) {
+                var row = (XSSFRow)worksheet.CreateRow(3 + k);
+                row.HeightInPoints = 18;
+
+                for(int g = 0; g < columns.Count; g++) {
+                    var cell = row.CreateCell(g);
+                    var column = columns[g];
+                    var type = column.DataType;
+                    var value = data.Rows[k][g];
+
+                    cell.CellStyle = converter.GetCellStyle(Color.Empty, false);
+                    if(value == null) continue;
+
+                    if(type == typeof(Int16) ||
+                        type == typeof(Int32) ||
+                        type == typeof(Int64) ||
+                        type == typeof(Single) ||
+                        type == typeof(Double)) {
+                        cell.SetCellValue(Convert.ToDouble(value));
+                    } else if(type == typeof(Boolean)) {
+                        cell.SetCellValue((Boolean)value);
+                    } else if(type == typeof(DateTime)) {
+                        cell.SetCellValue((DateTime)value);
+                    } else {
+                        cell.SetCellValue(new XSSFRichTextString(value.ToString()));
+                    }
+                }
+            }
+
+            var ms = new MemoryStream();
+            converter.Workbook.Write(ms);
+            return ms;
         }
 
         public void Save<T>(List<T> data, string fullPath, string title = "No title", string subtitle = "No subtitle") {
             using(var ms = Export<T>(data, title, subtitle)) {
+                using(var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write)) {
+                    ms.WriteTo(fs);
+                    fs.Flush();
+                }
+            }
+        }
+
+        public void Save(DataTable data, string fullPath, string title = "No title", string subtitle = "No subtitle") {
+            using(var ms = Export(data, title, subtitle)) {
                 using(var fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write)) {
                     ms.WriteTo(fs);
                     fs.Flush();
@@ -158,6 +238,27 @@ namespace iPem.Core.NPOI {
             }
 
             using(var ms = Export<T>(data, title, subtitle)) {
+                if(!httpContext.Response.Buffer) {
+                    httpContext.Response.Buffer = true;
+                    httpContext.Response.Clear();
+                }
+
+                httpContext.Response.ContentType = this.ContentType;
+                httpContext.Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", fileName));
+                httpContext.Response.Flush();
+                httpContext.Response.BinaryWrite(ms.ToArray());
+            }
+        }
+
+        public void Send(DataTable data, HttpContextBase httpContext, string fileName = "", string title = "No title", string subtitle = "No subtitle") {
+            if(string.IsNullOrWhiteSpace(fileName))
+                fileName = this.RandomFileName;
+            else {
+                fileName = fileName.Trim();
+                if(!fileName.EndsWith(".xlsx", StringComparison.CurrentCultureIgnoreCase)) fileName = string.Format("{0}.xlsx", fileName);
+            }
+
+            using(var ms = Export(data, title, subtitle)) {
                 if(!httpContext.Response.Buffer) {
                     httpContext.Response.Buffer = true;
                     httpContext.Response.Clear();

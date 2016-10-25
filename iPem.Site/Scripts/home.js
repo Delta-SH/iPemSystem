@@ -805,7 +805,18 @@
                         bbar: offPagingToolbar
                     }
                 ]
-            }]
+            }],
+            listeners: {
+                resize: function (me, width, height, oldWidth, oldHeight) {
+                    if (almChart) almChart.resize();
+                    if (cpuChart) cpuChart.resize();
+                    if (memoryChart) memoryChart.resize();
+                    if (energybarChart) energybarChart.resize();
+                    if (energypieChart) energypieChart.resize();
+                    if (unconnectedChart) unconnectedChart.resize();
+                    if (offlineChart) offlineChart.resize();
+                }
+            }
         });
 
         /*add components to viewport panel*/

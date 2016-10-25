@@ -20,10 +20,12 @@ namespace iPem.Core {
     public partial class CommonHelper {
         private static PerformanceCounter cpuCounter;
         private static PerformanceCounter ramCounter;
+        private static GregorianCalendar calendar;
 
         static CommonHelper() {
             cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            calendar = new GregorianCalendar();
         }
 
         /// <summary>
@@ -228,14 +230,25 @@ namespace iPem.Core {
         }
 
         /// <summary>
-        /// Datetime Converter
+        /// Week Converter
         /// </summary>
         /// <param name="val">val</param>
-        public static string DateTimeConverter(DateTime val) {
+        public static string WeekConverter(DateTime val) {
             if(!IsValidDateTime(val))
                 return string.Empty;
 
-            return val.ToString("yyyy-MM-dd HH:mm:ss");
+            return string.Format("{0}Äê{1}ÖÜ", val.Year, calendar.GetWeekOfYear(val, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday));
+        }
+
+        /// <summary>
+        /// Month Converter
+        /// </summary>
+        /// <param name="val">val</param>
+        public static string MonthConverter(DateTime val) {
+            if(!IsValidDateTime(val))
+                return string.Empty;
+
+            return val.ToString("yyyy-MM");
         }
 
         /// <summary>
@@ -247,6 +260,17 @@ namespace iPem.Core {
                 return string.Empty;
 
             return val.ToString("yyyy-MM-dd");
+        }
+
+        /// <summary>
+        /// Datetime Converter
+        /// </summary>
+        /// <param name="val">val</param>
+        public static string DateTimeConverter(DateTime val) {
+            if(!IsValidDateTime(val))
+                return string.Empty;
+
+            return val.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         /// <summary>

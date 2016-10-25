@@ -154,7 +154,7 @@
 
 					saveResult.setTextWithIcon('', '');
 					if (baseForm.isValid()) {
-						saveResult.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+						saveResult.setTextWithIcon('正在处理...', 'x-icon-loading');
 
 						var toRoles = form.getComponent('toRoles'),
 							roles = toRoles.getSelectedValues();
@@ -205,7 +205,7 @@
 		basic.load({
 			url: '/Account/GetNotice',
 			params: { id: record.raw.id, action: $$iPems.Action.Edit },
-			waitMsg: '正在处理，请稍后...',
+			waitMsg: '正在处理...',
 			waitTitle: '系统提示',
 			success: function (form, action) {
 			    form.clearInvalid();
@@ -227,7 +227,7 @@
 				Ext.Ajax.request({
 					url: '/Account/DeleteNotice',
 					params: { id: record.raw.id },
-					mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
+					mask: new Ext.LoadMask(grid, { msg: '正在处理...' }),
 					success: function (response, options) {
 						var data = Ext.decode(response.responseText, true);
 						if (data.success)
@@ -321,7 +321,7 @@
 					basic.load({
 						url: '/Account/GetNotice',
 						params: { id: '', action: $$iPems.Action.Add },
-						waitMsg: '正在处理，请稍后...',
+						waitMsg: '正在处理...',
 						waitTitle: '系统提示',
 						success: function (form, action) {
 						    form.clearInvalid();

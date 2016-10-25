@@ -182,6 +182,7 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
+                flex: 2,
                 layout: {
                     type: 'hbox',
                     align: 'stretch',
@@ -193,11 +194,18 @@
                         flex: 1,
                         contentEl: 'bar-chart'
                     }
-                ]
+                ],
+                listeners: {
+                    resize: function (me, width, height, oldWidth, oldHeight) {
+                        var barContainer = Ext.get('bar-chart');
+                        barContainer.setHeight(height - 40);
+                        if (barChart) barChart.resize();
+                    }
+                }
             }, {
                 xtype: 'gridpanel',
                 glyph: 0xf029,
-                flex: 2,
+                flex: 3,
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,

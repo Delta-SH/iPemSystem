@@ -17,7 +17,7 @@
      * @property _ajax_loading_message
      * @type String
      **/
-    var _ajax_loading_message = '<strong>系统提示:</strong> 正在处理，请稍后...';
+    var _ajax_loading_message = '<strong>系统提示:</strong> 正在处理...';
 
     /**
      * The ok message for ajax.

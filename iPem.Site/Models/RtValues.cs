@@ -27,5 +27,21 @@ namespace iPem.Site.Models {
         public double jslHuLue { get; set; }
 
         public double jslQueRen { get; set; }
+
+        public string[] hxzlxtkydXinHao { get; set; }
+
+        public string[] hxzlxtkydLeiXing { get; set; }
+
+        public string[] hxjlxtkydXinHao { get; set; }
+
+        public string[] hxjlxtkydPangLuXinHao { get; set; }
+
+        public string[] hxjlxtkydLeiXing { get; set; }
+
+        public string[] hxwkxtkydXinHao { get; set; }
+
+        public string[] hxjkkydXinHao { get; set; }
+
+        public string[] hxjkkydLeiXing { get; set; }
     }
 }

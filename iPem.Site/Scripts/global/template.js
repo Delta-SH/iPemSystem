@@ -115,7 +115,7 @@ Ext.onReady(function () {
                     items: [
                         Ext.create('Ext.ux.IFrame', {
                             flex: 1,
-                            loadMask: '正在处理，请稍后...',
+                            loadMask: '正在处理...',
                             src: '/Home/Speech'
                         })
                     ]

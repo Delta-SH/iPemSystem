@@ -12,6 +12,7 @@ using iPem.Site.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -82,16 +83,16 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500103(int start, int limit, string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
-            var data = new AjaxDataModel<List<Model500103>> {
+        public JsonResult Request500101(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500101>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<Model500103>()
+                data = new List<Model500101>()
             };
 
             try {
-                var models = this.Get500103(parent, types, points, startDate, endDate);
+                var models = this.Get500101(parent, types, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -115,9 +116,101 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500103(string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
+        public ActionResult Download500101(string parent, string[] types, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500103(parent, types, points, startDate, endDate);
+                var models = this.Get500101(parent, types, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500101>(models, "直流系统可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500102(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500102>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500102>()
+            };
+
+            try {
+                var models = this.Get500102(parent, types, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500102(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500102(parent, types, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500102>(models, "交流不间断系统可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500103(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500103>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500103>()
+            };
+
+            try {
+                var models = this.Get500103(parent, types, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500103(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500103(parent, types, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500103>(models, "温控系统可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -128,7 +221,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500104(int start, int limit, string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
+        public JsonResult Request500104(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<Model500104>> {
                 success = true,
                 message = "无数据",
@@ -137,7 +230,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.Get500104(parent, types, points, startDate, endDate);
+                var models = this.Get500104(parent, types, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -161,9 +254,9 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500104(string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
+        public ActionResult Download500104(string parent, string[] types, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500104(parent, types, points, startDate, endDate);
+                var models = this.Get500104(parent, types, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500104>(models, "监控可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -243,9 +336,6 @@ namespace iPem.Site.Controllers {
                         data.data.Add(models[i]);
                     }
 
-                    if(models.Count > 100)
-                        models = models.Take(100).ToList();
-
                     foreach(var model in models) {
                         var names = model.name.Split(new char[]{','});
                         data.chart.Add(new Chart500301 {
@@ -276,6 +366,347 @@ namespace iPem.Site.Controllers {
             try {
                 var models = this.Get500301(parent, size, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500301>(models, "能耗分类统计", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFields500302(int period, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<string>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<string>()
+            };
+
+            try {
+                var models = this.GetModel500302(period, startDate, endDate);
+                if(models != null && models.Columns.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Columns.Count;
+
+                    for(int i = 0; i < models.Columns.Count; i++) {
+                        data.data.Add(models.Columns[i].ColumnName);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult Request500302(int start, int limit, string parent, int period, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<DataTable> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = null
+            };
+
+            try {
+                var models = this.Get500302(parent, period, size, startDate, endDate);
+                if(models != null && models.Rows.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Rows.Count;
+
+                    var end = start + limit;
+                    if(end > models.Rows.Count)
+                        end = models.Rows.Count;
+
+                    data.data = models.Clone();
+                    for(int i = start; i < end; i++) {
+                        data.data.Rows.Add(models.Rows[i].ItemArray);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500302(string parent, int period, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500302(parent, period, size, startDate, endDate);
+                using(var ms = _excelManager.Export(models, "能耗趋势分析", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500303(int start, int limit, string parent, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxChartModel<List<Model500303>, List<ChartModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500303>(),
+                chart = new List<ChartModel>()
+            };
+
+            try {
+                var models = this.Get500303(parent, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+
+                    foreach(var model in models) {
+                        var names = model.name.Split(new char[] { ',' });
+                        data.chart.Add(new ChartModel { 
+                            index = model.index,
+                            name = names.Length > 0 ? names[names.Length - 1] : "", 
+                            value = model.current,
+                            comment = model.last.ToString()
+                        });
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500303(string parent, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500303(parent, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500303>(models, "能耗同址同比", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500304(int start, int limit, string parent, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxChartModel<List<Model500304>, List<ChartModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500304>(),
+                chart = new List<ChartModel>()
+            };
+
+            try {
+                var models = this.Get500304(parent, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+
+                    foreach(var model in models) {
+                        var names = model.name.Split(new char[] { ',' });
+                        data.chart.Add(new ChartModel {
+                            index = model.index,
+                            name = names.Length > 0 ? names[names.Length - 1] : "",
+                            value = model.current,
+                            comment = model.last.ToString()
+                        });
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500304(string parent, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500304(parent, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500304>(models, "能耗同址环比", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500305(int start, int limit, string[] parents, int period, DateTime startDate, DateTime endDate) {
+            var data = new AjaxChartModel<List<Model500305>, List<ChartsModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500305>(),
+                chart = new List<ChartsModel>()
+            };
+
+            try {
+                if(parents == null || parents.Length != 2) throw new iPemException("仅支持两个对比站点");
+
+                var akeys = Common.SplitKeys(parents[0]);
+                if(akeys.Length != 2) throw new iPemException("无效的参数 parents");
+
+                var bkeys = Common.SplitKeys(parents[1]);
+                if(bkeys.Length != 2) throw new iPemException("无效的参数 parents");
+
+                var models = this.Get500305(akeys[1], bkeys[1], period, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+
+                    foreach(var model in models) {
+                        var chart = new ChartsModel {
+                            index = model.index,
+                            name = model.period,
+                            models = new List<ChartModel>() { new ChartModel { index = 0, name = model.Aname, value = model.Avalue }, new ChartModel { index = 1, name = model.Bname, value = model.Bvalue } }
+                        };
+                        data.chart.Add(chart);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500305(string[] parents, int period, DateTime startDate, DateTime endDate) {
+            try {
+                if(parents == null || parents.Length != 2) throw new iPemException("仅支持两个对比站点");
+
+                var akeys = Common.SplitKeys(parents[0]);
+                if(akeys.Length != 2) throw new iPemException("无效的参数 parents");
+
+                var bkeys = Common.SplitKeys(parents[1]);
+                if(bkeys.Length != 2) throw new iPemException("无效的参数 parents");
+
+                var models = this.Get500305(akeys[1], bkeys[1], period, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500305>(models, "站点能耗对比", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500306(int start, int limit, string parent, DateTime startDate, DateTime endDate) {
+            var data = new AjaxChartModel<List<Model500306>, List<ChartsModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500306>(),
+                chart = new List<ChartsModel>()
+            };
+
+            try {
+                var models = this.Get500306(parent, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+
+                    foreach(var model in models) {
+                        var names = model.name.Split(new char[] { ',' });
+                        var chart = new ChartsModel {
+                            index = model.index,
+                            name = names.Length > 0 ? names[names.Length - 1] : "",
+                            models = new List<ChartModel>()
+                        };
+
+                        chart.models.Add(new ChartModel {
+                            index = 0,
+                            name = "设备能耗",
+                            value = model.device
+                        });
+
+                        chart.models.Add(new ChartModel {
+                            index = 1,
+                            name = "总能耗",
+                            value = model.total
+                        });
+
+                        chart.models.Add(new ChartModel {
+                            index = 2,
+                            name = "PUE",
+                            value = model.pue
+                        });
+
+                        data.chart.Add(chart);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500306(string parent, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500306(parent, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500306>(models, "站点PUE值", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -422,12 +853,118 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        private List<Model500103> Get500103(string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
+        private List<Model500101> Get500101(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500101>();
+            if(_workContext.RtValues == null 
+                || _workContext.RtValues.hxzlxtkydXinHao == null 
+                || _workContext.RtValues.hxzlxtkydXinHao.Length == 0
+                || _workContext.RtValues.hxzlxtkydLeiXing == null
+                || _workContext.RtValues.hxzlxtkydLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent)) 
+                return result;
+
+            var points = _workContext.RtValues.hxzlxtkydXinHao;
+            var devTypes = _workContext.RtValues.hxzlxtkydLeiXing;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
+
+            if(parent != "root") {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null)
+                    stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+            }
+
+            var index = 0;
+            foreach(var station in stations) {
+                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
+
+                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var cntTime = endDate.Subtract(startDate).TotalSeconds;
+                result.Add(new Model500101 {
+                    index = ++index,
+                    name = string.Format("{0},{1}", area == null ? "" : area.ToString(), station.Current.Name),
+                    type = station.Current.Type.Name,
+                    count = devices.Count,
+                    almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                    cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                    rate = string.Format("{0:P2}", devices.Count > 0 && cntTime > 0 ? 1 - almTime / (devices.Count * cntTime) : 1)
+                });
+            }
+
+            return result;
+        }
+
+        private List<Model500102> Get500102(string parent, string[] types, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500102>();
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.hxjlxtkydXinHao == null
+                || _workContext.RtValues.hxjlxtkydXinHao.Length == 0
+                || _workContext.RtValues.hxjlxtkydPangLuXinHao == null
+                || _workContext.RtValues.hxjlxtkydPangLuXinHao.Length == 0
+                || _workContext.RtValues.hxjlxtkydLeiXing == null
+                || _workContext.RtValues.hxjlxtkydLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var almPoints = _workContext.RtValues.hxjlxtkydXinHao;
+            var runPoints = _workContext.RtValues.hxjlxtkydPangLuXinHao;
+            var devTypes = _workContext.RtValues.hxjlxtkydLeiXing;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
+
+            if(parent != "root") {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null)
+                    stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+            }
+
+            var index = 0;
+            foreach(var station in stations) {
+                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate);
+                var almAlarms = alarms.FindAll(a => almPoints.Contains(a.PointId));
+                var runAlarms = alarms.FindAll(a => runPoints.Contains(a.PointId));
+                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
+
+                var almTime = almAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var runTime = runAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var cntTime = endDate.Subtract(startDate).TotalSeconds;
+                result.Add(new Model500102 {
+                    index = ++index,
+                    name = string.Format("{0},{1}", area == null ? "" : area.ToString(), station.Current.Name),
+                    type = station.Current.Type.Name,
+                    almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                    runTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(runTime)),
+                    count = devices.Count,
+                    time = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                    rate = string.Format("{0:P2}", devices.Count > 0 && cntTime > 0 ? 1 - ((almTime + runTime) / (devices.Count * cntTime)) : 1)
+                });
+            }
+
+            return result;
+        }
+
+        private List<Model500103> Get500103(string parent, string[] types, DateTime startDate, DateTime endDate) {
             endDate = endDate.AddSeconds(86399);
 
             var result = new List<Model500103>();
-            if(points == null || points.Length == 0) return result;
-            if(string.IsNullOrWhiteSpace(parent)) return result;
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.hxwkxtkydXinHao == null
+                || _workContext.RtValues.hxwkxtkydXinHao.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var points = _workContext.RtValues.hxwkxtkydXinHao;
 
             var stations = _workContext.RoleStations;
             if(types != null && types.Length > 0)
@@ -466,12 +1003,20 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<Model500104> Get500104(string parent, string[] types, string[] points, DateTime startDate, DateTime endDate) {
+        private List<Model500104> Get500104(string parent, string[] types, DateTime startDate, DateTime endDate) {
             endDate = endDate.AddSeconds(86399);
 
             var result = new List<Model500104>();
-            if(points == null || points.Length == 0) return result;
-            if(string.IsNullOrWhiteSpace(parent)) return result;
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.hxjkkydXinHao == null
+                || _workContext.RtValues.hxjkkydXinHao.Length == 0
+                || _workContext.RtValues.hxjkkydLeiXing == null
+                || _workContext.RtValues.hxjkkydLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var points = _workContext.RtValues.hxjkkydXinHao;
+            var devTypes = _workContext.RtValues.hxjkkydLeiXing;
 
             var stations = _workContext.RoleStations;
             if(types != null && types.Length > 0)
@@ -485,7 +1030,7 @@ namespace iPem.Site.Controllers {
 
             var index = 0;
             foreach(var station in stations) {
-                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => d.Protocol.Points.Select(p => p.Id).Intersect(points).Any()).ToList();
+                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                 var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
 
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
@@ -639,6 +1184,613 @@ namespace iPem.Site.Controllers {
             current.upsrate = string.Format("{0:P2}", current.zl > 0 ? current.ups / current.zl : 0);
             current.qtrate = string.Format("{0:P2}", current.zl > 0 ? current.qt / current.zl : 0);
             return current;
+        }
+
+        private DataTable Get500302(string parent, int period, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = this.GetModel500302(period, startDate, endDate);
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            if(parent == "root") {
+                #region root
+                if(size == (int)EnmOrganization.Area) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    foreach(var root in roots) {
+                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var categories = energies.FindAll(e => children.Contains(e.Id));
+
+                        this.Calculate500302(result, categories, root.ToString());
+                    }
+                } else if(size == (int)EnmOrganization.Station) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    foreach(var child in _workContext.RoleStations) {
+                        var categories = energies.FindAll(e => e.Id == child.Current.Id);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name));
+                    }
+                } else if(size == (int)EnmOrganization.Room) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                    foreach(var child in _workContext.RoleRooms) {
+                        var categories = energies.FindAll(e => e.Id == child.Current.Id);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        this.Calculate500302(result, categories, string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name));
+                    }
+                }
+                #endregion
+            } else {
+                #region children
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(size == (int)EnmOrganization.Area) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        if(current.HasChildren) {
+                            foreach(var root in current.ChildRoot) {
+                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var categories = energies.FindAll(e => children.Contains(e.Id));
+
+                                this.Calculate500302(result, categories, root.ToString());
+                            }
+                        } else {
+                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var categories = energies.FindAll(e => children.Contains(e.Id));
+
+                            this.Calculate500302(result, categories, current.ToString());
+                        }
+                    } else if(size == (int)EnmOrganization.Station) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        foreach(var child in children) {
+                            var categories = energies.FindAll(e => e.Id == child.Current.Id);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : current.ToString(), child.Current.Name));
+                        }
+                    } else if(size == (int)EnmOrganization.Room) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        foreach(var child in children) {
+                            var categories = energies.FindAll(e => e.Id == child.Current.Id);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            this.Calculate500302(result, categories, string.Format("{0},{1},{2}", area != null ? area.ToString() : current.ToString(), child.Current.StationName, child.Current.Name));
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            return result;
+        }
+
+        private DataTable GetModel500302(int period, DateTime startDate, DateTime endDate) {
+            var model = new DataTable("Model500302");
+            var column0 = new DataColumn("序号", typeof(int));
+            column0.AutoIncrement = true;
+            column0.AutoIncrementSeed = 1;
+            model.Columns.Add(column0);
+
+            var column1 = new DataColumn("名称", typeof(string));
+            model.Columns.Add(column1);
+
+            startDate = startDate.Date;endDate = endDate.Date;
+            var dates = new List<DateTime>();
+            while(startDate <= endDate) {
+                dates.Add(startDate);
+                startDate = startDate.AddDays(1);
+            }
+
+            if(period == (int)EnmPeriod.Month) {
+                dates = dates.GroupBy(d => new { d.Year, d.Month }).Select(g => new DateTime(g.Key.Year, g.Key.Month, 1)).ToList();
+                foreach(var date in dates) {
+                    var column = new DataColumn(CommonHelper.MonthConverter(date), typeof(double));
+                    column.DefaultValue = 0;
+                    column.ExtendedProperties.Add("Start", date);
+                    column.ExtendedProperties.Add("End", date.AddMonths(1).AddSeconds(-1));
+                    model.Columns.Add(column);
+                }
+            } else if(period == (int)EnmPeriod.Week) {
+                dates = dates.GroupBy(d => d.Date.AddDays(-1 * (((int)d.DayOfWeek + 6) % 7))).Select(g => g.Key).ToList();
+                foreach(var date in dates) {
+                    var column = new DataColumn(CommonHelper.WeekConverter(date), typeof(double));
+                    column.DefaultValue = 0;
+                    column.ExtendedProperties.Add("Start", date);
+                    column.ExtendedProperties.Add("End", date.AddDays(6).AddSeconds(86399));
+                    model.Columns.Add(column);
+                }
+            } else if(period == (int)EnmPeriod.Day) {
+                foreach(var date in dates) {
+                    var column = new DataColumn(CommonHelper.DateConverter(date), typeof(double));
+                    column.DefaultValue = 0;
+                    column.ExtendedProperties.Add("Start", date);
+                    column.ExtendedProperties.Add("End", date.AddSeconds(86399));
+                    model.Columns.Add(column);
+                }
+            }
+
+            return model;
+        }
+
+        private void Calculate500302(DataTable dt, List<HisElec> categories, string name) {
+            var row = dt.NewRow();
+            row[1] = name;
+            for(var k = 2; k < dt.Columns.Count; k++) {
+                var column = dt.Columns[k];
+                var start = (DateTime)column.ExtendedProperties["Start"];
+                var end = (DateTime)column.ExtendedProperties["End"];
+
+                row[k] = categories.FindAll(c => c.Period >= start && c.Period <= end).Sum(c => c.Value);
+            }
+            dt.Rows.Add(row);
+        }
+
+        private List<Model500303> Get500303(string parent, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500303>();
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                if(size == (int)EnmOrganization.Area) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    foreach(var root in roots) {
+                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                        var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+
+                        result.Add(new Model500303 {
+                            index = ++index,
+                            name = root.ToString(),
+                            period = string.Format("{0} ~ {1}",CommonHelper.DateConverter(startDate),CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                } else if(size == (int)EnmOrganization.Station) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    foreach(var child in _workContext.RoleStations) {
+                        var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        result.Add(new Model500303 {
+                            index = ++index,
+                            name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                } else if(size == (int)EnmOrganization.Room) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    foreach(var child in _workContext.RoleRooms) {
+                        var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        result.Add(new Model500303 {
+                            index = ++index,
+                            name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                }
+                #endregion
+            } else {
+                #region children
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(size == (int)EnmOrganization.Area) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        if(current.HasChildren) {
+                            foreach(var root in current.ChildRoot) {
+                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                                var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                                var currentValue = currentCategories.Sum(c => c.Value);
+                                var lastValue = lastCategories.Sum(c => c.Value);
+
+                                result.Add(new Model500303 {
+                                    index = ++index,
+                                    name = root.ToString(),
+                                    period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                    current = currentValue,
+                                    last = lastValue,
+                                    increase = currentValue - lastValue,
+                                    rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                                });
+                            }
+                        } else {
+                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                            var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+
+                            result.Add(new Model500303 {
+                                index = ++index,
+                                name = current.ToString(),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    } else if(size == (int)EnmOrganization.Station) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        foreach(var child in children) {
+                            var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            result.Add(new Model500303 {
+                                index = ++index,
+                                name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    } else if(size == (int)EnmOrganization.Room) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        foreach(var child in children) {
+                            var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            result.Add(new Model500303 {
+                                index = ++index,
+                                name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            return result;
+        }
+
+        private List<Model500304> Get500304(string parent, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500304>();
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                if(size == (int)EnmOrganization.Area) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    foreach(var root in roots) {
+                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                        var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+
+                        result.Add(new Model500304 {
+                            index = ++index,
+                            name = root.ToString(),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                } else if(size == (int)EnmOrganization.Station) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    foreach(var child in _workContext.RoleStations) {
+                        var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        result.Add(new Model500304 {
+                            index = ++index,
+                            name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                } else if(size == (int)EnmOrganization.Room) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    foreach(var child in _workContext.RoleRooms) {
+                        var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var currentValue = currentCategories.Sum(c => c.Value);
+                        var lastValue = lastCategories.Sum(c => c.Value);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        result.Add(new Model500304 {
+                            index = ++index,
+                            name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            current = currentValue,
+                            last = lastValue,
+                            increase = currentValue - lastValue,
+                            rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                        });
+                    }
+                }
+                #endregion
+            } else {
+                #region children
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(size == (int)EnmOrganization.Area) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        if(current.HasChildren) {
+                            foreach(var root in current.ChildRoot) {
+                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                                var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                                var currentValue = currentCategories.Sum(c => c.Value);
+                                var lastValue = lastCategories.Sum(c => c.Value);
+
+                                result.Add(new Model500304 {
+                                    index = ++index,
+                                    name = root.ToString(),
+                                    period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                    current = currentValue,
+                                    last = lastValue,
+                                    increase = currentValue - lastValue,
+                                    rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                                });
+                            }
+                        } else {
+                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
+                            var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+
+                            result.Add(new Model500304 {
+                                index = ++index,
+                                name = current.ToString(),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    } else if(size == (int)EnmOrganization.Station) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        foreach(var child in children) {
+                            var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            result.Add(new Model500304 {
+                                index = ++index,
+                                name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    } else if(size == (int)EnmOrganization.Room) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        foreach(var child in children) {
+                            var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
+                            var currentValue = currentCategories.Sum(c => c.Value);
+                            var lastValue = lastCategories.Sum(c => c.Value);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                            result.Add(new Model500304 {
+                                index = ++index,
+                                name = string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name),
+                                period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                                current = currentValue,
+                                last = lastValue,
+                                increase = currentValue - lastValue,
+                                rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
+                            });
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            return result;
+        }
+
+        private List<Model500305> Get500305(string aid, string bid, int period, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500305>();
+
+            var aStation = _workContext.RoleStations.Find(s => s.Current.Id == aid);
+            if(aStation == null) return result;
+
+            var bStation = _workContext.RoleStations.Find(s => s.Current.Id == bid);
+            if(bStation == null) return result;
+
+            var aEnergies = _hisElecService.GetEnergiesAsList(aStation.Current.Id, EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+            var bEnergies = _hisElecService.GetEnergiesAsList(bStation.Current.Id, EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+
+            startDate = startDate.Date; endDate = endDate.Date;
+            var dates = new List<DateTime>();
+            while(startDate <= endDate) {
+                dates.Add(startDate);
+                startDate = startDate.AddDays(1);
+            }
+
+            var index = 0;
+            if(period == (int)EnmPeriod.Month) {
+                dates = dates.GroupBy(d => new { d.Year, d.Month }).Select(g => new DateTime(g.Key.Year, g.Key.Month, 1)).ToList();
+                foreach(var date in dates) {
+                    var end = date.AddMonths(1).AddSeconds(-1);
+
+                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    result.Add(new Model500305 {
+                        index = ++index,
+                        period = CommonHelper.MonthConverter(date),
+                        Aname = aStation.Current.Name,
+                        Bname = bStation.Current.Name,
+                        Avalue = avalue,
+                        Bvalue = bvalue,
+                        increase = avalue-bvalue,
+                        rate = string.Format("{0:P2}", bvalue > 0 ? (avalue - bvalue) / bvalue : 1)
+                    });
+                }
+            } else if(period == (int)EnmPeriod.Week) {
+                dates = dates.GroupBy(d => d.Date.AddDays(-1 * (((int)d.DayOfWeek + 6) % 7))).Select(g => g.Key).ToList();
+                foreach(var date in dates) {
+                    var end = date.AddDays(6).AddSeconds(86399);
+
+                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    result.Add(new Model500305 {
+                        index = ++index,
+                        period = CommonHelper.WeekConverter(date),
+                        Aname = aStation.Current.Name,
+                        Bname = bStation.Current.Name,
+                        Avalue = avalue,
+                        Bvalue = bvalue,
+                        increase = avalue - bvalue,
+                        rate = string.Format("{0:P2}", bvalue > 0 ? (avalue - bvalue) / bvalue : 1)
+                    });
+                }
+            } else if(period == (int)EnmPeriod.Day) {
+                foreach(var date in dates) {
+                    var end = date.AddSeconds(86399);
+
+                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    result.Add(new Model500305 {
+                        index = ++index,
+                        period = CommonHelper.DateConverter(date),
+                        Aname = aStation.Current.Name,
+                        Bname = bStation.Current.Name,
+                        Avalue = avalue,
+                        Bvalue = bvalue,
+                        increase = avalue - bvalue,
+                        rate = string.Format("{0:P2}", bvalue > 0 ? (avalue - bvalue) / bvalue : 1)
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500306> Get500306(string parent, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500306>();
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.SB, startDate, endDate);
+                var totalEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                foreach(var child in _workContext.RoleStations) {
+                    var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);
+                    var totalCategories = totalEnergies.FindAll(e => e.Id == child.Current.Id);
+                    var deviceValue = deviceCategories.Sum(c => c.Value);
+                    var totalValue = totalCategories.Sum(c => c.Value);
+                    var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                    result.Add(new Model500306 {
+                        index = ++index,
+                        name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                        period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                        device = deviceValue,
+                        total = totalValue,
+                        pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d
+                    });
+                }
+                #endregion
+            } else {
+                #region children
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.SB, startDate, endDate);
+                    var totalEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                    foreach(var child in children) {
+                        var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var totalCategories = totalEnergies.FindAll(e => e.Id == child.Current.Id);
+                        var deviceValue = deviceCategories.Sum(c => c.Value);
+                        var totalValue = totalCategories.Sum(c => c.Value);
+                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+
+                        result.Add(new Model500306 {
+                            index = ++index,
+                            name = string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name),
+                            period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
+                            device = deviceValue,
+                            total = totalValue,
+                            pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d
+                        });
+                    }
+                }
+                #endregion
+            }
+
+            return result;
         }
 
         private List<Model500401> Get500401(string parent, int size, string[] types, DateTime startDate, DateTime endDate) {

@@ -243,6 +243,7 @@
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
+                    flex: 2,
                     layout: {
                         type: 'hbox',
                         align: 'stretch',
@@ -258,11 +259,22 @@
                             flex: 2,
                             contentEl: 'bar-chart'
                         }
-                    ]
+                    ],
+                    listeners: {
+                        resize: function (me, width, height, oldWidth, oldHeight) {
+                            var pieContainer = Ext.get('pie-chart'),
+                                barContainer = Ext.get('bar-chart');
+
+                            pieContainer.setHeight(height - 40);
+                            barContainer.setHeight(height - 40);
+                            if (pieChart) pieChart.resize();
+                            if (barChart) barChart.resize();
+                        }
+                    }
                 }, {
                     xtype: 'gridpanel',
                     glyph: 0xf029,
-                    flex: 1,
+                    flex: 3,
                     margin: '5 0 0 0',
                     collapsible: true,
                     collapseFirst: false,

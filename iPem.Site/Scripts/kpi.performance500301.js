@@ -73,7 +73,10 @@ var now = new Date(),
         ],
         yAxis: [
             {
-                type: 'value'
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} kW·h'
+                }
             }
         ],
         series: [
@@ -260,6 +263,7 @@ var now = new Date(),
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
+                flex: 1,
                 layout: {
                     type: 'hbox',
                     align: 'stretch',
@@ -275,7 +279,18 @@ var now = new Date(),
                         flex: 2,
                         contentEl: 'bar-chart'
                     }
-                ]
+                ],
+                listeners: {
+                    resize: function (me, width, height, oldWidth, oldHeight) {
+                        var pieContainer = Ext.get('pie-chart'),
+                            barContainer = Ext.get('bar-chart');
+
+                        pieContainer.setHeight(height - 40);
+                        barContainer.setHeight(height - 40);
+                        if (pieChart) pieChart.resize();
+                        if (barChart) barChart.resize();
+                    }
+                }
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,

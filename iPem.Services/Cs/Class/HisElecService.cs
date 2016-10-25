@@ -40,6 +40,22 @@ namespace iPem.Services.Cs {
             return _hisRepository.GetEntities(id, type, start, end);
         }
 
+        public IPagedList<HisElec> GetEnergies(string id, EnmOrganization type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisElec>(this.GetEnergiesAsList(id, type, formula, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisElec> GetEnergiesAsList(string id, EnmOrganization type, EnmFormula formula, DateTime start, DateTime end) {
+            return _hisRepository.GetEntities(id, type, formula, start, end);
+        }
+
+        public IPagedList<HisElec> GetEnergies(EnmOrganization type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisElec>(this.GetEnergiesAsList(type, formula, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisElec> GetEnergiesAsList(EnmOrganization type, EnmFormula formula, DateTime start, DateTime end) {
+            return _hisRepository.GetEntities(type, formula, start, end);
+        }
+
         public IPagedList<HisElec> GetEnergies(EnmOrganization type, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<HisElec>(this.GetEnergiesAsList(type, start, end), pageIndex, pageSize);
         }

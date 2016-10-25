@@ -280,7 +280,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       operateIds.push(m.data.id);
                   });
 
-                  result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                  result.setTextWithIcon('正在处理...', 'x-icon-loading');
                   form.submit({
                       submitEmptyText: false,
                       clientValidation: true,
@@ -330,7 +330,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     basic.load({
         url: '/Account/GetRole',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
-        waitMsg: '正在处理，请稍后...',
+        waitMsg: '正在处理...',
         waitTitle: '系统提示',
         success: function (form, action) {
             form.clearInvalid();
@@ -396,7 +396,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
             Ext.Ajax.request({
                 url: '/Account/DeleteRole',
                 params: { id: record.raw.id },
-                mask: new Ext.LoadMask(grid, { msg: '正在处理，请稍后...' }),
+                mask: new Ext.LoadMask(grid, { msg: '正在处理...' }),
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success)
@@ -488,7 +488,7 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                 basic.load({
                     url: '/Account/GetRole',
                     params: { id: '', action: $$iPems.Action.Add },
-                    waitMsg: '正在处理，请稍后...',
+                    waitMsg: '正在处理...',
                     waitTitle: '系统提示',
                     success: function (form, action) {
                         form.clearInvalid();

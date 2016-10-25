@@ -387,6 +387,7 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
+                flex: 2,
                 tools: [
                     //{
                     //    type: 'print',
@@ -411,7 +412,18 @@
                         flex: 2,
                         contentEl: 'bar-chart'
                     }
-                ]
+                ],
+                listeners: {
+                    resize: function (me, width, height, oldWidth, oldHeight) {
+                        var pieContainer = Ext.get('pie-chart'),
+                            barContainer = Ext.get('bar-chart');
+
+                        pieContainer.setHeight(height - 40);
+                        barContainer.setHeight(height - 40);
+                        if (pieChart) pieChart.resize();
+                        if (barChart) barChart.resize();
+                    }
+                }
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
@@ -419,7 +431,7 @@
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
-                flex: 2,
+                flex: 3,
                 store: currentStore,
                 tools:[{
                     type: 'print',
@@ -451,7 +463,7 @@
                             url: '/Home/GetAppointmentDetail',
                             Method: 'POST',
                             params: { id: fieldValue },
-                            mask: new Ext.LoadMask(view.ownerCt, { msg: '正在处理，请稍后...' }),
+                            mask: new Ext.LoadMask(view.ownerCt, { msg: '正在处理...' }),
                             success: function (response, options) {
                                 var data = Ext.decode(response.responseText, true);
                                 if (data.success) {

@@ -69,7 +69,7 @@
         Ext.Ajax.request({
             url: '/Report/RequestChart400301',
             params: { device: device, point: point, starttime: starttime, endtime: endtime },
-            mask: new Ext.LoadMask(target, { msg: '正在处理，请稍后...' }),
+            mask: new Ext.LoadMask(target, { msg: '正在处理...' }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -115,7 +115,14 @@
                 items: [{
                     xtype: 'container',
                     contentEl: 'line-chart'
-                }]
+                }],
+                listeners: {
+                    resize: function (me, width, height, oldWidth, oldHeight) {
+                        var lineContainer = Ext.get('line-chart');
+                        lineContainer.setHeight(height - 40);
+                        if (lineChart) lineChart.resize();
+                    }
+                }
             }],
             dockedItems: [{
                 xtype: 'panel',

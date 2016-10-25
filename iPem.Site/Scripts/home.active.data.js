@@ -286,7 +286,7 @@
 
                   result.setTextWithIcon('', '');
                   if (baseForm.isValid()) {
-                      result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                      result.setTextWithIcon('正在处理...', 'x-icon-loading');
                       baseForm.submit({
                           submitEmptyText: false,
                           clientValidation: true,
@@ -369,7 +369,7 @@
 
                   result.setTextWithIcon('', '');
                   if (baseForm.isValid()) {
-                      result.setTextWithIcon('正在处理，请稍后...', 'x-icon-loading');
+                      result.setTextWithIcon('正在处理...', 'x-icon-loading');
                       baseForm.submit({
                           submitEmptyText: false,
                           clientValidation: true,
@@ -498,7 +498,7 @@
                                     Ext.Ajax.request({
                                         url: '/Component/FilterRoomPath',
                                         params: { text: text },
-                                        mask: new Ext.LoadMask({ target: tree, msg: '正在处理，请稍后...' }),
+                                        mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
                                         success: function (response, options) {
                                             var data = Ext.decode(response.responseText, true);
                                             if (data.success) {
@@ -551,7 +551,13 @@
                                     flex: 3,
                                     contentEl: 'line-chart'
                                 }
-                            ]
+                            ],
+                            listeners: {
+                                resize: function (me, width, height, oldWidth, oldHeight) {
+                                    if (gaugeChart) gaugeChart.resize();
+                                    if (lineChart) lineChart.resize();
+                                }
+                            }
                         },
                         {
                             id: 'points-grid',
@@ -681,7 +687,7 @@
                                             Ext.Ajax.request({
                                                 url: '/Home/AddRssPoint',
                                                 params: { device: record.get('devid'), point: record.get('pointid') },
-                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理，请稍后...' }),
+                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
                                                 success: function (response, options) {
                                                     var data = Ext.decode(response.responseText, true);
                                                     if (data.success) {
@@ -701,7 +707,7 @@
                                             Ext.Ajax.request({
                                                 url: '/Home/RemoveRssPoint',
                                                 params: { device: record.get('devid'), point: record.get('pointid') },
-                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理，请稍后...' }),
+                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
                                                 success: function (response, options) {
                                                     var data = Ext.decode(response.responseText, true);
                                                     if (data.success) {

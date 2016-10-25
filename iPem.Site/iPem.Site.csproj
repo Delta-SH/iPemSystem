@@ -227,8 +227,14 @@
     <Compile Include="Models\Model400401.cs" />
     <Compile Include="Models\Model400402.cs" />
     <Compile Include="Models\Model400403.cs" />
+    <Compile Include="Models\Model500101.cs" />
+    <Compile Include="Models\Model500102.cs" />
     <Compile Include="Models\Model500103.cs" />
     <Compile Include="Models\Model500301.cs" />
+    <Compile Include="Models\Model500303.cs" />
+    <Compile Include="Models\Model500304.cs" />
+    <Compile Include="Models\Model500305.cs" />
+    <Compile Include="Models\Model500306.cs" />
     <Compile Include="Models\Model500401.cs" />
     <Compile Include="Models\Model500402.cs" />
     <Compile Include="Models\Model500403.cs" />
@@ -959,6 +965,10 @@
     <Content Include="Scripts\home.active.alarm.js" />
     <Content Include="Scripts\account.notice.js" />
     <Content Include="Scripts\kpi.performance500301.js" />
+    <Content Include="Scripts\kpi.performance500303.js" />
+    <Content Include="Scripts\kpi.performance500304.js" />
+    <Content Include="Scripts\kpi.performance500305.js" />
+    <Content Include="Scripts\kpi.performance500306.js" />
     <Content Include="Scripts\report.custom400403.js" />
     <Content Include="Content\ux\fonts\topbar.eot" />
     <Content Include="Content\ux\fonts\topbar.ttf" />
@@ -1093,6 +1103,11 @@
     <Content Include="Views\KPI\base500102.cshtml" />
     <Content Include="Views\KPI\base500101.cshtml" />
     <Content Include="Views\KPI\performance500301.cshtml" />
+    <Content Include="Views\KPI\performance500302.cshtml" />
+    <Content Include="Views\KPI\performance500303.cshtml" />
+    <Content Include="Views\KPI\performance500304.cshtml" />
+    <Content Include="Views\KPI\performance500305.cshtml" />
+    <Content Include="Views\KPI\performance500306.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

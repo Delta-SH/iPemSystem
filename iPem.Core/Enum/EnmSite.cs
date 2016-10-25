@@ -145,4 +145,14 @@
         SubDevType,
         Point
     }
+
+    /// <summary>
+    /// Represents the period enumeration
+    /// </summary>
+    public enum EnmPeriod {
+        Year,
+        Month,
+        Week,
+        Day
+    }
 }

@@ -8,6 +8,10 @@ namespace iPem.Data.Repository.Cs {
 
         List<HisElec> GetEntities(string id, EnmOrganization type, DateTime start, DateTime end);
 
+        List<HisElec> GetEntities(string id, EnmOrganization type, EnmFormula formula, DateTime start, DateTime end);
+
+        List<HisElec> GetEntities(EnmOrganization type, EnmFormula formula, DateTime start, DateTime end);
+
         List<HisElec> GetEntities(EnmOrganization type, DateTime start, DateTime end);
 
         List<HisElec> GetEntities(DateTime start, DateTime end);

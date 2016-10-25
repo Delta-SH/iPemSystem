@@ -1532,7 +1532,15 @@ namespace iPem.Site.Controllers {
                     whlHuLue = 0,
                     jslGuiDing = 0,
                     jslHuLue = 0,
-                    jslQueRen = 0
+                    jslQueRen = 0,
+                    hxzlxtkydXinHao = null,
+                    hxzlxtkydLeiXing = null,
+                    hxjlxtkydXinHao = null,
+                    hxjlxtkydPangLuXinHao = null,
+                    hxjlxtkydLeiXing = null,
+                    hxwkxtkydXinHao = null,
+                    hxjkkydXinHao = null,
+                    hxjkkydLeiXing = null
                 }
             };
 
