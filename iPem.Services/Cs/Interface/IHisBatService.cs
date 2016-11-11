@@ -16,5 +16,11 @@ namespace iPem.Services.Cs {
         IPagedList<HisBat> GetHisBats(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
         List<HisBat> GetHisBatsAsList(DateTime start, DateTime end);
+
+        List<HisBat> GetProcedures(string device, DateTime start, DateTime end);
+
+        List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end);
+
+        List<HisBat> GetProcedures(DateTime start, DateTime end);
     }
 }

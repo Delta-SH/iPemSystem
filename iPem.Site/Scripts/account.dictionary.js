@@ -1767,6 +1767,286 @@
                                 }]
                             }
                         ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '关键监控测点接入率(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtgjjkcdjrlLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源"、"蓄电池组"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '开关电源带载合格率(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtkgdydzhglLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }, {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtkgdydzhglztXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '工作状态',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源工作状态"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtkgdydzhglfzXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '负载电流',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源负载电流"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '蓄电池后备时长合格率(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtxdchbschglLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"蓄电池组"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }, {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtxdchbschglztXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '工作状态',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"蓄电池组工作状态"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtxdchbschglfzXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '负载电流',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"蓄电池组负载电流"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '温控容量合格率(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtwkrlhglXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"高温告警"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '直流系统可用度(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtzlxtkydXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源一次下电"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtzlxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"开关电源"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'fieldset',
+                        title: '监控故障处理及时率(其他站点)',
+                        margin: '10 35 20 20',
+                        defaultType: 'textfield',
+                        fieldDefaults: {
+                            anchor: '100%',
+                            labelWidth: 80,
+                            labelAlign: 'left'
+                        },
+                        layout: 'anchor',
+                        items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 15 15',
+                                items: [{
+                                    name: 'qtjkgzcljslXinHao',
+                                    xtype: 'PointMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '告警信号',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"站点通信中断"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }
+                        ]
                     }
                 ],
                 buttonAlign: 'left',

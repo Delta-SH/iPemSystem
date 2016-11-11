@@ -153,6 +153,96 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[TT_BatTime]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TT_BatTime]') AND type in (N'U'))
+DROP TABLE [dbo].[TT_BatTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[TT_BatTime](
+	[DeviceId] [varchar](100) NOT NULL,
+	[Period] [datetime] NOT NULL,
+	[Value] [float] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_TT_BatTime] PRIMARY KEY CLUSTERED 
+(
+	[DeviceId] ASC,
+	[Period] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[TT_Elec]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TT_Elec]') AND type in (N'U'))
+DROP TABLE [dbo].[TT_Elec]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[TT_Elec](
+	[Id] [varchar](100) NOT NULL,
+	[Type] [int] NOT NULL,
+	[FormulaType] [int] NOT NULL,
+	[Period] [datetime] NOT NULL,
+	[Value] [float] NOT NULL,
+ CONSTRAINT [PK_E_Elec] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC,
+	[Type] ASC,
+	[FormulaType] ASC,
+	[Period] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[TT_LoadRate]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TT_LoadRate]') AND type in (N'U'))
+DROP TABLE [dbo].[TT_LoadRate]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[TT_LoadRate](
+	[DeviceId] [varchar](100) NOT NULL,
+	[Period] [datetime] NOT NULL,
+	[Value] [float] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_TT_LoadRate] PRIMARY KEY CLUSTERED 
+(
+	[DeviceId] ASC,
+	[Period] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[V_Alm]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Alm]') AND type in (N'U'))
 DROP TABLE [dbo].[V_Alm]

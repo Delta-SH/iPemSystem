@@ -411,7 +411,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
 
 var currentGridPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf033,
-    title: '系统角色信息',
+    title: '角色信息',
     region: 'center',
     store: currentStore,
     columnLines: true,

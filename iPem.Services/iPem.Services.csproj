@@ -40,12 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Am\Class\AmDeviceService.cs" />
+    <Compile Include="Am\Class\AmStationService.cs" />
+    <Compile Include="Am\Interface\IAmDeviceService.cs" />
+    <Compile Include="Am\Interface\IAmStationService.cs" />
     <Compile Include="Common\CacheKeys.cs" />
     <Compile Include="Cs\Class\ActAlmService.cs" />
     <Compile Include="Cs\Class\FsuKeyService.cs" />
+    <Compile Include="Cs\Class\HisBatTimeService.cs" />
     <Compile Include="Cs\Class\HisElecService.cs" />
+    <Compile Include="Cs\Class\HisLoadRateService.cs" />
     <Compile Include="Cs\Interface\IFsuKeyService.cs" />
+    <Compile Include="Cs\Interface\IHisBatTimeService.cs" />
     <Compile Include="Cs\Interface\IHisElecService.cs" />
+    <Compile Include="Cs\Interface\IHisLoadRateService.cs" />
     <Compile Include="Sc\Class\ExtendAlmService.cs" />
     <Compile Include="Cs\Class\HisAlmService.cs" />
     <Compile Include="Cs\Class\HisBatService.cs" />

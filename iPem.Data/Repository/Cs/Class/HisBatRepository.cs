@@ -99,6 +99,78 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
+        public List<HisBat> GetProcedures(string device, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisBat>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisBat_Repository_GetProceduresByDevice, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisBat();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[3].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisBat>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisBat_Repository_GetProceduresByPoint, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisBat();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<HisBat> GetProcedures(DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisBat>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisBat_Repository_GetProcedures, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisBat();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
         #endregion
 
     }

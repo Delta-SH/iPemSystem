@@ -107,7 +107,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: '信号测值曲线',
+                title: '测值曲线',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -127,7 +127,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '信号筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

@@ -230,6 +230,15 @@
     <Compile Include="Models\Model500101.cs" />
     <Compile Include="Models\Model500102.cs" />
     <Compile Include="Models\Model500103.cs" />
+    <Compile Include="Models\Model500201.cs" />
+    <Compile Include="Models\Model500202.cs" />
+    <Compile Include="Models\Model500203.cs" />
+    <Compile Include="Models\Model500204.cs" />
+    <Compile Include="Models\Model500205.cs" />
+    <Compile Include="Models\Model500206.cs" />
+    <Compile Include="Models\Model500207.cs" />
+    <Compile Include="Models\Model500208.cs" />
+    <Compile Include="Models\Model500209.cs" />
     <Compile Include="Models\Model500301.cs" />
     <Compile Include="Models\Model500303.cs" />
     <Compile Include="Models\Model500304.cs" />
@@ -956,6 +965,15 @@
     <Content Include="Content\themes\fonts\introduction.eot" />
     <Content Include="Content\themes\fonts\introduction.ttf" />
     <Content Include="Content\themes\fonts\introduction.woff" />
+    <Content Include="Scripts\kpi.base500201.js" />
+    <Content Include="Scripts\kpi.base500202.js" />
+    <Content Include="Scripts\kpi.base500203.js" />
+    <Content Include="Scripts\kpi.base500204.js" />
+    <Content Include="Scripts\kpi.base500205.js" />
+    <Content Include="Scripts\kpi.base500206.js" />
+    <Content Include="Scripts\kpi.base500207.js" />
+    <Content Include="Scripts\kpi.base500208.js" />
+    <Content Include="Scripts\kpi.base500209.js" />
     <Content Include="Scripts\kpi.custom500401.js" />
     <Content Include="Scripts\kpi.base500104.js" />
     <Content Include="Scripts\kpi.base500105.js" />
@@ -1108,6 +1126,15 @@
     <Content Include="Views\KPI\performance500304.cshtml" />
     <Content Include="Views\KPI\performance500305.cshtml" />
     <Content Include="Views\KPI\performance500306.cshtml" />
+    <Content Include="Views\KPI\base500201.cshtml" />
+    <Content Include="Views\KPI\base500202.cshtml" />
+    <Content Include="Views\KPI\base500203.cshtml" />
+    <Content Include="Views\KPI\base500204.cshtml" />
+    <Content Include="Views\KPI\base500205.cshtml" />
+    <Content Include="Views\KPI\base500206.cshtml" />
+    <Content Include="Views\KPI\base500207.cshtml" />
+    <Content Include="Views\KPI\base500208.cshtml" />
+    <Content Include="Views\KPI\base500209.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -153,7 +153,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: '能耗对比',
+                title: '对比图表',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -180,7 +180,7 @@
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '站点能耗对比',
+                title: '能耗信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -253,7 +253,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '能耗筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

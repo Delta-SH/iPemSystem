@@ -4,7 +4,7 @@
         pieOption = {
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b} <br/>{a}: {c} ({d}%)"
             },
             legend: {
                 orient: 'vertical',
@@ -15,7 +15,7 @@
             },
             series: [
                 {
-                    name: '站点分类',
+                    name: '数量(占比)',
                     type: 'pie',
                     radius: ['45%', '85%'],
                     center: ['60%', '50%'],
@@ -45,7 +45,6 @@
         barOption = {
             tooltip: {
                 trigger: 'axis',
-                formatter: "{a} <br/>{b}: {c}",
                 axisPointer: {
                     type: 'shadow'
                 }
@@ -71,7 +70,7 @@
             ],
             series: [
                 {
-                    name: '站点分类',
+                    name: '数量',
                     type: 'bar',
                     data: []
                 }
@@ -195,7 +194,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '站点统计条件',
+                title: '筛选条件',
                 bodyCls: 'x-docked-top-with-bottom',
                 collapsible: true,
                 collapsed: false,
@@ -231,7 +230,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: '站点统计图表',
+                title: '分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -270,7 +269,7 @@
                 margin: '5 0 0 0',
                 collapsible: true,
                 collapseFirst: false,
-                title: '站点统计信息',
+                title: '站点信息',
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,

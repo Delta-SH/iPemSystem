@@ -160,32 +160,6 @@ Ext.override(Ext.form.field.Date, {
     format: 'Y-m-d'
 });
 
-/*override line highlight*/
-Ext.override(Ext.chart.series.Line, {
-    highlightItem: function () {
-        var me = this,
-            line = me.line;
-
-        Ext.chart.series.Line.superclass.highlightItem.apply(this, arguments);
-        if (line && !me.highlighted && me.highlightLine !== false) { // added the third condition 
-            if (!('__strokeWidth' in line)) {
-                line.__strokeWidth = parseFloat(line.attr['stroke-width']) || 0;
-            }
-            if (line.__anim) {
-                line.__anim.paused = true;
-            }
-
-            line.__anim = new Ext.fx.Anim({
-                target: line,
-                to: {
-                    'stroke-width': line.__strokeWidth + 3
-                }
-            });
-            me.highlighted = true;
-        }
-    }
-});
-
 /*show failure window*/
 window.$$iPems.ShowFailure = function (response, errorMsg) {
     var bodySize = Ext.getBody().getViewSize(),

@@ -11,5 +11,10 @@ namespace iPem.Data.Repository.Cs {
 
         List<HisBat> GetEntities(DateTime start, DateTime end);
 
+        List<HisBat> GetProcedures(string device, DateTime start, DateTime end);
+
+        List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end);
+
+        List<HisBat> GetProcedures(DateTime start, DateTime end);
     }
 }

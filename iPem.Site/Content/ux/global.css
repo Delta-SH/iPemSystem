@@ -17,17 +17,14 @@
 }
 
 .x-panel-header-default .x-panel-header-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
 .x-btn-default-toolbar-small .x-btn-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
 .x-window-header-default .x-window-header-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
@@ -36,7 +33,6 @@
 }
 
 .x-menu-item-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
@@ -68,9 +64,6 @@
 }
 
 .x-danger-panel .x-panel-header-default {
-    line-height: 18px;
-    opacity: 1;
-
     background-color: #df3e3e;
     background-image: none;
     border: 1px solid #df3e3e;

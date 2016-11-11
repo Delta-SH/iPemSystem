@@ -286,7 +286,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: '告警分类占比',
+                title: '分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -314,7 +314,7 @@
                 id: 'history-alarm-grid',
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '告警分类信息',
+                title: '告警信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -473,7 +473,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '告警筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

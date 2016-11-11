@@ -55,6 +55,18 @@ namespace iPem.Services.Cs {
             return _hisRepository.GetEntities(start, end);
         }
 
+        public List<HisBat> GetProcedures(string device, DateTime start, DateTime end) {
+            return _hisRepository.GetProcedures(device, start, end);
+        }
+
+        public List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end) {
+            return _hisRepository.GetProcedures(device, point, start, end);
+        }
+
+        public List<HisBat> GetProcedures(DateTime start, DateTime end) {
+            return _hisRepository.GetProcedures(start, end);
+        }
+
         #endregion
 
     }

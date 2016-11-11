@@ -235,7 +235,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf046,
-    title: '系统工程信息',
+    title: '工程信息',
     region: 'center',
     store: currentStore,
     columnLines: true,

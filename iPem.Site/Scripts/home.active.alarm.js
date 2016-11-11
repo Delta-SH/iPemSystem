@@ -4,7 +4,7 @@
         pieOption = {
             tooltip: {
                 trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
+                formatter: "{b} <br/>{a}: {c} ({d}%)"
             },
             legend: {
                 orient: 'vertical',
@@ -14,7 +14,7 @@
             },
             series: [
                 {
-                    name: '实时告警',
+                    name: '数量(占比)',
                     type: 'pie',
                     radius: ['45%', '85%'],
                     center: ['60%', '50%'],
@@ -423,7 +423,7 @@
                 id: 'organization',
                 region: 'west',
                 xtype: 'treepanel',
-                title: '系统层级列表',
+                title: '系统层级',
                 glyph: 0xf011,
                 width: 220,
                 split: true,
@@ -540,7 +540,7 @@
                 items: [{
                     xtype: 'panel',
                     glyph: 0xf030,
-                    title: '告警分类占比',
+                    title: '分类占比',
                     collapsible: true,
                     collapseFirst: false,
                     margin: '5 0 0 0',
@@ -584,7 +584,7 @@
                 }, {
                     xtype: 'panel',
                     glyph: 0xf029,
-                    title: '告警详细信息',
+                    title: '告警信息',
                     collapsible: true,
                     collapseFirst: false,
                     layout: 'fit',
@@ -742,7 +742,7 @@
                 dockedItems: [{
                     xtype: 'panel',
                     glyph: 0xf034,
-                    title: '告警筛选条件',
+                    title: '筛选条件',
                     collapsible: true,
                     collapsed: false,
                     dock: 'top',

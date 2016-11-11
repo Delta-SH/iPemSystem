@@ -139,7 +139,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: '能耗趋势曲线',
+                title: '趋势曲线',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -167,7 +167,7 @@
                 id: 'detail-grid',
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '能耗趋势分析',
+                title: '能耗信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -192,7 +192,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '能耗筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

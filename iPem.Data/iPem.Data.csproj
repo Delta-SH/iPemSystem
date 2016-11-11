@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\SqlCommands_Cs.cs" />
+    <Compile Include="Common\SqlCommands_Am.cs" />
     <Compile Include="Common\SqlCommands_Sc.cs" />
     <Compile Include="Common\SqlCommands_Rs.cs" />
     <Compile Include="Common\SqlHelper.cs" />
@@ -47,11 +48,19 @@
     <Compile Include="Installation\DbInstaller.cs" />
     <Compile Include="Installation\IDbInstaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Am\Class\AmDeviceRepository.cs" />
+    <Compile Include="Repository\Am\Class\AmStationRepository.cs" />
+    <Compile Include="Repository\Am\Interface\IAmDeviceRepository.cs" />
+    <Compile Include="Repository\Am\Interface\IAmStationRepository.cs" />
     <Compile Include="Repository\Cs\Class\ActAlmRepository.cs" />
     <Compile Include="Repository\Cs\Class\FsuKeyRepository.cs" />
+    <Compile Include="Repository\Cs\Class\HisBatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisElecRepository.cs" />
+    <Compile Include="Repository\Cs\Class\HisLoadRateRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IFsuKeyRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IHisBatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisElecRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IHisLoadRateRepository.cs" />
     <Compile Include="Repository\Sc\Class\ExtendAlmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisAlmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisBatRepository.cs" />

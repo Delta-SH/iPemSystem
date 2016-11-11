@@ -5,7 +5,7 @@ var now = new Date(),
     pieOption = {
         tooltip: {
             trigger: 'item',
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
+            formatter: "{b} <br/>{a}: {c} ({d}%)"
         },
         legend: {
             orient: 'vertical',
@@ -15,7 +15,7 @@ var now = new Date(),
         },
         series: [
             {
-                name: '能耗分类',
+                name: '能耗(占比)',
                 type: 'pie',
                 radius: ['45%', '85%'],
                 center: ['60%', '50%'],
@@ -259,7 +259,7 @@ var now = new Date(),
             items: [{
                 xtype: 'panel',
                 glyph: 0xf030,
-                title: '能耗分类占比',
+                title: '分类占比',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -294,7 +294,7 @@ var now = new Date(),
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '能耗分类信息',
+                title: '能耗信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -421,7 +421,7 @@ var now = new Date(),
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '能耗筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

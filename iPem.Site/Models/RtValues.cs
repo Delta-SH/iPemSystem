@@ -43,5 +43,27 @@ namespace iPem.Site.Models {
         public string[] hxjkkydXinHao { get; set; }
 
         public string[] hxjkkydLeiXing { get; set; }
+
+        public string[] qtgjjkcdjrlLeiXing { get; set; }
+
+        public string[] qtwkrlhglXinHao { get; set; }
+
+        public string[] qtzlxtkydXinHao { get; set; }
+
+        public string[] qtzlxtkydLeiXing { get; set; }
+
+        public string[] qtjkgzcljslXinHao { get; set; }
+
+        public string[] qtkgdydzhglLeiXing { get; set; }
+
+        public string[] qtkgdydzhglztXinHao { get; set; }
+
+        public string[] qtkgdydzhglfzXinHao { get; set; }
+
+        public string[] qtxdchbschglLeiXing { get; set; }
+
+        public string[] qtxdchbschglztXinHao { get; set; }
+
+        public string[] qtxdchbschglfzXinHao { get; set; }
     }
 }

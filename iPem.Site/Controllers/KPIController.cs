@@ -1,8 +1,10 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Domain.Cs;
+using iPem.Core.Domain.Rs;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
+using iPem.Services.Am;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
@@ -28,8 +30,15 @@ namespace iPem.Site.Controllers {
         private readonly IWebLogger _webLogger;
         private readonly IDictionaryService _dictionaryService;
         private readonly IEnumMethodsService _enumMethodsService;
+        private readonly IStationTypeService _stationTypeService;
+        private readonly IDeviceTypeService _deviceTypeService;
         private readonly IHisAlmService _hisAlmService;
+        private readonly IHisBatService _hisBatService;
+        private readonly IHisBatTimeService _hisBatTimeService;
         private readonly IHisElecService _hisElecService;
+        private readonly IHisLoadRateService _hisLoadRateService;
+        private readonly IAmDeviceService _amDeviceService;
+        private readonly IAmStationService _amStationService;
 
         #endregion
 
@@ -42,16 +51,30 @@ namespace iPem.Site.Controllers {
             IWebLogger webLogger,
             IDictionaryService dictionaryService,
             IEnumMethodsService enumMethodsService,
+            IStationTypeService stationTypeService,
+            IDeviceTypeService deviceTypeService,
             IHisAlmService hisAlmService,
-            IHisElecService hisElecService) {
+            IHisBatService hisBatService,
+            IHisBatTimeService hisBatTimeService,
+            IHisElecService hisElecService,
+            IHisLoadRateService hisLoadRateService,
+            IAmDeviceService amDeviceService,
+            IAmStationService amStationService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
             this._dictionaryService = dictionaryService;
             this._enumMethodsService = enumMethodsService;
+            this._stationTypeService = stationTypeService;
+            this._deviceTypeService = deviceTypeService;
             this._hisAlmService = hisAlmService;
+            this._hisBatService = hisBatService;
+            this._hisBatTimeService = hisBatTimeService;
+            this._hisLoadRateService = hisLoadRateService;
             this._hisElecService = hisElecService;
+            this._amDeviceService = amDeviceService;
+            this._amStationService = amStationService;
         }
 
         #endregion
@@ -313,6 +336,420 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult Request500201(int start, int limit, string parent, string[] types, int size) {
+            var data = new AjaxDataModel<List<Model500201>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500201>()
+            };
+
+            try {
+                var models = this.Get500201(parent, types, size);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500201(string parent, string[] types, int size) {
+            try {
+                var models = this.Get500201(parent, types, size);
+                using(var ms = _excelManager.Export<Model500201>(models, "监控覆盖率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500202(int start, int limit, string parent, string[] types, int size) {
+            var data = new AjaxDataModel<List<Model500202>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500202>()
+            };
+
+            try {
+                var models = this.Get500202(parent, types, size);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500202(string parent, string[] types, int size) {
+            try {
+                var models = this.Get500202(parent, types, size);
+                using(var ms = _excelManager.Export<Model500202>(models, "关键监控测点接入率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500203(int start, int limit, string parent, string[] types, int size) {
+            var data = new AjaxDataModel<List<Model500203>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500203>()
+            };
+
+            try {
+                var models = this.Get500203(parent, types, size);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500203(string parent, string[] types, int size) {
+            try {
+                var models = this.Get500203(parent, types, size);
+                using(var ms = _excelManager.Export<Model500203>(models, "站点标识率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500204(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500204>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500204>()
+            };
+
+            try {
+                var models = this.Get500204(parent, types, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500204(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500204(parent, types, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500204>(models, "开关电源带载合格率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500205(int start, int limit, string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500205>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500205>()
+            };
+
+            try {
+                var models = this.Get500205(parent, types, size, interval, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500205(string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500205(parent, types, size, interval, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500205>(models, "蓄电池后备时长合格率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500206(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500206>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500206>()
+            };
+
+            try {
+                var models = this.Get500206(parent, types, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500206(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500206(parent, types, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500206>(models, "温控容量合格率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500207(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500207>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500207>()
+            };
+
+            try {
+                var models = this.Get500207(parent, types, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500207(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500207(parent, types, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500207>(models, "直流系统可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500208(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500208>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500208>()
+            };
+
+            try {
+                var models = this.Get500208(parent, types, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500208(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500208(parent, types, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500208>(models, "监控故障处理及时率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Request500209(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<Model500209>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model500209>()
+            };
+
+            try {
+                var models = this.Get500209(parent, types, size, startDate, endDate);
+                if(models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if(end > models.Count)
+                        end = models.Count;
+
+                    for(int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Download500209(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.Get500209(parent, types, size, startDate, endDate);
+                using(var ms = _excelManager.Export<Model500209>(models, "蓄电池核对性放电及时率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult Request500301(int start, int limit, string parent, int size, DateTime startDate, DateTime endDate) {
             var data = new AjaxChartModel<List<Model500301>, List<Chart500301>> {
                 success = true,
@@ -365,7 +802,7 @@ namespace iPem.Site.Controllers {
         public ActionResult Download500301(string parent, int size, DateTime startDate, DateTime endDate) {
             try {
                 var models = this.Get500301(parent, size, startDate, endDate);
-                using(var ms = _excelManager.Export<Model500301>(models, "能耗分类统计", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<Model500301>(models, "能耗分类信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -706,7 +1143,7 @@ namespace iPem.Site.Controllers {
         public ActionResult Download500306(string parent, DateTime startDate, DateTime endDate) {
             try {
                 var models = this.Get500306(parent, startDate, endDate);
-                using(var ms = _excelManager.Export<Model500306>(models, "站点PUE值", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<Model500306>(models, "站点PUE信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -1083,6 +1520,801 @@ namespace iPem.Site.Controllers {
                     cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
                     rate = string.Format("{0:P2}", roadCount > 0 && cntTime > 0 ? 1 - almTime / (roadCount * cntTime) : 1)
                 });
+            }
+
+            return result;
+        }
+
+        private List<Model500201> Get500201(string parent, string[] types, int size) {
+            var result = new List<Model500201>();
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            if(types == null) types = new string[] { };
+            //var tnames = new List<string>();
+            //if(types.Length > 0) tnames.AddRange(_stationTypeService.GetAllStationTypesAsList().FindAll(t => types.Contains(t.Id)).Select(t=>t.Name));
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var amStations = _amStationService.GetAmStationsAsList();
+                foreach(var leaf in leaies) {
+                    var keys = new List<string>();
+                    keys.Add(leaf.Current.Name);
+                    foreach(var child in leaf.Children) {
+                        keys.Add(child.Current.Name);
+                    }
+
+                    var curStations = _workContext.RoleStations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+                    
+                    if(types.Length > 0)
+                        curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+                    //if(tnames.Count > 0)
+                    //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
+
+                    result.Add(new Model500201 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        current = curStations.Count,
+                        last = lastStations.Count,
+                        rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var amStations = _amStationService.GetAmStationsAsList();
+                        foreach(var leaf in leaies) {
+                            var keys = new List<string>();
+                            keys.Add(leaf.Current.Name);
+                            foreach(var child in leaf.Children) {
+                                keys.Add(child.Current.Name);
+                            }
+
+                            var curStations = _workContext.RoleStations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+
+                            if(types.Length > 0)
+                                curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+                            //if(tnames.Count > 0)
+                            //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
+
+                            result.Add(new Model500201 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                current = curStations.Count,
+                                last = lastStations.Count,
+                                rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var amStations = _amStationService.GetAmStationsAsList();
+                        var curStations = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var lastStations = amStations.FindAll(s => s.Parent == current.Current.Name);
+
+                        if(types.Length > 0)
+                            curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+                        //if(tnames.Count > 0)
+                        //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
+
+                        result.Add(new Model500201 {
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            current = curStations.Count,
+                            last = lastStations.Count,
+                            rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500202> Get500202(string parent, string[] types, int size) {
+            var result = new List<Model500202>();
+            var rtValues = _workContext.RtValues;
+            if(rtValues == null 
+                || rtValues.qtgjjkcdjrlLeiXing == null 
+                || rtValues.qtgjjkcdjrlLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent)) return result;
+
+            var devTypeIds = rtValues.qtgjjkcdjrlLeiXing;
+            var devTypeNames = _deviceTypeService.GetAllSubDeviceTypesAsList().FindAll(t => devTypeIds.Contains(t.Id)).Select(t => t.Name).ToList();
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0) stations = stations.FindAll(s=>types.Contains(s.Current.Type.Id));
+            var devices = stations.SelectMany(d=>d.Rooms).SelectMany(r=>r.Devices).Where(d => devTypeIds.Contains(d.Current.SubType.Id)).ToList();
+            
+            var amStations = _amStationService.GetAmStationsAsList();            
+            var amDevices = _amDeviceService.GetAmDevicesAsList().FindAll(d => devTypeNames.Contains(d.Type));
+            var amFullDevices = (from amd in amDevices
+                                 join ams in amStations on amd.ParentId equals ams.Id
+                                 select new { Device = amd, Station = ams }).ToList();
+            
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var keys = new List<string>();
+                    keys.Add(leaf.Current.Name);
+                    foreach(var child in leaf.Children) {
+                        keys.Add(child.Current.Name);
+                    }
+
+                    var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
+                    var lastDevices = amFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+
+                    result.Add(new Model500202 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        current = curDevices.Count,
+                        last = lastDevices.Count,
+                        rate = string.Format("{0:P2}", lastDevices.Count > 0 ? (double)curDevices.Count / (double)lastDevices.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var keys = new List<string>();
+                            keys.Add(leaf.Current.Name);
+                            foreach(var child in leaf.Children) {
+                                keys.Add(child.Current.Name);
+                            }
+
+                            var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
+                            var lastDevices = amFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+
+                            result.Add(new Model500202 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                current = curDevices.Count,
+                                last = lastDevices.Count,
+                                rate = string.Format("{0:P2}", lastDevices.Count > 0 ? (double)curDevices.Count / (double)lastDevices.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var curDevices = devices.FindAll(d => d.Current.AreaId == current.Current.Id);
+                        var lastDevices = amFullDevices.FindAll(d => d.Station.Parent == current.Current.Name);
+
+                        result.Add(new Model500202 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            current = curDevices.Count,
+                            last = lastDevices.Count,
+                            rate = string.Format("{0:P2}", lastDevices.Count > 0 ? (double)curDevices.Count / (double)lastDevices.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500203> Get500203(string parent, string[] types, int size) {
+            var result = new List<Model500203>();
+            if(string.IsNullOrWhiteSpace(parent)) return result;
+
+            var amStations = _amStationService.GetAmStationsAsList();
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0) stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+            stations = (from sta in stations
+                        join ams in amStations on new { Name = sta.Current.Name, Type = sta.Current.Type.Name } equals new { Name = ams.Name, Type = ams.Type }
+                        select sta).ToList();
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var keys = new List<string>();
+                    keys.Add(leaf.Current.Name);
+                    foreach(var child in leaf.Children) {
+                        keys.Add(child.Current.Name);
+                    }
+
+                    var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+
+                    result.Add(new Model500203 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        current = curStations.Count,
+                        last = lastStations.Count,
+                        rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var keys = new List<string>();
+                            keys.Add(leaf.Current.Name);
+                            foreach(var child in leaf.Children) {
+                                keys.Add(child.Current.Name);
+                            }
+
+                            var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+
+                            result.Add(new Model500203 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                current = curStations.Count,
+                                last = lastStations.Count,
+                                rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var curStations = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var lastStations = amStations.FindAll(s => s.Parent == current.Current.Name);
+
+                        result.Add(new Model500203 {
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            current = curStations.Count,
+                            last = lastStations.Count,
+                            rate = string.Format("{0:P2}", lastStations.Count > 0 ? (double)curStations.Count / (double)lastStations.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500204> Get500204(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500204>();
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.qtkgdydzhglLeiXing == null
+                || _workContext.RtValues.qtkgdydzhglLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var devTypes = _workContext.RtValues.qtkgdydzhglLeiXing;
+            var devices = stations.SelectMany(s => s.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+
+            var values = _hisLoadRateService.GetMaxLoadRates(startDate, endDate).FindAll(l => l.Value <= 0.65);
+            var devKeys = values.Select(v => v.DeviceId);
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var children = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+
+                    result.Add(new Model500204 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        count = matchs.Count,
+                        total = children.Count,
+                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var children = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+
+                            result.Add(new Model500204 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                count = matchs.Count,
+                                total = children.Count,
+                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var children = devices.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+
+                        result.Add(new Model500204 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            count = matchs.Count,
+                            total = children.Count,
+                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500205> Get500205(string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500205>();
+            if(string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var values = _hisBatTimeService.GetMinBatTimes(startDate, endDate);
+            var alldev = from dev in _workContext.RoleDevices
+                         join val in values on dev.Current.Id equals val.DeviceId
+                         select new { Id = dev.Current.StationId, Value = val.Value };
+
+            var allsta = from dev in alldev
+                         group dev by dev.Id into g
+                         select new { Id = g.Key, Value = g.Min(v => v.Value) };
+
+            var matsta = allsta.Where(s => s.Value >= interval);
+            var allstaKeys = allsta.Select(s=>s.Id);
+            var matstaKeys = matsta.Select(s=>s.Id);
+            stations = stations.FindAll(s => allstaKeys.Contains(s.Current.Id));
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+
+                    result.Add(new Model500205 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        count = matchs.Count,
+                        total = children.Count,
+                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+
+                            result.Add(new Model500205 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                count = matchs.Count,
+                                total = children.Count,
+                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+
+                        result.Add(new Model500205 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            count = matchs.Count,
+                            total = children.Count,
+                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500206> Get500206(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500206>();
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.qtwkrlhglXinHao == null
+                || _workContext.RtValues.qtwkrlhglXinHao.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var points = _workContext.RtValues.qtwkrlhglXinHao;
+            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => points.Contains(a.PointId));
+            var staKeys = from alarm in alarms
+                          group alarm by alarm.StationId into g
+                          select g.Key;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var total = new List<Station>();
+            var gaowen = new List<Station>();
+            foreach(var station in stations) {
+                var devices = station.Rooms.SelectMany(r => r.Devices);
+                foreach(var device in devices) {
+                    if(device.Protocol.Points.Select(p => p.Id).Intersect(points).Any()) {
+                        var current = station.Current; total.Add(current);
+                        if(staKeys.Contains(current.Id)) gaowen.Add(current);
+                        break;
+                    }
+                }
+            }
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var tt = total.FindAll(s => leaf.Keys.Contains(s.AreaId));
+                    var gw = gaowen.FindAll(s => leaf.Keys.Contains(s.AreaId));
+
+                    result.Add(new Model500206 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        current = gw.Count,
+                        last = tt.Count,
+                        rate = string.Format("{0:P2}", tt.Count > 0 ? 1 - (double)gw.Count / (double)tt.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var tt = total.FindAll(s => leaf.Keys.Contains(s.AreaId));
+                            var gw = gaowen.FindAll(s => leaf.Keys.Contains(s.AreaId));
+
+                            result.Add(new Model500206 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                current = gw.Count,
+                                last = tt.Count,
+                                rate = string.Format("{0:P2}", tt.Count > 0 ? 1 - (double)gw.Count / (double)tt.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var tt = total.FindAll(s => s.AreaId == current.Current.Id);
+                        var gw = gaowen.FindAll(s => s.AreaId == current.Current.Id);
+
+                        result.Add(new Model500206 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            current = gw.Count,
+                            last = tt.Count,
+                            rate = string.Format("{0:P2}", tt.Count > 0 ? 1 - (double)gw.Count / (double)tt.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500207> Get500207(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500207>();
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.qtzlxtkydXinHao == null
+                || _workContext.RtValues.qtzlxtkydXinHao.Length == 0
+                || _workContext.RtValues.qtzlxtkydLeiXing == null
+                || _workContext.RtValues.qtzlxtkydLeiXing.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var points = _workContext.RtValues.qtwkrlhglXinHao;
+            var devTypes = _workContext.RtValues.qtzlxtkydLeiXing;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var allAlms = _hisAlmService.GetAllAlmsAsList(startDate, endDate)
+                          .FindAll(a => points.Contains(a.PointId));
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+                    var matchs = children.Select(c=>c.Current.Id);
+                    var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                    var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                    result.Add(new Model500207 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                        count = devices.Count,
+                        cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                        rate = string.Format("{0:P2}", devices.Count > 0 && cntTime > 0 ? 1 - almTime / (devices.Count * cntTime) : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+                            var matchs = children.Select(c => c.Current.Id);
+                            var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                            var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                            result.Add(new Model500207 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                                count = devices.Count,
+                                cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                                rate = string.Format("{0:P2}", devices.Count > 0 && cntTime > 0 ? 1 - almTime / (devices.Count * cntTime) : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
+                        var matchs = children.Select(c => c.Current.Id);
+                        var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                        var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                        result.Add(new Model500207 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                            count = devices.Count,
+                            cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                            rate = string.Format("{0:P2}", devices.Count > 0 && cntTime > 0 ? 1 - almTime / (devices.Count * cntTime) : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500208> Get500208(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500208>();
+            if(_workContext.RtValues == null
+                || _workContext.RtValues.qtjkgzcljslXinHao == null
+                || _workContext.RtValues.qtjkgzcljslXinHao.Length == 0
+                || string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var points = _workContext.RtValues.qtjkgzcljslXinHao;
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var allAlms = _hisAlmService.GetAllAlmsAsList(startDate, endDate)
+                          .FindAll(a => points.Contains(a.PointId));
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var matchs = children.Select(c => c.Current.Id);
+                    var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                    var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                    result.Add(new Model500208 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                        count = children.Count,
+                        cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                        rate = string.Format("{0:P2}", children.Count > 0 && cntTime > 0 ? 1 - almTime / (children.Count * cntTime) : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var matchs = children.Select(c => c.Current.Id);
+                            var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                            var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                            result.Add(new Model500208 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                                count = children.Count,
+                                cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                                rate = string.Format("{0:P2}", children.Count > 0 && cntTime > 0 ? 1 - almTime / (children.Count * cntTime) : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var matchs = children.Select(c => c.Current.Id);
+                        var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                        var cntTime = endDate.Subtract(startDate).TotalSeconds;
+
+                        result.Add(new Model500208 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
+                            count = children.Count,
+                            cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
+                            rate = string.Format("{0:P2}", children.Count > 0 && cntTime > 0 ? 1 - almTime / (children.Count * cntTime) : 1)
+                        });
+                        #endregion
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private List<Model500209> Get500209(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var result = new List<Model500209>();
+            if(string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            var stations = _workContext.RoleStations;
+            if(types != null && types.Length > 0)
+                stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
+
+            var values = _hisBatService.GetProcedures(startDate, endDate).FindAll(b => b.ValueTime.Subtract(b.StartTime).TotalHours > 1);
+            var devKeys = from val in values
+                          group val by val.DeviceId into g
+                          select g.Key;
+
+            var devices = from dev in _workContext.RoleDevices
+                          join key in devKeys on dev.Current.Id equals key
+                          select dev.Current;
+
+            var staKeys = from dev in devices
+                          group dev by dev.StationId into g
+                          select g.Key;
+
+            var index = 0;
+            if(parent == "root") {
+                #region root
+                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                foreach(var leaf in leaies) {
+                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+
+                    result.Add(new Model500209 {
+                        index = ++index,
+                        name = leaf.ToString(),
+                        type = leaf.Current.Type.Value,
+                        current = matchs.Count,
+                        last = children.Count,
+                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                    });
+                }
+                #endregion
+            } else {
+                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                if(current != null) {
+                    if(current.HasChildren) {
+                        #region children
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        foreach(var leaf in leaies) {
+                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+
+                            result.Add(new Model500209 {
+                                index = ++index,
+                                name = leaf.ToString(),
+                                type = leaf.Current.Type.Value,
+                                current = matchs.Count,
+                                last = children.Count,
+                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            });
+                        }
+                        #endregion
+                    } else {
+                        #region self
+                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+
+                        result.Add(new Model500209 {
+                            index = ++index,
+                            name = current.ToString(),
+                            type = current.Current.Type.Value,
+                            current = matchs.Count,
+                            last = children.Count,
+                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        });
+                        #endregion
+                    }
+                }
             }
 
             return result;

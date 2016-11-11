@@ -533,7 +533,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
 
 var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf045,
-    title: '工程预约信息',
+    title: '工程预约',
     region: 'center',
     store: currentStore,
     columnLines: true,

@@ -141,7 +141,7 @@
             items: [{
                 xtype: 'panel',
                 glyph: 0xf031,
-                title: '能耗环比',
+                title: '环比图表',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -168,7 +168,7 @@
             }, {
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '能耗同址环比',
+                title: '能耗信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -235,7 +235,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '能耗筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

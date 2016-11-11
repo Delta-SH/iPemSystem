@@ -81,7 +81,7 @@
             items: [{
                 xtype: 'grid',
                 glyph: 0xf029,
-                title: '信号测值信息',
+                title: '测值信息',
                 collapsible: true,
                 collapseFirst: false,
                 margin: '5 0 0 0',
@@ -157,7 +157,7 @@
             dockedItems: [{
                 xtype: 'panel',
                 glyph: 0xf034,
-                title: '信号筛选条件',
+                title: '筛选条件',
                 collapsible: true,
                 collapsed: false,
                 dock: 'top',

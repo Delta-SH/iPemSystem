@@ -347,6 +347,7 @@ GO
 CREATE TABLE [dbo].[C_SubDeviceType](
 	[Id] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
+	[Desc] [varchar](512) NULL,
 	[DeviceTypeId] [varchar](100) NOT NULL,
  CONSTRAINT [PK_C_SubDeviceType] PRIMARY KEY CLUSTERED 
 (

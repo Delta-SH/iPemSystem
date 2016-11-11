@@ -17,11 +17,11 @@
 
 @font-face {
 	font-family: 'ipems-icon-font';
-	src: url('//at.alicdn.com/t/font_1476239760_62732.eot');
-	src: url('//at.alicdn.com/t/font_1476239760_62732.eot?#iefix') format('embedded-opentype'),
-		 url('//at.alicdn.com/t/font_1476239760_62732.ttf') format('truetype'),
-		 url('//at.alicdn.com/t/font_1476239760_62732.woff') format('woff'),
-		 url('//at.alicdn.com/t/font_1476239760_62732.svg?#ipems-icon-font') format('svg');
+	src: url('/Content/ux/fonts/iconfont.eot');
+	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
+		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
+		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;
@@ -135,17 +135,14 @@
 }
 
 .x-panel-header-default .x-panel-header-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
 .x-btn-default-toolbar-small .x-btn-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
 .x-window-header-default .x-window-header-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
@@ -154,7 +151,6 @@
 }
 
 .x-menu-item-glyph {
-    line-height: 18px;
     opacity: 0.8;
 }
 
@@ -186,9 +182,6 @@
 }
 
 .x-danger-panel .x-panel-header-default {
-    line-height: 18px;
-    opacity: 1;
-
     background-color: #df3e3e;
     background-image: none;
     border: 1px solid #df3e3e;

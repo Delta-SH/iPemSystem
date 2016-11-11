@@ -3,7 +3,7 @@
         lineChart = null,
         gaugeOption = {
             tooltip: {
-                formatter: '{a}: {c} {b}'
+                formatter: '{c} {b}'
             },
             series: [
                 {
@@ -237,7 +237,7 @@
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     var controlWnd = Ext.create('Ext.window.Window', {
-        title: '信号遥控参数',
+        title: '信号遥控',
         height: 250,
         width: 400,
         glyph: 0xf040,
@@ -322,7 +322,7 @@
     });
 
     var adjustWnd = Ext.create('Ext.window.Window', {
-        title: '信号遥调参数',
+        title: '信号遥调',
         height: 250,
         width: 400,
         glyph: 0xf028,
@@ -415,7 +415,7 @@
                     id: 'organization',
                     region: 'west',
                     xtype: 'treepanel',
-                    title: '系统层级列表',
+                    title: '系统层级',
                     glyph: 0xf011,
                     width: 220,
                     split: true,
@@ -533,7 +533,7 @@
                         {
                             xtype: 'panel',
                             glyph: 0xf039,
-                            title: '信号实时图表',
+                            title: '实时图表',
                             collapsible: true,
                             collapseFirst: false,
                             layout: {
@@ -569,7 +569,7 @@
                             flex: 2,
                             header: {
                                 glyph: 0xf029,
-                                title: '信号实时测值',
+                                title: '实时测值',
                                 items: [
                                     {
                                         xtype: 'checkboxgroup',

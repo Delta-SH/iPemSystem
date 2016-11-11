@@ -89,7 +89,7 @@
 
     var currentGridPanel = Ext.create('Ext.grid.Panel', {
         glyph: 0xf025,
-        title: '系统消息列表',
+        title: '系统消息',
         region: 'center',
         store: currentStore,
         columnLines: true,

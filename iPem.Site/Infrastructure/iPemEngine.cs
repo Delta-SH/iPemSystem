@@ -6,9 +6,11 @@ using iPem.Core.Data;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
 using iPem.Data.Installation;
+using iPem.Data.Repository.Am;
 using iPem.Data.Repository.Cs;
 using iPem.Data.Repository.Rs;
 using iPem.Data.Repository.Sc;
+using iPem.Services.Am;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
@@ -137,6 +139,8 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IHisElecRepository>(c => new HisElecRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisStaticRepository>(c => new HisStaticRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisValueRepository>(c => new HisValueRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisLoadRateRepository>(c => new HisLoadRateRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisBatTimeRepository>(c => new HisBatTimeRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();
@@ -146,6 +150,8 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<HisElecService>().As<IHisElecService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisStaticService>().As<IHisStaticService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisValueService>().As<IHisValueService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisLoadRateService>().As<IHisLoadRateService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisBatTimeService>().As<IHisBatTimeService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDbType.Sc)) {
@@ -168,6 +174,8 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IRoleRepository>(c => new RoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IUserRepository>(c => new UserRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IWebEventRepository>(c => new WebEventRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IAmDeviceRepository>(c => new AmDeviceRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IAmStationRepository>(c => new AmStationRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<AppointmentService>().As<IAppointmentService>().InstancePerLifetimeScope();
@@ -186,6 +194,8 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RoleService>().As<IRoleService>().InstancePerLifetimeScope();
                 builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
                 builder.RegisterType<WebLogger>().As<IWebLogger>().InstancePerLifetimeScope();
+                builder.RegisterType<AmDeviceService>().As<IAmDeviceService>().InstancePerLifetimeScope();
+                builder.RegisterType<AmStationService>().As<IAmStationService>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);
