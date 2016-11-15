@@ -3210,7 +3210,7 @@ namespace iPem.Site.Controllers {
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                    var count = childStores.Count(a => (a.ExtSet1 != null && a.ExtSet1.ConfirmedTime.HasValue ? a.ExtSet1.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                    var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                     var total = childStores.Count;
                     result.Add(new Model500403 {
                         index = ++index,
@@ -3230,7 +3230,7 @@ namespace iPem.Site.Controllers {
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
                             var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                            var count = childStores.Count(a => (a.ExtSet1 != null && a.ExtSet1.ConfirmedTime.HasValue ? a.ExtSet1.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                            var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                             var total = childStores.Count;
                             result.Add(new Model500403 {
                                 index = ++index,
@@ -3245,7 +3245,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var childStores = stores.FindAll(a => a.Current.AreaId == current.Current.Id);
-                        var count = childStores.Count(a => (a.ExtSet1 != null && a.ExtSet1.ConfirmedTime.HasValue ? a.ExtSet1.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                        var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                         var total = childStores.Count;
                         result.Add(new Model500403 {
                             index = ++index,

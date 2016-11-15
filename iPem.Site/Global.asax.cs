@@ -107,6 +107,13 @@ namespace iPem.Site {
             }
         }
 
+        protected void Session_Start(object sender, EventArgs e) {
+            HttpContext.Current.Session["Status"] = "200 Ok";
+        }
+
+        protected void Session_End(object sender, EventArgs e) {
+        }
+
         protected void SetWorkingCulture() {
             //ensure database is installed
             var dbManager = EngineContext.Current.Resolve<IDbManager>();

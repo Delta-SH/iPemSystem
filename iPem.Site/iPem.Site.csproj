@@ -194,6 +194,7 @@
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
+    <Compile Include="Models\AuthModel.cs" />
     <Compile Include="Models\Chart500301.cs" />
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\FormulaModel.cs" />
@@ -280,6 +281,7 @@
     <Content Include="Content\framework\bootstrap-3.3.5\css\bootstrap.css" />
     <Content Include="Content\framework\bootstrap-3.3.5\css\bootstrap.min.css" />
     <Content Include="Content\framework\bootstrap-3.3.5\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\themes\css\install.authentication.css" />
     <Content Include="Content\themes\css\install.configuration.css" />
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
     <Content Include="Content\themes\css\home.speech.css" />
@@ -349,6 +351,7 @@
     <Content Include="Content\themes\icons\male.png" />
     <Content Include="Content\ux\all.css" />
     <Content Include="Content\ux\font.css" />
+    <Content Include="Content\ux\fonts\iconfont.svg" />
     <Content Include="Content\ux\fonts\topbar.svg" />
     <Content Include="Content\ux\global.css" />
     <Content Include="Content\ux\icon.css" />
@@ -380,6 +383,7 @@
     <Content Include="Scripts\account.roles.js" />
     <Content Include="Scripts\account.users.js" />
     <Content Include="Scripts\all.js" />
+    <Content Include="Scripts\authentication.js" />
     <Content Include="Scripts\components\all.js" />
     <Content Include="Scripts\ext-4.2.1\locale\ext-lang-cn.min.js" />
     <Content Include="Scripts\ext-4.2.1\theme\css\ext-all-neptune.css" />
@@ -993,6 +997,9 @@
     <Content Include="Content\ux\fonts\topbar.woff" />
     <Content Include="Scripts\kpi.custom500402.js" />
     <Content Include="Scripts\kpi.custom500403.js" />
+    <Content Include="Content\ux\fonts\iconfont.eot" />
+    <Content Include="Content\ux\fonts\iconfont.ttf" />
+    <Content Include="Content\ux\fonts\iconfont.woff" />
     <None Include="Properties\PublishProfiles\iPemDeployConfig.pubxml" />
     <Content Include="Scripts\kpi.performance500302.js" />
     <None Include="Scripts\_references.js" />
@@ -1135,6 +1142,7 @@
     <Content Include="Views\KPI\base500207.cshtml" />
     <Content Include="Views\KPI\base500208.cshtml" />
     <Content Include="Views\KPI\base500209.cshtml" />
+    <Content Include="Views\Installation\Authentication.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

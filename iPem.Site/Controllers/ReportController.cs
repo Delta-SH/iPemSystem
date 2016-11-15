@@ -471,7 +471,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -482,10 +482,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
 
@@ -517,7 +517,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -528,10 +528,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty,
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty,
                             background = Common.GetAlarmLevelColor(stores[i].Current.AlmLevel)
                         });
                     }
@@ -575,7 +575,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -586,10 +586,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
 
@@ -633,7 +633,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -644,10 +644,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -690,7 +690,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -702,10 +702,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
 
@@ -750,7 +750,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -762,10 +762,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1140,7 +1140,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1151,10 +1151,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1183,7 +1183,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1194,10 +1194,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1240,7 +1240,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1251,10 +1251,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1283,7 +1283,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1294,10 +1294,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1340,7 +1340,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1351,10 +1351,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1383,7 +1383,7 @@ namespace iPem.Site.Controllers {
                             levelid = (int)stores[i].Current.AlmLevel,
                             startDate = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endDate = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
-                            area = stores[i].AreaFullName,
+                            area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
@@ -1394,10 +1394,10 @@ namespace iPem.Site.Controllers {
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
                             frequency = stores[i].Current.Frequency,
                             endType = Common.GetEndTypeDisplay(stores[i].Current.EndType),
-                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet1 != null ? stores[i].ExtSet1.Confirmed : EnmConfirm.Unconfirmed),
-                            confirmer = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.Confirmer) ? stores[i].ExtSet1.Confirmer : string.Empty,
-                            confirmedtime = stores[i].ExtSet1 != null && stores[i].ExtSet1.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet1.ConfirmedTime.Value) : string.Empty,
-                            project = stores[i].ExtSet1 != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet1.ProjectId) ? stores[i].ExtSet1.ProjectId : string.Empty
+                            confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
+                            confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
+                            confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
+                            project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty
                         });
                     }
                 }
@@ -1776,16 +1776,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             return stores;
         }
@@ -1839,16 +1839,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => almlevels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             return stores.OrderBy(s => s.Current.AlmLevel).ToList();
         }
@@ -1902,16 +1902,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => almlevels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             return stores.OrderBy(s => s.Device.Type.Id).ToList();
         }
@@ -2551,16 +2551,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
 
             var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
@@ -2655,16 +2655,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
 
             var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
@@ -2757,16 +2757,16 @@ namespace iPem.Site.Controllers {
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlmLevel));
 
             if(confirm == "confirm")
-                stores = stores.FindAll(a => a.ExtSet1 != null && a.ExtSet1.Confirmed == EnmConfirm.Confirmed);
+                stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
 
             if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.ExtSet1 == null || a.ExtSet1.Confirmed == EnmConfirm.Unconfirmed);
+                stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
             if(project == "project")
-                stores = stores.FindAll(a => a.ExtSet1 != null && !string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet != null && !string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
             if(project == "unproject")
-                stores = stores.FindAll(a => a.ExtSet1 == null || string.IsNullOrWhiteSpace(a.ExtSet1.ProjectId));
+                stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
 
             var total1 = stores.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);

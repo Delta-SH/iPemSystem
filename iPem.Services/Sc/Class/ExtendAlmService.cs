@@ -43,6 +43,14 @@ namespace iPem.Services.Sc {
             _extendAlmRepository.Update(entities);
         }
 
+        public IPagedList<ExtAlm> GetHisExtAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<ExtAlm>(this.GetHisExtAlmsAsList(start, end), pageIndex, pageSize);
+        }
+
+        public List<ExtAlm> GetHisExtAlmsAsList(DateTime start, DateTime end) {
+            return _extendAlmRepository.GetHisEntities(start, end);
+        }
+
         #endregion
 
     }

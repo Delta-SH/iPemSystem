@@ -15,5 +15,11 @@ namespace iPem.Data.Repository.Sc {
         /// </summary>
         /// <param name="entities">entities</param>
         void Update(List<ExtAlm> entities);
+
+        /// <summary>
+        /// Gets the history entities
+        /// </summary>
+        /// <returns>entities</returns>
+        List<ExtAlm> GetHisEntities(DateTime start, DateTime end);
     }
 }

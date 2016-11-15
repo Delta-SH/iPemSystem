@@ -50,6 +50,15 @@ namespace iPem.Site.Controllers {
         #region Action
 
         public ActionResult Index() {
+            var cachedKey = string.Format("Installation-{0}", Session.SessionID);
+            if(!_cacheManager.IsSet(cachedKey)) {
+                return View("Authentication", new AuthModel {
+                    key = cachedKey,
+                    name = "安装向导鉴权",
+                    service = "/Installation"
+                });
+            }
+
             if(_dbManager.DatabaseIsInstalled())
                 return RedirectToRoute("HomePage");
 
@@ -58,7 +67,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(string data) {
+        public ActionResult Success(string data) {
             //restart application
             var webHelper = EngineContext.Current.Resolve<IWebHelper>();
             webHelper.RestartAppDomain();
@@ -323,7 +332,7 @@ namespace iPem.Site.Controllers {
                     IsLockedOut = false,
                     LastLockoutDate = DateTime.Now,
                     Comment = model.comment,
-                    EmployeeId = "",
+                    EmployeeId = "00001",
                     Enabled = true
                 });
 
@@ -357,6 +366,15 @@ namespace iPem.Site.Controllers {
         }
 
         public ActionResult DbConfiguration() {
+            var cachedKey = string.Format("DbConfiguration-{0}", Session.SessionID);
+            if(!_cacheManager.IsSet(cachedKey)) {
+                return View("Authentication", new AuthModel {
+                    key = cachedKey,
+                    name = "数据库操作鉴权",
+                    service = "/Installation/DbConfiguration"
+                });
+            }
+
             if(!_dbManager.DatabaseIsInstalled())
                 return RedirectToAction("Index");
 
@@ -509,6 +527,43 @@ namespace iPem.Site.Controllers {
             }
 
             return Json(result);
+        }
+
+        public ActionResult Authentication() {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Authentication(AuthModel model, string password) {
+            try {
+                if(model == null)
+                    ModelState.AddModelError("", "应用Model不能为空。");
+
+                if(ModelState.IsValid && String.IsNullOrWhiteSpace(model.key))
+                    ModelState.AddModelError("", "应用Key不能为空。");
+
+                if(ModelState.IsValid && String.IsNullOrWhiteSpace(model.service))
+                    ModelState.AddModelError("", "无法获取应用地址。");
+
+                if(ModelState.IsValid && !Url.IsLocalUrl(model.service))
+                    ModelState.AddModelError("", "应用地址不是有效的URL。");
+
+                if(String.IsNullOrWhiteSpace(password))
+                    ModelState.AddModelError("", "鉴权密码不能为空。");
+
+                if(ModelState.IsValid && CommonHelper.GetCleanKey() != password) 
+                    ModelState.AddModelError("", "密码验证失败，请与管理员联系。");
+
+                if(ModelState.IsValid) {
+                    _cacheManager.Set<string>(model.key, "", TimeSpan.FromMinutes(5));
+                    return Redirect(model.service);
+                }
+            } catch(Exception exc) {
+                ModelState.AddModelError("", exc.Message);
+            }
+
+            return View(model);
         }
 
         #endregion

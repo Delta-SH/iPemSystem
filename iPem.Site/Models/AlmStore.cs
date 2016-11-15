@@ -7,7 +7,7 @@ namespace iPem.Site.Models {
     public class AlmStore<T> where T : class {
         public T Current { get; set; }
 
-        public ExtAlm ExtSet1 { get; set; }
+        public ExtAlm ExtSet { get; set; }
 
         public Point Point { get; set; }
 
@@ -18,7 +18,5 @@ namespace iPem.Site.Models {
         public Station Station { get; set; }
 
         public Area Area { get; set; }
-
-        public String AreaFullName { get; set; }
     }
 }

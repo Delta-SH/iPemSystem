@@ -12,5 +12,9 @@ namespace iPem.Services.Sc {
 
         void Update(List<ExtAlm> entities);
 
+        IPagedList<ExtAlm> GetHisExtAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<ExtAlm> GetHisExtAlmsAsList(DateTime start, DateTime end);
+
     }
 }

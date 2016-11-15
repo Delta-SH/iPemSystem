@@ -1,0 +1,31 @@
+﻿body {
+  padding-top: 60px;
+}
+
+.panel-danger {
+    border-color: #df3e3e;
+}
+
+.panel-danger > .panel-heading {
+    background-color: #df3e3e;
+    border-color: #df3e3e;
+    color: #fff;
+}
+
+.error-tips {
+    color:#A94442;
+    font-size:12px;
+    height:20px;
+    line-height:20px;
+    padding-left:80px;
+}
+
+.btn {
+    width:90px;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}

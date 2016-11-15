@@ -1,0 +1,60 @@
+﻿@{ Layout = null; }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 用户鉴权</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    <link href="@Url.Content("~/Content/framework/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/css/install.authentication.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">@(Model != null ? Model.name : "鉴权对话框")</h3>
+            </div>
+            <div class="panel-body">
+                @using(Html.BeginForm("Authentication", "Installation", FormMethod.Post, new { name = "validateForm", id = "validateForm" })) {
+                @Html.AntiForgeryToken()
+                    <p>用户的某些操作可能会影响到系统的正常运行，为了确保系统安全、稳定、高效的运行，系统需对特殊的操作进行鉴权认证。</p>
+                    <p>鉴权认证通过的用户也必须按照对应功能页面的说明谨慎操作，涉及到数据库相关操作时，请务必先备份数据库，以免数据丢失。</p>
+                    <p><strong>此操作将影响所有使用该系统的用户，请谨慎选择！</strong></p>
+                    <input id="key" name="key" type="hidden" value="@(Model != null ? Model.key : "")" />
+                    <input id="name" name="name" type="hidden" value="@(Model != null ? Model.name : "")" />
+                    <input id="service" name="service" type="hidden" value="@(Model != null ? Model.service : "")" />
+                    <div class="input-group">
+                        <span class="input-group-addon">鉴权密码</span>
+                        <input id="password" name="password" type="text" class="form-control" placeholder="如尚未获得鉴权密码，请与系统管理员联系。" required />
+                    </div>
+                    <div class="error-tips"></div>
+                    <button type="submit" class="btn btn-danger">鉴权</button>
+                    var validationSummary = Html.ValidationSummary(true);
+                    if(!MvcHtmlString.IsNullOrEmpty(validationSummary)) {
+                        <div id="alert" class="alert alert-danger alert-dismissible" role="alert" style="margin-bottom:0;margin-top:5px;padding:10px 30px 10px 10px;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            @validationSummary
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="@Url.Content("~/Scripts/framework/jquery-1.11.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/bootstrap-3.3.5.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/additional-methods.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/localization/messages_zh.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/authentication.js")" type="text/javascript"></script>
+</body>
+</html>

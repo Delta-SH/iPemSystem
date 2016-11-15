@@ -77,6 +77,31 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
+        public List<ExtAlm> GetHisEntities(DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@Start",SqlDbType.DateTime),
+                                     new SqlParameter("@End",SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
+
+            var entities = new List<ExtAlm>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_ExtendAlm_Repository_GetHisEntities, parms)) {
+                while(rdr.Read()) {
+                    var entity = new ExtAlm();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.Start = SqlTypeConverter.DBNullDateTimeHandler(rdr["Start"]);
+                    entity.End = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["End"]);
+                    entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
+                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
         #endregion
 
     }

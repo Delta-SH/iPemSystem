@@ -145,7 +145,7 @@ CREATE TABLE [dbo].[H_ExtendAlms](
 	[Confirmed] [int] NULL,
 	[Confirmer] [varchar](100) NULL,
 	[ConfirmedTime] [datetime] NULL,
- CONSTRAINT [PK_H_Alm] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_H_ExtendAlms] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC,
 	[FsuId] ASC

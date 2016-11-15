@@ -38,7 +38,7 @@
         @if(result == null) {
             <div class="panel panel-default" style="border:none; box-shadow:none;">
                 <div class="panel-body" style="padding:0; margin:0;">
-                    @using(Html.BeginForm("Index", "Installation", FormMethod.Post, new { name = "insform", id = "insform" })) {
+                    @using(Html.BeginForm("Success", "Installation", FormMethod.Post, new { name = "insform", id = "insform" })) {
                         @Html.AntiForgeryToken()
                         <div id="wizard-panel">
                             <h1>欢迎界面</h1>

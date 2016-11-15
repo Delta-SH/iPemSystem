@@ -732,8 +732,7 @@ namespace iPem.Site.Infrastructure {
                 
                 var alarms = _actAlmService.GetAllAlmsAsList();
                 var extsets = _extendAlmService.GetAllExtAlmsAsList();
-                var points = this.Points.FindAll(p => p.Type == EnmPoint.AI || p.Type == EnmPoint.DI);
-
+                var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
                 _cachedAlmStore = (from alarm in alarms
                                    join point in points on alarm.PointId equals point.Id
                                    join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
@@ -745,13 +744,20 @@ namespace iPem.Site.Infrastructure {
                                    orderby alarm.StartTime descending
                                    select new AlmStore<ActAlm> {
                                        Current = alarm,
-                                       ExtSet1 = def,
+                                       ExtSet = def,
                                        Point = point,
                                        Device = device.Current,
                                        Room = room.Current,
                                        Station = station.Current,
-                                       Area = area.Current,
-                                       AreaFullName = area.ToString()
+                                       Area = new Area {
+                                           Id = area.Current.Id,
+                                           Code = area.Current.Code,
+                                           Name = area.ToString(),
+                                           Type = area.Current.Type,
+                                           ParentId = area.Current.ParentId,
+                                           Comment = area.Current.Comment,
+                                           Enabled = area.Current.Enabled
+                                       }
                                    }).ToList();
 
                 return _cachedAlmStore;
@@ -763,12 +769,11 @@ namespace iPem.Site.Infrastructure {
         #region Methods
 
         public List<AlmStore<ActAlm>> GetActAlmStore(List<ActAlm> alarms) {
-            if(alarms == null || alarms.Count == 0)
+            if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<ActAlm>>();
 
             var extsets = _extendAlmService.GetAllExtAlmsAsList();
-            var points = this.Points.FindAll(p => p.Type == EnmPoint.AI || p.Type == EnmPoint.DI);
-
+            var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id
                     join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
@@ -780,23 +785,29 @@ namespace iPem.Site.Infrastructure {
                     orderby alarm.StartTime descending
                     select new AlmStore<ActAlm> {
                         Current = alarm,
-                        ExtSet1 = def,
+                        ExtSet = def,
                         Point = point,
                         Device = device.Current,
                         Room = room.Current,
                         Station = station.Current,
-                        Area = area.Current,
-                        AreaFullName = area.ToString()
+                        Area = new Area {
+                            Id = area.Current.Id,
+                            Code = area.Current.Code,
+                            Name = area.ToString(),
+                            Type = area.Current.Type,
+                            ParentId = area.Current.ParentId,
+                            Comment = area.Current.Comment,
+                            Enabled = area.Current.Enabled
+                        }
                     }).ToList();
         }
 
         public List<AlmStore<HisAlm>> GetHisAlmStore(List<HisAlm> alarms, DateTime start, DateTime end) {
-            if(alarms == null || alarms.Count == 0)
+            if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<HisAlm>>();
 
-            var extsets = _extendAlmService.GetAllExtAlmsAsList();
-            var points = this.Points.FindAll(p => p.Type == EnmPoint.AI || p.Type == EnmPoint.DI);
-
+            var extsets = _extendAlmService.GetHisExtAlmsAsList(start, end);
+            var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id
                     join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
@@ -808,13 +819,20 @@ namespace iPem.Site.Infrastructure {
                     orderby alarm.StartTime descending
                     select new AlmStore<HisAlm> {
                         Current = alarm,
-                        ExtSet1 = def,
+                        ExtSet = def,
                         Point = point,
                         Device = device.Current,
                         Room = room.Current,
                         Station = station.Current,
-                        Area = area.Current,
-                        AreaFullName = area.ToString()
+                        Area = new Area {
+                            Id = area.Current.Id,
+                            Code = area.Current.Code,
+                            Name = area.ToString(),
+                            Type = area.Current.Type,
+                            ParentId = area.Current.ParentId,
+                            Comment = area.Current.Comment,
+                            Enabled = area.Current.Enabled
+                        }
                     }).ToList();
         }
 
