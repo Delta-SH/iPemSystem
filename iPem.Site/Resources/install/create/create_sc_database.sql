@@ -309,6 +309,37 @@ GO
 SET ANSI_PADDING OFF
 GO
 
+--创建表[dbo].[M_Formulas]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Formulas]') AND type in (N'U'))
+DROP TABLE [dbo].[M_Formulas]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[M_Formulas](
+	[Id] [varchar](100) NOT NULL,
+	[Type] [int] NOT NULL,
+	[FormulaType] [int] NOT NULL,
+	[Formula] [varchar](max) NULL,
+	[Comment] [varchar](1024) NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_M_Formulas] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC,
+	[Type] ASC,
+	[FormulaType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[M_NodesInAppointment]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_NodesInAppointment]') AND type in (N'U'))

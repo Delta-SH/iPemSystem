@@ -98,7 +98,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 '</thead>',
                 '<tbody>',
                     '<tpl for="appointments">',
-                        '<tr><td>{#}</td><td>{startTime}</td><td>{endTime}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
+                        '<tr><td>{#}</td><td>{startDate}</td><td>{endDate}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
                     '</tpl>',
                 '</tbody>',
             '</tpl>',

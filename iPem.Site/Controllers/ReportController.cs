@@ -1437,7 +1437,11 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null && current.HasChildren) {
-                    var ordered = current.Children.OrderBy(a => a.Current.Type.Id);
+                    var children = current.Children;
+                    if(types != null && types.Length > 0)
+                        children = children.FindAll(a => types.Contains(a.Current.Type.Id));
+
+                    var ordered = children.OrderBy(a => a.Current.Type.Id);
                     foreach(var child in ordered) {
                         result.Add(new Model400101 {
                             index = ++index,

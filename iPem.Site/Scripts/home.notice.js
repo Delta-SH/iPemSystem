@@ -65,6 +65,7 @@
         closeAction: 'hide',
         bodyPadding: 10,
         layout: 'form',
+        autoScroll:true,
         items: [{
             itemId: 'notice-detail',
             xtype: 'label',

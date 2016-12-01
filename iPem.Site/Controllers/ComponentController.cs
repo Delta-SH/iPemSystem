@@ -855,7 +855,7 @@ namespace iPem.Site.Controllers {
                             }
                         }
 
-                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, parent.Current.Id));
+                        paths.Add(Common.JoinKeys((int)EnmOrganization.Station, current.Current.Id));
                         data.data.Add(paths.ToArray());
                     }
 
