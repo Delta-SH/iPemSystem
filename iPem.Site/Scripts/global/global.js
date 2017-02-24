@@ -533,21 +533,23 @@ window.$$iPems.validateFormula = function (formula, allowEmpty) {
 
     var variables = $$iPems.SplitKeys(formula.replace(/\(|\)/g, '').replace(/[\+\-\*\/]/g, $$iPems.Separator));
     Ext.Array.each(variables, function (item, index) {
-        if (!/^@.+>>.+$/.test(item)) {
-            result = Ext.String.format($$iPems.formulaResults.E04, item);
-            return false;
-        }
+        if (!/^\d+(\.\d+)?$/.test(item)) {
+            if (!/^@.+>>.+$/.test(item)) {
+                result = Ext.String.format($$iPems.formulaResults.E04, item);
+                return false;
+            }
 
-        var starts = item.match(/@/g);
-        if (starts.length > 1) {
-            result = Ext.String.format($$iPems.formulaResults.E05, item);
-            return false;
-        }
+            var starts = item.match(/@/g);
+            if (starts.length > 1) {
+                result = Ext.String.format($$iPems.formulaResults.E05, item);
+                return false;
+            }
 
-        var separators = item.match(/>>/g);
-        if (separators.length > 1) {
-            result = Ext.String.format($$iPems.formulaResults.E06, item);
-            return false;
+            var separators = item.match(/>>/g);
+            if (separators.length > 1) {
+                result = Ext.String.format($$iPems.formulaResults.E06, item);
+                return false;
+            }
         }
     });
 
