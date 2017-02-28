@@ -237,38 +237,38 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetPointStatusDisplay(EnmPointStatus status) {
+        public static string GetPointStatusDisplay(EnmState status) {
             switch(status) {
-                case EnmPointStatus.Normal:
+                case EnmState.Normal:
                     return "正常数据";
-                case EnmPointStatus.Level1:
+                case EnmState.Level1:
                     return "一级告警";
-                case EnmPointStatus.Level2:
+                case EnmState.Level2:
                     return "二级告警";
-                case EnmPointStatus.Level3:
+                case EnmState.Level3:
                     return "三级告警";
-                case EnmPointStatus.Level4:
+                case EnmState.Level4:
                     return "四级告警";
-                case EnmPointStatus.Opevent:
+                case EnmState.Opevent:
                     return "操作事件";
-                case EnmPointStatus.Invalid:
+                case EnmState.Invalid:
                     return "无效数据";
                 default:
                     return "未定义";
             }
         }
 
-        public static string GetAlarmLevelDisplay(EnmAlarmLevel level) {
+        public static string GetAlarmLevelDisplay(EnmLevel level) {
             switch(level) {
-                case EnmAlarmLevel.NoAlarm:
+                case EnmLevel.Level0:
                     return "无告警";
-                case EnmAlarmLevel.Level1:
+                case EnmLevel.Level1:
                     return "一级告警";
-                case EnmAlarmLevel.Level2:
+                case EnmLevel.Level2:
                     return "二级告警";
-                case EnmAlarmLevel.Level3:
+                case EnmLevel.Level3:
                     return "三级告警";
-                case EnmAlarmLevel.Level4:
+                case EnmLevel.Level4:
                     return "四级告警";
                 default:
                     return "未定义";
@@ -355,36 +355,36 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static Color GetAlarmLevelColor(EnmAlarmLevel level) {
+        public static Color GetAlarmLevelColor(EnmLevel level) {
             switch(level) {
-                case EnmAlarmLevel.Level1:
+                case EnmLevel.Level1:
                     return Color.Red;
-                case EnmAlarmLevel.Level2:
+                case EnmLevel.Level2:
                     return Color.Orange;
-                case EnmAlarmLevel.Level3:
+                case EnmLevel.Level3:
                     return Color.Yellow;
-                case EnmAlarmLevel.Level4:
+                case EnmLevel.Level4:
                     return Color.SkyBlue;
                 default:
                     return Color.White;
             }
         }
 
-        public static Color GetPointStatusColor(EnmPointStatus status) {
+        public static Color GetPointStatusColor(EnmState status) {
             switch(status) {
-                case EnmPointStatus.Normal:
+                case EnmState.Normal:
                     return Color.LimeGreen;
-                case EnmPointStatus.Level1:
+                case EnmState.Level1:
                     return Color.Red;
-                case EnmPointStatus.Level2:
+                case EnmState.Level2:
                     return Color.Orange;
-                case EnmPointStatus.Level3:
+                case EnmState.Level3:
                     return Color.Yellow;
-                case EnmPointStatus.Level4:
+                case EnmState.Level4:
                     return Color.SkyBlue;
-                case EnmPointStatus.Opevent:
+                case EnmState.Opevent:
                     return Color.Blue;
-                case EnmPointStatus.Invalid:
+                case EnmState.Invalid:
                     return Color.LightGray;
                 default:
                     return Color.White;

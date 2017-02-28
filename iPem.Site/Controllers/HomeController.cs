@@ -39,6 +39,7 @@ namespace iPem.Site.Controllers {
         private readonly IProjectService _projectsService;
         private readonly IActAlmService _actAlmService;
         private readonly IPointService _pointService;
+        private readonly IFsuService _fsuService;
         private readonly IFsuKeyService _fsuKeyService;
         private readonly IHisElecService _hisElecService;
 
@@ -60,6 +61,7 @@ namespace iPem.Site.Controllers {
             IProjectService projectsService,
             IActAlmService actAlmService,
             IPointService pointService,
+            IFsuService fsuService,
             IFsuKeyService fsuKeyService,
             IHisElecService hisElecService) {
             this._excelManager = excelManager;
@@ -75,6 +77,7 @@ namespace iPem.Site.Controllers {
             this._projectsService = projectsService;
             this._actAlmService = actAlmService;
             this._pointService = pointService;
+            this._fsuService = fsuService;
             this._fsuKeyService = fsuKeyService;
             this._hisElecService = hisElecService;
         }
@@ -599,7 +602,7 @@ namespace iPem.Site.Controllers {
                         foreach(var point in points) {
                             var tick = DateTime.Now.Ticks;
                             var value = (float)Math.Round(CommonHelper.GenerateRandomInteger(-500, 500) * 0.782, 2);
-                            var status = EnmPointStatus.Invalid;
+                            var status = EnmState.Invalid;
                             var changed = DateTime.Now;
 
                             data.data.Add(new ActPointModel {
@@ -816,10 +819,10 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = new HomeAlmModel();
-                model.total1 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
-                model.total2 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
-                model.total3 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
-                model.total4 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+                model.total1 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level1);
+                model.total2 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level2);
+                model.total3 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level3);
+                model.total4 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level4);
                 model.total = model.total1 + model.total2 + model.total3 + model.total4;
                 model.alarms = new List<HomeAreaAlmModel>();
 
@@ -829,10 +832,10 @@ namespace iPem.Site.Controllers {
 
                     var alarmsInArea = new HomeAreaAlmModel();
                     alarmsInArea.name = root.Current.Name;
-                    alarmsInArea.level1 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level1);
-                    alarmsInArea.level2 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level2);
-                    alarmsInArea.level3 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level3);
-                    alarmsInArea.level4 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmAlarmLevel.Level4);
+                    alarmsInArea.level1 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level1);
+                    alarmsInArea.level2 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level2);
+                    alarmsInArea.level3 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level3);
+                    alarmsInArea.level4 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level4);
                     alarmsInArea.total = alarmsInArea.level1 + alarmsInArea.level2 + alarmsInArea.level3 + alarmsInArea.level4;
                     model.alarms.Add(alarmsInArea);
                 }
@@ -925,7 +928,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var offKeys = _fsuKeyService.GetAllKeysAsList();
+                var offKeys = _fsuService.GetAllExtendsAsList();
                 var allFsus = from fsu in _workContext.RoleFsus
                               join ok in offKeys on fsu.Current.Id equals ok.Id
                               join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
@@ -973,7 +976,7 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadHomeOff() {
             try {
-                var offKeys = _fsuKeyService.GetAllKeysAsList().FindAll(k => !k.Status);
+                var offKeys = _fsuService.GetAllExtendsAsList().FindAll(k => !k.Status);
                 var allFsus = from fsu in _workContext.RoleFsus
                               join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
                               join ok in offKeys on fsu.Current.Id equals ok.Id into lt
@@ -1019,7 +1022,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var offKeys = _fsuKeyService.GetAllKeysAsList();
+                var offKeys = _fsuService.GetAllExtendsAsList();
                 var allFsus = from fsu in _workContext.RoleFsus
                               join ok in offKeys on fsu.Current.Id equals ok.Id
                               select new { Fsu = fsu, Ok = ok };
@@ -1078,7 +1081,7 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadHomeUnconnected() {
             try {
-                var offKeys = _fsuKeyService.GetAllKeysAsList();
+                var offKeys = _fsuService.GetAllExtendsAsList();
                 var allFsus = from fsu in _workContext.RoleFsus
                               join ok in offKeys on fsu.Current.Id equals ok.Id
                               select new { Fsu = fsu, Ok = ok };
@@ -1211,10 +1214,10 @@ namespace iPem.Site.Controllers {
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var curstores = stores.FindAll(s => root.Keys.Contains(s.Current.AreaId));
-                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                     }
                     #endregion
                 } else {
@@ -1230,18 +1233,18 @@ namespace iPem.Site.Controllers {
                                 if(current.HasChildren) {
                                     foreach(var child in current.ChildRoot) {
                                         var curstores = stores.FindAll(s => child.Keys.Contains(s.Current.AreaId));
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                     }
                                 } else if(current.Stations.Count > 0) {
                                     foreach(var station in current.Stations) {
                                         var curstores = stores.FindAll(s => s.Current.StationId == station.Current.Id);
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                                        models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                     }
                                 }
                             }
@@ -1252,10 +1255,10 @@ namespace iPem.Site.Controllers {
                             if(current != null && current.Rooms.Count > 0) {
                                 foreach(var room in current.Rooms) {
                                     var curstores = stores.FindAll(m => m.Current.RoomId == room.Current.Id);
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                 }
                             }
                             #endregion
@@ -1265,10 +1268,10 @@ namespace iPem.Site.Controllers {
                             if(current != null && current.Devices.Count > 0) {
                                 foreach(var device in current.Devices) {
                                     var curstores = stores.FindAll(s => s.Current.DeviceId == device.Current.Id);
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                                    models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                 }
                             }
                             #endregion
@@ -1277,10 +1280,10 @@ namespace iPem.Site.Controllers {
                             var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
                             if(current != null) {
                                 var curstores = stores.FindAll(s => s.Current.DeviceId == current.Current.Id);
-                                models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level1) });
-                                models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level2) });
-                                models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level3, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level3) });
-                                models.Add(new ChartModel { index = (int)EnmAlarmLevel.Level4, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmAlarmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmAlarmLevel.Level4) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                             }
                             #endregion
                         }

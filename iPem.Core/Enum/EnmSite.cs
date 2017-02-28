@@ -40,46 +40,41 @@
     /// Represents the point enumeration
     /// </summary>
     /// <remarks>
-    /// 0-遥信信号（DI）
-    /// 1-遥测信号（AI）
-    /// 2-遥控信号（DO）
-    /// 3-遥调信号（AO）
+    /// 4-遥信信号（DI）
+    /// 3-遥测信号（AI）
+    /// 1-遥控信号（DO）
+    /// 2-遥调信号（AO）
     /// </remarks>
     public enum EnmPoint {
-        DI,
-        AI,
-        DO,
-        AO
+        DI=4,
+        AI=3,
+        DO=1,
+        AO=2
     }
 
     /// <summary>
-    /// Represents the point status enumeration
+    /// Represents the point state enumeration
     /// </summary>
-    public enum EnmPointStatus {
+    public enum EnmState {
         Normal,
-        Level1,
-        Level2,
-        Level3,
-        Level4,
-        Opevent,
         Invalid
     }
 
     /// <summary>
     /// Represents the alarm level enumeration
     /// </summary>
-    public enum EnmAlarmLevel {
-        NoAlarm,
-        Level1,
-        Level2,
-        Level3,
-        Level4
+    public enum EnmLevel {
+        Level0 = 0,
+        Level1 = 1,
+        Level2 = 2,
+        Level3 = 3,
+        Level4 = 4
     }
 
     /// <summary>
     /// Represents the alarm flag enumeration
     /// </summary>
-    public enum EnmAlarmFlag {
+    public enum EnmFlag {
         Begin,
         End
     }

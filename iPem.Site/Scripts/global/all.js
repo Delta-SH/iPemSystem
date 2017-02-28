@@ -291,46 +291,31 @@ window.$$iPems.Organization = {
 
 /** 
 Point Type
-0-遥信信号（DI）
-1-遥测信号（AI）
-2-遥控信号（DO）
-3-遥调信号（AO）
+4-遥信信号（DI）
+3-遥测信号（AI）
+1-遥控信号（DO）
+2-遥调信号（AO）
 */
 window.$$iPems.Point = {
-    DI: 0,
-    AI: 1,
-    DO: 2,
-    AO: 3
+    DI: 4,
+    AI: 3,
+    DO: 1,
+    AO: 2
 };
 
 /*Point Status*/
-window.$$iPems.PointStatus = {
+window.$$iPems.State = {
     Normal: 0,
-    Level1: 1,
-    Level2: 2,
-    Level3: 3,
-    Level4: 4,
-    Opevent: 5,
-    Invalid: 6
+    Invalid: 1
 };
 
-/*Status Css Class*/
-window.$$iPems.GetPointStatusCls = function (value) {
+/*Status Css*/
+window.$$iPems.GetStateCls = function (value) {
     switch (value) {
-        case $$iPems.PointStatus.Normal:
-            return 'point-status-normal';
-        case $$iPems.PointStatus.Level1:
-            return 'point-status-level1';
-        case $$iPems.PointStatus.Level2:
-            return 'point-status-level2';
-        case $$iPems.PointStatus.Level3:
-            return 'point-status-level3';
-        case $$iPems.PointStatus.Level4:
-            return 'point-status-level4';
-        case $$iPems.PointStatus.Opevent:
-            return 'point-status-opevent';
-        case $$iPems.PointStatus.Invalid:
-            return 'point-status-invalid';
+        case $$iPems.State.Normal:
+            return 'point-state-normal';
+        case $$iPems.State.Invalid:
+            return 'point-state-invalid';
         default:
             return '';
     }
@@ -338,6 +323,7 @@ window.$$iPems.GetPointStatusCls = function (value) {
 
 /*Alarm Level*/
 window.$$iPems.AlmLevel = {
+    Level0: 0,
     Level1: 1,
     Level2: 2,
     Level3: 3,

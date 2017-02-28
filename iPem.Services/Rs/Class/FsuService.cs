@@ -44,6 +44,14 @@ namespace iPem.Services.Rs {
             return _fsuRepository.GetEntities();
         }
 
+        public IPagedList<FsuExt> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<FsuExt>(this.GetAllExtendsAsList(), pageIndex, pageSize);
+        }
+
+        public List<FsuExt> GetAllExtendsAsList() {
+            return _fsuRepository.GetExtends();
+        }
+
         #endregion
 
     }

@@ -46,7 +46,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
-                    entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
                 }
@@ -74,7 +74,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
-                    entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
                 }
@@ -100,7 +100,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
-                    entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
                 }
@@ -128,7 +128,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
-                    entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
                 }
@@ -152,7 +152,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
-                    entity.State = SqlTypeConverter.DBNullEnmPointStatusHandler(rdr["State"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
                 }

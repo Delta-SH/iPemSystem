@@ -32,7 +32,7 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// Gets or sets the state
         /// </summary>
-        public EnmPointStatus State { get; set; }
+        public EnmState State { get; set; }
 
         /// <summary>
         /// Gets or sets the datetime

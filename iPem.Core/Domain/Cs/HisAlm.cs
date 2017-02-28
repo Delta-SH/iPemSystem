@@ -42,7 +42,7 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// Gets or sets the alarm level
         /// </summary>
-        public EnmAlarmLevel AlmLevel { get; set; }
+        public EnmLevel AlmLevel { get; set; }
 
         /// <summary>
         /// Gets or sets the frequency

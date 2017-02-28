@@ -268,22 +268,22 @@ namespace iPem.Data.Common {
         /// DBNull Level Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmAlarmLevel DBNullEnmLevelHandler(object val) {
-            if(val == DBNull.Value) { return EnmAlarmLevel.Level1; }
+        public static EnmLevel DBNullEnmLevelHandler(object val) {
+            if(val == DBNull.Value) { return EnmLevel.Level1; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmAlarmLevel), v) ? (EnmAlarmLevel)v : EnmAlarmLevel.Level1;
+            return Enum.IsDefined(typeof(EnmLevel), v) ? (EnmLevel)v : EnmLevel.Level1;
         }
 
         /// <summary>
         /// DBNull Flag Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmAlarmFlag DBNullEnmFlagHandler(object val) {
-            if(val == DBNull.Value) { return EnmAlarmFlag.Begin; }
+        public static EnmFlag DBNullEnmFlagHandler(object val) {
+            if(val == DBNull.Value) { return EnmFlag.Begin; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmAlarmFlag), v) ? (EnmAlarmFlag)v : EnmAlarmFlag.Begin;
+            return Enum.IsDefined(typeof(EnmFlag), v) ? (EnmFlag)v : EnmFlag.Begin;
         }
 
         /// <summary>
@@ -309,14 +309,14 @@ namespace iPem.Data.Common {
         }
 
         /// <summary>
-        /// DBNull PointStatus Handler
+        /// DBNull State Handler
         /// </summary>
         /// <param name="val">val</param>
-        public static EnmPointStatus DBNullEnmPointStatusHandler(object val) {
-            if(val == DBNull.Value) { return EnmPointStatus.Invalid; }
+        public static EnmState DBNullEnmStateHandler(object val) {
+            if(val == DBNull.Value) { return EnmState.Invalid; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmPointStatus), v) ? (EnmPointStatus)v : EnmPointStatus.Invalid;
+            return Enum.IsDefined(typeof(EnmState), v) ? (EnmState)v : EnmState.Invalid;
         }
 
         /// <summary>

@@ -11,5 +11,7 @@ namespace iPem.Data.Repository.Rs {
 
         List<Fsu> GetEntities();
 
+        List<FsuExt> GetExtends();
+
     }
 }

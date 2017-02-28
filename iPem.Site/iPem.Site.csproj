@@ -179,6 +179,7 @@
     <Compile Include="Extensions\AjaxAuthorizeAttribute.cs" />
     <Compile Include="Infrastructure\Common.cs" />
     <Compile Include="Infrastructure\EngineContext.cs" />
+    <Compile Include="Infrastructure\FSUService.cs" />
     <Compile Include="Infrastructure\Icons.cs" />
     <Compile Include="Infrastructure\IEngine.cs" />
     <Compile Include="Infrastructure\iPemEngine.cs" />

@@ -72,7 +72,7 @@ namespace iPem.Core.Domain.Rs {
         /// <summary>
         /// Gets or sets the alarm level
         /// </summary>
-        public EnmAlarmLevel AlarmLevel { get; set; }
+        public EnmLevel AlarmLevel { get; set; }
 
         /// <summary>
         /// Gets or sets the trigger type

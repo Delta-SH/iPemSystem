@@ -612,7 +612,7 @@
                                 trackOver: true,
                                 emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                                 getRowClass: function (record, rowIndex, rowParams, store) {
-                                    return $$iPems.GetPointStatusCls(record.get("statusid"));
+                                    return $$iPems.GetStateCls(record.get("statusid"));
                                 }
                             },
                             features: [{

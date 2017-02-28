@@ -192,8 +192,8 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                foreach(EnmAlarmLevel level in Enum.GetValues(typeof(EnmAlarmLevel))) {
-                    if(level == EnmAlarmLevel.NoAlarm) continue;
+                foreach(EnmLevel level in Enum.GetValues(typeof(EnmLevel))) {
+                    if(level == EnmLevel.Level0) continue;
                     data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplay(level) });
                 }
 

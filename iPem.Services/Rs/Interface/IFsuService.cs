@@ -10,5 +10,9 @@ namespace iPem.Services.Rs {
         IPagedList<Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue);
 
         List<Fsu> GetAllFsusAsList();
+
+        IPagedList<FsuExt> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<FsuExt> GetAllExtendsAsList();
     }
 }

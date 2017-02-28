@@ -159,6 +159,8 @@ namespace iPem.Data.Common {
         INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id] 
         WHERE D.[Enabled] = 1;";
+        public const string Sql_FsuExt_Repository_GetExtends = @"
+        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment] FROM [dbo].[D_Fsu];";
 
         //point repository
         public const string Sql_Point_Repository_GetEntitiesByDevice = @"

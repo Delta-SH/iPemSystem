@@ -321,26 +321,11 @@ div.help-tip div.help-tip-content p {
 	height: 262px;
 }
 
-/**point status css*/
-.point-status-normal .x-status-cell {
+/**point state css*/
+.point-state-normal .x-status-cell {
     background-color : #32cd32;
 }
-.point-status-level1 .x-status-cell { 
-    background-color : #ff0000; 
-}
-.point-status-level2 .x-status-cell { 
-    background-color : #ffa500; 
-}
-.point-status-level3 .x-status-cell { 
-    background-color : #ffff00; 
-}
-.point-status-level4 .x-status-cell { 
-    background-color : #87ceeb; 
-}
-.point-status-opevent .x-status-cell { 
-    background-color : #0000ff; 
-}
-.point-status-invalid .x-status-cell { 
+.point-state-invalid .x-status-cell { 
     background-color : #d3d3d3; 
 }
 
