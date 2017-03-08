@@ -27,7 +27,7 @@ namespace iPem.Site.Models {
         public string type { get; set; }
 
         [ExcelDisplayName("信号测值")]
-        public float value { get; set; }
+        public string value { get; set; }
 
         [ExcelDisplayName("单位/描述")]
         public string unit { get; set; }

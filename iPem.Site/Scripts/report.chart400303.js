@@ -50,7 +50,7 @@
                 splitLine: { show: false }
             }],
             yAxis: [{
-                name: '电池电压(V)',
+                name: '电池电压(V)/电流(A)',
                 nameLocation: 'middle',
                 nameGap: 30,
                 type: 'value',

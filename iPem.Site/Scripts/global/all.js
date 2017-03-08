@@ -51,6 +51,8 @@ Ext.setGlyphFontFamily('ipems-icon-font');
 Ext.Ajax.timeout = 300000;
 Ext.override(Ext.data.Connection, { timeout: Ext.Ajax.timeout });
 Ext.override(Ext.data.JsonP, { timeout: Ext.Ajax.timeout });
+Ext.override(Ext.data.proxy.Server, { timeout: Ext.Ajax.timeout });
+Ext.override(Ext.data.proxy.Ajax, { timeout: Ext.Ajax.timeout });
 Ext.override(Ext.form.Basic, {
     timeout: Ext.Ajax.timeout / 1000,
     afterAction: function (action, success) {

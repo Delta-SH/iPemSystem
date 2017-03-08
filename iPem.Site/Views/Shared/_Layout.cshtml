@@ -68,7 +68,7 @@
                     </li>
                     <li>
                         <a href="/Home/UCenter" target="_self" title="用户中心" class="ucenter @(ViewBag.BarIndex != null && ViewBag.BarIndex == 4 ? "ucurrent" : "")">
-                            <span>@(CurrentEmployee != null && !String.IsNullOrWhiteSpace(CurrentEmployee.Name) ? CurrentEmployee.Name : User.Identity.Name)</span>
+                            <span class="words">Hi, @(CurrentEmployee != null && !String.IsNullOrWhiteSpace(CurrentEmployee.Name) ? CurrentEmployee.Name : User.Identity.Name)</span>
                             <img src="/Account/GetCurrentPhoto" alt="用户头像" title="用户头像" />
                         </a>
                     </li>

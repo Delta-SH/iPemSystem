@@ -165,6 +165,26 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
+        public FsuExt GetExtend(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+
+            FsuExt entity = null;
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_FsuExt_Repository_GetExtend, parms)) {
+                if(rdr.Read()) {
+                    entity = new FsuExt();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
+                    entity.Port = SqlTypeConverter.DBNullInt32Handler(rdr["Port"]);
+                    entity.ChangeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ChangeTime"]);
+                    entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
+                    entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
+                    entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
+                }
+            }
+            return entity;
+        }
+
         public List<FsuExt> GetExtends() {
             var entities = new List<FsuExt>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_FsuExt_Repository_GetExtends, null)) {

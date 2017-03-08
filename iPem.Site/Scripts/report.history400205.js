@@ -103,7 +103,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 '</thead>',
                 '<tbody>',
                     '<tpl for="projects">',
-                        '<tr><td>{#}</td><td>{Name}</td><td>{StartTime}</td><td>{EndTime}</td><td>{Responsible}</td><td>{ContactPhone}</td><td>{Company}</td><td>{Enabled:this.isTimeout}</td><tr/>',
+                        '<tr><td>{#}</td><td>{name}</td><td>{start}</td><td>{end}</td><td>{responsible}</td><td>{contact}</td><td>{company}</td><td>{enabled:this.isTimeout}</td><tr/>',
                     '</tpl>',
                 '</tbody>',
             '</tpl>',

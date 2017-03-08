@@ -731,7 +731,7 @@ namespace iPem.Site.Infrastructure {
                     return _cachedAlmStore;
                 
                 var alarms = _actAlmService.GetAllAlmsAsList();
-                var extsets = _extendAlmService.GetAllExtAlmsAsList();
+                var exts = _extendAlmService.GetAllExtAlmsAsList();
                 var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
                 _cachedAlmStore = (from alarm in alarms
                                    join point in points on alarm.PointId equals point.Id
@@ -739,7 +739,7 @@ namespace iPem.Site.Infrastructure {
                                    join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                                    join station in this.RoleStations on alarm.StationId equals station.Current.Id
                                    join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                                   join ext in extsets on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                                   join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
                                    from def in lt.DefaultIfEmpty()
                                    orderby alarm.StartTime descending
                                    select new AlmStore<ActAlm> {
@@ -772,7 +772,7 @@ namespace iPem.Site.Infrastructure {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<ActAlm>>();
 
-            var extsets = _extendAlmService.GetAllExtAlmsAsList();
+            var exts = _extendAlmService.GetAllExtAlmsAsList();
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id
@@ -780,7 +780,7 @@ namespace iPem.Site.Infrastructure {
                     join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                     join station in this.RoleStations on alarm.StationId equals station.Current.Id
                     join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in extsets on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                    join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
                     from def in lt.DefaultIfEmpty()
                     orderby alarm.StartTime descending
                     select new AlmStore<ActAlm> {
@@ -806,7 +806,7 @@ namespace iPem.Site.Infrastructure {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<HisAlm>>();
 
-            var extsets = _extendAlmService.GetHisExtAlmsAsList(start, end);
+            var exts = _extendAlmService.GetHisExtAlmsAsList(start, end);
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id
@@ -814,7 +814,7 @@ namespace iPem.Site.Infrastructure {
                     join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                     join station in this.RoleStations on alarm.StationId equals station.Current.Id
                     join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in extsets on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                    join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
                     from def in lt.DefaultIfEmpty()
                     orderby alarm.StartTime descending
                     select new AlmStore<HisAlm> {

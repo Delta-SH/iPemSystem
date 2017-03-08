@@ -177,6 +177,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Extensions\AjaxAuthorizeAttribute.cs" />
+    <Compile Include="Infrastructure\BIPackMgr.cs" />
     <Compile Include="Infrastructure\Common.cs" />
     <Compile Include="Infrastructure\EngineContext.cs" />
     <Compile Include="Infrastructure\FSUService.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Extensions\JsonNetResult.cs" />
     <Compile Include="Infrastructure\Store.cs" />
     <Compile Include="Models\ActAlmModel.cs" />
+    <Compile Include="Models\ActValue.cs" />
     <Compile Include="Models\AlmStore.cs" />
     <Compile Include="Models\ActPointModel.cs" />
     <Compile Include="Models\AjaxDataModel.cs" />
@@ -196,6 +198,17 @@
     <Compile Include="Models\AppointmentDetailModel.cs" />
     <Compile Include="Models\AppointmentModel.cs" />
     <Compile Include="Models\AuthModel.cs" />
+    <Compile Include="Models\BInterface\GetDataAckPackage.cs" />
+    <Compile Include="Models\BInterface\GetDataPackage.cs" />
+    <Compile Include="Models\BInterface\GetThresholdAckPackage.cs" />
+    <Compile Include="Models\BInterface\GetThresholdPackage.cs" />
+    <Compile Include="Models\BInterface\SetPointActPackage.cs" />
+    <Compile Include="Models\BInterface\SetPointPackage.cs" />
+    <Compile Include="Models\BInterface\SetThresholdAckPackage.cs" />
+    <Compile Include="Models\BInterface\SetThresholdPackage.cs" />
+    <Compile Include="Models\BInterface\TSemaphore.cs" />
+    <Compile Include="Models\BInterface\TSignalMeasurementId.cs" />
+    <Compile Include="Models\BInterface\TThreshold.cs" />
     <Compile Include="Models\Chart500301.cs" />
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\FormulaModel.cs" />

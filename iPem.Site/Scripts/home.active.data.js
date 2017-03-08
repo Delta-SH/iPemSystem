@@ -150,7 +150,7 @@
             { name: 'device', type: 'string' },
             { name: 'point', type: 'string' },
             { name: 'type', type: 'string' },
-            { name: 'value', type: 'float' },
+            { name: 'value', type: 'string' },
             { name: 'unit', type: 'string' },
             { name: 'status', type: 'string' },
             { name: 'time', type: 'string' },

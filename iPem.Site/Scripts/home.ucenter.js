@@ -59,10 +59,13 @@
                 width: 100,
                 items: [{
                     xtype: 'image',
-                    height: 80,
-                    width: 80,
-                    margin: '25 0 0 20',
-                    src: '/Account/GetCurrentPhoto'
+                    height: 60,
+                    width: 60,
+                    margin: '20 0 0 28',
+                    src: '/Account/GetCurrentPhoto',
+                    style: {
+                        'border-radius': '60px',
+                    }
                 }]
             },{
                 xtype: 'container',

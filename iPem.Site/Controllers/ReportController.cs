@@ -391,7 +391,7 @@ namespace iPem.Site.Controllers {
                             point = stores[i].Point.Name,
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
-                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value, stores[i].Point.UnitState),
+                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
                             status = Common.GetPointStatusDisplay(stores[i].Current.State),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.Time),
                             statusid = (int)stores[i].Current.State
@@ -424,7 +424,7 @@ namespace iPem.Site.Controllers {
                             point = stores[i].Point.Name,
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
-                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value, stores[i].Point.UnitState),
+                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
                             status = Common.GetPointStatusDisplay(stores[i].Current.State),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.Time),
                             statusid = (int)stores[i].Current.State,

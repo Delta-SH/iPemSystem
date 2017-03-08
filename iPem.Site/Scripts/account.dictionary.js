@@ -455,7 +455,7 @@
                             itemId: 'dataPath',
                             name: 'dataPath',
                             xtype: 'textfield',
-                            fieldLabel: '实时数据 访问路径',
+                            fieldLabel: '实时数据 虚拟路径',
                             emptyText: '示例： /Services/GetData',
                             allowBlank: false
                         },
@@ -463,8 +463,8 @@
                             itemId: 'orderPath',
                             name: 'orderPath',
                             xtype: 'textfield',
-                            fieldLabel: '远程控制 访问路径',
-                            emptyText: '示例： /Services/SetOrder',
+                            fieldLabel: '远程控制 虚拟路径',
+                            emptyText: '示例： /Services/SetPoint',
                             allowBlank: false
                         }
                     ]

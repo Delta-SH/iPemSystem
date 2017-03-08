@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Enum;
+using iPem.Site.Models.BInterface;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -241,16 +242,6 @@ namespace iPem.Site.Infrastructure {
             switch(status) {
                 case EnmState.Normal:
                     return "正常数据";
-                case EnmState.Level1:
-                    return "一级告警";
-                case EnmState.Level2:
-                    return "二级告警";
-                case EnmState.Level3:
-                    return "三级告警";
-                case EnmState.Level4:
-                    return "四级告警";
-                case EnmState.Opevent:
-                    return "操作事件";
                 case EnmState.Invalid:
                     return "无效数据";
                 default:
@@ -286,7 +277,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetValueDisplay(EnmPoint type, double value, string unit) {
+        public static string GetValueDisplay(EnmPoint type, string value, string unit) {
             switch(type) {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
@@ -296,8 +287,7 @@ namespace iPem.Site.Infrastructure {
                         var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
                         if(vs.Length != 2) continue;
 
-                        var flag = ((int)value).ToString();
-                        if(vs[0].Trim() == flag) {
+                        if(vs[0].Trim() == value) {
                             result = vs[1].Trim();
                             break;
                         }
@@ -311,7 +301,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetUnitDisplay(EnmPoint type, double value, string unit) {
+        public static string GetUnitDisplay(EnmPoint type, string value, string unit) {
             switch(type) {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
@@ -321,8 +311,7 @@ namespace iPem.Site.Infrastructure {
                         var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
                         if(vs.Length != 2) continue;
 
-                        var flag = ((int)value).ToString();
-                        if(vs[0].Trim() == flag) {
+                        if(vs[0].Trim() == value) {
                             result = vs[1].Trim();
                             break;
                         }
@@ -374,16 +363,6 @@ namespace iPem.Site.Infrastructure {
             switch(status) {
                 case EnmState.Normal:
                     return Color.LimeGreen;
-                case EnmState.Level1:
-                    return Color.Red;
-                case EnmState.Level2:
-                    return Color.Orange;
-                case EnmState.Level3:
-                    return Color.Yellow;
-                case EnmState.Level4:
-                    return Color.SkyBlue;
-                case EnmState.Opevent:
-                    return Color.Blue;
                 case EnmState.Invalid:
                     return Color.LightGray;
                 default:
@@ -433,6 +412,25 @@ namespace iPem.Site.Infrastructure {
                 }
             }
             return false;
+        }
+
+        public static string JoinSignalMeasurementId(TSignalMeasurementId id) {
+            return string.Format("{0}{1}", id.Id, id.SignalNumber.PadLeft(3, '0'));
+        }
+
+        public static TSignalMeasurementId SplitSignalMeasurementId(string id, string number) {
+            if(string.IsNullOrWhiteSpace(number)) {
+                return new TSignalMeasurementId {
+                    Id = id,
+                    SignalNumber = "999"
+                };
+            } else {
+                number = number.PadLeft(3, '0');
+                return new TSignalMeasurementId {
+                    Id = id.EndsWith(number) ? id.Substring(0, id.Length - 3) : id,
+                    SignalNumber = number
+                };
+            }
         }
     }
 }

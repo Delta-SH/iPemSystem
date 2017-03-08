@@ -27,7 +27,7 @@ a, a:hover, a:active, a:visited, a:link {
 .header .top-nav {
     float: right;
     height: 50px;
-    margin-right: 10px;
+    margin-right: 3px;
 }
 
 .top-nav ul {
@@ -66,31 +66,35 @@ a, a:hover, a:active, a:visited, a:link {
 }
 
 .icon-nav > li > a .label {
-    font-size: 10px;
-    font-weight: 400;
-    line-height: 14px;
-    padding: 0 3px;
+    top: 10px;
+    right: 10px;
     position: absolute;
-    right: 15px;
-    top: 8px;
-
-    color:#fff;
-    border-radius: 0;
-    text-shadow: none;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    color: #fff;
+    font-size: 0.5em;
+    font-weight: 600;
+    border-radius: 16px;
     background: #e63a3a none repeat scroll 0 0;
 }
 
 .icon-nav > li img {
-    border: 0 none;
-    vertical-align: middle;
-    margin-left: 10px;
     width: 28px;
     height: 28px;
+    border: 0 none;
+    border-radius: 28px;
+    vertical-align: middle;
+    margin-left: 3px;
 }
 
 .icon-nav > li .ucenter {
-    font-size: 1.05em;
     padding: 13px 10px 10px 10px;
+}
+
+.icon-nav > li .ucenter > .words {
+    font-size: 15px;
 }
 
 .icon-nav li > .ucurrent {

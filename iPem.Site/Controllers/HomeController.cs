@@ -12,6 +12,7 @@ using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
+using iPem.Site.Models.BInterface;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -155,7 +156,7 @@ namespace iPem.Site.Controllers {
                     start = new DateTime(Convert.ToInt64(Session["SpeechScanTime"]));
 
                 var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.levels.Contains((int)a.AlmLevel));
-                var stores = _workContext.GetActAlmStore(alarms);
+                var stores = _workContext.GetActAlmStore(alarms).FindAll(a=>a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
                 if(config.basic.Contains(3))
                     stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
 
@@ -599,31 +600,87 @@ namespace iPem.Site.Controllers {
                         for(var i = start; i < end; i++)
                             points.Add(stores[i]);
 
-                        foreach(var point in points) {
-                            var tick = DateTime.Now.Ticks;
-                            var value = (float)Math.Round(CommonHelper.GenerateRandomInteger(-500, 500) * 0.782, 2);
-                            var status = EnmState.Invalid;
-                            var changed = DateTime.Now;
+                        #region request active values
+
+                        var values = new List<ActValue>();
+                        try {
+                            var pointsInFsu = points.GroupBy(g => g.Device.FsuId);
+                            foreach(var fsu in pointsInFsu) {
+                                var current = _workContext.RoleFsus.Find(f => f.Current.Id == fsu.Key);
+                                if(current == null) continue;
+                                var ext = _fsuService.GetFsuExt(current.Current.Id);
+                                if(ext == null || !ext.Status) continue;
+                                var package = new GetDataPackage() { FsuId = current.Current.Id, DeviceList = new List<GetDataDevice>() };
+
+                                var devicesInFsu = fsu.GroupBy(d => new { d.Device.Id });
+                                foreach(var device in devicesInFsu) {
+                                    var devPack = new GetDataDevice() {
+                                        Id = device.Key.Id,
+                                        Ids = new List<string>()
+                                    };
+
+                                    foreach(var point in device.Select(d => d.Current)) {
+                                        var signalIds = Common.SplitSignalMeasurementId(point.Id, point.Number);
+                                        if(!devPack.Ids.Contains(signalIds.Id)) devPack.Ids.Add(signalIds.Id);
+                                    }
+
+                                    package.DeviceList.Add(devPack);
+                                }
+
+                                var actData = BIPackMgr.GetData(ext, package);
+                                if(actData != null && actData.Result == EnmResult.Success) {
+                                    foreach(var v in actData.DeviceList) {
+                                        foreach(var a in v.Values) {
+                                            values.Add(new ActValue() {
+                                                DeviceId = v.Id,
+                                                PointId = Common.JoinSignalMeasurementId(new TSignalMeasurementId { Id = a.Id, SignalNumber = a.SignalNumber }),
+                                                MeasuredVal = a.MeasuredVal != "NULL" ? (double?)double.Parse(a.MeasuredVal) : null,
+                                                SetupVal = null,
+                                                Status = a.Status,
+                                                Time = a.Time
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        } catch(Exception exc) {
+                            _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                        }
+
+                        #endregion
+
+                        var pValues = from point in points
+                                      join val in values on new { Device = point.Device.Id, Point = point.Current.Id } equals new { Device = val.DeviceId, Point = val.PointId } into lt
+                                      from def in lt.DefaultIfEmpty()
+                                      select new {
+                                          Point = point,
+                                          Value = def
+                                      };
+
+                        foreach(var pv in pValues) {
+                            var value = pv.Value != null && pv.Value.MeasuredVal.HasValue ? pv.Value.MeasuredVal.Value.ToString() : "NULL";
+                            var status = pv.Value != null ? pv.Value.Status : EnmState.Invalid;
+                            var time = pv.Value != null ? pv.Value.Time : DateTime.Now;
 
                             data.data.Add(new ActPointModel {
                                 index = ++start,
-                                area = point.AreaFullName,
-                                station = point.Device.StationName,
-                                room = point.Device.RoomName,
-                                device = point.Device.Name,
-                                point = point.Current.Name,
-                                type = Common.GetPointTypeDisplay(point.Current.Type),
+                                area = pv.Point.AreaFullName,
+                                station = pv.Point.Device.StationName,
+                                room = pv.Point.Device.RoomName,
+                                device = pv.Point.Device.Name,
+                                point = pv.Point.Current.Name,
+                                type = Common.GetPointTypeDisplay(pv.Point.Current.Type),
                                 value = value,
-                                unit = Common.GetUnitDisplay(point.Current.Type, value, point.Current.UnitState),
+                                unit = Common.GetUnitDisplay(pv.Point.Current.Type, value, pv.Point.Current.UnitState),
                                 status = Common.GetPointStatusDisplay(status),
-                                time = CommonHelper.DateTimeConverter(changed),
-                                devid = point.Device.Id,
-                                pointid = point.Current.Id,
-                                typeid = (int)point.Current.Type,
+                                time = CommonHelper.DateTimeConverter(time),
+                                devid = pv.Point.Device.Id,
+                                pointid = pv.Point.Current.Id,
+                                typeid = (int)pv.Point.Current.Type,
                                 statusid = (int)status,
-                                rsspoint = point.RssPoint,
-                                rssfrom = point.RssFrom,
-                                timestamp = CommonHelper.ShortTimeConverter(changed)
+                                rsspoint = pv.Point.RssPoint,
+                                rssfrom = pv.Point.RssFrom,
+                                timestamp = CommonHelper.ShortTimeConverter(time)
                             });
                         }
                     }
@@ -726,10 +783,44 @@ namespace iPem.Site.Controllers {
                 var curFsu = _workContext.RoleFsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
                 if(curFsu == null) throw new iPemException("未找到Fsu");
 
+                var curFsuExt = _fsuService.GetFsuExt(curFsu.Current.Id);
+                if(curFsuExt == null) throw new iPemException("未找到Fsu");
+                if(!curFsuExt.Status) throw new iPemException("Fsu通信中断");
+
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
-                return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
+                var curId = Common.SplitSignalMeasurementId(curPoint.Id, curPoint.Number);
+                var package = new SetPointPackage() {
+                    FsuId = curFsu.Current.Id,
+                    DeviceList = new List<SetPointDevice>() {
+                        new SetPointDevice() {
+                            Id = curDevice.Current.Id,
+                            Values = new List<TSemaphore>() {
+                                new TSemaphore() {
+                                    Id = curId.Id,
+                                    SignalNumber = curId.SignalNumber,
+                                    Type = curPoint.Type,
+                                    MeasuredVal = "NULL",
+                                    SetupVal = ctrl.ToString(),
+                                    Status = EnmState.Normal,
+                                    Time = DateTime.Now
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var result = BIPackMgr.SetPoint(curFsuExt, package);
+                if(result != null && result.Result == EnmResult.Success) {
+                    if(result.DeviceList != null) {
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Id);
+                        if(devResult != null && devResult.SuccessList.Contains(curId))
+                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
+                    }
+                }
+
+                throw new iPemException("参数设置失败");
             } catch(Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -754,8 +845,42 @@ namespace iPem.Site.Controllers {
                 var curFsu = _workContext.RoleFsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
                 if(curFsu == null) throw new iPemException("未找到Fsu");
 
+                var curFsuExt = _fsuService.GetFsuExt(curFsu.Current.Id);
+                if(curFsuExt == null) throw new iPemException("未找到Fsu");
+                if(!curFsuExt.Status) throw new iPemException("Fsu通信中断");
+
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
+
+                var curId = Common.SplitSignalMeasurementId(curPoint.Id, curPoint.Number);
+                var package = new SetPointPackage() {
+                    FsuId = curFsu.Current.Id,
+                    DeviceList = new List<SetPointDevice>() {
+                        new SetPointDevice() {
+                            Id = curDevice.Current.Id,
+                            Values = new List<TSemaphore>() {
+                                new TSemaphore() {
+                                    Id = curId.Id,
+                                    SignalNumber = curId.SignalNumber,
+                                    Type = curPoint.Type,
+                                    MeasuredVal = "NULL",
+                                    SetupVal = adjust.ToString(),
+                                    Status = EnmState.Normal,
+                                    Time = DateTime.Now
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var result = BIPackMgr.SetPoint(curFsuExt, package);
+                if(result != null && result.Result == EnmResult.Success) {
+                    if(result.DeviceList != null) {
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Id);
+                        if(devResult != null && devResult.SuccessList.Contains(curId))
+                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
+                    }
+                }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
             } catch(Exception exc) {
