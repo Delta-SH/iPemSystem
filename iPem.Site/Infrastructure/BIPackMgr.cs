@@ -26,23 +26,23 @@ namespace iPem.Site.Infrastructure {
             return new SetPointActPackage(xmlData);
         }
 
-        public static GetThresholdAckPackage GetThreshold(FsuExt fsu, GetDataPackage package) {
+        public static GetThresholdAckPackage GetThreshold(FsuExt fsu, GetThresholdPackage package) {
             if(fsu == null) return null;
             return GetThreshold(new UriBuilder("http", fsu.IP, fsu.Port, "").ToString(), package);
         }
 
-        public static GetThresholdAckPackage GetThreshold(string url, GetDataPackage package) {
+        public static GetThresholdAckPackage GetThreshold(string url, GetThresholdPackage package) {
             var service = new FSUServiceService() { Url = url, Timeout = 10000 };
             var xmlData = service.invoke(package.ToXml());
             return new GetThresholdAckPackage(xmlData);
         }
 
-        public static SetThresholdAckPackage SetThreshold(FsuExt fsu, GetDataPackage package) {
+        public static SetThresholdAckPackage SetThreshold(FsuExt fsu, SetThresholdPackage package) {
             if(fsu == null) return null;
             return SetThreshold(new UriBuilder("http", fsu.IP, fsu.Port, "").ToString(), package);
         }
 
-        public static SetThresholdAckPackage SetThreshold(string url, GetDataPackage package) {
+        public static SetThresholdAckPackage SetThreshold(string url, SetThresholdPackage package) {
             var service = new FSUServiceService() { Url = url, Timeout = 10000 };
             var xmlData = service.invoke(package.ToXml());
             return new SetThresholdAckPackage(xmlData);

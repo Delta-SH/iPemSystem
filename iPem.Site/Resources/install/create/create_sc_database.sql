@@ -2,7 +2,7 @@
 * Web Default Data Sql Script Library v1.0.0
 * Copyright 2016, Delta
 * Author: Steven
-* Date: 2016/09/02
+* Date: 2017/03/15
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -65,6 +65,8 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[
 ALTER TABLE [dbo].[U_UsersInRoles] DROP CONSTRAINT [FK_U_UsersInRoles_U_Roles]
 GO
 
+
+
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[AM_Devices]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AM_Devices]') AND type in (N'U'))
@@ -124,9 +126,9 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[H_ExtendAlms]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_ExtendAlms]') AND type in (N'U'))
-DROP TABLE [dbo].[H_ExtendAlms]
+--创建表[dbo].[H_ExtAlarms]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_ExtAlarms]') AND type in (N'U'))
+DROP TABLE [dbo].[H_ExtAlarms]
 GO
 
 SET ANSI_NULLS ON
@@ -136,19 +138,18 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[H_ExtendAlms](
-	[Id] [varchar](100) NOT NULL,
-	[FsuId] [varchar](100) NOT NULL,
-	[Start] [datetime] NOT NULL,
-	[End] [datetime] NULL,
+CREATE TABLE [dbo].[H_ExtAlarms](
+	[Id] [varchar](200) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[Time] [datetime] NOT NULL,
 	[ProjectId] [varchar](100) NULL,
 	[Confirmed] [int] NULL,
 	[Confirmer] [varchar](100) NULL,
 	[ConfirmedTime] [datetime] NULL,
- CONSTRAINT [PK_H_ExtendAlms] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_H_ExtAlarms] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC,
-	[FsuId] ASC
+	[SerialNo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -309,6 +310,7 @@ GO
 SET ANSI_PADDING OFF
 GO
 
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[M_Formulas]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Formulas]') AND type in (N'U'))
 DROP TABLE [dbo].[M_Formulas]
@@ -449,7 +451,7 @@ CREATE TABLE [dbo].[U_Menus](
 	[Name] [varchar](100) NOT NULL,
 	[Icon] [varchar](512) NULL,
 	[Url] [varchar](512) NULL,
-	[Comment] [varchar](MAX) NULL,
+	[Comment] [varchar](max) NULL,
 	[Index] [int] NULL,
 	[LastId] [int] NOT NULL,
 	[Enabled] [bit] NOT NULL,
@@ -457,7 +459,7 @@ CREATE TABLE [dbo].[U_Menus](
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 SET ANSI_PADDING OFF
@@ -639,6 +641,7 @@ GO
 
 SET ANSI_PADDING OFF
 GO
+
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[H_NoticesInUsers]

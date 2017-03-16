@@ -31,6 +31,30 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
+        public IPagedList<HisValue> GetValuesByArea(string area, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByAreaAsList(area, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisValue> GetValuesByAreaAsList(string area, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByArea(area, start, end);
+        }
+
+        public IPagedList<HisValue> GetValuesByStation(string station, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByStationAsList(station, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisValue> GetValuesByStationAsList(string station, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByStation(station, start, end);
+        }
+
+        public IPagedList<HisValue> GetValuesByRoom(string room, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisValue>(this.GetValuesByRoomAsList(room, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisValue> GetValuesByRoomAsList(string room, DateTime start, DateTime end) {
+            return _hisRepository.GetEntitiesByRoom(room, start, end);
+        }
+
         public IPagedList<HisValue> GetValuesByDevice(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<HisValue>(this.GetValuesByDeviceAsList(device, start, end), pageIndex, pageSize);
         }

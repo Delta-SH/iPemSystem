@@ -22,7 +22,8 @@
     public enum EnmOperation {
         Control,
         Adjust,
-        Confirm
+        Confirm,
+        Threshold
     }
 
     /// <summary>

@@ -404,6 +404,115 @@
         ]
     });
 
+    var thresholdWnd = Ext.create('Ext.window.Window', {
+        title: '设置门限',
+        height: 250,
+        width: 400,
+        glyph: 0xf002,
+        modal: true,
+        border: false,
+        hidden: true,
+        closeAction: 'hide',
+        items: [{
+            xtype: 'form',
+            itemId: 'thresholdForm',
+            border: false,
+            layout: {
+                type: 'vbox',
+                align: 'center'
+            },
+            fieldDefaults: {
+                labelWidth: 100,
+                labelAlign: 'left',
+                margin: '15 15 15 15',
+                width: '100%'
+            },
+            items: [{
+                xtype: 'hiddenfield',
+                itemId: 'point',
+                name: 'point'
+            }, {
+                xtype: 'hiddenfield',
+                itemId: 'device',
+                name: 'device'
+            }, {
+                xtype: 'textfield',
+                itemId: 'nmid',
+                name: 'nmid',
+                fieldLabel: '网管告警编号'
+            }, {
+                xtype: 'AlarmLevelCombo',
+                itemId: 'level',
+                name: 'level',
+                fieldLabel: '告 警 等 级',
+                all: true,
+                width: '100%'
+            }, {
+                xtype: 'numberfield',
+                itemId: 'threshold',
+                name: 'threshold',
+                fieldLabel: '告警门限阈值',
+                value: -1,
+                allowBlank: false,
+                allowOnlyWhitespace: false
+            }]
+        }],
+        buttons: [
+          { id: 'thresholdResult', xtype: 'iconlabel', text: '' },
+          { xtype: 'tbfill' },
+          {
+              xtype: 'button',
+              text: '保存',
+              handler: function (el, e) {
+                  var form = thresholdWnd.getComponent('thresholdForm'),
+                      baseForm = form.getForm(),
+                      device = form.getComponent('device').getValue(),
+                      point = form.getComponent('point').getValue(),
+                      nmalarmID = form.getComponent('nmid').getValue(),
+                      alarmLevel = form.getComponent('level').getValue(),
+                      threshold = form.getComponent('threshold').getValue(),
+                      result = Ext.getCmp('thresholdResult');
+
+                  result.setTextWithIcon('', '');
+                  if (baseForm.isValid()) {
+                      result.setTextWithIcon('正在处理...', 'x-icon-loading');
+                      baseForm.submit({
+                          submitEmptyText: false,
+                          clientValidation: true,
+                          preventWindow: true,
+                          url: '/Home/SetThreshold',
+                          params: {
+                              device: device,
+                              point: point,
+                              nmalarmID: nmalarmID,
+                              alarmLevel: alarmLevel,
+                              threshold: threshold
+                          },
+                          success: function (form, action) {
+                              result.setTextWithIcon(action.result.message, 'x-icon-accept');
+                          },
+                          failure: function (form, action) {
+                              var message = 'undefined error.';
+                              if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+                                  message = action.result.message;
+
+                              result.setTextWithIcon(message, 'x-icon-error');
+                          }
+                      });
+                  } else {
+                      result.setTextWithIcon('表单填写错误', 'x-icon-error');
+                  }
+              }
+          }, {
+              xtype: 'button',
+              text: '取消',
+              handler: function (el, e) {
+                  thresholdWnd.close();
+              }
+          }
+        ]
+    });
+
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
             id: 'currentLayout',
@@ -641,6 +750,33 @@
                                     menuText: '操作',
                                     text: '操作',
                                     items: [{
+                                        tooltip: '设置门限',
+                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                                            return (r.get('typeid') === $$iPems.Point.AI && $$iPems.ThresholdOperation) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                                        },
+                                        handler: function (view, rowIndex, colIndex, item, event, record) {
+                                            view.getSelectionModel().select(record);
+                                            var form = thresholdWnd.getComponent('thresholdForm'),
+                                                device = form.getComponent('device'),
+                                                point = form.getComponent('point'),
+                                                result = Ext.getCmp('thresholdResult');
+
+                                            device.setValue(record.get('devid'));
+                                            point.setValue(record.get('pointid'));
+                                            result.setTextWithIcon('', '')
+
+                                            form.load({
+                                                url: '/Home/GetThreshold',
+                                                params: { device: device.getValue(), point: point.getValue() },
+                                                waitMsg: '正在处理...',
+                                                waitTitle: '系统提示',
+                                                success: function (form, action) {
+                                                    form.clearInvalid();
+                                                    thresholdWnd.show();
+                                                }
+                                            })
+                                        }
+                                    }, {
                                         tooltip: '遥控',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
                                             return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';

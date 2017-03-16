@@ -36,23 +36,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }
@@ -68,23 +67,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }
@@ -100,23 +98,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }
@@ -132,23 +129,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }
@@ -167,23 +163,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }
@@ -196,23 +191,22 @@ namespace iPem.Data.Repository.Cs {
                 while(rdr.Read()) {
                     var entity = new ActAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.AlmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlmFlag"]);
-                    entity.AlmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlmLevel"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
-                    entity.AlmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlmDesc"]);
-                    entity.NormalDesc = SqlTypeConverter.DBNullStringHandler(rdr["NormalDesc"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
-                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
-                    entity.ValueUnit = SqlTypeConverter.DBNullStringHandler(rdr["ValueUnit"]);
-                    entity.EndType = SqlTypeConverter.DBNullEnmEndTypeHandler(rdr["EndType"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entities.Add(entity);
                 }
             }

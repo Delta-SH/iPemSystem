@@ -27,15 +27,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public List<ExtAlm> GetEntities() {
-            var entities = new List<ExtAlm>();
+        public List<ExtAlarm> GetEntities() {
+            var entities = new List<ExtAlarm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_ExtendAlm_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new ExtAlm();
+                    var entity = new ExtAlarm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.Start = SqlTypeConverter.DBNullDateTimeHandler(rdr["Start"]);
-                    entity.End = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["End"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
@@ -46,10 +45,10 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public void Update(List<ExtAlm> entities) {
-            SqlParameter[] parms = {   new SqlParameter("@Id", SqlDbType.VarChar,100),
-                                       new SqlParameter("@FsuId", SqlDbType.VarChar,100),
-                                       new SqlParameter("@Start", SqlDbType.DateTime),
+        public void Update(List<ExtAlarm> entities) {
+            SqlParameter[] parms = {   new SqlParameter("@Id", SqlDbType.VarChar,200),
+                                       new SqlParameter("@SerialNo", SqlDbType.VarChar,100),
+                                       new SqlParameter("@Time", SqlDbType.DateTime),
                                        new SqlParameter("@ProjectId", SqlDbType.VarChar,100),
                                        new SqlParameter("@Confirmed", SqlDbType.TinyInt),
                                        new SqlParameter("@Confirmer", SqlDbType.VarChar,200),
@@ -61,8 +60,8 @@ namespace iPem.Data.Repository.Sc {
                 try {
                     foreach(var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
-                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.FsuId);
-                        parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.Start);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.SerialNo);
+                        parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.Time);
                         parms[3].Value = SqlTypeConverter.DBNullStringChecker(entity.ProjectId);
                         parms[4].Value = (int)entity.Confirmed;
                         parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.Confirmer);
@@ -77,21 +76,20 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public List<ExtAlm> GetHisEntities(DateTime start, DateTime end) {
+        public List<ExtAlarm> GetHisEntities(DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Start",SqlDbType.DateTime),
                                      new SqlParameter("@End",SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
             parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
-            var entities = new List<ExtAlm>();
+            var entities = new List<ExtAlarm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_ExtendAlm_Repository_GetHisEntities, parms)) {
                 while(rdr.Read()) {
-                    var entity = new ExtAlm();
+                    var entity = new ExtAlarm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.Start = SqlTypeConverter.DBNullDateTimeHandler(rdr["Start"]);
-                    entity.End = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["End"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entity.ProjectId = SqlTypeConverter.DBNullStringHandler(rdr["ProjectId"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);

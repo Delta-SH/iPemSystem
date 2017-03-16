@@ -6,7 +6,9 @@ namespace iPem.Site.Models {
     public class ActValue {
         public string DeviceId { get; set; }
 
-        public string PointId { get; set; }
+        public string SignalId { get; set; }
+
+        public string SignalNumber { get; set; }
 
         public double? MeasuredVal { get; set; }
 

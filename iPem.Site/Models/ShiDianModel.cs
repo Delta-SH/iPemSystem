@@ -5,8 +5,13 @@ using System.Web.Script.Serialization;
 namespace iPem.Site.Models {
     [Serializable]
     public class ShiDianModel {
-        [ScriptIgnore]
-        public Device device { get; set; }
+        public string area { get; set; }
+
+        public string station { get; set; }
+
+        public string room { get; set; }
+
+        public string device { get; set; }
 
         public string start { get; set; }
 

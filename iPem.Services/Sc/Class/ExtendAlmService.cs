@@ -31,23 +31,23 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public IPagedList<ExtAlm> GetAllExtAlms(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ExtAlm>(this.GetAllExtAlmsAsList(), pageIndex, pageSize);
+        public IPagedList<ExtAlarm> GetAllExtAlms(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<ExtAlarm>(this.GetAllExtAlmsAsList(), pageIndex, pageSize);
         }
 
-        public List<ExtAlm> GetAllExtAlmsAsList() {
+        public List<ExtAlarm> GetAllExtAlmsAsList() {
             return _extendAlmRepository.GetEntities();
         }
 
-        public void Update(List<ExtAlm> entities) {
+        public void Update(List<ExtAlarm> entities) {
             _extendAlmRepository.Update(entities);
         }
 
-        public IPagedList<ExtAlm> GetHisExtAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ExtAlm>(this.GetHisExtAlmsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<ExtAlarm> GetHisExtAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<ExtAlarm>(this.GetHisExtAlmsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<ExtAlm> GetHisExtAlmsAsList(DateTime start, DateTime end) {
+        public List<ExtAlarm> GetHisExtAlmsAsList(DateTime start, DateTime end) {
             return _extendAlmRepository.GetHisEntities(start, end);
         }
 

@@ -43,7 +43,6 @@ namespace iPem.Site.Infrastructure {
         private readonly IStationService _stationService;
         private readonly IStationTypeService _stationTypeService;
         //cs repository
-        private readonly IFsuKeyService _fsuKeyService;
         private readonly IActAlmService _actAlmService;
         //sc repository
         private readonly IAreasInRoleService _areasInRoleService;
@@ -110,7 +109,6 @@ namespace iPem.Site.Infrastructure {
         IStationService stationService,
         IStationTypeService stationTypeService,
         //cs repository
-        IFsuKeyService fsuKeyService,
         IActAlmService actAlmService,
         //sc repository
         IAreasInRoleService areasInRoleService,
@@ -138,7 +136,6 @@ namespace iPem.Site.Infrastructure {
             this._stationService = stationService;
             this._stationTypeService = stationTypeService;
             //cs repository
-            this._fsuKeyService = fsuKeyService;
             this._actAlmService = actAlmService;
             //sc repository
             this._areasInRoleService = areasInRoleService;
@@ -739,9 +736,9 @@ namespace iPem.Site.Infrastructure {
                                    join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                                    join station in this.RoleStations on alarm.StationId equals station.Current.Id
                                    join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                                   join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                                   join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                                    from def in lt.DefaultIfEmpty()
-                                   orderby alarm.StartTime descending
+                                   orderby alarm.AlarmTime descending
                                    select new AlmStore<ActAlm> {
                                        Current = alarm,
                                        ExtSet = def,
@@ -780,9 +777,9 @@ namespace iPem.Site.Infrastructure {
                     join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                     join station in this.RoleStations on alarm.StationId equals station.Current.Id
                     join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                    join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                     from def in lt.DefaultIfEmpty()
-                    orderby alarm.StartTime descending
+                    orderby alarm.AlarmTime descending
                     select new AlmStore<ActAlm> {
                         Current = alarm,
                         ExtSet = def,
@@ -814,9 +811,9 @@ namespace iPem.Site.Infrastructure {
                     join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
                     join station in this.RoleStations on alarm.StationId equals station.Current.Id
                     join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in exts on new { alarm.Id, alarm.FsuId } equals new { ext.Id, ext.FsuId } into lt
+                    join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                     from def in lt.DefaultIfEmpty()
-                    orderby alarm.StartTime descending
+                    orderby alarm.AlarmTime descending
                     select new AlmStore<HisAlm> {
                         Current = alarm,
                         ExtSet = def,

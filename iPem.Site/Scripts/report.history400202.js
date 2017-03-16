@@ -168,7 +168,6 @@
             { name: 'comment', type: 'string' },
             { name: 'frequency', type: 'int' },
             { name: 'interval', type: 'string' },
-            { name: 'endType', type: 'string' },
             { name: 'confirmed', type: 'string' },
             { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
@@ -549,10 +548,6 @@
                     {
                         text: '告警历时',
                         dataIndex: 'interval'
-                    },
-                    {
-                        text: '结束方式',
-                        dataIndex: 'endType'
                     },
                     {
                         text: '确认状态',

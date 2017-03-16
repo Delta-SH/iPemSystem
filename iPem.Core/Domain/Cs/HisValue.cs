@@ -5,6 +5,26 @@ namespace iPem.Core.Domain.Cs {
     [Serializable]
     public partial class HisValue : BaseEntity {
         /// <summary>
+        /// Gets or sets the area identifier
+        /// </summary>
+        public string AreaId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the station identifier
+        /// </summary>
+        public string StationId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the room identifier
+        /// </summary>
+        public string RoomId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fsu identifier
+        /// </summary>
+        public string FsuId { get; set; }
+
+        /// <summary>
         /// Gets or sets the device identifier
         /// </summary>
         public string DeviceId { get; set; }
@@ -15,19 +35,19 @@ namespace iPem.Core.Domain.Cs {
         public string PointId { get; set; }
 
         /// <summary>
-        /// Gets or sets the type
+        /// Gets or sets the point type
         /// </summary>
-        public int Type { get; set; }
+        public EnmPoint PointType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the record type
+        /// </summary>
+        public int RecordType { get; set; }
 
         /// <summary>
         /// Gets or sets the value
         /// </summary>
         public double Value { get; set; }
-
-        /// <summary>
-        /// Gets or sets the threshold
-        /// </summary>
-        public double Threshold { get; set; }
 
         /// <summary>
         /// Gets or sets the state

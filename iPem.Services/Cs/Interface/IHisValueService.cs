@@ -5,6 +5,18 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Cs {
     public partial interface IHisValueService {
+        IPagedList<HisValue> GetValuesByArea(string area, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<HisValue> GetValuesByAreaAsList(string area, DateTime start, DateTime end);
+
+        IPagedList<HisValue> GetValuesByStation(string station, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<HisValue> GetValuesByStationAsList(string station, DateTime start, DateTime end);
+
+        IPagedList<HisValue> GetValuesByRoom(string room, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<HisValue> GetValuesByRoomAsList(string room, DateTime start, DateTime end);
+
         IPagedList<HisValue> GetValuesByDevice(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
         List<HisValue> GetValuesByDeviceAsList(string device, DateTime start, DateTime end);

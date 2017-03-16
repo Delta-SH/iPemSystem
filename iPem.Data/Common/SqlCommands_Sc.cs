@@ -7,12 +7,12 @@ namespace iPem.Data.Common {
     /// </summary>
     public static class SqlCommands_Sc {
         //extend alarms repository
-        public const string Sql_ExtendAlm_Repository_GetEntities = @"SELECT * FROM [dbo].[H_ExtendAlms];";
+        public const string Sql_ExtendAlm_Repository_GetEntities = @"SELECT * FROM [dbo].[H_ExtAlarms];";
         public const string Sql_ExtendAlm_Repository_Update = @"
-        UPDATE [dbo].[H_ExtendAlms] SET [ProjectId]=ISNULL(@ProjectId,[ProjectId]),[Confirmed]=@Confirmed,[Confirmer]=@Confirmer,[ConfirmedTime]=@ConfirmedTime WHERE [Id]=@Id AND [FsuId]=@FsuId;
+        UPDATE [dbo].[H_ExtAlarms] SET [ProjectId]=ISNULL(@ProjectId,[ProjectId]),[Confirmed]=@Confirmed,[Confirmer]=@Confirmer,[ConfirmedTime]=@ConfirmedTime WHERE [Id]=@Id AND [SerialNo]=@SerialNo;
         IF(@@ROWCOUNT = 0)
         BEGIN
-	        INSERT INTO [dbo].[H_ExtendAlms]([Id],[FsuId],[Start],[End],[ProjectId],[Confirmed],[Confirmer],[ConfirmedTime]) VALUES(@Id,@FsuId,@Start,NULL,@ProjectId,@Confirmed,@Confirmer,@ConfirmedTime);
+	        INSERT INTO [dbo].[H_ExtAlarms]([Id],[SerialNo],[Time],[ProjectId],[Confirmed],[Confirmer],[ConfirmedTime]) VALUES(@Id,@SerialNo,@Time,@ProjectId,@Confirmed,@Confirmer,@ConfirmedTime);
         END";
         public const string Sql_ExtendAlm_Repository_GetHisEntities = @"
         DECLARE @tpDate DATETIME, 
@@ -23,7 +23,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[H_ExtendAlms'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[H_ExtAlarms'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -33,7 +33,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Start] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Time] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);

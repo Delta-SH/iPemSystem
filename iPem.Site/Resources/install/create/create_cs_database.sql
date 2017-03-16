@@ -2,13 +2,13 @@
 * Web Default Data Sql Script Library v1.0.0
 * Copyright 2016, Delta
 * Author: Steven
-* Date: 2016/09/02
+* Date: 2017/03/15
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[A_Act]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_Act]') AND type in (N'U'))
-DROP TABLE [dbo].[A_Act]
+--创建表[dbo].[A_Alarm]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_Alarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_Alarm]
 GO
 
 SET ANSI_NULLS ON
@@ -18,29 +18,28 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-CREATE TABLE [dbo].[A_Act](
-	[Id] [varchar](100) NOT NULL,
-	[AreaId] [varchar](100) NOT NULL,
-	[StationId] [varchar](100) NOT NULL,
-	[RoomId] [varchar](100) NOT NULL,
+CREATE TABLE [dbo].[A_Alarm](
+	[Id] [varchar](200) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[AreaId] [varchar](100) NULL,
+	[StationId] [varchar](100) NULL,
+	[RoomId] [varchar](100) NULL,
 	[FsuId] [varchar](100) NOT NULL,
-	[DeviceId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
-	[AlmFlag] [int] NOT NULL,
-	[AlmLevel] [int] NOT NULL,
-	[Frequency] [int] NOT NULL,
-	[AlmDesc] [varchar](100) NOT NULL,
-	[NormalDesc] [varchar](100) NOT NULL,
-	[StartTime] [datetime] NOT NULL,
-	[EndTime] [datetime] NOT NULL,
-	[StartValue] [float] NOT NULL,
-	[EndValue] [float] NOT NULL,
-	[ValueUnit] [varchar](20) NOT NULL,
-	[EndType] [int] NOT NULL,
- CONSTRAINT [PK_A_Act] PRIMARY KEY CLUSTERED 
+	[DeviceId] [varchar](100) NULL,
+	[PointId] [varchar](100) NULL,
+	[SignalId] [varchar](100) NULL,
+	[SignalNumber] [varchar](20) NULL,
+	[NMAlarmId] [varchar](100) NULL,
+	[AlarmTime] [datetime] NULL,
+	[AlarmLevel] [int] NULL,
+	[AlarmFlag] [int] NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmValue] [float] NULL,
+	[AlarmRemark] [varchar](100) NULL,
+ CONSTRAINT [PK_A_Alarm] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC,
-	[FsuId] ASC
+	[SerialNo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -49,9 +48,9 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[A_Hist]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_Hist]') AND type in (N'U'))
-DROP TABLE [dbo].[A_Hist]
+--创建表[dbo].[A_HAlarm]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_HAlarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_HAlarm]
 GO
 
 SET ANSI_NULLS ON
@@ -61,90 +60,30 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-CREATE TABLE [dbo].[A_Hist](
-	[Id] [varchar](100) NOT NULL,
-	[AreaId] [varchar](100) NOT NULL,
-	[StationId] [varchar](100) NOT NULL,
-	[RoomId] [varchar](100) NOT NULL,
+CREATE TABLE [dbo].[A_HAlarm](
+	[Id] [varchar](200) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[AreaId] [varchar](100) NULL,
+	[StationId] [varchar](100) NULL,
+	[RoomId] [varchar](100) NULL,
 	[FsuId] [varchar](100) NOT NULL,
-	[DeviceId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
-	[AlmLevel] [int] NOT NULL,
-	[Frequency] [int] NOT NULL,
-	[AlmDesc] [varchar](100) NOT NULL,
-	[NormalDesc] [varchar](100) NOT NULL,
-	[StartTime] [datetime] NOT NULL,
-	[EndTime] [datetime] NOT NULL,
-	[StartValue] [float] NOT NULL,
-	[EndValue] [float] NOT NULL,
-	[ValueUnit] [varchar](20) NOT NULL,
-	[EndType] [int] NOT NULL,
- CONSTRAINT [PK_A_Hist] PRIMARY KEY CLUSTERED 
+	[DeviceId] [varchar](100) NULL,
+	[PointId] [varchar](100) NULL,
+	[SignalId] [varchar](100) NULL,
+	[SignalNumber] [varchar](20) NULL,
+	[NMAlarmId] [varchar](100) NULL,
+	[AlarmTime] [datetime] NULL,
+	[EndTime] [datetime] NULL,
+	[AlarmValue] [float] NULL,
+	[EndValue] [float] NULL,
+	[AlarmLevel] [int] NULL,
+	[AlarmFlag] [int] NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmRemark] [varchar](100) NULL,
+ CONSTRAINT [PK_A_HAlarm] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC,
-	[FsuId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[H_DBScript]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_DBScript]') AND type in (N'U'))
-DROP TABLE [dbo].[H_DBScript]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[H_DBScript](
-	[Id] [int] NOT NULL,
-	[Name] [varchar](200) NULL,
-	[Type] [int] NULL,
-	[CreateName] [varchar](200) NULL,
-	[CreateTime] [datetime] NULL,
-	[ExecuteTime] [datetime] NULL,
-	[Desc] [varchar](512) NULL,
- CONSTRAINT [PK_H_DBScript] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[M_Fsu]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Fsu]') AND type in (N'U'))
-DROP TABLE [dbo].[M_Fsu]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[M_Fsu](
-	[Id] [varchar](100) NOT NULL,
-	[IP] [varchar](20) NULL,
-	[Port] [int] NULL,
-	[Status] [bit] NOT NULL,
-	[ChangeTime] [datetime] NOT NULL,
-	[LastTime] [datetime] NOT NULL,
-	[Desc] [varchar](512) NULL,
- CONSTRAINT [PK_M_Fsu] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
+	[SerialNo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -243,31 +182,6 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[V_Alm]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Alm]') AND type in (N'U'))
-DROP TABLE [dbo].[V_Alm]
-GO
-
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING OFF
-GO
-
-CREATE TABLE [dbo].[V_Alm](
-	[DeviceId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
-	[StartTime] [datetime] NOT NULL,
-	[Value] [float] NOT NULL,
-	[ValueTime] [datetime] NOT NULL
-) ON [PRIMARY]
-GO
-
-SET ANSI_PADDING OFF
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[V_Bat]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Bat]') AND type in (N'U'))
 DROP TABLE [dbo].[V_Bat]
@@ -281,6 +195,10 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Bat](
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[FsuId] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[StartTime] [datetime] NOT NULL,
@@ -293,9 +211,9 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---创建表[dbo].[V_Hist]
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Hist]') AND type in (N'U'))
-DROP TABLE [dbo].[V_Hist]
+--创建表[dbo].[V_HMeasure]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_HMeasure]') AND type in (N'U'))
+DROP TABLE [dbo].[V_HMeasure]
 GO
 
 SET ANSI_NULLS ON
@@ -305,14 +223,53 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-CREATE TABLE [dbo].[V_Hist](
-	[DeviceId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
-	[Type] [int] NOT NULL,
-	[Value] [float] NOT NULL,
-	[Threshold] [float] NOT NULL,
-	[State] [int] NOT NULL,
-	[Time] [datetime] NOT NULL
+CREATE TABLE [dbo].[V_HMeasure](
+	[AreaId] [varchar](100) NULL,
+	[StationId] [varchar](100) NULL,
+	[RoomId] [varchar](100) NULL,
+	[FsuId] [varchar](100) NULL,
+	[DeviceId] [varchar](100) NULL,
+	[PointId] [varchar](100) NULL,
+	[SignalId] [varchar](100) NULL,
+	[SignalNumber] [varchar](10) NULL,
+	[SignalDesc] [varchar](120) NULL,
+	[Type] [int] NULL,
+	[Value] [real] NULL,
+	[OrderNumber] [varchar](20) NULL,
+	[UpdateTime] [datetime] NULL
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_HPoint]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_HPoint]') AND type in (N'U'))
+DROP TABLE [dbo].[V_HPoint]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[V_HPoint](
+	[AreaId] [varchar](100) NULL,
+	[StationId] [varchar](100) NULL,
+	[RoomId] [varchar](100) NULL,
+	[FsuId] [varchar](100) NULL,
+	[DeviceId] [varchar](100) NULL,
+	[PointId] [varchar](100) NULL,
+	[SignalId] [varchar](100) NULL,
+	[SignalNumber] [varchar](10) NULL,
+	[PointType] [int] NULL,
+	[RecordType] [int] NULL,
+	[Value] [real] NULL,
+	[State] [int] NULL,
+	[UpdateTime] [datetime] NULL
 ) ON [PRIMARY]
 GO
 
@@ -333,6 +290,10 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[V_Static](
+	[AreaId] [varchar](100) NULL,
+	[StationId] [varchar](100) NULL,
+	[RoomId] [varchar](100) NULL,
+	[FsuId] [varchar](100) NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[BeginTime] [datetime] NOT NULL,

@@ -121,7 +121,6 @@
     <Compile Include="Domain\Am\AmDevice.cs" />
     <Compile Include="Domain\Am\AmStation.cs" />
     <Compile Include="Domain\Cs\ActAlm.cs" />
-    <Compile Include="Domain\Cs\FsuKey.cs" />
     <Compile Include="Domain\Cs\HisBatTime.cs" />
     <Compile Include="Domain\Cs\HisElec.cs" />
     <Compile Include="Domain\Cs\HisLoadRate.cs" />

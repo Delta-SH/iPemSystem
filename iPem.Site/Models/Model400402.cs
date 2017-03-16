@@ -57,9 +57,6 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("触发频次")]
         public int frequency { get; set; }
 
-        [ExcelDisplayName("结束方式")]
-        public string endType { get; set; }
-
         [ExcelDisplayName("确认状态")]
         public string confirmed { get; set; }
 

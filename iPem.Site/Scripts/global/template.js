@@ -8,8 +8,7 @@ Ext.onReady(function () {
     Ext.tip.QuickTipManager.init();
 
     //start tasks
-    $$iPems.Tasks.noticeTask.start();
-    $$iPems.Tasks.actAlmNoticeTask.start();
+    $$iPems.Tasks.badgeTask.start();
 
     /*home page*/
     var _titlebar = Ext.create('Ext.panel.Panel', {

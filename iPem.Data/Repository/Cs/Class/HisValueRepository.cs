@@ -28,6 +28,96 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
+        public List<HisValue> GetEntitiesByArea(string area, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@AreaId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(area);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisValue>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByArea, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
+                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<HisValue> GetEntitiesByStation(string station, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@StationId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(station);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisValue>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByStation, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
+                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<HisValue> GetEntitiesByRoom(string room, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@RoomId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(room);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<HisValue>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByRoom, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
+                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
         public List<HisValue> GetEntitiesByDevice(string device, DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
@@ -41,11 +131,15 @@ namespace iPem.Data.Repository.Cs {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByDevice, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
-                    entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
@@ -69,11 +163,15 @@ namespace iPem.Data.Repository.Cs {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByPoint1, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
-                    entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
@@ -95,11 +193,15 @@ namespace iPem.Data.Repository.Cs {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByPoint2, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
-                    entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
@@ -123,11 +225,15 @@ namespace iPem.Data.Repository.Cs {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntitiesByPoints, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
-                    entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);
@@ -147,11 +253,15 @@ namespace iPem.Data.Repository.Cs {
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisValue_Repository_GetEntities, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisValue();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.Type = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
-                    entity.Threshold = SqlTypeConverter.DBNullDoubleHandler(rdr["Threshold"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
                     entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
                     entities.Add(entity);

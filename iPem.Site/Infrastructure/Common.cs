@@ -218,6 +218,8 @@ namespace iPem.Site.Infrastructure {
                     return "信号遥调";
                 case EnmOperation.Confirm:
                     return "告警确认";
+                case EnmOperation.Threshold:
+                    return "门限设置";
                 default:
                     return "其他";
             }
@@ -412,25 +414,6 @@ namespace iPem.Site.Infrastructure {
                 }
             }
             return false;
-        }
-
-        public static string JoinSignalMeasurementId(TSignalMeasurementId id) {
-            return string.Format("{0}{1}", id.Id, id.SignalNumber.PadLeft(3, '0'));
-        }
-
-        public static TSignalMeasurementId SplitSignalMeasurementId(string id, string number) {
-            if(string.IsNullOrWhiteSpace(number)) {
-                return new TSignalMeasurementId {
-                    Id = id,
-                    SignalNumber = "999"
-                };
-            } else {
-                number = number.PadLeft(3, '0');
-                return new TSignalMeasurementId {
-                    Id = id.EndsWith(number) ? id.Substring(0, id.Length - 3) : id,
-                    SignalNumber = number
-                };
-            }
         }
     }
 }

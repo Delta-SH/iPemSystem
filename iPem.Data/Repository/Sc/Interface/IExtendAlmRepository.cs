@@ -8,18 +8,18 @@ namespace iPem.Data.Repository.Sc {
         /// Gets the entities
         /// </summary>
         /// <returns>entities</returns>
-        List<ExtAlm> GetEntities();
+        List<ExtAlarm> GetEntities();
 
         /// <summary>
         /// Update the entities
         /// </summary>
         /// <param name="entities">entities</param>
-        void Update(List<ExtAlm> entities);
+        void Update(List<ExtAlarm> entities);
 
         /// <summary>
         /// Gets the history entities
         /// </summary>
         /// <returns>entities</returns>
-        List<ExtAlm> GetHisEntities(DateTime start, DateTime end);
+        List<ExtAlarm> GetHisEntities(DateTime start, DateTime end);
     }
 }

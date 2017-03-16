@@ -133,7 +133,6 @@ namespace iPem.Site.Infrastructure {
 
                 //register repository
                 builder.Register<IActAlmRepository>(c => new ActAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IFsuKeyRepository>(c => new FsuKeyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisAlmRepository>(c => new HisAlmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisBatRepository>(c => new HisBatRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisElecRepository>(c => new HisElecRepository(connectionString)).InstancePerLifetimeScope();
@@ -144,7 +143,6 @@ namespace iPem.Site.Infrastructure {
 
                 //register service
                 builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();
-                builder.RegisterType<FsuKeyService>().As<IFsuKeyService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisAlmService>().As<IHisAlmService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisBatService>().As<IHisBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisElecService>().As<IHisElecService>().InstancePerLifetimeScope();

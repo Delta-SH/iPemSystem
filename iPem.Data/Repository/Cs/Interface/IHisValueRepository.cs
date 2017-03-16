@@ -5,6 +5,33 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Cs {
     public partial interface IHisValueRepository {
         /// <summary>
+        /// Gets entities from the repository by the specific area identifier
+        /// </summary>
+        /// <param name="area">the area identifier</param>
+        /// <param name="start">the start datetime</param>
+        /// <param name="end">the end datetime</param>
+        /// <returns>history value list</returns>
+        List<HisValue> GetEntitiesByArea(string area, DateTime start, DateTime end);
+
+        /// <summary>
+        /// Gets entities from the repository by the specific station identifier
+        /// </summary>
+        /// <param name="station">the station identifier</param>
+        /// <param name="start">the start datetime</param>
+        /// <param name="end">the end datetime</param>
+        /// <returns>history value list</returns>
+        List<HisValue> GetEntitiesByStation(string station, DateTime start, DateTime end);
+
+        /// <summary>
+        /// Gets entities from the repository by the specific device identifier
+        /// </summary>
+        /// <param name="room">the room identifier</param>
+        /// <param name="start">the start datetime</param>
+        /// <param name="end">the end datetime</param>
+        /// <returns>history value list</returns>
+        List<HisValue> GetEntitiesByRoom(string room, DateTime start, DateTime end);
+
+        /// <summary>
         /// Gets entities from the repository by the specific device identifier
         /// </summary>
         /// <param name="device">the device identifier</param>

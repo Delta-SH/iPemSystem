@@ -1321,7 +1321,7 @@ namespace iPem.Site.Controllers {
                 var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
 
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500101 {
                     index = ++index,
@@ -1373,8 +1373,8 @@ namespace iPem.Site.Controllers {
                 var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                var almTime = almAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
-                var runTime = runAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var almTime = almAlarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var runTime = runAlarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500102 {
                     index = ++index,
@@ -1424,7 +1424,7 @@ namespace iPem.Site.Controllers {
                 }
 
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500103 {
                     index = ++index,
@@ -1471,7 +1471,7 @@ namespace iPem.Site.Controllers {
                 var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
 
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500104 {
                     index = ++index,
@@ -1509,7 +1509,7 @@ namespace iPem.Site.Controllers {
             foreach(var station in stations) {
                 var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => a.PointId == rtValues.tingDianXinHao);
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500105 {
                     index = ++index,
@@ -2083,7 +2083,7 @@ namespace iPem.Site.Controllers {
                     var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                     var matchs = children.Select(c=>c.Current.Id);
                     var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                     result.Add(new Model500207 {
@@ -2108,7 +2108,7 @@ namespace iPem.Site.Controllers {
                             var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                             var matchs = children.Select(c => c.Current.Id);
                             var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                             result.Add(new Model500207 {
@@ -2128,7 +2128,7 @@ namespace iPem.Site.Controllers {
                         var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                         var matchs = children.Select(c => c.Current.Id);
                         var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                         result.Add(new Model500207 {
@@ -2174,7 +2174,7 @@ namespace iPem.Site.Controllers {
                     var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var matchs = children.Select(c => c.Current.Id);
                     var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                     result.Add(new Model500208 {
@@ -2198,7 +2198,7 @@ namespace iPem.Site.Controllers {
                             var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                             var matchs = children.Select(c => c.Current.Id);
                             var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                             result.Add(new Model500208 {
@@ -2217,7 +2217,7 @@ namespace iPem.Site.Controllers {
                         var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
                         var matchs = children.Select(c => c.Current.Id);
                         var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                         result.Add(new Model500208 {
@@ -3042,14 +3042,14 @@ namespace iPem.Site.Controllers {
             if(parent == "root") {
                 #region root
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
-                var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
+                var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
                 foreach(var leaf in leaies) {
                     var childDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
                     var childDevIds = childDevices.Select(d => d.Current.Id);
                     var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                     var devCount = childDevices.Count;
-                    var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                    var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
                     result.Add(new Model500401 {
                         index = ++index,
@@ -3068,14 +3068,14 @@ namespace iPem.Site.Controllers {
                     if(current.HasChildren) {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
-                        var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
+                        var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
                         foreach(var leaf in leaies) {
                             var childDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
                             var childDevIds = childDevices.Select(d => d.Current.Id);
                             var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                             var devCount = childDevices.Count;
-                            var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                            var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
                             result.Add(new Model500401 {
                                 index = ++index,
@@ -3090,13 +3090,13 @@ namespace iPem.Site.Controllers {
                         #endregion
                     } else {
                         #region self
-                        var alarms = _hisAlmService.GetAlmsInAreaAsList(parent, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
+                        var alarms = _hisAlmService.GetAlmsInAreaAsList(parent, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
                         var childDevices = devices.FindAll(d => d.Current.AreaId == parent);
                         var childDevIds = childDevices.Select(d => d.Current.Id);
                         var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                         var devCount = childDevices.Count;
-                        var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
+                        var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
                         result.Add(new Model500401 {
                             index = ++index,
@@ -3124,7 +3124,7 @@ namespace iPem.Site.Controllers {
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.jslHuLue);
+            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.jslHuLue);
             if(types != null && types.Length > 0) {
                 var devMatchs = _workContext.RoleDevices.FindAll(d => types.Contains(d.Current.Type.Id)).Select(d => d.Current.Id);
                 alarms = alarms.FindAll(a => devMatchs.Contains(a.DeviceId));
@@ -3136,7 +3136,7 @@ namespace iPem.Site.Controllers {
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var childAlarms = alarms.FindAll(a => leaf.Keys.Contains(a.AreaId));
-                    var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
+                    var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
                     var total = childAlarms.Count;
                     result.Add(new Model500402 {
                         index = ++index,
@@ -3156,7 +3156,7 @@ namespace iPem.Site.Controllers {
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
                             var childAlarms = alarms.FindAll(a => leaf.Keys.Contains(a.AreaId));
-                            var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
+                            var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
                             var total = childAlarms.Count;
                             result.Add(new Model500402 {
                                 index = ++index,
@@ -3171,7 +3171,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var childAlarms = alarms.FindAll(a => a.AreaId == current.Current.Id);
-                        var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
+                        var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
                         var total = childAlarms.Count;
                         result.Add(new Model500402 {
                             index = ++index,
@@ -3200,7 +3200,7 @@ namespace iPem.Site.Controllers {
 
             var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate);
             if(levels != null && levels.Length > 0)
-                alarms = alarms.FindAll(a => levels.Contains((int)a.AlmLevel));
+                alarms = alarms.FindAll(a => levels.Contains((int)a.AlarmLevel));
 
             var stores = _workContext.GetHisAlmStore(alarms, startDate, endDate);
 
@@ -3210,7 +3210,7 @@ namespace iPem.Site.Controllers {
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                    var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                    var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
                     var total = childStores.Count;
                     result.Add(new Model500403 {
                         index = ++index,
@@ -3230,7 +3230,7 @@ namespace iPem.Site.Controllers {
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
                             var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                            var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                            var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
                             var total = childStores.Count;
                             result.Add(new Model500403 {
                                 index = ++index,
@@ -3245,7 +3245,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var childStores = stores.FindAll(a => a.Current.AreaId == current.Current.Id);
-                        var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
+                        var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
                         var total = childStores.Count;
                         result.Add(new Model500403 {
                             index = ++index,

@@ -110,10 +110,10 @@ namespace iPem.Site.Controllers {
 
                         var eachSta = almsInSta.FirstOrDefault(s => s.Id == station.Current.Id);
                         if(eachSta != null) {
-                            model.alm1 = eachSta.Alarms.Count(a=>a.AlmLevel == EnmLevel.Level1);
-                            model.alm2 = eachSta.Alarms.Count(a => a.AlmLevel == EnmLevel.Level2);
-                            model.alm3 = eachSta.Alarms.Count(a => a.AlmLevel == EnmLevel.Level3);
-                            model.alm4 = eachSta.Alarms.Count(a => a.AlmLevel == EnmLevel.Level4);
+                            model.alm1 = eachSta.Alarms.Count(a=>a.AlarmLevel == EnmLevel.Level1);
+                            model.alm2 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level2);
+                            model.alm3 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level3);
+                            model.alm4 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level4);
 
                             if(model.alm1 > 0)
                                 model.level = (int)EnmLevel.Level1;

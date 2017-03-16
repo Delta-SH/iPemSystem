@@ -2,8 +2,241 @@
 * Web Default Data Sql Script Library v1.0.0
 * Copyright 2016, Delta
 * Author: Steven
-* Date: 2016/09/02
+* Date: 2017/03/15
 */
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[C_LogicType]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_LogicType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_LogicType]'))
+ALTER TABLE [dbo].[C_LogicType] DROP CONSTRAINT [FK_C_LogicType_C_DeviceType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[C_SubDeviceType]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubDeviceType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubDeviceType]'))
+ALTER TABLE [dbo].[C_SubDeviceType] DROP CONSTRAINT [FK_C_SubDeviceType_C_DeviceType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[C_SubLogicType]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubLogicType_C_LogicType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubLogicType]'))
+ALTER TABLE [dbo].[C_SubLogicType] DROP CONSTRAINT [FK_C_SubLogicType_C_LogicType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_ACDistBox]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ACDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ACDistBox]'))
+ALTER TABLE [dbo].[D_ACDistBox] DROP CONSTRAINT [FK_D_ACDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_AirCondHost]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondHost_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondHost]'))
+ALTER TABLE [dbo].[D_AirCondHost] DROP CONSTRAINT [FK_D_AirCondHost_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_AirCondWindCabi]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCabi]'))
+ALTER TABLE [dbo].[D_AirCondWindCabi] DROP CONSTRAINT [FK_D_AirCondWindCabi_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_AirCondWindCool]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCool_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCool]'))
+ALTER TABLE [dbo].[D_AirCondWindCool] DROP CONSTRAINT [FK_D_AirCondWindCool_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_BattGroup]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattGroup]'))
+ALTER TABLE [dbo].[D_BattGroup] DROP CONSTRAINT [FK_D_BattGroup_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_BattTempBox]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattTempBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattTempBox]'))
+ALTER TABLE [dbo].[D_BattTempBox] DROP CONSTRAINT [FK_D_BattTempBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_ChangeHeat]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ChangeHeat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ChangeHeat]'))
+ALTER TABLE [dbo].[D_ChangeHeat] DROP CONSTRAINT [FK_D_ChangeHeat_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_CombSwitElecSour]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_CombSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_CombSwitElecSour]'))
+ALTER TABLE [dbo].[D_CombSwitElecSour] DROP CONSTRAINT [FK_D_CombSwitElecSour_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_ControlEqui]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ControlEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ControlEqui]'))
+ALTER TABLE [dbo].[D_ControlEqui] DROP CONSTRAINT [FK_D_ControlEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_DCDistBox]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DCDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DCDistBox]'))
+ALTER TABLE [dbo].[D_DCDistBox] DROP CONSTRAINT [FK_D_DCDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Device]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Device_S_Room]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Device]'))
+ALTER TABLE [dbo].[D_Device] DROP CONSTRAINT [FK_D_Device_S_Room]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_DivSwitElecSour]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DivSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DivSwitElecSour]'))
+ALTER TABLE [dbo].[D_DivSwitElecSour] DROP CONSTRAINT [FK_D_DivSwitElecSour_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_ElecSourCabi]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ElecSourCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ElecSourCabi]'))
+ALTER TABLE [dbo].[D_ElecSourCabi] DROP CONSTRAINT [FK_D_ElecSourCabi_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_FSU]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_FSU_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_FSU]'))
+ALTER TABLE [dbo].[D_FSU] DROP CONSTRAINT [FK_D_FSU_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_GeneratorGroup]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_GeneratorGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_GeneratorGroup]'))
+ALTER TABLE [dbo].[D_GeneratorGroup] DROP CONSTRAINT [FK_D_GeneratorGroup_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_HighVoltDistBox]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_HighVoltDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_HighVoltDistBox]'))
+ALTER TABLE [dbo].[D_HighVoltDistBox] DROP CONSTRAINT [FK_D_HighVoltDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Inverter]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Inverter_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Inverter]'))
+ALTER TABLE [dbo].[D_Inverter] DROP CONSTRAINT [FK_D_Inverter_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_LowDistCabinet]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_LowDistCabinet_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_LowDistCabinet]'))
+ALTER TABLE [dbo].[D_LowDistCabinet] DROP CONSTRAINT [FK_D_LowDistCabinet_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Manostat]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Manostat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Manostat]'))
+ALTER TABLE [dbo].[D_Manostat] DROP CONSTRAINT [FK_D_Manostat_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_MobiGenerator]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_MobiGenerator_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_MobiGenerator]'))
+ALTER TABLE [dbo].[D_MobiGenerator] DROP CONSTRAINT [FK_D_MobiGenerator_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_OrdiAirCond]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_OrdiAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_OrdiAirCond]'))
+ALTER TABLE [dbo].[D_OrdiAirCond] DROP CONSTRAINT [FK_D_OrdiAirCond_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_SolarController]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarController_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarController]'))
+ALTER TABLE [dbo].[D_SolarController] DROP CONSTRAINT [FK_D_SolarController_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_SolarEqui]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarEqui]'))
+ALTER TABLE [dbo].[D_SolarEqui] DROP CONSTRAINT [FK_D_SolarEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_SpecAirCond]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SpecAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SpecAirCond]'))
+ALTER TABLE [dbo].[D_SpecAirCond] DROP CONSTRAINT [FK_D_SpecAirCond_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_SwitchFuse]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SwitchFuse_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SwitchFuse]'))
+ALTER TABLE [dbo].[D_SwitchFuse] DROP CONSTRAINT [FK_D_SwitchFuse_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Transformer]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Transformer_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Transformer]'))
+ALTER TABLE [dbo].[D_Transformer] DROP CONSTRAINT [FK_D_Transformer_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_UPS]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_UPS_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_UPS]'))
+ALTER TABLE [dbo].[D_UPS] DROP CONSTRAINT [FK_D_UPS_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Ventilation]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Ventilation_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Ventilation]'))
+ALTER TABLE [dbo].[D_Ventilation] DROP CONSTRAINT [FK_D_Ventilation_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_WindEnerEqui]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindEnerEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindEnerEqui]'))
+ALTER TABLE [dbo].[D_WindEnerEqui] DROP CONSTRAINT [FK_D_WindEnerEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_WindLightCompCon]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindLightCompCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindLightCompCon]'))
+ALTER TABLE [dbo].[D_WindLightCompCon] DROP CONSTRAINT [FK_D_WindLightCompCon_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_WindPowerCon]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindPowerCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindPowerCon]'))
+ALTER TABLE [dbo].[D_WindPowerCon] DROP CONSTRAINT [FK_D_WindPowerCon_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[P_PointsInProtocol]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Protocol]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol] DROP CONSTRAINT [FK_P_PointsInProtocol_P_Protocol]
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol] DROP CONSTRAINT [FK_P_PointsInProtocol_P_Point]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[S_Room]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Room_S_Station]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Room]'))
+ALTER TABLE [dbo].[S_Room] DROP CONSTRAINT [FK_S_Room_S_Station]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[S_Station]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Station_A_Area]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Station]'))
+ALTER TABLE [dbo].[S_Station] DROP CONSTRAINT [FK_S_Station_A_Area]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[U_MenusInRole]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_MenusInRole_U_Role]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]'))
+ALTER TABLE [dbo].[U_MenusInRole] DROP CONSTRAINT [FK_U_MenusInRole_U_Role]
+GO
+
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_Area]
@@ -22,7 +255,7 @@ CREATE TABLE [dbo].[A_Area](
 	[Id] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
 	[Name] [varchar](200) NOT NULL,
-	[NodeLevel] [int] NULL,
+	[NodeLevel] [int] NOT NULL,
 	[ParentId] [varchar](100) NOT NULL,
 	[Desc] [varchar](512) NULL,
 	[Enabled] [bit] NOT NULL,
@@ -347,8 +580,8 @@ GO
 CREATE TABLE [dbo].[C_SubDeviceType](
 	[Id] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[Desc] [varchar](512) NULL,
 	[DeviceTypeId] [varchar](100) NOT NULL,
+	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_SubDeviceType] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -449,6 +682,284 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_ACDistBox]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_ACDistBox]') AND type in (N'U'))
+DROP TABLE [dbo].[D_ACDistBox]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_ACDistBox](
+	[DeviceID] [varchar](100) NOT NULL,
+	[TotalCap] [varchar](20) NOT NULL,
+	[OutputPortNumber] [int] NOT NULL,
+ CONSTRAINT [PK_D_ACDistBox] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_AirCondHost]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_AirCondHost]') AND type in (N'U'))
+DROP TABLE [dbo].[D_AirCondHost]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_AirCondHost](
+	[DeviceID] [varchar](100) NOT NULL,
+	[MakeCoolCap] [varchar](20) NOT NULL,
+	[WorkID] [int] NOT NULL,
+	[InputRatedPower] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_AirCondHost] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_AirCondWindCabi]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCabi]') AND type in (N'U'))
+DROP TABLE [dbo].[D_AirCondWindCabi]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_AirCondWindCabi](
+	[DeviceID] [varchar](100) NOT NULL,
+	[InputRatedPower] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_AirCondWindCabi] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_AirCondWindCool]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCool]') AND type in (N'U'))
+DROP TABLE [dbo].[D_AirCondWindCool]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_AirCondWindCool](
+	[DeviceID] [varchar](100) NOT NULL,
+	[InputRatedPower] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_AirCondWindCool] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_BattGroup]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_BattGroup]') AND type in (N'U'))
+DROP TABLE [dbo].[D_BattGroup]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_BattGroup](
+	[DeviceID] [varchar](100) NOT NULL,
+	[SingGroupCap] [varchar](20) NOT NULL,
+	[SingVoltGrade] [int] NOT NULL,
+	[SingGroupBattNumber] [int] NOT NULL,
+ CONSTRAINT [PK_D_BattGroup] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_BattTempBox]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_BattTempBox]') AND type in (N'U'))
+DROP TABLE [dbo].[D_BattTempBox]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_BattTempBox](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedMakeCoolCap] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_BattTempBox] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_ChangeHeat]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_ChangeHeat]') AND type in (N'U'))
+DROP TABLE [dbo].[D_ChangeHeat]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_ChangeHeat](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_ChangeHeat] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_CombSwitElecSour]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_CombSwitElecSour]') AND type in (N'U'))
+DROP TABLE [dbo].[D_CombSwitElecSour]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_CombSwitElecSour](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedOutputVolt] [float] NOT NULL,
+	[MoniModuleModel] [varchar](20) NOT NULL,
+	[ExisRModuleCount] [varchar](20) NOT NULL,
+	[RModuleModel] [varchar](20) NOT NULL,
+	[RModuleRatedWorkVolt] [int] NOT NULL,
+	[SingRModuleRatedOPCap] [varchar](20) NOT NULL,
+	[SingGBattGFuseCap] [varchar](20) NOT NULL,
+	[BattGFuseGNumber] [int] NOT NULL,
+	[OrCanSecoDownPower] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_CombSwitElecSour] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_ControlEqui]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_ControlEqui]') AND type in (N'U'))
+DROP TABLE [dbo].[D_ControlEqui]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_ControlEqui](
+	[DeviceID] [varchar](100) NOT NULL,
+	[DeviceIP] [varchar](20) NULL,
+ CONSTRAINT [PK_D_ControlEqui] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_DCDistBox]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_DCDistBox]') AND type in (N'U'))
+DROP TABLE [dbo].[D_DCDistBox]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_DCDistBox](
+	[DeviceID] [varchar](100) NOT NULL,
+	[TotalCap] [varchar](20) NOT NULL,
+	[OutputPortNumber] [int] NULL,
+ CONSTRAINT [PK_D_DCDistBox] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[D_Device]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Device]') AND type in (N'U'))
 DROP TABLE [dbo].[D_Device]
@@ -487,6 +998,71 @@ CREATE TABLE [dbo].[D_Device](
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_DivSwitElecSour]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_DivSwitElecSour]') AND type in (N'U'))
+DROP TABLE [dbo].[D_DivSwitElecSour]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_DivSwitElecSour](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedOutputVolt] [float] NOT NULL,
+	[MoniModuleModel] [varchar](20) NOT NULL,
+	[ExisRModuleCount] [varchar](20) NOT NULL,
+	[RModuleModel] [varchar](20) NOT NULL,
+	[RModuleRatedWorkVolt] [int] NOT NULL,
+	[SingRModuleRatedOPCap] [varchar](20) NOT NULL,
+	[SingGBattGFuseCap] [varchar](20) NOT NULL,
+	[BattGFuseGNumber] [int] NOT NULL,
+	[OPDistBoardModel] [varchar](20) NOT NULL,
+	[OPDistBoardNumber] [int] NOT NULL,
+ CONSTRAINT [PK_D_DivSwitElecSour] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_ElecSourCabi]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_ElecSourCabi]') AND type in (N'U'))
+DROP TABLE [dbo].[D_ElecSourCabi]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_ElecSourCabi](
+	[DeviceID] [varchar](100) NOT NULL,
+	[ChangeSwitchCap] [varchar](20) NOT NULL,
+	[SwitchingObjectID] [int] NOT NULL,
+ CONSTRAINT [PK_D_ElecSourCabi] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
 GO
 
 SET ANSI_PADDING OFF
@@ -506,17 +1082,639 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[D_FSU](
-	[DeviceId] [varchar](100) NOT NULL,
-	[Uid] [varchar](20) NULL,
-	[Pwd] [varchar](20) NULL,
-	[FtpUid] [varchar](20) NULL,
-	[FtpPwd] [varchar](20) NULL,
+	[DeviceID] [varchar](100) NOT NULL,
+	[Code] [varchar](100) NULL,
+	[IP] [varchar](20) NULL,
+	[Port] [int] NULL,
+	[UID] [varchar](20) NULL,
+	[PWD] [varchar](20) NULL,
+	[FtpUID] [varchar](20) NULL,
+	[FtpPWD] [varchar](20) NULL,
 	[FtpFilePath] [varchar](20) NULL,
 	[FtpAuthority] [int] NULL,
+	[ChangeTime] [datetime] NOT NULL,
+	[LastTime] [datetime] NOT NULL,
+	[Status] [bit] NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
-	[DeviceId] ASC
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_GeneratorGroup]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_GeneratorGroup]') AND type in (N'U'))
+DROP TABLE [dbo].[D_GeneratorGroup]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_GeneratorGroup](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedWorkVolt] [varchar](20) NOT NULL,
+	[RunTypeID] [int] NOT NULL,
+	[CoolingTypeID] [int] NOT NULL,
+	[RunBattModel] [varchar](40) NOT NULL,
+	[RunBattGroupNum] [int] NOT NULL,
+	[RunBattCap] [int] NOT NULL,
+	[OilBoxVolume] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_GeneratorGroup] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_HighVoltDistBox]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_HighVoltDistBox]') AND type in (N'U'))
+DROP TABLE [dbo].[D_HighVoltDistBox]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_HighVoltDistBox](
+	[DeviceID] [varchar](100) NOT NULL,
+	[SysRatedCap] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_HighVoltDistBox] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_Inverter]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Inverter]') AND type in (N'U'))
+DROP TABLE [dbo].[D_Inverter]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_Inverter](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[InputRatedVolt] [varchar](20) NOT NULL,
+	[OutputRatedVolt] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_Inverter] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_LowDistCabinet]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_LowDistCabinet]') AND type in (N'U'))
+DROP TABLE [dbo].[D_LowDistCabinet]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_LowDistCabinet](
+	[DeviceID] [varchar](100) NOT NULL,
+	[SysRatedCapacity] [varchar](30) NOT NULL,
+	[SingelCapacity] [varchar](30) NOT NULL,
+	[CapGroupNumber] [int] NOT NULL,
+	[CapNumber] [int] NOT NULL,
+	[OutputPortNumber] [int] NULL,
+ CONSTRAINT [PK_D_LowDistCabinet] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_Manostat]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Manostat]') AND type in (N'U'))
+DROP TABLE [dbo].[D_Manostat]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_Manostat](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_Manostat] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_MobiGenerator]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_MobiGenerator]') AND type in (N'U'))
+DROP TABLE [dbo].[D_MobiGenerator]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_MobiGenerator](
+	[DeviceID] [varchar](100) NOT NULL,
+	[SourceID] [int] NOT NULL,
+	[OilEngiTypeID] [int] NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedWorkVolt] [varchar](20) NOT NULL,
+	[PhasesTypeID] [int] NOT NULL,
+ CONSTRAINT [PK_D_MobiGenerator] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_OrdiAirCond]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_OrdiAirCond]') AND type in (N'U'))
+DROP TABLE [dbo].[D_OrdiAirCond]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_OrdiAirCond](
+	[DeviceID] [varchar](100) NOT NULL,
+	[MakeCoolCap] [varchar](20) NOT NULL,
+	[MakeHotCap] [varchar](20) NOT NULL,
+	[InputRatedPower] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_OrdiAirCond] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_RedefinePoint]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]') AND type in (N'U'))
+DROP TABLE [dbo].[D_RedefinePoint]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_RedefinePoint](
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[AlarmLevel] [int] NOT NULL,
+	[AlarmLimit] [float] NULL,
+	[AlarmReturnDiff] [float] NULL,
+	[AlarmRecoveryDelay] [int] NULL,
+	[TriggerTypeId] [int] NULL,
+	[SavedPeriod] [int] NULL,
+	[AbsoluteThreshold] [float] NULL,
+	[PerThreshold] [float] NULL,
+	[StaticePeriod] [int] NULL,
+	[Extend] [varchar](max) NULL,
+ CONSTRAINT [PK_D_RedefinePoint] PRIMARY KEY CLUSTERED 
+(
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_SolarController]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_SolarController]') AND type in (N'U'))
+DROP TABLE [dbo].[D_SolarController]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_SolarController](
+	[DeviceID] [varchar](100) NOT NULL,
+	[DownHangSunBoardNumber] [int] NOT NULL,
+	[OutputRatedCap] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_SolarController] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_SolarEqui]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_SolarEqui]') AND type in (N'U'))
+DROP TABLE [dbo].[D_SolarEqui]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_SolarEqui](
+	[DeviceID] [varchar](100) NOT NULL,
+	[SolarBoardRatedPower] [varchar](20) NOT NULL,
+	[OutputVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_SolarEqui] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_SpecAirCond]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_SpecAirCond]') AND type in (N'U'))
+DROP TABLE [dbo].[D_SpecAirCond]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_SpecAirCond](
+	[DeviceID] [varchar](100) NOT NULL,
+	[MakeCoolCap] [varchar](20) NOT NULL,
+	[MakeHotCap] [varchar](20) NOT NULL,
+	[InputRatedPower] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_SpecAirCond] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_SwitchFuse]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_SwitchFuse]') AND type in (N'U'))
+DROP TABLE [dbo].[D_SwitchFuse]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_SwitchFuse](
+	[DeviceID] [varchar](100) NOT NULL,
+	[TermSeriesID] [int] NOT NULL,
+	[ElecModeID] [int] NOT NULL,
+	[RatedCap] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+	[OPCableCode] [varchar](20) NULL,
+	[OPCableName] [varchar](40) NOT NULL,
+	[OPCableModel] [varchar](40) NOT NULL,
+	[OPCableCap] [varchar](20) NOT NULL,
+	[DownDevName] [varchar](40) NOT NULL,
+	[DownDevSFName] [varchar](40) NOT NULL,
+ CONSTRAINT [PK_D_SwitchFuse] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_Transformer]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Transformer]') AND type in (N'U'))
+DROP TABLE [dbo].[D_Transformer]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_Transformer](
+	[DeviceID] [varchar](100) NOT NULL,
+	[TypeID] [int] NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedInputVolt] [varchar](20) NOT NULL,
+	[RatedOutputVolt] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_Transformer] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_UPS]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_UPS]') AND type in (N'U'))
+DROP TABLE [dbo].[D_UPS]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_UPS](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedOutputVolt] [int] NOT NULL,
+	[WorkID] [int] NOT NULL,
+ CONSTRAINT [PK_D_UPS] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_Ventilation]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Ventilation]') AND type in (N'U'))
+DROP TABLE [dbo].[D_Ventilation]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_Ventilation](
+	[DeviceID] [varchar](100) NOT NULL,
+	[RatedPower] [varchar](20) NOT NULL,
+	[RatedVolt] [int] NOT NULL,
+ CONSTRAINT [PK_D_Ventilation] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_WindEnerEqui]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_WindEnerEqui]') AND type in (N'U'))
+DROP TABLE [dbo].[D_WindEnerEqui]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_WindEnerEqui](
+	[DeviceID] [varchar](100) NOT NULL,
+	[FanRatedPower] [varchar](20) NOT NULL,
+	[OutputPowerVolt] [int] NOT NULL,
+	[FanTypeID] [int] NOT NULL,
+ CONSTRAINT [PK_D_WindEnerEqui] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_WindLightCompCon]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_WindLightCompCon]') AND type in (N'U'))
+DROP TABLE [dbo].[D_WindLightCompCon]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_WindLightCompCon](
+	[DeviceID] [varchar](100) NOT NULL,
+	[DownHangSunBoardNumber] [int] NOT NULL,
+	[DownHangFanNumber] [int] NOT NULL,
+	[OutputRatedCap] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_WindLightCompCon] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_WindPowerCon]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_WindPowerCon]') AND type in (N'U'))
+DROP TABLE [dbo].[D_WindPowerCon]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_WindPowerCon](
+	[DeviceID] [varchar](100) NOT NULL,
+	[DownFanNumber] [varchar](20) NOT NULL,
+	[OutputRatedCap] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_D_WindPowerCon] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[H_DBScript]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_DBScript]') AND type in (N'U'))
+DROP TABLE [dbo].[H_DBScript]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[H_DBScript](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NULL,
+	[CreateTime] [datetime] NULL,
+	[ExecuteTime] [datetime] NULL,
+	[Desc] [varchar](512) NULL,
+	[Type] [int] NULL,
+	[CreateName] [varchar](200) NULL,
+ CONSTRAINT [PK_H_DBScript] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[H_OpEvent]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_OpEvent]') AND type in (N'U'))
+DROP TABLE [dbo].[H_OpEvent]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[H_OpEvent](
+	[ID] [varchar](100) NOT NULL,
+	[UserID] [varchar](100) NULL,
+	[NodeID] [varchar](100) NULL,
+	[NodeTable] [varchar](40) NULL,
+	[OpType] [int] NULL,
+	[OpTime] [datetime] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_H_OpEvent] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[H_Sync]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_Sync]') AND type in (N'U'))
+DROP TABLE [dbo].[H_Sync]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[H_Sync](
+	[ID] [varchar](100) NOT NULL,
+	[NodeID] [varchar](100) NULL,
+	[NodeType] [int] NULL,
+	[ModifyType] [int] NULL,
+	[ModifyTime] [datetime] NULL,
+ CONSTRAINT [PK_H_Sync] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -564,7 +1762,7 @@ CREATE TABLE [dbo].[P_Point](
 	[Extend1] [varchar](512) NULL,
 	[Extend2] [varchar](512) NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NULL,
+	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_P_Point] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -726,6 +1924,40 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[Sys_Menu]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Sys_Menu]') AND type in (N'U'))
+DROP TABLE [dbo].[Sys_Menu]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Sys_Menu](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[ParentID] [varchar](100) NULL,
+	[Type] [int] NOT NULL,
+	[Name] [varchar](200) NULL,
+	[NameImg] [varchar](100) NULL,
+	[Url] [varchar](200) NULL,
+	[Index] [int] NULL,
+	[CreateTime] [datetime] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_Sys_Menu] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[U_Employee]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Employee]') AND type in (N'U'))
 DROP TABLE [dbo].[U_Employee]
@@ -775,4 +2007,611 @@ CREATE TABLE [dbo].[U_Employee](
 GO
 
 SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_MenusInRole]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]') AND type in (N'U'))
+DROP TABLE [dbo].[U_MenusInRole]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_MenusInRole](
+	[RoleID] [varchar](100) NOT NULL,
+	[MenuID] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_U_MenusInRole] PRIMARY KEY NONCLUSTERED 
+(
+	[RoleID] ASC,
+	[MenuID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_Role]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Role]') AND type in (N'U'))
+DROP TABLE [dbo].[U_Role]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_Role](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[Authority] [varchar](300) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_U_Role] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_User]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_User]') AND type in (N'U'))
+DROP TABLE [dbo].[U_User]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_User](
+	[ID] [varchar](100) NOT NULL,
+	[EmpID] [varchar](100) NULL,
+	[Enabled] [bit] NOT NULL,
+	[UID] [varchar](100) NOT NULL,
+	[PWD] [varchar](128) NOT NULL,
+	[PwdFormat] [int] NOT NULL,
+	[PwdSalt] [varchar](128) NOT NULL,
+	[RoleID] [varchar](100) NOT NULL,
+	[OnlineTime] [datetime] NULL,
+	[LimitTime] [datetime] NOT NULL,
+	[CreateTime] [datetime] NOT NULL,
+	[LastLoginTime] [datetime] NULL,
+	[LastPwdChangedTime] [datetime] NULL,
+	[FailedPwdAttemptCount] [int] NOT NULL,
+	[FailedPwdTime] [datetime] NULL,
+	[IsLockedOut] [bit] NOT NULL,
+	[LastLockoutTime] [datetime] NULL,
+	[Remark] [varchar](512) NULL,
+ CONSTRAINT [PK_U_User] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+
+
+
+
+
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[C_LogicType]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_LogicType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_LogicType]'))
+ALTER TABLE [dbo].[C_LogicType]  WITH CHECK ADD  CONSTRAINT [FK_C_LogicType_C_DeviceType] FOREIGN KEY([DeviceTypeId])
+REFERENCES [dbo].[C_DeviceType] ([Id])
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_LogicType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_LogicType]'))
+ALTER TABLE [dbo].[C_LogicType] CHECK CONSTRAINT [FK_C_LogicType_C_DeviceType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[C_SubDeviceType]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubDeviceType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubDeviceType]'))
+ALTER TABLE [dbo].[C_SubDeviceType]  WITH CHECK ADD  CONSTRAINT [FK_C_SubDeviceType_C_DeviceType] FOREIGN KEY([DeviceTypeId])
+REFERENCES [dbo].[C_DeviceType] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubDeviceType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubDeviceType]'))
+ALTER TABLE [dbo].[C_SubDeviceType] CHECK CONSTRAINT [FK_C_SubDeviceType_C_DeviceType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[C_SubLogicType]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubLogicType_C_LogicType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubLogicType]'))
+ALTER TABLE [dbo].[C_SubLogicType]  WITH NOCHECK ADD  CONSTRAINT [FK_C_SubLogicType_C_LogicType] FOREIGN KEY([LogicTypeId])
+REFERENCES [dbo].[C_LogicType] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubLogicType_C_LogicType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubLogicType]'))
+ALTER TABLE [dbo].[C_SubLogicType] CHECK CONSTRAINT [FK_C_SubLogicType_C_LogicType]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_ACDistBox]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ACDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ACDistBox]'))
+ALTER TABLE [dbo].[D_ACDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_ACDistBox_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ACDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ACDistBox]'))
+ALTER TABLE [dbo].[D_ACDistBox] CHECK CONSTRAINT [FK_D_ACDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_AirCondHost]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondHost_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondHost]'))
+ALTER TABLE [dbo].[D_AirCondHost]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondHost_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondHost_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondHost]'))
+ALTER TABLE [dbo].[D_AirCondHost] CHECK CONSTRAINT [FK_D_AirCondHost_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_AirCondWindCabi]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCabi]'))
+ALTER TABLE [dbo].[D_AirCondWindCabi]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondWindCabi_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCabi]'))
+ALTER TABLE [dbo].[D_AirCondWindCabi] CHECK CONSTRAINT [FK_D_AirCondWindCabi_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_AirCondWindCool]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCool_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCool]'))
+ALTER TABLE [dbo].[D_AirCondWindCool]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondWindCool_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_AirCondWindCool_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_AirCondWindCool]'))
+ALTER TABLE [dbo].[D_AirCondWindCool] CHECK CONSTRAINT [FK_D_AirCondWindCool_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_BattGroup]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattGroup]'))
+ALTER TABLE [dbo].[D_BattGroup]  WITH CHECK ADD  CONSTRAINT [FK_D_BattGroup_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattGroup]'))
+ALTER TABLE [dbo].[D_BattGroup] CHECK CONSTRAINT [FK_D_BattGroup_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_BattTempBox]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattTempBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattTempBox]'))
+ALTER TABLE [dbo].[D_BattTempBox]  WITH CHECK ADD  CONSTRAINT [FK_D_BattTempBox_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_BattTempBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_BattTempBox]'))
+ALTER TABLE [dbo].[D_BattTempBox] CHECK CONSTRAINT [FK_D_BattTempBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_ChangeHeat]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ChangeHeat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ChangeHeat]'))
+ALTER TABLE [dbo].[D_ChangeHeat]  WITH CHECK ADD  CONSTRAINT [FK_D_ChangeHeat_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ChangeHeat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ChangeHeat]'))
+ALTER TABLE [dbo].[D_ChangeHeat] CHECK CONSTRAINT [FK_D_ChangeHeat_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_CombSwitElecSour]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_CombSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_CombSwitElecSour]'))
+ALTER TABLE [dbo].[D_CombSwitElecSour]  WITH CHECK ADD  CONSTRAINT [FK_D_CombSwitElecSour_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_CombSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_CombSwitElecSour]'))
+ALTER TABLE [dbo].[D_CombSwitElecSour] CHECK CONSTRAINT [FK_D_CombSwitElecSour_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_ControlEqui]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ControlEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ControlEqui]'))
+ALTER TABLE [dbo].[D_ControlEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_ControlEqui_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ControlEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ControlEqui]'))
+ALTER TABLE [dbo].[D_ControlEqui] CHECK CONSTRAINT [FK_D_ControlEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_DCDistBox]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DCDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DCDistBox]'))
+ALTER TABLE [dbo].[D_DCDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_DCDistBox_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DCDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DCDistBox]'))
+ALTER TABLE [dbo].[D_DCDistBox] CHECK CONSTRAINT [FK_D_DCDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Device]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Device_S_Room]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Device]'))
+ALTER TABLE [dbo].[D_Device]  WITH CHECK ADD  CONSTRAINT [FK_D_Device_S_Room] FOREIGN KEY([RoomId])
+REFERENCES [dbo].[S_Room] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Device_S_Room]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Device]'))
+ALTER TABLE [dbo].[D_Device] CHECK CONSTRAINT [FK_D_Device_S_Room]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_DivSwitElecSour]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DivSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DivSwitElecSour]'))
+ALTER TABLE [dbo].[D_DivSwitElecSour]  WITH CHECK ADD  CONSTRAINT [FK_D_DivSwitElecSour_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_DivSwitElecSour_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_DivSwitElecSour]'))
+ALTER TABLE [dbo].[D_DivSwitElecSour] CHECK CONSTRAINT [FK_D_DivSwitElecSour_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_ElecSourCabi]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ElecSourCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ElecSourCabi]'))
+ALTER TABLE [dbo].[D_ElecSourCabi]  WITH CHECK ADD  CONSTRAINT [FK_D_ElecSourCabi_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ElecSourCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ElecSourCabi]'))
+ALTER TABLE [dbo].[D_ElecSourCabi] CHECK CONSTRAINT [FK_D_ElecSourCabi_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_FSU]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_FSU_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_FSU]'))
+ALTER TABLE [dbo].[D_FSU]  WITH CHECK ADD  CONSTRAINT [FK_D_FSU_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_FSU_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_FSU]'))
+ALTER TABLE [dbo].[D_FSU] CHECK CONSTRAINT [FK_D_FSU_D_Device]
+GO
+
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_GeneratorGroup]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_GeneratorGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_GeneratorGroup]'))
+ALTER TABLE [dbo].[D_GeneratorGroup]  WITH CHECK ADD  CONSTRAINT [FK_D_GeneratorGroup_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_GeneratorGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_GeneratorGroup]'))
+ALTER TABLE [dbo].[D_GeneratorGroup] CHECK CONSTRAINT [FK_D_GeneratorGroup_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_HighVoltDistBox]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_HighVoltDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_HighVoltDistBox]'))
+ALTER TABLE [dbo].[D_HighVoltDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_HighVoltDistBox_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_HighVoltDistBox_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_HighVoltDistBox]'))
+ALTER TABLE [dbo].[D_HighVoltDistBox] CHECK CONSTRAINT [FK_D_HighVoltDistBox_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Inverter]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Inverter_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Inverter]'))
+ALTER TABLE [dbo].[D_Inverter]  WITH CHECK ADD  CONSTRAINT [FK_D_Inverter_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Inverter_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Inverter]'))
+ALTER TABLE [dbo].[D_Inverter] CHECK CONSTRAINT [FK_D_Inverter_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_LowDistCabinet]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_LowDistCabinet_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_LowDistCabinet]'))
+ALTER TABLE [dbo].[D_LowDistCabinet]  WITH CHECK ADD  CONSTRAINT [FK_D_LowDistCabinet_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_LowDistCabinet_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_LowDistCabinet]'))
+ALTER TABLE [dbo].[D_LowDistCabinet] CHECK CONSTRAINT [FK_D_LowDistCabinet_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Manostat]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Manostat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Manostat]'))
+ALTER TABLE [dbo].[D_Manostat]  WITH CHECK ADD  CONSTRAINT [FK_D_Manostat_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Manostat_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Manostat]'))
+ALTER TABLE [dbo].[D_Manostat] CHECK CONSTRAINT [FK_D_Manostat_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_MobiGenerator]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_MobiGenerator_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_MobiGenerator]'))
+ALTER TABLE [dbo].[D_MobiGenerator]  WITH CHECK ADD  CONSTRAINT [FK_D_MobiGenerator_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_MobiGenerator_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_MobiGenerator]'))
+ALTER TABLE [dbo].[D_MobiGenerator] CHECK CONSTRAINT [FK_D_MobiGenerator_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_OrdiAirCond]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_OrdiAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_OrdiAirCond]'))
+ALTER TABLE [dbo].[D_OrdiAirCond]  WITH CHECK ADD  CONSTRAINT [FK_D_OrdiAirCond_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_OrdiAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_OrdiAirCond]'))
+ALTER TABLE [dbo].[D_OrdiAirCond] CHECK CONSTRAINT [FK_D_OrdiAirCond_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_SolarController]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarController_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarController]'))
+ALTER TABLE [dbo].[D_SolarController]  WITH CHECK ADD  CONSTRAINT [FK_D_SolarController_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarController_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarController]'))
+ALTER TABLE [dbo].[D_SolarController] CHECK CONSTRAINT [FK_D_SolarController_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_SolarEqui]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarEqui]'))
+ALTER TABLE [dbo].[D_SolarEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_SolarEqui_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarEqui]'))
+ALTER TABLE [dbo].[D_SolarEqui] CHECK CONSTRAINT [FK_D_SolarEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_SpecAirCond]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SpecAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SpecAirCond]'))
+ALTER TABLE [dbo].[D_SpecAirCond]  WITH CHECK ADD  CONSTRAINT [FK_D_SpecAirCond_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SpecAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SpecAirCond]'))
+ALTER TABLE [dbo].[D_SpecAirCond] CHECK CONSTRAINT [FK_D_SpecAirCond_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_SwitchFuse]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SwitchFuse_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SwitchFuse]'))
+ALTER TABLE [dbo].[D_SwitchFuse]  WITH CHECK ADD  CONSTRAINT [FK_D_SwitchFuse_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SwitchFuse_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SwitchFuse]'))
+ALTER TABLE [dbo].[D_SwitchFuse] CHECK CONSTRAINT [FK_D_SwitchFuse_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Transformer]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Transformer_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Transformer]'))
+ALTER TABLE [dbo].[D_Transformer]  WITH CHECK ADD  CONSTRAINT [FK_D_Transformer_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Transformer_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Transformer]'))
+ALTER TABLE [dbo].[D_Transformer] CHECK CONSTRAINT [FK_D_Transformer_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_UPS]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_UPS_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_UPS]'))
+ALTER TABLE [dbo].[D_UPS]  WITH CHECK ADD  CONSTRAINT [FK_D_UPS_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_UPS_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_UPS]'))
+ALTER TABLE [dbo].[D_UPS] CHECK CONSTRAINT [FK_D_UPS_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Ventilation]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Ventilation_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Ventilation]'))
+ALTER TABLE [dbo].[D_Ventilation]  WITH CHECK ADD  CONSTRAINT [FK_D_Ventilation_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Ventilation_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Ventilation]'))
+ALTER TABLE [dbo].[D_Ventilation] CHECK CONSTRAINT [FK_D_Ventilation_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_WindEnerEqui]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindEnerEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindEnerEqui]'))
+ALTER TABLE [dbo].[D_WindEnerEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_WindEnerEqui_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindEnerEqui_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindEnerEqui]'))
+ALTER TABLE [dbo].[D_WindEnerEqui] CHECK CONSTRAINT [FK_D_WindEnerEqui_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_WindLightCompCon]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindLightCompCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindLightCompCon]'))
+ALTER TABLE [dbo].[D_WindLightCompCon]  WITH CHECK ADD  CONSTRAINT [FK_D_WindLightCompCon_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindLightCompCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindLightCompCon]'))
+ALTER TABLE [dbo].[D_WindLightCompCon] CHECK CONSTRAINT [FK_D_WindLightCompCon_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_WindPowerCon]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindPowerCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindPowerCon]'))
+ALTER TABLE [dbo].[D_WindPowerCon]  WITH CHECK ADD  CONSTRAINT [FK_D_WindPowerCon_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_WindPowerCon_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_WindPowerCon]'))
+ALTER TABLE [dbo].[D_WindPowerCon] CHECK CONSTRAINT [FK_D_WindPowerCon_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[P_PointsInProtocol]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Point] FOREIGN KEY([PointId])
+REFERENCES [dbo].[P_Point] ([Id])
+ON UPDATE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol] CHECK CONSTRAINT [FK_P_PointsInProtocol_P_Point]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Protocol]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Protocol] FOREIGN KEY([ProtocolId])
+REFERENCES [dbo].[P_Protocol] ([Id])
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Protocol]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
+ALTER TABLE [dbo].[P_PointsInProtocol] CHECK CONSTRAINT [FK_P_PointsInProtocol_P_Protocol]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[S_Room]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Room_S_Station]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Room]'))
+ALTER TABLE [dbo].[S_Room]  WITH CHECK ADD  CONSTRAINT [FK_S_Room_S_Station] FOREIGN KEY([StationId])
+REFERENCES [dbo].[S_Station] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Room_S_Station]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Room]'))
+ALTER TABLE [dbo].[S_Room] CHECK CONSTRAINT [FK_S_Room_S_Station]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[S_Station]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Station_A_Area]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Station]'))
+ALTER TABLE [dbo].[S_Station]  WITH CHECK ADD  CONSTRAINT [FK_S_Station_A_Area] FOREIGN KEY([AreaId])
+REFERENCES [dbo].[A_Area] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_S_Station_A_Area]') AND parent_object_id = OBJECT_ID(N'[dbo].[S_Station]'))
+ALTER TABLE [dbo].[S_Station] CHECK CONSTRAINT [FK_S_Station_A_Area]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[U_MenusInRole]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_MenusInRole_U_Role]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]'))
+ALTER TABLE [dbo].[U_MenusInRole]  WITH CHECK ADD  CONSTRAINT [FK_U_MenusInRole_U_Role] FOREIGN KEY([RoleID])
+REFERENCES [dbo].[U_Role] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_MenusInRole_U_Role]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]'))
+ALTER TABLE [dbo].[U_MenusInRole] CHECK CONSTRAINT [FK_U_MenusInRole_U_Role]
 GO

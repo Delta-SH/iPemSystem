@@ -17,11 +17,15 @@ Ext.define("Ext.ux.AlarmLevelMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetAlarmLevels';
         me.callParent(arguments);
-        me.store.load();
+        me.store.load({
+            scope: me,
+            params: { all: me.all }
+        });
     }
 });
 
@@ -38,12 +42,14 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetAlarmLevels';
         me.callParent(arguments);
         me.store.load({
             scope: me,
+            params: { all: me.all },
             callback: function (records, operation, success) {
                 if (success && records.length > 0)
                     me.select(records[0]);

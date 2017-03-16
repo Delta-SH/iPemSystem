@@ -183,7 +183,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAlarmLevels(int start, int limit) {
+        public JsonResult GetAlarmLevels(int start, int limit, bool all = false) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,
                 message = "No data",
@@ -193,7 +193,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(EnmLevel level in Enum.GetValues(typeof(EnmLevel))) {
-                    if(level == EnmLevel.Level0) continue;
+                    if(level == EnmLevel.Level0 && !all) continue;
                     data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetAlarmLevelDisplay(level) });
                 }
 

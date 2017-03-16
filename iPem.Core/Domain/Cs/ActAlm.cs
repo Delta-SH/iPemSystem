@@ -8,6 +8,11 @@ namespace iPem.Core.Domain.Cs {
         /// Gets or sets the identifier
         /// </summary>
         public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm identifier
+        /// </summary>
+        public string SerialNo { get; set; }
         
         /// <summary>
         /// Gets or sets the area identifier
@@ -40,58 +45,53 @@ namespace iPem.Core.Domain.Cs {
         public string PointId { get; set; }
 
         /// <summary>
-        /// Gets or sets the alarm flag
+        /// Gets or sets the signal identifier
         /// </summary>
-        public EnmFlag AlmFlag { get; set; }
+        public string SignalId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the signal number
+        /// </summary>
+        public string SignalNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets the nmalarm identifier
+        /// </summary>
+        public string NMAlarmId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm datetime
+        /// </summary>
+        public DateTime AlarmTime { get; set; }
 
         /// <summary>
         /// Gets or sets the alarm level
         /// </summary>
-        public EnmLevel AlmLevel { get; set; }
+        public EnmLevel AlarmLevel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm flag
+        /// </summary>
+        public EnmFlag AlarmFlag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm descripetion
+        /// </summary>
+        public string AlarmDesc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm value
+        /// </summary>
+        public double AlarmValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the alarm remark
+        /// </summary>
+        public string AlarmRemark { get; set; }
 
         /// <summary>
         /// Gets or sets the frequency
         /// </summary>
         public int Frequency { get; set; }
-
-        /// <summary>
-        /// Gets or sets the alarm descripetion
-        /// </summary>
-        public string AlmDesc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the normal descripretion
-        /// </summary>
-        public string NormalDesc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the start datetime
-        /// </summary>
-        public DateTime StartTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the end datetime
-        /// </summary>
-        public DateTime EndTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets the start value
-        /// </summary>
-        public double StartValue { get; set; }
-
-        /// <summary>
-        /// Gets or sets the end value
-        /// </summary>
-        public double EndValue { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value unit
-        /// </summary>
-        public string ValueUnit { get; set; }
-
-        /// <summary>
-        /// Gets or sets the end type
-        /// </summary>
-        public EnmAlarmEndType EndType { get; set; }
     }
 }

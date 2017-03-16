@@ -1870,51 +1870,32 @@ window.$$iPems.deleteAtCursor = function (target) {
 
 //global tasks
 window.$$iPems.Tasks = {
-    noticeTask: Ext.util.TaskManager.newTask({
+    badgeTask: Ext.util.TaskManager.newTask({
         run: function () {
             Ext.Ajax.request({
-                url: '/Home/GetNoticesCount',
+                url: '/Home/GetBadges',
                 preventWindow: true,
                 success: function (response, options) {
                     var data = Ext.decode(response.responseText, true);
                     if (data.success) {
-                        var count = data.data,
-                            tips = Ext.get('noticeCount');
+                        var me = data.data;
+                        if (!Ext.isEmpty(me)) {
+                            var ntetip = Ext.get('noticeCount'),
+                                almtip = Ext.get('actAlmCount');
 
-                        if (!Ext.isEmpty(tips)) {
-                            tips.setHTML(count > 99 ? '99+' : count);
-                            tips.setDisplayed(count > 0);
+                            if (!Ext.isEmpty(ntetip)) {
+                                ntetip.setHTML(me.notices > 99 ? '99+' : me.notices);
+                                ntetip.setDisplayed(me.notices > 0);
+                            }
 
-                            //restart
-                            $$iPems.Tasks.noticeTask.fireOnStart = false;
-                            $$iPems.Tasks.noticeTask.restart();
-                        }
-                    }
-                }
-            });
-        },
-        fireOnStart: true,
-        interval: 15000,
-        repeat: 1
-    }),
-    actAlmNoticeTask: Ext.util.TaskManager.newTask({
-        run: function () {
-            Ext.Ajax.request({
-                url: '/Home/GetActAlmCount',
-                preventWindow: true,
-                success: function (response, options) {
-                    var data = Ext.decode(response.responseText, true);
-                    if (data.success) {
-                        var count = data.data,
-                            tips = Ext.get('actAlmCount');
-
-                        if (!Ext.isEmpty(tips)) {
-                            tips.setHTML(count > 99 ? '99+' : count);
-                            tips.setDisplayed(count > 0);
+                            if (!Ext.isEmpty(almtip)) {
+                                almtip.setHTML(me.alarms > 99 ? '99+' : me.alarms);
+                                almtip.setDisplayed(me.alarms > 0);
+                            }
 
                             //restart
-                            $$iPems.Tasks.actAlmNoticeTask.fireOnStart = false;
-                            $$iPems.Tasks.actAlmNoticeTask.restart();
+                            $$iPems.Tasks.badgeTask.fireOnStart = false;
+                            $$iPems.Tasks.badgeTask.restart();
                         }
                     }
                 }
@@ -1980,8 +1961,7 @@ Ext.onReady(function () {
     Ext.tip.QuickTipManager.init();
 
     //start tasks
-    $$iPems.Tasks.noticeTask.start();
-    $$iPems.Tasks.actAlmNoticeTask.start();
+    $$iPems.Tasks.badgeTask.start();
 
     /*home page*/
     var _titlebar = Ext.create('Ext.panel.Panel', {
@@ -2138,11 +2118,15 @@ Ext.define("Ext.ux.AlarmLevelMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetAlarmLevels';
         me.callParent(arguments);
-        me.store.load();
+        me.store.load({
+            scope: me,
+            params: {all: me.all}
+        });
     }
 });
 
@@ -2159,12 +2143,14 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetAlarmLevels';
         me.callParent(arguments);
         me.store.load({
             scope: me,
+            params: {all: me.all},
             callback: function (records, operation, success) {
                 if (success && records.length > 0)
                     me.select(records[0]);

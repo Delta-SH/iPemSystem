@@ -41,7 +41,6 @@ namespace iPem.Site.Controllers {
         private readonly IActAlmService _actAlmService;
         private readonly IPointService _pointService;
         private readonly IFsuService _fsuService;
-        private readonly IFsuKeyService _fsuKeyService;
         private readonly IHisElecService _hisElecService;
 
         #endregion
@@ -63,7 +62,6 @@ namespace iPem.Site.Controllers {
             IActAlmService actAlmService,
             IPointService pointService,
             IFsuService fsuService,
-            IFsuKeyService fsuKeyService,
             IHisElecService hisElecService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -79,7 +77,6 @@ namespace iPem.Site.Controllers {
             this._actAlmService = actAlmService;
             this._pointService = pointService;
             this._fsuService = fsuService;
-            this._fsuKeyService = fsuKeyService;
             this._hisElecService = hisElecService;
         }
 
@@ -97,6 +94,7 @@ namespace iPem.Site.Controllers {
             ViewBag.MenuVisible = false;
             ViewBag.Control = _workContext.Operations.Contains(EnmOperation.Control);
             ViewBag.Adjust = _workContext.Operations.Contains(EnmOperation.Adjust);
+            ViewBag.Threshold = _workContext.Operations.Contains(EnmOperation.Threshold);
             return View();
         }
 
@@ -123,6 +121,42 @@ namespace iPem.Site.Controllers {
 
         public ActionResult Speech() {
             return View();
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetBadges() {
+            var data = new AjaxDataModel<BadgeModel> {
+                success = true,
+                message = "200 Ok",
+                total = 0,
+                data = new BadgeModel() { notices = 0, alarms = 0 }
+            };
+
+            try {
+                data.data.notices = _noticeService.GetUnreadCount(_workContext.User.Id);
+                //获取新增告警数量
+                var start = DateTime.Now; var end = DateTime.Now;
+                if(Session["ActAlmNoticeTime"] != null)
+                    start = new DateTime(Convert.ToInt64(Session["ActAlmNoticeTime"]));
+                else
+                    Session["ActAlmNoticeTime"] = start.Ticks;
+
+                var alarms = _actAlmService.GetAlmsAsList(start, end);
+                if(alarms.Count > 0) {
+                    var matchs = new HashSet<string>();
+                    foreach(var area in _workContext.RoleAreas) {
+                        matchs.Add(area.Current.Id);
+                    }
+
+                    data.data.alarms = alarms.Count(m => matchs.Contains(m.AreaId));
+                }
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [AjaxAuthorize]
@@ -155,7 +189,7 @@ namespace iPem.Site.Controllers {
                 else
                     start = new DateTime(Convert.ToInt64(Session["SpeechScanTime"]));
 
-                var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.levels.Contains((int)a.AlmLevel));
+                var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.levels.Contains((int)a.AlarmLevel));
                 var stores = _workContext.GetActAlmStore(alarms).FindAll(a=>a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
                 if(config.basic.Contains(3))
                     stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
@@ -202,13 +236,13 @@ namespace iPem.Site.Controllers {
                         contents.Add(store.Point.Name);
 
                     if(config.contents.Contains(6))
-                        contents.Add(CommonHelper.DateTimeConverter(store.Current.StartTime));
+                        contents.Add(CommonHelper.DateTimeConverter(store.Current.AlarmTime));
 
                     if(config.contents.Contains(7))
-                        contents.Add(string.Format("发生{0}", Common.GetAlarmLevelDisplay(store.Current.AlmLevel)));
+                        contents.Add(string.Format("发生{0}", Common.GetAlarmLevelDisplay(store.Current.AlarmLevel)));
 
-                    if(config.contents.Contains(8) && !string.IsNullOrWhiteSpace(store.Current.AlmDesc))
-                        contents.Add(store.Current.AlmDesc);
+                    if(config.contents.Contains(8) && !string.IsNullOrWhiteSpace(store.Current.AlarmDesc))
+                        contents.Add(store.Current.AlarmDesc);
 
                     data.data.Add(string.Join("，", contents));
                 }
@@ -230,9 +264,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("参数无效 text");
 
                 var bytes = CommonHelper.ConvertTextToSpeech(text);
-                if(bytes == null)
-                    throw new iPemException("语音转换失败");
-
+                if(bytes == null) throw new iPemException("语音转换失败");
                 return File(bytes, "audio/wav");
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -378,31 +410,6 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        [AjaxAuthorize]
-        public JsonResult GetNoticesCount() {
-            var data = new AjaxDataModel<int> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = 0
-            };
-
-            try {
-                var unreadsCount = _noticeService.GetUnreadCount(_workContext.User.Id);
-                if(unreadsCount > 0) {
-                    data.message = "200 Ok";
-                    data.total = unreadsCount;
-                    data.data = unreadsCount;
-                }
-
-                return Json(data, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                data.success = false; data.message = exc.Message;
-                return Json(data, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         [HttpPost]
         [AjaxAuthorize]
         public JsonResult SetNotices(string[] notices, string status) {
@@ -438,45 +445,6 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        [AjaxAuthorize]
-        public JsonResult GetActAlmCount() {
-            var data = new AjaxDataModel<int> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = 0
-            };
-
-            try {
-                var start = DateTime.Now; var end = DateTime.Now;
-                if(Session["ActAlmNoticeTime"] != null)
-                    start = new DateTime(Convert.ToInt64(Session["ActAlmNoticeTime"]));
-                else
-                    Session["ActAlmNoticeTime"] = start.Ticks;
-
-                var alarms = _actAlmService.GetAlmsAsList(start, end);
-                if(alarms.Count > 0) {
-                    var matchs = new HashSet<string>();
-                    foreach(var area in _workContext.RoleAreas) {
-                        matchs.Add(area.Current.Id);
-                    }
-
-                    var count = alarms.Count(m => matchs.Contains(m.AreaId));
-                    if(count > 0) {
-                        data.message = "200 Ok";
-                        data.total = count;
-                        data.data = count;
-                    }
-                }
-
-                return Json(data, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
-                data.success = false; data.message = exc.Message;
-                return Json(data, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         [HttpPost]
         [AjaxAuthorize]
         public JsonResult RequestActAlarms(string node, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project, int start, int limit) {
@@ -502,19 +470,19 @@ namespace iPem.Site.Controllers {
                         data.data.Add(new ActAlmModel {
                             index = i + 1,
                             fsuid = stores[i].Current.FsuId,
-                            id = stores[i].Current.Id,
-                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            levelid = (int)stores[i].Current.AlmLevel,
-                            start = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            id = stores[i].Current.SerialNo,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlarmLevel),
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            start = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
                             area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
                             point = stores[i].Point.Name,
-                            comment = stores[i].Current.AlmDesc,
-                            value = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = string.Format("{0:F2}", stores[i].Current.AlarmValue),
                             frequency = stores[i].Current.Frequency,
-                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
                             project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty,
                             confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
                             confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
@@ -545,24 +513,24 @@ namespace iPem.Site.Controllers {
                         models.Add(new ActAlmModel {
                             index = i + 1,
                             fsuid = stores[i].Current.FsuId,
-                            id = stores[i].Current.Id,
-                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlmLevel),
-                            levelid = (int)stores[i].Current.AlmLevel,
-                            start = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            id = stores[i].Current.SerialNo,
+                            level = Common.GetAlarmLevelDisplay(stores[i].Current.AlarmLevel),
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            start = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
                             area = stores[i].Area.Name,
                             station = stores[i].Station.Name,
                             room = stores[i].Room.Name,
                             device = stores[i].Device.Name,
                             point = stores[i].Point.Name,
-                            comment = stores[i].Current.AlmDesc,
-                            value = string.Format("{0:F2} {1}", stores[i].Current.StartValue, stores[i].Current.ValueUnit),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = string.Format("{0:F2}", stores[i].Current.AlarmValue),
                             frequency = stores[i].Current.Frequency,
-                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
                             project = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.ProjectId) ? stores[i].ExtSet.ProjectId : string.Empty,
                             confirmed = Common.GetConfirmStatusDisplay(stores[i].ExtSet != null ? stores[i].ExtSet.Confirmed : EnmConfirm.Unconfirmed),
                             confirmedtime = stores[i].ExtSet != null && stores[i].ExtSet.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].ExtSet.ConfirmedTime.Value) : string.Empty,
                             confirmer = stores[i].ExtSet != null && !string.IsNullOrWhiteSpace(stores[i].ExtSet.Confirmer) ? stores[i].ExtSet.Confirmer : string.Empty,
-                            background = Common.GetAlarmLevelColor(stores[i].Current.AlmLevel)
+                            background = Common.GetAlarmLevelColor(stores[i].Current.AlarmLevel)
                         });
                     }
                 }
@@ -606,38 +574,40 @@ namespace iPem.Site.Controllers {
                         try {
                             var pointsInFsu = points.GroupBy(g => g.Device.FsuId);
                             foreach(var fsu in pointsInFsu) {
-                                var current = _workContext.RoleFsus.Find(f => f.Current.Id == fsu.Key);
-                                if(current == null) continue;
-                                var ext = _fsuService.GetFsuExt(current.Current.Id);
-                                if(ext == null || !ext.Status) continue;
-                                var package = new GetDataPackage() { FsuId = current.Current.Id, DeviceList = new List<GetDataDevice>() };
+                                var curFsu = _workContext.RoleFsus.Find(f => f.Current.Id == fsu.Key);
+                                if(curFsu == null) continue;
+                                var curExt = _fsuService.GetFsuExt(curFsu.Current.Id);
+                                if(curExt == null || !curExt.Status) continue;
+                                var package = new GetDataPackage() { FsuId = curFsu.Current.Code, DeviceList = new List<GetDataDevice>() };
 
-                                var devicesInFsu = fsu.GroupBy(d => new { d.Device.Id });
-                                foreach(var device in devicesInFsu) {
+                                var pointsInDevice = fsu.GroupBy(d => new { d.Device.Id, d.Device.Code });
+                                foreach(var device in pointsInDevice) {
                                     var devPack = new GetDataDevice() {
-                                        Id = device.Key.Id,
+                                        Id = device.Key.Code,
                                         Ids = new List<string>()
                                     };
 
                                     foreach(var point in device.Select(d => d.Current)) {
-                                        var signalIds = Common.SplitSignalMeasurementId(point.Id, point.Number);
-                                        if(!devPack.Ids.Contains(signalIds.Id)) devPack.Ids.Add(signalIds.Id);
+                                        if(!devPack.Ids.Contains(point.Code)) devPack.Ids.Add(point.Code);
                                     }
 
                                     package.DeviceList.Add(devPack);
                                 }
 
-                                var actData = BIPackMgr.GetData(ext, package);
+                                var actData = BIPackMgr.GetData(curExt, package);
                                 if(actData != null && actData.Result == EnmResult.Success) {
-                                    foreach(var v in actData.DeviceList) {
-                                        foreach(var a in v.Values) {
+                                    foreach(var device in actData.DeviceList) {
+                                        var curDev = pointsInDevice.FirstOrDefault(f => f.Key.Code == device.Id);
+                                        if(curDev == null) continue;
+                                        foreach(var val in device.Values) {
                                             values.Add(new ActValue() {
-                                                DeviceId = v.Id,
-                                                PointId = Common.JoinSignalMeasurementId(new TSignalMeasurementId { Id = a.Id, SignalNumber = a.SignalNumber }),
-                                                MeasuredVal = a.MeasuredVal != "NULL" ? (double?)double.Parse(a.MeasuredVal) : null,
+                                                DeviceId = curDev.Key.Id,
+                                                SignalId = val.Id,
+                                                SignalNumber = val.SignalNumber,
+                                                MeasuredVal = val.MeasuredVal != "NULL" ? (double?)double.Parse(val.MeasuredVal) : null,
                                                 SetupVal = null,
-                                                Status = a.Status,
-                                                Time = a.Time
+                                                Status = val.Status,
+                                                Time = val.Time
                                             });
                                         }
                                     }
@@ -650,7 +620,7 @@ namespace iPem.Site.Controllers {
                         #endregion
 
                         var pValues = from point in points
-                                      join val in values on new { Device = point.Device.Id, Point = point.Current.Id } equals new { Device = val.DeviceId, Point = val.PointId } into lt
+                                      join val in values on new { Device = point.Device.Id, Code = point.Current.Code, Number = point.Current.Number } equals new { Device = val.DeviceId, Code = val.SignalId, Number = val.SignalNumber } into lt
                                       from def in lt.DefaultIfEmpty()
                                       select new {
                                           Point = point,
@@ -701,17 +671,17 @@ namespace iPem.Site.Controllers {
                 if(keys == null || keys.Length == 0)
                     throw new ArgumentException("参数无效 keys");
 
-                var entities = new List<ExtAlm>();
+                var entities = new List<ExtAlarm>();
                 foreach(var key in keys) {
                     var ids = Common.SplitKeys(key);
                     if(ids.Length != 2) continue;
 
-                    var current = _workContext.ActAlmStore.Find(a => a.Current.FsuId == ids[0] && a.Current.Id == ids[1]);
+                    var current = _workContext.ActAlmStore.Find(a => a.Current.FsuId == ids[0] && a.Current.SerialNo == ids[1]);
                     if(current != null) {
-                        entities.Add(new ExtAlm {
-                            FsuId = current.Current.FsuId,
+                        entities.Add(new ExtAlarm {
                             Id = current.Current.Id,
-                            Start = current.Current.StartTime,
+                            SerialNo = current.Current.SerialNo,
+                            Time = current.Current.AlarmTime,
                             Confirmed = EnmConfirm.Confirmed,
                             ConfirmedTime = DateTime.Now,
                             Confirmer = _workContext.Employee.Name
@@ -790,16 +760,15 @@ namespace iPem.Site.Controllers {
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
-                var curId = Common.SplitSignalMeasurementId(curPoint.Id, curPoint.Number);
                 var package = new SetPointPackage() {
-                    FsuId = curFsu.Current.Id,
+                    FsuId = curFsu.Current.Code,
                     DeviceList = new List<SetPointDevice>() {
                         new SetPointDevice() {
-                            Id = curDevice.Current.Id,
+                            Id = curDevice.Current.Code,
                             Values = new List<TSemaphore>() {
                                 new TSemaphore() {
-                                    Id = curId.Id,
-                                    SignalNumber = curId.SignalNumber,
+                                    Id = curPoint.Code,
+                                    SignalNumber = curPoint.Number,
                                     Type = curPoint.Type,
                                     MeasuredVal = "NULL",
                                     SetupVal = ctrl.ToString(),
@@ -812,10 +781,13 @@ namespace iPem.Site.Controllers {
                 };
 
                 var result = BIPackMgr.SetPoint(curFsuExt, package);
-                if(result != null && result.Result == EnmResult.Success) {
+                if(result != null) {
+                    if(result.Result == EnmResult.Failure)
+                        throw new iPemException(result.FailureCause ?? "参数设置失败");
+
                     if(result.DeviceList != null) {
-                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Id);
-                        if(devResult != null && devResult.SuccessList.Contains(curId))
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
+                        if(devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
                             return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
                     }
                 }
@@ -852,16 +824,15 @@ namespace iPem.Site.Controllers {
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
-                var curId = Common.SplitSignalMeasurementId(curPoint.Id, curPoint.Number);
                 var package = new SetPointPackage() {
-                    FsuId = curFsu.Current.Id,
+                    FsuId = curFsu.Current.Code,
                     DeviceList = new List<SetPointDevice>() {
                         new SetPointDevice() {
-                            Id = curDevice.Current.Id,
+                            Id = curDevice.Current.Code,
                             Values = new List<TSemaphore>() {
                                 new TSemaphore() {
-                                    Id = curId.Id,
-                                    SignalNumber = curId.SignalNumber,
+                                    Id = curPoint.Code,
+                                    SignalNumber = curPoint.Number,
                                     Type = curPoint.Type,
                                     MeasuredVal = "NULL",
                                     SetupVal = adjust.ToString(),
@@ -874,15 +845,154 @@ namespace iPem.Site.Controllers {
                 };
 
                 var result = BIPackMgr.SetPoint(curFsuExt, package);
-                if(result != null && result.Result == EnmResult.Success) {
+                if(result != null) {
+                    if(result.Result == EnmResult.Failure)
+                        throw new iPemException(result.FailureCause ?? "参数设置失败");
+
                     if(result.DeviceList != null) {
-                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Id);
-                        if(devResult != null && devResult.SuccessList.Contains(curId))
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
+                        if(devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
                             return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
                     }
                 }
 
-                return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
+                throw new iPemException("参数设置失败");
+            } catch(Exception exc) {
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult GetThreshold(string device, string point) {
+            var data = new AjaxDataModel<ThresholdModel> {
+                success = true,
+                message = "200 OK",
+                total = 0,
+                data = null
+            };
+
+            try {
+                if(!_workContext.Operations.Contains(EnmOperation.Threshold))
+                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
+
+                if(string.IsNullOrWhiteSpace(device))
+                    throw new ArgumentException("参数无效 device");
+
+                if(string.IsNullOrWhiteSpace(point))
+                    throw new ArgumentException("参数无效 point");
+
+                var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == device);
+                if(curDevice == null) throw new iPemException("未找到设备");
+
+                var curFsu = _workContext.RoleFsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
+                if(curFsu == null) throw new iPemException("未找到Fsu");
+
+                var curFsuExt = _fsuService.GetFsuExt(curFsu.Current.Id);
+                if(curFsuExt == null) throw new iPemException("未找到Fsu");
+                if(!curFsuExt.Status) throw new iPemException("Fsu通信中断");
+
+                var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
+                if(curPoint == null) throw new iPemException("未找到信号");
+
+                var package = new GetThresholdPackage() {
+                    FsuId = curFsu.Current.Code,
+                    DeviceList = new List<GetThresholdDevice>() {
+                        new GetThresholdDevice() {
+                            Id = curDevice.Current.Code,
+                            Ids = new List<string>(){ curPoint.Code }
+                        }
+                    }
+                };
+
+                var result = BIPackMgr.GetThreshold(curFsuExt, package);
+                if(result != null ) {
+                    if(result.Result == EnmResult.Failure)
+                        throw new iPemException(result.FailureCause ?? "参数设置失败");
+
+                    if(result.DeviceList != null) {
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
+                        if(devResult != null) {
+                            var dResult = devResult.Values.Find(d => d.Id == curPoint.Code && d.SignalNumber == curPoint.Number);
+                            if(dResult != null) {
+                                data.data = new ThresholdModel {
+                                    id = dResult.Id,
+                                    number = dResult.SignalNumber,
+                                    type = (int)dResult.Type,
+                                    threshold = dResult.Threshold,
+                                    level = ((int)dResult.AlarmLevel).ToString(),
+                                    nmid = dResult.NMAlarmID
+                                };
+                                return Json(data, JsonRequestBehavior.AllowGet);
+                            }
+                        }
+                    }
+                }
+
+                throw new iPemException("获取数据失败");
+            } catch(Exception exc) {
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SetThreshold(string device, string point, double threshold, int alarmLevel, string nmalarmID) {
+            try {
+                if(!_workContext.Operations.Contains(EnmOperation.Threshold))
+                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
+
+                if(string.IsNullOrWhiteSpace(device))
+                    throw new ArgumentException("参数无效 device");
+
+                if(string.IsNullOrWhiteSpace(point))
+                    throw new ArgumentException("参数无效 point");
+
+                var curDevice = _workContext.RoleDevices.Find(d => d.Current.Id == device);
+                if(curDevice == null) throw new iPemException("未找到设备");
+
+                var curFsu = _workContext.RoleFsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
+                if(curFsu == null) throw new iPemException("未找到Fsu");
+
+                var curFsuExt = _fsuService.GetFsuExt(curFsu.Current.Id);
+                if(curFsuExt == null) throw new iPemException("未找到Fsu");
+                if(!curFsuExt.Status) throw new iPemException("Fsu通信中断");
+
+                var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
+                if(curPoint == null) throw new iPemException("未找到信号");
+
+                var package = new SetThresholdPackage() {
+                    FsuId = curFsu.Current.Code,
+                    DeviceList = new List<SetThresholdDevice>() {
+                        new SetThresholdDevice() {
+                            Id = curDevice.Current.Code,
+                            Values = new List<TThreshold>() {
+                                new TThreshold() {
+                                    Id = curPoint.Code,
+                                    SignalNumber = curPoint.Number,
+                                    Type = curPoint.Type,
+                                    Threshold = threshold.ToString(),
+                                    AlarmLevel = Enum.IsDefined(typeof(EnmLevel), alarmLevel) ? (EnmLevel)alarmLevel : EnmLevel.Level0,
+                                    NMAlarmID = nmalarmID
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var result = BIPackMgr.SetThreshold(curFsuExt, package);
+                if(result != null) {
+                    if(result.Result == EnmResult.Failure)
+                        throw new iPemException(result.FailureCause ?? "参数设置失败");
+
+                    if(result.DeviceList != null) {
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
+                        if (devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
+                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
+                    }
+                }
+
+                throw new iPemException("参数设置失败");
             } catch(Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -944,10 +1054,10 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = new HomeAlmModel();
-                model.total1 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level1);
-                model.total2 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level2);
-                model.total3 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level3);
-                model.total4 = _workContext.ActAlmStore.Count(a => a.Current.AlmLevel == EnmLevel.Level4);
+                model.total1 = _workContext.ActAlmStore.Count(a => a.Current.AlarmLevel == EnmLevel.Level1);
+                model.total2 = _workContext.ActAlmStore.Count(a => a.Current.AlarmLevel == EnmLevel.Level2);
+                model.total3 = _workContext.ActAlmStore.Count(a => a.Current.AlarmLevel == EnmLevel.Level3);
+                model.total4 = _workContext.ActAlmStore.Count(a => a.Current.AlarmLevel == EnmLevel.Level4);
                 model.total = model.total1 + model.total2 + model.total3 + model.total4;
                 model.alarms = new List<HomeAreaAlmModel>();
 
@@ -957,10 +1067,10 @@ namespace iPem.Site.Controllers {
 
                     var alarmsInArea = new HomeAreaAlmModel();
                     alarmsInArea.name = root.Current.Name;
-                    alarmsInArea.level1 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level1);
-                    alarmsInArea.level2 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level2);
-                    alarmsInArea.level3 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level3);
-                    alarmsInArea.level4 = alarmsInRoot.Count(a => a.Current.AlmLevel == EnmLevel.Level4);
+                    alarmsInArea.level1 = alarmsInRoot.Count(a => a.Current.AlarmLevel == EnmLevel.Level1);
+                    alarmsInArea.level2 = alarmsInRoot.Count(a => a.Current.AlarmLevel == EnmLevel.Level2);
+                    alarmsInArea.level3 = alarmsInRoot.Count(a => a.Current.AlarmLevel == EnmLevel.Level3);
+                    alarmsInArea.level4 = alarmsInRoot.Count(a => a.Current.AlarmLevel == EnmLevel.Level4);
                     alarmsInArea.total = alarmsInArea.level1 + alarmsInArea.level2 + alarmsInArea.level3 + alarmsInArea.level4;
                     model.alarms.Add(alarmsInArea);
                 }
@@ -1098,7 +1208,6 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult DownloadHomeOff() {
             try {
                 var offKeys = _fsuService.GetAllExtendsAsList().FindAll(k => !k.Status);
@@ -1203,7 +1312,6 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult DownloadHomeUnconnected() {
             try {
                 var offKeys = _fsuService.GetAllExtendsAsList();
@@ -1297,7 +1405,7 @@ namespace iPem.Site.Controllers {
             }
 
             if(almlevel != null && almlevel.Length > 0)
-                stores = stores.FindAll(s => almlevel.Contains((int)s.Current.AlmLevel));
+                stores = stores.FindAll(s => almlevel.Contains((int)s.Current.AlarmLevel));
 
             if(confirm == "confirm")
                 stores = stores.FindAll(a => a.ExtSet != null && a.ExtSet.Confirmed == EnmConfirm.Confirmed);
@@ -1317,7 +1425,7 @@ namespace iPem.Site.Controllers {
         private List<ChartModel> GetActAlmChart1(List<AlmStore<ActAlm>> stores) {
             var models = new List<ChartModel>();
             if(stores != null && stores.Count > 0) {
-                var groups = stores.GroupBy(s => s.Current.AlmLevel).OrderBy(g => g.Key);
+                var groups = stores.GroupBy(s => s.Current.AlarmLevel).OrderBy(g => g.Key);
                 foreach(var group in groups) {
                     models.Add(new ChartModel {
                         index = (int)group.Key,
@@ -1339,10 +1447,10 @@ namespace iPem.Site.Controllers {
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var curstores = stores.FindAll(s => root.Keys.Contains(s.Current.AreaId));
-                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = root.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                     }
                     #endregion
                 } else {
@@ -1358,18 +1466,18 @@ namespace iPem.Site.Controllers {
                                 if(current.HasChildren) {
                                     foreach(var child in current.ChildRoot) {
                                         var curstores = stores.FindAll(s => child.Keys.Contains(s.Current.AreaId));
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = child.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                     }
                                 } else if(current.Stations.Count > 0) {
                                     foreach(var station in current.Stations) {
                                         var curstores = stores.FindAll(s => s.Current.StationId == station.Current.Id);
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = station.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = station.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = station.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = station.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                        models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = station.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                     }
                                 }
                             }
@@ -1380,10 +1488,10 @@ namespace iPem.Site.Controllers {
                             if(current != null && current.Rooms.Count > 0) {
                                 foreach(var room in current.Rooms) {
                                     var curstores = stores.FindAll(m => m.Current.RoomId == room.Current.Id);
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = room.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = room.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = room.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = room.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = room.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                 }
                             }
                             #endregion
@@ -1393,10 +1501,10 @@ namespace iPem.Site.Controllers {
                             if(current != null && current.Devices.Count > 0) {
                                 foreach(var device in current.Devices) {
                                     var curstores = stores.FindAll(s => s.Current.DeviceId == device.Current.Id);
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = device.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = device.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = device.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = device.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                    models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = device.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                                 }
                             }
                             #endregion
@@ -1405,10 +1513,10 @@ namespace iPem.Site.Controllers {
                             var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
                             if(current != null) {
                                 var curstores = stores.FindAll(s => s.Current.DeviceId == current.Current.Id);
-                                models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
-                                models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
-                                models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
-                                models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = current.Current.Name, value = curstores.Count(s => s.Current.AlmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level1), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level1) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level2), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level2) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level3, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level3), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level3) });
+                                models.Add(new ChartModel { index = (int)EnmLevel.Level4, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmLevel.Level4), comment = Common.GetAlarmLevelDisplay(EnmLevel.Level4) });
                             }
                             #endregion
                         }
