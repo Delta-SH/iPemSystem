@@ -39,12 +39,8 @@ namespace iPem.Services.Cs {
             return _hisRepository.GetEntities(start, end);
         }
 
-        public List<HisLoadRate> GetMaxLoadRates(DateTime start, DateTime end) {
-            return _hisRepository.GetMaxEntities(start, end);
-        }
-
-        public List<HisLoadRate> GetMinLoadRates(DateTime start, DateTime end) {
-            return _hisRepository.GetMinEntities(start, end);
+        public List<HisLoadRate> GetMaxInDevice(DateTime start, DateTime end, double max) {
+            return _hisRepository.GetMaxInDevice(start, end, max);
         }
 
         #endregion

@@ -1339,9 +1339,8 @@
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
-                            labelWidth: 100,
-                            labelAlign: 'left',
-                            margin: 15
+                            labelWidth: 80,
+                            labelAlign: 'left'
                         },
                         layout: 'anchor',
                         items: [
@@ -1349,42 +1348,18 @@
                                 xtype: 'container',
                                 anchor: '100%',
                                 layout: 'hbox',
+                                margin: '15 15 15 15',
                                 items: [{
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
-                                        name: 'tingDianXinHao',
-                                        xtype: 'PointPicker',
-                                        fieldLabel: '市电状态信号',
-                                        allowBlank: false,
-                                        emptyText: '请选择市电状态信号...'
-                                    }, {
-                                        name: 'weiTingDian',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '市电正常测值',
-                                        allowBlank: false,
-                                        allowDecimals: false,
-                                        emptyText: '市电正常状态时的测值',
-                                        value: 0,
-                                        minValue: 0
-                                    }]
+                                    name: 'tingDianXinHao',
+                                    xtype: 'PointPicker',
+                                    fieldLabel: '市电状态',
+                                    allowBlank: false,
+                                    flex: 1
                                 }, {
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
-                                        xtype: 'displayfield'
-                                    }, {
-                                        name: 'tingDian',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '市电停电测值',
-                                        allowBlank: false,
-                                        allowDecimals: false,
-                                        emptyText: '市电停电状态时的测值',
-                                        value: 1,
-                                        minValue: 0
-                                    }]
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"市电停电状态"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
                                 }]
                             }
                         ]
@@ -1396,9 +1371,8 @@
                         defaultType: 'textfield',
                         fieldDefaults: {
                             anchor: '100%',
-                            labelWidth: 100,
-                            labelAlign: 'left',
-                            margin: 15
+                            labelWidth: 80,
+                            labelAlign: 'left'
                         },
                         layout: 'anchor',
                         items: [
@@ -1406,42 +1380,18 @@
                                 xtype: 'container',
                                 anchor: '100%',
                                 layout: 'hbox',
+                                margin: '15 15 15 15',
                                 items: [{
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
-                                        name: 'faDianXinHao',
-                                        xtype: 'PointPicker',
-                                        fieldLabel: '油机状态信号',
-                                        allowBlank: false,
-                                        emptyText: '请选择油机状态信号...'
-                                    }, {
-                                        name: 'weiFaDian',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '油机停机测值',
-                                        allowBlank: false,
-                                        allowDecimals: false,
-                                        emptyText: '油机停机状态时的测值',
-                                        value: 0,
-                                        minValue: 0
-                                    }]
+                                    name: 'faDianXinHao',
+                                    xtype: 'PointPicker',
+                                    fieldLabel: '油机状态',
+                                    allowBlank: false,
+                                    flex: 1
                                 }, {
-                                    xtype: 'container',
-                                    flex: 1,
-                                    layout: 'anchor',
-                                    items: [{
-                                        xtype: 'displayfield'
-                                    }, {
-                                        name: 'faDian',
-                                        xtype: 'numberfield',
-                                        fieldLabel: '油机工作测值',
-                                        allowBlank: false,
-                                        allowDecimals: false,
-                                        emptyText: '油机工作状态时的测值',
-                                        value: 1,
-                                        minValue: 0
-                                    }]
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"油机运行状态"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
                                 }]
                             }
                         ]
@@ -1586,14 +1536,14 @@
                                 layout: 'hbox',
                                 margin: '15 15 0 15',
                                 items: [{
-                                    name: 'hxzlxtkydXinHao',
-                                    xtype: 'PointMultiPicker',
+                                    name: 'hxzlxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '告警信号',
+                                    fieldLabel: '设备类型',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"开关电源蓄电池组总电压低"信号）',
+                                    value: '（注：设置"开关电源"设备类型）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1604,14 +1554,14 @@
                                 layout: 'hbox',
                                 margin: '15 15 15 15',
                                 items: [{
-                                    name: 'hxzlxtkydLeiXing',
-                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    name: 'hxzlxtkydXinHao',
+                                    xtype: 'PointMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '设备类型',
+                                    fieldLabel: '告警信号',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"开关电源蓄电池组"设备类型）',
+                                    value: '（注：设置"输出电压过低告警"信号）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1636,14 +1586,14 @@
                                 layout: 'hbox',
                                 margin: '15 15 0 15',
                                 items: [{
-                                    name: 'hxjlxtkydXinHao',
-                                    xtype: 'PointMultiPicker',
+                                    name: 'hxjlxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '告警信号',
+                                    fieldLabel: '设备类型',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"UPS蓄电池组总电压低"信号）',
+                                    value: '（注：设置"UPS设备"设备类型）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1654,14 +1604,14 @@
                                 layout: 'hbox',
                                 margin: '15 15 0 15',
                                 items: [{
-                                    name: 'hxjlxtkydPangLuXinHao',
+                                    name: 'hxjlxtkydXinHao',
                                     xtype: 'PointMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '运行信号',
+                                    fieldLabel: '告警信号',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"UPS旁路运行"信号）',
+                                    value: '（注：设置"输出电压过低告警"信号）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1672,14 +1622,14 @@
                                 layout: 'hbox',
                                 margin: '15 15 15 15',
                                 items: [{
-                                    name: 'hxjlxtkydLeiXing',
-                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    name: 'hxjlxtkydPangLuXinHao',
+                                    xtype: 'PointMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '设备类型',
+                                    fieldLabel: '旁路信号',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"UPS蓄电池组"设备类型）',
+                                    value: '（注：设置"旁路运行状态告警"信号）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1698,6 +1648,24 @@
                         },
                         layout: 'anchor',
                         items: [
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'hxwkxtkydLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"机房环境"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
                             {
                                 xtype: 'container',
                                 anchor: '100%',
@@ -1761,7 +1729,7 @@
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"采集设备"设备类型）',
+                                    value: '（注：设置"动环监控采集设备"设备类型）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1842,7 +1810,7 @@
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"开关电源工作状态"信号）',
+                                    value: '（注：设置"工作状态"信号）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1860,7 +1828,7 @@
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"开关电源负载电流"信号）',
+                                    value: '（注：设置"负载电流"信号）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1892,7 +1860,7 @@
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"蓄电池组"设备类型）',
+                                    value: '（注：设置"开关电源"设备类型）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1902,14 +1870,54 @@
                                 layout: 'hbox',
                                 margin: '15 15 0 15',
                                 items: [{
-                                    name: 'qtxdchbschglztXinHao',
+                                    name: 'qtxdchbschgldyXinHao',
                                     xtype: 'PointMultiPicker',
                                     flex: 1,
-                                    fieldLabel: '工作状态',
+                                    fieldLabel: '输出电压',
                                     allowBlank: false
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"蓄电池组工作状态"信号）',
+                                    value: '（注：设置"直流输出电压"信号）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtxdchbschglMax',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '放电电压',
+                                    allowBlank: false,
+                                    value: 51.5,
+                                    minValue: 0,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: 'V（注：当直流输出电压小于该值则视为电池放电,建议:51.5V）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            },
+                            {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtxdchbschglMin',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '合格电压',
+                                    allowBlank: false,
+                                    value: 47,
+                                    minValue: 0,
+                                    flex: 1
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: 'V（注：电池放电结束后直流输出电压大于该值则视为放电合格,建议:47V）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1920,14 +1928,16 @@
                                 layout: 'hbox',
                                 margin: '15 15 15 15',
                                 items: [{
-                                    name: 'qtxdchbschglfzXinHao',
-                                    xtype: 'PointMultiPicker',
-                                    flex: 1,
-                                    fieldLabel: '负载电流',
-                                    allowBlank: false
+                                    name: 'qtxdchbschglFenZhong',
+                                    xtype: 'numberfield',
+                                    fieldLabel: '放电时间',
+                                    allowBlank: false,
+                                    value: 15,
+                                    minValue: 0,
+                                    flex: 1
                                 }, {
                                     xtype: 'displayfield',
-                                    value: '（注：设置"蓄电池组负载电流"信号）',
+                                    value: '分钟（注：当电池放电时间大于该值则视为放电完成，建议:15分钟）',
                                     margin: '0 0 0 15',
                                     flex: 1
                                 }]
@@ -1947,6 +1957,23 @@
                         layout: 'anchor',
                         items: [
                             {
+                                xtype: 'container',
+                                anchor: '100%',
+                                layout: 'hbox',
+                                margin: '15 15 0 15',
+                                items: [{
+                                    name: 'qtwkrlhglLeiXing',
+                                    xtype: 'SubDeviceTypeMultiPicker',
+                                    flex: 1,
+                                    fieldLabel: '设备类型',
+                                    allowBlank: false
+                                }, {
+                                    xtype: 'displayfield',
+                                    value: '（注：设置"机房环境"设备类型）',
+                                    margin: '0 0 0 15',
+                                    flex: 1
+                                }]
+                            }, {
                                 xtype: 'container',
                                 anchor: '100%',
                                 layout: 'hbox',

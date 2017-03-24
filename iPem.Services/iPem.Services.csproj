@@ -52,14 +52,14 @@
     <Compile Include="Cs\Interface\IHisBatTimeService.cs" />
     <Compile Include="Cs\Interface\IHisElecService.cs" />
     <Compile Include="Cs\Interface\IHisLoadRateService.cs" />
-    <Compile Include="Sc\Class\ExtendAlmService.cs" />
+    <Compile Include="Sc\Class\ExtAlarmService.cs" />
     <Compile Include="Cs\Class\HisAlmService.cs" />
     <Compile Include="Cs\Class\HisBatService.cs" />
     <Compile Include="Cs\Class\HisStaticService.cs" />
     <Compile Include="Cs\Class\HisValueService.cs" />
     <Compile Include="Cs\Interface\IActAlmService.cs" />
     <Compile Include="Sc\Class\FormulaService.cs" />
-    <Compile Include="Sc\Interface\IExtendAlmService.cs" />
+    <Compile Include="Sc\Interface\IExtAlarmService.cs" />
     <Compile Include="Cs\Interface\IHisAlmService.cs" />
     <Compile Include="Cs\Interface\IHisBatService.cs" />
     <Compile Include="Cs\Interface\IHisStaticService.cs" />

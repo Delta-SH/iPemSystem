@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
-    public partial interface IExtendAlmRepository {
+    public partial interface IExtAlarmRepository {
         /// <summary>
         /// Gets the entities
         /// </summary>

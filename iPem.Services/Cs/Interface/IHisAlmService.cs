@@ -21,6 +21,10 @@ namespace iPem.Services.Cs {
 
         List<HisAlm> GetAlmsInDeviceAsList(string device, DateTime start, DateTime end);
 
+        IPagedList<HisAlm> GetAlmsInPoint(string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+
+        List<HisAlm> GetAlmsInPointAsList(string point, DateTime start, DateTime end);
+
         IPagedList<HisAlm> GetAllAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
         List<HisAlm> GetAllAlmsAsList(DateTime start, DateTime end);

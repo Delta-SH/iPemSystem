@@ -125,7 +125,7 @@
     <Compile Include="Domain\Cs\HisElec.cs" />
     <Compile Include="Domain\Cs\HisLoadRate.cs" />
     <Compile Include="Domain\Rs\FsuExt.cs" />
-    <Compile Include="Domain\Sc\ExtAlm.cs" />
+    <Compile Include="Domain\Sc\ExtAlarm.cs" />
     <Compile Include="Domain\Cs\HisAlm.cs" />
     <Compile Include="Domain\Cs\HisBat.cs" />
     <Compile Include="Domain\Cs\HisStatic.cs" />

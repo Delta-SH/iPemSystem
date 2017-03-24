@@ -35,6 +35,16 @@ namespace iPem.Core.Domain.Cs {
         public string PointId { get; set; }
 
         /// <summary>
+        /// Gets or sets the signal identifier
+        /// </summary>
+        public string SignalId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the signal number
+        /// </summary>
+        public string SignalNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the point type
         /// </summary>
         public EnmPoint PointType { get; set; }
@@ -57,6 +67,6 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// Gets or sets the datetime
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime UpdateTime { get; set; }
     }
 }

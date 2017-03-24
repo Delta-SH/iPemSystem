@@ -12,6 +12,8 @@ namespace iPem.Data.Repository.Cs {
 
         List<HisAlm> GetEntitiesInDevice(string device, DateTime start, DateTime end);
 
+        List<HisAlm> GetEntities(string point, DateTime start, DateTime end);
+
         List<HisAlm> GetEntities(DateTime start, DateTime end);
     }
 }

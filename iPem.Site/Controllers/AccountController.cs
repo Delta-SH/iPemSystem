@@ -1523,14 +1523,13 @@ namespace iPem.Site.Controllers {
                     chaoPin = 1,
                     chaoDuan = 1,
                     chaoChang = 1,
-                    weiTingDian = 0,
-                    tingDian = 1,
-                    weiFaDian = 0,
-                    faDian = 1,
                     whlHuLue = 0,
                     jslGuiDing = 0,
                     jslHuLue = 0,
-                    jslQueRen = 0
+                    jslQueRen = 0,
+                    qtxdchbschglMax = 0,
+                    qtxdchbschglMin = 0,
+                    qtxdchbschglFenZhong = 0
                 }
             };
 

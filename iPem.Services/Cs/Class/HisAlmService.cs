@@ -63,6 +63,14 @@ namespace iPem.Services.Cs {
             return _hisRepository.GetEntitiesInDevice(device, start, end);
         }
 
+        public IPagedList<HisAlm> GetAlmsInPoint(string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<HisAlm>(this.GetAlmsInPointAsList(point, start, end), pageIndex, pageSize);
+        }
+
+        public List<HisAlm> GetAlmsInPointAsList(string point, DateTime start, DateTime end) {
+            return _hisRepository.GetEntities(point, start, end);
+        }
+
         public IPagedList<HisAlm> GetAllAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<HisAlm>(this.GetAllAlmsAsList(start, end), pageIndex, pageSize);
         }

@@ -102,7 +102,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '蓄电池组数',
+        text: '开关电源套数',
         dataIndex: 'count',
         width: 150,
         align: 'left',

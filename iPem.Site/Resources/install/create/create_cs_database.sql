@@ -105,14 +105,22 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[TT_BatTime](
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
-	[Period] [datetime] NOT NULL,
-	[Value] [float] NOT NULL,
+	[StartTime] [datetime] NOT NULL,
+	[EndTime] [datetime] NOT NULL,
+	[StartValue] [float] NOT NULL,
+	[EndValue] [float] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_TT_BatTime] PRIMARY KEY CLUSTERED 
 (
+	[AreaId] ASC,
+	[StationId] ASC,
+	[RoomId] ASC,
 	[DeviceId] ASC,
-	[Period] ASC
+	[StartTime] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -166,14 +174,21 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[TT_LoadRate](
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
-	[Period] [datetime] NOT NULL,
+	[StartTime] [datetime] NOT NULL,
+	[EndTime] [datetime] NOT NULL,
 	[Value] [float] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_TT_LoadRate] PRIMARY KEY CLUSTERED 
 (
+	[AreaId] ASC,
+	[StationId] ASC,
+	[RoomId] ASC,
 	[DeviceId] ASC,
-	[Period] ASC
+	[StartTime] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

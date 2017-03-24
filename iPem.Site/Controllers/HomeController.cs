@@ -33,7 +33,7 @@ namespace iPem.Site.Controllers {
         private readonly IWebLogger _webLogger;
         private readonly IAppointmentService _appointmentService;
         private readonly IDictionaryService _dictionaryService;
-        private readonly IExtendAlmService _extendAlmService;
+        private readonly IExtAlarmService _extAlarmService;
         private readonly INoticeService _noticeService;
         private readonly INoticeInUserService _noticeInUserService;
         private readonly IProfileService _profileService;
@@ -54,7 +54,7 @@ namespace iPem.Site.Controllers {
             IWebLogger webLogger,
             IAppointmentService appointmentService,
             IDictionaryService dictionaryService,
-            IExtendAlmService extendAlmService,
+            IExtAlarmService extAlarmService,
             INoticeService noticeService,
             INoticeInUserService noticeInUserService,
             IProfileService profileService,
@@ -69,7 +69,7 @@ namespace iPem.Site.Controllers {
             this._webLogger = webLogger;
             this._appointmentService = appointmentService;
             this._dictionaryService = dictionaryService;
-            this._extendAlmService = extendAlmService;
+            this._extAlarmService = extAlarmService;
             this._noticeService = noticeService;
             this._noticeInUserService = noticeInUserService;
             this._profileService = profileService;
@@ -689,7 +689,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                _extendAlmService.Update(entities);
+                _extAlarmService.Update(entities);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "告警确认成功" });
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);

@@ -805,7 +805,7 @@ CREATE TABLE [dbo].[D_BattGroup](
 	[DeviceID] [varchar](100) NOT NULL,
 	[SingGroupCap] [varchar](20) NOT NULL,
 	[SingVoltGrade] [int] NOT NULL,
-	[SingGroupBattNumber] [int] NOT NULL,
+	[SingGroupBattNumber] [varchar](20) NOT NULL,
  CONSTRAINT [PK_D_BattGroup] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC

@@ -33,7 +33,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IDeviceTypeService _deviceTypeService;
         private readonly IEmployeeService _employeeService;
         private readonly IEnumMethodsService _enumMethodsService;
-        private readonly IExtendAlmService _extendAlmService;
+        private readonly IExtAlarmService _extAlarmService;
         private readonly IFsuService _fsuService;
         private readonly ILogicTypeService _logicTypeService;
         private readonly IPointService _pointService;
@@ -99,7 +99,7 @@ namespace iPem.Site.Infrastructure {
         IDeviceTypeService deviceTypeService,
         IEmployeeService employeeService,
         IEnumMethodsService enumMethodsService,
-        IExtendAlmService extendAlmService,
+        IExtAlarmService extAlarmService,
         IFsuService fsuService,
         ILogicTypeService rsLogicTypeService,
         IPointService pointService,
@@ -126,7 +126,7 @@ namespace iPem.Site.Infrastructure {
             this._deviceTypeService = deviceTypeService;
             this._employeeService = employeeService;
             this._enumMethodsService = enumMethodsService;
-            this._extendAlmService = extendAlmService;
+            this._extAlarmService = extAlarmService;
             this._fsuService = fsuService;
             this._logicTypeService = rsLogicTypeService;
             this._pointService = pointService;
@@ -728,7 +728,7 @@ namespace iPem.Site.Infrastructure {
                     return _cachedAlmStore;
                 
                 var alarms = _actAlmService.GetAllAlmsAsList();
-                var exts = _extendAlmService.GetAllExtAlmsAsList();
+                var exts = _extAlarmService.GetAllExtAlarmsAsList();
                 var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
                 _cachedAlmStore = (from alarm in alarms
                                    join point in points on alarm.PointId equals point.Id
@@ -769,7 +769,7 @@ namespace iPem.Site.Infrastructure {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<ActAlm>>();
 
-            var exts = _extendAlmService.GetAllExtAlmsAsList();
+            var exts = _extAlarmService.GetAllExtAlarmsAsList();
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id
@@ -803,7 +803,7 @@ namespace iPem.Site.Infrastructure {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<HisAlm>>();
 
-            var exts = _extendAlmService.GetHisExtAlmsAsList(start, end);
+            var exts = _extAlarmService.GetHisExtAlarmsAsList(start, end);
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
             return (from alarm in alarms
                     join point in points on alarm.PointId equals point.Id

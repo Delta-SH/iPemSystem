@@ -155,6 +155,41 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+        public const string Sql_HisAlm_Repository_GetEntitiesByPoint = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[A_HAlarm'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N''' [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH HisAlm AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM HisAlm;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
         public const string Sql_HisAlm_Repository_GetEntities = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -997,7 +1032,7 @@ namespace iPem.Data.Common {
         EXECUTE sp_executesql @SQL;";
 
         //history load rates
-        public const string Sql_HisLoadRate_Repository_GetEntities = @"
+        public const string Sql_HisLoadRate_Repository_GetEntities1 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -1016,7 +1051,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1028,11 +1063,11 @@ namespace iPem.Data.Common {
 		        (
 			        ' + @SQL + N'
 		        )
-		        SELECT * FROM tmp ORDER BY [Period];'
+		        SELECT * FROM tmp ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
-        public const string Sql_HisLoadRate_Repository_GetMaxEntities = @"
+        public const string Sql_HisLoadRate_Repository_GetEntities2 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -1051,7 +1086,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1067,46 +1102,7 @@ namespace iPem.Data.Common {
 		    (
 			    SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId] ORDER BY [Value] DESC) AS [RN],* FROM tmp1
 		    )
-		    SELECT * FROM tmp2 WHERE [RN] = 1;'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_HisLoadRate_Repository_GetMinEntities = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[TT_LoadRate'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH tmp1 AS
-		    (
-			    ' + @SQL + N'
-		    ),
-		    tmp2 AS
-		    (
-			    SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId] ORDER BY [Value]) AS [RN],* FROM tmp1
-		    )
-		    SELECT * FROM tmp2 WHERE [RN] = 1;'
+		    SELECT * FROM tmp2 WHERE [RN] = 1 AND [Value] <= ' + @Max
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1131,7 +1127,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1143,85 +1139,7 @@ namespace iPem.Data.Common {
 		        (
 			        ' + @SQL + N'
 		        )
-		        SELECT * FROM tmp ORDER BY [Period];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_HisBatTime_Repository_GetMaxEntities = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[TT_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH tmp1 AS
-		    (
-			    ' + @SQL + N'
-		    ),
-		    tmp2 AS
-		    (
-			    SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId] ORDER BY [Value] DESC) AS [RN],* FROM tmp1
-		    )
-		    SELECT * FROM tmp2 WHERE [RN] = 1;'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_HisBatTime_Repository_GetMinEntities = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[TT_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Period] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH tmp1 AS
-		    (
-			    ' + @SQL + N'
-		    ),
-		    tmp2 AS
-		    (
-			    SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId] ORDER BY [Value]) AS [RN],* FROM tmp1
-		    )
-		    SELECT * FROM tmp2 WHERE [RN] = 1;'
+		        SELECT * FROM tmp ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";

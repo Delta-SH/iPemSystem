@@ -10,9 +10,5 @@ namespace iPem.Services.Cs {
 
         List<HisBatTime> GetHisBatTimesAsList(DateTime start, DateTime end);
 
-        List<HisBatTime> GetMaxBatTimes(DateTime start, DateTime end);
-
-        List<HisBatTime> GetMinBatTimes(DateTime start, DateTime end);
-
     }
 }

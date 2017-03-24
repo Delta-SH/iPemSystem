@@ -47,11 +47,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -77,11 +79,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -107,11 +111,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -137,11 +143,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -169,11 +177,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -199,11 +209,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -231,11 +243,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }
@@ -259,11 +273,13 @@ namespace iPem.Data.Repository.Cs {
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.RecordType = SqlTypeConverter.DBNullInt32Handler(rdr["RecordType"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.State = SqlTypeConverter.DBNullEnmStateHandler(rdr["State"]);
-                    entity.Time = SqlTypeConverter.DBNullDateTimeHandler(rdr["Time"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
             }

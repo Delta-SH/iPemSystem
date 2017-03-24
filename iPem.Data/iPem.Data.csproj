@@ -59,14 +59,14 @@
     <Compile Include="Repository\Cs\Interface\IHisBatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisElecRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisLoadRateRepository.cs" />
-    <Compile Include="Repository\Sc\Class\ExtendAlmRepository.cs" />
+    <Compile Include="Repository\Sc\Class\ExtAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisAlmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisBatRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisStaticRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisValueRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IActAlmRepository.cs" />
     <Compile Include="Repository\Sc\Class\FormulaRepository.cs" />
-    <Compile Include="Repository\Sc\Interface\IExtendAlmRepository.cs" />
+    <Compile Include="Repository\Sc\Interface\IExtAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisAlmRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisBatRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisStaticRepository.cs" />

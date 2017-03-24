@@ -1,21 +1,5 @@
-﻿//Ext.define('DetailModel', {
-//    extend: 'Ext.data.Model',
-//    belongsTo: 'ReportModel',
-//    fields: [
-//        { name: 'area', type: 'string' },
-//        { name: 'station', type: 'string' },
-//        { name: 'room', type: 'string' },
-//        { name: 'device', type: 'string' },
-//        { name: 'point', type: 'string' },
-//        { name: 'start', type: 'string' },
-//        { name: 'end', type: 'string' },
-//        { name: 'interval', type: 'string' }
-//    ]
-//});
-
-Ext.define('ReportModel', {
+﻿Ext.define('ReportModel', {
     extend: 'Ext.data.Model',
-    //hasMany: { model: 'DetailModel', name: 'details', associationKey: 'details' },
     fields: [
         { name: 'index', type: 'int' },
         { name: 'area', type: 'string' },

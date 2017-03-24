@@ -10,8 +10,7 @@ namespace iPem.Services.Cs {
 
         List<HisLoadRate> GetHisLoadRatesAsList(DateTime start, DateTime end);
 
-        List<HisLoadRate> GetMaxLoadRates(DateTime start, DateTime end);
+        List<HisLoadRate> GetMaxInDevice(DateTime start, DateTime end, double max);
 
-        List<HisLoadRate> GetMinLoadRates(DateTime start, DateTime end);
     }
 }

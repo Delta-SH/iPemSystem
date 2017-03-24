@@ -33,8 +33,8 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(area);
-            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<HisAlm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntitiesByArea, parms)) {
@@ -72,8 +72,8 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(station);
-            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<HisAlm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntitiesByStation, parms)) {
@@ -111,8 +111,8 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(room);
-            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<HisAlm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntitiesByRoom, parms)) {
@@ -150,11 +150,50 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
-            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<HisAlm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntitiesByDevice, parms)) {
+                while(rdr.Read()) {
+                    var entity = new HisAlm();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
+                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<HisAlm> GetEntities(string point, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@PointId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(point);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
+
+            var entities = new List<HisAlm>();
+            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntitiesByPoint, parms)) {
                 while(rdr.Read()) {
                     var entity = new HisAlm();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
@@ -187,8 +226,8 @@ namespace iPem.Data.Repository.Cs {
             SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
-            parms[0].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<HisAlm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_HisAlm_Repository_GetEntities, parms)) {

@@ -393,7 +393,7 @@ namespace iPem.Site.Controllers {
                             value = stores[i].Current.Value,
                             unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
                             status = Common.GetPointStatusDisplay(stores[i].Current.State),
-                            time = CommonHelper.DateTimeConverter(stores[i].Current.Time),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
                             statusid = (int)stores[i].Current.State
                         });
                     }
@@ -426,7 +426,7 @@ namespace iPem.Site.Controllers {
                             value = stores[i].Current.Value,
                             unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
                             status = Common.GetPointStatusDisplay(stores[i].Current.State),
-                            time = CommonHelper.DateTimeConverter(stores[i].Current.Time),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
                             statusid = (int)stores[i].Current.State,
                             background = Common.GetPointStatusColor(stores[i].Current.State)
                         });
@@ -985,7 +985,7 @@ namespace iPem.Site.Controllers {
                                     for(int i = 0; i < models.Count; i++) {
                                         data.data.Add(new ChartModel {
                                             index = i + 1,
-                                            name = CommonHelper.DateTimeConverter(models[i].Time),
+                                            name = CommonHelper.DateTimeConverter(models[i].UpdateTime),
                                             value = models[i].Value,
                                             comment = curPoint.UnitState
                                         });
@@ -2271,22 +2271,29 @@ namespace iPem.Site.Controllers {
             if(!string.IsNullOrWhiteSpace(parent)) {
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    var index = 0;
-                    var values = this.GetTingDianValues(starttime, endtime);
-                    var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
-                    foreach(var station in stations) {
-                        var details = values.FindAll(v => v.station == station.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
+                    var rtValues = _workContext.RtValues;
+                    if(rtValues != null && !string.IsNullOrWhiteSpace(rtValues.tingDianXinHao)) {
+                        var index = 0;
+                        var alarms = _hisAlmService.GetAlmsInPointAsList(rtValues.tingDianXinHao, starttime, endtime);
+                        var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        foreach(var station in stations) {
+                            var details = alarms.FindAll(a => a.StationId == station.Current.Id);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                        models.Add(new Model400207 {
-                            index = ++index,
-                            area = area != null ? area.ToString(): "",
-                            name = station.Current.Name,
-                            type = station.Current.Type.Name,
-                            count = details.Count(),
-                            interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.interval))),
-                            details = details
-                        });
+                            models.Add(new Model400207 {
+                                index = ++index,
+                                area = area != null ? area.ToString() : "",
+                                name = station.Current.Name,
+                                type = station.Current.Type.Name,
+                                count = details.Count,
+                                interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds))),
+                                details = details.Select(d => new ShiDianModel {
+                                    start = CommonHelper.DateTimeConverter(d.AlarmTime),
+                                    end = CommonHelper.DateTimeConverter(d.EndTime),
+                                    timespan = CommonHelper.IntervalConverter(d.AlarmTime, d.EndTime)
+                                }).ToList()
+                            });
+                        }
                     }
                 }
             }
@@ -2301,22 +2308,29 @@ namespace iPem.Site.Controllers {
             if(!string.IsNullOrWhiteSpace(parent)) {
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    var index = 0;
-                    var values = this.GetFaDianValues(starttime, endtime);
-                    var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
-                    foreach(var station in stations) {
-                        var details = values.FindAll(v => v.station == station.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
+                    var rtValues = _workContext.RtValues;
+                    if(rtValues != null && !string.IsNullOrWhiteSpace(rtValues.faDianXinHao)) {
+                        var index = 0;
+                        var alarms = _hisAlmService.GetAlmsInPointAsList(rtValues.faDianXinHao, starttime, endtime);
+                        var stations = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        foreach(var station in stations) {
+                            var details = alarms.FindAll(a => a.StationId == station.Current.Id);
+                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                        models.Add(new Model400208 {
-                            index = ++index,
-                            area = area != null ? area.ToString() : "",
-                            name = station.Current.Name,
-                            type = station.Current.Type.Name,
-                            count = details.Count(),
-                            interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.interval))),
-                            details = details
-                        });
+                            models.Add(new Model400208 {
+                                index = ++index,
+                                area = area != null ? area.ToString() : "",
+                                name = station.Current.Name,
+                                type = station.Current.Type.Name,
+                                count = details.Count,
+                                interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds))),
+                                details = details.Select(d => new ShiDianModel {
+                                    start = CommonHelper.DateTimeConverter(d.AlarmTime),
+                                    end = CommonHelper.DateTimeConverter(d.EndTime),
+                                    timespan = CommonHelper.IntervalConverter(d.AlarmTime, d.EndTime)
+                                }).ToList()
+                            });
+                        }
                     }
                 }
             }
@@ -2376,120 +2390,6 @@ namespace iPem.Site.Controllers {
             }
 
             return appSets;
-        }
-
-        private List<ShiDianModel> GetTingDianValues(DateTime start, DateTime end) {
-            var models = new List<ShiDianModel>();
-
-            var rtValues = _workContext.RtValues;
-            if(rtValues == null || rtValues.tingDianXinHao == null) return models;
-
-            var values = _hisValueService.GetValuesByPointAsList(rtValues.tingDianXinHao, start, end);
-            var valuesInDevice = from val in values
-                                 group val by new { val.AreaId, val.StationId, val.RoomId, val.DeviceId } into g
-                                 select new {
-                                     AreaId = g.Key.AreaId,
-                                     StationId = g.Key.StationId,
-                                     RoomId = g.Key.RoomId,
-                                     DeviceId = g.Key.DeviceId,
-                                     Values = g
-                                 };
-
-            foreach(var value in valuesInDevice) {
-                DateTime? onetime = null;
-                foreach(var val in value.Values.OrderBy(v => v.Time)) {
-                    if(val.Value == rtValues.tingDian && !onetime.HasValue) {
-                        onetime = val.Time;
-                    } else if(val.Value == rtValues.weiTingDian && onetime.HasValue) {
-                        models.Add(new ShiDianModel {
-                            area = value.AreaId,
-                            station = value.StationId,
-                            room = value.RoomId,
-                            device = value.DeviceId,
-                            start = CommonHelper.DateTimeConverter( onetime.Value),
-                            end = CommonHelper.DateTimeConverter(val.Time),
-                            interval = val.Time.Subtract(onetime.Value).TotalSeconds,
-                            timespan = CommonHelper.IntervalConverter(onetime.Value, val.Time)
-                        });
-
-                        onetime = null;
-                    }
-                }
-
-                if(onetime.HasValue) {
-                    models.Add(new ShiDianModel {
-                        area = value.AreaId,
-                        station = value.StationId,
-                        room = value.RoomId,
-                        device = value.DeviceId,
-                        start = CommonHelper.DateTimeConverter(onetime.Value),
-                        end = CommonHelper.DateTimeConverter(end),
-                        interval = end.Subtract(onetime.Value).TotalSeconds,
-                        timespan = CommonHelper.IntervalConverter(onetime.Value, end)
-                    });
-
-                    onetime = null;
-                }
-            }
-
-            return models;
-        }
-
-        private List<ShiDianModel> GetFaDianValues(DateTime start, DateTime end) {
-            var models = new List<ShiDianModel>();
-
-            var rtValues = _workContext.RtValues;
-            if(rtValues == null || rtValues.faDianXinHao == null) return models;
-
-            var values = _hisValueService.GetValuesByPointAsList(rtValues.faDianXinHao, start, end);
-            var valuesInDevice = from val in values
-                                 group val by new { val.AreaId, val.StationId, val.RoomId, val.DeviceId } into g
-                                 select new {
-                                     AreaId = g.Key.AreaId,
-                                     StationId = g.Key.StationId,
-                                     RoomId = g.Key.RoomId,
-                                     DeviceId = g.Key.DeviceId,
-                                     Values = g
-                                 };
-
-            foreach(var value in valuesInDevice) {
-                DateTime? onetime = null;
-                foreach(var val in value.Values.OrderBy(v => v.Time)) {
-                    if(val.Value == rtValues.faDian && !onetime.HasValue) {
-                        onetime = val.Time;
-                    } else if(val.Value == rtValues.weiFaDian && onetime.HasValue) {
-                        models.Add(new ShiDianModel {
-                            area = value.AreaId,
-                            station = value.StationId,
-                            room = value.RoomId,
-                            device = value.DeviceId,
-                            start = CommonHelper.DateTimeConverter(onetime.Value),
-                            end = CommonHelper.DateTimeConverter(val.Time),
-                            interval = val.Time.Subtract(onetime.Value).TotalSeconds,
-                            timespan = CommonHelper.IntervalConverter(onetime.Value, val.Time)
-                        });
-
-                        onetime = null;
-                    }
-                }
-
-                if(onetime.HasValue) {
-                    models.Add(new ShiDianModel {
-                        area = value.AreaId,
-                        station = value.StationId,
-                        room = value.RoomId,
-                        device = value.DeviceId,
-                        start = CommonHelper.DateTimeConverter(onetime.Value),
-                        end = CommonHelper.DateTimeConverter(end),
-                        interval = end.Subtract(onetime.Value).TotalSeconds,
-                        timespan = CommonHelper.IntervalConverter(onetime.Value, end)
-                    });
-
-                    onetime = null;
-                }
-            }
-
-            return models;
         }
 
         private List<AlmStore<HisAlm>> GetCustom400401(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project, List<ChartsModel> charts) {

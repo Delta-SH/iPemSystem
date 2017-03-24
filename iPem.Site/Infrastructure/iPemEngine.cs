@@ -159,7 +159,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IAppointmentRepository>(c => new AppointmentRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IAreasInRoleRepository>(c => new AreasInRoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IDictionaryRepository>(c => new DictionaryRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IExtendAlmRepository>(c => new ExtendAlmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IExtAlarmRepository>(c => new ExtAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IFormulaRepository>(c => new FormulaRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IMenuRepository>(c => new MenuRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IMenusInRoleRepository>(c => new MenusInRoleRepository(connectionString)).InstancePerLifetimeScope();
@@ -179,7 +179,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<AppointmentService>().As<IAppointmentService>().InstancePerLifetimeScope();
                 builder.RegisterType<AreasInRoleService>().As<IAreasInRoleService>().InstancePerLifetimeScope();
                 builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerLifetimeScope();
-                builder.RegisterType<ExtendAlmService>().As<IExtendAlmService>().InstancePerLifetimeScope();
+                builder.RegisterType<ExtAlarmService>().As <IExtAlarmService>().InstancePerLifetimeScope();
                 builder.RegisterType<FormulaService>().As<IFormulaService>().InstancePerLifetimeScope();
                 builder.RegisterType<MenuService>().As<IMenuService>().InstancePerLifetimeScope();
                 builder.RegisterType<MenusInRoleService>().As<IMenusInRoleService>().InstancePerLifetimeScope();

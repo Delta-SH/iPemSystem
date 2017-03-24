@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 namespace iPem.Data.Repository.Sc {
-    public partial class ExtendAlmRepository : IExtendAlmRepository {
+    public partial class ExtAlarmRepository : IExtAlarmRepository {
 
         #region Fields
 
@@ -19,7 +19,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// Ctor
         /// </summary>
-        public ExtendAlmRepository(string databaseConnectionString) {
+        public ExtAlarmRepository(string databaseConnectionString) {
             this._databaseConnectionString = databaseConnectionString;
         }
 

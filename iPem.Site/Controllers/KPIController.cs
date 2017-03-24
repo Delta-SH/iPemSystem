@@ -1398,10 +1398,13 @@ namespace iPem.Site.Controllers {
             if(_workContext.RtValues == null
                 || _workContext.RtValues.hxwkxtkydXinHao == null
                 || _workContext.RtValues.hxwkxtkydXinHao.Length == 0
+                || _workContext.RtValues.hxwkxtkydLeiXing == null
+                || _workContext.RtValues.hxwkxtkydLeiXing.Length == 0
                 || string.IsNullOrWhiteSpace(parent))
                 return result;
 
             var points = _workContext.RtValues.hxwkxtkydXinHao;
+            var devTypes = _workContext.RtValues.hxwkxtkydLeiXing;
 
             var stations = _workContext.RoleStations;
             if(types != null && types.Length > 0)
@@ -1416,11 +1419,12 @@ namespace iPem.Site.Controllers {
             var index = 0;
             foreach(var station in stations) {
                 var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
-                var devices = station.Rooms.SelectMany(r => r.Devices);
+                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id));
 
                 var total = 0;
                 foreach(var device in devices) {
-                    total += device.Protocol.Points.Select(p => p.Id).Intersect(points).Count();
+                    var gwPoints = device.Protocol.Points.FindAll(p => points.Contains(p.Id));
+                    total += gwPoints.Count;
                 }
 
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
@@ -1506,8 +1510,9 @@ namespace iPem.Site.Controllers {
             }
 
             var index = 0;
+            var tdAlarms = _hisAlmService.GetAlmsInPointAsList(rtValues.tingDianXinHao, startDate, endDate);
             foreach(var station in stations) {
-                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => a.PointId == rtValues.tingDianXinHao);
+                var alarms = tdAlarms.FindAll(a => a.StationId == station.Current.Id);
                 var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
                 var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
@@ -1530,8 +1535,6 @@ namespace iPem.Site.Controllers {
             if(string.IsNullOrWhiteSpace(parent)) return result;
 
             if(types == null) types = new string[] { };
-            //var tnames = new List<string>();
-            //if(types.Length > 0) tnames.AddRange(_stationTypeService.GetAllStationTypesAsList().FindAll(t => types.Contains(t.Id)).Select(t=>t.Name));
 
             var index = 0;
             if(parent == "root") {
@@ -1550,9 +1553,6 @@ namespace iPem.Site.Controllers {
                     
                     if(types.Length > 0)
                         curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
-
-                    //if(tnames.Count > 0)
-                    //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
 
                     result.Add(new Model500201 {
                         index = ++index,
@@ -1584,9 +1584,6 @@ namespace iPem.Site.Controllers {
                             if(types.Length > 0)
                                 curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-                            //if(tnames.Count > 0)
-                            //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
-
                             result.Add(new Model500201 {
                                 index = ++index,
                                 name = leaf.ToString(),
@@ -1605,9 +1602,6 @@ namespace iPem.Site.Controllers {
 
                         if(types.Length > 0)
                             curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
-
-                        //if(tnames.Count > 0)
-                        //    lastStations = lastStations.FindAll(s => tnames.Contains(s.Type));
 
                         result.Add(new Model500201 {
                             name = current.ToString(),
@@ -1813,8 +1807,7 @@ namespace iPem.Site.Controllers {
 
             var devTypes = _workContext.RtValues.qtkgdydzhglLeiXing;
             var devices = stations.SelectMany(s => s.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
-
-            var values = _hisLoadRateService.GetMaxLoadRates(startDate, endDate).FindAll(l => l.Value <= 0.65);
+            var values = _hisLoadRateService.GetMaxInDevice(startDate, endDate, 0.65d);
             var devKeys = values.Select(v => v.DeviceId);
 
             var index = 0;
@@ -1822,16 +1815,16 @@ namespace iPem.Site.Controllers {
                 #region root
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
-                    var children = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+                    var children1 = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
 
                     result.Add(new Model500204 {
                         index = ++index,
                         name = leaf.ToString(),
                         type = leaf.Current.Type.Value,
-                        count = matchs.Count,
-                        total = children.Count,
-                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        count = children2.Count,
+                        total = children1.Count,
+                        rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                     });
                 }
                 #endregion
@@ -1842,31 +1835,31 @@ namespace iPem.Site.Controllers {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
-                            var children = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+                            var children1 = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
 
                             result.Add(new Model500204 {
                                 index = ++index,
                                 name = leaf.ToString(),
                                 type = leaf.Current.Type.Value,
-                                count = matchs.Count,
-                                total = children.Count,
-                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                                count = children2.Count,
+                                total = children1.Count,
+                                rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                             });
                         }
                         #endregion
                     } else {
                         #region self
-                        var children = devices.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var matchs = children.FindAll(c => devKeys.Contains(c.Current.Id));
+                        var children1 = devices.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
 
                         result.Add(new Model500204 {
                             index = ++index,
                             name = current.ToString(),
                             type = current.Current.Type.Value,
-                            count = matchs.Count,
-                            total = children.Count,
-                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            count = children2.Count,
+                            total = children1.Count,
+                            rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                         });
                         #endregion
                     }
@@ -1880,42 +1873,34 @@ namespace iPem.Site.Controllers {
             endDate = endDate.AddSeconds(86399);
 
             var result = new List<Model500205>();
-            if(string.IsNullOrWhiteSpace(parent))
+            if(_workContext.RtValues == null || string.IsNullOrWhiteSpace(parent))
                 return result;
 
-            var stations = _workContext.RoleStations;
-            if(types != null && types.Length > 0)
+            var values = _hisBatTimeService.GetHisBatTimesAsList(startDate, endDate);
+            var ovalues1 = values.FindAll(b => b.EndTime.Subtract(b.StartTime).TotalMinutes >= _workContext.RtValues.qtxdchbschglFenZhong);
+            var ovalues2 = ovalues1.FindAll(v => v.EndValue >= _workContext.RtValues.qtxdchbschglMin);
+            var matchs1 = from o in ovalues1 group o by o.StationId into g select g.Key;
+            var matchs2 = from o in ovalues2 group o by o.StationId into g select g.Key;
+
+            var stations = _workContext.RoleStations.FindAll(s => matchs1.Contains(s.Current.Id));
+            if(types != null && types.Length > 0) 
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
-
-            var values = _hisBatTimeService.GetMinBatTimes(startDate, endDate);
-            var alldev = from dev in _workContext.RoleDevices
-                         join val in values on dev.Current.Id equals val.DeviceId
-                         select new { Id = dev.Current.StationId, Value = val.Value };
-
-            var allsta = from dev in alldev
-                         group dev by dev.Id into g
-                         select new { Id = g.Key, Value = g.Min(v => v.Value) };
-
-            var matsta = allsta.Where(s => s.Value >= interval);
-            var allstaKeys = allsta.Select(s=>s.Id);
-            var matstaKeys = matsta.Select(s=>s.Id);
-            stations = stations.FindAll(s => allstaKeys.Contains(s.Current.Id));
 
             var index = 0;
             if(parent == "root") {
                 #region root
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
-                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+                    var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
 
                     result.Add(new Model500205 {
                         index = ++index,
                         name = leaf.ToString(),
                         type = leaf.Current.Type.Value,
-                        count = matchs.Count,
-                        total = children.Count,
-                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        count = children2.Count,
+                        total = children1.Count,
+                        rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                     });
                 }
                 #endregion
@@ -1926,31 +1911,31 @@ namespace iPem.Site.Controllers {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
-                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+                            var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
 
                             result.Add(new Model500205 {
                                 index = ++index,
                                 name = leaf.ToString(),
                                 type = leaf.Current.Type.Value,
-                                count = matchs.Count,
-                                total = children.Count,
-                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                                count = children2.Count,
+                                total = children1.Count,
+                                rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                             });
                         }
                         #endregion
                     } else {
                         #region self
-                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var matchs = children.FindAll(c => matstaKeys.Contains(c.Current.Id));
+                        var children1 = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
 
                         result.Add(new Model500205 {
                             index = ++index,
                             name = current.ToString(),
                             type = current.Current.Type.Value,
-                            count = matchs.Count,
-                            total = children.Count,
-                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            count = children2.Count,
+                            total = children1.Count,
+                            rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                         });
                         #endregion
                     }
@@ -1965,16 +1950,17 @@ namespace iPem.Site.Controllers {
 
             var result = new List<Model500206>();
             if(_workContext.RtValues == null
+                || _workContext.RtValues.qtwkrlhglLeiXing == null
+                || _workContext.RtValues.qtwkrlhglLeiXing.Length == 0
                 || _workContext.RtValues.qtwkrlhglXinHao == null
                 || _workContext.RtValues.qtwkrlhglXinHao.Length == 0
                 || string.IsNullOrWhiteSpace(parent))
                 return result;
 
+            var devTypes = _workContext.RtValues.qtwkrlhglLeiXing;
             var points = _workContext.RtValues.qtwkrlhglXinHao;
             var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => points.Contains(a.PointId));
-            var staKeys = from alarm in alarms
-                          group alarm by alarm.StationId into g
-                          select g.Key;
+            var staKeys = from alarm in alarms group alarm by alarm.StationId into g select g.Key;
 
             var stations = _workContext.RoleStations;
             if(types != null && types.Length > 0)
@@ -1983,11 +1969,16 @@ namespace iPem.Site.Controllers {
             var total = new List<Station>();
             var gaowen = new List<Station>();
             foreach(var station in stations) {
-                var devices = station.Rooms.SelectMany(r => r.Devices);
+                if(staKeys.Contains(station.Current.Id)) {
+                    total.Add(station.Current);
+                    gaowen.Add(station.Current);
+                    continue;
+                }
+
+                var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id));
                 foreach(var device in devices) {
-                    if(device.Protocol.Points.Select(p => p.Id).Intersect(points).Any()) {
-                        var current = station.Current; total.Add(current);
-                        if(staKeys.Contains(current.Id)) gaowen.Add(current);
+                    if(device.Protocol.Points.Any(p=>points.Contains(p.Id))) {
+                        total.Add(station.Current);
                         break;
                     }
                 }
@@ -2248,17 +2239,9 @@ namespace iPem.Site.Controllers {
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var values = _hisBatService.GetProcedures(startDate, endDate).FindAll(b => b.ValueTime.Subtract(b.StartTime).TotalHours > 1);
-            var devKeys = from val in values
-                          group val by val.DeviceId into g
-                          select g.Key;
-
-            var devices = from dev in _workContext.RoleDevices
-                          join key in devKeys on dev.Current.Id equals key
-                          select dev.Current;
-
-            var staKeys = from dev in devices
-                          group dev by dev.StationId into g
+            var values = _hisBatTimeService.GetHisBatTimesAsList(startDate, endDate).FindAll(b => b.EndTime.Subtract(b.StartTime).TotalHours > 1);
+            var staKeys = from val in values
+                          group val by val.StationId into g
                           select g.Key;
 
             var index = 0;
@@ -2266,16 +2249,16 @@ namespace iPem.Site.Controllers {
                 #region root
                 var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
-                    var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+                    var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
 
                     result.Add(new Model500209 {
                         index = ++index,
                         name = leaf.ToString(),
                         type = leaf.Current.Type.Value,
-                        current = matchs.Count,
-                        last = children.Count,
-                        rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                        current = children2.Count,
+                        last = children1.Count,
+                        rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                     });
                 }
                 #endregion
@@ -2286,31 +2269,31 @@ namespace iPem.Site.Controllers {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
-                            var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+                            var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
 
                             result.Add(new Model500209 {
                                 index = ++index,
                                 name = leaf.ToString(),
                                 type = leaf.Current.Type.Value,
-                                current = matchs.Count,
-                                last = children.Count,
-                                rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                                current = children2.Count,
+                                last = children1.Count,
+                                rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                             });
                         }
                         #endregion
                     } else {
                         #region self
-                        var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var matchs = children.FindAll(c => staKeys.Contains(c.Current.Id));
+                        var children1 = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
 
                         result.Add(new Model500209 {
                             index = ++index,
                             name = current.ToString(),
                             type = current.Current.Type.Value,
-                            current = matchs.Count,
-                            last = children.Count,
-                            rate = string.Format("{0:P2}", children.Count > 0 ? (double)matchs.Count / (double)children.Count : 1)
+                            current = children2.Count,
+                            last = children1.Count,
+                            rate = string.Format("{0:P2}", children1.Count > 0 ? (double)children2.Count / (double)children1.Count : 1)
                         });
                         #endregion
                     }

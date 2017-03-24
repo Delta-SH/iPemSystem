@@ -39,14 +39,6 @@ namespace iPem.Services.Cs {
             return _hisRepository.GetEntities(start, end);
         }
 
-        public List<HisBatTime> GetMaxBatTimes(DateTime start, DateTime end) {
-            return _hisRepository.GetMaxEntities(start, end);
-        }
-
-        public List<HisBatTime> GetMinBatTimes(DateTime start, DateTime end) {
-            return _hisRepository.GetMinEntities(start, end);
-        }
-
         #endregion
 
     }
