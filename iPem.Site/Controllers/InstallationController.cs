@@ -490,7 +490,7 @@ namespace iPem.Site.Controllers {
                 if(string.IsNullOrWhiteSpace(password))
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
-                if(CommonHelper.GetCleanKey() != password)
+                if(CommonHelper.CreateDynamicKeys() != password)
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
                 _dataProvider.CleanEntites();
@@ -552,7 +552,7 @@ namespace iPem.Site.Controllers {
                 if(String.IsNullOrWhiteSpace(password))
                     ModelState.AddModelError("", "鉴权密码不能为空。");
 
-                if(ModelState.IsValid && CommonHelper.GetCleanKey() != password) 
+                if(ModelState.IsValid && CommonHelper.CreateDynamicKeys() != password) 
                     ModelState.AddModelError("", "密码验证失败，请与管理员联系。");
 
                 if(ModelState.IsValid) {

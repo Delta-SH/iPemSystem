@@ -24,7 +24,7 @@ namespace iPem.Core {
         /// Gets or sets the application version
         /// </summary>
         public string Version {
-            get { return "V1.0.0 Build161001"; }
+            get { return "V1.0.0 Build170325"; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace iPem.Core {
         /// Gets or sets the copyright
         /// </summary>
         public string Copyright {
-            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2016"; }
+            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2017"; }
         }
 
         /// <summary>
