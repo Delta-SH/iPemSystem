@@ -45,24 +45,19 @@ namespace iPem.Core.Domain.Cs {
         public string SignalNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the point type
+        /// Gets or sets the signal descrition
         /// </summary>
-        public EnmPoint PointType { get; set; }
+        public string SignalDesc { get; set; }
 
         /// <summary>
-        /// Gets or sets the record type
+        /// Gets or sets the point type
         /// </summary>
-        public int RecordType { get; set; }
+        public EnmPoint Type { get; set; }
 
         /// <summary>
         /// Gets or sets the value
         /// </summary>
         public double Value { get; set; }
-
-        /// <summary>
-        /// Gets or sets the state
-        /// </summary>
-        public EnmState State { get; set; }
 
         /// <summary>
         /// Gets or sets the datetime

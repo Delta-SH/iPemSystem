@@ -392,9 +392,9 @@ namespace iPem.Site.Controllers {
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
                             unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
-                            status = Common.GetPointStatusDisplay(stores[i].Current.State),
+                            status = Common.GetPointStatusDisplay(EnmState.Normal),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
-                            statusid = (int)stores[i].Current.State
+                            statusid = (int)EnmState.Normal
                         });
                     }
                 }
@@ -425,10 +425,10 @@ namespace iPem.Site.Controllers {
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
                             unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
-                            status = Common.GetPointStatusDisplay(stores[i].Current.State),
+                            status = Common.GetPointStatusDisplay(EnmState.Normal),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
-                            statusid = (int)stores[i].Current.State,
-                            background = Common.GetPointStatusColor(stores[i].Current.State)
+                            statusid = (int)EnmState.Normal,
+                            background = Common.GetPointStatusColor(EnmState.Normal)
                         });
                     }
                 }

@@ -236,7 +236,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -271,7 +271,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -306,7 +306,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -341,7 +341,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -376,7 +376,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -411,7 +411,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -467,7 +467,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -504,7 +504,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_HPoint'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
