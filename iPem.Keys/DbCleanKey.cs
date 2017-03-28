@@ -27,7 +27,7 @@ namespace iPem.Keys {
 
             var bytes = MD5.Create().ComputeHash(Encoding.Default.GetBytes(key));
             if(bytes != null) {
-                key = string.Join("", bytes);
+                key = string.Join("", bytes.Reverse());
                 if(length < key.Length)
                     key = key.Substring(0, length);
             }
