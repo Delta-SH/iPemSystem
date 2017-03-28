@@ -324,3 +324,25 @@ GO
 
 SET ANSI_PADDING OFF
 GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建存储过程[dbo].[CreateTable]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CreateTable]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CreateTable]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+Create PROCEDURE [dbo].[CreateTable]
+	@Name varchar(40),
+	@TableDefine varchar(1000)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	IF NOT EXISTS(SELECT NAME FROM SYSOBJECTS WHERE XTYPE = 'U' AND NAME = @NAME)
+		EXEC('CREATE TABLE [dbo].['+@Name+'](' + @TableDefine + ')');
+END
+GO
