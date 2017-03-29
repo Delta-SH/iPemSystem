@@ -16,19 +16,16 @@ var query = function (store) {
     var range = Ext.getCmp('rangePicker'),
         types = Ext.getCmp('stationTypeMultiCombo'),
         start = Ext.getCmp('startField'),
-        end = Ext.getCmp('endField'),
-        count = Ext.getCmp('roadCount');
+        end = Ext.getCmp('endField');
 
     if (!range.isValid()) return;
     if (!start.isValid()) return;
     if (!end.isValid()) return;
-    if (!count.isValid()) return;
 
     store.proxy.extraParams.parent = range.getValue();
     store.proxy.extraParams.types = types.getValue();
     store.proxy.extraParams.startDate = start.getRawValue();
     store.proxy.extraParams.endDate = end.getRawValue();
-    store.proxy.extraParams.roadCount = count.getRawValue();
     store.loadPage(1);
 };
 
@@ -133,38 +130,18 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 allowBlank: false,
                 emptyText: '请选择查询范围...',
                 fieldLabel: '查询范围',
-                width: 568,
+                width: 280,
+            }, {
+                id: 'stationTypeMultiCombo',
+                xtype: 'StationTypeMultiCombo',
+                emptyText: '默认全部',
+                width: 280
             }, {
                 xtype: 'button',
                 glyph: 0xf005,
                 text: '数据查询',
                 handler: function (me, event) {
                     query(currentStore);
-                }
-            }]
-        }, {
-            xtype: 'toolbar',
-            border: false,
-            items: [{
-                id: 'stationTypeMultiCombo',
-                xtype: 'StationTypeMultiCombo',
-                emptyText: '默认全部',
-                width: 280
-            }, {
-                id: 'roadCount',
-                xtype: 'numberfield',
-                fieldLabel: '市电路数',
-                minValue: 1,
-                labelWidth: 60,
-                width: 280,
-                value: 1,
-                allowBlank: false
-            }, {
-                xtype: 'button',
-                glyph: 0xf010,
-                text: '数据导出',
-                handler: function (me, event) {
-                    print(currentStore);
                 }
             }]
         }, {
@@ -188,6 +165,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                 editable: false,
                 allowBlank: false
+            }, {
+                xtype: 'button',
+                glyph: 0xf010,
+                text: '数据导出',
+                handler: function (me, event) {
+                    print(currentStore);
+                }
             }]
         }]
     }],

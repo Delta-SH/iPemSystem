@@ -392,13 +392,13 @@
                 items: [{
                     itemId: 'login',
                     xtype: 'fieldset',
-                    title: 'WebService 登录信息',
+                    title: 'B接口通信信息',
                     margin: '20 20 10 20',
                     defaultType: 'textfield',
                     layout: 'anchor',
                     fieldDefaults: {
                         anchor: '100%',
-                        labelWidth: 150,
+                        labelWidth: 120,
                         labelAlign: 'left',
                         margin: 25
                     },
@@ -407,7 +407,7 @@
                             itemId: 'ip',
                             name: 'ip',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 通信地址',
+                            fieldLabel: 'FSU 通信地址',
                             emptyText: '示例： 192.168.10.100',
                             vtype: 'IPv4',
                             allowBlank: false
@@ -416,55 +416,32 @@
                             itemId: 'port',
                             name: 'port',
                             xtype: 'numberfield',
-                            fieldLabel: 'WebService 通信端口',
+                            fieldLabel: 'FSU 通信端口',
                             value: 8080,
                             minValue: 1,
                             maxValue: 65535,
                             allowBlank: false
                         },
                         {
+                            itemId: 'fsuPath',
+                            name: 'fsuPath',
+                            xtype: 'textfield',
+                            fieldLabel: 'FSU 虚拟路径',
+                            emptyText: '示例： /Services/FSUService',
+                            allowBlank: false
+                        },
+                        {
                             itemId: 'uid',
                             name: 'uid',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 登录帐号',
+                            fieldLabel: 'FSU 登录帐号',
                             allowBlank: false
                         },
                         {
                             itemId: 'password',
                             name: 'password',
                             xtype: 'textfield',
-                            fieldLabel: 'WebService 登录密码',
-                            allowBlank: false
-                        }
-                    ]
-                }, {
-                    itemId: 'path',
-                    xtype: 'fieldset',
-                    title: 'WebService 访问路径',
-                    margin: '10 20 20 20',
-                    defaultType: 'textfield',
-                    layout: 'anchor',
-                    fieldDefaults: {
-                        anchor: '100%',
-                        labelWidth: 150,
-                        labelAlign: 'left',
-                        margin: 25
-                    },
-                    items: [
-                        {
-                            itemId: 'dataPath',
-                            name: 'dataPath',
-                            xtype: 'textfield',
-                            fieldLabel: '实时数据 虚拟路径',
-                            emptyText: '示例： /Services/GetData',
-                            allowBlank: false
-                        },
-                        {
-                            itemId: 'orderPath',
-                            name: 'orderPath',
-                            xtype: 'textfield',
-                            fieldLabel: '远程控制 虚拟路径',
-                            emptyText: '示例： /Services/SetPoint',
+                            fieldLabel: 'FSU 登录密码',
                             allowBlank: false
                         }
                     ]
@@ -535,7 +512,8 @@
                                     items: [
                                         { boxLabel: '启用语音播报', name: 'basic', inputValue: 1 },
                                         { boxLabel: '循环播报告警', name: 'basic', inputValue: 2 },
-                                        { boxLabel: '禁播工程告警', name: 'basic', inputValue: 3 }
+                                        { boxLabel: '禁播工程告警', name: 'basic', inputValue: 3 },
+                                        { boxLabel: '禁播确认告警', name: 'basic', inputValue: 4 }
                                     ]
                                 }]
                             }, {

@@ -290,7 +290,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500105(int start, int limit, string parent, string[] types, int roadCount, DateTime startDate, DateTime endDate) {
+        public JsonResult Request500105(int start, int limit, string parent, string[] types, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<Model500105>> {
                 success = true,
                 message = "无数据",
@@ -299,7 +299,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.Get500105(parent, types, roadCount, startDate, endDate);
+                var models = this.Get500105(parent, types, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -323,9 +323,9 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500105(string parent, string[] types, int roadCount, DateTime startDate, DateTime endDate) {
+        public ActionResult Download500105(string parent, string[] types, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500105(parent, types, roadCount, startDate, endDate);
+                var models = this.Get500105(parent, types, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500105>(models, "市电可用度", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -520,7 +520,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult Request500205(int start, int limit, string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+        public JsonResult Request500205(int start, int limit, string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<Model500205>> {
                 success = true,
                 message = "无数据",
@@ -529,7 +529,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.Get500205(parent, types, size, interval, startDate, endDate);
+                var models = this.Get500205(parent, types, size, startDate, endDate);
                 if(models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -553,9 +553,9 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult Download500205(string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+        public ActionResult Download500205(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
             try {
-                var models = this.Get500205(parent, types, size, interval, startDate, endDate);
+                var models = this.Get500205(parent, types, size, startDate, endDate);
                 using(var ms = _excelManager.Export<Model500205>(models, "蓄电池后备时长合格率", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -1491,7 +1491,7 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<Model500105> Get500105(string parent, string[] types, int roadCount, DateTime startDate, DateTime endDate) {
+        private List<Model500105> Get500105(string parent, string[] types, DateTime startDate, DateTime endDate) {
             endDate = endDate.AddSeconds(86399);
 
             var result = new List<Model500105>();
@@ -1520,10 +1520,10 @@ namespace iPem.Site.Controllers {
                     index = ++index,
                     name = string.Format("{0},{1}", area == null ? "" : area.ToString(), station.Current.Name),
                     type = station.Current.Type.Name,
-                    count = roadCount,
+                    count = station.Current.CityElectNumber,
                     almTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(almTime)),
                     cntTime = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(cntTime)),
-                    rate = string.Format("{0:P2}", roadCount > 0 && cntTime > 0 ? 1 - almTime / (roadCount * cntTime) : 1)
+                    rate = string.Format("{0:P2}", station.Current.CityElectNumber > 0 && cntTime > 0 ? 1 - almTime / (station.Current.CityElectNumber * cntTime) : 1)
                 });
             }
 
@@ -1869,7 +1869,7 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<Model500205> Get500205(string parent, string[] types, int size, double interval, DateTime startDate, DateTime endDate) {
+        private List<Model500205> Get500205(string parent, string[] types, int size, DateTime startDate, DateTime endDate) {
             endDate = endDate.AddSeconds(86399);
 
             var result = new List<Model500205>();

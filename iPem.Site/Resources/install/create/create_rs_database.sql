@@ -150,6 +150,16 @@ ALTER TABLE [dbo].[D_OrdiAirCond] DROP CONSTRAINT [FK_D_OrdiAirCond_D_Device]
 GO
 
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
+--É¾³ýÍâ¼ü[dbo].[D_RedefinePoint]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint] DROP CONSTRAINT [FK_D_RedefinePoint_P_Point]
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint] DROP CONSTRAINT [FK_D_RedefinePoint_D_Device]
+GO
+
+--¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
 --É¾³ýÍâ¼ü[dbo].[D_SolarController]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarController_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarController]'))
 ALTER TABLE [dbo].[D_SolarController] DROP CONSTRAINT [FK_D_SolarController_D_Device]
@@ -1359,7 +1369,7 @@ CREATE TABLE [dbo].[D_RedefinePoint](
 	[SavedPeriod] [int] NULL,
 	[AbsoluteThreshold] [float] NULL,
 	[PerThreshold] [float] NULL,
-	[StaticePeriod] [int] NULL,
+	[StaticPeriod] [int] NULL,
 	[Extend] [varchar](max) NULL,
  CONSTRAINT [PK_D_RedefinePoint] PRIMARY KEY CLUSTERED 
 (
@@ -1708,7 +1718,7 @@ CREATE TABLE [dbo].[H_OpEvent](
 	[NodeTable] [varchar](40) NULL,
 	[OpType] [int] NULL,
 	[OpTime] [datetime] NULL,
-	[Desc] [varchar](512) NULL,
+	[Desc] [varchar](max) NULL,
  CONSTRAINT [PK_H_OpEvent] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -1930,6 +1940,7 @@ CREATE TABLE [dbo].[S_Station](
 	[Contact] [varchar](20) NULL,
 	[CityElecCap] [varchar](20) NOT NULL,
 	[CityElecLoadTypeId] [int] NOT NULL,
+	[CityElectNumber] [int] NOT NULL,
 	[LineRadiusSize] [varchar](20) NULL,
 	[LineLength] [varchar](20) NULL,
 	[SuppPowerTypeId] [int] NULL,
@@ -2450,6 +2461,30 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_OrdiAirCond_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_OrdiAirCond]'))
 ALTER TABLE [dbo].[D_OrdiAirCond] CHECK CONSTRAINT [FK_D_OrdiAirCond_D_Device]
+GO
+
+--¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
+--Ìí¼ÓÍâ¼ü[dbo].[D_RedefinePoint]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint] CHECK CONSTRAINT [FK_D_RedefinePoint_D_Device]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_P_Point] FOREIGN KEY([PointID])
+REFERENCES [dbo].[P_Point] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_RedefinePoint_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_RedefinePoint]'))
+ALTER TABLE [dbo].[D_RedefinePoint] CHECK CONSTRAINT [FK_D_RedefinePoint_P_Point]
 GO
 
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö

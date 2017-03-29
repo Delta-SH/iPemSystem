@@ -43,6 +43,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
                     entity.CityElecLoadTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["CityElecLoadTypeID"]);
+                    entity.CityElectNumber = SqlTypeConverter.DBNullInt32Handler(rdr["CityElectNumber"]);
                     entity.CityElecCap = SqlTypeConverter.DBNullStringHandler(rdr["CityElecCap"]);
                     entity.CityElecLoad = SqlTypeConverter.DBNullStringHandler(rdr["CityElecLoad"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
@@ -76,6 +77,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
                     entity.CityElecLoadTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["CityElecLoadTypeID"]);
+                    entity.CityElectNumber = SqlTypeConverter.DBNullInt32Handler(rdr["CityElectNumber"]);
                     entity.CityElecCap = SqlTypeConverter.DBNullStringHandler(rdr["CityElecCap"]);
                     entity.CityElecLoad = SqlTypeConverter.DBNullStringHandler(rdr["CityElecLoad"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
@@ -107,6 +109,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
                     entity.CityElecLoadTypeId = SqlTypeConverter.DBNullInt32Handler(rdr["CityElecLoadTypeID"]);
+                    entity.CityElectNumber = SqlTypeConverter.DBNullInt32Handler(rdr["CityElectNumber"]);
                     entity.CityElecCap = SqlTypeConverter.DBNullStringHandler(rdr["CityElecCap"]);
                     entity.CityElecLoad = SqlTypeConverter.DBNullStringHandler(rdr["CityElecLoad"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);

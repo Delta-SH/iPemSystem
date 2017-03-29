@@ -16,21 +16,18 @@ var query = function (store) {
     var range = Ext.getCmp('rangePicker'),
         types = Ext.getCmp('stationTypeMultiCombo'),
         size = Ext.getCmp('areaTypeCombo'),
-        interval = Ext.getCmp('batInterval'),
         start = Ext.getCmp('startField'),
         end = Ext.getCmp('endField');
 
     if (!range.isValid()) return;
     if (!types.isValid()) return;
     if (!size.isValid()) return;
-    if (!interval.isValid()) return;
     if (!start.isValid()) return;
     if (!end.isValid()) return;
 
     store.proxy.extraParams.parent = range.getValue();
     store.proxy.extraParams.types = types.getValue();
     store.proxy.extraParams.size = size.getValue();
-    store.proxy.extraParams.interval = interval.getValue();
     store.proxy.extraParams.startDate = start.getRawValue();
     store.proxy.extraParams.endDate = end.getRawValue();
     store.loadPage(1);
@@ -131,12 +128,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 allowBlank: false,
                 emptyText: '请选择查询范围...',
                 fieldLabel: '查询范围',
-                width: 280,
-            }, {
-                id: 'stationTypeMultiCombo',
-                xtype: 'StationTypeMultiCombo',
-                emptyText: '默认全部',
-                width: 280
+                width: 568,
             }, {
                 xtype: 'button',
                 glyph: 0xf005,
@@ -149,20 +141,15 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
             xtype: 'toolbar',
             border: false,
             items: [{
+                id: 'stationTypeMultiCombo',
+                xtype: 'StationTypeMultiCombo',
+                emptyText: '默认全部',
+                width: 280
+            }, {
                 id: 'areaTypeCombo',
                 xtype: 'AreaTypeCombo',
                 fieldLabel: '统计粒度',
                 width: 280
-            }, {
-                id: 'batInterval',
-                xtype: 'numberfield',
-                fieldLabel: '规定时长',
-                emptyText: '规定的蓄电池后备时长(单位:小时)',
-                minValue: 1,
-                labelWidth: 60,
-                width: 280,
-                value: 10,
-                allowBlank: false
             }, {
                 xtype: 'button',
                 glyph: 0xf010,

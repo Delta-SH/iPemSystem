@@ -1416,11 +1416,10 @@ namespace iPem.Site.Controllers {
                 total = 0,
                 data = new WsValues {
                     ip = "",
-                    port = 8080,
+                    port = 8000,
+                    fsuPath = "",
                     uid = "",
-                    password = "",
-                    dataPath = "",
-                    orderPath = ""
+                    password = ""
                 }
             };
 

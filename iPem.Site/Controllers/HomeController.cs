@@ -190,9 +190,11 @@ namespace iPem.Site.Controllers {
                     start = new DateTime(Convert.ToInt64(Session["SpeechScanTime"]));
 
                 var alarms = _actAlmService.GetAlmsAsList(start, end).FindAll(a => config.levels.Contains((int)a.AlarmLevel));
-                var stores = _workContext.GetActAlmStore(alarms).FindAll(a=>a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
+                var stores = _workContext.GetActAlmStore(alarms);
                 if(config.basic.Contains(3))
                     stores = stores.FindAll(a => a.ExtSet == null || string.IsNullOrWhiteSpace(a.ExtSet.ProjectId));
+                if(config.basic.Contains(4))
+                    stores = stores.FindAll(a => a.ExtSet == null || a.ExtSet.Confirmed == EnmConfirm.Unconfirmed);
 
                 if(config.stationTypes != null && config.stationTypes.Length > 0)
                     stores = stores.FindAll(a => config.stationTypes.Contains(a.Station.Type.Id));
@@ -594,7 +596,7 @@ namespace iPem.Site.Controllers {
                                     package.DeviceList.Add(devPack);
                                 }
 
-                                var actData = BIPackMgr.GetData(curExt, package);
+                                var actData = BIPackMgr.GetData(curExt, _workContext.WsValues, package);
                                 if(actData != null && actData.Result == EnmResult.Success) {
                                     foreach(var device in actData.DeviceList) {
                                         var curDev = pointsInDevice.FirstOrDefault(f => f.Key.Code == device.Id);
@@ -780,7 +782,7 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.SetPoint(curFsuExt, package);
+                var result = BIPackMgr.SetPoint(curFsuExt, _workContext.WsValues, package);
                 if(result != null) {
                     if(result.Result == EnmResult.Failure)
                         throw new iPemException(result.FailureCause ?? "参数设置失败");
@@ -844,7 +846,7 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.SetPoint(curFsuExt, package);
+                var result = BIPackMgr.SetPoint(curFsuExt, _workContext.WsValues, package);
                 if(result != null) {
                     if(result.Result == EnmResult.Failure)
                         throw new iPemException(result.FailureCause ?? "参数设置失败");
@@ -905,7 +907,7 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.GetThreshold(curFsuExt, package);
+                var result = BIPackMgr.GetThreshold(curFsuExt, _workContext.WsValues, package);
                 if(result != null ) {
                     if(result.Result == EnmResult.Failure)
                         throw new iPemException(result.FailureCause ?? "参数设置失败");
@@ -980,7 +982,7 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.SetThreshold(curFsuExt, package);
+                var result = BIPackMgr.SetThreshold(curFsuExt, _workContext.WsValues, package);
                 if(result != null) {
                     if(result.Result == EnmResult.Failure)
                         throw new iPemException(result.FailureCause ?? "参数设置失败");

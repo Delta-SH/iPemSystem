@@ -47,6 +47,11 @@ namespace iPem.Core.Domain.Rs {
         public int CityElecLoadTypeId { get; set; }
 
         /// <summary>
+        /// Gets or sets the city electric number
+        /// </summary>
+        public int CityElectNumber { get; set; }
+
+        /// <summary>
         /// Gets or sets the city electric capacity
         /// </summary>
         public string CityElecCap { get; set; }
