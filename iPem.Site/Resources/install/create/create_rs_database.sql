@@ -1842,7 +1842,7 @@ GO
 CREATE TABLE [dbo].[P_Protocol](
 	[Id] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[SubDevTypeId] [varchar](100) NOT NULL,
+	[SubDeviceTypeId] [varchar](100) NOT NULL,
 	[Desc] [varchar](512) NULL,
 	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_P_Protocol] PRIMARY KEY CLUSTERED 

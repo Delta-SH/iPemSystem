@@ -195,7 +195,7 @@ namespace iPem.Data.Common {
 
         //protocol repository
         public const string Sql_Protocol_Repository_GetEntities = @"
-        SELECT PP.[Id],PP.[Name],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],PP.[SubDevTypeId] AS [SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],PP.[Desc] AS [Comment],PP.[Enabled] FROM [dbo].[P_Protocol] PP
+        SELECT PP.[Id],PP.[Name],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],PP.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],PP.[Desc] AS [Comment],PP.[Enabled] FROM [dbo].[P_Protocol] PP
         INNER JOIN [dbo].[C_SubDeviceType] SD ON PP.[SubDevTypeId] = SD.[Id] 
         INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
         WHERE PP.[Enabled] = 1;";
