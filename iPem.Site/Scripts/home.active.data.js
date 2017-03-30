@@ -430,12 +430,12 @@
             },
             items: [{
                 xtype: 'hiddenfield',
-                itemId: 'point',
-                name: 'point'
-            }, {
-                xtype: 'hiddenfield',
                 itemId: 'device',
                 name: 'device'
+            }, {
+                xtype: 'hiddenfield',
+                itemId: 'point',
+                name: 'point'
             }, {
                 xtype: 'textfield',
                 itemId: 'nmid',

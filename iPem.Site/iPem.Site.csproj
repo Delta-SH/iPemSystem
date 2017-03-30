@@ -199,6 +199,7 @@
     <Compile Include="Models\AppointmentModel.cs" />
     <Compile Include="Models\AuthModel.cs" />
     <Compile Include="Models\BadgeModel.cs" />
+    <Compile Include="Models\BInterface\EnmBI.cs" />
     <Compile Include="Models\BInterface\GetDataAckPackage.cs" />
     <Compile Include="Models\BInterface\GetDataPackage.cs" />
     <Compile Include="Models\BInterface\GetThresholdAckPackage.cs" />

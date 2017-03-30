@@ -45,8 +45,8 @@ namespace iPem.Site.Models.BInterface {
                             var tThreshold = new TThreshold();
                             tThreshold.Id = child.Attributes["ID"] != null ? child.Attributes["ID"].InnerText : string.Empty;
                             tThreshold.SignalNumber = child.Attributes["SignalNumber"] != null ? child.Attributes["SignalNumber"].InnerText : string.Empty;
-                            var type = child.Attributes["Type"] != null ? int.Parse(child.Attributes["Type"].InnerText) : (int)EnmPoint.AI;
-                            tThreshold.Type = Enum.IsDefined(typeof(EnmResult), type) ? (EnmPoint)type : EnmPoint.AI;
+                            var type = child.Attributes["Type"] != null ? int.Parse(child.Attributes["Type"].InnerText) : (int)EnmBIPoint.AL;
+                            tThreshold.Type = Enum.IsDefined(typeof(EnmBIPoint), type) ? (EnmBIPoint)type : EnmBIPoint.AL;
                             tThreshold.Threshold = child.Attributes["Threshold"] != null ? child.Attributes["Threshold"].InnerText : "";
                             var level = child.Attributes["AlarmLevel"] != null ? int.Parse(child.Attributes["AlarmLevel"].InnerText) : (int)EnmLevel.Level0;
                             tThreshold.AlarmLevel = Enum.IsDefined(typeof(EnmLevel), level) ? (EnmLevel)level : EnmLevel.Level0;

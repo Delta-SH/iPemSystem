@@ -7,7 +7,7 @@ namespace iPem.Site.Models.BInterface {
 
         public string SignalNumber { get; set; }
 
-        public EnmPoint Type { get; set; }
+        public EnmBIPoint Type { get; set; }
 
         public string MeasuredVal { get; set; }
 

@@ -772,7 +772,7 @@ namespace iPem.Site.Controllers {
                                 new TSemaphore() {
                                     Id = curPoint.Code,
                                     SignalNumber = curPoint.Number,
-                                    Type = curPoint.Type,
+                                    Type = EnmBIPoint.DO,
                                     MeasuredVal = "NULL",
                                     SetupVal = ctrl.ToString(),
                                     Status = EnmState.Normal,
@@ -790,7 +790,7 @@ namespace iPem.Site.Controllers {
 
                     if(result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
-                        if(devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
+                        if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))
                             return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
                     }
                 }
@@ -836,7 +836,7 @@ namespace iPem.Site.Controllers {
                                 new TSemaphore() {
                                     Id = curPoint.Code,
                                     SignalNumber = curPoint.Number,
-                                    Type = curPoint.Type,
+                                    Type = EnmBIPoint.AO,
                                     MeasuredVal = "NULL",
                                     SetupVal = adjust.ToString(),
                                     Status = EnmState.Normal,
@@ -854,7 +854,7 @@ namespace iPem.Site.Controllers {
 
                     if(result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
-                        if(devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
+                        if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))
                             return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
                     }
                 }
@@ -973,7 +973,7 @@ namespace iPem.Site.Controllers {
                                 new TThreshold() {
                                     Id = curPoint.Code,
                                     SignalNumber = curPoint.Number,
-                                    Type = curPoint.Type,
+                                    Type = EnmBIPoint.AL,
                                     Threshold = threshold.ToString(),
                                     AlarmLevel = Enum.IsDefined(typeof(EnmLevel), alarmLevel) ? (EnmLevel)alarmLevel : EnmLevel.Level0,
                                     NMAlarmID = nmalarmID
@@ -990,7 +990,7 @@ namespace iPem.Site.Controllers {
 
                     if(result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
-                        if (devResult != null && devResult.SuccessList.Contains(new TSignalMeasurementId { Id = curPoint.Code, SignalNumber = curPoint.Number }))
+                        if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))
                             return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
                     }
                 }

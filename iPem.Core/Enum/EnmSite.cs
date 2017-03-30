@@ -47,10 +47,10 @@
     /// 2-遥调信号（AO）
     /// </remarks>
     public enum EnmPoint {
-        DI=4,
-        AI=3,
-        DO=1,
-        AO=2
+        DI = 4,
+        AI = 3,
+        DO = 1,
+        AO = 2
     }
 
     /// <summary>
