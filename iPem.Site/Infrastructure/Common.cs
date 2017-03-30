@@ -246,8 +246,10 @@ namespace iPem.Site.Infrastructure {
                     return "正常数据";
                 case EnmState.Invalid:
                     return "无效数据";
-                default:
+                case EnmState.Undefined:
                     return "未定义";
+                default:
+                    return "";
             }
         }
 

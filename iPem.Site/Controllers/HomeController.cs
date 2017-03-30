@@ -650,6 +650,7 @@ namespace iPem.Site.Controllers {
                                 pointid = pv.Point.Current.Id,
                                 typeid = (int)pv.Point.Current.Type,
                                 statusid = (int)status,
+                                level = (int)pv.Point.Current.AlarmLevel,
                                 rsspoint = pv.Point.RssPoint,
                                 rssfrom = pv.Point.RssFrom,
                                 timestamp = CommonHelper.ShortTimeConverter(time)

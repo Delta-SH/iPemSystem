@@ -59,7 +59,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }
@@ -98,7 +97,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }
@@ -137,7 +135,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }
@@ -176,7 +173,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }
@@ -215,7 +211,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }
@@ -252,7 +247,6 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmFlag = SqlTypeConverter.DBNullEnmFlagHandler(rdr["AlarmFlag"]);
                     entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Frequency = SqlTypeConverter.DBNullInt32Handler(rdr["Frequency"]);
                     entities.Add(entity);
                 }
             }

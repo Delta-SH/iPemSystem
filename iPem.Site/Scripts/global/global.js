@@ -268,7 +268,8 @@ window.$$iPems.Point = {
 /*Point State*/
 window.$$iPems.State = {
     Normal: 0,
-    Invalid: 1
+    Invalid: 1,
+    Undefined: 2
 };
 
 /*State Css*/
@@ -278,6 +279,8 @@ window.$$iPems.GetStateCls = function (value) {
             return 'point-state-normal';
         case $$iPems.State.Invalid:
             return 'point-state-invalid';
+        case $$iPems.State.Undefined:
+            return 'point-state-undefined';
         default:
             return '';
     }
@@ -294,7 +297,9 @@ window.$$iPems.AlmLevel = {
 
 /*Alarm Css Class*/
 window.$$iPems.GetAlmLevelCls = function (value) {
-    switch(value) {
+    switch (value) {
+        case $$iPems.AlmLevel.Level0:
+            return 'alm-level0';
         case $$iPems.AlmLevel.Level1:
             return 'alm-level1';
         case $$iPems.AlmLevel.Level2:

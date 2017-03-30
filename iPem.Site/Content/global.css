@@ -332,8 +332,14 @@ div.help-tip div.help-tip-content p {
 .point-state-invalid .x-status-cell { 
     background-color : #d3d3d3; 
 }
+.point-state-undefined .x-status-cell { 
+    background-color : #fff; 
+}
 
 /**alarm level css*/
+.alm-level0 .x-level-cell { 
+    background-color : #32cd32;
+}
 .alm-level1 .x-level-cell { 
     background-color : #ff0000;
 }

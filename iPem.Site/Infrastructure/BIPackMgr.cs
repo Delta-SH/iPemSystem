@@ -27,7 +27,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static SetPointActPackage SetPoint(string url, SetPointPackage package) {
-            var service = new FSUServiceService() { Url = url, Timeout = 10000 };
+            var service = new FSUServiceService() { Url = url, Timeout = 15000 };
             var xmlData = service.invoke(package.ToXml());
             return new SetPointActPackage(xmlData);
         }
@@ -53,7 +53,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static SetThresholdAckPackage SetThreshold(string url, SetThresholdPackage package) {
-            var service = new FSUServiceService() { Url = url, Timeout = 10000 };
+            var service = new FSUServiceService() { Url = url, Timeout = 15000 };
             var xmlData = service.invoke(package.ToXml());
             return new SetThresholdAckPackage(xmlData);
         }

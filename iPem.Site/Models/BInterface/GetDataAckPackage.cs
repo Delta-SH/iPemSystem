@@ -51,8 +51,8 @@ namespace iPem.Site.Models.BInterface {
                             tSemaphore.Type = Enum.IsDefined(typeof(EnmResult), type) ? (EnmPoint)type : EnmPoint.AI;
                             tSemaphore.MeasuredVal = child.Attributes["MeasuredVal"] != null ? child.Attributes["MeasuredVal"].InnerText : "NULL";
                             tSemaphore.SetupVal = child.Attributes["SetupVal"] != null ? child.Attributes["SetupVal"].InnerText : "NULL";
-                            var status = child.Attributes["Status"] != null ? int.Parse(child.Attributes["Status"].InnerText) : (int)EnmState.Invalid;
-                            tSemaphore.Status = Enum.IsDefined(typeof(EnmState), status) ? (EnmState)status : EnmState.Invalid;
+                            var status = child.Attributes["Status"] != null ? int.Parse(child.Attributes["Status"].InnerText) : (int)EnmState.Undefined;
+                            tSemaphore.Status = Enum.IsDefined(typeof(EnmState), status) ? (EnmState)status : EnmState.Undefined;
                             tSemaphore.Time = child.Attributes["Time"] != null ? DateTime.Parse(child.Attributes["Time"].InnerText) : DateTime.Now;
                             device.Values.Add(tSemaphore);
                         }

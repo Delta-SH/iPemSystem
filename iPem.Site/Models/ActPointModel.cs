@@ -51,6 +51,9 @@ namespace iPem.Site.Models {
         public int statusid { get; set; }
 
         [ExcelIgnore]
+        public int level { get; set; }
+
+        [ExcelIgnore]
         public bool rsspoint { get; set; }
 
         [ExcelIgnore]

@@ -158,6 +158,7 @@
             { name: 'pointid', type: 'string' },
             { name: 'typeid', type: 'int' },
             { name: 'statusid', type: 'int' },
+            { name: 'level', type: 'int' },
             { name: 'rsspoint', type: 'boolean' },
             { name: 'rssfrom', type: 'boolean' },
             { name: 'timestamp', type: 'string' }
@@ -445,7 +446,7 @@
                 itemId: 'level',
                 name: 'level',
                 fieldLabel: '告 警 等 级',
-                all: true,
+                all: false,
                 width: '100%'
             }, {
                 xtype: 'numberfield',
@@ -752,7 +753,7 @@
                                     items: [{
                                         tooltip: '设置门限',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('typeid') === $$iPems.Point.AI && $$iPems.ThresholdOperation) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                                            return (r.get('level') > 0 && $$iPems.ThresholdOperation) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
                                         },
                                         handler: function (view, rowIndex, colIndex, item, event, record) {
                                             view.getSelectionModel().select(record);
