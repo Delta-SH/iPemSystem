@@ -58,8 +58,12 @@
     /// </summary>
     public enum EnmState {
         Normal,
-        Invalid,
-        Undefined
+        Level1,
+        Level2,
+        Level3,
+        Level4,
+        Opevent,
+        Invalid
     }
 
     /// <summary>

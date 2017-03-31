@@ -18,7 +18,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -38,18 +38,18 @@
                 {
                     name: '设备能耗',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '总能耗',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: 'PUE',
                     type: 'line',
                     yAxisIndex: 1,
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -115,7 +115,7 @@
                 if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
                     var xaxis = [], series0 = [], series1 = [], series2 = [];
-                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         Ext.Array.each(data.chart, function (item) {
                             xaxis.push(item.name);
                             series0.push(item.models[0].value);
@@ -123,6 +123,11 @@
                             series2.push(item.models[2].value);
                         });
                     }
+
+                    if (xaxis.length == 0) xaxis.push('无数据');
+                    if (series0.length == 0) series0.push(0);
+                    if (series1.length == 0) series1.push(0);
+                    if (series2.length == 0) series2.push(0);
 
                     barOption.xAxis[0].data = xaxis;
                     barOption.series[0].data = series0;

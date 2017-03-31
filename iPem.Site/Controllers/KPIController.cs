@@ -761,7 +761,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.Get500301(parent, size, startDate, endDate);
-                if(models != null && models.Count > 0) {
+                if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
@@ -902,7 +902,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.Get500303(parent, size, startDate, endDate);
-                if(models != null && models.Count > 0) {
+                if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
@@ -959,7 +959,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.Get500304(parent, size, startDate, endDate);
-                if(models != null && models.Count > 0) {
+                if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
@@ -1024,7 +1024,7 @@ namespace iPem.Site.Controllers {
                 if(bkeys.Length != 2) throw new iPemException("无效的参数 parents");
 
                 var models = this.Get500305(akeys[1], bkeys[1], period, startDate, endDate);
-                if(models != null && models.Count > 0) {
+                if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
@@ -1088,7 +1088,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.Get500306(parent, startDate, endDate);
-                if(models != null && models.Count > 0) {
+                if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 

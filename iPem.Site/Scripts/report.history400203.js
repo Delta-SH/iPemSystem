@@ -123,6 +123,7 @@
             { name: 'levelid', type: 'int' },
             { name: 'startDate', type: 'string' },
             { name: 'endDate', type: 'string' },
+            { name: 'nmid', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
 			{ name: 'room', type: 'string' },
@@ -260,17 +261,13 @@
             load: function (me, records, successful) {
                 if (successful && pieChart && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         pieOption.series[0].data[0].value = 0;
                         pieOption.series[0].data[1].value = 0;
                         pieOption.series[0].data[2].value = 0;
                         pieOption.series[0].data[3].value = 0;
 
-                        barOption.series[0].data[0].value = 0;
-                        barOption.series[0].data[1].value = 0;
-                        barOption.series[0].data[2].value = 0;
-                        barOption.series[0].data[3].value = 0;
-
+                        barOption.series[0].data = [0, 0, 0, 0];
                         Ext.Array.each(data.chart, function (item, index) {
                             if (item.index == $$iPems.AlmLevel.Level1) {
                                 pieOption.series[0].data[0].value = item.value;
@@ -431,6 +428,10 @@
                     {
                         text: '结束时间',
                         dataIndex: 'endDate'
+                    },
+                    {
+                        text: '告警管理编号',
+                        dataIndex: 'nmid'
                     },
                     {
                         text: '所属区域',

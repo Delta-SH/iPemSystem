@@ -17,7 +17,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -35,7 +35,7 @@
                             color: '#f04b51'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '二级告警',
@@ -45,7 +45,7 @@
                             color: '#efa91f'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '三级告警',
@@ -55,7 +55,7 @@
                             color: '#f5d313'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '四级告警',
@@ -65,7 +65,7 @@
                             color: '#0892cd'
                         }
                     },
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -80,6 +80,7 @@
             { name: 'levelid', type: 'int' },
             { name: 'startDate', type: 'string' },
             { name: 'endDate', type: 'string' },
+            { name: 'nmid', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
 			{ name: 'room', type: 'string' },
@@ -218,7 +219,7 @@
             load: function (me, records, successful) {
                 if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         var xaxis = [],
                             series1 = [],
                             series2 = [],
@@ -256,6 +257,12 @@
                                 series4.push(groups[x].L4);
                             }
                         }
+
+                        if (xaxis.length == 0) xaxis.push('无数据');
+                        if (series1.length == 0) series1.push(0);
+                        if (series2.length == 0) series2.push(0);
+                        if (series3.length == 0) series3.push(0);
+                        if (series4.length == 0) series4.push(0);
 
                         barOption.xAxis[0].data = xaxis;
                         barOption.series[0].data = series1;
@@ -398,6 +405,10 @@
                     {
                         text: '结束时间',
                         dataIndex: 'endDate'
+                    },
+                    {
+                        text: '告警管理编号',
+                        dataIndex: 'nmid'
                     },
                     {
                         text: '所属区域',

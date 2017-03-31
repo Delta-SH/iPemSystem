@@ -5,7 +5,7 @@
                 trigger: 'axis',
                 formatter: function (params) {
                     var xaxis = lineOption.xAxis[0].data;
-                    if (xaxis.length > 0) {
+                    if (xaxis.length > 0 && xaxis[0] != '无数据') {
                         if (!Ext.isArray(params)) params = [params];
 
                         var tips = [Ext.String.format('开始时间：{0}<br/>结束时间：{1}', xaxis[params[0].dataIndex].start, xaxis[params[0].dataIndex].end)];
@@ -16,7 +16,7 @@
                         return tips.join('<br/>');
                     }
 
-                    return 'No Data';
+                    return '无数据';
                 }
             },
             legend: {
@@ -46,7 +46,7 @@
                 type: 'category',
                 boundaryGap: false,
                 splitLine: {show: false},
-                data:[]
+                data:['无数据']
             }],
             yAxis: [{
                 type: 'value'
@@ -56,17 +56,17 @@
                     name: '最大测值',
                     type: 'line',
                     smooth: true,
-                    data: []
+                    data: [0]
                 }, {
                     name: '平均测值',
                     type: 'line',
                     smooth: true,
-                    data: []
+                    data: [0]
                 }, {
                     name: '最小测值',
                     type: 'line',
                     smooth: true,
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -94,7 +94,7 @@
                 if (data.success) {
                     if (lineChart) {
                         var xaxis = [], series0 = [], series1 = [], series2 = [];
-                        if (data.data && Ext.isArray(data.data)) {
+                        if (!Ext.isEmpty(data.data) && Ext.isArray(data.data)) {
                             Ext.Array.each(data.data, function (item, index) {
                                 xaxis.push({
                                     value: item.name.replace(' ', '\n'),
@@ -119,6 +119,11 @@
                                 });
                             });
                         }
+
+                        if (xaxis.length == 0) xaxis.push('无数据');
+                        if (series0.length == 0) series0.push(0);
+                        if (series1.length == 0) series1.push(0);
+                        if (series2.length == 0) series2.push(0);
 
                         lineOption.xAxis[0].data = xaxis;
                         lineOption.series[0].data = series0;

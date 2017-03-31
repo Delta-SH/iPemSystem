@@ -3,29 +3,29 @@
         lineChart = null,
         gaugeOption = {
             tooltip: {
-                formatter: '{c} {b}'
+                formatter: '{b}: {c} {a}'
             },
             series: [
                 {
-                    name: '实时测值',
+                    name: '',
                     type: 'gauge',
                     center: ['50%', 100],
                     radius: '100%',
                     title: {
-                        offsetCenter: [0, -30],
+                        offsetCenter: [0, 73],
                         textStyle: {
                             color: '#005eaa',
                             fontWeight: 'bolder',
-                            fontSize: 16
+                            fontSize: 12
                         }
                     },
                     detail: {
-                        offsetCenter: [0, 30],
+                        offsetCenter: [0, -30],
                         textStyle: {
-                            fontSize: 18
+                            fontSize: 16
                         }
                     },
-                    data: [{ value: 0, name: 'kW·h' }]
+                    data: [{ value: 0, name: '无数据' }]
                 }
             ]
         },
@@ -45,14 +45,14 @@
                 type: 'category',
                 boundaryGap: false,
                 splitLine: { show: false },
-                data: []
+                data: ['无数据']
             }],
             yAxis: [{
                 type: 'value'
             }],
             series: [
                 {
-                    name: 'kW·h',
+                    name: '',
                     type: 'line',
                     smooth: true,
                     symbol: 'none',
@@ -63,7 +63,7 @@
                         }
                     },
                     areaStyle: { normal: {} },
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -71,11 +71,11 @@
     var resetChart = function () {
         gaugeOption.series[0].min = 0;
         gaugeOption.series[0].max = 100;
-        gaugeOption.series[0].data[0].value = 0;
-        gaugeOption.series[0].data[0].name = 'kW·h';
+        gaugeOption.series[0].name = '';
+        gaugeOption.series[0].data[0] = {};
         gaugeChart.setOption(gaugeOption, true);
 
-        lineOption.series[0].name = 'kW·h';
+        lineOption.series[0].name = '';
         lineOption.series[0].data = [];
         lineOption.xAxis[0].data = [];
         lineChart.setOption(lineOption, true);
@@ -85,10 +85,14 @@
         if (record != null) {
             var maxcount = 60,
                 timestamp = record.get('timestamp'),
+                point = record.get('point'),
                 value = record.get('value'),
                 unit = record.get('unit');
 
-            if (value >= 0) {
+            if (value === 'NULL') {
+                gaugeOption.series[0].min = 0;
+                gaugeOption.series[0].max = 100;
+            } else if (value >= 0) {
                 if (value <= 100) {
                     gaugeOption.series[0].min = 0;
                     gaugeOption.series[0].max = 100;
@@ -124,7 +128,8 @@
                 }
             }
 
-            gaugeOption.series[0].data[0].name = unit;
+            gaugeOption.series[0].name = unit;
+            gaugeOption.series[0].data[0].name = point;
             gaugeOption.series[0].data[0].value = value;
             gaugeChart.setOption(gaugeOption, true);
 

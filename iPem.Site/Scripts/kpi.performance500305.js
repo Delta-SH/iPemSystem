@@ -18,7 +18,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -34,12 +34,12 @@
                 {
                     name: '站点A',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '站点B',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -120,13 +120,17 @@
                 if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
                     var xaxis = [], series0 = [], series1 = [];
-                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         Ext.Array.each(data.chart, function (item) {
                             xaxis.push(item.name);
                             series0.push(item.models[0].value);
                             series1.push(item.models[1].value);
                         });
                     }
+
+                    if (xaxis.length == 0) xaxis.push('无数据');
+                    if (series0.length == 0) series0.push(0);
+                    if (series1.length == 0) series1.push(0);
 
                     barOption.xAxis[0].data = xaxis;
                     barOption.series[0].data = series0;

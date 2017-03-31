@@ -95,7 +95,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -113,7 +113,7 @@
                             color: '#f04b51'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '二级告警',
@@ -123,7 +123,7 @@
                             color: '#efa91f'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '三级告警',
@@ -133,7 +133,7 @@
                             color: '#f5d313'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '四级告警',
@@ -143,7 +143,7 @@
                             color: '#0892cd'
                         }
                     },
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -156,6 +156,7 @@
 			{ name: 'id', type: 'string' },
             { name: 'level', type: 'string' },
             { name: 'levelid', type: 'int' },
+            { name: 'nmid', type: 'string' },
             { name: 'start', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
@@ -679,6 +680,10 @@
                                 text: '告警时间',
                                 dataIndex: 'start',
                                 width: 150
+                            },
+                            {
+                                text: '告警管理编号',
+                                dataIndex: 'nmid'
                             },
                             {
                                 text: '所属区域',

@@ -16,7 +16,7 @@
                         return tips.join('<br/>');
                     }
 
-                    return 'No Data';
+                    return '无数据';
                 }
             },
             legend: {
@@ -82,10 +82,9 @@
                 if (data.success) {
                     if (lineChart) {
                         var legend = [], series = [];
-                        if (data.data && Ext.isArray(data.data)) {
+                        if (!Ext.isEmpty(data.data) && Ext.isArray(data.data)) {
                             Ext.Array.each(data.data, function (item, index) {
                                 legend.push(item.name);
-
                                 var models = [];
                                 Ext.Array.each(item.models, function (model) {
                                     models.push({

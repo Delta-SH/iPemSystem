@@ -17,7 +17,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -30,7 +30,7 @@
                 {
                     name: '数量',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -107,15 +107,15 @@
             load: function (me, records, successful) {
                 if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)
-                        && data.chart.length > 0) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         var xaxis = [], series = [];
                         Ext.Array.each(data.chart, function (item, index) {
                             xaxis.push(item.name);
                             series.push(item.value);
                         });
+
+                        if (xaxis.length == 0) xaxis.push('无数据');
+                        if (series.length == 0) series.push(0);
 
                         barOption.xAxis[0].data = xaxis;
                         barOption.series[0].data = series;

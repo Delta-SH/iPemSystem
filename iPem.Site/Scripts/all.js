@@ -1544,19 +1544,31 @@ window.$$iPems.Point = {
 /*Point State*/
 window.$$iPems.State = {
     Normal: 0,
-    Invalid: 1,
-    Undefined: 2
+    Level1: 1,
+    Level2: 2,
+    Level3: 3,
+    Level4: 4,
+    Opevent: 5,
+    Invalid: 6
 };
 
 /*State Css*/
 window.$$iPems.GetStateCls = function (value) {
     switch (value) {
         case $$iPems.State.Normal:
-            return 'point-state-normal';
+            return 'point-status-normal';
+        case $$iPems.State.Level1:
+            return 'point-status-level1';
+        case $$iPems.State.Level2:
+            return 'point-status-level2';
+        case $$iPems.State.Level3:
+            return 'point-status-level3';
+        case $$iPems.State.Level4:
+            return 'point-status-level4';
+        case $$iPems.State.Opevent:
+            return 'point-status-opevent';
         case $$iPems.State.Invalid:
-            return 'point-state-invalid';
-        case $$iPems.State.Undefined:
-            return 'point-state-undefined';
+            return 'point-status-invalid';
         default:
             return '';
     }
@@ -1907,19 +1919,19 @@ window.$$iPems.Tasks = {
             });
         },
         fireOnStart: true,
-        interval: 15000,
+        interval: 10000,
         repeat: 1
     }),
     actAlmTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 15000,
+        interval: 10000,
         repeat: 1
     }),
     actPointTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 15000,
+        interval: 10000,
         repeat: 1
     }),
     homeTasks: {
@@ -1932,7 +1944,7 @@ window.$$iPems.Tasks = {
         svrTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 5000,
+            interval: 10000,
             repeat: 1
         }),
         energyTask: Ext.util.TaskManager.newTask({

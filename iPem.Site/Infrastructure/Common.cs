@@ -244,12 +244,20 @@ namespace iPem.Site.Infrastructure {
             switch(status) {
                 case EnmState.Normal:
                     return "正常数据";
+                case EnmState.Level1:
+                    return "一级告警";
+                case EnmState.Level2:
+                    return "二级告警";
+                case EnmState.Level3:
+                    return "三级告警";
+                case EnmState.Level4:
+                    return "四级告警";
+                case EnmState.Opevent:
+                    return "操作事件";
                 case EnmState.Invalid:
                     return "无效数据";
-                case EnmState.Undefined:
-                    return "未定义";
                 default:
-                    return "";
+                    return "未定义";
             }
         }
 

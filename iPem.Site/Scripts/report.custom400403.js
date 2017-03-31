@@ -120,6 +120,7 @@
             { name: 'levelid', type: 'int' },
             { name: 'startDate', type: 'string' },
             { name: 'endDate', type: 'string' },
+            { name: 'nmid', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
 			{ name: 'room', type: 'string' },
@@ -432,6 +433,10 @@
                     {
                         text: '结束时间',
                         dataIndex: 'endDate'
+                    },
+                    {
+                        text: '告警管理编号',
+                        dataIndex: 'nmid'
                     },
                     {
                         text: '所属区域',

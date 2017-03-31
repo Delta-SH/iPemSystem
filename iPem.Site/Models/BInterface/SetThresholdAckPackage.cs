@@ -17,7 +17,7 @@ namespace iPem.Site.Models.BInterface {
             var Name = xmlDoc.SelectSingleNode("/Response/PK_Type/Name");
             if(Name == null) return;
 
-            if(!Name.InnerText.Equals(EnmPackType.SET_POINT_ACK.ToString())) 
+            if(!Name.InnerText.Equals(EnmPackType.SET_THRESHOLD_ACK.ToString())) 
                 return;
 
             var FsuId = xmlDoc.SelectSingleNode("/Response/Info/FSUID");

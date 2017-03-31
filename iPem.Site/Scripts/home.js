@@ -27,7 +27,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -45,7 +45,7 @@
                             color: '#f04b51'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '二级告警',
@@ -55,7 +55,7 @@
                             color: '#efa91f'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '三级告警',
@@ -65,7 +65,7 @@
                             color: '#f5d313'
                         }
                     },
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '四级告警',
@@ -75,7 +75,7 @@
                             color: '#0892cd'
                         }
                     },
-                    data: []
+                    data: [0]
                 }
             ]
         },
@@ -164,7 +164,6 @@
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
             },
-            
             series: [
                 {
                     name: '能耗分类占比',
@@ -222,7 +221,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -235,37 +234,37 @@
                 {
                     name: '空调',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '照明',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '办公',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '设备',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '开关电源',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: 'UPS',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 },
                 {
                     name: '其他',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 }
             ]
         },

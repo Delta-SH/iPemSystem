@@ -67,7 +67,7 @@ var now = new Date(),
         xAxis: [
             {
                 type: 'category',
-                data: [],
+                data: ['无数据'],
                 splitLine: { show: false }
             }
         ],
@@ -84,43 +84,43 @@ var now = new Date(),
                 name: '空调',
                 type: 'bar',
                 stack:'one',
-                data: []
+                data: [0]
             },
             {
                 name: '照明',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             },
             {
                 name: '办公',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             },
             {
                 name: '设备',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             },
             {
                 name: '开关电源',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             },
             {
                 name: 'UPS',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             },
             {
                 name: '其他',
                 type: 'bar',
                 stack: 'one',
-                data: []
+                data: [0]
             }
         ]
     };
@@ -199,7 +199,7 @@ var now = new Date(),
                 if (successful && pieChart && barChart) {
                     var data = me.proxy.reader.jsonData;
                     var xaxis = [], kt = [], zm = [], bg = [], sb = [], kgdy = [], ups = [], qt = [], ttkt = 0, ttzm = 0, ttbg = 0, ttsb = 0, ttkgdy = 0, ttups = 0, ttqt = 0;
-                    if (!Ext.isEmpty(data) && !Ext.isEmpty(data.chart)) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         Ext.Array.each(data.chart, function (item) {
                             xaxis.push(item.name);
                             kt.push(item.kt);

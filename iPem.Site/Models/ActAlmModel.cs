@@ -26,6 +26,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("告警时间")]
         public string start { get; set; }
 
+        [ExcelDisplayName("告警管理编号")]
+        public string nmid { get; set; }
+
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 

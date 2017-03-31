@@ -29,7 +29,7 @@
                 type: 'category',
                 boundaryGap: false,
                 splitLine: { show: false },
-                data: []
+                data: ['无数据']
             }],
             yAxis: [{
                 type: 'value'
@@ -47,7 +47,7 @@
                         }
                     },
                     areaStyle: { normal: {} },
-                    data: [ ]
+                    data: [0]
                 }
             ]
         };
@@ -82,6 +82,9 @@
                                 unit = item.comment;
                             });
                         }
+
+                        if (xaxis.length == 0) xaxis.push('无数据');
+                        if (series.length == 0) series.push(0);
 
                         lineOption.series[0].name = unit;
                         lineOption.series[0].data = series;

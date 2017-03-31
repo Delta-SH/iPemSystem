@@ -14,7 +14,7 @@
             },
             xAxis: [{
                 type: 'category',
-                data: []
+                data: ['无数据']
             }],
             yAxis: [{
                 type: 'value',
@@ -22,7 +22,7 @@
                     formatter: '{value} kW·h'
                 }
             }],
-            series: [ ]
+            series: [{ name: '趋势', type: 'line', smooth: true, data: [0] }]
         };
 
     var query = function (store, grid) {
@@ -117,6 +117,9 @@
 
                         lineOption.series.push(series);
                     });
+
+                    if (lineOption.xAxis[0].data.length == 0) lineOption.xAxis[0].data.push('无数据');
+                    if (lineOption.series.length == 0) lineOption.series.push({ name: '趋势', type: 'line', smooth: true, data: [0] });
                     lineChart.setOption(lineOption, true);
                 }
             }

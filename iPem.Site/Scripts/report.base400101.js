@@ -10,7 +10,7 @@
                 orient: 'vertical',
                 x: 'left',
                 y: 'center',
-                data: []
+                data: ['无数据']
             },
             series: [
                 {
@@ -37,7 +37,7 @@
                             show: false
                         }
                     },
-                    data: []
+                    data: [0]
                 }
             ]
         },
@@ -58,7 +58,7 @@
             xAxis: [
                 {
                     type: 'category',
-                    data: [],
+                    data: ['无数据'],
                     splitLine: { show: false }
                 }
             ],
@@ -71,7 +71,7 @@
                 {
                     name: '数量',
                     type: 'bar',
-                    data: []
+                    data: [0]
                 }
             ]
         };
@@ -137,10 +137,7 @@
             load: function (me, records, successful) {
                 if (successful && pieChart && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)
-                        && data.chart.length > 0) {
+                    if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         var legend = [], pseries = [], xaxis = [], bseries = [];
                         Ext.Array.each(data.chart, function (item, index) {
                             legend.push(item.name);
@@ -151,6 +148,11 @@
                             xaxis.push(item.name);
                             bseries.push(item.value);
                         });
+
+                        if (legend.length == 0) legend.push('无数据');
+                        if (pseries.length == 0) pseries.push({ value: 0, name: '无数据' });
+                        if (xaxis.length == 0) xaxis.push('无数据');
+                        if (bseries.length == 0) bseries.push(0);
 
                         pieOption.legend.data = legend;
                         pieOption.series[0].data = pseries;
