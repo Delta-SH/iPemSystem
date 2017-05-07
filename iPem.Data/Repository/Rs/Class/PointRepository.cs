@@ -42,6 +42,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
                     entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
@@ -85,6 +87,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
                     entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
@@ -125,6 +129,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.StationType = new StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StationTypeName"]) };
                     entity.SubDeviceType = new SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
                     entity.DeviceType = new DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };

@@ -140,6 +140,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IHisValueRepository>(c => new HisValueRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisLoadRateRepository>(c => new HisLoadRateRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IHisBatTimeRepository>(c => new HisBatTimeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IHisFtpRepository>(c => new HisFtpRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();
@@ -150,6 +151,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<HisValueService>().As<IHisValueService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisLoadRateService>().As<IHisLoadRateService>().InstancePerLifetimeScope();
                 builder.RegisterType<HisBatTimeService>().As<IHisBatTimeService>().InstancePerLifetimeScope();
+                builder.RegisterType<HisFtpService>().As<IHisFtpService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDbType.Sc)) {

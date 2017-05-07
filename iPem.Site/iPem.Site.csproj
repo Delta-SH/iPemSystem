@@ -164,6 +164,7 @@
     <Compile Include="Controllers\ComponentController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
+    <Compile Include="Controllers\FsuController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstallationController.cs" />
@@ -214,6 +215,8 @@
     <Compile Include="Models\Chart500301.cs" />
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\FormulaModel.cs" />
+    <Compile Include="Models\FsuModel.cs" />
+    <Compile Include="Models\FtpModel.cs" />
     <Compile Include="Models\HomeAlmModel.cs" />
     <Compile Include="Models\HomeAreaAlmModel.cs" />
     <Compile Include="Models\HomeEnergyModel.cs" />
@@ -303,6 +306,32 @@
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
     <Content Include="Content\themes\css\home.speech.css" />
     <Content Include="Content\themes\icons\category.png" />
+    <Content Include="Content\themes\icons\menu-count.png" />
+    <Content Include="Content\themes\icons\menu-csgl.png" />
+    <Content Include="Content\themes\icons\menu-dzdt.png" />
+    <Content Include="Content\themes\icons\menu-fsuftp.png" />
+    <Content Include="Content\themes\icons\menu-fsucx.png" />
+    <Content Include="Content\themes\icons\menu-fsupz.png" />
+    <Content Include="Content\themes\icons\menu-gcgl.png" />
+    <Content Include="Content\themes\icons\menu-gcyy.png" />
+    <Content Include="Content\themes\icons\menu-jsgl.png" />
+    <Content Include="Content\themes\icons\menu-kpi-dz.png" />
+    <Content Include="Content\themes\icons\menu-kpi-jkd.png" />
+    <Content Include="Content\themes\icons\menu-kpi-nh.png" />
+    <Content Include="Content\themes\icons\menu-kpi.png" />
+    <Content Include="Content\themes\icons\menu-pzgl.png" />
+    <Content Include="Content\themes\icons\menu-query.png" />
+    <Content Include="Content\themes\icons\menu-report-dz.png" />
+    <Content Include="Content\themes\icons\menu-report-jc.png" />
+    <Content Include="Content\themes\icons\menu-report-ls.png" />
+    <Content Include="Content\themes\icons\menu-report-qx.png" />
+    <Content Include="Content\themes\icons\menu-report.png" />
+    <Content Include="Content\themes\icons\menu-rzgl.png" />
+    <Content Include="Content\themes\icons\menu-txzt.png" />
+    <Content Include="Content\themes\icons\menu-xnjm.png" />
+    <Content Include="Content\themes\icons\menu-xtgl.png" />
+    <Content Include="Content\themes\icons\menu-xxgl.png" />
+    <Content Include="Content\themes\icons\menu-yhgl.png" />
     <Content Include="Content\themes\icons\signal.png" />
     <Content Include="Content\themes\images\cfg.png" />
     <Content Include="Content\themes\css\configuration.map.iframe.css" />
@@ -845,6 +874,8 @@
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window\window-default-sides.gif" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.min.js" />
+    <Content Include="Scripts\fsu.ftp.js" />
+    <Content Include="Scripts\fsu.js" />
     <Content Include="Scripts\global\all.js" />
     <Content Include="Scripts\global\global.js" />
     <Content Include="Scripts\help.js" />
@@ -1019,6 +1050,7 @@
     <Content Include="Content\ux\fonts\iconfont.woff" />
     <None Include="Properties\PublishProfiles\iPemDeployConfig.pubxml" />
     <Content Include="Scripts\kpi.performance500302.js" />
+    <Content Include="Scripts\fsu.configuration.js" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.min.js" />
@@ -1160,6 +1192,9 @@
     <Content Include="Views\KPI\base500208.cshtml" />
     <Content Include="Views\KPI\base500209.cshtml" />
     <Content Include="Views\Installation\Authentication.cshtml" />
+    <Content Include="Views\Fsu\Index.cshtml" />
+    <Content Include="Views\Fsu\Configuration.cshtml" />
+    <Content Include="Views\Fsu\Ftp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

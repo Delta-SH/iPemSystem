@@ -93,6 +93,14 @@ INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_SCVendor]
+DELETE FROM [dbo].[C_SCVendor];
+GO
+
+INSERT INTO [dbo].[C_SCVendor]([ID],[Name]) VALUES('03','中达');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加默认值[dbo].[Sys_Menu]
 DELETE FROM [dbo].[Sys_Menu];
 GO

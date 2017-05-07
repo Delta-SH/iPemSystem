@@ -2020,7 +2020,7 @@ Ext.onReady(function () {
                     collapsed: false,
                     autoScroll: true,
                     useArrows: false,
-                    rootVisible: true,
+                    rootVisible: false,
                     hidden: !$$iPems.menuVisible,
                     margins: '5 0 5 5',
                     contentEl: 'left-nav-panel',

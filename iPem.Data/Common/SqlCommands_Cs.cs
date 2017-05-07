@@ -34,7 +34,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ' + @AreaId + N' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ''' + @AreaId + N''' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -69,7 +69,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ' + @StationId + N' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ''' + @StationId + N''' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -104,7 +104,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ' + @RoomId + N' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ''' + @RoomId + N''' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -139,7 +139,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -174,7 +174,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N''' [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N'''  AND [AlarmTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -246,7 +246,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ' + @AreaId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ''' + @AreaId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -281,7 +281,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ' + @StationId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ''' + @StationId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -316,7 +316,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ' + @RoomId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ''' + @RoomId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -351,7 +351,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -386,7 +386,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ' + @PointId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -421,7 +421,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ' + @PointId + N' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -551,7 +551,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [BeginTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [BeginTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -586,7 +586,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [BeginTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ' + @PointId + N' AND [BeginTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -658,7 +658,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -693,7 +693,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -763,7 +763,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -798,7 +798,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ' + @DeviceId + N' AND [PointId] = ' + @PointId + N' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1143,5 +1143,9 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+
+        //history ftp
+        public const string Sql_HisFtp_Repository_GetEntities = @"SELECT [FsuID],[EventType],[EventDesc] AS [Message],[EventTime] FROM [dbo].[H_FsuEvent] WHERE [EventTime] BETWEEN @Start AND @End;";
+        public const string Sql_HisFtp_Repository_GetEntitiesByType = @"SELECT [FsuID],[EventType],[EventDesc] AS [Message],[EventTime] FROM [dbo].[H_FsuEvent] WHERE [EventTime] BETWEEN @Start AND @End AND [EventType] = @EventType;";
     }
 }

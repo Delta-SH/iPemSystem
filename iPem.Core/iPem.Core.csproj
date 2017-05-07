@@ -123,6 +123,7 @@
     <Compile Include="Domain\Cs\ActAlm.cs" />
     <Compile Include="Domain\Cs\HisBatTime.cs" />
     <Compile Include="Domain\Cs\HisElec.cs" />
+    <Compile Include="Domain\Cs\HisFtp.cs" />
     <Compile Include="Domain\Cs\HisLoadRate.cs" />
     <Compile Include="Domain\Rs\FsuExt.cs" />
     <Compile Include="Domain\Sc\ExtAlarm.cs" />

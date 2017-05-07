@@ -51,7 +51,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -82,7 +82,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -113,7 +113,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -144,7 +144,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -177,7 +177,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -208,7 +208,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -241,7 +241,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }
@@ -270,7 +270,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
                     entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
                     entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
-                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.Value = SqlTypeConverter.DBNullFloatHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
                     entities.Add(entity);
                 }

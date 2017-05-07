@@ -391,7 +391,7 @@ namespace iPem.Site.Controllers {
                             point = stores[i].Point.Name,
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
-                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
+                            unit = string.IsNullOrWhiteSpace(stores[i].Current.SignalDesc) ? Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState) : stores[i].Current.SignalDesc,
                             status = Common.GetPointStatusDisplay(EnmState.Normal),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
                             statusid = (int)EnmState.Normal
@@ -424,7 +424,7 @@ namespace iPem.Site.Controllers {
                             point = stores[i].Point.Name,
                             type = Common.GetPointTypeDisplay(stores[i].Point.Type),
                             value = stores[i].Current.Value,
-                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
+                            unit = string.IsNullOrWhiteSpace(stores[i].Current.SignalDesc) ? Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState) : stores[i].Current.SignalDesc,
                             status = Common.GetPointStatusDisplay(EnmState.Normal),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
                             statusid = (int)EnmState.Normal,
@@ -992,7 +992,7 @@ namespace iPem.Site.Controllers {
                                         data.data.Add(new ChartModel {
                                             index = i + 1,
                                             name = CommonHelper.DateTimeConverter(models[i].UpdateTime),
-                                            value = models[i].Value,
+                                            value = double.Parse(models[i].Value.ToString()),
                                             comment = curPoint.UnitState
                                         });
                                     }
@@ -1729,7 +1729,7 @@ namespace iPem.Site.Controllers {
                               AreaFullName = area.ToString()
                           }).ToList();
 
-            return new List<ValStore<HisValue>>();
+            return stores;
         }
 
         private List<AlmStore<HisAlm>> GetHistory400202(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, int[] levels, string[] logicTypes, string point, string confirm, string project) {

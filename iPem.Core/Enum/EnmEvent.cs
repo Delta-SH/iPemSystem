@@ -20,4 +20,9 @@
         Exception,
         Other
     }
+
+    public enum EnmFtpEvent {
+        Undefined,
+        FTP
+    }
 }

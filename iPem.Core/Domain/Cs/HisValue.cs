@@ -57,7 +57,7 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// Gets or sets the value
         /// </summary>
-        public double Value { get; set; }
+        public float Value { get; set; }
 
         /// <summary>
         /// Gets or sets the datetime

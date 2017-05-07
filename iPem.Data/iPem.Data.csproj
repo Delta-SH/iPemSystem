@@ -55,9 +55,11 @@
     <Compile Include="Repository\Cs\Class\ActAlmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisBatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisElecRepository.cs" />
+    <Compile Include="Repository\Cs\Class\HisFtpRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisLoadRateRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisBatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisElecRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IHisFtpRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IHisLoadRateRepository.cs" />
     <Compile Include="Repository\Sc\Class\ExtAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Class\HisAlmRepository.cs" />

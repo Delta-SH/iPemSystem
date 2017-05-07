@@ -540,6 +540,32 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[C_SCVendor]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_SCVendor]') AND type in (N'U'))
+DROP TABLE [dbo].[C_SCVendor]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[C_SCVendor](
+	[Id] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+ CONSTRAINT [PK_C_SCVendor] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[C_StationType]
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_StationType]') AND type in (N'U'))
 DROP TABLE [dbo].[C_StationType]
@@ -1778,6 +1804,8 @@ CREATE TABLE [dbo].[P_Point](
 	[Type] [int] NOT NULL,
 	[UnitState] [varchar](160) NULL,
 	[Number] [varchar](20) NOT NULL,
+	[AlarmId] [varchar](100) NULL,
+	[NMAlarmId] [varchar](100) NULL,
 	[StationTypeId] [varchar](100) NOT NULL,
 	[SubDeviceTypeId] [varchar](100) NOT NULL,
 	[SubLogicTypeId] [varchar](100) NOT NULL,

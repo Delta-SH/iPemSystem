@@ -12,7 +12,7 @@
                     center: ['50%', 100],
                     radius: '100%',
                     title: {
-                        offsetCenter: [0, 73],
+                        offsetCenter: [0, 60],
                         textStyle: {
                             color: '#005eaa',
                             fontWeight: 'bolder',

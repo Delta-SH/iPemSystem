@@ -35,6 +35,16 @@ namespace iPem.Core.Domain.Rs {
         public string Number { get; set; }
 
         /// <summary>
+        /// Gets or sets the number
+        /// </summary>
+        public string AlarmId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number
+        /// </summary>
+        public string NMAlarmId { get; set; }
+
+        /// <summary>
         /// Gets or sets the station type
         /// </summary>
         public StationType StationType { get; set; }

@@ -48,9 +48,11 @@
     <Compile Include="Cs\Class\ActAlmService.cs" />
     <Compile Include="Cs\Class\HisBatTimeService.cs" />
     <Compile Include="Cs\Class\HisElecService.cs" />
+    <Compile Include="Cs\Class\HisFtpService.cs" />
     <Compile Include="Cs\Class\HisLoadRateService.cs" />
     <Compile Include="Cs\Interface\IHisBatTimeService.cs" />
     <Compile Include="Cs\Interface\IHisElecService.cs" />
+    <Compile Include="Cs\Interface\IHisFtpService.cs" />
     <Compile Include="Cs\Interface\IHisLoadRateService.cs" />
     <Compile Include="Sc\Class\ExtAlarmService.cs" />
     <Compile Include="Cs\Class\HisAlmService.cs" />
