@@ -12,7 +12,7 @@
         { name: 'message', type: 'string' },
         { name: 'time', type: 'string' }
     ],
-    idProperty: 'id'
+    idProperty: 'index'
 });
 
 var query = function (store) {
@@ -26,8 +26,8 @@ var query = function (store) {
         types = typesField.getValue(),
         filter = filterField.getValue(),
         keywords = keywordsField.getRawValue(),
-        startDate = startField.getValue(),
-        endDate = endField.getValue();
+        startDate = startField.getRawValue(),
+        endDate = endField.getRawValue();
 
     var proxy = store.getProxy();
     proxy.extraParams.parent = parent;
@@ -159,7 +159,7 @@ Ext.onReady(function () {
                     fieldLabel: '查询范围',
                     emptyText: '默认全部'
                 }, {
-                    id: 'statusField',
+                    id: 'typesField',
                     xtype: 'multicombo',
                     fieldLabel: '日志类型',
                     valueField: 'id',

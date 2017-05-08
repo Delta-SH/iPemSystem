@@ -98,7 +98,6 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult DownloadFsu(string parent, int[] status, int filter, string keywords) {
             try {
                 var models = this.GetFsus(parent, status, filter, keywords);
@@ -143,7 +142,6 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult DownloadFtp(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
             try {
                 var models = this.GetFtps(parent, types, startDate, endDate, filter, keywords);
@@ -241,6 +239,8 @@ namespace iPem.Site.Controllers {
         }
 
         private List<FtpModel> GetFtps(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
+            endDate = endDate.AddDays(1).AddMilliseconds(-1);
+
             var result = new List<FtpModel>();
             var fsus = new List<OrgFsu>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -279,32 +279,29 @@ namespace iPem.Site.Controllers {
             }
 
             var events = _ftpService.GetEventsAsList(startDate, endDate, EnmFtpEvent.FTP);
-            if(events != null && events.Count > 0)
-                extends = extends.FindAll(e => (status.Contains(1) && e.Status) || (status.Contains(0) && !e.Status));
+            if (types != null && types.Length > 0)
+                events = events.FindAll(e => types.Contains((int)e.EventType));
 
-            var stores = from fsu in fsus
-                         join ext in extends on fsu.Current.Id equals ext.Id
+            var stores = from evt in events
+                         join fsu in fsus on evt.FsuId equals fsu.Current.Id
                          join room in _workContext.RoleRooms on fsu.Current.RoomId equals room.Current.Id
                          join station in _workContext.RoleStations on fsu.Current.StationId equals station.Current.Id
                          join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
-                         select new FsuModel {
+                         select new FtpModel {
                              id = fsu.Current.Id,
                              code = fsu.Current.Code,
                              name = fsu.Current.Name,
                              area = area.ToString(),
                              station = station.Current.Name,
                              room = room.Current.Name,
-                             ip = ext.IP ?? string.Empty,
-                             port = ext.Port,
-                             last = CommonHelper.DateTimeConverter(ext.LastTime),
-                             change = CommonHelper.DateTimeConverter(ext.ChangeTime),
-                             status = ext.Status ? "在线" : "离线",
-                             comment = ext.Comment ?? string.Empty
+                             type = Common.GetFtpEventDisplay(evt.EventType),
+                             message = evt.Message ?? string.Empty,
+                             time = CommonHelper.DateTimeConverter(evt.EventTime)
                          };
 
             var index = 0;
-            foreach(var store in stores.OrderBy(s => s.code)) {
-                result.Add(new FsuModel {
+            foreach (var store in stores.OrderByDescending(s => s.time)) {
+                result.Add(new FtpModel {
                     index = ++index,
                     id = store.id,
                     code = store.code,
@@ -312,12 +309,9 @@ namespace iPem.Site.Controllers {
                     area = store.area,
                     station = store.station,
                     room = store.room,
-                    ip = store.ip,
-                    port = store.port,
-                    last = store.last,
-                    change = store.change,
-                    status = store.status,
-                    comment = store.comment
+                    type = store.type,
+                    message = store.message,
+                    time = store.time
                 });
             }
 
@@ -325,5 +319,6 @@ namespace iPem.Site.Controllers {
         }
 
         #endregion
+
     }
 }

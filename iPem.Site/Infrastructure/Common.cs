@@ -289,6 +289,16 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetFtpEventDisplay(EnmFtpEvent evt) {
+            switch (evt) {
+                case EnmFtpEvent.FTP:
+                    return "FTP操作";
+                case EnmFtpEvent.Undefined:
+                default:
+                    return "未定义";
+            }
+        }
+
         public static string GetValueDisplay(EnmPoint type, string value, string unit) {
             switch(type) {
                 case EnmPoint.DI:
