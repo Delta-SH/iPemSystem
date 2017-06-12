@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace iPem.Site.Models.Organization {
     [Serializable]
     public partial class OrgStation {
-        public Station Current { get; set; }
+        public S_Station Current { get; set; }
 
         public List<OrgRoom> Rooms { get; set; }
     }

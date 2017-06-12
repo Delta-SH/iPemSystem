@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IActAlmRepository _actRepository;
+        private readonly IA_AAlarmRepository _actRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public ActAlmService(
-            IActAlmRepository actRepository,
+            IA_AAlarmRepository actRepository,
             ICacheManager cacheManager) {
             this._actRepository = actRepository;
             this._cacheManager = cacheManager;
@@ -31,52 +31,52 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<ActAlm> GetAlmsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAlmsInAreaAsList(area), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAlmsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAlmsInAreaAsList(area), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAlmsInAreaAsList(string area) {
-            return _actRepository.GetEntitiesInArea(area);
+        public List<A_AAlarm> GetAlmsInAreaAsList(string area) {
+            return _actRepository.GetAlarmsInArea(area);
         }
 
-        public IPagedList<ActAlm> GetAlmsInStation(string station, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAlmsInStationAsList(station), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAlmsInStation(string station, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAlmsInStationAsList(station), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAlmsInStationAsList(string station) {
-            return _actRepository.GetEntitiesInStation(station);
+        public List<A_AAlarm> GetAlmsInStationAsList(string station) {
+            return _actRepository.GetAlarmsInStation(station);
         }
 
-        public IPagedList<ActAlm> GetAlmsInRoom(string room, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAlmsInRoomAsList(room), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAlmsInRoom(string room, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAlmsInRoomAsList(room), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAlmsInRoomAsList(string room) {
-            return _actRepository.GetEntitiesInRoom(room);
+        public List<A_AAlarm> GetAlmsInRoomAsList(string room) {
+            return _actRepository.GetAlarmsInRoom(room);
         }
 
-        public IPagedList<ActAlm> GetAlmsInDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAlmsInDeviceAsList(device), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAlmsInDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAlmsInDeviceAsList(device), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAlmsInDeviceAsList(string device) {
-            return _actRepository.GetEntitiesInDevice(device);
+        public List<A_AAlarm> GetAlmsInDeviceAsList(string device) {
+            return _actRepository.GetAlarmsInDevice(device);
         }
 
-        public IPagedList<ActAlm> GetAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAlmsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAlmsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAlmsAsList(DateTime start, DateTime end) {
-            return _actRepository.GetEntities(start, end);
+        public List<A_AAlarm> GetAlmsAsList(DateTime start, DateTime end) {
+            return _actRepository.GetAlarms(start, end);
         }
 
-        public IPagedList<ActAlm> GetAllAlms(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<ActAlm>(this.GetAllAlmsAsList(), pageIndex, pageSize);
+        public IPagedList<A_AAlarm> GetAllAlms(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_AAlarm>(this.GetAllAlmsAsList(), pageIndex, pageSize);
         }
 
-        public List<ActAlm> GetAllAlmsAsList() {
-            return _actRepository.GetEntities();
+        public List<A_AAlarm> GetAllAlmsAsList() {
+            return _actRepository.GetAlarms();
         }
 
         #endregion

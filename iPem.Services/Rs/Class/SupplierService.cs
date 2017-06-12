@@ -10,7 +10,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly ISupplierRepository _supplierRepository;
+        private readonly IC_SupplierRepository _supplierRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public SupplierService(
-            ISupplierRepository supplierRepository,
+            IC_SupplierRepository supplierRepository,
             ICacheManager cacheManager) {
             this._supplierRepository = supplierRepository;
             this._cacheManager = cacheManager;
@@ -31,15 +31,15 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Supplier GetSupplier(string id) {
+        public C_Supplier GetSupplier(string id) {
             return _supplierRepository.GetEntity(id);
         }
 
-        public IPagedList<Supplier> GetAllSuppliers(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Supplier>(this.GetAllSuppliersAsList(), pageIndex, pageSize);
+        public IPagedList<C_Supplier> GetAllSuppliers(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Supplier>(this.GetAllSuppliersAsList(), pageIndex, pageSize);
         }
 
-        public List<Supplier> GetAllSuppliersAsList() {
+        public List<C_Supplier> GetAllSuppliersAsList() {
             return _supplierRepository.GetEntities();
         }
 

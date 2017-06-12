@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface IMenuService {
-        Menu GetMenu(int id);
+        U_Menu GetMenu(int id);
 
-        IPagedList<Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Menu> GetAllMenusAsList();
+        List<U_Menu> GetAllMenusAsList();
 
-        IPagedList<Menu> GetMenus(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Menu> GetMenus(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Menu> GetMenusAsList(Guid role);
+        List<U_Menu> GetMenusAsList(Guid role);
 
-        void InsertMenu(Menu menu);
+        void InsertMenu(U_Menu menu);
 
-        void UpdateMenu(Menu menu);
+        void UpdateMenu(U_Menu menu);
 
-        void DeleteMenu(Menu menu);
+        void DeleteMenu(U_Menu menu);
     }
 }

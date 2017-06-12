@@ -10,7 +10,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IRoomRepository _roomRepository;
+        private readonly IS_RoomRepository _roomRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public RoomService(
-            IRoomRepository roomRepository,
+            IS_RoomRepository roomRepository,
             ICacheManager cacheManager) {
             this._roomRepository = roomRepository;
             this._cacheManager = cacheManager;
@@ -31,23 +31,23 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Room GetRoom(string id) {
+        public S_Room GetRoom(string id) {
             return _roomRepository.GetEntity(id);
         }
 
-        public IPagedList<Room> GetAllRooms(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Room>(this.GetAllRoomsAsList(), pageIndex, pageSize);
+        public IPagedList<S_Room> GetAllRooms(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<S_Room>(this.GetAllRoomsAsList(), pageIndex, pageSize);
         }
 
-        public List<Room> GetAllRoomsAsList() {
+        public List<S_Room> GetAllRoomsAsList() {
             return _roomRepository.GetEntities();
         }
 
-        public IPagedList<Room> GetRooms(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Room>(this.GetRoomsAsList(parent), pageIndex, pageSize);
+        public IPagedList<S_Room> GetRooms(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<S_Room>(this.GetRoomsAsList(parent), pageIndex, pageSize);
         }
 
-        public List<Room> GetRoomsAsList(string parent) {
+        public List<S_Room> GetRoomsAsList(string parent) {
             return _roomRepository.GetEntities(parent);
         }
 

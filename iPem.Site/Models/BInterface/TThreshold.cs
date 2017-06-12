@@ -11,7 +11,7 @@ namespace iPem.Site.Models.BInterface {
 
         public string Threshold { get; set; }
 
-        public EnmLevel AlarmLevel { get; set; }
+        public EnmAlarm AlarmLevel { get; set; }
 
         public string NMAlarmID { get; set; }
     }

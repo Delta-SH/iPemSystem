@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IDeviceTypeService {
-        DeviceType GetDeviceType(string id);
+        C_DeviceType GetDeviceType(string id);
 
-        SubDeviceType GetSubDeviceType(string id);
+        C_SubDeviceType GetSubDeviceType(string id);
 
-        IPagedList<DeviceType> GetAllDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_DeviceType> GetAllDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<DeviceType> GetAllDeviceTypesAsList();
+        List<C_DeviceType> GetAllDeviceTypesAsList();
 
-        IPagedList<SubDeviceType> GetAllSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_SubDeviceType> GetAllSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<SubDeviceType> GetAllSubDeviceTypesAsList();
+        List<C_SubDeviceType> GetAllSubDeviceTypesAsList();
     }
 }

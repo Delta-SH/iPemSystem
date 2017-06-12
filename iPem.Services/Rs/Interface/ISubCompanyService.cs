@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface ISubCompanyService {
-        SubCompany GetSubCompany(string id);
+        C_SubCompany GetSubCompany(string id);
 
-        IPagedList<SubCompany> GetAllSubCompanies(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_SubCompany> GetAllSubCompanies(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<SubCompany> GetAllSubCompaniesAsList();
+        List<C_SubCompany> GetAllSubCompaniesAsList();
     }
 }

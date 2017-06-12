@@ -6,19 +6,19 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface INodesInAppointmentService {
-        IPagedList<NodesInAppointment> GetAllNodes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_NodeInReservation> GetAllNodes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<NodesInAppointment> GetAllNodesAsList();
+        List<M_NodeInReservation> GetAllNodesAsList();
 
-        IPagedList<NodesInAppointment> GetNodes(EnmOrganization type, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_NodeInReservation> GetNodes(EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<NodesInAppointment> GetNodesAsList(EnmOrganization type);
+        List<M_NodeInReservation> GetNodesAsList(EnmSSH type);
 
-        IPagedList<NodesInAppointment> GetNodes(Guid appointmentId, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_NodeInReservation> GetNodes(Guid appointmentId, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<NodesInAppointment> GetNodesAsList(Guid appointmentId);
+        List<M_NodeInReservation> GetNodesAsList(Guid appointmentId);
 
-        void Add(List<NodesInAppointment> nodes);
+        void Add(List<M_NodeInReservation> nodes);
 
         void Remove(Guid appointmentId);
     }

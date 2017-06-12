@@ -7,9 +7,9 @@ namespace iPem.Site.Models {
     public class PointStore<T> where T : class {
         public T Current { get; set; }
 
-        public Device Device { get; set; }
+        public D_Device Device { get; set; }
 
-        public Area Area { get; set; }
+        public A_Area Area { get; set; }
 
         public bool RssPoint { get; set; }
 

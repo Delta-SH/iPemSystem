@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisBatRepository _hisRepository;
+        private readonly IV_BatRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisBatService(
-            IHisBatRepository hisRepository,
+            IV_BatRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -31,39 +31,39 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisBat> GetHisBats(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisBat>(this.GetHisBatsAsList(device, start, end), pageIndex, pageSize);
+        public IPagedList<V_Bat> GetHisBats(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Bat>(this.GetHisBatsAsList(device, start, end), pageIndex, pageSize);
         }
 
-        public List<HisBat> GetHisBatsAsList(string device, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, start, end);
+        public List<V_Bat> GetHisBatsAsList(string device, DateTime start, DateTime end) {
+            return _hisRepository.GetValuesInDevice(device, start, end);
         }
 
-        public IPagedList<HisBat> GetHisBats(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisBat>(this.GetHisBatsAsList(device, point, start, end), pageIndex, pageSize);
+        public IPagedList<V_Bat> GetHisBats(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Bat>(this.GetHisBatsAsList(device, point, start, end), pageIndex, pageSize);
         }
 
-        public List<HisBat> GetHisBatsAsList(string device, string point, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, point, start, end);
+        public List<V_Bat> GetHisBatsAsList(string device, string point, DateTime start, DateTime end) {
+            return _hisRepository.GetValuesInPoint(device, point, start, end);
         }
 
-        public IPagedList<HisBat> GetHisBats(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisBat>(this.GetHisBatsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<V_Bat> GetHisBats(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Bat>(this.GetHisBatsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisBat> GetHisBatsAsList(DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(start, end);
+        public List<V_Bat> GetHisBatsAsList(DateTime start, DateTime end) {
+            return _hisRepository.GetValues(start, end);
         }
 
-        public List<HisBat> GetProcedures(string device, DateTime start, DateTime end) {
+        public List<V_Bat> GetProcedures(string device, DateTime start, DateTime end) {
             return _hisRepository.GetProcedures(device, start, end);
         }
 
-        public List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end) {
+        public List<V_Bat> GetProcedures(string device, string point, DateTime start, DateTime end) {
             return _hisRepository.GetProcedures(device, point, start, end);
         }
 
-        public List<HisBat> GetProcedures(DateTime start, DateTime end) {
+        public List<V_Bat> GetProcedures(DateTime start, DateTime end) {
             return _hisRepository.GetProcedures(start, end);
         }
 

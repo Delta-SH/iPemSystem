@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IEmployeeService {
-        Employee GetEmpolyee(string id);
+        U_Employee GetEmpolyee(string id);
 
-        Employee GetEmpolyeeByCode(string code);
+        U_Employee GetEmpolyeeByCode(string code);
 
-        IPagedList<Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Employee> GetEmployeesByDeptAsList(string dept);
+        List<U_Employee> GetEmployeesByDeptAsList(string dept);
 
-        IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Employee> GetAllEmployeesAsList();
+        List<U_Employee> GetAllEmployeesAsList();
     }
 }

@@ -32,33 +32,33 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual Notice GetNotice(Guid id) {
+        public virtual H_Notice GetNotice(Guid id) {
             return _noticeRepository.GetEntity(id);
         }
 
-        public virtual IPagedList<Notice> GetAllNotices(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Notice>(this.GetAllNoticesAsList(), pageIndex, pageSize);
+        public virtual IPagedList<H_Notice> GetAllNotices(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_Notice>(this.GetAllNoticesAsList(), pageIndex, pageSize);
         }
 
-        public virtual List<Notice> GetAllNoticesAsList() {
+        public virtual List<H_Notice> GetAllNoticesAsList() {
             return _noticeRepository.GetEntities();
         }
 
-        public virtual IPagedList<Notice> GetNotices(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Notice>(this.GetNoticesAsList(start, end), pageIndex, pageSize);
+        public virtual IPagedList<H_Notice> GetNotices(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_Notice>(this.GetNoticesAsList(start, end), pageIndex, pageSize);
         }
 
-        public virtual List<Notice> GetNoticesAsList(DateTime start, DateTime end) {
+        public virtual List<H_Notice> GetNoticesAsList(DateTime start, DateTime end) {
             var result = this.GetAllNoticesAsList();
             if(result.Count > 0) result = result.FindAll(r => r.CreatedTime >= start && r.CreatedTime <= end);
             return result;
         }
 
-        public virtual IPagedList<Notice> GetNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Notice>(this.GetNoticesAsList(uid), pageIndex, pageSize);
+        public virtual IPagedList<H_Notice> GetNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_Notice>(this.GetNoticesAsList(uid), pageIndex, pageSize);
         }
 
-        public virtual List<Notice> GetNoticesAsList(Guid uid) {
+        public virtual List<H_Notice> GetNoticesAsList(Guid uid) {
             return _noticeRepository.GetEntities(uid);
         }
 
@@ -66,21 +66,21 @@ namespace iPem.Services.Sc {
             return _noticeRepository.GetUnreadCount(uid);
         }
 
-        public virtual void Add(Notice notice) {
+        public virtual void Add(H_Notice notice) {
             if(notice == null)
                 throw new ArgumentNullException("notice");
 
             _noticeRepository.Insert(notice);
         }
 
-        public virtual void Update(Notice notice) {
+        public virtual void Update(H_Notice notice) {
             if(notice == null)
                 throw new ArgumentNullException("notice");
 
             _noticeRepository.Update(notice);
         }
 
-        public virtual void Remove(Notice notice) {
+        public virtual void Remove(H_Notice notice) {
             if(notice == null)
                 throw new ArgumentNullException("notice");
 

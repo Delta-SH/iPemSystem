@@ -27,14 +27,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual MenusInRole GetEntity(Guid role) {
+        public virtual U_EntitiesInRole GetEntity(Guid role) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(role);
 
-            var entity = new MenusInRole { RoleId = role, Menus = new List<Menu>() };
+            var entity = new U_EntitiesInRole { RoleId = role, Menus = new List<U_Menu>() };
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_MenusInRole_Repository_GetEntities, parms)) {
                 while(rdr.Read()) {
-                    entity.Menus.Add(new Menu {
+                    entity.Menus.Add(new U_Menu {
                         Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]),
                         Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]),
                         Icon = SqlTypeConverter.DBNullStringHandler(rdr["Icon"]),
@@ -49,11 +49,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual void Insert(MenusInRole entity) {
-            Insert(new List<MenusInRole> { entity });
+        public virtual void Insert(U_EntitiesInRole entity) {
+            Insert(new List<U_EntitiesInRole> { entity });
         }
 
-        public virtual void Insert(List<MenusInRole> entities) {
+        public virtual void Insert(List<U_EntitiesInRole> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@MenuId", SqlDbType.Int) };
 

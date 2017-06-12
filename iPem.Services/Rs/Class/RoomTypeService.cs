@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IRoomTypeRepository _roomTypeRepository;
+        private readonly IC_RoomTypeRepository _roomTypeRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public RoomTypeService(
-            IRoomTypeRepository roomTypeRepository,
+            IC_RoomTypeRepository roomTypeRepository,
             ICacheManager cacheManager) {
             this._roomTypeRepository = roomTypeRepository;
             this._cacheManager = cacheManager;
@@ -32,21 +32,21 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public RoomType GetRoomType(string id) {
+        public C_RoomType GetRoomType(string id) {
             return _roomTypeRepository.GetEntity(id);
         }
 
-        public IPagedList<RoomType> GetAllRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<RoomType>(this.GetAllRoomTypesAsList(), pageIndex, pageSize);
+        public IPagedList<C_RoomType> GetAllRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_RoomType>(this.GetAllRoomTypesAsList(), pageIndex, pageSize);
         }
 
-        public List<RoomType> GetAllRoomTypesAsList() {
-            List<RoomType> result = null;
+        public List<C_RoomType> GetAllRoomTypesAsList() {
+            List<C_RoomType> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_RoomTypesRepository)) {
-                result = _cacheManager.Get<List<RoomType>>(GlobalCacheKeys.Rs_RoomTypesRepository);
+                result = _cacheManager.Get<List<C_RoomType>>(GlobalCacheKeys.Rs_RoomTypesRepository);
             } else {
                 result = _roomTypeRepository.GetEntities();
-                _cacheManager.Set<List<RoomType>>(GlobalCacheKeys.Rs_RoomTypesRepository, result);
+                _cacheManager.Set<List<C_RoomType>>(GlobalCacheKeys.Rs_RoomTypesRepository, result);
             }
 
             return result;

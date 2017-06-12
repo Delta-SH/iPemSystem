@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IDepartmentService {
-        Department GetDepartment(string id);
+        C_Department GetDepartment(string id);
 
-        Department GetDepartmentByCode(string code);
+        C_Department GetDepartmentByCode(string code);
 
-        IPagedList<Department> GetAllDepartments(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_Department> GetAllDepartments(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Department> GetAllDepartmentsAsList();
+        List<C_Department> GetAllDepartmentsAsList();
     }
 }

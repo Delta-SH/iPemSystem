@@ -27,11 +27,11 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual List<NoticeInUser> GetEntities() {
-            var entities = new List<NoticeInUser>();
+        public virtual List<H_NoticeInUser> GetEntities() {
+            var entities = new List<H_NoticeInUser>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_NoticesInUsers_Repository_GetEntities1, null)) {
                 while(rdr.Read()) {
-                    var entity = new NoticeInUser();
+                    var entity = new H_NoticeInUser();
                     entity.NoticeId = SqlTypeConverter.DBNullGuidHandler(rdr["NoticeId"]);
                     entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
                     entity.Readed = SqlTypeConverter.DBNullBooleanHandler(rdr["Readed"]);
@@ -42,14 +42,14 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<NoticeInUser> GetEntities(Guid uid) {
+        public virtual List<H_NoticeInUser> GetEntities(Guid uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
 
-            var entities = new List<NoticeInUser>();
+            var entities = new List<H_NoticeInUser>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_NoticesInUsers_Repository_GetEntities2, parms)) {
                 while(rdr.Read()) {
-                    var entity = new NoticeInUser();
+                    var entity = new H_NoticeInUser();
                     entity.NoticeId = SqlTypeConverter.DBNullGuidHandler(rdr["NoticeId"]);
                     entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
                     entity.Readed = SqlTypeConverter.DBNullBooleanHandler(rdr["Readed"]);
@@ -60,11 +60,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual void Insert(NoticeInUser entity) {
-            Insert(new List<NoticeInUser>() { entity });
+        public virtual void Insert(H_NoticeInUser entity) {
+            Insert(new List<H_NoticeInUser>() { entity });
         }
 
-        public virtual void Insert(List<NoticeInUser> entities) {
+        public virtual void Insert(List<H_NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Readed", SqlDbType.Bit),
@@ -89,11 +89,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(NoticeInUser entity) {
-            Update(new List<NoticeInUser>() { entity });
+        public virtual void Update(H_NoticeInUser entity) {
+            Update(new List<H_NoticeInUser>() { entity });
         }
 
-        public virtual void Update(List<NoticeInUser> entities) {
+        public virtual void Update(List<H_NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Readed", SqlDbType.Bit),
@@ -118,11 +118,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(NoticeInUser entity) {
-            Delete(new List<NoticeInUser>() { entity });
+        public virtual void Delete(H_NoticeInUser entity) {
+            Delete(new List<H_NoticeInUser>() { entity });
         }
 
-        public virtual void Delete(List<NoticeInUser> entities) {
+        public virtual void Delete(List<H_NoticeInUser> entities) {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100) };
 

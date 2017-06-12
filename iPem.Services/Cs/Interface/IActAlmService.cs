@@ -5,28 +5,28 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Cs {
     public partial interface IActAlmService {
-        IPagedList<ActAlm> GetAlmsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAlmsInArea(string area, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAlmsInAreaAsList(string area);
+        List<A_AAlarm> GetAlmsInAreaAsList(string area);
 
-        IPagedList<ActAlm> GetAlmsInStation(string station, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAlmsInStation(string station, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAlmsInStationAsList(string station);
+        List<A_AAlarm> GetAlmsInStationAsList(string station);
 
-        IPagedList<ActAlm> GetAlmsInRoom(string room, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAlmsInRoom(string room, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAlmsInRoomAsList(string room);
+        List<A_AAlarm> GetAlmsInRoomAsList(string room);
 
-        IPagedList<ActAlm> GetAlmsInDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAlmsInDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAlmsInDeviceAsList(string device);
+        List<A_AAlarm> GetAlmsInDeviceAsList(string device);
 
-        IPagedList<ActAlm> GetAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAlmsAsList(DateTime start, DateTime end);
+        List<A_AAlarm> GetAlmsAsList(DateTime start, DateTime end);
 
-        IPagedList<ActAlm> GetAllAlms(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_AAlarm> GetAllAlms(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<ActAlm> GetAllAlmsAsList();
+        List<A_AAlarm> GetAllAlmsAsList();
     }
 }

@@ -27,11 +27,11 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual List<Appointment> GetEntities() {
-            var entities = new List<Appointment>();
+        public virtual List<M_Reservation> GetEntities() {
+            var entities = new List<M_Reservation>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Appointment_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new Appointment();
+                    var entity = new M_Reservation();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
@@ -46,7 +46,7 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<Appointment> GetEntities(DateTime startTime, DateTime endTime) {
+        public virtual List<M_Reservation> GetEntities(DateTime startTime, DateTime endTime) {
             SqlParameter[] parms = { 
                                        new SqlParameter("@startTime", SqlDbType.DateTime), 
                                        new SqlParameter("@endTime", SqlDbType.DateTime) 
@@ -54,10 +54,10 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = startTime;
             parms[1].Value = endTime;
 
-            var entities = new List<Appointment>();
+            var entities = new List<M_Reservation>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Appointment_Repository_GetEntitiesByDate, parms)) {
                 while(rdr.Read()) {
-                    var entity = new Appointment();
+                    var entity = new M_Reservation();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
@@ -72,13 +72,13 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual Appointment GetEntity(Guid id) {
+        public virtual M_Reservation GetEntity(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
-            Appointment entity = null;
+            M_Reservation entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Appointment_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Appointment();
+                    entity = new M_Reservation();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
@@ -92,11 +92,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual void Insert(Appointment entity) {
-            Insert(new List<Appointment> { entity });
+        public virtual void Insert(M_Reservation entity) {
+            Insert(new List<M_Reservation> { entity });
         }
 
-        public virtual void Insert(List<Appointment> entities) {
+        public virtual void Insert(List<M_Reservation> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@StartTime", SqlDbType.DateTime),
                                      new SqlParameter("@EndTime", SqlDbType.DateTime),
@@ -129,11 +129,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(Appointment entity) {
-            Update(new List<Appointment> { entity });
+        public virtual void Update(M_Reservation entity) {
+            Update(new List<M_Reservation> { entity });
         }
 
-        public virtual void Update(List<Appointment> entities) {
+        public virtual void Update(List<M_Reservation> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@StartTime", SqlDbType.DateTime),
                                      new SqlParameter("@EndTime", SqlDbType.DateTime),
@@ -167,11 +167,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(Appointment entity) {
-            Delete(new List<Appointment> { entity });
+        public virtual void Delete(M_Reservation entity) {
+            Delete(new List<M_Reservation> { entity });
         }
 
-        public virtual void Delete(List<Appointment> entities) {
+        public virtual void Delete(List<M_Reservation> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

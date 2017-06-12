@@ -32,34 +32,34 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual Formula GetFormula(string id, EnmOrganization type, EnmFormula formulaType) {
+        public virtual M_Formula GetFormula(string id, EnmSSH type, EnmFormula formulaType) {
             return _formulaRepository.GetEntity(id, type, formulaType);
         }
 
-        public virtual IPagedList<Formula> GetFormulas(string id, EnmOrganization type, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Formula>(this.GetFormulasAsList(id, type), pageIndex, pageSize);
+        public virtual IPagedList<M_Formula> GetFormulas(string id, EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Formula>(this.GetFormulasAsList(id, type), pageIndex, pageSize);
         }
 
-        public virtual List<Formula> GetFormulasAsList(string id, EnmOrganization type) {
+        public virtual List<M_Formula> GetFormulasAsList(string id, EnmSSH type) {
             return _formulaRepository.GetEntities(id, type);
         }
 
-        public virtual IPagedList<Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Formula>(this.GetAllFormulasAsList(), pageIndex, pageSize);
+        public virtual IPagedList<M_Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Formula>(this.GetAllFormulasAsList(), pageIndex, pageSize);
         }
 
-        public virtual List<Formula> GetAllFormulasAsList() {
+        public virtual List<M_Formula> GetAllFormulasAsList() {
             return _formulaRepository.GetEntities();
         }
 
-        public virtual void Save(Formula formula) {
+        public virtual void Save(M_Formula formula) {
             if(formula == null)
                 throw new ArgumentNullException("formula");
 
             _formulaRepository.Save(formula);
         }
 
-        public virtual void SaveRange(List<Formula> formulas) {
+        public virtual void SaveRange(List<M_Formula> formulas) {
             if(formulas == null)
                 throw new ArgumentNullException("formulas");
 

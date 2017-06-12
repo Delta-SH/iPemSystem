@@ -8,7 +8,7 @@ using System.Web.Services.Description;
 
 namespace iPem.Core {
     /// <summary>
-    /// Represents a webservice helper
+    /// WebService帮助类
     /// </summary>
     public abstract class WebServiceHelper {
         public static object InvokeWebService(string url, string methodname, object[] args) {

@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisAlmRepository _hisRepository;
+        private readonly IA_HAlarmRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisAlmService(
-            IHisAlmRepository hisRepository,
+            IA_HAlarmRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -31,52 +31,52 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisAlm> GetAlmsInArea(string area, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAlmsInAreaAsList(area, start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAlmsInArea(string area, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAlmsInAreaAsList(area, start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAlmsInAreaAsList(string area, DateTime start, DateTime end) {
-            return _hisRepository.GetEntitiesInArea(area, start, end);
+        public List<A_HAlarm> GetAlmsInAreaAsList(string area, DateTime start, DateTime end) {
+            return _hisRepository.GetAlarmsInArea(area, start, end);
         }
 
-        public IPagedList<HisAlm> GetAlmsInStation(string station, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAlmsInStationAsList(station, start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAlmsInStation(string station, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAlmsInStationAsList(station, start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAlmsInStationAsList(string station, DateTime start, DateTime end) {
-            return _hisRepository.GetEntitiesInStation(station, start, end);
+        public List<A_HAlarm> GetAlmsInStationAsList(string station, DateTime start, DateTime end) {
+            return _hisRepository.GetAlarmsInStation(station, start, end);
         }
 
-        public IPagedList<HisAlm> GetAlmsInRoom(string room, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAlmsInRoomAsList(room, start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAlmsInRoom(string room, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAlmsInRoomAsList(room, start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAlmsInRoomAsList(string room, DateTime start, DateTime end) {
-            return _hisRepository.GetEntitiesInRoom(room, start, end);
+        public List<A_HAlarm> GetAlmsInRoomAsList(string room, DateTime start, DateTime end) {
+            return _hisRepository.GetAlarmsInRoom(room, start, end);
         }
 
-        public IPagedList<HisAlm> GetAlmsInDevice(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAlmsInDeviceAsList(device, start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAlmsInDevice(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAlmsInDeviceAsList(device, start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAlmsInDeviceAsList(string device, DateTime start, DateTime end) {
-            return _hisRepository.GetEntitiesInDevice(device, start, end);
+        public List<A_HAlarm> GetAlmsInDeviceAsList(string device, DateTime start, DateTime end) {
+            return _hisRepository.GetAlarmsInDevice(device, start, end);
         }
 
-        public IPagedList<HisAlm> GetAlmsInPoint(string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAlmsInPointAsList(point, start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAlmsInPoint(string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAlmsInPointAsList(point, start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAlmsInPointAsList(string point, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(point, start, end);
+        public List<A_HAlarm> GetAlmsInPointAsList(string point, DateTime start, DateTime end) {
+            return _hisRepository.GetAlarmsInPoint(point, start, end);
         }
 
-        public IPagedList<HisAlm> GetAllAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisAlm>(this.GetAllAlmsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<A_HAlarm> GetAllAlms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_HAlarm>(this.GetAllAlmsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisAlm> GetAllAlmsAsList(DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(start, end);
+        public List<A_HAlarm> GetAllAlmsAsList(DateTime start, DateTime end) {
+            return _hisRepository.GetAlarms(start, end);
         }
 
         #endregion

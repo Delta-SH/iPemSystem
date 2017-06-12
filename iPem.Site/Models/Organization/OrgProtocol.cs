@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace iPem.Site.Models.Organization {
     [Serializable]
     public partial class OrgProtocol {
-        public Protocol Current { get; set; }
+        public P_Protocol Current { get; set; }
 
-        public List<Point> Points { get; set; }
+        public List<P_Point> Points { get; set; }
     }
 }

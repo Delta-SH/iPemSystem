@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IDutyService {
-        Duty GetDuty(string id);
+        C_Duty GetDuty(string id);
 
-        IPagedList<Duty> GetAllDuties(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_Duty> GetAllDuties(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Duty> GetAllDutiesAsList();
+        List<C_Duty> GetAllDutiesAsList();
     }
 }

@@ -31,48 +31,48 @@ namespace iPem.Services.Sc {
 
         #region Method
 
-        public Appointment GetAppointment(Guid id) {
+        public M_Reservation GetAppointment(Guid id) {
             return _appointmentRepository.GetEntity(id);
         }
 
-        public IPagedList<Appointment> GetAppointments(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Appointment>(this.GetAppointmentsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<M_Reservation> GetAppointments(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Reservation>(this.GetAppointmentsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<Appointment> GetAppointmentsAsList(DateTime start, DateTime end) {
+        public List<M_Reservation> GetAppointmentsAsList(DateTime start, DateTime end) {
             return _appointmentRepository.GetEntities(start, end);
         }
 
-        public IPagedList<Appointment> GetAllAppointments(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Appointment>(this.GetAllAppointmentsAsList(), pageIndex, pageSize);
+        public IPagedList<M_Reservation> GetAllAppointments(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Reservation>(this.GetAllAppointmentsAsList(), pageIndex, pageSize);
         }
 
-        public List<Appointment> GetAllAppointmentsAsList() {
+        public List<M_Reservation> GetAllAppointmentsAsList() {
             return _appointmentRepository.GetEntities();
         }
 
-        public void Add(Appointment entity) {
+        public void Add(M_Reservation entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 
             _appointmentRepository.Insert(entity);
         }
 
-        public void AddRange(List<Appointment> entities) {
+        public void AddRange(List<M_Reservation> entities) {
             if(entities == null)
                 throw new ArgumentNullException("entities");
 
             _appointmentRepository.Insert(entities);
         }
 
-        public void Update(Appointment entity) {
+        public void Update(M_Reservation entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 
             _appointmentRepository.Update(entity);
         }
 
-        public void Delete(Appointment entity) {
+        public void Delete(M_Reservation entity) {
             if(entity == null)
                 throw new ArgumentNullException("entity");
 

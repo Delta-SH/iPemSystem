@@ -31,17 +31,17 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets the current role
         /// </summary>
-        Role Role { get; }
+        U_Role Role { get; }
 
         /// <summary>
         /// Gets the current user
         /// </summary>
-        User User { get; }
+        U_User User { get; }
 
         /// <summary>
         /// Gets the current employee
         /// </summary>
-        Employee Employee { get; }
+        U_Employee Employee { get; }
 
         /// <summary>
         /// Gets the current user profile
@@ -66,28 +66,28 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets the current menus
         /// </summary>
-        List<Menu> Menus { get; }
+        List<U_Menu> Menus { get; }
 
         /// <summary>
         /// Gets the current operations
         /// </summary>
         HashSet<EnmOperation> Operations { get; }
 
-        List<LogicType> LogicTypes { get; }
+        List<C_LogicType> LogicTypes { get; }
 
-        List<SubLogicType> SubLogicTypes { get; }
+        List<C_SubLogicType> SubLogicTypes { get; }
 
-        List<DeviceType> DeviceTypes { get; }
+        List<C_DeviceType> DeviceTypes { get; }
 
-        List<SubDeviceType> SubDeviceTypes { get; }
+        List<C_SubDeviceType> SubDeviceTypes { get; }
 
-        List<RoomType> RoomTypes { get; }
+        List<C_RoomType> RoomTypes { get; }
 
-        List<StationType> StationTypes { get; }
+        List<C_StationType> StationTypes { get; }
 
-        List<EnumMethods> AreaTypes { get; }
+        List<C_EnumMethod> AreaTypes { get; }
 
-        List<Point> Points { get; }
+        List<P_Point> Points { get; }
 
         List<OrgProtocol> Protocols { get; }
 
@@ -111,10 +111,10 @@ namespace iPem.Site.Infrastructure {
 
         List<OrgDevice> RoleDevices { get; }
 
-        List<AlmStore<ActAlm>> ActAlmStore { get; }
+        List<AlmStore<A_AAlarm>> ActAlmStore { get; }
 
-        List<AlmStore<ActAlm>> GetActAlmStore(List<ActAlm> alarms);
+        List<AlmStore<A_AAlarm>> GetActAlmStore(List<A_AAlarm> alarms);
 
-        List<AlmStore<HisAlm>> GetHisAlmStore(List<HisAlm> alarms, DateTime start, DateTime end);
+        List<AlmStore<A_HAlarm>> GetHisAlmStore(List<A_HAlarm> alarms, DateTime start, DateTime end);
     }
 }

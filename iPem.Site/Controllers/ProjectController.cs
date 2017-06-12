@@ -167,7 +167,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentException("参数无效 project");
 
                 if(action == (int)EnmAction.Add) {
-                    var newOne = new Project {
+                    var newOne = new M_Project {
                         Id = new Guid(project.id),
                         Name = project.name,
                         StartTime = Convert.ToDateTime(project.start),
@@ -273,51 +273,51 @@ namespace iPem.Site.Controllers {
 
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
-                    if(type == (int)EnmOrganization.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Area);
+                    if(type == (int)EnmSSH.Area) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Area);
                         var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Device);
+                    } else if(type == (int)EnmSSH.Device) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Device);
                         var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Room);
+                    } else if(type == (int)EnmSSH.Room) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Room);
                         var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Station);
+                    } else if(type == (int)EnmSSH.Station) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Station);
                         var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
@@ -453,7 +453,7 @@ namespace iPem.Site.Controllers {
                 var nodes = _nodesInAppointmentService.GetNodesAsList(new Guid(id));
 
                 //预约区域
-                var areaNodes = nodes.FindAll(a => a.NodeType == EnmOrganization.Area);
+                var areaNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Area);
                 var areaMatchs = from node in areaNodes
                                  join area in _workContext.RoleAreas on node.NodeId equals area.Current.Id
                                  select area.Current;
@@ -462,7 +462,7 @@ namespace iPem.Site.Controllers {
 
 
                 //预约站点
-                var stationNodes = nodes.FindAll(a => a.NodeType == EnmOrganization.Station);
+                var stationNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Station);
                 var stationMatchs = from node in stationNodes
                                      join station in _workContext.RoleStations on node.NodeId equals station.Current.Id
                                      select station.Current;
@@ -470,7 +470,7 @@ namespace iPem.Site.Controllers {
                 data.data.stations = stationMatchs.Any() ? string.Join(",", stationMatchs.Select(a => a.Name)) : "无站点";
 
                 //预约机房
-                var roomNodes = nodes.FindAll(a => a.NodeType == EnmOrganization.Room);
+                var roomNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Room);
                 var roomMatchs = from node in roomNodes
                                   join room in _workContext.RoleRooms on node.NodeId equals room.Current.Id
                                   select room.Current;
@@ -478,7 +478,7 @@ namespace iPem.Site.Controllers {
                 data.data.rooms = roomMatchs.Any() ? string.Join(",", roomMatchs.Select(a => a.Name)) : "无机房";
 
                 //预约设备
-                var deviceNodes = nodes.FindAll(a => a.NodeType == EnmOrganization.Device);
+                var deviceNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Device);
                 var deviceMatchs = from node in deviceNodes
                                     join device in _workContext.RoleDevices on node.NodeId equals device.Current.Id
                                     select device.Current;
@@ -512,7 +512,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentException("未勾选需要预约的监控点！");
 
                 if(action == (int)EnmAction.Add) {
-                    var newOne = new Appointment {
+                    var newOne = new M_Reservation {
                         Id = Guid.NewGuid(),
                         StartTime = startTime,
                         EndTime = endTime,
@@ -523,15 +523,15 @@ namespace iPem.Site.Controllers {
                         Enabled = appointment.enabled
                     };
 
-                    var nodes = new List<NodesInAppointment>();
+                    var nodes = new List<M_NodeInReservation>();
                     foreach(var node in appointment.nodes) {
                          var keys = Common.SplitKeys(node);
                          if(keys.Length == 2) {
                              var type = int.Parse(keys[0]);
-                             nodes.Add(new NodesInAppointment {
-                                  AppointmentId = newOne.Id,
+                             nodes.Add(new M_NodeInReservation {
+                                  ReservationId = newOne.Id,
                                   NodeId = keys[1],
-                                  NodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area
+                                  NodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area
                              });
                          }
                     }
@@ -551,15 +551,15 @@ namespace iPem.Site.Controllers {
                     existed.Comment = appointment.comment;
                     existed.Enabled = appointment.enabled;
 
-                    var nodes = new List<NodesInAppointment>();
+                    var nodes = new List<M_NodeInReservation>();
                     foreach(var node in appointment.nodes) {
                         var keys = Common.SplitKeys(node);
                         if(keys.Length == 2) {
                             var type = int.Parse(keys[0]);
-                            nodes.Add(new NodesInAppointment {
-                                AppointmentId = existed.Id,
+                            nodes.Add(new M_NodeInReservation {
+                                ReservationId = existed.Id,
                                 NodeId = keys[1],
-                                NodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area
+                                NodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area
                             });
                         }
                     }
@@ -620,51 +620,51 @@ namespace iPem.Site.Controllers {
 
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
-                    if(type == (int)EnmOrganization.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Area);
+                    if(type == (int)EnmSSH.Area) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Area);
                         var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Device);
+                    } else if(type == (int)EnmSSH.Device) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Device);
                         var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Room);
+                    } else if(type == (int)EnmSSH.Room) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Room);
                         var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));
-                    } else if(type == (int)EnmOrganization.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmOrganization.Station);
+                    } else if(type == (int)EnmSSH.Station) {
+                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Station);
                         var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
 
                         var ids = (from node in matchs
-                                   group node by node.AppointmentId into g
+                                   group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
                         result = result.FindAll(a => ids.Contains(a.Appointment.Id));

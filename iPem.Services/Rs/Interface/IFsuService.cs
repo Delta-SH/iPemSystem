@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IFsuService {
-        Fsu GetFsu(string id);
+        D_Fsu GetFsu(string id);
 
-        IPagedList<Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<D_Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Fsu> GetAllFsusAsList();
+        List<D_Fsu> GetAllFsusAsList();
 
-        FsuExt GetFsuExt(string id);
+        D_ExtFsu GetFsuExt(string id);
 
-        IPagedList<FsuExt> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<D_ExtFsu> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<FsuExt> GetAllExtendsAsList();
+        List<D_ExtFsu> GetAllExtendsAsList();
     }
 }

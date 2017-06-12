@@ -27,14 +27,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual Notice GetEntity(Guid id) {
+        public virtual H_Notice GetEntity(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            Notice entity = null;
+            H_Notice entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Notice_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Notice();
+                    entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
                     entity.Content = SqlTypeConverter.DBNullStringHandler(rdr["Content"]);
@@ -45,11 +45,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual List<Notice> GetEntities() {
-            var entities = new List<Notice>();
+        public virtual List<H_Notice> GetEntities() {
+            var entities = new List<H_Notice>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Notice_Repository_GetEntities1, null)) {
                 while(rdr.Read()) {
-                    var entity = new Notice();
+                    var entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
                     entity.Content = SqlTypeConverter.DBNullStringHandler(rdr["Content"]);
@@ -61,14 +61,14 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<Notice> GetEntities(Guid uid) {
+        public virtual List<H_Notice> GetEntities(Guid uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
 
-            var entities = new List<Notice>();
+            var entities = new List<H_Notice>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Notice_Repository_GetEntities2, parms)) {
                 while(rdr.Read()) {
-                    var entity = new Notice();
+                    var entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
                     entity.Content = SqlTypeConverter.DBNullStringHandler(rdr["Content"]);
@@ -93,11 +93,11 @@ namespace iPem.Data.Repository.Sc {
             return 0;
         }
 
-        public virtual void Insert(Notice entity) {
-            Insert(new List<Notice>() { entity });
+        public virtual void Insert(H_Notice entity) {
+            Insert(new List<H_Notice>() { entity });
         }
 
-        public virtual void Insert(List<Notice> entities) {
+        public virtual void Insert(List<H_Notice> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Title", SqlDbType.VarChar,512),
                                      new SqlParameter("@Content", SqlDbType.VarChar),
@@ -124,11 +124,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(Notice entity) {
-            Update(new List<Notice>() { entity });
+        public virtual void Update(H_Notice entity) {
+            Update(new List<H_Notice>() { entity });
         }
 
-        public virtual void Update(List<Notice> entities) {
+        public virtual void Update(List<H_Notice> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Title", SqlDbType.VarChar,512),
                                      new SqlParameter("@Content", SqlDbType.VarChar),
@@ -155,11 +155,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(Notice entity) {
-            Delete(new List<Notice>() { entity });
+        public virtual void Delete(H_Notice entity) {
+            Delete(new List<H_Notice>() { entity });
         }
 
-        public virtual void Delete(List<Notice> entities) {
+        public virtual void Delete(List<H_Notice> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

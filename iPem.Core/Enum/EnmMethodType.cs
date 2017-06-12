@@ -2,40 +2,68 @@
 
 namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents an method type
+    /// 枚举自定义类型
     /// </summary>
-    /// <remarks>
-    /// { Id: 1, Name: "区域" }
-    /// { Id: 2, Name: "站点" }
-    /// { Id: 3, Name: "机房" }
-    /// { Id: 4, Name: "FSU" }
-    /// { Id: 5, Name: "UPS" }
-    /// { Id: 6, Name: "变压器" }
-    /// { Id: 7, Name: "发电机组" }
-    /// { Id: 8, Name: "风能设备" }
-    /// { Id: 9, Name: "开关熔丝" }
-    /// { Id: 10, Name: "移动发电机" }
-    /// { Id: 11, Name: "中央空调主机系统" }
-    /// { Id: 12, Name: "自动电源切换柜" }
-    /// { Id: 13, Name: "设备" }
-    /// { Id: 14, Name: "信号" }
-    /// { Id: 15, Name: "员工"}
-    /// </remarks>
     public enum EnmMethodType {
+        /// <summary>
+        /// 区域
+        /// </summary>
         Area = 1,
-        Station, 
-        Room,
-        Fsu,
-        Ups,
-        BianYaQi,
-        FaDianJiZu,
-        FengNengSheBei,
-        KaiGuanRongSi,
-        YiDongFaDianJi,
-        ZhongYangKongTiaoZhuJiXiTong,
-        ZiDongDianYuanQieHuanGui,
-        Device,
-        Point,
-        Employee
+        /// <summary>
+        /// 站点
+        /// </summary>
+        Station = 2,
+        /// <summary>
+        /// 机房
+        /// </summary>
+        Room = 3,
+        /// <summary>
+        /// FSU
+        /// </summary>
+        Fsu = 4,
+        /// <summary>
+        /// UPS
+        /// </summary>
+        Ups = 5,
+        /// <summary>
+        /// 变压器
+        /// </summary>
+        BYQ = 6,
+        /// <summary>
+        /// 发电机组
+        /// </summary>
+        FDJZ = 7,
+        /// <summary>
+        /// 风能设备
+        /// </summary>
+        FNSB = 8,
+        /// <summary>
+        /// 开关熔丝
+        /// </summary>
+        KGRS = 9,
+        /// <summary>
+        /// 移动发电机
+        /// </summary>
+        YDFDJ = 10,
+        /// <summary>
+        /// 中央空调主机系统
+        /// </summary>
+        ZYKTZJXT = 11,
+        /// <summary>
+        /// 自动电源切换柜
+        /// </summary>
+        ZDDYQHG = 12,
+        /// <summary>
+        /// 设备
+        /// </summary>
+        Device = 13,
+        /// <summary>
+        /// 信号
+        /// </summary>
+        Point = 14,
+        /// <summary>
+        /// 员工
+        /// </summary>
+        Employee = 15
     }
 }

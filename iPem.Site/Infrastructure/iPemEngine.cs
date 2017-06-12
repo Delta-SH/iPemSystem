@@ -84,26 +84,26 @@ namespace iPem.Site.Infrastructure {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Rs];
 
                 //register repository
-                builder.Register<IAreaRepository>(c => new AreaRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IBrandRepository>(c => new BrandRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IDepartmentRepository>(c => new DepartmentRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IDeviceRepository>(c => new DeviceRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IDeviceTypeRepository>(c => new DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IDutyRepository>(c => new DutyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IEmployeeRepository>(c => new EmployeeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IEnumMethodsRepository>(c => new EnumMethodsRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IFsuRepository>(c => new FsuRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<ILogicTypeRepository>(c => new LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IPointRepository>(c => new PointRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IProductorRepository>(c => new ProductorRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IProtocolRepository>(c => new ProtocolRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IRoomRepository>(c => new RoomRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IRoomTypeRepository>(c => new RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IStationRepository>(c => new StationRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IStationTypeRepository>(c => new StationTypeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<ISubCompanyRepository>(c => new SubCompanyRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<ISupplierRepository>(c => new SupplierRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IUnitRepository>(c => new UnitRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IA_AreaRepository>(c => new A_AreaRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_BrandRepository>(c => new C_BrandRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_DepartmentRepository>(c => new C_DepartmentRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ID_DeviceRepository>(c => neD_DeviceRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_DeviceTypeRepository>(c => new C_DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_DutyRepository>(c => neC_DutyRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IU_EmployeeRepository>(c => neU_EmployeeRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_EnumMethodRepository>(c => newC_EnumMethodRepositoryy(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ID_FsuRepository>(c => new D_FsuRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_LogicTypeRepository>(c => new C_LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IP_PointRepository>(c => neP_PointRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_ProductorRepository>(c => neC_ProductorRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IP_ProtocolRepository>(c => neP_ProtocolRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IS_RoomRepository>(c => neS_RoomRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_RoomTypeRepository>(c => neC_RoomTypeRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IS_StationRepository>(c => new S_StationRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_StationTypeRepository>(c => new C_StationTypeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_SubCompanyRepository>(c => neC_SubCompanyRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_SupplierRepository>(c => neC_SupplierRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_UnitRepository>(c => new C_UnitRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<AreaService>().As<IAreaService>().InstancePerLifetimeScope();
@@ -132,15 +132,15 @@ namespace iPem.Site.Infrastructure {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Cs];
 
                 //register repository
-                builder.Register<IActAlmRepository>(c => new ActAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisAlmRepository>(c => new HisAlmRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisBatRepository>(c => new HisBatRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisElecRepository>(c => new HisElecRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisStaticRepository>(c => new HisStaticRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisValueRepository>(c => new HisValueRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisLoadRateRepository>(c => new HisLoadRateRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisBatTimeRepository>(c => new HisBatTimeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IHisFtpRepository>(c => new HisFtpRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IA_AAlarmRepository>(c => new A_AAlarmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IA_HAlarmRepository>(c => new A_HAlarmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_BatRepository>(c => new V_BatRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_ElecRepository>(c => new V_ElecRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_StaticRepository>(c => new V_StaticRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_HMeasureRepository>(c => neV_HMeasureRepositoryry(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_LoadRepository>(c => new V_LoadRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_BatTimeRepository>(c => new V_BatTimeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IH_FsuEventRepository>(c => H_FsuEventRepositorytory(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<ActAlmService>().As<IActAlmService>().InstancePerLifetimeScope();

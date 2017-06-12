@@ -5,13 +5,13 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Sc {
     public partial interface IDictionaryRepository {
 
-        Dictionary GetEntity(int id);
+        M_Dictionary GetEntity(int id);
 
-        List<Dictionary> GetEntities();
+        List<M_Dictionary> GetEntities();
 
-        void Update(Dictionary entity);
+        void Update(M_Dictionary entity);
 
-        void Update(List<Dictionary> entities);
+        void Update(List<M_Dictionary> entities);
 
     }
 }

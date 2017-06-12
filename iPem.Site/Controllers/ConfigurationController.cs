@@ -110,23 +110,23 @@ namespace iPem.Site.Controllers {
 
                         var eachSta = almsInSta.FirstOrDefault(s => s.Id == station.Current.Id);
                         if(eachSta != null) {
-                            model.alm1 = eachSta.Alarms.Count(a=>a.AlarmLevel == EnmLevel.Level1);
-                            model.alm2 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level2);
-                            model.alm3 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level3);
-                            model.alm4 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmLevel.Level4);
+                            model.alm1 = eachSta.Alarms.Count(a=>a.AlarmLevel == EnmAlarm.Level1);
+                            model.alm2 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmAlarm.Level2);
+                            model.alm3 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmAlarm.Level3);
+                            model.alm4 = eachSta.Alarms.Count(a => a.AlarmLevel == EnmAlarm.Level4);
 
                             if(model.alm1 > 0)
-                                model.level = (int)EnmLevel.Level1;
+                                model.level = (int)EnmAlarm.Level1;
                             else if(model.alm2 > 0)
-                                model.level = (int)EnmLevel.Level2;
+                                model.level = (int)EnmAlarm.Level2;
                             else if(model.alm3 > 0)
-                                model.level = (int)EnmLevel.Level3;
+                                model.level = (int)EnmAlarm.Level3;
                             else if(model.alm4 > 0)
-                                model.level = (int)EnmLevel.Level4;
+                                model.level = (int)EnmAlarm.Level4;
                             else
-                                model.level = (int)EnmLevel.Level0;
+                                model.level = (int)EnmAlarm.Level0;
                         } else {
-                            model.level = (int)EnmLevel.Level0;
+                            model.level = (int)EnmAlarm.Level0;
                             model.alm1 = 0;
                             model.alm2 = 0;
                             model.alm3 = 0;

@@ -7,7 +7,7 @@ using System.Linq;
 namespace iPem.Site.Models.Organization {
     [Serializable]
     public partial class OrgArea {
-        public Area Current { get; set; }
+        public A_Area Current { get; set; }
 
         public List<OrgStation> Stations { get; set; }
 

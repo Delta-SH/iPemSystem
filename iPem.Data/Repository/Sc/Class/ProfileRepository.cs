@@ -27,14 +27,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual UserProfile GetEntity(Guid id) {
+        public virtual U_Profile GetEntity(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            UserProfile entity = null;
+            U_Profile entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Profile_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new UserProfile() {
+                    entity = new U_Profile() {
                         UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]),
                         ValuesJson = SqlTypeConverter.DBNullStringHandler(rdr["ValuesJson"]),
                         ValuesBinary = SqlTypeConverter.DBNullBytesHandler(rdr["ValuesBinary"]),
@@ -45,7 +45,7 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual void Save(UserProfile entity) {
+        public virtual void Save(U_Profile entity) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar,100),
                                      new SqlParameter("@ValuesJson", SqlDbType.NText),
                                      new SqlParameter("@ValuesBinary", SqlDbType.Image),

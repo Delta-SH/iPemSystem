@@ -3,9 +3,9 @@ using System;
 
 namespace iPem.Services.Sc {
     public partial interface IProfileService {
-        UserProfile GetProfile(Guid uid);
+        U_Profile GetProfile(Guid uid);
 
-        void Save(UserProfile profile);
+        void Save(U_Profile profile);
 
         void Remove(Guid uid);
     }

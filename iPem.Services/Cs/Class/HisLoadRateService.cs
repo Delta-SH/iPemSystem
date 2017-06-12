@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisLoadRateRepository _hisRepository;
+        private readonly IV_LoadRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisLoadRateService(
-            IHisLoadRateRepository hisRepository,
+            IV_LoadRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -31,15 +31,15 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisLoadRate> GetHisLoadRates(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisLoadRate>(this.GetHisLoadRatesAsList(start, end), pageIndex, pageSize);
+        public IPagedList<V_Load> GetHisLoadRates(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Load>(this.GetHisLoadRatesAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisLoadRate> GetHisLoadRatesAsList(DateTime start, DateTime end) {
+        public List<V_Load> GetHisLoadRatesAsList(DateTime start, DateTime end) {
             return _hisRepository.GetEntities(start, end);
         }
 
-        public List<HisLoadRate> GetMaxInDevice(DateTime start, DateTime end, double max) {
+        public List<V_Load> GetMaxInDevice(DateTime start, DateTime end, double max) {
             return _hisRepository.GetMaxInDevice(start, end, max);
         }
 

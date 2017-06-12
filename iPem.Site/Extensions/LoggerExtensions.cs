@@ -59,7 +59,7 @@ namespace iPem.Site.Extensions {
             if(logger.IsEnabled(level)) {
                 try {
                     var fullMessage = exception == null ? string.Empty : exception.ToString();
-                    var log = new WebEvent {
+                    var log = new H_WebEvent {
                         Id = Guid.NewGuid(),
                         Level = level,
                         Type = type,

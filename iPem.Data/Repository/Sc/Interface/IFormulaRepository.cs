@@ -6,15 +6,15 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Sc {
     public partial interface IFormulaRepository {
 
-        Formula GetEntity(string id, EnmOrganization type, EnmFormula formulaType);
+        M_Formula GetEntity(string id, EnmSSH type, EnmFormula formulaType);
 
-        List<Formula> GetEntities(string id, EnmOrganization type);
+        List<M_Formula> GetEntities(string id, EnmSSH type);
 
-        List<Formula> GetEntities();
+        List<M_Formula> GetEntities();
 
-        void Save(Formula entity);
+        void Save(M_Formula entity);
 
-        void Save(List<Formula> entities);
+        void Save(List<M_Formula> entities);
 
     }
 }

@@ -33,7 +33,7 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public OperateInRole GetOperates(Guid role) {
-            if(role.Equals(Role.SuperId)) {
+            if(role.Equals(U_Role.SuperId)) {
                 var operations = new OperateInRole() {
                     RoleId = role,
                     Operates = new List<EnmOperation>()

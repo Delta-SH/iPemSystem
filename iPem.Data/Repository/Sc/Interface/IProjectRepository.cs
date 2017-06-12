@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface IProjectRepository {
-        List<Project> GetEntities();
+        List<M_Project> GetEntities();
 
-        List<Project> GetEntities(DateTime starttime, DateTime endtime);
+        List<M_Project> GetEntities(DateTime starttime, DateTime endtime);
 
-        Project GetEntity(Guid id);
+        M_Project GetEntity(Guid id);
 
-        void Insert(Project entity);
+        void Insert(M_Project entity);
 
-        void Update(Project entity);
+        void Update(M_Project entity);
     }
 }

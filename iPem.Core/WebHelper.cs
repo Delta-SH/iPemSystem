@@ -9,9 +9,10 @@ using System.Web.Hosting;
 
 namespace iPem.Core {
     /// <summary>
-    /// Represents a web helper
+    /// Web¹«¹²°ïÖúÀà
     /// </summary>
     public partial class WebHelper : IWebHelper {
+
         #region Fields
 
         private readonly HttpContextBase _httpContext;
@@ -588,5 +589,6 @@ namespace iPem.Core {
         }
 
         #endregion
+
     }
 }

@@ -7,13 +7,13 @@ using System.Collections.Generic;
 namespace iPem.Services.Cs {
     public partial interface IHisFtpService {
 
-        IPagedList<HisFtp> GetEvents(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<H_FsuEvent> GetEvents(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisFtp> GetEventsAsList(DateTime start, DateTime end);
+        List<H_FsuEvent> GetEventsAsList(DateTime start, DateTime end);
 
-        IPagedList<HisFtp> GetEvents(DateTime start, DateTime end, EnmFtpEvent type, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<H_FsuEvent> GetEvents(DateTime start, DateTime end, EnmFsuEvent type, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisFtp> GetEventsAsList(DateTime start, DateTime end, EnmFtpEvent type);
+        List<H_FsuEvent> GetEventsAsList(DateTime start, DateTime end, EnmFsuEvent type);
 
     }
 }

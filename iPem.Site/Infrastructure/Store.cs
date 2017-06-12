@@ -18,17 +18,17 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets or sets the current role
         /// </summary>
-        public Role Role { get; set; }
+        public U_Role Role { get; set; }
 
         /// <summary>
         /// Gets or sets the current user
         /// </summary>
-        public User User { get; set; }
+        public U_User User { get; set; }
 
         /// <summary>
         /// Gets or sets the current employee
         /// </summary>
-        public Employee Employee { get; set; }
+        public U_Employee Employee { get; set; }
 
         /// <summary>
         /// Gets or sets the current user profile

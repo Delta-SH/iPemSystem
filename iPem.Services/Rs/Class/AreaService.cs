@@ -13,7 +13,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IAreaRepository _areaRepository;
+        private readonly IA_AreaRepository _areaRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEnumMethodsService _methodsService;
 
@@ -25,7 +25,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public AreaService(
-            IAreaRepository areaRepository,
+            IA_AreaRepository areaRepository,
             ICacheManager cacheManager,
             IEnumMethodsService methodsService) {
             this._areaRepository = areaRepository;
@@ -37,8 +37,8 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Area GetArea(string id) {
-            var current = _areaRepository.GetEntity(id);
+        public A_Area GetArea(string id) {
+            var current = _areaRepository.GetArea(id);
             if(current != null) {
                 var type = _methodsService.GetValue(current.Type.Id);
                 if(type != null) current.Type.Value = type.Name;
@@ -46,12 +46,12 @@ namespace iPem.Services.Rs {
             return current;
         }
 
-        public IPagedList<Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Area>(this.GetAreasAsList(), pageIndex, pageSize);
+        public IPagedList<A_Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_Area>(this.GetAreasAsList(), pageIndex, pageSize);
         }
 
-        public List<Area> GetAreasAsList() {
-            var result = _areaRepository.GetEntities();
+        public List<A_Area> GetAreasAsList() {
+            var result = _areaRepository.GetAreas();
             var types = _methodsService.GetValuesAsList(EnmMethodType.Area, "类型");
             for(var i = 0; i < result.Count; i++) {
                 var current = result[i];

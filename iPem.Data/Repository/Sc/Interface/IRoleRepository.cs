@@ -4,24 +4,24 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface IRoleRepository {
-        Role GetEntity(Guid id);
+        U_Role GetEntity(Guid id);
 
-        Role GetEntity(string name);
+        U_Role GetEntity(string name);
 
-        Role GetEntityByUid(Guid uid);
+        U_Role GetEntityByUid(Guid uid);
 
-        List<Role> GetEntities();
+        List<U_Role> GetEntities();
 
-        void Insert(Role entity);
+        void Insert(U_Role entity);
 
-        void Insert(List<Role> entities);
+        void Insert(List<U_Role> entities);
 
-        void Update(Role entity);
+        void Update(U_Role entity);
 
-        void Update(List<Role> entities);
+        void Update(List<U_Role> entities);
 
-        void Delete(Role entity);
+        void Delete(U_Role entity);
 
-        void Delete(List<Role> entities);
+        void Delete(List<U_Role> entities);
     }
 }

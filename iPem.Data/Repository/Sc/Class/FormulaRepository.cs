@@ -28,7 +28,7 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public Formula GetEntity(string id, EnmOrganization type, EnmFormula formulaType) {
+        public M_Formula GetEntity(string id, EnmSSH type, EnmFormula formulaType) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@FormulaType", SqlDbType.Int) };
@@ -36,12 +36,12 @@ namespace iPem.Data.Repository.Sc {
             parms[1].Value = (int)type;
             parms[2].Value = (int)formulaType;
 
-            Formula entity = null;
+            M_Formula entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Formula_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Formula();
+                    entity = new M_Formula();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -51,18 +51,18 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public List<Formula> GetEntities(string id, EnmOrganization type) {
+        public List<M_Formula> GetEntities(string id, EnmSSH type) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int) };
             parms[0].Value = id;
             parms[1].Value = (int)type;
 
-            var entities = new List<Formula>();
+            var entities = new List<M_Formula>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Formula_Repository_GetEntities, parms)) {
                 while(rdr.Read()) {
-                    var entity = new Formula();
+                    var entity = new M_Formula();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -73,13 +73,13 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public List<Formula> GetEntities() {
-            var entities = new List<Formula>();
+        public List<M_Formula> GetEntities() {
+            var entities = new List<M_Formula>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Formula_Repository_GetAllEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new Formula();
+                    var entity = new M_Formula();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Type = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["Type"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -90,11 +90,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public void Save(Formula entity) {
-            Save(new List<Formula>() { entity });
+        public void Save(M_Formula entity) {
+            Save(new List<M_Formula>() { entity });
         }
 
-        public void Save(List<Formula> entities) {
+        public void Save(List<M_Formula> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@FormulaType", SqlDbType.Int),

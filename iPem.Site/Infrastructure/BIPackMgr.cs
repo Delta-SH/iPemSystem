@@ -6,7 +6,7 @@ using System;
 
 namespace iPem.Site.Infrastructure {
     public abstract class BIPackMgr {
-        public static GetDataAckPackage GetData(FsuExt fsu, WsValues ws, GetDataPackage package) {
+        public static GetDataAckPackage GetData(D_ExtFsu fsu, WsValues ws, GetDataPackage package) {
             if(fsu == null) throw new iPemException("Fsu通信未配置");
             if(ws == null) throw new iPemException("WebService通信未配置");
             if(package == null) throw new iPemException("数据包不能为空");
@@ -19,7 +19,7 @@ namespace iPem.Site.Infrastructure {
             return new GetDataAckPackage(xmlData);
         }
 
-        public static SetPointActPackage SetPoint(FsuExt fsu, WsValues ws, SetPointPackage package) {
+        public static SetPointActPackage SetPoint(D_ExtFsu fsu, WsValues ws, SetPointPackage package) {
             if(fsu == null) throw new iPemException("Fsu通信未配置");
             if(ws == null) throw new iPemException("WebService通信未配置");
             if(package == null) throw new iPemException("数据包不能为空");
@@ -32,7 +32,7 @@ namespace iPem.Site.Infrastructure {
             return new SetPointActPackage(xmlData);
         }
 
-        public static GetThresholdAckPackage GetThreshold(FsuExt fsu, WsValues ws, GetThresholdPackage package) {
+        public static GetThresholdAckPackage GetThreshold(D_ExtFsu fsu, WsValues ws, GetThresholdPackage package) {
             if(fsu == null) throw new iPemException("Fsu通信未配置");
             if(ws == null) throw new iPemException("WebService通信未配置");
             if(package == null) throw new iPemException("数据包不能为空");
@@ -45,7 +45,7 @@ namespace iPem.Site.Infrastructure {
             return new GetThresholdAckPackage(xmlData);
         }
 
-        public static SetThresholdAckPackage SetThreshold(FsuExt fsu, WsValues ws, SetThresholdPackage package) {
+        public static SetThresholdAckPackage SetThreshold(D_ExtFsu fsu, WsValues ws, SetThresholdPackage package) {
             if(fsu == null) throw new iPemException("Fsu通信未配置");
             if(ws == null) throw new iPemException("WebService通信未配置");
             if(package == null) throw new iPemException("数据包不能为空");

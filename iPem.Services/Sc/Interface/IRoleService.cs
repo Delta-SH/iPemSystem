@@ -6,29 +6,29 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface IRoleService {
-        Role GetRole(Guid id);
+        U_Role GetRole(Guid id);
 
-        Role GetRole(string name);
+        U_Role GetRole(string name);
 
-        Role GetRoleByUid(Guid uid);
+        U_Role GetRoleByUid(Guid uid);
 
-        IPagedList<Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Role> GetAllRolesAsList();
+        List<U_Role> GetAllRolesAsList();
 
-        IPagedList<Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Role> GetRolesAsList(Guid id);
+        List<U_Role> GetRolesAsList(Guid id);
 
-        IPagedList<Role> GetRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_Role> GetRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Role> GetRolesAsList(string[] names);
+        List<U_Role> GetRolesAsList(string[] names);
 
-        void Add(Role role);
+        void Add(U_Role role);
 
-        void Update(Role role);
+        void Update(U_Role role);
 
-        void Remove(Role role);
+        void Remove(U_Role role);
 
         EnmLoginResults Validate(Guid uid);
     }

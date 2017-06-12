@@ -4,22 +4,22 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface IAppointmentRepository {
-        List<Appointment> GetEntities();
+        List<M_Reservation> GetEntities();
 
-        List<Appointment> GetEntities(DateTime startDate, DateTime endDate);
+        List<M_Reservation> GetEntities(DateTime startDate, DateTime endDate);
 
-        Appointment GetEntity(Guid id);
+        M_Reservation GetEntity(Guid id);
 
-        void Insert(Appointment entity);
+        void Insert(M_Reservation entity);
 
-        void Insert(List<Appointment> entities);
+        void Insert(List<M_Reservation> entities);
 
-        void Update(Appointment entity);
+        void Update(M_Reservation entity);
 
-        void Update(List<Appointment> entities);
+        void Update(List<M_Reservation> entities);
 
-        void Delete(Appointment entity);
+        void Delete(M_Reservation entity);
 
-        void Delete(List<Appointment> entities);
+        void Delete(List<M_Reservation> entities);
     }
 }

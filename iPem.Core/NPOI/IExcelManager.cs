@@ -6,7 +6,7 @@ using System.Web;
 
 namespace iPem.Core.NPOI {
     /// <summary>
-    /// Excel manager interface
+    /// Excel管理器接口
     /// </summary>
     public interface IExcelManager {
         MemoryStream Export<T>(List<T> data, string title = "No title", string subtitle = "No subtitle");

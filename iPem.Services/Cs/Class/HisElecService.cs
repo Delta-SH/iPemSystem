@@ -11,7 +11,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisElecRepository _hisRepository;
+        private readonly IV_ElecRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisElecService(
-            IHisElecRepository hisRepository,
+            IV_ElecRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -32,44 +32,44 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisElec> GetEnergies(string id, EnmOrganization type, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisElec>(this.GetEnergiesAsList(id, type, start, end), pageIndex, pageSize);
+        public IPagedList<V_Elec> GetEnergies(string id, EnmSSH type, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Elec>(this.GetEnergiesAsList(id, type, start, end), pageIndex, pageSize);
         }
 
-        public List<HisElec> GetEnergiesAsList(string id, EnmOrganization type, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(id, type, start, end);
+        public List<V_Elec> GetEnergiesAsList(string id, EnmSSH type, DateTime start, DateTime end) {
+            return _hisRepository.GetValues(id, type, start, end);
         }
 
-        public IPagedList<HisElec> GetEnergies(string id, EnmOrganization type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisElec>(this.GetEnergiesAsList(id, type, formula, start, end), pageIndex, pageSize);
+        public IPagedList<V_Elec> GetEnergies(string id, EnmSSH type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Elec>(this.GetEnergiesAsList(id, type, formula, start, end), pageIndex, pageSize);
         }
 
-        public List<HisElec> GetEnergiesAsList(string id, EnmOrganization type, EnmFormula formula, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(id, type, formula, start, end);
+        public List<V_Elec> GetEnergiesAsList(string id, EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
+            return _hisRepository.GetValues(id, type, formula, start, end);
         }
 
-        public IPagedList<HisElec> GetEnergies(EnmOrganization type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisElec>(this.GetEnergiesAsList(type, formula, start, end), pageIndex, pageSize);
+        public IPagedList<V_Elec> GetEnergies(EnmSSH type, EnmFormula formula, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Elec>(this.GetEnergiesAsList(type, formula, start, end), pageIndex, pageSize);
         }
 
-        public List<HisElec> GetEnergiesAsList(EnmOrganization type, EnmFormula formula, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(type, formula, start, end);
+        public List<V_Elec> GetEnergiesAsList(EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
+            return _hisRepository.GetValues(type, formula, start, end);
         }
 
-        public IPagedList<HisElec> GetEnergies(EnmOrganization type, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisElec>(this.GetEnergiesAsList(type, start, end), pageIndex, pageSize);
+        public IPagedList<V_Elec> GetEnergies(EnmSSH type, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Elec>(this.GetEnergiesAsList(type, start, end), pageIndex, pageSize);
         }
 
-        public List<HisElec> GetEnergiesAsList(EnmOrganization type, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(type, start, end);
+        public List<V_Elec> GetEnergiesAsList(EnmSSH type, DateTime start, DateTime end) {
+            return _hisRepository.GetValues(type, start, end);
         }
 
-        public IPagedList<HisElec> GetEnergies(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisElec>(this.GetEnergiesAsList(start, end), pageIndex, pageSize);
+        public IPagedList<V_Elec> GetEnergies(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Elec>(this.GetEnergiesAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisElec> GetEnergiesAsList(DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(start, end);
+        public List<V_Elec> GetEnergiesAsList(DateTime start, DateTime end) {
+            return _hisRepository.GetValues(start, end);
         }
 
         #endregion

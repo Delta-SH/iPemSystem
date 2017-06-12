@@ -31,11 +31,11 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public MenusInRole GetMenusInRole(Guid id) {
+        public U_EntitiesInRole GetMenusInRole(Guid id) {
             return _menusInRoleRepository.GetEntity(id);
         }
 
-        public void AddMenusInRole(MenusInRole menus) {
+        public void AddMenusInRole(U_EntitiesInRole menus) {
             if(menus == null)
                 throw new ArgumentException("menus");
 

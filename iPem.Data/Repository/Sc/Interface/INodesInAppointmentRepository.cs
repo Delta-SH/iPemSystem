@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface INodesInAppointmentRepository {
-        List<NodesInAppointment> GetEntities();
+        List<M_NodeInReservation> GetEntities();
 
-        List<NodesInAppointment> GetEntities(EnmOrganization type);
+        List<M_NodeInReservation> GetEntities(EnmSSH type);
 
-        List<NodesInAppointment> GetEntities(Guid appointmentId);
+        List<M_NodeInReservation> GetEntities(Guid appointmentId);
 
-        void Insert(NodesInAppointment entity);
+        void Insert(M_NodeInReservation entity);
 
-        void Insert(List<NodesInAppointment> entities);
+        void Insert(List<M_NodeInReservation> entities);
 
         void Delete(Guid appointmentId);
 

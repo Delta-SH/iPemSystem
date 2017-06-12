@@ -5,20 +5,20 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface ILogicTypeService {
-        LogicType GetLogicType(string id);
+        C_LogicType GetLogicType(string id);
 
-        SubLogicType GetSubLogicType(string id);
+        C_SubLogicType GetSubLogicType(string id);
 
-        IPagedList<LogicType> GetAllLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_LogicType> GetAllLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<LogicType> GetAllLogicTypesAsList();
+        List<C_LogicType> GetAllLogicTypesAsList();
 
-        IPagedList<SubLogicType> GetAllSubLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_SubLogicType> GetAllSubLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<SubLogicType> GetAllSubLogicTypesAsList();
+        List<C_SubLogicType> GetAllSubLogicTypesAsList();
 
-        IPagedList<SubLogicType> GetSubLogicTypes(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_SubLogicType> GetSubLogicTypes(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<SubLogicType> GetSubLogicTypesAsList(string parent);
+        List<C_SubLogicType> GetSubLogicTypesAsList(string parent);
     }
 }

@@ -164,14 +164,14 @@ namespace iPem.Site.Controllers {
                 if(keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Area) {
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if(nodeType == EnmSSH.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
                         if(current != null)
                             fsus = _workContext.RoleFsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
-                    } else if(nodeType == EnmOrganization.Station) {
+                    } else if(nodeType == EnmSSH.Station) {
                         fsus = _workContext.RoleFsus.FindAll(d => d.Current.StationId == id);
-                    } else if(nodeType == EnmOrganization.Room) {
+                    } else if(nodeType == EnmSSH.Room) {
                         var current = _workContext.RoleRooms.Find(a => a.Current.Id == id);
                         if(current != null) fsus = current.Fsus;
                     }
@@ -250,14 +250,14 @@ namespace iPem.Site.Controllers {
                 if(keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if(nodeType == EnmOrganization.Area) {
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if(nodeType == EnmSSH.Area) {
                         var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
                         if(current != null)
                             fsus = _workContext.RoleFsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
-                    } else if(nodeType == EnmOrganization.Station) {
+                    } else if(nodeType == EnmSSH.Station) {
                         fsus = _workContext.RoleFsus.FindAll(d => d.Current.StationId == id);
-                    } else if(nodeType == EnmOrganization.Room) {
+                    } else if(nodeType == EnmSSH.Room) {
                         var current = _workContext.RoleRooms.Find(a => a.Current.Id == id);
                         if(current != null) fsus = current.Fsus;
                     }
@@ -278,7 +278,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var events = _ftpService.GetEventsAsList(startDate, endDate, EnmFtpEvent.FTP);
+            var events = _ftpService.GetEventsAsList(startDate, endDate, EnmFsuEvent.FTP);
             if (types != null && types.Length > 0)
                 events = events.FindAll(e => types.Contains((int)e.EventType));
 

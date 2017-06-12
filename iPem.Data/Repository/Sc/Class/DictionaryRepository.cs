@@ -27,14 +27,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public Dictionary GetEntity(int id) {
+        public M_Dictionary GetEntity(int id) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
             parms[0].Value = id;
 
-            Dictionary entity = null;
+            M_Dictionary entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Dictionary_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Dictionary();
+                    entity = new M_Dictionary();
                     entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.ValuesJson = SqlTypeConverter.DBNullStringHandler(rdr["ValuesJson"]);
@@ -45,11 +45,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public List<Dictionary> GetEntities() {
-            var entities = new List<Dictionary>();
+        public List<M_Dictionary> GetEntities() {
+            var entities = new List<M_Dictionary>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Dictionary_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new Dictionary();
+                    var entity = new M_Dictionary();
                     entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.ValuesJson = SqlTypeConverter.DBNullStringHandler(rdr["ValuesJson"]);
@@ -61,11 +61,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public void Update(Dictionary entity) {
-            Update(new List<Dictionary>() { entity });
+        public void Update(M_Dictionary entity) {
+            Update(new List<M_Dictionary>() { entity });
         }
 
-        public void Update(List<Dictionary> entities) {
+        public void Update(List<M_Dictionary> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@ValuesJson", SqlDbType.NText),

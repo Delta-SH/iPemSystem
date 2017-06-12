@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IRoomTypeService {
-        RoomType GetRoomType(string id);
+        C_RoomType GetRoomType(string id);
 
-        IPagedList<RoomType> GetAllRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_RoomType> GetAllRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<RoomType> GetAllRoomTypesAsList();
+        List<C_RoomType> GetAllRoomTypesAsList();
     }
 }

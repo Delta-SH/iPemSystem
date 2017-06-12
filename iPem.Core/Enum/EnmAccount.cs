@@ -1,99 +1,150 @@
 ﻿namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents password format enumeration
+    /// 登录密码格式
     /// </summary>
     public enum EnmPasswordFormat {
+        /// <summary>
+        /// 不加密
+        /// </summary>
         Clear,
+        /// <summary>
+        /// 加密
+        /// </summary>
         Hashed
     }
 
     /// <summary>
-    /// Represents the license status enumeration
+    /// 序列号状态
     /// </summary>
     public enum EnmLicenseStatus {
+        /// <summary>
+        /// 无效
+        /// </summary>
         Invalid,
+        /// <summary>
+        /// 过期
+        /// </summary>
         Expired,
+        /// <summary>
+        /// 评估
+        /// </summary>
         Evaluation,
+        /// <summary>
+        /// 正常
+        /// </summary>
         Licensed
     }
 
     /// <summary>
-    /// Represents the employee sex enumeration
+    /// 性别
     /// </summary>
     public enum EnmSex {
+        /// <summary>
+        /// 男
+        /// </summary>
         Male,
+        /// <summary>
+        /// 女
+        /// </summary>
         Female
     }
 
     /// <summary>
-    /// Represents the employee degree enumeration
+    /// 学历
     /// </summary>
     public enum EnmDegree {
+        /// <summary>
+        /// 高中
+        /// </summary>
         High,
+        /// <summary>
+        /// 大专
+        /// </summary>
         College,
+        /// <summary>
+        /// 本科
+        /// </summary>
         Bachelor,
+        /// <summary>
+        /// 硕士
+        /// </summary>
         Master,
+        /// <summary>
+        /// 博士或博士后
+        /// </summary>
         Doctor,
+        /// <summary>
+        /// 其他
+        /// </summary>
         Other
     }
 
     /// <summary>
-    /// Represents the employee marriage enumeration
+    /// 婚姻状况
     /// </summary>
     public enum EnmMarriage {
+        /// <summary>
+        /// 单身
+        /// </summary>
         Single,
+        /// <summary>
+        /// 已婚
+        /// </summary>
         Married,
+        /// <summary>
+        /// 其他
+        /// </summary>
         Other
     }
 
     /// <summary>
-    /// Represents the user login result enumeration
+    /// 用户登录结果
     /// </summary>
     public enum EnmLoginResults {
         /// <summary>
-        /// Login successful
+        /// 登录成功
         /// </summary>
         Successful = 1,
         /// <summary>
-        /// Account dies not exist
+        /// 账户不存在
         /// </summary>
         NotExist = 2,
         /// <summary>
-        /// Wrong password
+        /// 密码错误
         /// </summary>
         WrongPassword = 3,
         /// <summary>
-        /// Account have not been enabled
+        /// 账户被禁用
         /// </summary>
         NotEnabled = 4,
         /// <summary>
-        /// Account has been expired 
+        /// 账户已过期
         /// </summary>
         Expired = 5,
         /// <summary>
-        /// Account has been locked 
+        /// 账户被锁定
         /// </summary>
         Locked = 6,
         /// <summary>
-        /// Role dies not exist
+        /// 角色不存在
         /// </summary>
         RoleNotExist = 7,
         /// <summary>
-        /// Role have not been enabled
+        /// 角色被禁用
         /// </summary>
         RoleNotEnabled = 8
     }
 
     /// <summary>
-    /// Represents change password result enumeration
+    /// 更新密码结果
     /// </summary>
     public enum EnmChangeResults {
         /// <summary>
-        /// Change successful
+        /// 更新成功
         /// </summary>
         Successful = 1,
         /// <summary>
-        /// Wrong password
+        /// 原始密码错误
         /// </summary>
         WrongPassword = 2
     }

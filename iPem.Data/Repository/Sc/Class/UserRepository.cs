@@ -30,14 +30,14 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual User GetEntity(Guid id) {
+        public virtual U_User GetEntity(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            User entity = null;
+            U_User entity = null;
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntityById, parms)) {
                 if (rdr.Read()) {
-                    entity = new User();
+                    entity = new U_User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
@@ -60,14 +60,14 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual User GetEntity(string name) {
+        public virtual U_User GetEntity(string name) {
             SqlParameter[] parms = { new SqlParameter("@Uid", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringHandler(name);
 
-            User entity = null;
+            U_User entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntityByName, parms)) {
                 if(rdr.Read()) {
-                    entity = new User();
+                    entity = new U_User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
@@ -90,11 +90,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual List<User> GetEntities() {
-            var entities = new List<User>();
+        public virtual List<U_User> GetEntities() {
+            var entities = new List<U_User>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
-                    var entity = new User();
+                    var entity = new U_User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
@@ -118,14 +118,14 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<User> GetEntities(Guid id) {
+        public virtual List<U_User> GetEntities(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            var entities = new List<User>();
+            var entities = new List<U_User>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_User_Repository_GetEntitiesByRole, parms)) {
                 while(rdr.Read()) {
-                    var entity = new User();
+                    var entity = new U_User();
                     entity.RoleId = SqlTypeConverter.DBNullGuidHandler(rdr["RoleId"]);
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
@@ -149,11 +149,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual void Insert(User entity) {
-            Insert(new List<User>() { entity });
+        public virtual void Insert(U_User entity) {
+            Insert(new List<U_User>() { entity });
         }
 
-        public virtual void Insert(List<User> entities) {
+        public virtual void Insert(List<U_User> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Uid", SqlDbType.VarChar,100),
@@ -204,11 +204,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(User entity) {
-            Update(new List<User>() { entity });
+        public virtual void Update(U_User entity) {
+            Update(new List<U_User>() { entity });
         }
 
-        public virtual void Update(List<User> entities) {
+        public virtual void Update(List<U_User> entities) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Uid", SqlDbType.VarChar,100),
@@ -251,11 +251,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(User entity) {
-            Delete(new List<User>() { entity });
+        public virtual void Delete(U_User entity) {
+            Delete(new List<U_User>() { entity });
         }
 
-        public virtual void Delete(List<User> entities) {
+        public virtual void Delete(List<U_User> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

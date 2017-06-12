@@ -31,11 +31,11 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public UserProfile GetProfile(Guid uid) {
+        public U_Profile GetProfile(Guid uid) {
             return _profileRepository.GetEntity(uid);
         }
 
-        public void Save(UserProfile profile) {
+        public void Save(U_Profile profile) {
             _profileRepository.Save(profile);
         }
 

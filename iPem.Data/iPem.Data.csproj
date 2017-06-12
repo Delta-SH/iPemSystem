@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\SqlCommands_Cs.cs" />
-    <Compile Include="Common\SqlCommands_Am.cs" />
     <Compile Include="Common\SqlCommands_Sc.cs" />
     <Compile Include="Common\SqlCommands_Rs.cs" />
     <Compile Include="Common\SqlHelper.cs" />
@@ -48,31 +47,35 @@
     <Compile Include="Installation\DbInstaller.cs" />
     <Compile Include="Installation\IDbInstaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\Am\Class\AmDeviceRepository.cs" />
-    <Compile Include="Repository\Am\Class\AmStationRepository.cs" />
-    <Compile Include="Repository\Am\Interface\IAmDeviceRepository.cs" />
-    <Compile Include="Repository\Am\Interface\IAmStationRepository.cs" />
-    <Compile Include="Repository\Cs\Class\ActAlmRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisBatTimeRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisElecRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisFtpRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisLoadRateRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisBatTimeRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisElecRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisFtpRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisLoadRateRepository.cs" />
+    <Compile Include="Repository\Cs\Class\A_AAlarmRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_BatTimeRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_ElecRepository.cs" />
+    <Compile Include="Repository\Cs\Class\H_FsuEventRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_LoadRepository.cs" />
+    <Compile Include="Repository\Cs\Class\H_IDeviceRepository.cs" />
+    <Compile Include="Repository\Cs\Class\H_IStationRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_AMeasureRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_BatTimeRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_ElecRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IH_FsuEventRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_LoadRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IH_IDeviceRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IH_IStationRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_AMeasureRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_SCVendorRepository.cs" />
     <Compile Include="Repository\Sc\Class\ExtAlarmRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisAlmRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisBatRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisStaticRepository.cs" />
-    <Compile Include="Repository\Cs\Class\HisValueRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IActAlmRepository.cs" />
+    <Compile Include="Repository\Cs\Class\A_HAlarmRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_BatRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_StaticRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_HMeasureRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IA_AAlarmRepository.cs" />
     <Compile Include="Repository\Sc\Class\FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IExtAlarmRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisAlmRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisBatRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisStaticRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IHisValueRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IA_HAlarmRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_BatRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_StaticRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_HMeasureRepository.cs" />
     <Compile Include="Repository\Sc\Class\AppointmentRepository.cs" />
     <Compile Include="Repository\Sc\Class\AreasInRoleRepository.cs" />
     <Compile Include="Repository\Sc\Class\DictionaryRepository.cs" />
@@ -106,42 +109,42 @@
     <Compile Include="Repository\Sc\Class\RoleRepository.cs" />
     <Compile Include="Repository\Sc\Class\UserRepository.cs" />
     <Compile Include="Repository\Sc\Class\WebEventRepository.cs" />
-    <Compile Include="Repository\Rs\Class\AreaRepository.cs" />
-    <Compile Include="Repository\Rs\Class\BrandRepository.cs" />
-    <Compile Include="Repository\Rs\Class\DepartmentRepository.cs" />
-    <Compile Include="Repository\Rs\Class\DeviceRepository.cs" />
-    <Compile Include="Repository\Rs\Class\DeviceTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Class\DutyRepository.cs" />
+    <Compile Include="Repository\Rs\Class\A_AreaRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_BrandRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_DepartmentRepository.cs" />
+    <Compile Include="Repository\Rs\Class\D_DeviceRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_DeviceTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_DutyRepository.cs" />
     <Compile Include="Repository\Rs\Class\EmployeeRepository.cs" />
-    <Compile Include="Repository\Rs\Class\EnumMethodsRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_EnumMethodRepository.cs" />
     <Compile Include="Repository\Rs\Class\FsuRepository.cs" />
-    <Compile Include="Repository\Rs\Class\ProductorRepository.cs" />
-    <Compile Include="Repository\Rs\Class\RoomTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Class\StationTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Class\SubCompanyRepository.cs" />
-    <Compile Include="Repository\Rs\Class\SupplierRepository.cs" />
-    <Compile Include="Repository\Rs\Class\UnitRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IAreaRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IBrandRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IDepartmentRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IDeviceRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IDeviceTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IDutyRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_ProductorRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_RoomTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_StationTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_SubCompanyRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_SupplierRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_UnitRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IA_AreaRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_BrandRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_DepartmentRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\ID_DeviceRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_DeviceTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_DutyRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IEmployeeRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IEnumMethodsRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_EnumMethodRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IFsuRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\ILogicTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IProductorRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_LogicTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_ProductorRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IRoomRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IRoomTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_RoomTypeRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IStationRepository.cs" />
-    <Compile Include="Repository\Rs\Class\LogicTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_LogicTypeRepository.cs" />
     <Compile Include="Repository\Rs\Class\RoomRepository.cs" />
     <Compile Include="Repository\Rs\Class\StationRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IStationTypeRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\ISubCompanyRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\ISupplierRepository.cs" />
-    <Compile Include="Repository\Rs\Interface\IUnitRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_StationTypeRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_SubCompanyRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_SupplierRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_UnitRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">
@@ -150,9 +153,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

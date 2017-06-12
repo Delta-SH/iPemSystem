@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IStationTypeService {
-        StationType GetStationType(string id);
+        C_StationType GetStationType(string id);
 
-        IPagedList<StationType> GetAllStationTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_StationType> GetAllStationTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<StationType> GetAllStationTypesAsList();
+        List<C_StationType> GetAllStationTypesAsList();
     }
 }

@@ -2,33 +2,32 @@
 
 namespace iPem.Core {
     /// <summary>
-    /// ID Value Pair
+    /// 键值数据类
     /// </summary>
     [Serializable]
     public class IdValuePair<T1, T2> {
         /// <summary>
-        /// Class Constructor
+        /// 默认构造函数
         /// </summary>
-        public IdValuePair() { 
-        }
+        public IdValuePair() { }
 
         /// <summary>
-        /// Class Constructor
+        /// 自定义构造函数
         /// </summary>
-        /// <param name="id">Id</param>
-        /// <param name="value">Value</param>
+        /// <param name="id">键</param>
+        /// <param name="value">值</param>
         public IdValuePair(T1 id, T2 value) {
             this.Id = id;
             this.Value = value;
         }
 
         /// <summary>
-        /// ID
+        /// 键
         /// </summary>
         public T1 Id { get; set; }
 
         /// <summary>
-        /// Value
+        /// 值
         /// </summary>
         public T2 Value { get; set; }
     }

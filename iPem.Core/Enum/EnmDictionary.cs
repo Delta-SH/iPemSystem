@@ -2,37 +2,66 @@
 
 namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents the system dictionary keys
+    /// 参数分类
     /// </summary>
     public enum EnmDictionary {
+        /// <summary>
+        /// Fsu统一接口参数
+        /// </summary>
         Ws = 1,
+        /// <summary>
+        /// 告警播报参数
+        /// </summary>
         Ts,
-        Pue,
+        /// <summary>
+        /// 能耗参数
+        /// </summary>
+        Elec,
+        /// <summary>
+        /// 报表相关参数
+        /// </summary>
         Report
     }
 
     /// <summary>
-    /// Represents the formulas
+    /// 公式类型
     /// </summary>
-    /// <remarks>
-    /// KT: 空调
-    /// ZM: 照明
-    /// BG: 办公
-    /// SB: 设备
-    /// KGDY: 开关电源
-    /// UPS: UPS
-    /// QT: 其他
-    /// ZL: 总量
-    /// </remarks>
     public enum EnmFormula {
+        /// <summary>
+        /// 空调
+        /// </summary>
         KT,
+        /// <summary>
+        /// 照明
+        /// </summary>
         ZM,
+        /// <summary>
+        /// 办公
+        /// </summary>
         BG,
+        /// <summary>
+        /// 设备
+        /// </summary>
         SB,
+        /// <summary>
+        /// 开关电源
+        /// </summary>
         KGDY,
+        /// <summary>
+        /// UPS
+        /// </summary>
         UPS,
+        /// <summary>
+        /// 其他
+        /// </summary>
         QT,
+        /// <summary>
+        /// 总量
+        /// </summary>
         ZL,
+        /// <summary>
+        /// PUE
+        /// </summary>
         PUE
     }
 }

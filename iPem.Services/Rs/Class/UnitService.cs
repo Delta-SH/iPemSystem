@@ -10,7 +10,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IUnitRepository _unitRepository;
+        private readonly IC_UnitRepository _unitRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public UnitService(
-            IUnitRepository unitRepository,
+            IC_UnitRepository unitRepository,
             ICacheManager cacheManager) {
             this._unitRepository = unitRepository;
             this._cacheManager = cacheManager;
@@ -31,15 +31,15 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Unit GetUnit(string id) {
+        public C_Unit GetUnit(string id) {
             return _unitRepository.GetEntity(id);
         }
 
-        public IPagedList<Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Unit>(this.GetAllUnitsAsList(), pageIndex, pageSize);
+        public IPagedList<C_Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Unit>(this.GetAllUnitsAsList(), pageIndex, pageSize);
         }
 
-        public List<Unit> GetAllUnitsAsList() {
+        public List<C_Unit> GetAllUnitsAsList() {
             return _unitRepository.GetEntities();
         }
 

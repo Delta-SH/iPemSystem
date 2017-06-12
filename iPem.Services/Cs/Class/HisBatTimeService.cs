@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisBatTimeRepository _hisRepository;
+        private readonly IV_BatTimeRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisBatTimeService(
-            IHisBatTimeRepository hisRepository,
+            IV_BatTimeRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -31,12 +31,12 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisBatTime> GetHisBatTimes(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisBatTime>(this.GetHisBatTimesAsList(start, end), pageIndex, pageSize);
+        public IPagedList<V_BatTime> GetHisBatTimes(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_BatTime>(this.GetHisBatTimesAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisBatTime> GetHisBatTimesAsList(DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(start, end);
+        public List<V_BatTime> GetHisBatTimesAsList(DateTime start, DateTime end) {
+            return _hisRepository.GetValues(start, end);
         }
 
         #endregion

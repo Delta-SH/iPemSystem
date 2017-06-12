@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Sc {
     public partial interface IProfileRepository {
 
-        UserProfile GetEntity(Guid id);
+        U_Profile GetEntity(Guid id);
 
-        void Save(UserProfile entity);
+        void Save(U_Profile entity);
 
         void Delete(Guid id);
 

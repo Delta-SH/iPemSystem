@@ -278,11 +278,11 @@ namespace iPem.Site.Controllers {
                 var service = new RoleService(repository, _cacheManager);
                 var installed = (type == 0);
 
-                var entity = service.GetRole(Role.SuperId);
+                var entity = service.GetRole(U_Role.SuperId);
                 if(entity != null) service.Remove(entity);
 
-                entity = new Role() {
-                    Id = Role.SuperId,
+                entity = new U_Role() {
+                    Id = U_Role.SuperId,
                     Name = model.name,
                     Comment = model.comment,
                     Enabled = true
@@ -318,8 +318,8 @@ namespace iPem.Site.Controllers {
                 var entity = service.GetUser(model.name);
                 if(entity != null) service.Remove(entity);
 
-                service.Add(new User() {
-                    RoleId = Role.SuperId,
+                service.Add(new U_User() {
+                    RoleId = U_Role.SuperId,
                     Id = Guid.NewGuid(),
                     Uid = model.name,
                     Password = model.pwd,

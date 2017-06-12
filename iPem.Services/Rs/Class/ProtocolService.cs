@@ -10,7 +10,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IProtocolRepository _protocolRepository;
+        private readonly IP_ProtocolRepository _protocolRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public ProtocolService(
-            IProtocolRepository protocolRepository,
+            IP_ProtocolRepository protocolRepository,
             ICacheManager cacheManager) {
             this._protocolRepository = protocolRepository;
             this._cacheManager = cacheManager;
@@ -31,11 +31,11 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public IPagedList<Protocol> GetAllProtocols(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Protocol>(this.GetAllProtocolsAsList(), pageIndex, pageSize);
+        public IPagedList<P_Protocol> GetAllProtocols(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<P_Protocol>(this.GetAllProtocolsAsList(), pageIndex, pageSize);
         }
 
-        public List<Protocol> GetAllProtocolsAsList() {
+        public List<P_Protocol> GetAllProtocolsAsList() {
             return _protocolRepository.GetEntities();
         }
 

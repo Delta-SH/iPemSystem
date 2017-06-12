@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace iPem.Core.NPOI {
+    /// <summary>
+    /// Excel适配器
+    /// </summary>
     public class ExcelConverter {
 
         #region Field 

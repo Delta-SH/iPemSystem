@@ -6,11 +6,11 @@ using System.Collections.Generic;
 namespace iPem.Services.Cs {
     public partial interface IHisLoadRateService {
 
-        IPagedList<HisLoadRate> GetHisLoadRates(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_Load> GetHisLoadRates(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisLoadRate> GetHisLoadRatesAsList(DateTime start, DateTime end);
+        List<V_Load> GetHisLoadRatesAsList(DateTime start, DateTime end);
 
-        List<HisLoadRate> GetMaxInDevice(DateTime start, DateTime end, double max);
+        List<V_Load> GetMaxInDevice(DateTime start, DateTime end, double max);
 
     }
 }

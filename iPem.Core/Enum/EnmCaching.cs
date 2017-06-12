@@ -1,6 +1,6 @@
 ﻿namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents a cache provider enumeration
+    /// 缓存适配器分类
     /// </summary>
     public enum EnmCacheProvider {
         Memcached,

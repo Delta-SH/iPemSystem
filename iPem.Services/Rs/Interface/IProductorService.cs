@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IProductorService {
-        Productor GetProductor(string id);
+        C_Productor GetProductor(string id);
 
-        IPagedList<Productor> GetAllProductors(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_Productor> GetAllProductors(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Productor> GetAllProductorsAsList();
+        List<C_Productor> GetAllProductorsAsList();
     }
 }

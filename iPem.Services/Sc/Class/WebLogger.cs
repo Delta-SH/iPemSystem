@@ -36,48 +36,48 @@ namespace iPem.Services.Sc {
             }
         }
 
-        public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public virtual IPagedList<H_WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime);
-            return new PagedList<WebEvent>(query, pageIndex, pageSize);
+            return new PagedList<H_WebEvent>(query, pageIndex, pageSize);
         }
 
-        public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public virtual IPagedList<H_WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, levels);
-            return new PagedList<WebEvent>(query, pageIndex, pageSize);
+            return new PagedList<H_WebEvent>(query, pageIndex, pageSize);
         }
 
-        public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public virtual IPagedList<H_WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, null, types);
-            return new PagedList<WebEvent>(query, pageIndex, pageSize);
+            return new PagedList<H_WebEvent>(query, pageIndex, pageSize);
         }
 
-        public virtual IPagedList<WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public virtual IPagedList<H_WebEvent> GetAllLogs(DateTime startTime, DateTime endTime, EnmEventLevel[] levels, EnmEventType[] types, int pageIndex = 0, int pageSize = int.MaxValue) {
             var query = _webEventRepository.GetEntities(startTime, endTime, levels, types);
-            return new PagedList<WebEvent>(query, pageIndex, pageSize);
+            return new PagedList<H_WebEvent>(query, pageIndex, pageSize);
         }
 
-        public virtual void Insert(WebEvent log) {
+        public virtual void Insert(H_WebEvent log) {
             if (log == null)
                 throw new ArgumentNullException("log");
 
             _webEventRepository.Insert(log);
         }
 
-        public virtual void Insert(List<WebEvent> logs) {
+        public virtual void Insert(List<H_WebEvent> logs) {
             if (logs == null)
                 throw new ArgumentNullException("logs");
 
             _webEventRepository.Insert(logs);
         }
 
-        public virtual void Delete(WebEvent log) {
+        public virtual void Delete(H_WebEvent log) {
             if (log == null)
                 throw new ArgumentNullException("log");
 
             _webEventRepository.Delete(log);
         }
 
-        public virtual void Delete(List<WebEvent> logs) {
+        public virtual void Delete(List<H_WebEvent> logs) {
             if (logs == null)
                 throw new ArgumentNullException("logs");
 

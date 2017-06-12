@@ -5,7 +5,7 @@ namespace iPem.Data.Common {
     /// The SqlText class is intended to encapsulate high performance, 
     /// scalable best practices for common uses of SqlClient.
     /// </summary>
-    public static class SqlCommands_Sc {
+    public static partial class SqlCommands_Sc {
         //extend alarms repository
         public const string Sql_ExtendAlm_Repository_GetEntities = @"SELECT * FROM [dbo].[H_ExtAlarms];";
         public const string Sql_ExtendAlm_Repository_Update = @"

@@ -27,11 +27,11 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual List<Project> GetEntities() {
-            var entities = new List<Project>();
+        public virtual List<M_Project> GetEntities() {
+            var entities = new List<M_Project>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Project_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new Project();
+                    var entity = new M_Project();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
@@ -49,17 +49,17 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<Project> GetEntities(DateTime starttime, DateTime endtime) {
+        public virtual List<M_Project> GetEntities(DateTime starttime, DateTime endtime) {
             SqlParameter[] parms = { new SqlParameter("@starttime",SqlDbType.DateTime),
                                      new SqlParameter("@endtime",SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(starttime);
             parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(endtime);
 
-            var entities = new List<Project>();
+            var entities = new List<M_Project>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Project_Repository_GetEntitiesByDate, parms)) {
                 while(rdr.Read()) {
-                    var entity = new Project();
+                    var entity = new M_Project();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
@@ -77,14 +77,14 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual Project GetEntity(Guid id) {
+        public virtual M_Project GetEntity(Guid id) {
             SqlParameter[] parms = { new SqlParameter("@Id",SqlDbType.VarChar,100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            Project entity = null;
+            M_Project entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Project_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Project();
+                    entity = new M_Project();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
@@ -101,7 +101,7 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual void Insert(Project entity) {
+        public virtual void Insert(M_Project entity) {
             SqlParameter[] parms ={ new SqlParameter("@Id",SqlDbType.VarChar,100),
                                     new SqlParameter("@Name",SqlDbType.VarChar,100),
                                     new SqlParameter("@StartTime",SqlDbType.DateTime),
@@ -138,7 +138,7 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(Project entity) {
+        public virtual void Update(M_Project entity) {
             SqlParameter[] parms = { new SqlParameter("@Id",SqlDbType.VarChar,100),
                                      new SqlParameter("@Name",SqlDbType.VarChar,100),
                                      new SqlParameter("@StartTime",SqlDbType.DateTime),

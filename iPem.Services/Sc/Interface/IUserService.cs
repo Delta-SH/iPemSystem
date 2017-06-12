@@ -6,23 +6,23 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface IUserService {
-        User GetUser(Guid id);
+        U_User GetUser(Guid id);
 
-        User GetUser(string name);
+        U_User GetUser(string name);
 
-        IPagedList<User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<User> GetUsersAsList();
+        List<U_User> GetUsersAsList();
 
-        IPagedList<User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<User> GetUsersAsList(Guid role, bool deep = true);
+        List<U_User> GetUsersAsList(Guid role, bool deep = true);
 
-        void Add(User user);
+        void Add(U_User user);
 
-        void Update(User user);
+        void Update(U_User user);
 
-        void Remove(User user);
+        void Remove(U_User user);
 
         void SetLastLoginDate(Guid id, DateTime lastDate);
 
@@ -34,8 +34,8 @@ namespace iPem.Services.Sc {
 
         bool CheckPassword(String oPwd, EnmPasswordFormat oFormat, String oSalt, String ePwd);
 
-        EnmChangeResults ChangePassword(User user, String oPwd, String nPwd);
+        EnmChangeResults ChangePassword(U_User user, String oPwd, String nPwd);
 
-        void ForcePassword(User user, String nPwd);
+        void ForcePassword(U_User user, String nPwd);
     }
 }

@@ -35,47 +35,47 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public Menu GetMenu(int id) {
+        public U_Menu GetMenu(int id) {
             return _menuRepository.GetEntity(id);
         }
 
-        public IPagedList<Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Menu>(this.GetAllMenusAsList(), pageIndex, pageSize);
+        public IPagedList<U_Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Menu>(this.GetAllMenusAsList(), pageIndex, pageSize);
         }
 
-        public List<Menu> GetAllMenusAsList() {
-            List<Menu> result = null;
+        public List<U_Menu> GetAllMenusAsList() {
+            List<U_Menu> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository)) {
-                result = _cacheManager.Get<List<Menu>>(GlobalCacheKeys.Sc_MenusRepository);
+                result = _cacheManager.Get<List<U_Menu>>(GlobalCacheKeys.Sc_MenusRepository);
             } else {
                 result = _menuRepository.GetEntities();
-                _cacheManager.Set<List<Menu>>(GlobalCacheKeys.Sc_MenusRepository, result);
+                _cacheManager.Set<List<U_Menu>>(GlobalCacheKeys.Sc_MenusRepository, result);
             }
 
             return result;
         }
 
-        public IPagedList<Menu> GetMenus(Guid role, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Menu>(this.GetMenusAsList(role), pageIndex, pageSize);
+        public IPagedList<U_Menu> GetMenus(Guid role, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Menu>(this.GetMenusAsList(role), pageIndex, pageSize);
         }
 
-        public List<Menu> GetMenusAsList(Guid role) {
-            if(role.Equals(Role.SuperId))
+        public List<U_Menu> GetMenusAsList(Guid role) {
+            if(role.Equals(U_Role.SuperId))
                 return this.GetAllMenusAsList();
 
-            List<Menu> result = null;
+            List<U_Menu> result = null;
             var key = string.Format(GlobalCacheKeys.Rl_MenusResultPattern, role);
             if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<Menu>>(key);
+                result = _cacheManager.Get<List<U_Menu>>(key);
             } else {
                 result = _menusInRoleRepository.GetEntity(role).Menus;
-                _cacheManager.Set<List<Menu>>(key, result, CachedIntervals.Global_Intervals);
+                _cacheManager.Set<List<U_Menu>>(key, result, CachedIntervals.Global_Intervals);
             }
 
             return result;
         }
 
-        public void InsertMenu(Menu menu) {
+        public void InsertMenu(U_Menu menu) {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 
@@ -85,7 +85,7 @@ namespace iPem.Services.Sc {
             _menuRepository.Insert(menu);
         }
 
-        public void UpdateMenu(Menu menu) {
+        public void UpdateMenu(U_Menu menu) {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 
@@ -95,7 +95,7 @@ namespace iPem.Services.Sc {
             _menuRepository.Update(menu);
         }
 
-        public void DeleteMenu(Menu menu) {
+        public void DeleteMenu(U_Menu menu) {
             if(menu == null)
                 throw new ArgumentNullException("menu");
 

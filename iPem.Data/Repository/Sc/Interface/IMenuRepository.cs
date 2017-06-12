@@ -4,20 +4,20 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface IMenuRepository {
-        Menu GetEntity(int id);
+        U_Menu GetEntity(int id);
 
-        List<Menu> GetEntities();
+        List<U_Menu> GetEntities();
 
-        void Insert(Menu entity);
+        void Insert(U_Menu entity);
 
-        void Insert(List<Menu> entities);
+        void Insert(List<U_Menu> entities);
 
-        void Update(Menu entity);
+        void Update(U_Menu entity);
 
-        void Update(List<Menu> entities);
+        void Update(List<U_Menu> entities);
 
-        void Delete(Menu entity);
+        void Delete(U_Menu entity);
 
-        void Delete(List<Menu> entities);
+        void Delete(List<U_Menu> entities);
     }
 }

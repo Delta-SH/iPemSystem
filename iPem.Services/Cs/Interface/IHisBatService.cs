@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Cs {
     public partial interface IHisBatService {
-        IPagedList<HisBat> GetHisBats(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_Bat> GetHisBats(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisBat> GetHisBatsAsList(string device, DateTime start, DateTime end);
+        List<V_Bat> GetHisBatsAsList(string device, DateTime start, DateTime end);
 
-        IPagedList<HisBat> GetHisBats(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_Bat> GetHisBats(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisBat> GetHisBatsAsList(string device, string point, DateTime start, DateTime end);
+        List<V_Bat> GetHisBatsAsList(string device, string point, DateTime start, DateTime end);
 
-        IPagedList<HisBat> GetHisBats(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_Bat> GetHisBats(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisBat> GetHisBatsAsList(DateTime start, DateTime end);
+        List<V_Bat> GetHisBatsAsList(DateTime start, DateTime end);
 
-        List<HisBat> GetProcedures(string device, DateTime start, DateTime end);
+        List<V_Bat> GetProcedures(string device, DateTime start, DateTime end);
 
-        List<HisBat> GetProcedures(string device, string point, DateTime start, DateTime end);
+        List<V_Bat> GetProcedures(string device, string point, DateTime start, DateTime end);
 
-        List<HisBat> GetProcedures(DateTime start, DateTime end);
+        List<V_Bat> GetProcedures(DateTime start, DateTime end);
     }
 }

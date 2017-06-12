@@ -2,71 +2,71 @@
 
 namespace iPem.Core {
     /// <summary>
-    /// Represents an application store
+    /// 应用程序相关信息
     /// </summary>
     [Serializable]
     public partial class iPemStore {
         /// <summary>
-        /// Gets or sets the application identifier
+        /// 应用程序标识
         /// </summary>
         public Guid Id {
             get { return new Guid("CBC23C46-D14D-4B05-99DB-243826013069"); }
         }
 
         /// <summary>
-        /// Gets or sets the application name
+        /// 应用程序名称
         /// </summary>
         public string Name {
             get { return "智能监控管理系统"; }
         }
 
         /// <summary>
-        /// Gets or sets the application version
+        /// 软件版本
         /// </summary>
         public string Version {
             get { return "V1.0.0 Build170325"; }
         }
 
         /// <summary>
-        /// Gets or sets the company name
+        /// 所属公司
         /// </summary>
         public string CompanyName {
             get { return "中达电通股份有限公司"; }
         }
 
         /// <summary>
-        /// Gets or sets the copyright
+        /// 中文版权
         /// </summary>
         public string Copyright {
             get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2017"; }
         }
 
         /// <summary>
-        /// Gets or sets the copyright
+        /// 英文版权
         /// </summary>
         public string Copyright_Us {
             get { return "Delta GreenTech(China) Co., Ltd. All Rights Reserved"; }
         }
 
         /// <summary>
-        /// Gets or sets the browser requirements
+        /// 浏览器要求
         /// </summary>
         public string Requirements {
             get { return "浏览器：IE10+、Firefox、Chrome"; }
         }
 
         /// <summary>
-        /// Gets or sets the application location
+        /// 本地URL
         /// </summary>
         public string Location { get; set; }
 
         /// <summary>
-        /// Gets or sets the application host
+        /// 本地主机名
         /// </summary>
         public string Host { get; set; }
 
         /// <summary>
-        /// Gets or sets the application port
+        /// 本地端口
         /// </summary>
         public int Port { get; set; }
     }

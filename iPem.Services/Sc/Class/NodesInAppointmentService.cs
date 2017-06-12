@@ -32,31 +32,31 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public IPagedList<NodesInAppointment> GetAllNodes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<NodesInAppointment>(this.GetAllNodesAsList(), pageIndex, pageSize);
+        public IPagedList<M_NodeInReservation> GetAllNodes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_NodeInReservation>(this.GetAllNodesAsList(), pageIndex, pageSize);
         }
 
-        public List<NodesInAppointment> GetAllNodesAsList() {
+        public List<M_NodeInReservation> GetAllNodesAsList() {
             return _nodesInAppointmentRepository.GetEntities();
         }
 
-        public IPagedList<NodesInAppointment> GetNodes(EnmOrganization type, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<NodesInAppointment>(this.GetNodesAsList(type), pageIndex, pageSize);
+        public IPagedList<M_NodeInReservation> GetNodes(EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_NodeInReservation>(this.GetNodesAsList(type), pageIndex, pageSize);
         }
 
-        public List<NodesInAppointment> GetNodesAsList(EnmOrganization type) {
+        public List<M_NodeInReservation> GetNodesAsList(EnmSSH type) {
             return _nodesInAppointmentRepository.GetEntities(type);
         }
 
-        public IPagedList<NodesInAppointment> GetNodes(Guid appointmentId, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<NodesInAppointment>(this.GetNodesAsList(appointmentId), pageIndex, pageSize);
+        public IPagedList<M_NodeInReservation> GetNodes(Guid appointmentId, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_NodeInReservation>(this.GetNodesAsList(appointmentId), pageIndex, pageSize);
         }
 
-        public List<NodesInAppointment> GetNodesAsList(Guid appointmentId) {
+        public List<M_NodeInReservation> GetNodesAsList(Guid appointmentId) {
             return _nodesInAppointmentRepository.GetEntities(appointmentId);
         }
 
-        public void Add(List<NodesInAppointment> nodes) {
+        public void Add(List<M_NodeInReservation> nodes) {
             if(nodes == null)
                 throw new ArgumentNullException("nodes");
 

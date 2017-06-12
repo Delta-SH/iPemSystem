@@ -27,13 +27,13 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual Menu GetEntity(int id) {
+        public virtual U_Menu GetEntity(int id) {
             SqlParameter[] parms = { new SqlParameter("@Id", id) };
 
-            Menu entity = null;
+            U_Menu entity = null;
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Menu_Repository_GetEntity, parms)) {
                 if(rdr.Read()) {
-                    entity = new Menu();
+                    entity = new U_Menu();
                     entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Icon = SqlTypeConverter.DBNullStringHandler(rdr["Icon"]);
@@ -47,11 +47,11 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public virtual List<Menu> GetEntities() {
-            var entities = new List<Menu>();
+        public virtual List<U_Menu> GetEntities() {
+            var entities = new List<U_Menu>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_Menu_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
-                    var entity = new Menu();
+                    var entity = new U_Menu();
                     entity.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Icon = SqlTypeConverter.DBNullStringHandler(rdr["Icon"]);
@@ -66,11 +66,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual void Insert(Menu entity) {
-            Insert(new List<Menu>() { entity });
+        public virtual void Insert(U_Menu entity) {
+            Insert(new List<U_Menu>() { entity });
         }
 
-        public virtual void Insert(List<Menu> entities) {
+        public virtual void Insert(List<U_Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Icon", SqlDbType.VarChar,512),
@@ -103,11 +103,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Update(Menu entity) {
-            Update(new List<Menu>() { entity });
+        public virtual void Update(U_Menu entity) {
+            Update(new List<U_Menu>() { entity });
         }
 
-        public virtual void Update(List<Menu> entities) {
+        public virtual void Update(List<U_Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int),
                                      new SqlParameter("@Name", SqlDbType.VarChar,100),
                                      new SqlParameter("@Icon", SqlDbType.VarChar,512),
@@ -140,11 +140,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(Menu entity) {
-            Delete(new List<Menu>() { entity });
+        public virtual void Delete(U_Menu entity) {
+            Delete(new List<U_Menu>() { entity });
         }
 
-        public virtual void Delete(List<Menu> entities) {
+        public virtual void Delete(List<U_Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

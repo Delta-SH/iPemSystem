@@ -1966,8 +1966,8 @@ namespace iPem.Site.Controllers {
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var total = new List<Station>();
-            var gaowen = new List<Station>();
+            var total = new List<S_Station>();
+            var gaowen = new List<S_Station>();
             foreach(var station in stations) {
                 if(staKeys.Contains(station.Current.Id)) {
                     total.Add(station.Current);
@@ -2312,23 +2312,23 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                if(size == (int)EnmOrganization.Area) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, startDate, endDate);
+                if(size == (int)EnmSSH.Area) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                         var categories = energies.FindAll(e => children.Contains(e.Id));
                         result.Add(this.Calculate500301(categories, ++index, root.ToString()));
                     }
-                } else if(size == (int)EnmOrganization.Station) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, startDate, endDate);
+                } else if(size == (int)EnmSSH.Station) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
                     foreach(var child in _workContext.RoleStations) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
                         var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
                         result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name)));
                     }
-                } else if(size == (int)EnmOrganization.Room) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, startDate, endDate);
+                } else if(size == (int)EnmSSH.Room) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, startDate, endDate);
                     foreach(var child in _workContext.RoleRooms) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
                         var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
@@ -2340,8 +2340,8 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    if(size == (int)EnmOrganization.Area) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, startDate, endDate);
+                    if(size == (int)EnmSSH.Area) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
                                 var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2353,16 +2353,16 @@ namespace iPem.Site.Controllers {
                             var categories = energies.FindAll(e => children.Contains(e.Id));
                             result.Add(this.Calculate500301(categories, ++index, current.ToString()));
                         }
-                    } else if(size == (int)EnmOrganization.Station) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, startDate, endDate);
+                    } else if(size == (int)EnmSSH.Station) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
                         var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
                             var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
                             result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1}", area != null ? area.ToString() : current.ToString(), child.Current.Name)));
                         }
-                    } else if(size == (int)EnmOrganization.Room) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, startDate, endDate);
+                    } else if(size == (int)EnmSSH.Room) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, startDate, endDate);
                         var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
@@ -2377,7 +2377,7 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private Model500301 Calculate500301(List<HisElec> categories, int index, string name) {
+        private Model500301 Calculate500301(List<V_Elec> categories, int index, string name) {
             var current = new Model500301 {
                 index = index,
                 name = name,
@@ -2409,8 +2409,8 @@ namespace iPem.Site.Controllers {
 
             if(parent == "root") {
                 #region root
-                if(size == (int)EnmOrganization.Area) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                if(size == (int)EnmSSH.Area) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2418,16 +2418,16 @@ namespace iPem.Site.Controllers {
 
                         this.Calculate500302(result, categories, root.ToString());
                     }
-                } else if(size == (int)EnmOrganization.Station) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                } else if(size == (int)EnmSSH.Station) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                     foreach(var child in _workContext.RoleStations) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
                         var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name));
                     }
-                } else if(size == (int)EnmOrganization.Room) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                } else if(size == (int)EnmSSH.Room) {
+                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
                     foreach(var child in _workContext.RoleRooms) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
                         var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
@@ -2440,8 +2440,8 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    if(size == (int)EnmOrganization.Area) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    if(size == (int)EnmSSH.Area) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
                                 var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2455,8 +2455,8 @@ namespace iPem.Site.Controllers {
 
                             this.Calculate500302(result, categories, current.ToString());
                         }
-                    } else if(size == (int)EnmOrganization.Station) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    } else if(size == (int)EnmSSH.Station) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                         var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
@@ -2464,8 +2464,8 @@ namespace iPem.Site.Controllers {
 
                             this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : current.ToString(), child.Current.Name));
                         }
-                    } else if(size == (int)EnmOrganization.Room) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
+                    } else if(size == (int)EnmSSH.Room) {
+                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
                         var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
@@ -2498,7 +2498,7 @@ namespace iPem.Site.Controllers {
                 startDate = startDate.AddDays(1);
             }
 
-            if(period == (int)EnmPeriod.Month) {
+            if(period == (int)EnmPDH.Month) {
                 dates = dates.GroupBy(d => new { d.Year, d.Month }).Select(g => new DateTime(g.Key.Year, g.Key.Month, 1)).ToList();
                 foreach(var date in dates) {
                     var column = new DataColumn(CommonHelper.MonthConverter(date), typeof(double));
@@ -2507,7 +2507,7 @@ namespace iPem.Site.Controllers {
                     column.ExtendedProperties.Add("End", date.AddMonths(1).AddSeconds(-1));
                     model.Columns.Add(column);
                 }
-            } else if(period == (int)EnmPeriod.Week) {
+            } else if(period == (int)EnmPDH.Week) {
                 dates = dates.GroupBy(d => d.Date.AddDays(-1 * (((int)d.DayOfWeek + 6) % 7))).Select(g => g.Key).ToList();
                 foreach(var date in dates) {
                     var column = new DataColumn(CommonHelper.WeekConverter(date), typeof(double));
@@ -2516,7 +2516,7 @@ namespace iPem.Site.Controllers {
                     column.ExtendedProperties.Add("End", date.AddDays(6).AddSeconds(86399));
                     model.Columns.Add(column);
                 }
-            } else if(period == (int)EnmPeriod.Day) {
+            } else if(period == (int)EnmPDH.Day) {
                 foreach(var date in dates) {
                     var column = new DataColumn(CommonHelper.DateConverter(date), typeof(double));
                     column.DefaultValue = 0;
@@ -2529,7 +2529,7 @@ namespace iPem.Site.Controllers {
             return model;
         }
 
-        private void Calculate500302(DataTable dt, List<HisElec> categories, string name) {
+        private void Calculate500302(DataTable dt, List<V_Elec> categories, string name) {
             var row = dt.NewRow();
             row[1] = name;
             for(var k = 2; k < dt.Columns.Count; k++) {
@@ -2551,9 +2551,9 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                if(size == (int)EnmOrganization.Area) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                if(size == (int)EnmSSH.Area) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2572,9 +2572,9 @@ namespace iPem.Site.Controllers {
                             rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                         });
                     }
-                } else if(size == (int)EnmOrganization.Station) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                } else if(size == (int)EnmSSH.Station) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                     foreach(var child in _workContext.RoleStations) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2592,9 +2592,9 @@ namespace iPem.Site.Controllers {
                             rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                         });
                     }
-                } else if(size == (int)EnmOrganization.Room) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                } else if(size == (int)EnmSSH.Room) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                     foreach(var child in _workContext.RoleRooms) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2618,9 +2618,9 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    if(size == (int)EnmOrganization.Area) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    if(size == (int)EnmSSH.Area) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
                                 var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2656,9 +2656,9 @@ namespace iPem.Site.Controllers {
                                 rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                             });
                         }
-                    } else if(size == (int)EnmOrganization.Station) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    } else if(size == (int)EnmSSH.Station) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                         var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2677,9 +2677,9 @@ namespace iPem.Site.Controllers {
                                 rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                             });
                         }
-                    } else if(size == (int)EnmOrganization.Room) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    } else if(size == (int)EnmSSH.Room) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                         var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2715,9 +2715,9 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                if(size == (int)EnmOrganization.Area) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                if(size == (int)EnmSSH.Area) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                     var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
                         var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2736,9 +2736,9 @@ namespace iPem.Site.Controllers {
                             rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                         });
                     }
-                } else if(size == (int)EnmOrganization.Station) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                } else if(size == (int)EnmSSH.Station) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                     foreach(var child in _workContext.RoleStations) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2756,9 +2756,9 @@ namespace iPem.Site.Controllers {
                             rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                         });
                     }
-                } else if(size == (int)EnmOrganization.Room) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                } else if(size == (int)EnmSSH.Room) {
+                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                     foreach(var child in _workContext.RoleRooms) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2782,9 +2782,9 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    if(size == (int)EnmOrganization.Area) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    if(size == (int)EnmSSH.Area) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
                                 var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
@@ -2820,9 +2820,9 @@ namespace iPem.Site.Controllers {
                                 rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                             });
                         }
-                    } else if(size == (int)EnmOrganization.Station) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    } else if(size == (int)EnmSSH.Station) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                         var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2841,9 +2841,9 @@ namespace iPem.Site.Controllers {
                                 rate = string.Format("{0:P2}", lastValue > 0 ? (currentValue - lastValue) / lastValue : 1)
                             });
                         }
-                    } else if(size == (int)EnmOrganization.Room) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    } else if(size == (int)EnmSSH.Room) {
+                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                         var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2881,8 +2881,8 @@ namespace iPem.Site.Controllers {
             var bStation = _workContext.RoleStations.Find(s => s.Current.Id == bid);
             if(bStation == null) return result;
 
-            var aEnergies = _hisElecService.GetEnergiesAsList(aStation.Current.Id, EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
-            var bEnergies = _hisElecService.GetEnergiesAsList(bStation.Current.Id, EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+            var aEnergies = _hisElecService.GetEnergiesAsList(aStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+            var bEnergies = _hisElecService.GetEnergiesAsList(bStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
 
             startDate = startDate.Date; endDate = endDate.Date;
             var dates = new List<DateTime>();
@@ -2892,7 +2892,7 @@ namespace iPem.Site.Controllers {
             }
 
             var index = 0;
-            if(period == (int)EnmPeriod.Month) {
+            if(period == (int)EnmPDH.Month) {
                 dates = dates.GroupBy(d => new { d.Year, d.Month }).Select(g => new DateTime(g.Key.Year, g.Key.Month, 1)).ToList();
                 foreach(var date in dates) {
                     var end = date.AddMonths(1).AddSeconds(-1);
@@ -2910,7 +2910,7 @@ namespace iPem.Site.Controllers {
                         rate = string.Format("{0:P2}", bvalue > 0 ? (avalue - bvalue) / bvalue : 1)
                     });
                 }
-            } else if(period == (int)EnmPeriod.Week) {
+            } else if(period == (int)EnmPDH.Week) {
                 dates = dates.GroupBy(d => d.Date.AddDays(-1 * (((int)d.DayOfWeek + 6) % 7))).Select(g => g.Key).ToList();
                 foreach(var date in dates) {
                     var end = date.AddDays(6).AddSeconds(86399);
@@ -2928,7 +2928,7 @@ namespace iPem.Site.Controllers {
                         rate = string.Format("{0:P2}", bvalue > 0 ? (avalue - bvalue) / bvalue : 1)
                     });
                 }
-            } else if(period == (int)EnmPeriod.Day) {
+            } else if(period == (int)EnmPDH.Day) {
                 foreach(var date in dates) {
                     var end = date.AddSeconds(86399);
 
@@ -2959,8 +2959,8 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.SB, startDate, endDate);
-                var totalEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
+                var totalEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                 foreach(var child in _workContext.RoleStations) {
                     var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);
                     var totalCategories = totalEnergies.FindAll(e => e.Id == child.Current.Id);
@@ -2982,8 +2982,8 @@ namespace iPem.Site.Controllers {
                 #region children
                 var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.SB, startDate, endDate);
-                    var totalEnergies = _hisElecService.GetEnergiesAsList(EnmOrganization.Station, EnmFormula.ZL, startDate, endDate);
+                    var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
+                    var totalEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                     var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                     foreach(var child in children) {
                         var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);

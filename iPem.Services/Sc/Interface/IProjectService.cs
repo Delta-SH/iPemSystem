@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface IProjectService {
-        Project GetProject(Guid id);
+        M_Project GetProject(Guid id);
 
-        IPagedList<Project> GetAllProjects(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Project> GetAllProjects(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Project> GetAllProjectsAsList();
+        List<M_Project> GetAllProjectsAsList();
 
-        IPagedList<Project> GetProjects(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Project> GetProjects(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Project> GetProjectsAsList(DateTime start, DateTime end);
+        List<M_Project> GetProjectsAsList(DateTime start, DateTime end);
 
-        IPagedList<Project> GetProjects(string[] names, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Project> GetProjects(string[] names, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Project> GetProjectsAsList(string[] names, DateTime start, DateTime end);
+        List<M_Project> GetProjectsAsList(string[] names, DateTime start, DateTime end);
 
-        void Add(Project project);
+        void Add(M_Project project);
 
-        void Update(Project project);
+        void Update(M_Project project);
     }
 }

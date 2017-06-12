@@ -55,24 +55,24 @@ namespace iPem.Site.Infrastructure {
 
         private Guid? _cachedIdentifier;
         private Store _cachedStore;
-        private Role _cachedRole;
-        private User _cachedUser;
-        private Employee _cachedEmployee;
+        private U_Role _cachedRole;
+        private U_User _cachedUser;
+        private U_Employee _cachedEmployee;
         private ProfileValues _cachedProfile;
         private WsValues _cachedWsValues;
         private TsValues _cachedTsValues;
         private RtValues _cachedRtValues;
-        private List<Menu> _cachedMenus;
+        private List<U_Menu> _cachedMenus;
         private HashSet<EnmOperation> _cachedOperations;
 
-        private List<LogicType> _cachedLogicTypes;
-        private List<SubLogicType> _cachedSubLogicTypes;
-        private List<DeviceType> _cachedDeviceTypes;
-        private List<SubDeviceType> _cachedSubDeviceTypes;
-        private List<RoomType> _cachedRoomTypes;
-        private List<StationType> _cachedStationTypes;
-        private List<EnumMethods> _cachedAreaTypes;
-        private List<Point> _cachedPoints;
+        private List<C_LogicType> _cachedLogicTypes;
+        private List<C_SubLogicType> _cachedSubLogicTypes;
+        private List<C_DeviceType> _cachedDeviceTypes;
+        private List<C_SubDeviceType> _cachedSubDeviceTypes;
+        private List<C_RoomType> _cachedRoomTypes;
+        private List<C_StationType> _cachedStationTypes;
+        private List<C_EnumMethod> _cachedAreaTypes;
+        private List<P_Point> _cachedPoints;
         private List<OrgProtocol> _cachedProtocols;
         private List<OrgDevice> _cachedDevices;
         private List<OrgFsu> _cachedFsus;
@@ -84,7 +84,7 @@ namespace iPem.Site.Infrastructure {
         private List<OrgRoom> _cachedRoleRooms;
         private List<OrgFsu> _cachedRoleFsus;
         private List<OrgDevice> _cachedRoleDevices;
-        private List<AlmStore<ActAlm>> _cachedAlmStore;
+        private List<AlmStore<A_AAlarm>> _cachedAlmStore;
 
         #endregion
 
@@ -210,7 +210,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public Role Role {
+        public U_Role Role {
             get {
                 if(_cachedRole != null)
                     return _cachedRole;
@@ -233,7 +233,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public User User {
+        public U_User User {
             get {
                 if(_cachedUser != null)
                     return _cachedUser;
@@ -256,7 +256,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public Employee Employee {
+        public U_Employee Employee {
             get {
                 if(_cachedEmployee != null)
                     return _cachedEmployee;
@@ -329,7 +329,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<Menu> Menus {
+        public List<U_Menu> Menus {
             get {
                 if(_cachedMenus != null)
                     return _cachedMenus;
@@ -353,7 +353,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<LogicType> LogicTypes {
+        public List<C_LogicType> LogicTypes {
             get {
                 if(_cachedLogicTypes != null)
                     return _cachedLogicTypes;
@@ -363,7 +363,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<SubLogicType> SubLogicTypes {
+        public List<C_SubLogicType> SubLogicTypes {
             get {
                 if(_cachedSubLogicTypes != null)
                     return _cachedSubLogicTypes;
@@ -373,7 +373,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<DeviceType> DeviceTypes {
+        public List<C_DeviceType> DeviceTypes {
             get {
                 if(_cachedDeviceTypes != null)
                     return _cachedDeviceTypes;
@@ -383,7 +383,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<SubDeviceType> SubDeviceTypes {
+        public List<C_SubDeviceType> SubDeviceTypes {
             get {
                 if(_cachedSubDeviceTypes != null)
                     return _cachedSubDeviceTypes;
@@ -393,7 +393,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<RoomType> RoomTypes {
+        public List<C_RoomType> RoomTypes {
             get {
                 if(_cachedRoomTypes != null)
                     return _cachedRoomTypes;
@@ -403,7 +403,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<StationType> StationTypes {
+        public List<C_StationType> StationTypes {
             get {
                 if(_cachedStationTypes != null)
                     return _cachedStationTypes;
@@ -413,7 +413,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<EnumMethods> AreaTypes {
+        public List<C_EnumMethod> AreaTypes {
             get {
                 if(_cachedAreaTypes != null)
                     return _cachedAreaTypes;
@@ -423,16 +423,16 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<Point> Points {
+        public List<P_Point> Points {
             get {
                 if(_cachedPoints != null)
                     return _cachedPoints;
 
                 if(_cacheManager.IsSet(GlobalCacheKeys.Og_Points))
-                    return _cachedPoints = _cacheManager.Get<List<Point>>(GlobalCacheKeys.Og_Points);
+                    return _cachedPoints = _cacheManager.Get<List<P_Point>>(GlobalCacheKeys.Og_Points);
 
                 _cachedPoints = _pointService.GetAllPointsAsList();
-                _cacheManager.Set<List<Point>>(GlobalCacheKeys.Og_Points, _cachedPoints, CachedIntervals.Global_Intervals);
+                _cacheManager.Set<List<P_Point>>(GlobalCacheKeys.Og_Points, _cachedPoints, CachedIntervals.Global_Intervals);
                 return _cachedPoints;
             }
         }
@@ -613,7 +613,7 @@ namespace iPem.Site.Infrastructure {
 
         public List<OrgArea> RoleAreas {
             get {
-                if(this.Role.Id == Role.SuperId)
+                if(this.Role.Id == U_Role.SuperId)
                     return this.Areas;
 
                 if(_cachedRoleAreas != null)
@@ -652,7 +652,7 @@ namespace iPem.Site.Infrastructure {
 
         public List<OrgStation> RoleStations {
             get {
-                if(this.Role.Id == Role.SuperId)
+                if(this.Role.Id == U_Role.SuperId)
                     return this.Stations;
 
                 if(_cachedRoleStations != null)
@@ -670,7 +670,7 @@ namespace iPem.Site.Infrastructure {
 
         public List<OrgRoom> RoleRooms {
             get {
-                if(this.Role.Id == Role.SuperId)
+                if(this.Role.Id == U_Role.SuperId)
                     return this.Rooms;
 
                 if(_cachedRoleRooms != null)
@@ -688,7 +688,7 @@ namespace iPem.Site.Infrastructure {
 
         public List<OrgFsu> RoleFsus {
             get {
-                if(this.Role.Id == Role.SuperId)
+                if(this.Role.Id == U_Role.SuperId)
                     return this.Fsus;
 
                 if(_cachedRoleFsus != null)
@@ -706,7 +706,7 @@ namespace iPem.Site.Infrastructure {
 
         public List<OrgDevice> RoleDevices {
             get {
-                if(this.Role.Id == Role.SuperId)
+                if(this.Role.Id == U_Role.SuperId)
                     return this.Devices;
 
                 if(_cachedRoleDevices != null)
@@ -722,7 +722,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<AlmStore<ActAlm>> ActAlmStore {
+        public List<AlmStore<A_AAlarm>> ActAlmStore {
             get {
                 if(_cachedAlmStore != null)
                     return _cachedAlmStore;
@@ -739,14 +739,14 @@ namespace iPem.Site.Infrastructure {
                                    join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                                    from def in lt.DefaultIfEmpty()
                                    orderby alarm.AlarmTime descending
-                                   select new AlmStore<ActAlm> {
+                                   select new AlmStore<A_AAlarm> {
                                        Current = alarm,
                                        ExtSet = def,
                                        Point = point,
                                        Device = device.Current,
                                        Room = room.Current,
                                        Station = station.Current,
-                                       Area = new Area {
+                                       Area = new A_Area {
                                            Id = area.Current.Id,
                                            Code = area.Current.Code,
                                            Name = area.ToString(),
@@ -765,9 +765,9 @@ namespace iPem.Site.Infrastructure {
 
         #region Methods
 
-        public List<AlmStore<ActAlm>> GetActAlmStore(List<ActAlm> alarms) {
+        public List<AlmStore<A_AAlarm>> GetActAlmStore(List<A_AAlarm> alarms) {
             if(alarms == null || alarms.Count == 0) 
-                return new List<AlmStore<ActAlm>>();
+                return new List<AlmStore<A_AAlarm>>();
 
             var exts = _extAlarmService.GetAllExtAlarmsAsList();
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
@@ -780,14 +780,14 @@ namespace iPem.Site.Infrastructure {
                     join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                     from def in lt.DefaultIfEmpty()
                     orderby alarm.AlarmTime descending
-                    select new AlmStore<ActAlm> {
+                    select new AlmStore<A_AAlarm> {
                         Current = alarm,
                         ExtSet = def,
                         Point = point,
                         Device = device.Current,
                         Room = room.Current,
                         Station = station.Current,
-                        Area = new Area {
+                        Area = new A_Area {
                             Id = area.Current.Id,
                             Code = area.Current.Code,
                             Name = area.ToString(),
@@ -799,9 +799,9 @@ namespace iPem.Site.Infrastructure {
                     }).ToList();
         }
 
-        public List<AlmStore<HisAlm>> GetHisAlmStore(List<HisAlm> alarms, DateTime start, DateTime end) {
+        public List<AlmStore<A_HAlarm>> GetHisAlmStore(List<A_HAlarm> alarms, DateTime start, DateTime end) {
             if(alarms == null || alarms.Count == 0) 
-                return new List<AlmStore<HisAlm>>();
+                return new List<AlmStore<A_HAlarm>>();
 
             var exts = _extAlarmService.GetHisExtAlarmsAsList(start, end);
             var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
@@ -814,14 +814,14 @@ namespace iPem.Site.Infrastructure {
                     join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
                     from def in lt.DefaultIfEmpty()
                     orderby alarm.AlarmTime descending
-                    select new AlmStore<HisAlm> {
+                    select new AlmStore<A_HAlarm> {
                         Current = alarm,
                         ExtSet = def,
                         Point = point,
                         Device = device.Current,
                         Room = room.Current,
                         Station = station.Current,
-                        Area = new Area {
+                        Area = new A_Area {
                             Id = area.Current.Id,
                             Code = area.Current.Code,
                             Name = area.ToString(),

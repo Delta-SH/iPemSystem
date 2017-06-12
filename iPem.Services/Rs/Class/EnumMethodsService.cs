@@ -12,7 +12,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IEnumMethodsRepository _methodsRepository;
+        private readonly IC_EnumMethodRepository _methodsRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -23,7 +23,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public EnumMethodsService(
-            IEnumMethodsRepository methodsRepository,
+            IC_EnumMethodRepository methodsRepository,
             ICacheManager cacheManager) {
             this._methodsRepository = methodsRepository;
             this._cacheManager = cacheManager;
@@ -33,23 +33,23 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public EnumMethods GetValue(int id) {
+        public C_EnumMethod GetValue(int id) {
             return _methodsRepository.GetEntity(id);
         }
 
-        public IPagedList<EnumMethods> GetAllValues(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<EnumMethods>(this.GetAllValuesAsList(), pageIndex, pageSize);
+        public IPagedList<C_EnumMethod> GetAllValues(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_EnumMethod>(this.GetAllValuesAsList(), pageIndex, pageSize);
         }
 
-        public List<EnumMethods> GetAllValuesAsList() {
+        public List<C_EnumMethod> GetAllValuesAsList() {
             return _methodsRepository.GetEntities();
         }
 
-        public IPagedList<EnumMethods> GetValues(EnmMethodType type, string comment, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<EnumMethods>(this.GetValuesAsList(type, comment), pageIndex, pageSize);
+        public IPagedList<C_EnumMethod> GetValues(EnmMethodType type, string comment, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_EnumMethod>(this.GetValuesAsList(type, comment), pageIndex, pageSize);
         }
 
-        public List<EnumMethods> GetValuesAsList(EnmMethodType type, string comment) {
+        public List<C_EnumMethod> GetValuesAsList(EnmMethodType type, string comment) {
             return _methodsRepository.GetEntities(type, comment);
         }
 

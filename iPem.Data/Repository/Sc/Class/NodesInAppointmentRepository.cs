@@ -28,59 +28,59 @@ namespace iPem.Data.Repository.Sc {
 
         #region Method
 
-        public virtual List<NodesInAppointment> GetEntities() {
-            var entities = new List<NodesInAppointment>();
+        public virtual List<M_NodeInReservation> GetEntities() {
+            var entities = new List<M_NodeInReservation>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_NodesInAppointment_Repository_GetEntities, null)) {
                 while(rdr.Read()) {
-                    var entity = new NodesInAppointment();
-                    entity.AppointmentId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
+                    var entity = new M_NodeInReservation();
+                    entity.ReservationId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
                     entity.NodeId = SqlTypeConverter.DBNullStringHandler(rdr["NodeId"]);
-                    entity.NodeType = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["NodeType"]);
+                    entity.NodeType = SqlTypeConverter.DBNullEnmSSHHandler(rdr["NodeType"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public virtual List<NodesInAppointment> GetEntities(EnmOrganization type) {
+        public virtual List<M_NodeInReservation> GetEntities(EnmSSH type) {
             SqlParameter[] parms = { new SqlParameter("@NodeType", SqlDbType.Int) };
             parms[0].Value = (int)type;
 
-            var entities = new List<NodesInAppointment>();
+            var entities = new List<M_NodeInReservation>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_NodesInAppointment_Repository_GetEntitiesByNodeType, parms)) {
                 while(rdr.Read()) {
-                    var entity = new NodesInAppointment();
-                    entity.AppointmentId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
+                    var entity = new M_NodeInReservation();
+                    entity.ReservationId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
                     entity.NodeId = SqlTypeConverter.DBNullStringHandler(rdr["NodeId"]);
-                    entity.NodeType = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["NodeType"]);
+                    entity.NodeType = SqlTypeConverter.DBNullEnmSSHHandler(rdr["NodeType"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public virtual List<NodesInAppointment> GetEntities(Guid appointmentId) {
+        public virtual List<M_NodeInReservation> GetEntities(Guid appointmentId) {
             SqlParameter[] parms = { new SqlParameter("@AppointmentId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(appointmentId);
 
-            var entities = new List<NodesInAppointment>();
+            var entities = new List<M_NodeInReservation>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_NodesInAppointment_Repository_GetEntitiesByAppointmentId, parms)) {
                 while(rdr.Read()) {
-                    var entity = new NodesInAppointment();
-                    entity.AppointmentId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
+                    var entity = new M_NodeInReservation();
+                    entity.ReservationId = SqlTypeConverter.DBNullGuidHandler(rdr["AppointmentId"]);
                     entity.NodeId = SqlTypeConverter.DBNullStringHandler(rdr["NodeId"]);
-                    entity.NodeType = SqlTypeConverter.DBNullEnmOrganizationHandler(rdr["NodeType"]);
+                    entity.NodeType = SqlTypeConverter.DBNullEnmSSHHandler(rdr["NodeType"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public virtual void Insert(NodesInAppointment entity) {
-            Insert(new List<NodesInAppointment> { entity });
+        public virtual void Insert(M_NodeInReservation entity) {
+            Insert(new List<M_NodeInReservation> { entity });
         }
 
-        public virtual void Insert(List<NodesInAppointment> entities) {
+        public virtual void Insert(List<M_NodeInReservation> entities) {
             SqlParameter[] parms = { 
                                      new SqlParameter("@AppointmentId", SqlDbType.VarChar,100),
                                      new SqlParameter("@NodeId", SqlDbType.VarChar,100),
@@ -92,7 +92,7 @@ namespace iPem.Data.Repository.Sc {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach(var entity in entities) {
-                        parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.AppointmentId);
+                        parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.ReservationId);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.NodeId);
                         parms[2].Value = (int)entity.NodeType;
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_NodesInAppointment_Repository_Insert, parms);

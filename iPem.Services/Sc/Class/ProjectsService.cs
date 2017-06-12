@@ -32,43 +32,43 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual Project GetProject(Guid id) {
+        public virtual M_Project GetProject(Guid id) {
             return _projectsRepository.GetEntity(id);
         }
 
-        public IPagedList<Project> GetAllProjects(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Project>(this.GetAllProjectsAsList(), pageIndex, pageSize);
+        public IPagedList<M_Project> GetAllProjects(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Project>(this.GetAllProjectsAsList(), pageIndex, pageSize);
         }
 
-        public List<Project> GetAllProjectsAsList() {
+        public List<M_Project> GetAllProjectsAsList() {
             return _projectsRepository.GetEntities();
         }
 
-        public virtual IPagedList<Project> GetProjects(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Project>(this.GetProjectsAsList(start, end), pageIndex, pageSize);
+        public virtual IPagedList<M_Project> GetProjects(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Project>(this.GetProjectsAsList(start, end), pageIndex, pageSize);
         }
 
-        public virtual List<Project> GetProjectsAsList(DateTime start, DateTime end) {
+        public virtual List<M_Project> GetProjectsAsList(DateTime start, DateTime end) {
             return _projectsRepository.GetEntities(start, end);
         }
 
-        public virtual IPagedList<Project> GetProjects(string[] names, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Project>(this.GetProjectsAsList(names, start, end), pageIndex, pageSize);
+        public virtual IPagedList<M_Project> GetProjects(string[] names, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Project>(this.GetProjectsAsList(names, start, end), pageIndex, pageSize);
         }
 
-        public virtual List<Project> GetProjectsAsList(string[] names, DateTime start, DateTime end) {
+        public virtual List<M_Project> GetProjectsAsList(string[] names, DateTime start, DateTime end) {
             var result = _projectsRepository.GetEntities(start, end);
             return result.FindAll(r => CommonHelper.ConditionContain(r.Name, names));
         }
 
-        public virtual void Add(Project project) {
+        public virtual void Add(M_Project project) {
             if(project == null)
                 throw new ArgumentNullException("project");
 
             _projectsRepository.Insert(project);
         }
 
-        public virtual void Update(Project project) {
+        public virtual void Update(M_Project project) {
             if(project == null)
                 throw new ArgumentNullException("project");
 

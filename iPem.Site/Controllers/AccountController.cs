@@ -341,7 +341,7 @@ namespace iPem.Site.Controllers {
             try {
                 var menus = _menuService.GetAllMenusAsList();
                 if(menus.Count > 0) {
-                    var roots = new List<Menu>();
+                    var roots = new List<U_Menu>();
                     foreach(var menu in menus) {
                         if(!menus.Any(m => m.Id == menu.LastId))
                             roots.Add(menu);
@@ -378,7 +378,7 @@ namespace iPem.Site.Controllers {
             };
         }
 
-        private void MenusRecursion(List<Menu> menus, int pid, TreeModel node) {
+        private void MenusRecursion(List<U_Menu> menus, int pid, TreeModel node) {
             var _menus = menus.FindAll(m => m.LastId == pid).OrderBy(m => m.Index).ToList();
             if(_menus.Count > 0) {
                 node.data = new List<TreeModel>();
@@ -516,9 +516,9 @@ namespace iPem.Site.Controllers {
                 if(role.areas == null || role.areas.Length == 0)
                     throw new iPemException("无效的区域权限，保存失败。");
 
-                var menus = new MenusInRole {
+                var menus = new U_EntitiesInRole {
                     RoleId = new Guid(role.id),
-                    Menus = role.menus.Select(i => new Menu { Id = int.Parse(i) }).ToList()
+                    Menus = role.menus.Select(i => new U_Menu { Id = int.Parse(i) }).ToList()
                 };
 
                 var areas = role.areas.ToList();
@@ -533,7 +533,7 @@ namespace iPem.Site.Controllers {
                     if(existedRole != null)
                         throw new iPemException("角色已存在，保存失败。");
 
-                    var newRole = new Role {
+                    var newRole = new U_Role {
                         Id = new Guid(role.id),
                         Name = role.name,
                         Comment = role.comment,
@@ -812,7 +812,7 @@ namespace iPem.Site.Controllers {
                     if(existedUser != null)
                         throw new iPemException("用户已存在，保存失败。");
 
-                    var newUser = new User {
+                    var newUser = new U_User {
                         Id = new Guid(user.id),
                         RoleId = new Guid(user.roleId),
                         Uid = user.uid,
@@ -1305,7 +1305,7 @@ namespace iPem.Site.Controllers {
                     if(existed != null)
                         throw new iPemException("消息已存在，保存失败。");
 
-                    var one = new Notice {
+                    var one = new H_Notice {
                         Id = new Guid(notice.id),
                         Title = notice.title,
                         Content = notice.content,
@@ -1313,7 +1313,7 @@ namespace iPem.Site.Controllers {
                         Enabled = notice.enabled
                     };
 
-                    var toUsers = new List<User>();
+                    var toUsers = new List<U_User>();
                     var allUsers = _userService.GetUsersAsList();
                     if(roles != null && roles.Length > 0) {
                         foreach(var role in roles) {
@@ -1324,9 +1324,9 @@ namespace iPem.Site.Controllers {
                         toUsers.AddRange(allUsers);
                     }
 
-                    var noticesInUsers = new List<NoticeInUser>();
+                    var noticesInUsers = new List<H_NoticeInUser>();
                     foreach(var user in toUsers) {
-                        noticesInUsers.Add(new NoticeInUser {
+                        noticesInUsers.Add(new H_NoticeInUser {
                             NoticeId = one.Id,
                             UserId = user.Id,
                             Readed = false,
@@ -1348,7 +1348,7 @@ namespace iPem.Site.Controllers {
                     existed.CreatedTime = DateTime.Now;
                     existed.Enabled = notice.enabled;
 
-                    var toUsers = new List<User>();
+                    var toUsers = new List<U_User>();
                     var allUsers = _userService.GetUsersAsList();
                     if(roles != null && roles.Length > 0) {
                         foreach(var role in roles) {
@@ -1359,9 +1359,9 @@ namespace iPem.Site.Controllers {
                         toUsers.AddRange(allUsers);
                     }
 
-                    var noticesInUsers = new List<NoticeInUser>();
+                    var noticesInUsers = new List<H_NoticeInUser>();
                     foreach(var user in toUsers) {
-                        noticesInUsers.Add(new NoticeInUser {
+                        noticesInUsers.Add(new H_NoticeInUser {
                             NoticeId = existed.Id,
                             UserId = user.Id,
                             Readed = false,
@@ -1444,7 +1444,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.Update(new Dictionary {
+                _dictionaryService.Update(new M_Dictionary {
                     Id = (int)EnmDictionary.Ws,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Ws),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1497,7 +1497,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.Update(new Dictionary {
+                _dictionaryService.Update(new M_Dictionary {
                     Id = (int)EnmDictionary.Ts,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Ts),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1552,7 +1552,7 @@ namespace iPem.Site.Controllers {
                 if(values == null)
                     throw new ArgumentException("参数无效 values");
 
-                _dictionaryService.Update(new Dictionary {
+                _dictionaryService.Update(new M_Dictionary {
                     Id = (int)EnmDictionary.Report,
                     Name = Common.GetDictionaryDisplay(EnmDictionary.Report),
                     ValuesJson = JsonConvert.SerializeObject(values),
@@ -1581,8 +1581,8 @@ namespace iPem.Site.Controllers {
                 if(keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                    if (nodeType == EnmOrganization.Station || nodeType == EnmOrganization.Room){
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if (nodeType == EnmSSH.Station || nodeType == EnmSSH.Room){
                         var formulas = _formulaService.GetFormulasAsList(id, nodeType);
                         foreach(var formula in formulas) {
                             switch(formula.FormulaType) {
@@ -1654,20 +1654,20 @@ namespace iPem.Site.Controllers {
 
                 var type = int.Parse(keys[0]);
                 var id = keys[1];
-                var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                if(nodeType != EnmOrganization.Station && nodeType != EnmOrganization.Room)
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if(nodeType != EnmSSH.Station && nodeType != EnmSSH.Room)
                     throw new ArgumentException("能耗对象仅支持站点、机房");
 
-                var formulas = new List<Formula>();
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.PUE, FormulaText = formula.pueFormulas, Comment = formula.pueRemarks, CreatedTime = DateTime.Now });
+                var formulas = new List<M_Formula>();
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.PUE, FormulaText = formula.pueFormulas, Comment = formula.pueRemarks, CreatedTime = DateTime.Now });
                 
                 _formulaService.SaveRange(formulas);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
@@ -1694,14 +1694,14 @@ namespace iPem.Site.Controllers {
 
                 var srcType = int.Parse(srcKeys[0]);
                 var srcId = srcKeys[1];
-                var srcEnmType = Enum.IsDefined(typeof(EnmOrganization), srcType) ? (EnmOrganization)srcType : EnmOrganization.Area;
-                if(srcEnmType != EnmOrganization.Station && srcEnmType != EnmOrganization.Room)
+                var srcEnmType = Enum.IsDefined(typeof(EnmSSH), srcType) ? (EnmSSH)srcType : EnmSSH.Area;
+                if(srcEnmType != EnmSSH.Station && srcEnmType != EnmSSH.Room)
                     throw new ArgumentException("能耗对象仅支持站点、机房");
 
                 var tgtType = int.Parse(tgtKeys[0]);
                 var tgtId = tgtKeys[1];
-                var tgtEnmType = Enum.IsDefined(typeof(EnmOrganization), tgtType) ? (EnmOrganization)tgtType : EnmOrganization.Area;
-                if(tgtEnmType != EnmOrganization.Station && tgtEnmType != EnmOrganization.Room)
+                var tgtEnmType = Enum.IsDefined(typeof(EnmSSH), tgtType) ? (EnmSSH)tgtType : EnmSSH.Area;
+                if(tgtEnmType != EnmSSH.Station && tgtEnmType != EnmSSH.Room)
                     throw new ArgumentException("能耗对象仅支持站点、机房");
 
                 if(srcEnmType != tgtEnmType)
@@ -1738,8 +1738,8 @@ namespace iPem.Site.Controllers {
                     if(keys.Length == 2) {
                         var type = int.Parse(keys[0]);
                         var id = keys[1];
-                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                        if(nodeType == EnmOrganization.Area) {
+                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                        if(nodeType == EnmSSH.Area) {
                             #region area organization
                             var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
                             if(current != null) {
@@ -1749,7 +1749,7 @@ namespace iPem.Site.Controllers {
                                     data.total = current.ChildRoot.Count;
                                     for(var i = 0; i < current.ChildRoot.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Area, current.ChildRoot[i].Current.Id),
+                                            id = Common.JoinKeys((int)EnmSSH.Area, current.ChildRoot[i].Current.Id),
                                             text = current.ChildRoot[i].Current.Name,
                                             icon = Icons.Diqiu,
                                             expanded = false,
@@ -1765,7 +1765,7 @@ namespace iPem.Site.Controllers {
                                         data.total = current.Stations.Count;
                                         for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmOrganization.Station, current.Stations[i].Current.Id),
+                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Current.Id),
                                                 text = current.Stations[i].Current.Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
@@ -1778,7 +1778,7 @@ namespace iPem.Site.Controllers {
                                 }
                             }
                             #endregion
-                        } else if(nodeType == EnmOrganization.Station) {
+                        } else if(nodeType == EnmSSH.Station) {
                             #region station organization
                             var current = _workContext.RoleStations.Find(s => s.Current.Id == id);
                             if(current != null) {
@@ -1788,7 +1788,7 @@ namespace iPem.Site.Controllers {
                                     data.total = current.Rooms.Count;
                                     for(var i = 0; i < current.Rooms.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Room, current.Rooms[i].Current.Id),
+                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Current.Id),
                                             text = current.Rooms[i].Current.Name,
                                             icon = Icons.Room,
                                             expanded = false,
@@ -1800,7 +1800,7 @@ namespace iPem.Site.Controllers {
                                 }
                             }
                             #endregion
-                        } else if(nodeType == EnmOrganization.Room) {
+                        } else if(nodeType == EnmSSH.Room) {
                             #region room organization
                             var current = _workContext.RoleRooms.Find(d => d.Current.Id == id);
                             if(current != null) {
@@ -1813,7 +1813,7 @@ namespace iPem.Site.Controllers {
                                             continue;
 
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmOrganization.Device, current.Devices[i].Current.Id),
+                                            id = Common.JoinKeys((int)EnmSSH.Device, current.Devices[i].Current.Id),
                                             text = current.Devices[i].Current.Name,
                                             icon = Icons.Device,
                                             expanded = false,
@@ -1854,8 +1854,8 @@ namespace iPem.Site.Controllers {
                     if(keys.Length == 2) {
                         var type = int.Parse(keys[0]);
                         var id = keys[1];
-                        var nodeType = Enum.IsDefined(typeof(EnmOrganization), type) ? (EnmOrganization)type : EnmOrganization.Area;
-                        if(nodeType == EnmOrganization.Device) {
+                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                        if(nodeType == EnmSSH.Device) {
                             var current = _workContext.RoleDevices.Find(d => d.Current.Id == id);
                             if(current != null && current.Protocol != null) {
                                 var points = current.Protocol.Points.FindAll(p => p.Type == EnmPoint.AI);

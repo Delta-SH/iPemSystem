@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
     public partial interface IAppointmentService {
-        Appointment GetAppointment(Guid id);
+        M_Reservation GetAppointment(Guid id);
 
-        IPagedList<Appointment> GetAppointments(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Reservation> GetAppointments(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Appointment> GetAppointmentsAsList(DateTime start, DateTime end);
+        List<M_Reservation> GetAppointmentsAsList(DateTime start, DateTime end);
 
-        IPagedList<Appointment> GetAllAppointments(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Reservation> GetAllAppointments(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Appointment> GetAllAppointmentsAsList();
+        List<M_Reservation> GetAllAppointmentsAsList();
 
-        void Add(Appointment entity);
+        void Add(M_Reservation entity);
 
-        void AddRange(List<Appointment> entities);
+        void AddRange(List<M_Reservation> entities);
 
-        void Update(Appointment entity);
+        void Update(M_Reservation entity);
 
-        void Delete(Appointment entity);
+        void Delete(M_Reservation entity);
     }
 }

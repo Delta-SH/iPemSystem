@@ -1,156 +1,249 @@
 ﻿namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents the result enumeration
+    /// 结果类型
     /// </summary>
     public enum EnmResult {
+        /// <summary>
+        /// 失败
+        /// </summary>
         Failure,
+        /// <summary>
+        /// 成功
+        /// </summary>
         Success
     }
 
     /// <summary>
-    /// Represents ajax action enumeration
+    /// 表单操作类型
     /// </summary>
     public enum EnmAction {
+        /// <summary>
+        /// 新增
+        /// </summary>
         Add,
+        /// <summary>
+        /// 编辑
+        /// </summary>
         Edit,
+        /// <summary>
+        /// 删除
+        /// </summary>
         Delete
     }
 
     /// <summary>
-    /// Represents the operation enumeration
+    /// 信号操作类型
     /// </summary>
     public enum EnmOperation {
+        /// <summary>
+        /// 遥控
+        /// </summary>
         Control,
+        /// <summary>
+        /// 遥调
+        /// </summary>
         Adjust,
+        /// <summary>
+        /// 告警确认
+        /// </summary>
         Confirm,
+        /// <summary>
+        /// 告警阈值
+        /// </summary>
         Threshold
     }
 
     /// <summary>
-    /// Represents the organization enumeration
+    /// 系统层级结构
+    /// System Hierarchy
     /// </summary>
-    public enum EnmOrganization {
+    public enum EnmSSH {
+        /// <summary>
+        /// 区域
+        /// </summary>
         Area,
+        /// <summary>
+        /// 站点
+        /// </summary>
         Station,
+        /// <summary>
+        /// 机房
+        /// </summary>
         Room,
+        /// <summary>
+        /// Fsu
+        /// </summary>
+        Fsu,
+        /// <summary>
+        /// 设备
+        /// </summary>
         Device,
+        /// <summary>
+        /// 信号
+        /// </summary>
         Point
     }
 
     /// <summary>
-    /// Represents the point enumeration
+    /// 信号类型
     /// </summary>
-    /// <remarks>
-    /// 4-遥信信号（DI）
-    /// 3-遥测信号（AI）
-    /// 1-遥控信号（DO）
-    /// 2-遥调信号（AO）
-    /// </remarks>
     public enum EnmPoint {
-        DI = 4,
-        AI = 3,
+        /// <summary>
+        /// 遥控-1
+        /// </summary>
         DO = 1,
-        AO = 2
+        /// <summary>
+        /// 遥调-2
+        /// </summary>
+        AO = 2,
+        /// <summary>
+        /// 遥测-3
+        /// </summary>
+        AI = 3,
+        /// <summary>
+        /// 遥信-4
+        /// </summary>
+        DI = 4
     }
 
     /// <summary>
-    /// Represents the point state enumeration
+    /// 信号状态
     /// </summary>
     public enum EnmState {
+        /// <summary>
+        /// 正常数据
+        /// </summary>
         Normal,
+        /// <summary>
+        /// 一级告警
+        /// </summary>
         Level1,
+        /// <summary>
+        /// 二级告警
+        /// </summary>
         Level2,
+        /// <summary>
+        /// 三级告警
+        /// </summary>
         Level3,
+        /// <summary>
+        /// 四级告警
+        /// </summary>
         Level4,
+        /// <summary>
+        /// 操作事件
+        /// </summary>
         Opevent,
+        /// <summary>
+        /// 无效数据
+        /// </summary>
         Invalid
     }
 
     /// <summary>
-    /// Represents the alarm level enumeration
+    /// 告警等级
     /// </summary>
-    public enum EnmLevel {
-        Level0 = 0,
-        Level1 = 1,
-        Level2 = 2,
-        Level3 = 3,
-        Level4 = 4
+    public enum EnmAlarm {
+        /// <summary>
+        /// 无告警
+        /// </summary>
+        Level0,
+        /// <summary>
+        /// 一级告警
+        /// </summary>
+        Level1,
+        /// <summary>
+        /// 二级告警
+        /// </summary>
+        Level2,
+        /// <summary>
+        /// 三级告警
+        /// </summary>
+        Level3,
+        /// <summary>
+        /// 四级告警
+        /// </summary>
+        Level4,
     }
 
     /// <summary>
-    /// Represents the alarm flag enumeration
-    /// </summary>
-    public enum EnmFlag {
-        Begin,
-        End
-    }
-
-    /// <summary>
-    /// Represents the alarm end type enumeration
-    /// </summary>
-    /// <remarks>
-    /// Normal - 正常结束
-    /// UpLevel - 升级结束
-    /// Filter - 过滤结束
-    /// Mask - 手动屏蔽结束
-    /// NodeRemove - 节点删除
-    /// DeviceRemove - 设备删除
-    /// </remarks>
-    public enum EnmAlarmEndType {
-        Normal,
-        UpLevel,
-        Filter,
-        Mask,
-        NodeRemove,
-        DeviceRemove
-    }
-
-    /// <summary>
-    /// Represents the alarm confirm enumeration
+    /// 告警确认状态
     /// </summary>
     public enum EnmConfirm {
+        /// <summary>
+        /// 未确认
+        /// </summary>
         Unconfirmed,
+        /// <summary>
+        /// 已确认
+        /// </summary>
         Confirmed
     }
 
     /// <summary>
-    /// Represents the human resourse enumeration
+    /// 人资层级结构
     /// </summary>
-    public enum EnmHR {
+    public enum EnmHRH {
+        /// <summary>
+        /// 部门
+        /// </summary>
         Department,
+        /// <summary>
+        /// 员工
+        /// </summary>
         Employee
     }
 
     /// <summary>
-    /// Represents the device type tree enumeration
+    /// 设备类型层级结构
     /// </summary>
-    public enum EnmDeviceTypeTree {
+    public enum EnmDTH{
+        /// <summary>
+        /// 设备类型
+        /// </summary>
         DevType,
+        /// <summary>
+        /// 设备子类型
+        /// </summary>
         SubDevType
     }
 
     /// <summary>
-    /// Represents the logic tree enumeration
+    /// 逻辑分类层级结构
     /// </summary>
-    public enum EnmLogicTree {
+    public enum EnmLTH {
+        /// <summary>
+        /// 设备类型
+        /// </summary>
         DevType,
+        /// <summary>
+        /// 逻辑分类
+        /// </summary>
         Logic,
+        /// <summary>
+        /// 逻辑子类
+        /// </summary>
         SubLogic
     }
 
     /// <summary>
-    /// Represents the point tree enumeration
+    /// 信号层级结构
     /// </summary>
-    public enum EnmPointTree {
+    public enum EnmPTH {
+        /// <summary>
+        /// 设备类型
+        /// </summary>
         DevType,
-        SubDevType,
+        /// <summary>
+        /// 信号
+        /// </summary>
         Point
     }
 
     /// <summary>
-    /// Represents the period enumeration
+    /// 时间层级结构
     /// </summary>
-    public enum EnmPeriod {
+    public enum EnmPDH {
         Year,
         Month,
         Week,

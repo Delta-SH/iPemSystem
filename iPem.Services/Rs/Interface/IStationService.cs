@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IStationService {
-        Station GetStation(string id);
+        S_Station GetStation(string id);
 
-        IPagedList<Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<S_Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Station> GetAllStationsAsList();
+        List<S_Station> GetAllStationsAsList();
 
-        IPagedList<Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<S_Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Station> GetStationsAsList(string parent);
+        List<S_Station> GetStationsAsList(string parent);
     }
 }

@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IU_EmployeeRepository _employeeRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public EmployeeService(
-            IEmployeeRepository employeeRepository,
+            IU_EmployeeRepository employeeRepository,
             ICacheManager cacheManager) {
             this._employeeRepository = employeeRepository;
             this._cacheManager = cacheManager;
@@ -32,27 +32,27 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Employee GetEmpolyee(string id) {
+        public U_Employee GetEmpolyee(string id) {
             return _employeeRepository.GetEntity(id);
         }
 
-        public Employee GetEmpolyeeByCode(string code) {
+        public U_Employee GetEmpolyeeByCode(string code) {
             return _employeeRepository.GetEntityByCode(code);
         }
 
-        public IPagedList<Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Employee>(this.GetEmployeesByDeptAsList(dept), pageIndex, pageSize);
+        public IPagedList<U_Employee> GetEmployeesByDept(string dept, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Employee>(this.GetEmployeesByDeptAsList(dept), pageIndex, pageSize);
         }
 
-        public List<Employee> GetEmployeesByDeptAsList(string dept) {
+        public List<U_Employee> GetEmployeesByDeptAsList(string dept) {
             return _employeeRepository.GetEntitiesByDept(dept);
         }
 
-        public IPagedList<Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Employee>(this.GetAllEmployeesAsList(), pageIndex, pageSize);
+        public IPagedList<U_Employee> GetAllEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Employee>(this.GetAllEmployeesAsList(), pageIndex, pageSize);
         }
 
-        public List<Employee> GetAllEmployeesAsList() {
+        public List<U_Employee> GetAllEmployeesAsList() {
             return _employeeRepository.GetEntities();
         }
 

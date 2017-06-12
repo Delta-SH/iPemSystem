@@ -11,7 +11,7 @@ using System.Web;
 
 namespace iPem.Core.NPOI {
     /// <summary>
-    /// Represents a manager for excel operating.
+    /// Excel管理器
     /// </summary>
     public partial class ExcelManager : IExcelManager {
 

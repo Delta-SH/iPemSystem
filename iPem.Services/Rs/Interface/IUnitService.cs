@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IUnitService {
-        Unit GetUnit(string id);
+        C_Unit GetUnit(string id);
 
-        IPagedList<Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Unit> GetAllUnitsAsList();
+        List<C_Unit> GetAllUnitsAsList();
     }
 }

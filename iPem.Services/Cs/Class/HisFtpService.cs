@@ -11,7 +11,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisFtpRepository _hisRepository;
+        private readonly IH_FsuEventRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisFtpService(
-            IHisFtpRepository hisRepository,
+            IH_FsuEventRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -32,19 +32,19 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisFtp> GetEvents(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisFtp>(this.GetEventsAsList(start, end), pageIndex, pageSize);
+        public IPagedList<H_FsuEvent> GetEvents(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_FsuEvent>(this.GetEventsAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisFtp> GetEventsAsList(DateTime start, DateTime end) {
+        public List<H_FsuEvent> GetEventsAsList(DateTime start, DateTime end) {
             return _hisRepository.GetEntities(start, end);
         }
 
-        public IPagedList<HisFtp> GetEvents(DateTime start, DateTime end, EnmFtpEvent type, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisFtp>(this.GetEventsAsList(start, end, type), pageIndex, pageSize);
+        public IPagedList<H_FsuEvent> GetEvents(DateTime start, DateTime end, EnmFsuEvent type, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_FsuEvent>(this.GetEventsAsList(start, end, type), pageIndex, pageSize);
         }
 
-        public List<HisFtp> GetEventsAsList(DateTime start, DateTime end, EnmFtpEvent type) {
+        public List<H_FsuEvent> GetEventsAsList(DateTime start, DateTime end, EnmFsuEvent type) {
             return _hisRepository.GetEntities(start, end, type);
         }
 

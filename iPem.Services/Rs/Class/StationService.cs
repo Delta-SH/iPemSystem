@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IStationRepository _stationRepository;
+        private readonly IS_StationRepository _stationRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public StationService(
-            IStationRepository stationRepository,
+            IS_StationRepository stationRepository,
             ICacheManager cacheManager) {
             this._stationRepository = stationRepository;
             this._cacheManager = cacheManager;
@@ -32,23 +32,23 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Station GetStation(string id) {
+        public S_Station GetStation(string id) {
             return _stationRepository.GetEntity(id);
         }
 
-        public IPagedList<Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Station>(this.GetAllStationsAsList(), pageIndex, pageSize);
+        public IPagedList<S_Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<S_Station>(this.GetAllStationsAsList(), pageIndex, pageSize);
         }
 
-        public List<Station> GetAllStationsAsList() {
+        public List<S_Station> GetAllStationsAsList() {
             return _stationRepository.GetEntities();
         }
 
-        public IPagedList<Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Station>(this.GetStationsAsList(parent), pageIndex, pageSize);
+        public IPagedList<S_Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<S_Station>(this.GetStationsAsList(parent), pageIndex, pageSize);
         }
 
-        public List<Station> GetStationsAsList(string parent) {
+        public List<S_Station> GetStationsAsList(string parent) {
             return _stationRepository.GetEntities(parent);
         }
 

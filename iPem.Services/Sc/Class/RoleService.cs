@@ -34,61 +34,61 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual Role GetRole(Guid id) {
+        public virtual U_Role GetRole(Guid id) {
             return _roleRepository.GetEntity(id);
         }
 
-        public virtual Role GetRole(string name) {
+        public virtual U_Role GetRole(string name) {
             return _roleRepository.GetEntity(name);
         }
 
-        public virtual Role GetRoleByUid(Guid uid) {
+        public virtual U_Role GetRoleByUid(Guid uid) {
             return _roleRepository.GetEntityByUid(uid);
         }
 
-        public virtual IPagedList<Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Role>(this.GetAllRolesAsList(), pageIndex, pageSize);
+        public virtual IPagedList<U_Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Role>(this.GetAllRolesAsList(), pageIndex, pageSize);
         }
 
-        public virtual List<Role> GetAllRolesAsList() {
-            return _roleRepository.GetEntities().FindAll(r=>r.Id != Role.SuperId);
+        public virtual List<U_Role> GetAllRolesAsList() {
+            return _roleRepository.GetEntities().FindAll(r=>r.Id != U_Role.SuperId);
         }
 
-        public virtual IPagedList<Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Role>(this.GetRolesAsList(id), pageIndex, pageSize);
+        public virtual IPagedList<U_Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Role>(this.GetRolesAsList(id), pageIndex, pageSize);
         }
 
-        public virtual List<Role> GetRolesAsList(Guid id) {
+        public virtual List<U_Role> GetRolesAsList(Guid id) {
             var roles = _roleRepository.GetEntities();
-            var result = id.Equals(Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
+            var result = id.Equals(U_Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
             return result;
         }
 
-        public virtual IPagedList<Role> GetRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Role>(this.GetRolesAsList(names), pageIndex, pageSize);
+        public virtual IPagedList<U_Role> GetRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Role>(this.GetRolesAsList(names), pageIndex, pageSize);
         }
 
-        public virtual List<Role> GetRolesAsList(string[] names) {
+        public virtual List<U_Role> GetRolesAsList(string[] names) {
             var roles = _roleRepository.GetEntities();
-            var result = roles.FindAll(r => r.Id != Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
+            var result = roles.FindAll(r => r.Id != U_Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
             return result;
         }
 
-        public virtual void Add(Role role) {
+        public virtual void Add(U_Role role) {
             if (role == null)
                 throw new ArgumentNullException("role");
 
             _roleRepository.Insert(role);
         }
 
-        public virtual void Update(Role role) {
+        public virtual void Update(U_Role role) {
             if (role == null)
                 throw new ArgumentNullException("role");
 
             _roleRepository.Update(role);
         }
 
-        public virtual void Remove(Role role) {
+        public virtual void Remove(U_Role role) {
             if (role == null)
                 throw new ArgumentNullException("role");
 

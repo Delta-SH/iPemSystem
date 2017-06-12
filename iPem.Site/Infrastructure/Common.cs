@@ -168,7 +168,7 @@ namespace iPem.Site.Infrastructure {
                     return "数据通信";
                 case EnmDictionary.Ts:
                     return "语音播报";
-                case EnmDictionary.Pue:
+                case EnmDictionary.Elec:
                     return "能耗公式";
                 case EnmDictionary.Report:
                     return "报表参数";
@@ -261,17 +261,17 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetAlarmLevelDisplay(EnmLevel level) {
+        public static string GetAlarmLevelDisplay(EnmAlarm level) {
             switch(level) {
-                case EnmLevel.Level0:
+                case EnmAlarm.Level0:
                     return "无告警";
-                case EnmLevel.Level1:
+                case EnmAlarm.Level1:
                     return "一级告警";
-                case EnmLevel.Level2:
+                case EnmAlarm.Level2:
                     return "二级告警";
-                case EnmLevel.Level3:
+                case EnmAlarm.Level3:
                     return "三级告警";
-                case EnmLevel.Level4:
+                case EnmAlarm.Level4:
                     return "四级告警";
                 default:
                     return "未定义";
@@ -289,11 +289,11 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetFtpEventDisplay(EnmFtpEvent evt) {
+        public static string GetFtpEventDisplay(EnmFsuEvent evt) {
             switch (evt) {
-                case EnmFtpEvent.FTP:
+                case EnmFsuEvent.FTP:
                     return "FTP操作";
-                case EnmFtpEvent.Undefined:
+                case EnmFsuEvent.Undefined:
                 default:
                     return "未定义";
             }
@@ -366,15 +366,15 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static Color GetAlarmLevelColor(EnmLevel level) {
+        public static Color GetAlarmLevelColor(EnmAlarm level) {
             switch(level) {
-                case EnmLevel.Level1:
+                case EnmAlarm.Level1:
                     return Color.Red;
-                case EnmLevel.Level2:
+                case EnmAlarm.Level2:
                     return Color.Orange;
-                case EnmLevel.Level3:
+                case EnmAlarm.Level3:
                     return Color.Yellow;
-                case EnmLevel.Level4:
+                case EnmAlarm.Level4:
                     return Color.SkyBlue;
                 default:
                     return Color.White;

@@ -10,7 +10,7 @@ namespace iPem.Services.Cs {
 
         #region Fields
 
-        private readonly IHisStaticRepository _hisRepository;
+        private readonly IV_StaticRepository _hisRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,7 +21,7 @@ namespace iPem.Services.Cs {
         /// Ctor
         /// </summary>
         public HisStaticService(
-            IHisStaticRepository hisRepository,
+            IV_StaticRepository hisRepository,
             ICacheManager cacheManager) {
             this._hisRepository = hisRepository;
             this._cacheManager = cacheManager;
@@ -31,28 +31,28 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public IPagedList<HisStatic> GetValues(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisStatic>(this.GetValuesAsList(device, start, end), pageIndex, pageSize);
+        public IPagedList<V_Static> GetValues(string device, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Static>(this.GetValuesAsList(device, start, end), pageIndex, pageSize);
         }
 
-        public List<HisStatic> GetValuesAsList(string device, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, start, end);
+        public List<V_Static> GetValuesAsList(string device, DateTime start, DateTime end) {
+            return _hisRepository.GetValuesInPointInDevice(device, start, end);
         }
 
-        public IPagedList<HisStatic> GetValues(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisStatic>(this.GetValuesAsList(device, point, start, end), pageIndex, pageSize);
+        public IPagedList<V_Static> GetValues(string device, string point, DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Static>(this.GetValuesAsList(device, point, start, end), pageIndex, pageSize);
         }
 
-        public List<HisStatic> GetValuesAsList(string device, string point, DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(device, point, start, end);
+        public List<V_Static> GetValuesAsList(string device, string point, DateTime start, DateTime end) {
+            return _hisRepository.GetValuesInPoint(device, point, start, end);
         }
 
-        public IPagedList<HisStatic> GetValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<HisStatic>(this.GetValuesAsList(start, end), pageIndex, pageSize);
+        public IPagedList<V_Static> GetValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Static>(this.GetValuesAsList(start, end), pageIndex, pageSize);
         }
 
-        public List<HisStatic> GetValuesAsList(DateTime start, DateTime end) {
-            return _hisRepository.GetEntities(start, end);
+        public List<V_Static> GetValuesAsList(DateTime start, DateTime end) {
+            return _hisRepository.GetValues(start, end);
         }
 
         #endregion

@@ -3,7 +3,7 @@ using System;
 
 namespace iPem.Core.Data {
     /// <summary>
-    /// Represents a database
+    /// Represents a database entity
     /// </summary>
     public partial class DbEntity : BaseEntity {
         /// <summary>

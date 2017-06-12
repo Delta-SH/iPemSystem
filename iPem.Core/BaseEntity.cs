@@ -2,9 +2,9 @@
 
 namespace iPem.Core {
     /// <summary>
-    /// Base class for entities
+    /// 基类
     /// </summary>
     [Serializable]
-    public abstract partial class BaseEntity {
+    public abstract class BaseEntity {
     }
 }

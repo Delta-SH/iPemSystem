@@ -4,20 +4,20 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface INoticeInUserRepository {
-        List<NoticeInUser> GetEntities();
+        List<H_NoticeInUser> GetEntities();
 
-        List<NoticeInUser> GetEntities(Guid uid);
+        List<H_NoticeInUser> GetEntities(Guid uid);
 
-        void Insert(NoticeInUser entity);
+        void Insert(H_NoticeInUser entity);
 
-        void Insert(List<NoticeInUser> entities);
+        void Insert(List<H_NoticeInUser> entities);
 
-        void Update(NoticeInUser entity);
+        void Update(H_NoticeInUser entity);
 
-        void Update(List<NoticeInUser> entities);
+        void Update(List<H_NoticeInUser> entities);
 
-        void Delete(NoticeInUser entity);
+        void Delete(H_NoticeInUser entity);
 
-        void Delete(List<NoticeInUser> entities);
+        void Delete(List<H_NoticeInUser> entities);
     }
 }

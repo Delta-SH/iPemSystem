@@ -4,9 +4,9 @@ using System;
 
 namespace iPem.Services.Sc {
     public partial interface IMenusInRoleService {
-        MenusInRole GetMenusInRole(Guid id);
+        U_EntitiesInRole GetMenusInRole(Guid id);
 
-        void AddMenusInRole(MenusInRole menus);
+        void AddMenusInRole(U_EntitiesInRole menus);
 
         void DeleteMenusInRole(Guid id);
     }

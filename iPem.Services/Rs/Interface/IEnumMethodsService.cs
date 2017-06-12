@@ -6,14 +6,14 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IEnumMethodsService {
-        EnumMethods GetValue(int id);
+        C_EnumMethod GetValue(int id);
 
-        IPagedList<EnumMethods> GetAllValues(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_EnumMethod> GetAllValues(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<EnumMethods> GetAllValuesAsList();
+        List<C_EnumMethod> GetAllValuesAsList();
 
-        IPagedList<EnumMethods> GetValues(EnmMethodType type, string comment, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_EnumMethod> GetValues(EnmMethodType type, string comment, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<EnumMethods> GetValuesAsList(EnmMethodType type, string comment);
+        List<C_EnumMethod> GetValuesAsList(EnmMethodType type, string comment);
     }
 }

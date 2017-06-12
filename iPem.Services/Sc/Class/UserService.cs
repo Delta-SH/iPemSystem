@@ -36,34 +36,34 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual User GetUser(Guid id) {
+        public virtual U_User GetUser(Guid id) {
             return _userRepository.GetEntity(id);
         }
 
-        public virtual User GetUser(string name) {
+        public virtual U_User GetUser(string name) {
             return _userRepository.GetEntity(name);
         }
 
-        public virtual IPagedList<User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<User>(this.GetUsersAsList(), pageIndex, pageSize);
+        public virtual IPagedList<U_User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_User>(this.GetUsersAsList(), pageIndex, pageSize);
         }
 
-        public virtual List<User> GetUsersAsList() {
+        public virtual List<U_User> GetUsersAsList() {
             return _userRepository.GetEntities();
         }
 
-        public virtual IPagedList<User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<User>(this.GetUsersAsList(role, deep), pageIndex, pageSize);
+        public virtual IPagedList<U_User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_User>(this.GetUsersAsList(role, deep), pageIndex, pageSize);
         }
 
-        public virtual List<User> GetUsersAsList(Guid role, bool deep = true) {
-            if(deep && role.Equals(Role.SuperId))
+        public virtual List<U_User> GetUsersAsList(Guid role, bool deep = true) {
+            if(deep && role.Equals(U_Role.SuperId))
                 return this.GetUsersAsList();
 
             return _userRepository.GetEntities(role);
         }
 
-        public virtual void Add(User user) {
+        public virtual void Add(U_User user) {
             if (user == null)
                 throw new ArgumentNullException("user");
 
@@ -73,14 +73,14 @@ namespace iPem.Services.Sc {
             _userRepository.Insert(user);
         }
 
-        public virtual void Update(User user) {
+        public virtual void Update(U_User user) {
             if(user == null)
                 throw new ArgumentNullException("user");
 
             _userRepository.Update(user);
         }
 
-        public virtual void Remove(User user) {
+        public virtual void Remove(U_User user) {
             if(user == null)
                 throw new ArgumentNullException("user");
 
@@ -137,7 +137,7 @@ namespace iPem.Services.Sc {
             return _userRepository.EncodePassword(oPwd, oFormat, oSalt).Equals(ePwd);
         }
 
-        public virtual EnmChangeResults ChangePassword(User user, String oPwd, String nPwd) {
+        public virtual EnmChangeResults ChangePassword(U_User user, String oPwd, String nPwd) {
             if(!CheckPassword(oPwd, user.PasswordFormat, user.PasswordSalt, user.Password))
                 return EnmChangeResults.WrongPassword;
 
@@ -147,7 +147,7 @@ namespace iPem.Services.Sc {
             return EnmChangeResults.Successful;
         }
 
-        public virtual void ForcePassword(User user, String nPwd) {
+        public virtual void ForcePassword(U_User user, String nPwd) {
             user.PasswordSalt = _userRepository.GenerateSalt();
             user.Password = _userRepository.EncodePassword(nPwd, user.PasswordFormat, user.PasswordSalt);
             _userRepository.ChangePassword(user.Id, user.Password, user.PasswordFormat, user.PasswordSalt);

@@ -1,6 +1,6 @@
 ﻿namespace iPem.Core.Enum {
     /// <summary>
-    /// Represents an event level
+    /// 日志级别
     /// </summary>
     public enum EnmEventLevel {
         Debug,
@@ -11,7 +11,7 @@
     }
 
     /// <summary>
-    /// Represents an event type
+    /// 日志类型
     /// </summary>
     public enum EnmEventType {
         Login,
@@ -21,7 +21,10 @@
         Other
     }
 
-    public enum EnmFtpEvent {
+    /// <summary>
+    /// Fsu操作类型
+    /// </summary>
+    public enum EnmFsuEvent {
         Undefined,
         FTP
     }

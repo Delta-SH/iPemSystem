@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IFsuRepository _fsuRepository;
+        private readonly ID_FsuRepository _fsuRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public FsuService(
-            IFsuRepository fsuRepository,
+            ID_FsuRepository fsuRepository,
             ICacheManager cacheManager) {
             this._fsuRepository = fsuRepository;
             this._cacheManager = cacheManager;
@@ -32,28 +32,28 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public Fsu GetFsu(string id) {
-            return _fsuRepository.GetEntity(id);
+        public D_Fsu GetFsu(string id) {
+            return _fsuRepository.GetFsu(id);
         }
 
-        public IPagedList<Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Fsu>(this.GetAllFsusAsList(), pageIndex, pageSize);
+        public IPagedList<D_Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<D_Fsu>(this.GetAllFsusAsList(), pageIndex, pageSize);
         }
 
-        public List<Fsu> GetAllFsusAsList() {
-            return _fsuRepository.GetEntities();
+        public List<D_Fsu> GetAllFsusAsList() {
+            return _fsuRepository.GetFsus();
         }
 
-        public FsuExt GetFsuExt(string id) {
-            return _fsuRepository.GetExtend(id);
+        public D_ExtFsu GetFsuExt(string id) {
+            return _fsuRepository.GetExtFsu(id);
         }
 
-        public IPagedList<FsuExt> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<FsuExt>(this.GetAllExtendsAsList(), pageIndex, pageSize);
+        public IPagedList<D_ExtFsu> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<D_ExtFsu>(this.GetAllExtendsAsList(), pageIndex, pageSize);
         }
 
-        public List<FsuExt> GetAllExtendsAsList() {
-            return _fsuRepository.GetExtends();
+        public List<D_ExtFsu> GetAllExtendsAsList() {
+            return _fsuRepository.GetExtFsus();
         }
 
         #endregion

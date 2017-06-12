@@ -6,25 +6,25 @@ using System.Collections.Generic;
 namespace iPem.Data.Repository.Sc {
     public partial interface IUserRepository {
 
-        User GetEntity(Guid id);
+        U_User GetEntity(Guid id);
 
-        User GetEntity(string name);
+        U_User GetEntity(string name);
 
-        List<User> GetEntities();
+        List<U_User> GetEntities();
 
-        List<User> GetEntities(Guid id);
+        List<U_User> GetEntities(Guid id);
 
-        void Insert(User entity);
+        void Insert(U_User entity);
 
-        void Insert(List<User> entities);
+        void Insert(List<U_User> entities);
 
-        void Update(User entity);
+        void Update(U_User entity);
 
-        void Update(List<User> entities);
+        void Update(List<U_User> entities);
 
-        void Delete(User entity);
+        void Delete(U_User entity);
 
-        void Delete(List<User> entities);
+        void Delete(List<U_User> entities);
 
         void SetLastLoginDate(Guid id, DateTime lastDate);
 

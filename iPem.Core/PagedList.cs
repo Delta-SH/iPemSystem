@@ -73,6 +73,7 @@ namespace iPem.Core {
         public bool HasPreviousPage {
             get { return (PageIndex > 0); }
         }
+
         public bool HasNextPage {
             get { return (PageIndex + 1 < TotalPages); }
         }

@@ -29,17 +29,17 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public virtual List<WebEvent> GetEntities(DateTime startTime, DateTime endTime) {
+        public virtual List<H_WebEvent> GetEntities(DateTime startTime, DateTime endTime) {
             SqlParameter[] parms = { new SqlParameter("@StartTime", SqlDbType.DateTime),
                                      new SqlParameter("@EndTime", SqlDbType.DateTime) };
 
             parms[0].Value = startTime;
             parms[1].Value = endTime;
 
-            var entities = new List<WebEvent>();
+            var entities = new List<H_WebEvent>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_WebEvent_Repository_GetEntities, parms)) {
                 while (rdr.Read()) {
-                    var entity = new WebEvent();
+                    var entity = new H_WebEvent();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Level = SqlTypeConverter.DBNullEventLevelHandler(rdr["Level"]);
                     entity.Type = SqlTypeConverter.DBNullEventTypeHandler(rdr["Type"]);
@@ -56,7 +56,7 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual List<WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null) {
+        public virtual List<H_WebEvent> GetEntities(DateTime? startTime = null, DateTime? endTime = null, EnmEventLevel[] levels = null, EnmEventType[] types = null) {
             var query = @"SELECT [Id],[Level],[Type],[ShortMessage],[FullMessage],[IpAddress],[PageUrl],[ReferrerUrl],[UserId],[CreatedTime] FROM [dbo].[H_WebEvents]";
 
             var conditions = new List<String>();
@@ -87,10 +87,10 @@ namespace iPem.Data.Repository.Sc {
             if (orders.Count > 0)
                 query += @" ORDER BY " + string.Join(@",", orders);
 
-            var entities = new List<WebEvent>();
+            var entities = new List<H_WebEvent>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, null)) {
                 while (rdr.Read()) {
-                    var entity = new WebEvent();
+                    var entity = new H_WebEvent();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Level = SqlTypeConverter.DBNullEventLevelHandler(rdr["Level"]);
                     entity.Type = SqlTypeConverter.DBNullEventTypeHandler(rdr["Type"]);
@@ -107,11 +107,11 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public virtual void Insert(WebEvent entity) {
-            Insert(new List<WebEvent>() { entity });
+        public virtual void Insert(H_WebEvent entity) {
+            Insert(new List<H_WebEvent>() { entity });
         }
 
-        public virtual void Insert(List<WebEvent> entities) {
+        public virtual void Insert(List<H_WebEvent> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100),
                                      new SqlParameter("@Level", SqlDbType.Int),
                                      new SqlParameter("@Type", SqlDbType.Int),
@@ -150,11 +150,11 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public virtual void Delete(WebEvent entity) {
-            Delete(new List<WebEvent>() { entity });
+        public virtual void Delete(H_WebEvent entity) {
+            Delete(new List<H_WebEvent>() { entity });
         }
 
-        public virtual void Delete(List<WebEvent> entities) {
+        public virtual void Delete(List<H_WebEvent> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();

@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IAreaService {
-        Area GetArea(string id);
+        A_Area GetArea(string id);
 
-        IPagedList<Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<A_Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Area> GetAreasAsList();
+        List<A_Area> GetAreasAsList();
     }
 }

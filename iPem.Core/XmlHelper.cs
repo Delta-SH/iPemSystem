@@ -2,9 +2,8 @@
 
 namespace iPem.Core {
     /// <summary>
-    /// Xml helper class
+    /// Xml帮助类
     /// </summary>
     public partial class XmlHelper {
-
     }
 }

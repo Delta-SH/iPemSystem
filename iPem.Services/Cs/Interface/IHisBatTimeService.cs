@@ -6,9 +6,9 @@ using System.Collections.Generic;
 namespace iPem.Services.Cs {
     public partial interface IHisBatTimeService {
 
-        IPagedList<HisBatTime> GetHisBatTimes(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_BatTime> GetHisBatTimes(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<HisBatTime> GetHisBatTimesAsList(DateTime start, DateTime end);
+        List<V_BatTime> GetHisBatTimesAsList(DateTime start, DateTime end);
 
     }
 }

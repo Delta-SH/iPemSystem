@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace iPem.Core.Enum {
+    /// <summary>
+    /// B接口报文类型
+    /// </summary>
     public enum EnmPackType {
         LOGIN,
         LOGIN_ACK,

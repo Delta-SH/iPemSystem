@@ -6,15 +6,15 @@ using System.Collections.Generic;
 namespace iPem.Services.Sc {
     public partial interface IDictionaryService {
 
-        Dictionary GetDictionary(int id);
+        M_Dictionary GetDictionary(int id);
 
-        IPagedList<Dictionary> GetDictionaries(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Dictionary> GetDictionaries(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Dictionary> GetDictionariesAsList();
+        List<M_Dictionary> GetDictionariesAsList();
 
-        void Update(Dictionary dictionary);
+        void Update(M_Dictionary dictionary);
 
-        void Update(List<Dictionary> dictionaries);
+        void Update(List<M_Dictionary> dictionaries);
 
     }
 }

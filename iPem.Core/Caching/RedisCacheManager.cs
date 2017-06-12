@@ -19,12 +19,12 @@ namespace iPem.Core.Caching {
         private static ObjectSerializer _objectSerializer;
 
         /// <summary>
-        /// CacheTime Interval
+        /// CacheTime interval
         /// </summary>
         private static TimeSpan _cacheTime = TimeSpan.FromSeconds(300);
 
         /// <summary>
-        /// Create ClientManager
+        /// Create client manager
         /// </summary>
         private void CreateClientManager() {
             var config = iPem.Core.Configuration.RedisConfig.GetConfig();

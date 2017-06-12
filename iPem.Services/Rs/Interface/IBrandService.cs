@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
     public partial interface IBrandService {
-        Brand GetBrand(string id);
+        C_Brand GetBrand(string id);
 
-        IPagedList<Brand> GetAllBrands(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_Brand> GetAllBrands(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Brand> GetAllBrandsAsList();
+        List<C_Brand> GetAllBrandsAsList();
     }
 }

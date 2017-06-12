@@ -31,26 +31,26 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public Dictionary GetDictionary(int id) {
+        public M_Dictionary GetDictionary(int id) {
             return _dictionaryRepository.GetEntity(id);
         }
 
-        public IPagedList<Dictionary> GetDictionaries(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<Dictionary>(this.GetDictionariesAsList(), pageIndex, pageSize);
+        public IPagedList<M_Dictionary> GetDictionaries(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Dictionary>(this.GetDictionariesAsList(), pageIndex, pageSize);
         }
 
-        public List<Dictionary> GetDictionariesAsList() {
+        public List<M_Dictionary> GetDictionariesAsList() {
             return _dictionaryRepository.GetEntities();
         }
 
-        public void Update(Dictionary dictionary) {
+        public void Update(M_Dictionary dictionary) {
             if(dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
             _dictionaryRepository.Update(dictionary);
         }
 
-        public void Update(List<Dictionary> dictionaries) {
+        public void Update(List<M_Dictionary> dictionaries) {
             if(dictionaries == null)
                 throw new ArgumentNullException("dictionaries");
 

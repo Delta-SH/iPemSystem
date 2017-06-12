@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IStationTypeRepository _stationTypeRepository;
+        private readonly IC_StationTypeRepository _stationTypeRepository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public StationTypeService(
-            IStationTypeRepository stationTypeRepository,
+            IC_StationTypeRepository stationTypeRepository,
             ICacheManager cacheManager) {
             this._stationTypeRepository = stationTypeRepository;
             this._cacheManager = cacheManager;
@@ -32,21 +32,21 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public StationType GetStationType(string id) {
+        public C_StationType GetStationType(string id) {
             return _stationTypeRepository.GetEntity(id);
         }
 
-        public IPagedList<StationType> GetAllStationTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<StationType>(this.GetAllStationTypesAsList(), pageIndex, pageSize);
+        public IPagedList<C_StationType> GetAllStationTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_StationType>(this.GetAllStationTypesAsList(), pageIndex, pageSize);
         }
 
-        public List<StationType> GetAllStationTypesAsList() {
-            List<StationType> result = null;
+        public List<C_StationType> GetAllStationTypesAsList() {
+            List<C_StationType> result = null;
             if(_cacheManager.IsSet(GlobalCacheKeys.Rs_StationTypesRepository)) {
-                result = _cacheManager.Get<List<StationType>>(GlobalCacheKeys.Rs_StationTypesRepository);
+                result = _cacheManager.Get<List<C_StationType>>(GlobalCacheKeys.Rs_StationTypesRepository);
             } else {
                 result = _stationTypeRepository.GetEntities();
-                _cacheManager.Set<List<StationType>>(GlobalCacheKeys.Rs_StationTypesRepository, result);
+                _cacheManager.Set<List<C_StationType>>(GlobalCacheKeys.Rs_StationTypesRepository, result);
             }
 
             return result;

@@ -7,19 +7,19 @@ using System.Collections.Generic;
 namespace iPem.Services.Sc {
     public partial interface IFormulaService {
 
-        Formula GetFormula(string id, EnmOrganization type, EnmFormula formulaType);
+        M_Formula GetFormula(string id, EnmSSH type, EnmFormula formulaType);
 
-        IPagedList<Formula> GetFormulas(string id, EnmOrganization type, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Formula> GetFormulas(string id, EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Formula> GetFormulasAsList(string id, EnmOrganization type);
+        List<M_Formula> GetFormulasAsList(string id, EnmSSH type);
 
-        IPagedList<Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<M_Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<Formula> GetAllFormulasAsList();
+        List<M_Formula> GetAllFormulasAsList();
 
-        void Save(Formula formula);
+        void Save(M_Formula formula);
 
-        void SaveRange(List<Formula> formulas);
+        void SaveRange(List<M_Formula> formulas);
 
     }
 }

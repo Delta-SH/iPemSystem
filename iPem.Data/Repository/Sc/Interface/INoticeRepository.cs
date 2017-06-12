@@ -4,24 +4,24 @@ using System.Collections.Generic;
 
 namespace iPem.Data.Repository.Sc {
     public partial interface INoticeRepository {
-        Notice GetEntity(Guid id);
+        H_Notice GetEntity(Guid id);
 
-        List<Notice> GetEntities();
+        List<H_Notice> GetEntities();
 
-        List<Notice> GetEntities(Guid uid);
+        List<H_Notice> GetEntities(Guid uid);
 
         int GetUnreadCount(Guid uid);
 
-        void Insert(Notice entity);
+        void Insert(H_Notice entity);
 
-        void Insert(List<Notice> entities);
+        void Insert(List<H_Notice> entities);
 
-        void Update(Notice entity);
+        void Update(H_Notice entity);
 
-        void Update(List<Notice> entities);
+        void Update(List<H_Notice> entities);
 
-        void Delete(Notice entity);
+        void Delete(H_Notice entity);
 
-        void Delete(List<Notice> entities);
+        void Delete(List<H_Notice> entities);
     }
 }
