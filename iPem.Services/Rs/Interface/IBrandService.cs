@@ -4,11 +4,23 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 设备品牌API
+    /// </summary>
     public partial interface IBrandService {
+        /// <summary>
+        /// 获得指定的设备品牌信息
+        /// </summary>
         C_Brand GetBrand(string id);
 
-        IPagedList<C_Brand> GetAllBrands(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定的设备品牌信息
+        /// </summary>
+        List<C_Brand> GetBrands();
 
-        List<C_Brand> GetAllBrandsAsList();
+        /// <summary>
+        /// 获得指定的设备品牌信息（分页）
+        /// </summary>
+        IPagedList<C_Brand> GetPagedBrands(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

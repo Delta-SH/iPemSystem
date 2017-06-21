@@ -21,6 +21,6 @@ namespace iPem.Site.Models {
         public string interval { get; set; }
 
         [ExcelIgnore]
-        public List<AppointmentModel> appointments { get; set; }
+        public List<ReservationModel> appointments { get; set; }
     }
 }

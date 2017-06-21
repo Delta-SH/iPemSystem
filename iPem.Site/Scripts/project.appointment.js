@@ -67,10 +67,10 @@ var typeStore = Ext.create('Ext.data.Store', {
     ],
     data: [
         { "id": -1, "name": '按工程名称' },
-        { "id": $$iPems.Organization.Area, "name": '按区域名称' },
-        { "id": $$iPems.Organization.Station, "name": '按站点名称' },
-        { "id": $$iPems.Organization.Room, "name": '按机房名称' },
-        { "id": $$iPems.Organization.Device, "name": '按设备名称' }
+        { "id": $$iPems.SSH.Area, "name": '按区域名称' },
+        { "id": $$iPems.SSH.Station, "name": '按站点名称' },
+        { "id": $$iPems.SSH.Room, "name": '按机房名称' },
+        { "id": $$iPems.SSH.Device, "name": '按设备名称' }
     ]
 });
 

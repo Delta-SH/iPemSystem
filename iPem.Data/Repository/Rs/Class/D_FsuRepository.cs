@@ -55,6 +55,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
@@ -104,6 +105,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
@@ -151,6 +153,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
+                    entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);

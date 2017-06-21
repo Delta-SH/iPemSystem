@@ -51,14 +51,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -89,14 +89,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -127,14 +127,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -165,14 +165,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -206,14 +206,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -241,14 +241,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -276,14 +276,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -314,14 +314,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -352,14 +352,14 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -390,18 +390,43 @@ namespace iPem.Data.Repository.Cs {
                     entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
                     entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
                     entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ConfirmedTime"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
                     entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
                     entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
                     entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
             return entities;
+        }
+
+        public void Confirm(IList<A_AAlarm> alarms) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200),
+                                     new SqlParameter("@Confirmed", SqlDbType.Int),
+                                     new SqlParameter("@Confirmer", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@ConfirmedTime", SqlDbType.DateTime)};
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var alarm in alarms) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(alarm.Id);
+                        parms[1].Value = (int)alarm.Confirmed;
+                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(alarm.Confirmer);
+                        parms[3].Value = SqlTypeConverter.DBNullDateTimeNullableChecker(alarm.ConfirmedTime);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_Confirm, parms);
+                    }
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
         }
 
         #endregion

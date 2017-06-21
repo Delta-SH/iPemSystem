@@ -4,17 +4,20 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 设备类型/设备子类型信息API
+    /// </summary>
     public partial interface IDeviceTypeService {
         C_DeviceType GetDeviceType(string id);
 
         C_SubDeviceType GetSubDeviceType(string id);
 
-        IPagedList<C_DeviceType> GetAllDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        List<C_DeviceType> GetDeviceTypes();
 
-        List<C_DeviceType> GetAllDeviceTypesAsList();
+        List<C_SubDeviceType> GetSubDeviceTypes();
 
-        IPagedList<C_SubDeviceType> GetAllSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<C_DeviceType> GetPagedDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<C_SubDeviceType> GetAllSubDeviceTypesAsList();
+        IPagedList<C_SubDeviceType> GetPagedSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

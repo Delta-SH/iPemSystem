@@ -9,7 +9,7 @@ using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
 using iPem.Site.Models;
-using iPem.Site.Models.Organization;
+using iPem.Site.Models.SSH;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,15 +25,20 @@ namespace iPem.Site.Infrastructure {
 
         #region Fields
 
+        /// <summary>
+        /// 公共API
+        /// </summary>
         private readonly HttpContextBase _httpContext;
         private readonly ICacheManager _cacheManager;
-        //rs repository
+
+        /// <summary>
+        /// 资源数据API
+        /// </summary>
         private readonly IAreaService _areaService;
         private readonly IDeviceService _deviceService;
         private readonly IDeviceTypeService _deviceTypeService;
         private readonly IEmployeeService _employeeService;
-        private readonly IEnumMethodsService _enumMethodsService;
-        private readonly IExtAlarmService _extAlarmService;
+        private readonly IEnumMethodService _enumMethodService;
         private readonly IFsuService _fsuService;
         private readonly ILogicTypeService _logicTypeService;
         private readonly IPointService _pointService;
@@ -42,29 +47,39 @@ namespace iPem.Site.Infrastructure {
         private readonly IRoomTypeService _roomTypeService;
         private readonly IStationService _stationService;
         private readonly IStationTypeService _stationTypeService;
-        //cs repository
-        private readonly IActAlmService _actAlmService;
-        //sc repository
-        private readonly IAreasInRoleService _areasInRoleService;
+
+        /// <summary>
+        /// 历史数据API
+        /// </summary>
+        private readonly IAAlarmService _actAlarmService;
+
+        /// <summary>
+        /// 应用数据API
+        /// </summary>
         private readonly IDictionaryService _dictionaryService;
-        private readonly IMenuService _menuService;
-        private readonly IOperateInRoleService _operateService;
+        private readonly IEntitiesInRoleService _entitiesInRoleService;
+        private readonly IFollowPointService _followPointService;
         private readonly IProfileService _profileService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// 全局变量（用户相关）
+        /// </summary>
         private Guid? _cachedIdentifier;
         private Store _cachedStore;
         private U_Role _cachedRole;
+        private U_EntitiesInRole _cachedAuthorizations;
         private U_User _cachedUser;
         private U_Employee _cachedEmployee;
-        private ProfileValues _cachedProfile;
+        private iProfile _cachedProfile;
         private WsValues _cachedWsValues;
         private TsValues _cachedTsValues;
         private RtValues _cachedRtValues;
-        private List<U_Menu> _cachedMenus;
-        private HashSet<EnmOperation> _cachedOperations;
 
+        /// <summary>
+        /// 全局变量（配置相关）
+        /// </summary>
         private List<C_LogicType> _cachedLogicTypes;
         private List<C_SubLogicType> _cachedSubLogicTypes;
         private List<C_DeviceType> _cachedDeviceTypes;
@@ -72,61 +87,60 @@ namespace iPem.Site.Infrastructure {
         private List<C_RoomType> _cachedRoomTypes;
         private List<C_StationType> _cachedStationTypes;
         private List<C_EnumMethod> _cachedAreaTypes;
+        private List<SSHProtocol> _cachedAllProtocols;
+        private List<SSHDevice> _cachedAllDevices;
+        private List<SSHFsu> _cachedAllFsus;
+        private List<SSHRoom> _cachedAllRooms;
+        private List<SSHStation> _cachedAllStations;
+        private List<SSHArea> _cachedAllAreas;
+        private List<SSHArea> _cachedAreas;
+        private List<SSHStation> _cachedStations;
+        private List<SSHRoom> _cachedRooms;
+        private List<SSHFsu> _cachedFsus;
+        private List<SSHDevice> _cachedDevices;
         private List<P_Point> _cachedPoints;
-        private List<OrgProtocol> _cachedProtocols;
-        private List<OrgDevice> _cachedDevices;
-        private List<OrgFsu> _cachedFsus;
-        private List<OrgRoom> _cachedRooms;
-        private List<OrgStation> _cachedStations;
-        private List<OrgArea> _cachedAreas;
-        private List<OrgArea> _cachedRoleAreas;
-        private List<OrgStation> _cachedRoleStations;
-        private List<OrgRoom> _cachedRoleRooms;
-        private List<OrgFsu> _cachedRoleFsus;
-        private List<OrgDevice> _cachedRoleDevices;
-        private List<AlmStore<A_AAlarm>> _cachedAlmStore;
+        private List<P_SubPoint> _cachedSubPoints;
+        private List<P_Point> _cachedAI;
+        private List<P_Point> _cachedAO;
+        private List<P_Point> _cachedDI;
+        private List<P_Point> _cachedDO;
+        private List<P_Point> _cachedAL;
+        private List<AlmStore<A_AAlarm>> _cachedActAlarms;
 
         #endregion
 
         #region Ctor
 
         public iPemWorkContext(
-        HttpContextBase httpContext,
-        ICacheManager cacheManager,
-        //rs repository
-        IAreaService areaService,
-        IDeviceService deviceService,
-        IDeviceTypeService deviceTypeService,
-        IEmployeeService employeeService,
-        IEnumMethodsService enumMethodsService,
-        IExtAlarmService extAlarmService,
-        IFsuService fsuService,
-        ILogicTypeService rsLogicTypeService,
-        IPointService pointService,
-        IProtocolService protocolService,
-        IRoomService roomService,
-        IRoomTypeService roomTypeService,
-        IStationService stationService,
-        IStationTypeService stationTypeService,
-        //cs repository
-        IActAlmService actAlmService,
-        //sc repository
-        IAreasInRoleService areasInRoleService,
-        IDictionaryService dictionaryService,
-        IMenuService menuService,
-        IOperateInRoleService operateService,
-        IProfileService profileService,
-        IRoleService roleService,
-        IUserService userService) {
+            HttpContextBase httpContext,
+            ICacheManager cacheManager,
+            IAreaService areaService,
+            IDeviceService deviceService,
+            IDeviceTypeService deviceTypeService,
+            IEmployeeService employeeService,
+            IEnumMethodService enumMethodService,
+            IFsuService fsuService,
+            ILogicTypeService rsLogicTypeService,
+            IPointService pointService,
+            IProtocolService protocolService,
+            IRoomService roomService,
+            IRoomTypeService roomTypeService,
+            IStationService stationService,
+            IStationTypeService stationTypeService,
+            IAAlarmService actAlarmService,
+            IDictionaryService dictionaryService,
+            IEntitiesInRoleService entitiesInRoleService,
+            IFollowPointService followPointService,
+            IProfileService profileService,
+            IRoleService roleService,
+            IUserService userService) {
             this._httpContext = httpContext;
             this._cacheManager = cacheManager;
-            //rs repository
             this._areaService = areaService;
             this._deviceService = deviceService;
             this._deviceTypeService = deviceTypeService;
             this._employeeService = employeeService;
-            this._enumMethodsService = enumMethodsService;
-            this._extAlarmService = extAlarmService;
+            this._enumMethodService = enumMethodService;
             this._fsuService = fsuService;
             this._logicTypeService = rsLogicTypeService;
             this._pointService = pointService;
@@ -135,13 +149,10 @@ namespace iPem.Site.Infrastructure {
             this._roomTypeService = roomTypeService;
             this._stationService = stationService;
             this._stationTypeService = stationTypeService;
-            //cs repository
-            this._actAlmService = actAlmService;
-            //sc repository
-            this._areasInRoleService = areasInRoleService;
+            this._actAlarmService = actAlarmService;
             this._dictionaryService = dictionaryService;
-            this._menuService = menuService;
-            this._operateService = operateService;
+            this._entitiesInRoleService = entitiesInRoleService;
+            this._followPointService = followPointService;
             this._profileService = profileService;
             this._roleService = roleService;
             this._userService = userService;
@@ -173,37 +184,28 @@ namespace iPem.Site.Infrastructure {
                 }
 
                 var authCookie = _httpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
-                if(authCookie == null)
-                    throw new iPemException("Cookie not found.");
+                if(authCookie == null) throw new iPemException("Cookie not found.");
 
                 var ticket = FormsAuthentication.Decrypt(authCookie.Value);
-                if(ticket == null)
-                    throw new iPemException("Encrypted ticket is invalid.");
+                if(ticket == null) throw new iPemException("Encrypted ticket is invalid.");
 
                 _cachedIdentifier = new Guid(ticket.UserData);
                 return _cachedIdentifier.Value;
             }
         }
 
-        public Store Store {
+        private Store Store {
             get {
-                var now = DateTime.UtcNow;
                 if(_cachedStore != null) {
-                    _cachedStore.ExpireUtc = now.Add(CachedIntervals.Store_Intervals);
+                    _cachedStore.ResetExpire();
                     return _cachedStore;
                 }
                 
                 if(!EngineContext.Current.WorkStores.ContainsKey(Identifier)) {
-                    _cachedStore = new Store {
-                        Id = Identifier,
-                        ExpireUtc = now.Add(CachedIntervals.Store_Intervals),
-                        CreatedUtc = now
-                    };
-
-                    EngineContext.Current.WorkStores[Identifier] = _cachedStore;
+                    _cachedStore = Store.CreateInstance(Identifier);
                 } else {
                     _cachedStore = EngineContext.Current.WorkStores[Identifier];
-                    _cachedStore.ExpireUtc = now.Add(CachedIntervals.Store_Intervals);
+                    _cachedStore.ResetExpire();
                 }
 
                 return _cachedStore;
@@ -246,7 +248,7 @@ namespace iPem.Site.Infrastructure {
                 if(!IsAuthenticated)
                     throw new iPemException("Unauthorized");
 
-                var user = _userService.GetUser(_httpContext.User.Identity.Name);
+                var user = _userService.GetUserByName(_httpContext.User.Identity.Name);
                 if(user == null)
                     throw new iPemException("Current user not found.");
 
@@ -266,13 +268,13 @@ namespace iPem.Site.Infrastructure {
                     return _cachedEmployee;
                 }
 
-                Store.Employee = _cachedEmployee = _employeeService.GetEmpolyee(User.EmployeeId);
+                Store.Employee = _cachedEmployee = _employeeService.GetEmployeeById(User.EmployeeId);
 
                 return _cachedEmployee;
             }
         }
 
-        public ProfileValues Profile {
+        public iProfile Profile {
             get {
                 if(_cachedProfile != null)
                     return _cachedProfile;
@@ -282,12 +284,39 @@ namespace iPem.Site.Infrastructure {
                     return _cachedProfile;
                 }
 
-                var _profile = _profileService.GetProfile(User.Id);
-                if(_profile != null && !string.IsNullOrWhiteSpace(_profile.ValuesJson))
-                    Store.Profile = _cachedProfile = JsonConvert.DeserializeObject<ProfileValues>(_profile.ValuesJson);
+                var _profile = new iProfile { FollowPoints = _followPointService.GetFollowPointsInUser(User.Id) };
+                var _settings = _profileService.GetProfile(User.Id);
+                if (_settings != null && !string.IsNullOrWhiteSpace(_settings.ValuesJson))
+                    _profile.Settings = JsonConvert.DeserializeObject<Setting>(_settings.ValuesJson);
 
+                Store.Profile = _cachedProfile = _profile;
                 return _cachedProfile;
             }
+        }
+
+        public U_EntitiesInRole Authorizations {
+            get {
+                if (_cachedAuthorizations != null)
+                    return _cachedAuthorizations;
+
+                if (Store.Authorizations != null) {
+                    _cachedAuthorizations = Store.Authorizations;
+                    return _cachedAuthorizations;
+                }
+
+                Store.Authorizations = _cachedAuthorizations = _entitiesInRoleService.GetEntitiesInRole(Role.Id);
+                return _cachedAuthorizations;
+            }
+        }
+
+        public DateTime LastNoticeTime {
+            get { return this.Store.LastNoticeTime; }
+            set { this.Store.LastNoticeTime = value; }
+        }
+
+        public DateTime LastSpeechTime {
+            get { return this.Store.LastSpeechTime; }
+            set { this.Store.LastSpeechTime = value; }
         }
 
         public WsValues WsValues {
@@ -329,36 +358,12 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public List<U_Menu> Menus {
-            get {
-                if(_cachedMenus != null)
-                    return _cachedMenus;
-
-                return _cachedMenus = _menuService.GetMenusAsList(Role.Id);
-            }
-        }
-
-        public HashSet<EnmOperation> Operations {
-            get {
-                if(_cachedOperations != null)
-                    return _cachedOperations;
-
-                var operations = _operateService.GetOperates(Role.Id);
-                _cachedOperations = new HashSet<EnmOperation>();
-                foreach(var entity in operations.Operates) {
-                    _cachedOperations.Add(entity);
-                }
-
-                return _cachedOperations;
-            }
-        }
-
         public List<C_LogicType> LogicTypes {
             get {
                 if(_cachedLogicTypes != null)
                     return _cachedLogicTypes;
 
-                _cachedLogicTypes = _logicTypeService.GetAllLogicTypesAsList();
+                _cachedLogicTypes = _logicTypeService.GetLogicTypes();
                 return _cachedLogicTypes;
             }
         }
@@ -368,7 +373,7 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedSubLogicTypes != null)
                     return _cachedSubLogicTypes;
 
-                _cachedSubLogicTypes = _logicTypeService.GetAllSubLogicTypesAsList();
+                _cachedSubLogicTypes = _logicTypeService.GetSubLogicTypes();
                 return _cachedSubLogicTypes;
             }
         }
@@ -378,7 +383,7 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedDeviceTypes != null)
                     return _cachedDeviceTypes;
 
-                _cachedDeviceTypes = _deviceTypeService.GetAllDeviceTypesAsList();
+                _cachedDeviceTypes = _deviceTypeService.GetDeviceTypes();
                 return _cachedDeviceTypes;
             }
         }
@@ -388,7 +393,7 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedSubDeviceTypes != null)
                     return _cachedSubDeviceTypes;
 
-                _cachedSubDeviceTypes = _deviceTypeService.GetAllSubDeviceTypesAsList();
+                _cachedSubDeviceTypes = _deviceTypeService.GetSubDeviceTypes();
                 return _cachedSubDeviceTypes;
             }
         }
@@ -398,7 +403,7 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedRoomTypes != null)
                     return _cachedRoomTypes;
 
-                _cachedRoomTypes = _roomTypeService.GetAllRoomTypesAsList();
+                _cachedRoomTypes = _roomTypeService.GetRoomTypes();
                 return _cachedRoomTypes;
             }
         }
@@ -408,7 +413,7 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedStationTypes != null)
                     return _cachedStationTypes;
 
-                _cachedStationTypes = _stationTypeService.GetAllStationTypesAsList();
+                _cachedStationTypes = _stationTypeService.GetStationTypes();
                 return _cachedStationTypes;
             }
         }
@@ -418,346 +423,415 @@ namespace iPem.Site.Infrastructure {
                 if(_cachedAreaTypes != null)
                     return _cachedAreaTypes;
 
-                _cachedAreaTypes = _enumMethodsService.GetValuesAsList(EnmMethodType.Area, "类型");
+                _cachedAreaTypes = _enumMethodService.GetEnumsByType(EnmMethodType.Area, "类型");
                 return _cachedAreaTypes;
             }
         }
 
-        public List<P_Point> Points {
+        public List<SSHProtocol> AllProtocols {
             get {
-                if(_cachedPoints != null)
-                    return _cachedPoints;
+                if(_cachedAllProtocols != null)
+                    return _cachedAllProtocols;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Points))
-                    return _cachedPoints = _cacheManager.Get<List<P_Point>>(GlobalCacheKeys.Og_Points);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Protocols))
+                    return _cachedAllProtocols = _cacheManager.Get<List<SSHProtocol>>(GlobalCacheKeys.SSH_Protocols);
 
-                _cachedPoints = _pointService.GetAllPointsAsList();
-                _cacheManager.Set<List<P_Point>>(GlobalCacheKeys.Og_Points, _cachedPoints, CachedIntervals.Global_Intervals);
-                return _cachedPoints;
-            }
-        }
-
-        public List<OrgProtocol> Protocols {
-            get {
-                if(_cachedProtocols != null)
-                    return _cachedProtocols;
-
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Protocols))
-                    return _cachedProtocols = _cacheManager.Get<List<OrgProtocol>>(GlobalCacheKeys.Og_Protocols);
-
-                var protocols = _protocolService.GetAllProtocolsAsList();
-                _cachedProtocols = new List<OrgProtocol>();
+                var protocols = _protocolService.GetProtocols();
+                _cachedAllProtocols = new List<SSHProtocol>();
                 foreach(var protocol in protocols) {
-                    var points = _pointService.GetPointsInProtocolAsList(protocol.Id);
-                    _cachedProtocols.Add(new OrgProtocol {
+                    var points = _pointService.GetPointsInProtocol(protocol.Id);
+                    _cachedAllProtocols.Add(new SSHProtocol {
                         Current = protocol,
                         Points = points
                     });
                 }
 
-                _cacheManager.Set<List<OrgProtocol>>(GlobalCacheKeys.Og_Protocols, _cachedProtocols, CachedIntervals.Global_Intervals);
-                return _cachedProtocols;
+                _cacheManager.Set<List<SSHProtocol>>(GlobalCacheKeys.SSH_Protocols, _cachedAllProtocols, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllProtocols;
             }
         }
 
-        public List<OrgDevice> Devices {
+        public List<SSHDevice> AllDevices {
             get {
-                if(_cachedDevices != null)
-                    return _cachedDevices;
+                if(_cachedAllDevices != null)
+                    return _cachedAllDevices;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Devices))
-                    return _cachedDevices = _cacheManager.Get<List<OrgDevice>>(GlobalCacheKeys.Og_Devices);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Devices))
+                    return _cachedAllDevices = _cacheManager.Get<List<SSHDevice>>(GlobalCacheKeys.SSH_Devices);
 
-                var devices = _deviceService.GetAllDevicesAsList();
-                _cachedDevices = (from device in devices
-                                  join protocol in this.Protocols on device.ProtocolId equals protocol.Current.Id
-                                  select new OrgDevice {
-                                      Current = device,
-                                      Protocol = protocol
-                                  }).ToList();
+                _cachedAllDevices = new List<SSHDevice>();
+                var devices = _deviceService.GetDevices();
+                _cachedAllDevices = (from device in devices
+                                     join protocol in this.AllProtocols on device.ProtocolId equals protocol.Current.Id
+                                     select new SSHDevice { Current = device, Protocol = protocol }).ToList();
 
-                _cacheManager.Set<List<OrgDevice>>(GlobalCacheKeys.Og_Devices, _cachedDevices, CachedIntervals.Global_Intervals);
-                return _cachedDevices;
+                _cacheManager.Set<List<SSHDevice>>(GlobalCacheKeys.SSH_Devices, _cachedAllDevices, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllDevices;
             }
         }
 
-        public List<OrgFsu> Fsus {
+        public List<SSHFsu> AllFsus {
             get {
-                if(_cachedFsus != null)
-                    return _cachedFsus;
+                if(_cachedAllFsus != null)
+                    return _cachedAllFsus;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Fsus))
-                    return _cachedFsus = _cacheManager.Get<List<OrgFsu>>(GlobalCacheKeys.Og_Fsus);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Fsus))
+                    return _cachedAllFsus = _cacheManager.Get<List<SSHFsu>>(GlobalCacheKeys.SSH_Fsus);
 
-                var fsus = _fsuService.GetAllFsusAsList();
-                var devices = from device in this.Devices
+                var fsus = _fsuService.GetFsus();
+                var devices = from device in this.AllDevices
                               group device by device.Current.FsuId into g
                               select new {
                                   Id = g.Key,
                                   Devices = g
                               };
 
-                _cachedFsus = (from fsu in fsus
+                _cachedAllFsus = (from fsu in fsus
                                join dev in devices on fsu.Id equals dev.Id into lt
                                from def in lt.DefaultIfEmpty()
-                               select new OrgFsu {
+                               select new SSHFsu {
                                    Current = fsu,
-                                   Devices = def != null ? def.Devices.ToList() : new List<OrgDevice>()
+                                   Devices = def != null ? def.Devices.ToList() : new List<SSHDevice>()
                                }).ToList();
 
-                _cacheManager.Set<List<OrgFsu>>(GlobalCacheKeys.Og_Fsus, _cachedFsus, CachedIntervals.Global_Intervals);
-                return _cachedFsus;
+                _cacheManager.Set<List<SSHFsu>>(GlobalCacheKeys.SSH_Fsus, _cachedAllFsus, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllFsus;
             }
         }
 
-        public List<OrgRoom> Rooms {
+        public List<SSHRoom> AllRooms {
             get {
-                if(_cachedRooms != null)
-                    return _cachedRooms;
+                if(_cachedAllRooms != null)
+                    return _cachedAllRooms;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Rooms))
-                    return _cachedRooms = _cacheManager.Get<List<OrgRoom>>(GlobalCacheKeys.Og_Rooms);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Rooms))
+                    return _cachedAllRooms = _cacheManager.Get<List<SSHRoom>>(GlobalCacheKeys.SSH_Rooms);
 
-                var rooms = _roomService.GetAllRoomsAsList();
-                var dsets = from device in this.Devices
+                var rooms = _roomService.GetRooms();
+                var dsets = from device in this.AllDevices
                             group device by device.Current.RoomId into g
                             select new {
                                 Id = g.Key,
                                 Devices = g
                             };
 
-                var fsets = from fsu in this.Fsus
+                var fsets = from fsu in this.AllFsus
                             group fsu by fsu.Current.RoomId into g
                             select new {
                                 Id = g.Key,
                                 Fsus = g
                             };
 
-                _cachedRooms = (from room in rooms
+                _cachedAllRooms = (from room in rooms
                                 join ds in dsets on room.Id equals ds.Id into lt1
                                 from def1 in lt1.DefaultIfEmpty()
                                 join fs in fsets on room.Id equals fs.Id into lt2
                                 from def2 in lt2.DefaultIfEmpty()
-                                select new OrgRoom {
+                                select new SSHRoom {
                                     Current = room,
-                                    Devices = def1 != null ? def1.Devices.ToList() : new List<OrgDevice>(),
-                                    Fsus = def2 != null ? def2.Fsus.ToList() : new List<OrgFsu>()
+                                    Devices = def1 != null ? def1.Devices.ToList() : new List<SSHDevice>(),
+                                    Fsus = def2 != null ? def2.Fsus.ToList() : new List<SSHFsu>()
                                 }).ToList();
 
-                _cacheManager.Set<List<OrgRoom>>(GlobalCacheKeys.Og_Rooms, _cachedRooms, CachedIntervals.Global_Intervals);
-                return _cachedRooms;
+                _cacheManager.Set<List<SSHRoom>>(GlobalCacheKeys.SSH_Rooms, _cachedAllRooms, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllRooms;
             }
         }
 
-        public List<OrgStation> Stations {
+        public List<SSHStation> AllStations {
             get {
-                if(_cachedStations != null)
-                    return _cachedStations;
+                if(_cachedAllStations != null)
+                    return _cachedAllStations;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Stations))
-                    return _cachedStations = _cacheManager.Get<List<OrgStation>>(GlobalCacheKeys.Og_Stations);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Stations))
+                    return _cachedAllStations = _cacheManager.Get<List<SSHStation>>(GlobalCacheKeys.SSH_Stations);
 
-                var stations = _stationService.GetAllStationsAsList();
-                var rsets = from room in this.Rooms
+                var stations = _stationService.GetStations();
+                var rsets = from room in this.AllRooms
                             group room by room.Current.StationId into g
                             select new {
                                 Id = g.Key,
                                 Rooms = g
                             };
 
-                _cachedStations = (from station in stations
+                _cachedAllStations = (from station in stations
                                    join rs in rsets on station.Id equals rs.Id into lt
                                    from def in lt.DefaultIfEmpty()
-                                   select new OrgStation {
+                                   select new SSHStation {
                                        Current = station,
-                                       Rooms = def != null ? def.Rooms.ToList() : new List<OrgRoom>()
+                                       Rooms = def != null ? def.Rooms.ToList() : new List<SSHRoom>()
                                    }).ToList();
 
-                _cacheManager.Set<List<OrgStation>>(GlobalCacheKeys.Og_Stations, _cachedStations, CachedIntervals.Global_Intervals);
-                return _cachedStations;
+                _cacheManager.Set<List<SSHStation>>(GlobalCacheKeys.SSH_Stations, _cachedAllStations, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllStations;
             }
         }
 
-        public List<OrgArea> Areas {
+        public List<SSHArea> AllAreas {
             get {
-                if(_cachedAreas != null)
-                    return _cachedAreas;
+                if(_cachedAllAreas != null)
+                    return _cachedAllAreas;
 
-                if(_cacheManager.IsSet(GlobalCacheKeys.Og_Areas))
-                    return _cachedAreas = _cacheManager.Get<List<OrgArea>>(GlobalCacheKeys.Og_Areas);
+                if(_cacheManager.IsSet(GlobalCacheKeys.SSH_Areas))
+                    return _cachedAllAreas = _cacheManager.Get<List<SSHArea>>(GlobalCacheKeys.SSH_Areas);
 
-                var areas = _areaService.GetAreasAsList();
-                var ssets = from station in this.Stations
+                var areas = _areaService.GetAreas();
+                var ssets = from station in this.AllStations
                             group station by station.Current.AreaId into g
                             select new {
                                 Id = g.Key,
                                 Stations = g
                             };
 
-                _cachedAreas = (from area in areas
+                _cachedAllAreas = (from area in areas
                                 join ss in ssets on area.Id equals ss.Id into lt
                                 from def in lt.DefaultIfEmpty()
-                                select new OrgArea {
+                                select new SSHArea {
                                     Current = area,
-                                    Stations = def != null ? def.Stations.ToList() : new List<OrgStation>()
+                                    Stations = def != null ? def.Stations.ToList() : new List<SSHStation>()
                                 }).ToList();
+
+                foreach(var current in _cachedAllAreas) {
+                    current.Initializer(_cachedAllAreas);
+                }
+
+                _cacheManager.Set<List<SSHArea>>(GlobalCacheKeys.SSH_Areas, _cachedAllAreas, CachedIntervals.Global_Default_Intervals);
+                return _cachedAllAreas;
+            }
+        }
+
+        public List<SSHArea> Areas {
+            get {
+                if(this.Role.Id == U_Role.SuperId)
+                    return this.AllAreas;
+
+                if(_cachedAreas != null)
+                    return _cachedAreas;
+
+                var cachedKey = string.Format(GlobalCacheKeys.SSH_AreasPattern, this.Role.Id);
+                if(_cacheManager.IsSet(cachedKey))
+                    return _cachedAreas = _cacheManager.Get<List<SSHArea>>(cachedKey);
+
+                var authorizations = this.Authorizations.Areas;
+                if (authorizations.Count == 0) throw new iPemException("No Authorizations.");
+
+                var areas = _areaService.GetAreas();
+                var ssets = from station in this.AllStations
+                            group station by station.Current.AreaId into g
+                            select new { Id = g.Key, Stations = g };
+
+                _cachedAreas = (from area in areas
+                                    join permisson in authorizations on area.Id equals permisson
+                                    join ss in ssets on area.Id equals ss.Id into lt
+                                    from def in lt.DefaultIfEmpty()
+                                    select new SSHArea {
+                                        Current = area,
+                                        Stations = def != null ? def.Stations.ToList() : new List<SSHStation>()
+                                    }).ToList();
 
                 foreach(var current in _cachedAreas) {
                     current.Initializer(_cachedAreas);
                 }
 
-                _cacheManager.Set<List<OrgArea>>(GlobalCacheKeys.Og_Areas, _cachedAreas, CachedIntervals.Global_Intervals);
+                _cacheManager.Set<List<SSHArea>>(cachedKey, _cachedAreas, CachedIntervals.Global_Default_Intervals);
                 return _cachedAreas;
             }
         }
 
-        public List<OrgArea> RoleAreas {
+        public List<SSHStation> Stations {
             get {
                 if(this.Role.Id == U_Role.SuperId)
-                    return this.Areas;
+                    return this.AllStations;
 
-                if(_cachedRoleAreas != null)
-                    return _cachedRoleAreas;
+                if(_cachedStations != null)
+                    return _cachedStations;
 
-                var cachedKey = string.Format(GlobalCacheKeys.Og_RoleAreasPattern, this.Role.Id);
+                var cachedKey = string.Format(GlobalCacheKeys.SSH_StationsPattern, Role.Id);
                 if(_cacheManager.IsSet(cachedKey))
-                    return _cachedRoleAreas = _cacheManager.Get<List<OrgArea>>(cachedKey);
+                    return _cachedStations = _cacheManager.Get<List<SSHStation>>(cachedKey);
 
-                var areas = _areaService.GetAreasAsList();
-                var keys = _areasInRoleService.GetKeysAsList(this.Role.Id);
-                var ssets = from station in this.Stations
-                            group station by station.Current.AreaId into g
-                            select new {
-                                Id = g.Key,
-                                Stations = g
-                            };
+                _cachedStations = this.Areas.SelectMany(a => a.Stations).ToList();
+                _cacheManager.Set<List<SSHStation>>(cachedKey, _cachedStations, CachedIntervals.Global_Default_Intervals);
+                return _cachedStations;
+            }
+        }
 
-                _cachedRoleAreas = (from area in areas
-                                    join key in keys on area.Id equals key
-                                    join ss in ssets on area.Id equals ss.Id into lt
-                                    from def in lt.DefaultIfEmpty()
-                                    select new OrgArea {
-                                        Current = area,
-                                        Stations = def != null ? def.Stations.ToList() : new List<OrgStation>()
-                                    }).ToList();
+        public List<SSHRoom> Rooms {
+            get {
+                if(this.Role.Id == U_Role.SuperId)
+                    return this.AllRooms;
 
-                foreach(var current in _cachedRoleAreas) {
-                    current.Initializer(_cachedRoleAreas);
+                if(_cachedRooms != null)
+                    return _cachedRooms;
+
+                var cachedKey = string.Format(GlobalCacheKeys.SSH_RoomsPattern, Role.Id);
+                if(_cacheManager.IsSet(cachedKey))
+                    return _cachedRooms = _cacheManager.Get<List<SSHRoom>>(cachedKey);
+
+                _cachedRooms = this.Stations.SelectMany(s => s.Rooms).ToList();
+                _cacheManager.Set<List<SSHRoom>>(cachedKey, _cachedRooms, CachedIntervals.Global_Default_Intervals);
+                return _cachedRooms;
+            }
+        }
+
+        public List<SSHFsu> Fsus {
+            get {
+                if(this.Role.Id == U_Role.SuperId)
+                    return this.AllFsus;
+
+                if(_cachedFsus != null)
+                    return _cachedFsus;
+
+                var cachedKey = string.Format(GlobalCacheKeys.SSH_FsusPattern, Role.Id);
+                if(_cacheManager.IsSet(cachedKey))
+                    return _cachedFsus = _cacheManager.Get<List<SSHFsu>>(cachedKey);
+
+                _cachedFsus = this.Rooms.SelectMany(s => s.Fsus).ToList();
+                _cacheManager.Set<List<SSHFsu>>(cachedKey, _cachedFsus, CachedIntervals.Global_Default_Intervals);
+                return _cachedFsus;
+            }
+        }
+
+        public List<SSHDevice> Devices {
+            get {
+                if(this.Role.Id == U_Role.SuperId)
+                    return this.AllDevices;
+
+                if(_cachedDevices != null)
+                    return _cachedDevices;
+
+                var cachedKey = string.Format(GlobalCacheKeys.SSH_DevicesPattern, Role.Id);
+                if(_cacheManager.IsSet(cachedKey))
+                    return _cachedDevices = _cacheManager.Get<List<SSHDevice>>(cachedKey);
+
+                _cachedDevices = this.Rooms.SelectMany(s => s.Devices).ToList();
+                _cacheManager.Set<List<SSHDevice>>(cachedKey, _cachedDevices, CachedIntervals.Global_Default_Intervals);
+                return _cachedDevices;
+            }
+        }
+
+        public List<P_Point> Points {
+            get {
+                if (_cachedPoints != null)
+                    return _cachedPoints;
+
+                if (_cacheManager.IsSet(GlobalCacheKeys.SSH_Points))
+                    return _cachedPoints = _cacheManager.Get<List<P_Point>>(GlobalCacheKeys.SSH_Points);
+
+                _cachedPoints = _pointService.GetPoints();
+                _cacheManager.Set<List<P_Point>>(GlobalCacheKeys.SSH_Points, _cachedPoints, CachedIntervals.Global_Default_Intervals);
+                return _cachedPoints;
+            }
+        }
+
+        public List<P_SubPoint> SubPoints {
+            get {
+                if (_cachedSubPoints != null)
+                    return _cachedSubPoints;
+
+                if (_cacheManager.IsSet(GlobalCacheKeys.SSH_SubPoints))
+                    return _cachedSubPoints = _cacheManager.Get<List<P_SubPoint>>(GlobalCacheKeys.SSH_SubPoints);
+
+                _cachedSubPoints = _pointService.GetSubPoints();
+                _cacheManager.Set<List<P_SubPoint>>(GlobalCacheKeys.SSH_SubPoints, _cachedSubPoints, CachedIntervals.Global_Default_Intervals);
+                return _cachedSubPoints;
+            }
+        }
+
+        public List<P_Point> AI {
+            get {
+                if (_cachedAI != null)
+                    return _cachedAI;
+
+                _cachedAI = this.Points.FindAll(p => p.Type == EnmPoint.AI);
+                return _cachedAI;
+            }
+        }
+
+        public List<P_Point> AO {
+            get {
+                if (_cachedAO != null)
+                    return _cachedAO;
+
+                _cachedAO = this.Points.FindAll(p => p.Type == EnmPoint.AO);
+                return _cachedAO;
+            }
+        }
+
+        public List<P_Point> DI {
+            get {
+                if (_cachedDI != null)
+                    return _cachedDI;
+
+                _cachedDI = this.Points.FindAll(p => p.Type == EnmPoint.DI);
+                return _cachedDI;
+            }
+        }
+
+        public List<P_Point> DO {
+            get {
+                if (_cachedDO != null)
+                    return _cachedDO;
+
+                _cachedDO = this.Points.FindAll(p => p.Type == EnmPoint.DO);
+                return _cachedDO;
+            }
+        }
+
+        public List<P_Point> AL {
+            get {
+                if (_cachedAL != null)
+                    return _cachedAL;
+
+                _cachedAL = this.Points.FindAll(p => p.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(p.AlarmId));
+                return _cachedAL;
+            }
+        }
+
+        public List<AlmStore<A_AAlarm>> ActAlarms {
+            get {
+                if(_cachedActAlarms != null)
+                    return _cachedActAlarms;
+
+                //实时告警缓存10s，减小服务器压力
+                List<AlmStore<A_AAlarm>> _activeAlarms = null;
+                if (_cacheManager.IsSet(GlobalCacheKeys.Global_ActiveAlarms)) {
+                    _activeAlarms = _cacheManager.Get<List<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Global_ActiveAlarms);
+                } else {
+                    var allAlarms = _actAlarmService.GetAlarms();
+                    _activeAlarms = (from alarm in allAlarms
+                                     join point in this.AL on alarm.PointId equals point.Id
+                                     join device in this.AllDevices on alarm.DeviceId equals device.Current.Id
+                                     join room in this.AllRooms on alarm.RoomId equals room.Current.Id
+                                     join station in this.AllStations on alarm.StationId equals station.Current.Id
+                                     join area in this.AllAreas on alarm.AreaId equals area.Current.Id
+                                     orderby alarm.AlarmTime descending
+                                     select new AlmStore<A_AAlarm> {
+                                         Current = alarm,
+                                         Point = point,
+                                         Device = device.Current,
+                                         Room = room.Current,
+                                         Station = station.Current,
+                                         Area = new A_Area {
+                                             Id = area.Current.Id,
+                                             Code = area.Current.Code,
+                                             Name = area.ToString(),
+                                             Type = area.Current.Type,
+                                             ParentId = area.Current.ParentId,
+                                             Comment = area.Current.Comment,
+                                             Enabled = area.Current.Enabled
+                                         }
+                                     }).ToList();
+
+                    _cacheManager.Set<List<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Global_ActiveAlarms, _activeAlarms, CachedIntervals.Global_ActiveAlarm_Intervals);
                 }
 
-                _cacheManager.Set<List<OrgArea>>(cachedKey, _cachedRoleAreas, CachedIntervals.Global_Intervals);
-                return _cachedRoleAreas;
-            }
-        }
-
-        public List<OrgStation> RoleStations {
-            get {
-                if(this.Role.Id == U_Role.SuperId)
-                    return this.Stations;
-
-                if(_cachedRoleStations != null)
-                    return _cachedRoleStations;
-
-                var cachedKey = string.Format(GlobalCacheKeys.Og_RoleStationsPattern, Role.Id);
-                if(_cacheManager.IsSet(cachedKey))
-                    return _cachedRoleStations = _cacheManager.Get<List<OrgStation>>(cachedKey);
-
-                _cachedRoleStations = this.RoleAreas.SelectMany(a => a.Stations).ToList();
-                _cacheManager.Set<List<OrgStation>>(cachedKey, _cachedRoleStations, CachedIntervals.Global_Intervals);
-                return _cachedRoleStations;
-            }
-        }
-
-        public List<OrgRoom> RoleRooms {
-            get {
-                if(this.Role.Id == U_Role.SuperId)
-                    return this.Rooms;
-
-                if(_cachedRoleRooms != null)
-                    return _cachedRoleRooms;
-
-                var cachedKey = string.Format(GlobalCacheKeys.Og_RoleRoomsPattern, Role.Id);
-                if(_cacheManager.IsSet(cachedKey))
-                    return _cachedRoleRooms = _cacheManager.Get<List<OrgRoom>>(cachedKey);
-
-                _cachedRoleRooms = this.RoleStations.SelectMany(s => s.Rooms).ToList();
-                _cacheManager.Set<List<OrgRoom>>(cachedKey, _cachedRoleRooms, CachedIntervals.Global_Intervals);
-                return _cachedRoleRooms;
-            }
-        }
-
-        public List<OrgFsu> RoleFsus {
-            get {
-                if(this.Role.Id == U_Role.SuperId)
-                    return this.Fsus;
-
-                if(_cachedRoleFsus != null)
-                    return _cachedRoleFsus;
-
-                var cachedKey = string.Format(GlobalCacheKeys.Og_RoleFsusPattern, Role.Id);
-                if(_cacheManager.IsSet(cachedKey))
-                    return _cachedRoleFsus = _cacheManager.Get<List<OrgFsu>>(cachedKey);
-
-                _cachedRoleFsus = this.RoleRooms.SelectMany(s => s.Fsus).ToList();
-                _cacheManager.Set<List<OrgFsu>>(cachedKey, _cachedRoleFsus, CachedIntervals.Global_Intervals);
-                return _cachedRoleFsus;
-            }
-        }
-
-        public List<OrgDevice> RoleDevices {
-            get {
-                if(this.Role.Id == U_Role.SuperId)
-                    return this.Devices;
-
-                if(_cachedRoleDevices != null)
-                    return _cachedRoleDevices;
-
-                var cachedKey = string.Format(GlobalCacheKeys.Og_RoleDevicesPattern, Role.Id);
-                if(_cacheManager.IsSet(cachedKey))
-                    return _cachedRoleDevices = _cacheManager.Get<List<OrgDevice>>(cachedKey);
-
-                _cachedRoleDevices = this.RoleRooms.SelectMany(s => s.Devices).ToList();
-                _cacheManager.Set<List<OrgDevice>>(cachedKey, _cachedRoleDevices, CachedIntervals.Global_Intervals);
-                return _cachedRoleDevices;
-            }
-        }
-
-        public List<AlmStore<A_AAlarm>> ActAlmStore {
-            get {
-                if(_cachedAlmStore != null)
-                    return _cachedAlmStore;
-                
-                var alarms = _actAlmService.GetAllAlmsAsList();
-                var exts = _extAlarmService.GetAllExtAlarmsAsList();
-                var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
-                _cachedAlmStore = (from alarm in alarms
-                                   join point in points on alarm.PointId equals point.Id
-                                   join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
-                                   join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
-                                   join station in this.RoleStations on alarm.StationId equals station.Current.Id
-                                   join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                                   join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
-                                   from def in lt.DefaultIfEmpty()
-                                   orderby alarm.AlarmTime descending
-                                   select new AlmStore<A_AAlarm> {
-                                       Current = alarm,
-                                       ExtSet = def,
-                                       Point = point,
-                                       Device = device.Current,
-                                       Room = room.Current,
-                                       Station = station.Current,
-                                       Area = new A_Area {
-                                           Id = area.Current.Id,
-                                           Code = area.Current.Code,
-                                           Name = area.ToString(),
-                                           Type = area.Current.Type,
-                                           ParentId = area.Current.ParentId,
-                                           Comment = area.Current.Comment,
-                                           Enabled = area.Current.Enabled
-                                       }
-                                   }).ToList();
-
-                return _cachedAlmStore;
+                if (this.Role.Id == U_Role.SuperId) {
+                    return _cachedActAlarms = _activeAlarms;
+                } else {
+                    var keys = new HashSet<string>(this.Areas.Select(a => a.Current.Id));
+                    return _cachedActAlarms = _activeAlarms.FindAll(a => keys.Contains(a.Area.Id));
+                }
             }
         }
 
@@ -765,24 +839,39 @@ namespace iPem.Site.Infrastructure {
 
         #region Methods
 
-        public List<AlmStore<A_AAlarm>> GetActAlmStore(List<A_AAlarm> alarms) {
-            if(alarms == null || alarms.Count == 0) 
-                return new List<AlmStore<A_AAlarm>>();
+        public void ResetRole() {
+            this.Store.Role = null;
+        }
 
-            var exts = _extAlarmService.GetAllExtAlarmsAsList();
-            var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
+        public void ResetUser() {
+            this.Store.User = null;
+        }
+
+        public void ResetEmployee() {
+            this.Store.Employee = null;
+        }
+
+        public void ResetProfile() {
+            this.Store.Profile = null;
+        }
+
+        public void ResetAuthorizations() {
+            this.Store.Authorizations = null;
+        }
+
+        public List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms) {
+            if(alarms == null || alarms.Count == 0) 
+                return new List<AlmStore<A_HAlarm>>();
+
             return (from alarm in alarms
-                    join point in points on alarm.PointId equals point.Id
-                    join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
-                    join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
-                    join station in this.RoleStations on alarm.StationId equals station.Current.Id
-                    join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
-                    from def in lt.DefaultIfEmpty()
-                    orderby alarm.AlarmTime descending
-                    select new AlmStore<A_AAlarm> {
+                    join point in this.AL on alarm.PointId equals point.Id
+                    join device in this.Devices on alarm.DeviceId equals device.Current.Id
+                    join room in this.Rooms on alarm.RoomId equals room.Current.Id
+                    join station in this.Stations on alarm.StationId equals station.Current.Id
+                    join area in this.Areas on alarm.AreaId equals area.Current.Id
+                    orderby alarm.StartTime descending
+                    select new AlmStore<A_HAlarm> {
                         Current = alarm,
-                        ExtSet = def,
                         Point = point,
                         Device = device.Current,
                         Room = room.Current,
@@ -799,38 +888,28 @@ namespace iPem.Site.Infrastructure {
                     }).ToList();
         }
 
-        public List<AlmStore<A_HAlarm>> GetHisAlmStore(List<A_HAlarm> alarms, DateTime start, DateTime end) {
-            if(alarms == null || alarms.Count == 0) 
-                return new List<AlmStore<A_HAlarm>>();
+        public Dictionary<string, AlmStore<A_AAlarm>> AlarmsToDictionary(List<AlmStore<A_AAlarm>> alarms, bool primaryKey = true) {
+            var dictionary = new Dictionary<string, AlmStore<A_AAlarm>>();
+            if (alarms == null || alarms.Count == 0)
+                return dictionary;
 
-            var exts = _extAlarmService.GetHisExtAlarmsAsList(start, end);
-            var points = this.Points.FindAll(p => p.Type == EnmPoint.DI);
-            return (from alarm in alarms
-                    join point in points on alarm.PointId equals point.Id
-                    join device in this.RoleDevices on alarm.DeviceId equals device.Current.Id
-                    join room in this.RoleRooms on alarm.RoomId equals room.Current.Id
-                    join station in this.RoleStations on alarm.StationId equals station.Current.Id
-                    join area in this.RoleAreas on alarm.AreaId equals area.Current.Id
-                    join ext in exts on new { alarm.Id, alarm.SerialNo } equals new { ext.Id, ext.SerialNo } into lt
-                    from def in lt.DefaultIfEmpty()
-                    orderby alarm.AlarmTime descending
-                    select new AlmStore<A_HAlarm> {
-                        Current = alarm,
-                        ExtSet = def,
-                        Point = point,
-                        Device = device.Current,
-                        Room = room.Current,
-                        Station = station.Current,
-                        Area = new A_Area {
-                            Id = area.Current.Id,
-                            Code = area.Current.Code,
-                            Name = area.ToString(),
-                            Type = area.Current.Type,
-                            ParentId = area.Current.ParentId,
-                            Comment = area.Current.Comment,
-                            Enabled = area.Current.Enabled
-                        }
-                    }).ToList();
+            foreach (var alarm in alarms) {
+                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Device.Id, alarm.Point.Id)] = alarm;
+            }
+
+            return dictionary;
+        }
+
+        public Dictionary<string, AlmStore<A_HAlarm>> AlarmsToDictionary(List<AlmStore<A_HAlarm>> alarms, bool primaryKey = true) {
+            var dictionary = new Dictionary<string, AlmStore<A_HAlarm>>();
+            if (alarms == null || alarms.Count == 0)
+                return dictionary;
+
+            foreach (var alarm in alarms) {
+                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Device.Id, alarm.Point.Id)] = alarm;
+            }
+
+            return dictionary;
         }
 
         #endregion

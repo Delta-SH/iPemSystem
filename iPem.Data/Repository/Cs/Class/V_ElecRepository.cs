@@ -28,7 +28,7 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public List<V_Elec> GetValues(string id, EnmSSH type, DateTime start, DateTime end) {
+        public List<V_Elec> GetEnergies(string id, EnmSSH type, DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
@@ -55,7 +55,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_Elec> GetValues(string id, EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
+        public List<V_Elec> GetEnergies(string id, EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@FormulaType", SqlDbType.Int),
@@ -84,7 +84,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_Elec> GetValues(EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
+        public List<V_Elec> GetEnergies(EnmSSH type, EnmFormula formula, DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@FormulaType", SqlDbType.Int),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
@@ -111,7 +111,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_Elec> GetValues(EnmSSH type, DateTime start, DateTime end) {
+        public List<V_Elec> GetEnergies(EnmSSH type, DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
@@ -136,7 +136,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_Elec> GetValues(DateTime start, DateTime end) {
+        public List<V_Elec> GetEnergies(DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 

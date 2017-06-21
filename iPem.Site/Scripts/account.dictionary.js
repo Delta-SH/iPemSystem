@@ -534,10 +534,10 @@
                                         xtype: 'checkboxgroup',
                                         columns: 2,
                                         items: [
-                                            { boxLabel: '一级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level1 },
-                                            { boxLabel: '二级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level2 },
-                                            { boxLabel: '三级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level3 },
-                                            { boxLabel: '四级告警', name: 'levels', inputValue: $$iPems.AlmLevel.Level4 }
+                                            { boxLabel: '一级告警', name: 'levels', inputValue: $$iPems.Level.Level1 },
+                                            { boxLabel: '二级告警', name: 'levels', inputValue: $$iPems.Level.Level2 },
+                                            { boxLabel: '三级告警', name: 'levels', inputValue: $$iPems.Level.Level3 },
+                                            { boxLabel: '四级告警', name: 'levels', inputValue: $$iPems.Level.Level4 }
                                         ]
                                     }
                                 ]
@@ -727,7 +727,7 @@
                                     puesave = Ext.getCmp('puesave'),
                                     pueresult = Ext.getCmp('pueresult'),
                                     keys = $$iPems.SplitKeys(id),
-                                    visible = keys.length === 2 && (keys[0] == $$iPems.Organization.Station || keys[0] == $$iPems.Organization.Room);
+                                    visible = keys.length === 2 && (keys[0] == $$iPems.SSH.Station || keys[0] == $$iPems.SSH.Room);
 
                                 puebasic.reset();
                                 pueform.setDisabled(!visible);
@@ -750,10 +750,10 @@
                                     keys = $$iPems.SplitKeys(id);
 
                                 if (keys.length === 2) {
-                                    if (keys[0] == $$iPems.Organization.Station) {
+                                    if (keys[0] == $$iPems.SSH.Station) {
                                         formulaContextMenu01.target = record;
                                         formulaContextMenu01.showAt(e.getXY());
-                                    } else if (keys[0] == $$iPems.Organization.Room) {
+                                    } else if (keys[0] == $$iPems.SSH.Room) {
                                         formulaContextMenu02.target = record;
                                         formulaContextMenu02.showAt(e.getXY());
                                     }

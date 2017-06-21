@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_BrandRepository _brandRepository;
+        private readonly IC_BrandRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public BrandService(
-            IC_BrandRepository brandRepository,
+            IC_BrandRepository repository,
             ICacheManager cacheManager) {
-            this._brandRepository = brandRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,15 +33,15 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_Brand GetBrand(string id) {
-            return _brandRepository.GetEntity(id);
+            return _repository.GetBrand(id);
         }
 
-        public IPagedList<C_Brand> GetAllBrands(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_Brand>(this.GetAllBrandsAsList(), pageIndex, pageSize);
+        public List<C_Brand> GetBrands() {
+            return _repository.GetBrands();
         }
 
-        public List<C_Brand> GetAllBrandsAsList() {
-            return _brandRepository.GetEntities();
+        public IPagedList<C_Brand> GetPagedBrands(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Brand>(this.GetBrands(), pageIndex, pageSize);
         }
 
         #endregion

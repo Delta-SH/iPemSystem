@@ -4,25 +4,33 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
+    /// <summary>
+    /// 用户消息映射API
+    /// </summary>
     public partial interface INoticeInUserService {
-        IPagedList<H_NoticeInUser> GetAllNotices(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的用户消息映射关系
+        /// </summary>
+        List<H_NoticeInUser> GetNoticesInUsers();
 
-        List<H_NoticeInUser> GetAllNoticesAsList();
+        /// <summary>
+        /// 获得指定的用户消息映射关系
+        /// </summary>
+        List<H_NoticeInUser> GetNoticesInUser(Guid uid);
 
-        IPagedList<H_NoticeInUser> GetNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 新增用户消息映射关系
+        /// </summary>
+        void Add(params H_NoticeInUser[] notices);
 
-        List<H_NoticeInUser> GetNoticesAsList(Guid uid);
+        /// <summary>
+        /// 更新用户消息映射关系
+        /// </summary>
+        void Update(params H_NoticeInUser[] notices);
 
-        void Add(H_NoticeInUser notice);
-
-        void AddRange(List<H_NoticeInUser> notices);
-
-        void Update(H_NoticeInUser notice);
-
-        void UpdateRange(List<H_NoticeInUser> notices);
-
-        void Remove(H_NoticeInUser notice);
-
-        void RemoveRange(List<H_NoticeInUser> notices);
+        /// <summary>
+        /// 删除用户消息映射关系
+        /// </summary>
+        void Remove(params H_NoticeInUser[] notices);
     }
 }

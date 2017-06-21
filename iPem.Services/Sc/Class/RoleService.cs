@@ -13,7 +13,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IRoleRepository _roleRepository;
+        private readonly IU_RoleRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -24,9 +24,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public RoleService(
-            IRoleRepository roleRepository,
+            IU_RoleRepository repository,
             ICacheManager cacheManager) {
-            this._roleRepository = roleRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -34,72 +34,68 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual U_Role GetRole(Guid id) {
-            return _roleRepository.GetEntity(id);
+        public U_Role GetRoleById(Guid id) {
+            return _repository.GetRoleById(id);
         }
 
-        public virtual U_Role GetRole(string name) {
-            return _roleRepository.GetEntity(name);
+        public U_Role GetRoleByName(string name) {
+            return _repository.GetRoleByName(name);
         }
 
-        public virtual U_Role GetRoleByUid(Guid uid) {
-            return _roleRepository.GetEntityByUid(uid);
+        public U_Role GetRoleByUid(Guid uid) {
+            return _repository.GetRoleByUid(uid);
         }
 
-        public virtual IPagedList<U_Role> GetAllRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_Role>(this.GetAllRolesAsList(), pageIndex, pageSize);
+        public List<U_Role> GetRoles() {
+            return _repository.GetRoles().FindAll(r => r.Id != U_Role.SuperId);
         }
 
-        public virtual List<U_Role> GetAllRolesAsList() {
-            return _roleRepository.GetEntities().FindAll(r=>r.Id != U_Role.SuperId);
-        }
-
-        public virtual IPagedList<U_Role> GetRoles(Guid id, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_Role>(this.GetRolesAsList(id), pageIndex, pageSize);
-        }
-
-        public virtual List<U_Role> GetRolesAsList(Guid id) {
-            var roles = _roleRepository.GetEntities();
+        public List<U_Role> GetRolesByRole(Guid id) {
+            var roles = _repository.GetRoles();
             var result = id.Equals(U_Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
             return result;
         }
 
-        public virtual IPagedList<U_Role> GetRoles(string[] names, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_Role>(this.GetRolesAsList(names), pageIndex, pageSize);
-        }
-
-        public virtual List<U_Role> GetRolesAsList(string[] names) {
-            var roles = _roleRepository.GetEntities();
+        public List<U_Role> GetRoleByNames(string[] names) {
+            var roles = _repository.GetRoles();
             var result = roles.FindAll(r => r.Id != U_Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
             return result;
         }
 
-        public virtual void Add(U_Role role) {
-            if (role == null)
-                throw new ArgumentNullException("role");
-
-            _roleRepository.Insert(role);
+        public IPagedList<U_Role> GetPagedRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Role>(this.GetRoles(), pageIndex, pageSize);
         }
 
-        public virtual void Update(U_Role role) {
-            if (role == null)
-                throw new ArgumentNullException("role");
-
-            _roleRepository.Update(role);
+        public IPagedList<U_Role> GetPagedRoleByNames(string[] names, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_Role>(this.GetRoleByNames(names), pageIndex, pageSize);
         }
 
-        public virtual void Remove(U_Role role) {
-            if (role == null)
-                throw new ArgumentNullException("role");
+        public void Add(params U_Role[] roles) {
+            if (roles == null || roles.Length == 0)
+                throw new ArgumentNullException("roles");
 
-            _roleRepository.Delete(role);
+            _repository.Insert(roles);
+        }
+
+        public void Update(params U_Role[] roles) {
+            if (roles == null || roles.Length == 0)
+                throw new ArgumentNullException("roles");
+
+            _repository.Update(roles);
+        }
+
+        public void Remove(params U_Role[] roles) {
+            if (roles == null || roles.Length == 0)
+                throw new ArgumentNullException("roles");
+
+            _repository.Delete(roles);
         }
 
         #endregion
 
         #region Validate
 
-        public virtual EnmLoginResults Validate(Guid uid) {
+        public EnmLoginResults Validate(Guid uid) {
             var role = this.GetRoleByUid(uid);
             if(role == null)
                 return EnmLoginResults.RoleNotExist;

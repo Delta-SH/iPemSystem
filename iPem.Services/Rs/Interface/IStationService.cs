@@ -4,15 +4,28 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 站点信息API
+    /// </summary>
     public partial interface IStationService {
+        /// <summary>
+        /// 获得指定的站点
+        /// </summary>
         S_Station GetStation(string id);
 
-        IPagedList<S_Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定区域(第三级区域)下的站点
+        /// </summary>
+        List<S_Station> GetStationsInArea(string parent);
 
-        List<S_Station> GetAllStationsAsList();
+        /// <summary>
+        /// 获得所有的站点
+        /// </summary>
+        List<S_Station> GetStations();
 
-        IPagedList<S_Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        List<S_Station> GetStationsAsList(string parent);
+        /// <summary>
+        /// 获得所有的站点(分页)
+        /// </summary>
+        IPagedList<S_Station> GetPagedStations(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

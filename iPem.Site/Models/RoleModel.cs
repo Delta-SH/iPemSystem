@@ -27,6 +27,6 @@ namespace iPem.Site.Models {
         public string[] areas { get; set; }
 
         [ExcelIgnore]
-        public string[] operates { get; set; }
+        public string[] permissions { get; set; }
     }
 }

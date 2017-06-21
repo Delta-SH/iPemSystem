@@ -7,12 +7,12 @@
     var CurrentUser = WorkContext.User;
     var CurrentEmployee = WorkContext.Employee;
 
-    Menu CurrentMenu = null;
+    U_Menu CurrentMenu = null;
     var mid = ViewContext.RouteData.Values["id"];
     if(mid != null) {
         int menuId;
         if(int.TryParse(mid.ToString(), out menuId)) {
-            CurrentMenu = WorkContext.Menus.Find(m => m.Id == menuId);
+            CurrentMenu = WorkContext.Authorizations.Menus.Find(m => m.Id == menuId);
         }
     }
 }
@@ -69,7 +69,7 @@
                     <li>
                         <a href="/Home/UCenter" target="_self" title="用户中心" class="ucenter @(ViewBag.BarIndex != null && ViewBag.BarIndex == 4 ? "ucurrent" : "")">
                             <span class="words">Hi, @(CurrentEmployee != null && !String.IsNullOrWhiteSpace(CurrentEmployee.Name) ? CurrentEmployee.Name : User.Identity.Name)</span>
-                            <img src="/Account/GetCurrentPhoto" alt="用户头像" title="用户头像" />
+                            <img src="/Account/GetUserPhoto" alt="用户头像" title="用户头像" />
                         </a>
                     </li>
                 </ul>

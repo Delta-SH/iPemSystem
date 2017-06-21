@@ -19,7 +19,6 @@ namespace iPem.Core {
         /// 全局变量
         /// </summary>
         private static PerformanceCounter cpuCounter;
-        private static PerformanceCounter ramCounter;
         private static GregorianCalendar calendar;
         private static AspNetHostingPermissionLevel? _trustLevel;
 
@@ -28,7 +27,6 @@ namespace iPem.Core {
         /// </summary>
         static CommonHelper() {
             cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            ramCounter = new PerformanceCounter("Memory", "Available MBytes");
             calendar = new GregorianCalendar();
         }
 
@@ -286,12 +284,8 @@ namespace iPem.Core {
         /// </summary>
         public static double GetMemoryUsage() {
             var computer = new Microsoft.VisualBasic.Devices.ComputerInfo();
-            //var total = (computer.TotalPhysicalMemory) / (1024 * 1024);
-            //var ram = ramCounter.NextValue();
-            //return Math.Round((1 - ram / total) * 100, 2);
-
             var rate = (double)computer.AvailablePhysicalMemory / (double)computer.TotalPhysicalMemory;
-            return Math.Round(rate * 100, 2);
+            return Math.Round((1d - rate) * 100, 2);
         }
     }
 }

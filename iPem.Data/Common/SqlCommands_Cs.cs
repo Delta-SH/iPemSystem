@@ -14,11 +14,12 @@ namespace iPem.Data.Common {
         public const string Sql_A_AAlarm_Repository_GetAlarmsInRoom = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RoomId] = @RoomId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAlarmsInDevice = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [DeviceId] = @DeviceId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAlarmsInSpan = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AlarmTime] BETWEEN @Start AND @End AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAllAlarms = @"SELECT * FROM [dbo].[A_AAlarm] ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetPrimaryAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [PrimaryId] = @PrimaryId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetRelatedAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RelatedId] = @RelatedId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetFilterAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [FilterId] = @FilterId ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_Confirm = @"UPDATE [dbo].[A_AAlarm] SET [Confirmed] = @Confirmed,[Confirmer] = @Confirmer,[ConfirmedTime] = @ConfirmedTime WHERE [Id] = @Id;";
 
         /// <summary>
         /// 历史告警表
@@ -182,7 +183,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N''' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -433,12 +434,12 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 实时性能数据表
         /// </summary>
-        public const string Sql_V_AMeasure_Repository_GetMeasuresInArea = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure] WHERE [AreaId] = @AreaId;";
-        public const string Sql_V_AMeasure_Repository_GetMeasuresInStation = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure] WHERE [StationId] = @StationId;";
-        public const string Sql_V_AMeasure_Repository_GetMeasuresInRoom = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure] WHERE [RoomId] = @RoomId;";
-        public const string Sql_V_AMeasure_Repository_GetMeasuresInDevice = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure] WHERE [DeviceId] = @DeviceId;";
-        public const string Sql_V_AMeasure_Repository_GetMeasuresInPoint = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure] WHERE [DeviceId] = @DeviceId AND [PointId] = @PointId;";
-        public const string Sql_V_AMeasure_Repository_GetMeasures = @"SELECT [AreaId],[StationId],[RoomId],[FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SignalDesc],[Value],[UpdateTime] FROM [dbo].[V_AMeasure];";
+        public const string Sql_V_AMeasure_Repository_GetMeasure = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [DeviceId] = @DeviceId AND [SignalId] = @SignalId AND [SignalNumber] = @SignalNumber;";        
+        public const string Sql_V_AMeasure_Repository_GetMeasuresInArea = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [AreaId] = @AreaId;";
+        public const string Sql_V_AMeasure_Repository_GetMeasuresInStation = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [StationId] = @StationId;";
+        public const string Sql_V_AMeasure_Repository_GetMeasuresInRoom = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [RoomId] = @RoomId;";
+        public const string Sql_V_AMeasure_Repository_GetMeasuresInDevice = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [DeviceId] = @DeviceId;";
+        public const string Sql_V_AMeasure_Repository_GetMeasures = @"SELECT * FROM [dbo].[V_AMeasure];";
 
         /// <summary>
         /// 蓄电池放电测值表

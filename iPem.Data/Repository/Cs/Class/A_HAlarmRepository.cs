@@ -207,16 +207,14 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<A_HAlarm> GetAlarmsInPoint(string device, string point, DateTime start, DateTime end) {
-            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar,100),
-                                     new SqlParameter("@PointId", SqlDbType.VarChar,100),
+        public List<A_HAlarm> GetAlarmsInPoint(string id, DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@PointId", SqlDbType.VarChar,100),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
-            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
-            parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<A_HAlarm>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_HAlarm_Repository_GetAlarmsInPoint, parms)) {

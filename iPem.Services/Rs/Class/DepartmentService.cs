@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_DepartmentRepository _departmentRepository;
+        private readonly IC_DepartmentRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public DepartmentService(
-            IC_DepartmentRepository departmentRepository,
+            IC_DepartmentRepository repository,
             ICacheManager cacheManager) {
-            this._departmentRepository = departmentRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -32,20 +32,20 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public C_Department GetDepartment(string id) {
-            return _departmentRepository.GetEntity(id);
+        public C_Department GetDepartmentById(string id) {
+            return _repository.GetDepartmentById(id);
         }
 
         public C_Department GetDepartmentByCode(string code) {
-            return _departmentRepository.GetEntityByCode(code);
+            return _repository.GetDepartmentByCode(code);
         }
 
-        public IPagedList<C_Department> GetAllDepartments(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_Department>(this.GetAllDepartmentsAsList(), pageIndex, pageSize);
+        public List<C_Department> GetDepartments() {
+            return _repository.GetDepartments();
         }
 
-        public List<C_Department> GetAllDepartmentsAsList() {
-            return _departmentRepository.GetEntities();
+        public IPagedList<C_Department> GetPagedDepartments(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Department>(this.GetDepartments(), pageIndex, pageSize);
         }
 
         #endregion

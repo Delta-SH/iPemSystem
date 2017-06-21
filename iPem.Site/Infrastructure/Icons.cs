@@ -3,6 +3,7 @@
 namespace iPem.Site.Infrastructure {
     public static class Icons {
         public const string Add = @"/content/themes/icons/add.png";
+        public const string All = @"/content/themes/icons/all.png";
         public const string Cancel = @"/content/themes/icons/cancel.png";
         public const string Clear = @"/content/themes/icons/clear.png";
         public const string Category = @"/content/themes/icons/category.png";
@@ -18,6 +19,7 @@ namespace iPem.Site.Infrastructure {
         public const string Error = @"/content/themes/icons/error.png";
         public const string Excel = @"/content/themes/icons/excel.png";
         public const string Exit = @"/content/themes/icons/exit.png";
+        public const string Filter = @"/content/themes/icons/filter.png";
         public const string Home = @"/content/themes/icons/home.png";
         public const string Jifang = @"/content/themes/icons/jifang.png";
         public const string Junheng = @"/content/themes/icons/junheng.png";
@@ -29,6 +31,7 @@ namespace iPem.Site.Infrastructure {
         public const string Ok = @"/content/themes/icons/ok.png";
         public const string Password = @"/content/themes/icons/password.png";
         public const string Print = @"/content/themes/icons/print.png";
+        public const string Query = @"/content/themes/icons/query.png";
         public const string Read = @"/content/themes/icons/read.png";
         public const string Remove = @"/content/themes/icons/remove.png";
         public const string Room = @"/content/themes/icons/room.png";

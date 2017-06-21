@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_LogicTypeRepository _logicTypeRepository;
+        private readonly IC_LogicTypeRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public LogicTypeService(
-            IC_LogicTypeRepository logicTypeRepository,
+            IC_LogicTypeRepository repository,
             ICacheManager cacheManager) {
-            this._logicTypeRepository = logicTypeRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,51 +33,49 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_LogicType GetLogicType(string id) {
-            return _logicTypeRepository.GetEntity(id);
+            return _repository.GetLogicType(id);
         }
 
         public C_SubLogicType GetSubLogicType(string id) {
-            return _logicTypeRepository.GetSubEntity(id);
+            return _repository.GetSubLogicType(id);
         }
 
-        public IPagedList<C_LogicType> GetAllLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_LogicType>(this.GetAllLogicTypesAsList(), pageIndex, pageSize);
-        }
-
-        public List<C_LogicType> GetAllLogicTypesAsList() {
+        public List<C_LogicType> GetLogicTypes() {
             List<C_LogicType> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_LogicTypesRepository)) {
-                result = _cacheManager.Get<List<C_LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository);
+            var key = GlobalCacheKeys.Rs_LogicTypesRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<C_LogicType>>(key);
             } else {
-                result = _logicTypeRepository.GetEntities();
-                _cacheManager.Set<List<C_LogicType>>(GlobalCacheKeys.Rs_LogicTypesRepository, result);
+                result = _repository.GetLogicTypes();
+                _cacheManager.Set<List<C_LogicType>>(key, result);
             }
 
             return result;
         }
 
-        public IPagedList<C_SubLogicType> GetAllSubLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_SubLogicType>(this.GetAllSubLogicTypesAsList(), pageIndex, pageSize);
+        public List<C_SubLogicType> GetSubLogicTypes(string parent) {
+            return _repository.GetSubLogicTypes(parent);
         }
 
-        public List<C_SubLogicType> GetAllSubLogicTypesAsList() {
+        public List<C_SubLogicType> GetSubLogicTypes() {
             List<C_SubLogicType> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_SubLogicTypesRepository)) {
-                result = _cacheManager.Get<List<C_SubLogicType>>(GlobalCacheKeys.Rs_SubLogicTypesRepository);
+            var key = GlobalCacheKeys.Rs_SubLogicTypesRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<C_SubLogicType>>(key);
             } else {
-                result = _logicTypeRepository.GetSubEntities();
-                _cacheManager.Set<List<C_SubLogicType>>(GlobalCacheKeys.Rs_SubLogicTypesRepository, result);
+                result = _repository.GetSubLogicTypes();
+                _cacheManager.Set<List<C_SubLogicType>>(key, result);
             }
 
             return result;
         }
 
-        public IPagedList<C_SubLogicType> GetSubLogicTypes(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_SubLogicType>(this.GetSubLogicTypesAsList(parent), pageIndex, pageSize);
+        public IPagedList<C_LogicType> GetPagedLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_LogicType>(this.GetLogicTypes(), pageIndex, pageSize);
         }
 
-        public List<C_SubLogicType> GetSubLogicTypesAsList(string parent) {
-            return _logicTypeRepository.GetSubEntities(parent);
+        public IPagedList<C_SubLogicType> GetPagedSubLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_SubLogicType>(this.GetSubLogicTypes(), pageIndex, pageSize);
         }
 
         #endregion

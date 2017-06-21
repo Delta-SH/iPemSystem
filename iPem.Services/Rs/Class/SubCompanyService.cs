@@ -10,7 +10,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_SubCompanyRepository _subCompanyRepository;
+        private readonly IC_SubCompanyRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,9 +21,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public SubCompanyService(
-            IC_SubCompanyRepository subCompanyRepository,
+            IC_SubCompanyRepository repository,
             ICacheManager cacheManager) {
-            this._subCompanyRepository = subCompanyRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -31,16 +31,16 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public C_SubCompany GetSubCompany(string id) {
-            return _subCompanyRepository.GetEntity(id);
+        public C_SubCompany GetCompany(string id) {
+            return _repository.GetCompany(id);
         }
 
-        public IPagedList<C_SubCompany> GetAllSubCompanies(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_SubCompany>(this.GetAllSubCompaniesAsList(), pageIndex, pageSize);
+        public List<C_SubCompany> GetCompanies() {
+            return _repository.GetCompanies();
         }
 
-        public List<C_SubCompany> GetAllSubCompaniesAsList() {
-            return _subCompanyRepository.GetEntities();
+        public IPagedList<C_SubCompany> GetPagedCompanies(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_SubCompany>(this.GetCompanies(), pageIndex, pageSize);
         }
 
         #endregion

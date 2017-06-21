@@ -13,7 +13,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IUserRepository _userRepository;
+        private readonly IU_UserRepository _repository;
         private readonly ICacheManager _cacheManager;
         private readonly EnmPasswordFormat _passwordFormat;
 
@@ -25,9 +25,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public UserService(
-            IUserRepository userRepository,
+            IU_UserRepository repository,
             ICacheManager cacheManager) {
-            this._userRepository = userRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
             this._passwordFormat = EnmPasswordFormat.Hashed;
         }
@@ -36,84 +36,84 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual U_User GetUser(Guid id) {
-            return _userRepository.GetEntity(id);
+        public U_User GetUserById(Guid id) {
+            return _repository.GetUserById(id);
         }
 
-        public virtual U_User GetUser(string name) {
-            return _userRepository.GetEntity(name);
+        public U_User GetUserByName(string name) {
+            return _repository.GetUserByName(name);
         }
 
-        public virtual IPagedList<U_User> GetUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_User>(this.GetUsersAsList(), pageIndex, pageSize);
+        public List<U_User> GetUsers() {
+            return _repository.GetUsers();
         }
 
-        public virtual List<U_User> GetUsersAsList() {
-            return _userRepository.GetEntities();
+        public List<U_User> GetUsersInRole(Guid role, bool deep = true) {
+            if (deep && role.Equals(U_Role.SuperId))
+                return this.GetUsers();
+
+            return _repository.GetUsersInRole(role);
         }
 
-        public virtual IPagedList<U_User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_User>(this.GetUsersAsList(role, deep), pageIndex, pageSize);
+        public IPagedList<U_User> GetUsers(Guid role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_User>(this.GetUsersInRole(role, deep), pageIndex, pageSize);
         }
 
-        public virtual List<U_User> GetUsersAsList(Guid role, bool deep = true) {
-            if(deep && role.Equals(U_Role.SuperId))
-                return this.GetUsersAsList();
-
-            return _userRepository.GetEntities(role);
+        public IPagedList<U_User> GetPagedUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_User>(this.GetUsers(), pageIndex, pageSize);
         }
 
-        public virtual void Add(U_User user) {
+        public void Add(U_User user) {
             if (user == null)
                 throw new ArgumentNullException("user");
 
             user.PasswordFormat = _passwordFormat;
-            user.PasswordSalt = _userRepository.GenerateSalt();
-            user.Password = _userRepository.EncodePassword(user.Password, user.PasswordFormat, user.PasswordSalt);
-            _userRepository.Insert(user);
+            user.PasswordSalt = _repository.GenerateSalt();
+            user.Password = _repository.EncodePassword(user.Password, user.PasswordFormat, user.PasswordSalt);
+            _repository.Insert(new List<U_User> { user });
         }
 
-        public virtual void Update(U_User user) {
-            if(user == null)
-                throw new ArgumentNullException("user");
+        public void Update(params U_User[] users) {
+            if (users == null || users.Length == 0)
+                throw new ArgumentNullException("users");
 
-            _userRepository.Update(user);
+            _repository.Update(users);
         }
 
-        public virtual void Remove(U_User user) {
-            if(user == null)
-                throw new ArgumentNullException("user");
+        public void Remove(params U_User[] users) {
+            if (users == null || users.Length == 0)
+                throw new ArgumentNullException("users");
 
-            _userRepository.Delete(user);
+            _repository.Delete(users);
         }
 
-        public virtual void SetLastLoginDate(Guid id, DateTime lastDate) {
+        public void SetLastLoginDate(Guid id, DateTime lastDate) {
             if(id == default(Guid))
                 throw new ArgumentNullException("user");
 
-            _userRepository.SetLastLoginDate(id, lastDate);
+            _repository.SetLastLoginDate(id, lastDate);
         }
 
-        public virtual void SetFailedPasswordDate(Guid id, DateTime failedDate) {
+        public void SetFailedPasswordDate(Guid id, DateTime failedDate) {
             if(id == default(Guid))
                 throw new ArgumentNullException("user");
 
-            _userRepository.SetFailedPasswordDate(id, failedDate);
+            _repository.SetFailedPasswordDate(id, failedDate);
         }
 
-        public virtual void SetLockedOut(Guid id, Boolean isLockedOut, DateTime lastLockoutDate) {
+        public void SetLockedOut(Guid id, Boolean isLockedOut, DateTime lastLockoutDate) {
             if(id == default(Guid))
                 throw new ArgumentNullException("user");
 
-            _userRepository.SetLockedOut(id, isLockedOut, lastLockoutDate);
+            _repository.SetLockedOut(id, isLockedOut, lastLockoutDate);
         }
 
         #endregion
 
         #region Validate & Password
 
-        public virtual EnmLoginResults Validate(String name, String password) {
-            var user = this.GetUser(name);
+        public EnmLoginResults Validate(String name, String password) {
+            var user = this.GetUserByName(name);
 
             if(user == null)
                 return EnmLoginResults.NotExist;
@@ -133,24 +133,24 @@ namespace iPem.Services.Sc {
             return EnmLoginResults.Successful;
         }
 
-        public virtual bool CheckPassword(String oPwd, EnmPasswordFormat oFormat, String oSalt, String ePwd) {
-            return _userRepository.EncodePassword(oPwd, oFormat, oSalt).Equals(ePwd);
+        public bool CheckPassword(String oPwd, EnmPasswordFormat oFormat, String oSalt, String ePwd) {
+            return _repository.EncodePassword(oPwd, oFormat, oSalt).Equals(ePwd);
         }
 
-        public virtual EnmChangeResults ChangePassword(U_User user, String oPwd, String nPwd) {
+        public EnmChangeResults ChangePassword(U_User user, String oPwd, String nPwd) {
             if(!CheckPassword(oPwd, user.PasswordFormat, user.PasswordSalt, user.Password))
                 return EnmChangeResults.WrongPassword;
 
-            user.PasswordSalt = _userRepository.GenerateSalt();
-            user.Password = _userRepository.EncodePassword(nPwd, user.PasswordFormat, user.PasswordSalt);
-            _userRepository.ChangePassword(user.Id, user.Password, user.PasswordFormat, user.PasswordSalt);
+            user.PasswordSalt = _repository.GenerateSalt();
+            user.Password = _repository.EncodePassword(nPwd, user.PasswordFormat, user.PasswordSalt);
+            _repository.ChangePassword(user.Id, user.Password, user.PasswordFormat, user.PasswordSalt);
             return EnmChangeResults.Successful;
         }
 
-        public virtual void ForcePassword(U_User user, String nPwd) {
-            user.PasswordSalt = _userRepository.GenerateSalt();
-            user.Password = _userRepository.EncodePassword(nPwd, user.PasswordFormat, user.PasswordSalt);
-            _userRepository.ChangePassword(user.Id, user.Password, user.PasswordFormat, user.PasswordSalt);
+        public void ForcePassword(U_User user, String nPwd) {
+            user.PasswordSalt = _repository.GenerateSalt();
+            user.Password = _repository.EncodePassword(nPwd, user.PasswordFormat, user.PasswordSalt);
+            _repository.ChangePassword(user.Id, user.Password, user.PasswordFormat, user.PasswordSalt);
         }
 
         #endregion

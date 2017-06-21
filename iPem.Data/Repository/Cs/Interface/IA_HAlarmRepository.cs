@@ -28,9 +28,9 @@ namespace iPem.Data.Repository.Cs {
         List<A_HAlarm> GetAlarmsInDevice(string id, DateTime start, DateTime end);
 
         /// <summary>
-        /// 获得指定设备下单个信号的告警
+        /// 获得指定信号的告警
         /// </summary>
-        List<A_HAlarm> GetAlarmsInPoint(string device, string point, DateTime start, DateTime end);
+        List<A_HAlarm> GetAlarmsInPoint(string point, DateTime start, DateTime end);
 
         /// <summary>
         /// 获得指定时段内的告警

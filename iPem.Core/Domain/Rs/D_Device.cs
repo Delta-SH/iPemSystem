@@ -110,6 +110,11 @@ namespace iPem.Core.Domain.Rs {
         public string StationName { get; set; }
 
         /// <summary>
+        /// 站点类型(根据站点类型确定该设备下每个信号所对应的信号参数)
+        /// </summary>
+        public string StaTypeId { get; set; }
+
+        /// <summary>
         /// 所属机房
         /// </summary>
         public string RoomId { get; set; }

@@ -20,7 +20,6 @@ namespace iPem.Data.Repository.Rs {
         /// <summary>
         /// 获得所有的逻辑分类
         /// </summary>
-        /// <returns></returns>
         List<C_LogicType> GetLogicTypes();
 
         /// <summary>
@@ -31,7 +30,6 @@ namespace iPem.Data.Repository.Rs {
         /// <summary>
         /// 获得所有的逻辑子类
         /// </summary>
-        /// <returns></returns>
         List<C_SubLogicType> GetSubLogicTypes();
     }
 }

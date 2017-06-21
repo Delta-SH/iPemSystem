@@ -5,21 +5,54 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 标准信号API
+    /// </summary>
     public partial interface IPointService {
-        IPagedList<P_Point> GetAllPoints(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定设备下的信号
+        /// </summary>
+        List<P_Point> GetPointsInDevice(string id);
 
-        List<P_Point> GetAllPointsAsList();
+        /// <summary>
+        /// 获得指定设备下不同类型的信号
+        /// </summary>
+        List<P_Point> GetPointsInDevice(string id, bool _ai, bool _ao, bool _di, bool _do);
 
-        IPagedList<P_Point> GetPointsInDevice(string device, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定模版下的信号
+        /// </summary>
+        List<P_Point> GetPointsInProtocol(string id);
 
-        List<P_Point> GetPointsInDeviceAsList(string device);
+        /// <summary>
+        /// 获得所有的信号
+        /// </summary>
+        List<P_Point> GetPoints();
 
-        IPagedList<P_Point> GetPointsInDevice(string device, bool _ai, bool _ao, bool _di, bool _do, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定信号和站点类型的信号参数
+        /// </summary>
+        P_SubPoint GetSubPoint(string point, string statype);
 
-        List<P_Point> GetPointsInDevice(string device, bool _ai, bool _ao, bool _di, bool _do);
+        /// <summary>
+        /// 获得指定信号的信号参数
+        /// 同一个信号在不同的站点类型下，有可能有不同的参数信息。
+        /// </summary>
+        List<P_SubPoint> GetSubPointsInPoint(string id);
 
-        IPagedList<P_Point> GetPointsInProtocol(string protocol, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的信号参数
+        /// </summary>
+        List<P_SubPoint> GetSubPoints();
 
-        List<P_Point> GetPointsInProtocolAsList(string protocol);
+        /// <summary>
+        /// 获得所有的信号（分页）
+        /// </summary>
+        IPagedList<P_Point> GetPagedPoints(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// 获得所有的信号参数（分页）
+        /// </summary>
+        IPagedList<P_SubPoint> GetPagedSubPoints(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

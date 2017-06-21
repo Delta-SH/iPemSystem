@@ -16,6 +16,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("名称")]
         public string name { get; set; }
 
+        [ExcelDisplayName("厂家")]
+        public string vendor { get; set; }
+
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 
@@ -31,10 +34,10 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("端口")]
         public int port { get; set; }
 
-        [ExcelDisplayName("最后离线时间")]
+        [ExcelDisplayName("离线时间")]
         public string last { get; set; }
 
-        [ExcelDisplayName("状态改变时间")]
+        [ExcelDisplayName("注册时间")]
         public string change { get; set; }
 
         [ExcelDisplayName("状态")]

@@ -4,11 +4,23 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 计量单位API
+    /// </summary>
     public partial interface IUnitService {
+        /// <summary>
+        /// 获得指定的计量单位
+        /// </summary>
         C_Unit GetUnit(string id);
 
-        IPagedList<C_Unit> GetAllUnits(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的计量单位
+        /// </summary>
+        List<C_Unit> GetUnits();
 
-        List<C_Unit> GetAllUnitsAsList();
+        /// <summary>
+        /// 获得所有的计量单位(分页)
+        /// </summary>
+        IPagedList<C_Unit> GetPagedUnits(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

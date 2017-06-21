@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_ProductorRepository _productorRepository;
+        private readonly IC_ProductorRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public ProductorService(
-            IC_ProductorRepository productorRepository,
+            IC_ProductorRepository repository,
             ICacheManager cacheManager) {
-            this._productorRepository = productorRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,15 +33,15 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_Productor GetProductor(string id) {
-            return _productorRepository.GetEntity(id);
+            return _repository.GetProductor(id);
         }
 
-        public IPagedList<C_Productor> GetAllProductors(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_Productor>(this.GetAllProductorsAsList(), pageIndex, pageSize);
+        public List<C_Productor> GetProductors() {
+            return _repository.GetProductors();
         }
 
-        public List<C_Productor> GetAllProductorsAsList() {
-            return _productorRepository.GetEntities();
+        public IPagedList<C_Productor> GetPagedProductors(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Productor>(this.GetProductors(), pageIndex, pageSize);
         }
 
         #endregion

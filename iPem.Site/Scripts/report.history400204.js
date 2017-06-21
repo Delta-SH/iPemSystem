@@ -238,13 +238,13 @@
                                 };
                             }
 
-                            if (item.index == $$iPems.AlmLevel.Level1)
+                            if (item.index == $$iPems.Level.Level1)
                                 groups[item.name].L1 = item.value;
-                            else if (item.index == $$iPems.AlmLevel.Level2)
+                            else if (item.index == $$iPems.Level.Level2)
                                 groups[item.name].L2 = item.value;
-                            else if (item.index == $$iPems.AlmLevel.Level3)
+                            else if (item.index == $$iPems.Level.Level3)
                                 groups[item.name].L3 = item.value;
-                            else if (item.index == $$iPems.AlmLevel.Level4)
+                            else if (item.index == $$iPems.Level.Level4)
                                 groups[item.name].L4 = item.value;
                         });
 

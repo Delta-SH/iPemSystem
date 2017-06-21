@@ -11,8 +11,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IMenuRepository _menuRepository;
-        private readonly IMenusInRoleRepository _menusInRoleRepository;
+        private readonly IU_MenuRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -23,11 +22,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public MenuService(
-            IMenuRepository menuRepository,
-            IMenusInRoleRepository menusInRoleRepository,
+            IU_MenuRepository repository,
             ICacheManager cacheManager) {
-            this._menuRepository = menuRepository;
-            this._menusInRoleRepository = menusInRoleRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -36,73 +33,66 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public U_Menu GetMenu(int id) {
-            return _menuRepository.GetEntity(id);
+            return _repository.GetMenu(id);
         }
 
-        public IPagedList<U_Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_Menu>(this.GetAllMenusAsList(), pageIndex, pageSize);
-        }
-
-        public List<U_Menu> GetAllMenusAsList() {
+        public List<U_Menu> GetMenus() {
             List<U_Menu> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository)) {
-                result = _cacheManager.Get<List<U_Menu>>(GlobalCacheKeys.Sc_MenusRepository);
+            var key = GlobalCacheKeys.Sc_MenusRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<U_Menu>>(key);
             } else {
-                result = _menuRepository.GetEntities();
-                _cacheManager.Set<List<U_Menu>>(GlobalCacheKeys.Sc_MenusRepository, result);
+                result = _repository.GetMenus();
+                _cacheManager.Set<List<U_Menu>>(key, result);
             }
 
             return result;
         }
 
-        public IPagedList<U_Menu> GetMenus(Guid role, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<U_Menu>(this.GetMenusAsList(role), pageIndex, pageSize);
-        }
-
-        public List<U_Menu> GetMenusAsList(Guid role) {
-            if(role.Equals(U_Role.SuperId))
-                return this.GetAllMenusAsList();
+        public List<U_Menu> GetMenusInRole(Guid id) {
+            if(id.Equals(U_Role.SuperId))
+                return this.GetMenus();
 
             List<U_Menu> result = null;
-            var key = string.Format(GlobalCacheKeys.Rl_MenusResultPattern, role);
+            var key = string.Format(GlobalCacheKeys.Global_MenusInRolePattern, id);
             if(_cacheManager.IsSet(key)) {
                 result = _cacheManager.Get<List<U_Menu>>(key);
             } else {
-                result = _menusInRoleRepository.GetEntity(role).Menus;
-                _cacheManager.Set<List<U_Menu>>(key, result, CachedIntervals.Global_Intervals);
+                result = _repository.GetMenusInRole(id);
+                _cacheManager.Set<List<U_Menu>>(key, result, CachedIntervals.Global_Default_Intervals);
             }
 
             return result;
         }
 
-        public void InsertMenu(U_Menu menu) {
-            if(menu == null)
-                throw new ArgumentNullException("menu");
+        public void Add(params U_Menu[] menus) {
+            if (menus == null || menus.Length == 0)
+                throw new ArgumentNullException("menus");
 
             if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
-            _menuRepository.Insert(menu);
+            _repository.Insert(menus);
         }
 
-        public void UpdateMenu(U_Menu menu) {
-            if(menu == null)
-                throw new ArgumentNullException("menu");
+        public void Update(params U_Menu[] menus) {
+            if (menus == null || menus.Length == 0)
+                throw new ArgumentNullException("menus");
 
             if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
-            _menuRepository.Update(menu);
+            _repository.Update(menus);
         }
 
-        public void DeleteMenu(U_Menu menu) {
-            if(menu == null)
-                throw new ArgumentNullException("menu");
+        public void Remove(params U_Menu[] menus) {
+            if (menus == null || menus.Length == 0)
+                throw new ArgumentNullException("menus");
 
             if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
-            _menuRepository.Delete(menu);
+            _repository.Delete(menus);
         }
 
         #endregion

@@ -4,21 +4,38 @@ using iPem.Core.Domain.Sc;
 using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
+    /// <summary>
+    /// 系统菜单API
+    /// </summary>
     public partial interface IMenuService {
+        /// <summary>
+        /// 获得指定的系统菜单
+        /// </summary>
         U_Menu GetMenu(int id);
 
-        IPagedList<U_Menu> GetAllMenus(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得全部的系统菜单
+        /// </summary>
+        List<U_Menu> GetMenus();
 
-        List<U_Menu> GetAllMenusAsList();
+        /// <summary>
+        /// 获得指定角色的系统菜单
+        /// </summary>
+        List<U_Menu> GetMenusInRole(Guid id);
 
-        IPagedList<U_Menu> GetMenus(Guid roleId, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 新增系统菜单
+        /// </summary>
+        void Add(params U_Menu[] menus);
 
-        List<U_Menu> GetMenusAsList(Guid role);
+        /// <summary>
+        /// 更新系统菜单
+        /// </summary>
+        void Update(params U_Menu[] menus);
 
-        void InsertMenu(U_Menu menu);
-
-        void UpdateMenu(U_Menu menu);
-
-        void DeleteMenu(U_Menu menu);
+        /// <summary>
+        /// 删除系统菜单
+        /// </summary>
+        void Remove(params U_Menu[] menus);
     }
 }

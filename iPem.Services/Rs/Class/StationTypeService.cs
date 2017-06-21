@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_StationTypeRepository _stationTypeRepository;
+        private readonly IC_StationTypeRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public StationTypeService(
-            IC_StationTypeRepository stationTypeRepository,
+            IC_StationTypeRepository repository,
             ICacheManager cacheManager) {
-            this._stationTypeRepository = stationTypeRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,23 +33,24 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_StationType GetStationType(string id) {
-            return _stationTypeRepository.GetEntity(id);
+            return _repository.GetStationType(id);
         }
 
-        public IPagedList<C_StationType> GetAllStationTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_StationType>(this.GetAllStationTypesAsList(), pageIndex, pageSize);
-        }
-
-        public List<C_StationType> GetAllStationTypesAsList() {
+        public List<C_StationType> GetStationTypes() {
             List<C_StationType> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_StationTypesRepository)) {
-                result = _cacheManager.Get<List<C_StationType>>(GlobalCacheKeys.Rs_StationTypesRepository);
+            var key = GlobalCacheKeys.Rs_StationTypesRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<C_StationType>>(key);
             } else {
-                result = _stationTypeRepository.GetEntities();
-                _cacheManager.Set<List<C_StationType>>(GlobalCacheKeys.Rs_StationTypesRepository, result);
+                result = _repository.GetStationTypes();
+                _cacheManager.Set<List<C_StationType>>(key, result);
             }
 
             return result;
+        }
+
+        public IPagedList<C_StationType> GetPagedStationTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_StationType>(this.GetStationTypes(), pageIndex, pageSize);
         }
 
         #endregion

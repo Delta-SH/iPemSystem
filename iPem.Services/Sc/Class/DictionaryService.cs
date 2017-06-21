@@ -10,7 +10,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IDictionaryRepository _dictionaryRepository;
+        private readonly IM_DictionaryRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,9 +21,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public DictionaryService(
-            IDictionaryRepository dictionaryRepository,
+            IM_DictionaryRepository repository,
             ICacheManager cacheManager) {
-            this._dictionaryRepository = dictionaryRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -32,29 +32,22 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public M_Dictionary GetDictionary(int id) {
-            return _dictionaryRepository.GetEntity(id);
+            return _repository.GetDictionary(id);
         }
 
-        public IPagedList<M_Dictionary> GetDictionaries(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<M_Dictionary>(this.GetDictionariesAsList(), pageIndex, pageSize);
+        public List<M_Dictionary> GetDictionaries() {
+            return _repository.GetDictionaries();
         }
 
-        public List<M_Dictionary> GetDictionariesAsList() {
-            return _dictionaryRepository.GetEntities();
+        public IPagedList<M_Dictionary> GetPagedDictionaries(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Dictionary>(this.GetDictionaries(), pageIndex, pageSize);
         }
 
-        public void Update(M_Dictionary dictionary) {
-            if(dictionary == null)
-                throw new ArgumentNullException("dictionary");
-
-            _dictionaryRepository.Update(dictionary);
-        }
-
-        public void Update(List<M_Dictionary> dictionaries) {
-            if(dictionaries == null)
+        public void Update(params M_Dictionary[] dictionaries) {
+            if (dictionaries == null || dictionaries.Length == 0)
                 throw new ArgumentNullException("dictionaries");
 
-            _dictionaryRepository.Update(dictionaries);
+            _repository.Update(dictionaries);
         }
 
         #endregion

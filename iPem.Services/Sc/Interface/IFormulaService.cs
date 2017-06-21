@@ -5,21 +5,33 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Sc {
+    /// <summary>
+    /// 能耗公式API
+    /// </summary>
     public partial interface IFormulaService {
-
+        /// <summary>
+        /// 获得指定的公式
+        /// </summary>
         M_Formula GetFormula(string id, EnmSSH type, EnmFormula formulaType);
 
-        IPagedList<M_Formula> GetFormulas(string id, EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定的公式
+        /// </summary>
+        List<M_Formula> GetFormulas(string id, EnmSSH type);
 
-        List<M_Formula> GetFormulasAsList(string id, EnmSSH type);
+        /// <summary>
+        /// 获得所有的公式
+        /// </summary>
+        List<M_Formula> GetAllFormulas();
 
-        IPagedList<M_Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的公式(分页)
+        /// </summary>
+        IPagedList<M_Formula> GetPagedFormulas(int pageIndex = 0, int pageSize = int.MaxValue);
 
-        List<M_Formula> GetAllFormulasAsList();
-
-        void Save(M_Formula formula);
-
-        void SaveRange(List<M_Formula> formulas);
-
+        /// <summary>
+        /// 保存能耗公式
+        /// </summary>
+        void Save(params M_Formula[] formulas);
     }
 }

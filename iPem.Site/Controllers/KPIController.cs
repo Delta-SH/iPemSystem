@@ -4,7 +4,6 @@ using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Rs;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
-using iPem.Services.Am;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
@@ -27,18 +26,18 @@ namespace iPem.Site.Controllers {
         private readonly IExcelManager _excelManager;
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-        private readonly IWebLogger _webLogger;
+        private readonly IWebEventService _webLogger;
         private readonly IDictionaryService _dictionaryService;
-        private readonly IEnumMethodsService _enumMethodsService;
+        private readonly IEnumMethodService _enumMethodService;
         private readonly IStationTypeService _stationTypeService;
         private readonly IDeviceTypeService _deviceTypeService;
-        private readonly IHisAlmService _hisAlmService;
-        private readonly IHisBatService _hisBatService;
-        private readonly IHisBatTimeService _hisBatTimeService;
-        private readonly IHisElecService _hisElecService;
-        private readonly IHisLoadRateService _hisLoadRateService;
-        private readonly IAmDeviceService _amDeviceService;
-        private readonly IAmStationService _amStationService;
+        private readonly IHAlarmService _hisAlarmService;
+        private readonly IBatService _batService;
+        private readonly IBatTimeService _batTimeService;
+        private readonly IElecService _elecService;
+        private readonly ILoadService _loadService;
+        private readonly IHIDeviceService _hIDeviceService;
+        private readonly IHIStationService _hIStationService;
 
         #endregion
 
@@ -48,33 +47,33 @@ namespace iPem.Site.Controllers {
             IExcelManager excelManager,
             ICacheManager cacheManager,
             IWorkContext workContext,
-            IWebLogger webLogger,
+            IWebEventService webLogger,
             IDictionaryService dictionaryService,
-            IEnumMethodsService enumMethodsService,
+            IEnumMethodService enumMethodService,
             IStationTypeService stationTypeService,
             IDeviceTypeService deviceTypeService,
-            IHisAlmService hisAlmService,
-            IHisBatService hisBatService,
-            IHisBatTimeService hisBatTimeService,
-            IHisElecService hisElecService,
-            IHisLoadRateService hisLoadRateService,
-            IAmDeviceService amDeviceService,
-            IAmStationService amStationService) {
+            IHAlarmService hisAlarmService,
+            IBatService batService,
+            IBatTimeService batTimeService,
+            IElecService elecService,
+            ILoadService loadService,
+            IHIDeviceService hIDeviceService,
+            IHIStationService hIStationService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
             this._dictionaryService = dictionaryService;
-            this._enumMethodsService = enumMethodsService;
+            this._enumMethodService = enumMethodService;
             this._stationTypeService = stationTypeService;
             this._deviceTypeService = deviceTypeService;
-            this._hisAlmService = hisAlmService;
-            this._hisBatService = hisBatService;
-            this._hisBatTimeService = hisBatTimeService;
-            this._hisLoadRateService = hisLoadRateService;
-            this._hisElecService = hisElecService;
-            this._amDeviceService = amDeviceService;
-            this._amStationService = amStationService;
+            this._hisAlarmService = hisAlarmService;
+            this._batService = batService;
+            this._batTimeService = batTimeService;
+            this._loadService = loadService;
+            this._elecService = elecService;
+            this._hIDeviceService = hIDeviceService;
+            this._hIStationService = hIStationService;
         }
 
         #endregion
@@ -83,7 +82,7 @@ namespace iPem.Site.Controllers {
 
         [Authorize]
         public ActionResult Base(int? id) {
-            if(id.HasValue && _workContext.Menus.Any(m => m.Id == id.Value))
+            if(id.HasValue && _workContext.Authorizations.Menus.Any(m => m.Id == id.Value))
                 return View(string.Format("base{0}", id.Value));
 
             throw new HttpException(404, "Page not found.");
@@ -91,7 +90,7 @@ namespace iPem.Site.Controllers {
 
         [Authorize]
         public ActionResult Performance(int? id) {
-            if(id.HasValue && _workContext.Menus.Any(m => m.Id == id.Value))
+            if (id.HasValue && _workContext.Authorizations.Menus.Any(m => m.Id == id.Value))
                 return View(string.Format("performance{0}", id.Value));
 
             throw new HttpException(404, "Page not found.");
@@ -99,7 +98,7 @@ namespace iPem.Site.Controllers {
 
         [Authorize]
         public ActionResult Custom(int? id) {
-            if(id.HasValue && _workContext.Menus.Any(m => m.Id == id.Value))
+            if (id.HasValue && _workContext.Authorizations.Menus.Any(m => m.Id == id.Value))
                 return View(string.Format("custom{0}", id.Value));
 
             throw new HttpException(404, "Page not found.");
@@ -1305,12 +1304,12 @@ namespace iPem.Site.Controllers {
             var points = _workContext.RtValues.hxzlxtkydXinHao;
             var devTypes = _workContext.RtValues.hxzlxtkydLeiXing;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
 
             if(parent != "root") {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null)
                     stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
@@ -1318,10 +1317,10 @@ namespace iPem.Site.Controllers {
             var index = 0;
             foreach(var station in stations) {
                 var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
-                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
+                var alarms = _hisAlarmService.GetAlarmsInStation(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
 
-                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500101 {
                     index = ++index,
@@ -1355,26 +1354,26 @@ namespace iPem.Site.Controllers {
             var runPoints = _workContext.RtValues.hxjlxtkydPangLuXinHao;
             var devTypes = _workContext.RtValues.hxjlxtkydLeiXing;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
 
             if(parent != "root") {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null)
                     stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
             var index = 0;
             foreach(var station in stations) {
-                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate);
+                var alarms = _hisAlarmService.GetAlarmsInStation(station.Current.Id, startDate, endDate);
                 var almAlarms = alarms.FindAll(a => almPoints.Contains(a.PointId));
                 var runAlarms = alarms.FindAll(a => runPoints.Contains(a.PointId));
                 var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
-                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                var almTime = almAlarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
-                var runTime = runAlarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var almTime = almAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
+                var runTime = runAlarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500102 {
                     index = ++index,
@@ -1406,19 +1405,19 @@ namespace iPem.Site.Controllers {
             var points = _workContext.RtValues.hxwkxtkydXinHao;
             var devTypes = _workContext.RtValues.hxwkxtkydLeiXing;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
 
             if(parent != "root") {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null)
                     stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
             var index = 0;
             foreach(var station in stations) {
-                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
+                var alarms = _hisAlarmService.GetAlarmsInStation(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
                 var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id));
 
                 var total = 0;
@@ -1427,8 +1426,8 @@ namespace iPem.Site.Controllers {
                     total += gwPoints.Count;
                 }
 
-                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500103 {
                     index = ++index,
@@ -1459,12 +1458,12 @@ namespace iPem.Site.Controllers {
             var points = _workContext.RtValues.hxjkkydXinHao;
             var devTypes = _workContext.RtValues.hxjkkydLeiXing;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
 
             if(parent != "root") {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null)
                     stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
@@ -1472,10 +1471,10 @@ namespace iPem.Site.Controllers {
             var index = 0;
             foreach(var station in stations) {
                 var devices = station.Rooms.SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
-                var alarms = _hisAlmService.GetAlmsInStationAsList(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
+                var alarms = _hisAlarmService.GetAlarmsInStation(station.Current.Id, startDate, endDate).FindAll(a => points.Contains(a.PointId));
 
-                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500104 {
                     index = ++index,
@@ -1499,22 +1498,22 @@ namespace iPem.Site.Controllers {
             if(rtValues == null || rtValues.tingDianXinHao == null) return result;
             if(string.IsNullOrWhiteSpace(parent)) return result;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(d => types.Contains(d.Current.Type.Id));
 
             if(parent != "root") {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null)
                     stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
             var index = 0;
-            var tdAlarms = _hisAlmService.GetAlmsInPointAsList(rtValues.tingDianXinHao, startDate, endDate);
+            var tdAlarms = _hisAlarmService.GetAlarmsInPoint(rtValues.tingDianXinHao, startDate, endDate);
             foreach(var station in stations) {
                 var alarms = tdAlarms.FindAll(a => a.StationId == station.Current.Id);
-                var area = _workContext.RoleAreas.Find(a => a.Current.Id == station.Current.AreaId);
-                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+                var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                 var cntTime = endDate.Subtract(startDate).TotalSeconds;
                 result.Add(new Model500105 {
                     index = ++index,
@@ -1539,8 +1538,8 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
-                var amStations = _amStationService.GetAmStationsAsList();
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
+                var stations = _hIStationService.GetStations();
                 foreach(var leaf in leaies) {
                     var keys = new List<string>();
                     keys.Add(leaf.Current.Name);
@@ -1548,8 +1547,8 @@ namespace iPem.Site.Controllers {
                         keys.Add(child.Current.Name);
                     }
 
-                    var curStations = _workContext.RoleStations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+                    var curStations = _workContext.Stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                    var lastStations = stations.FindAll(s => keys.Contains(s.Parent));
                     
                     if(types.Length > 0)
                         curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1565,12 +1564,12 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
-                        var amStations = _amStationService.GetAmStationsAsList();
+                        var stations = _hIStationService.GetStations();
                         foreach(var leaf in leaies) {
                             var keys = new List<string>();
                             keys.Add(leaf.Current.Name);
@@ -1578,8 +1577,8 @@ namespace iPem.Site.Controllers {
                                 keys.Add(child.Current.Name);
                             }
 
-                            var curStations = _workContext.RoleStations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+                            var curStations = _workContext.Stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
+                            var lastStations = stations.FindAll(s => keys.Contains(s.Parent));
 
                             if(types.Length > 0)
                                 curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1596,9 +1595,9 @@ namespace iPem.Site.Controllers {
                         #endregion
                     } else {
                         #region self
-                        var amStations = _amStationService.GetAmStationsAsList();
-                        var curStations = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var lastStations = amStations.FindAll(s => s.Parent == current.Current.Name);
+                        var stations = _hIStationService.GetStations();
+                        var curStations = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id);
+                        var lastStations = stations.FindAll(s => s.Parent == current.Current.Name);
 
                         if(types.Length > 0)
                             curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1627,22 +1626,22 @@ namespace iPem.Site.Controllers {
                 || string.IsNullOrWhiteSpace(parent)) return result;
 
             var devTypeIds = rtValues.qtgjjkcdjrlLeiXing;
-            var devTypeNames = _deviceTypeService.GetAllSubDeviceTypesAsList().FindAll(t => devTypeIds.Contains(t.Id)).Select(t => t.Name).ToList();
+            var devTypeNames = _deviceTypeService.GetSubDeviceTypes().FindAll(t => devTypeIds.Contains(t.Id)).Select(t => t.Name).ToList();
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0) stations = stations.FindAll(s=>types.Contains(s.Current.Type.Id));
             var devices = stations.SelectMany(d=>d.Rooms).SelectMany(r=>r.Devices).Where(d => devTypeIds.Contains(d.Current.SubType.Id)).ToList();
-            
-            var amStations = _amStationService.GetAmStationsAsList();            
-            var amDevices = _amDeviceService.GetAmDevicesAsList().FindAll(d => devTypeNames.Contains(d.Type));
-            var amFullDevices = (from amd in amDevices
-                                 join ams in amStations on amd.ParentId equals ams.Id
-                                 select new { Device = amd, Station = ams }).ToList();
+
+            var iStations = _hIStationService.GetStations();
+            var iDevices = _hIDeviceService.GetDevices().FindAll(d => devTypeNames.Contains(d.Type));
+            var iFullDevices = (from amd in iDevices
+                                join ams in iStations on amd.ParentId equals ams.Id
+                                select new { Device = amd, Station = ams }).ToList();
             
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var keys = new List<string>();
                     keys.Add(leaf.Current.Name);
@@ -1651,7 +1650,7 @@ namespace iPem.Site.Controllers {
                     }
 
                     var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
-                    var lastDevices = amFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+                    var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
 
                     result.Add(new Model500202 {
                         index = ++index,
@@ -1664,7 +1663,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -1677,7 +1676,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
-                            var lastDevices = amFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+                            var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
 
                             result.Add(new Model500202 {
                                 index = ++index,
@@ -1692,7 +1691,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var curDevices = devices.FindAll(d => d.Current.AreaId == current.Current.Id);
-                        var lastDevices = amFullDevices.FindAll(d => d.Station.Parent == current.Current.Name);
+                        var lastDevices = iFullDevices.FindAll(d => d.Station.Parent == current.Current.Name);
 
                         result.Add(new Model500202 {
                             index = ++index,
@@ -1714,17 +1713,17 @@ namespace iPem.Site.Controllers {
             var result = new List<Model500203>();
             if(string.IsNullOrWhiteSpace(parent)) return result;
 
-            var amStations = _amStationService.GetAmStationsAsList();
-            var stations = _workContext.RoleStations;
+            var iStations = _hIStationService.GetStations();
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0) stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
             stations = (from sta in stations
-                        join ams in amStations on new { Name = sta.Current.Name, Type = sta.Current.Type.Name } equals new { Name = ams.Name, Type = ams.Type }
+                        join ams in iStations on new { Name = sta.Current.Name, Type = sta.Current.Type.Name } equals new { Name = ams.Name, Type = ams.Type }
                         select sta).ToList();
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var keys = new List<string>();
                     keys.Add(leaf.Current.Name);
@@ -1733,7 +1732,7 @@ namespace iPem.Site.Controllers {
                     }
 
                     var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+                    var lastStations = iStations.FindAll(s => keys.Contains(s.Parent));
 
                     result.Add(new Model500203 {
                         index = ++index,
@@ -1746,7 +1745,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -1759,7 +1758,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var lastStations = amStations.FindAll(s => keys.Contains(s.Parent));
+                            var lastStations = iStations.FindAll(s => keys.Contains(s.Parent));
 
                             result.Add(new Model500203 {
                                 index = ++index,
@@ -1774,7 +1773,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var curStations = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var lastStations = amStations.FindAll(s => s.Parent == current.Current.Name);
+                        var lastStations = iStations.FindAll(s => s.Parent == current.Current.Name);
 
                         result.Add(new Model500203 {
                             name = current.ToString(),
@@ -1801,19 +1800,19 @@ namespace iPem.Site.Controllers {
                 || string.IsNullOrWhiteSpace(parent))
                 return result;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
             var devTypes = _workContext.RtValues.qtkgdydzhglLeiXing;
             var devices = stations.SelectMany(s => s.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
-            var values = _hisLoadRateService.GetMaxInDevice(startDate, endDate, 0.65d);
+            var values = _loadService.GetLoads(startDate, endDate).FindAll(l => l.Value < 0.65);
             var devKeys = values.Select(v => v.DeviceId);
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var children1 = devices.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
@@ -1829,7 +1828,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -1876,20 +1875,20 @@ namespace iPem.Site.Controllers {
             if(_workContext.RtValues == null || string.IsNullOrWhiteSpace(parent))
                 return result;
 
-            var values = _hisBatTimeService.GetHisBatTimesAsList(startDate, endDate);
+            var values = _batTimeService.GetValues(startDate, endDate);
             var ovalues1 = values.FindAll(b => b.EndTime.Subtract(b.StartTime).TotalMinutes >= _workContext.RtValues.qtxdchbschglFenZhong);
             var ovalues2 = ovalues1.FindAll(v => v.EndValue >= _workContext.RtValues.qtxdchbschglMin);
             var matchs1 = from o in ovalues1 group o by o.StationId into g select g.Key;
             var matchs2 = from o in ovalues2 group o by o.StationId into g select g.Key;
 
-            var stations = _workContext.RoleStations.FindAll(s => matchs1.Contains(s.Current.Id));
+            var stations = _workContext.Stations.FindAll(s => matchs1.Contains(s.Current.Id));
             if(types != null && types.Length > 0) 
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
@@ -1905,7 +1904,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -1959,10 +1958,10 @@ namespace iPem.Site.Controllers {
 
             var devTypes = _workContext.RtValues.qtwkrlhglLeiXing;
             var points = _workContext.RtValues.qtwkrlhglXinHao;
-            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => points.Contains(a.PointId));
+            var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => points.Contains(a.PointId));
             var staKeys = from alarm in alarms group alarm by alarm.StationId into g select g.Key;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
@@ -1987,7 +1986,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var tt = total.FindAll(s => leaf.Keys.Contains(s.AreaId));
                     var gw = gaowen.FindAll(s => leaf.Keys.Contains(s.AreaId));
@@ -2003,7 +2002,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -2058,23 +2057,23 @@ namespace iPem.Site.Controllers {
             var points = _workContext.RtValues.qtwkrlhglXinHao;
             var devTypes = _workContext.RtValues.qtzlxtkydLeiXing;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var allAlms = _hisAlmService.GetAllAlmsAsList(startDate, endDate)
+            var allAlms = _hisAlarmService.GetAlarms(startDate, endDate)
                           .FindAll(a => points.Contains(a.PointId));
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                     var matchs = children.Select(c=>c.Current.Id);
                     var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                     result.Add(new Model500207 {
@@ -2089,7 +2088,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -2099,7 +2098,7 @@ namespace iPem.Site.Controllers {
                             var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                             var matchs = children.Select(c => c.Current.Id);
                             var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                             result.Add(new Model500207 {
@@ -2119,7 +2118,7 @@ namespace iPem.Site.Controllers {
                         var devices = children.SelectMany(c => c.Rooms).SelectMany(r => r.Devices).Where(d => devTypes.Contains(d.Current.SubType.Id)).ToList();
                         var matchs = children.Select(c => c.Current.Id);
                         var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                         result.Add(new Model500207 {
@@ -2150,22 +2149,22 @@ namespace iPem.Site.Controllers {
                 return result;
 
             var points = _workContext.RtValues.qtjkgzcljslXinHao;
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var allAlms = _hisAlmService.GetAllAlmsAsList(startDate, endDate)
+            var allAlms = _hisAlarmService.GetAlarms(startDate, endDate)
                           .FindAll(a => points.Contains(a.PointId));
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var matchs = children.Select(c => c.Current.Id);
                     var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                    var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                     result.Add(new Model500208 {
@@ -2180,7 +2179,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -2189,7 +2188,7 @@ namespace iPem.Site.Controllers {
                             var children = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                             var matchs = children.Select(c => c.Current.Id);
                             var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                            var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                             result.Add(new Model500208 {
@@ -2208,7 +2207,7 @@ namespace iPem.Site.Controllers {
                         var children = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
                         var matchs = children.Select(c => c.Current.Id);
                         var alarms = allAlms.FindAll(a => matchs.Contains(a.StationId));
-                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.AlarmTime).TotalSeconds);
+                        var almTime = alarms.Sum(a => a.EndTime.Subtract(a.StartTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
 
                         result.Add(new Model500208 {
@@ -2235,11 +2234,11 @@ namespace iPem.Site.Controllers {
             if(string.IsNullOrWhiteSpace(parent))
                 return result;
 
-            var stations = _workContext.RoleStations;
+            var stations = _workContext.Stations;
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var values = _hisBatTimeService.GetHisBatTimesAsList(startDate, endDate).FindAll(b => b.EndTime.Subtract(b.StartTime).TotalHours > 1);
+            var values = _batTimeService.GetValues(startDate, endDate).FindAll(b => b.EndTime.Subtract(b.StartTime).TotalHours > 1);
             var staKeys = from val in values
                           group val by val.StationId into g
                           select g.Key;
@@ -2247,7 +2246,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var children1 = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
@@ -2263,7 +2262,7 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
@@ -2313,60 +2312,60 @@ namespace iPem.Site.Controllers {
             if(parent == "root") {
                 #region root
                 if(size == (int)EnmSSH.Area) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
-                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    var energies = _elecService.GetEnergies(EnmSSH.Station, startDate, endDate);
+                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
-                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                         var categories = energies.FindAll(e => children.Contains(e.Id));
                         result.Add(this.Calculate500301(categories, ++index, root.ToString()));
                     }
                 } else if(size == (int)EnmSSH.Station) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
-                    foreach(var child in _workContext.RoleStations) {
+                    var energies = _elecService.GetEnergies(EnmSSH.Station, startDate, endDate);
+                    foreach(var child in _workContext.Stations) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
                         result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name)));
                     }
                 } else if(size == (int)EnmSSH.Room) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, startDate, endDate);
-                    foreach(var child in _workContext.RoleRooms) {
+                    var energies = _elecService.GetEnergies(EnmSSH.Room, startDate, endDate);
+                    foreach(var child in _workContext.Rooms) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
                         result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name)));
                     }
                 }
                 #endregion
             } else {
                 #region children
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(size == (int)EnmSSH.Area) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
+                        var energies = _elecService.GetEnergies(EnmSSH.Station, startDate, endDate);
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
-                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                                 var categories = energies.FindAll(e => children.Contains(e.Id));
                                 result.Add(this.Calculate500301(categories, ++index, root.ToString()));
                             }
                         } else {
-                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var children = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
                             var categories = energies.FindAll(e => children.Contains(e.Id));
                             result.Add(this.Calculate500301(categories, ++index, current.ToString()));
                         }
                     } else if(size == (int)EnmSSH.Station) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, startDate, endDate);
-                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        var energies = _elecService.GetEnergies(EnmSSH.Station, startDate, endDate);
+                        var children = _workContext.Stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
                             result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1}", area != null ? area.ToString() : current.ToString(), child.Current.Name)));
                         }
                     } else if(size == (int)EnmSSH.Room) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, startDate, endDate);
-                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        var energies = _elecService.GetEnergies(EnmSSH.Room, startDate, endDate);
+                        var children = _workContext.Rooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
                             result.Add(this.Calculate500301(categories, ++index, string.Format("{0},{1},{2}", area != null ? area.ToString() : current.ToString(), child.Current.StationName, child.Current.Name)));
                         }
                     }
@@ -2410,27 +2409,27 @@ namespace iPem.Site.Controllers {
             if(parent == "root") {
                 #region root
                 if(size == (int)EnmSSH.Area) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    var energies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
-                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                         var categories = energies.FindAll(e => children.Contains(e.Id));
 
                         this.Calculate500302(result, categories, root.ToString());
                     }
                 } else if(size == (int)EnmSSH.Station) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    foreach(var child in _workContext.RoleStations) {
+                    var energies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    foreach(var child in _workContext.Stations) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : "", child.Current.Name));
                     }
                 } else if(size == (int)EnmSSH.Room) {
-                    var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                    foreach(var child in _workContext.RoleRooms) {
+                    var energies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                    foreach(var child in _workContext.Rooms) {
                         var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         this.Calculate500302(result, categories, string.Format("{0},{1},{2}", area != null ? area.ToString() : "", child.Current.StationName, child.Current.Name));
                     }
@@ -2438,38 +2437,38 @@ namespace iPem.Site.Controllers {
                 #endregion
             } else {
                 #region children
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(size == (int)EnmSSH.Area) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var energies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
-                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                                 var categories = energies.FindAll(e => children.Contains(e.Id));
 
                                 this.Calculate500302(result, categories, root.ToString());
                             }
                         } else {
-                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var children = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
                             var categories = energies.FindAll(e => children.Contains(e.Id));
 
                             this.Calculate500302(result, categories, current.ToString());
                         }
                     } else if(size == (int)EnmSSH.Station) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        var energies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var children = _workContext.Stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             this.Calculate500302(result, categories, string.Format("{0},{1}", area != null ? area.ToString() : current.ToString(), child.Current.Name));
                         }
                     } else if(size == (int)EnmSSH.Room) {
-                        var energies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        var energies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                        var children = _workContext.Rooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var categories = energies.FindAll(e => e.Id == child.Current.Id);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             this.Calculate500302(result, categories, string.Format("{0},{1},{2}", area != null ? area.ToString() : current.ToString(), child.Current.StationName, child.Current.Name));
                         }
@@ -2537,7 +2536,7 @@ namespace iPem.Site.Controllers {
                 var start = (DateTime)column.ExtendedProperties["Start"];
                 var end = (DateTime)column.ExtendedProperties["End"];
 
-                row[k] = categories.FindAll(c => c.Period >= start && c.Period <= end).Sum(c => c.Value);
+                row[k] = categories.FindAll(c => c.StartTime >= start && c.EndTime <= end).Sum(c => c.Value);
             }
             dt.Rows.Add(row);
         }
@@ -2552,11 +2551,11 @@ namespace iPem.Site.Controllers {
             if(parent == "root") {
                 #region root
                 if(size == (int)EnmSSH.Area) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
-                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
-                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                         var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                         var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                         var currentValue = currentCategories.Sum(c => c.Value);
@@ -2573,14 +2572,14 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if(size == (int)EnmSSH.Station) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
-                    foreach(var child in _workContext.RoleStations) {
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    foreach(var child in _workContext.Stations) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                         var currentValue = currentCategories.Sum(c => c.Value);
                         var lastValue = lastCategories.Sum(c => c.Value);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         result.Add(new Model500303 {
                             index = ++index,
@@ -2593,14 +2592,14 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if(size == (int)EnmSSH.Room) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
-                    foreach(var child in _workContext.RoleRooms) {
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                    foreach(var child in _workContext.Rooms) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                         var currentValue = currentCategories.Sum(c => c.Value);
                         var lastValue = lastCategories.Sum(c => c.Value);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         result.Add(new Model500303 {
                             index = ++index,
@@ -2616,14 +2615,14 @@ namespace iPem.Site.Controllers {
                 #endregion
             } else {
                 #region children
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(size == (int)EnmSSH.Area) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
-                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                                 var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                                 var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                                 var currentValue = currentCategories.Sum(c => c.Value);
@@ -2640,7 +2639,7 @@ namespace iPem.Site.Controllers {
                                 });
                             }
                         } else {
-                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var children = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
                             var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                             var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                             var currentValue = currentCategories.Sum(c => c.Value);
@@ -2657,15 +2656,15 @@ namespace iPem.Site.Controllers {
                             });
                         }
                     } else if(size == (int)EnmSSH.Station) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
-                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        var children = _workContext.Stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                             var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                             var currentValue = currentCategories.Sum(c => c.Value);
                             var lastValue = lastCategories.Sum(c => c.Value);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             result.Add(new Model500303 {
                                 index = ++index,
@@ -2678,15 +2677,15 @@ namespace iPem.Site.Controllers {
                             });
                         }
                     } else if(size == (int)EnmSSH.Room) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
-                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate.AddYears(-1), endDate.AddYears(-1));
+                        var children = _workContext.Rooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                             var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                             var currentValue = currentCategories.Sum(c => c.Value);
                             var lastValue = lastCategories.Sum(c => c.Value);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             result.Add(new Model500303 {
                                 index = ++index,
@@ -2716,11 +2715,11 @@ namespace iPem.Site.Controllers {
             if(parent == "root") {
                 #region root
                 if(size == (int)EnmSSH.Area) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
-                    var roots = _workContext.RoleAreas.FindAll(a => !a.HasParents);
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
                     foreach(var root in roots) {
-                        var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                        var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                         var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                         var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                         var currentValue = currentCategories.Sum(c => c.Value);
@@ -2737,14 +2736,14 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if(size == (int)EnmSSH.Station) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
-                    foreach(var child in _workContext.RoleStations) {
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    foreach(var child in _workContext.Stations) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                         var currentValue = currentCategories.Sum(c => c.Value);
                         var lastValue = lastCategories.Sum(c => c.Value);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         result.Add(new Model500304 {
                             index = ++index,
@@ -2757,14 +2756,14 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if(size == (int)EnmSSH.Room) {
-                    var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                    var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
-                    foreach(var child in _workContext.RoleRooms) {
+                    var currentEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                    var lastEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                    foreach(var child in _workContext.Rooms) {
                         var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                         var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                         var currentValue = currentCategories.Sum(c => c.Value);
                         var lastValue = lastCategories.Sum(c => c.Value);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         result.Add(new Model500304 {
                             index = ++index,
@@ -2780,14 +2779,14 @@ namespace iPem.Site.Controllers {
                 #endregion
             } else {
                 #region children
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(size == (int)EnmSSH.Area) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
                         if(current.HasChildren) {
                             foreach(var root in current.ChildRoot) {
-                                var children = _workContext.RoleStations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                                var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
                                 var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                                 var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                                 var currentValue = currentCategories.Sum(c => c.Value);
@@ -2804,7 +2803,7 @@ namespace iPem.Site.Controllers {
                                 });
                             }
                         } else {
-                            var children = _workContext.RoleStations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
+                            var children = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id).Select(s => s.Current.Id);
                             var currentCategories = currentEnergies.FindAll(e => children.Contains(e.Id));
                             var lastCategories = lastEnergies.FindAll(e => children.Contains(e.Id));
                             var currentValue = currentCategories.Sum(c => c.Value);
@@ -2821,15 +2820,15 @@ namespace iPem.Site.Controllers {
                             });
                         }
                     } else if(size == (int)EnmSSH.Station) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
-                        var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        var children = _workContext.Stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                             var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                             var currentValue = currentCategories.Sum(c => c.Value);
                             var lastValue = lastCategories.Sum(c => c.Value);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             result.Add(new Model500304 {
                                 index = ++index,
@@ -2842,15 +2841,15 @@ namespace iPem.Site.Controllers {
                             });
                         }
                     } else if(size == (int)EnmSSH.Room) {
-                        var currentEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
-                        var lastEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
-                        var children = _workContext.RoleRooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                        var currentEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate, endDate);
+                        var lastEnergies = _elecService.GetEnergies(EnmSSH.Room, EnmFormula.ZL, startDate.AddMonths(-1), endDate.AddMonths(-1));
+                        var children = _workContext.Rooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
                         foreach(var child in children) {
                             var currentCategories = currentEnergies.FindAll(e => e.Id == child.Current.Id);
                             var lastCategories = lastEnergies.FindAll(e => e.Id == child.Current.Id);
                             var currentValue = currentCategories.Sum(c => c.Value);
                             var lastValue = lastCategories.Sum(c => c.Value);
-                            var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                            var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                             result.Add(new Model500304 {
                                 index = ++index,
@@ -2875,14 +2874,14 @@ namespace iPem.Site.Controllers {
 
             var result = new List<Model500305>();
 
-            var aStation = _workContext.RoleStations.Find(s => s.Current.Id == aid);
+            var aStation = _workContext.Stations.Find(s => s.Current.Id == aid);
             if(aStation == null) return result;
 
-            var bStation = _workContext.RoleStations.Find(s => s.Current.Id == bid);
+            var bStation = _workContext.Stations.Find(s => s.Current.Id == bid);
             if(bStation == null) return result;
 
-            var aEnergies = _hisElecService.GetEnergiesAsList(aStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-            var bEnergies = _hisElecService.GetEnergiesAsList(bStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+            var aEnergies = _elecService.GetEnergies(aStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+            var bEnergies = _elecService.GetEnergies(bStation.Current.Id, EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
 
             startDate = startDate.Date; endDate = endDate.Date;
             var dates = new List<DateTime>();
@@ -2897,8 +2896,8 @@ namespace iPem.Site.Controllers {
                 foreach(var date in dates) {
                     var end = date.AddMonths(1).AddSeconds(-1);
 
-                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
-                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    var avalue = aEnergies.FindAll(a => a.StartTime >= date && a.EndTime <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.StartTime >= date && b.EndTime <= end).Sum(e => e.Value);
                     result.Add(new Model500305 {
                         index = ++index,
                         period = CommonHelper.MonthConverter(date),
@@ -2915,8 +2914,8 @@ namespace iPem.Site.Controllers {
                 foreach(var date in dates) {
                     var end = date.AddDays(6).AddSeconds(86399);
 
-                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
-                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    var avalue = aEnergies.FindAll(a => a.StartTime >= date && a.EndTime <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.StartTime >= date && b.EndTime <= end).Sum(e => e.Value);
                     result.Add(new Model500305 {
                         index = ++index,
                         period = CommonHelper.WeekConverter(date),
@@ -2932,8 +2931,8 @@ namespace iPem.Site.Controllers {
                 foreach(var date in dates) {
                     var end = date.AddSeconds(86399);
 
-                    var avalue = aEnergies.FindAll(a => a.Period >= date && a.Period <= end).Sum(e => e.Value);
-                    var bvalue = bEnergies.FindAll(b => b.Period >= date && b.Period <= end).Sum(e => e.Value);
+                    var avalue = aEnergies.FindAll(a => a.StartTime >= date && a.EndTime <= end).Sum(e => e.Value);
+                    var bvalue = bEnergies.FindAll(b => b.StartTime >= date && b.EndTime <= end).Sum(e => e.Value);
                     result.Add(new Model500305 {
                         index = ++index,
                         period = CommonHelper.DateConverter(date),
@@ -2959,14 +2958,14 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
-                var totalEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                foreach(var child in _workContext.RoleStations) {
+                var deviceEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
+                var totalEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                foreach(var child in _workContext.Stations) {
                     var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);
                     var totalCategories = totalEnergies.FindAll(e => e.Id == child.Current.Id);
                     var deviceValue = deviceCategories.Sum(c => c.Value);
                     var totalValue = totalCategories.Sum(c => c.Value);
-                    var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                    var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                     result.Add(new Model500306 {
                         index = ++index,
@@ -2980,17 +2979,17 @@ namespace iPem.Site.Controllers {
                 #endregion
             } else {
                 #region children
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
-                    var deviceEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
-                    var totalEnergies = _hisElecService.GetEnergiesAsList(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
-                    var children = _workContext.RoleStations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                    var deviceEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.SB, startDate, endDate);
+                    var totalEnergies = _elecService.GetEnergies(EnmSSH.Station, EnmFormula.ZL, startDate, endDate);
+                    var children = _workContext.Stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                     foreach(var child in children) {
                         var deviceCategories = deviceEnergies.FindAll(e => e.Id == child.Current.Id);
                         var totalCategories = totalEnergies.FindAll(e => e.Id == child.Current.Id);
                         var deviceValue = deviceCategories.Sum(c => c.Value);
                         var totalValue = totalCategories.Sum(c => c.Value);
-                        var area = _workContext.RoleAreas.Find(a => a.Current.Id == child.Current.AreaId);
+                        var area = _workContext.Areas.Find(a => a.Current.Id == child.Current.AreaId);
 
                         result.Add(new Model500306 {
                             index = ++index,
@@ -3017,22 +3016,22 @@ namespace iPem.Site.Controllers {
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            var devices = _workContext.RoleDevices;
+            var devices = _workContext.Devices;
             if(types != null && types.Length > 0) 
                 devices = devices.FindAll(d => types.Contains(d.Current.Type.Id));
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
-                var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
+                var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
                 foreach(var leaf in leaies) {
                     var childDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
                     var childDevIds = childDevices.Select(d => d.Current.Id);
                     var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                     var devCount = childDevices.Count;
-                    var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
+                    var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
                     var cntTime = endDate.Subtract(startDate).TotalSeconds;
                     result.Add(new Model500401 {
                         index = ++index,
@@ -3046,19 +3045,19 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
-                        var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
+                        var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
                         foreach(var leaf in leaies) {
                             var childDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
                             var childDevIds = childDevices.Select(d => d.Current.Id);
                             var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                             var devCount = childDevices.Count;
-                            var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
+                            var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
                             var cntTime = endDate.Subtract(startDate).TotalSeconds;
                             result.Add(new Model500401 {
                                 index = ++index,
@@ -3073,13 +3072,13 @@ namespace iPem.Site.Controllers {
                         #endregion
                     } else {
                         #region self
-                        var alarms = _hisAlmService.GetAlmsInAreaAsList(parent, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.whlHuLue);
+                        var alarms = _hisAlarmService.GetAlarmsInArea(parent, startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
                         var childDevices = devices.FindAll(d => d.Current.AreaId == parent);
                         var childDevIds = childDevices.Select(d => d.Current.Id);
                         var childAlarms = alarms.FindAll(a => childDevIds.Contains(a.DeviceId));
 
                         var devCount = childDevices.Count;
-                        var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.AlarmTime).TotalSeconds);
+                        var almTime = childAlarms.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds);
                         var cntTime = endDate.Subtract(startDate).TotalSeconds;
                         result.Add(new Model500401 {
                             index = ++index,
@@ -3107,19 +3106,19 @@ namespace iPem.Site.Controllers {
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes > rtValues.jslHuLue);
+            var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.jslHuLue);
             if(types != null && types.Length > 0) {
-                var devMatchs = _workContext.RoleDevices.FindAll(d => types.Contains(d.Current.Type.Id)).Select(d => d.Current.Id);
+                var devMatchs = _workContext.Devices.FindAll(d => types.Contains(d.Current.Type.Id)).Select(d => d.Current.Id);
                 alarms = alarms.FindAll(a => devMatchs.Contains(a.DeviceId));
             }
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var childAlarms = alarms.FindAll(a => leaf.Keys.Contains(a.AreaId));
-                    var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
+                    var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
                     var total = childAlarms.Count;
                     result.Add(new Model500402 {
                         index = ++index,
@@ -3132,14 +3131,14 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
                             var childAlarms = alarms.FindAll(a => leaf.Keys.Contains(a.AreaId));
-                            var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
+                            var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
                             var total = childAlarms.Count;
                             result.Add(new Model500402 {
                                 index = ++index,
@@ -3154,7 +3153,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var childAlarms = alarms.FindAll(a => a.AreaId == current.Current.Id);
-                        var count = childAlarms.Count(a => a.EndTime.Subtract(a.AlarmTime).TotalMinutes >= rtValues.jslGuiDing);
+                        var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
                         var total = childAlarms.Count;
                         result.Add(new Model500402 {
                             index = ++index,
@@ -3181,19 +3180,19 @@ namespace iPem.Site.Controllers {
             var rtValues = _workContext.RtValues;
             if(rtValues == null) return result;
 
-            var alarms = _hisAlmService.GetAllAlmsAsList(startDate, endDate);
+            var alarms = _hisAlarmService.GetAlarms(startDate, endDate);
             if(levels != null && levels.Length > 0)
                 alarms = alarms.FindAll(a => levels.Contains((int)a.AlarmLevel));
 
-            var stores = _workContext.GetHisAlmStore(alarms, startDate, endDate);
+            var stores = _workContext.AlarmsToStore(alarms);
 
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.RoleAreas.FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
                     var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                    var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
+                    var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                     var total = childStores.Count;
                     result.Add(new Model500403 {
                         index = ++index,
@@ -3206,14 +3205,14 @@ namespace iPem.Site.Controllers {
                 }
                 #endregion
             } else {
-                var current = _workContext.RoleAreas.Find(a => a.Current.Id == parent);
+                var current = _workContext.Areas.Find(a => a.Current.Id == parent);
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
                             var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
-                            var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
+                            var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                             var total = childStores.Count;
                             result.Add(new Model500403 {
                                 index = ++index,
@@ -3228,7 +3227,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var childStores = stores.FindAll(a => a.Current.AreaId == current.Current.Id);
-                        var count = childStores.Count(a => (a.ExtSet != null && a.ExtSet.ConfirmedTime.HasValue ? a.ExtSet.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.AlarmTime).TotalMinutes >= rtValues.jslQueRen);
+                        var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                         var total = childStores.Count;
                         result.Add(new Model500403 {
                             index = ++index,

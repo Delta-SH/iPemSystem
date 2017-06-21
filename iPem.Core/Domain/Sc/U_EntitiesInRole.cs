@@ -19,8 +19,13 @@ namespace iPem.Core.Domain.Sc {
         public List<U_Menu> Menus { get; set; }
 
         /// <summary>
-        /// 角色操作权限
+        /// 角色区域
         /// </summary>
-        public List<EnmOperation> Operates { get; set; }
+        public List<string> Areas { get; set; }
+
+        /// <summary>
+        /// 角色权限
+        /// </summary>
+        public List<EnmPermission> Permissions { get; set; }
     }
 }

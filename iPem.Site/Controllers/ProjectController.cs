@@ -23,10 +23,10 @@ namespace iPem.Site.Controllers {
         private readonly IExcelManager _excelManager;
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-        private readonly IWebLogger _webLogger;
-        private readonly IAppointmentService _appointmentService;
-        private readonly INodesInAppointmentService _nodesInAppointmentService;
-        private readonly IProjectService _projectsService;
+        private readonly IWebEventService _webLogger;
+        private readonly IReservationService _reservationService;
+        private readonly INodeInReservationService _nodesInReservationService;
+        private readonly IProjectService _projectService;
 
         #endregion
 
@@ -36,17 +36,17 @@ namespace iPem.Site.Controllers {
             IExcelManager excelManager,
             ICacheManager cacheManager,
             IWorkContext workContext,
-            IWebLogger webLogger,
-            IAppointmentService appointmentService,
-            INodesInAppointmentService nodesInAppointmentService,
-            IProjectService projectsService) {
+            IWebEventService webLogger,
+            IReservationService reservationService,
+            INodeInReservationService nodesInReservationService,
+            IProjectService projectService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
             this._webLogger = webLogger;
-            this._appointmentService = appointmentService;
-            this._nodesInAppointmentService = nodesInAppointmentService;
-            this._projectsService = projectsService;
+            this._reservationService = reservationService;
+            this._nodesInReservationService = nodesInReservationService;
+            this._projectService = projectService;
         }
 
         #endregion
@@ -76,8 +76,8 @@ namespace iPem.Site.Controllers {
                 
                 var names = Common.SplitCondition(name);
                 var projects = names.Length > 0 ? 
-                    _projectsService.GetProjects(names, startDate, endDate, start / limit, limit) : 
-                    _projectsService.GetProjects(startDate, endDate, start / limit, limit);
+                    _projectService.GetPagedProjectsInNames(names, startDate, endDate, start / limit, limit) : 
+                    _projectService.GetPagedProjectsInSpan(startDate, endDate, start / limit, limit);
 
                 if(projects.TotalCount > 0) {
                     data.message = "200 Ok";
@@ -133,14 +133,13 @@ namespace iPem.Site.Controllers {
                     return Json(data, JsonRequestBehavior.AllowGet);
 
                 if(string.IsNullOrWhiteSpace(id))
-                    throw new ArgumentException("参数无效 id");
+                    throw new ArgumentException("id");
 
                 if(action != (int)EnmAction.Edit)
-                    throw new ArgumentException("参数无效 action");
+                    throw new ArgumentException("action");
 
-                var project = _projectsService.GetProject(new Guid(id));
-                if(project == null)
-                    throw new iPemException("未找到数据对象");
+                var project = _projectService.GetProject(id);
+                if(project == null) throw new iPemException("未找到数据对象");
 
                 data.data.id = project.Id.ToString();
                 data.data.name = project.Name;
@@ -163,12 +162,10 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult SaveProject(ProjectModel project, int action) {
             try {
-                if(project == null)
-                    throw new ArgumentException("参数无效 project");
-
+                if(project == null) throw new ArgumentException("project");
                 if(action == (int)EnmAction.Add) {
                     var newOne = new M_Project {
-                        Id = new Guid(project.id),
+                        Id = project.id,
                         Name = project.name,
                         StartTime = Convert.ToDateTime(project.start),
                         EndTime = Convert.ToDateTime(project.end).AddDays(1).AddSeconds(-1),
@@ -181,29 +178,29 @@ namespace iPem.Site.Controllers {
                         Enabled = project.enabled
                     };
 
-                    _projectsService.Add(newOne);
+                    _projectService.Add(newOne);
                     _webLogger.Information(EnmEventType.Operating, string.Format("新增工程[{0}]", project.name), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
-                    var existedOne = _projectsService.GetProject(new Guid(project.id));
-                    if(existedOne == null)
-                        throw new iPemException("工程不存在，保存失败。");
+                    var existed = _projectService.GetProject(project.id);
+                    if(existed == null) throw new iPemException("工程不存在，保存失败。");
 
-                    //existedOne.Id = projectId;
-                    existedOne.Name = project.name;
-                    existedOne.StartTime = Convert.ToDateTime(project.start);
-                    existedOne.EndTime = Convert.ToDateTime(project.end).AddDays(1).AddSeconds(-1);
-                    existedOne.Responsible = project.responsible;
-                    existedOne.ContactPhone = project.contact;
-                    existedOne.Company = project.company;
-                    existedOne.Comment = project.comment;
-                    existedOne.Enabled = project.enabled;
+                    //existed.Id = projectId;
+                    existed.Name = project.name;
+                    existed.StartTime = Convert.ToDateTime(project.start);
+                    existed.EndTime = Convert.ToDateTime(project.end).AddDays(1).AddSeconds(-1);
+                    existed.Responsible = project.responsible;
+                    existed.ContactPhone = project.contact;
+                    existed.Company = project.company;
+                    existed.Comment = project.comment;
+                    existed.Enabled = project.enabled;
 
-                    _projectsService.Update(existedOne);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新工程[{0}]", existedOne.Name), null, _workContext.User.Id);
+                    _projectService.Update(existed);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新工程[{0}]", existed.Name), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
-                throw new ArgumentException("参数无效 action");
+
+                throw new ArgumentException("action");
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
@@ -219,14 +216,14 @@ namespace iPem.Site.Controllers {
 
                 var names = Common.SplitCondition(name);
                 var projects = names.Length > 0 ? 
-                    _projectsService.GetProjectsAsList(names, startDate, endDate) : 
-                    _projectsService.GetProjectsAsList(startDate, endDate);
+                    _projectService.GetProjectsInNames(names, startDate, endDate) : 
+                    _projectService.GetProjectsInSpan(startDate, endDate);
 
                 var models = new List<ProjectModel>();
                 for(var i = 0; i < projects.Count; i++) {
                     models.Add(new ProjectModel {
                         index = i + 1,
-                        id = projects[i].Id.ToString(),
+                        id = projects[i].Id,
                         name = projects[i].Name,
                         start = CommonHelper.DateConverter(projects[i].StartTime),
                         end = CommonHelper.DateConverter(projects[i].EndTime),
@@ -250,32 +247,29 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAppointments(int start, int limit, DateTime startDate, DateTime endDate, int type, string keyWord) {
-            var data = new AjaxDataModel<List<AppointmentModel>> {
+        public JsonResult GetReservations(int start, int limit, DateTime startDate, DateTime endDate, int type, string keyWord) {
+            var data = new AjaxDataModel<List<ReservationModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<AppointmentModel>()
+                data = new List<ReservationModel>()
             };
 
             try {
                 startDate = startDate.Date;
                 endDate = endDate.Date.AddSeconds(86399);
 
-                var appointments = _appointmentService.GetAppointmentsAsList(startDate, endDate);
-                var projects = _projectsService.GetAllProjectsAsList();
-                var result = (from app in appointments
-                              join pro in projects on app.ProjectId equals pro.Id
-                              select new {
-                                  Appointment = app,
-                                  Project = pro
-                              }).ToList();
+                var reservations = _reservationService.GetReservationsInSpan(startDate, endDate);
+                var projects = _projectService.GetProjects();
+                var result = (from res in reservations
+                              join pro in projects on res.ProjectId equals pro.Id
+                              select new {Reservation = res,Project = pro}).ToList();
 
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
                     if(type == (int)EnmSSH.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Area);
-                        var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Area);
+                        var areas = _workContext.Areas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
@@ -284,10 +278,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Device);
-                        var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Device);
+                        var devices = _workContext.Devices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
@@ -296,10 +290,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Room);
-                        var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Room);
+                        var rooms = _workContext.Rooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
@@ -308,10 +302,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Station);
-                        var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Station);
+                        var stations = _workContext.Stations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
@@ -320,7 +314,7 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else {
                         result = result.FindAll(a => CommonHelper.ConditionContain(a.Project.Name, keyWords));
                     }
@@ -335,16 +329,16 @@ namespace iPem.Site.Controllers {
                         end = result.Count;
 
                     for(int i = start; i < end; i++) {
-                        data.data.Add(new AppointmentModel {
+                        data.data.Add(new ReservationModel {
                             index = i + 1,
-                            id = result[i].Appointment.Id.ToString(),
-                            startDate = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
-                            endDate = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
+                            id = result[i].Reservation.Id.ToString(),
+                            startDate = CommonHelper.DateTimeConverter(result[i].Reservation.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(result[i].Reservation.EndTime),
                             projectName = result[i].Project.Name,
-                            creator = result[i].Appointment.Creator,
-                            createdTime = CommonHelper.DateTimeConverter(result[i].Appointment.CreatedTime),
-                            comment = result[i].Appointment.Comment,
-                            enabled = result[i].Appointment.Enabled,
+                            creator = result[i].Reservation.Creator,
+                            createdTime = CommonHelper.DateTimeConverter(result[i].Reservation.CreatedTime),
+                            comment = result[i].Reservation.Comment,
+                            enabled = result[i].Reservation.Enabled,
                         });
                     }
                 }
@@ -365,7 +359,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _projectsService.GetAllProjectsAsList().Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
+                var models = _projectService.GetProjects().Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
                 var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit, models.Count());
                 if(result.Count > 0) {
                     data.message = "200 Ok";
@@ -384,12 +378,12 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAppointment(string id, int action) {
-            var data = new AjaxDataModel<AppointmentModel> {
+        public JsonResult GetReservation(string id, int action) {
+            var data = new AjaxDataModel<ReservationModel> {
                 success = true,
                 message = "200 OK",
                 total = 0,
-                data = new AppointmentModel {
+                data = new ReservationModel {
                     index = 1,
                     id = Guid.NewGuid().ToString(),
                     startDate = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(2100)),
@@ -405,24 +399,23 @@ namespace iPem.Site.Controllers {
                     return Json(data, JsonRequestBehavior.AllowGet);
 
                 if(string.IsNullOrWhiteSpace(id))
-                    throw new ArgumentException("参数无效 id");
+                    throw new ArgumentException("id");
 
                 if(action != (int)EnmAction.Edit)
-                    throw new ArgumentException("参数无效 action");
+                    throw new ArgumentException("action");
 
-                var appointment = _appointmentService.GetAppointment(new Guid(id));
-                if(appointment == null)
-                    throw new iPemException("未找到数据对象");
+                var reservation = _reservationService.GetReservation(id);
+                if(reservation == null) throw new iPemException("未找到数据对象");
 
-                var nodes = _nodesInAppointmentService.GetNodes(appointment.Id);
-                data.data.id = appointment.Id.ToString();
-                data.data.startDate = CommonHelper.DateTimeConverter(appointment.StartTime);
-                data.data.endDate = CommonHelper.DateTimeConverter(appointment.EndTime);
-                data.data.projectId = appointment.ProjectId.ToString();
-                data.data.creator = appointment.Creator;
-                data.data.createdTime = CommonHelper.DateTimeConverter(appointment.CreatedTime);
-                data.data.comment = appointment.Comment;
-                data.data.enabled = appointment.Enabled;
+                var nodes = _nodesInReservationService.GetNodesInReservationsInReservation(reservation.Id);
+                data.data.id = reservation.Id.ToString();
+                data.data.startDate = CommonHelper.DateTimeConverter(reservation.StartTime);
+                data.data.endDate = CommonHelper.DateTimeConverter(reservation.EndTime);
+                data.data.projectId = reservation.ProjectId.ToString();
+                data.data.creator = reservation.Creator;
+                data.data.createdTime = CommonHelper.DateTimeConverter(reservation.CreatedTime);
+                data.data.comment = reservation.Comment;
+                data.data.enabled = reservation.Enabled;
                 data.data.nodes = nodes.Select(m => Common.JoinKeys((int)m.NodeType, m.NodeId)).ToArray();
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
@@ -433,7 +426,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAppointmentDetails(string id) {
+        public JsonResult GetReservationDetails(string id) {
             var data = new AjaxDataModel<AppointmentDetailModel> {
                 success = true,
                 message = "200 OK",
@@ -448,14 +441,14 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(string.IsNullOrWhiteSpace(id))
-                    throw new ArgumentException("参数无效 id");
+                    throw new ArgumentException("id");
 
-                var nodes = _nodesInAppointmentService.GetNodesAsList(new Guid(id));
+                var nodes = _nodesInReservationService.GetNodesInReservationsInReservation(id);
 
                 //预约区域
                 var areaNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Area);
                 var areaMatchs = from node in areaNodes
-                                 join area in _workContext.RoleAreas on node.NodeId equals area.Current.Id
+                                 join area in _workContext.Areas on node.NodeId equals area.Current.Id
                                  select area.Current;
 
                 data.data.areas = areaMatchs.Any() ? string.Join(",", areaMatchs.Select(a => a.Name)) : "无区域";
@@ -464,7 +457,7 @@ namespace iPem.Site.Controllers {
                 //预约站点
                 var stationNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Station);
                 var stationMatchs = from node in stationNodes
-                                     join station in _workContext.RoleStations on node.NodeId equals station.Current.Id
+                                     join station in _workContext.Stations on node.NodeId equals station.Current.Id
                                      select station.Current;
 
                 data.data.stations = stationMatchs.Any() ? string.Join(",", stationMatchs.Select(a => a.Name)) : "无站点";
@@ -472,7 +465,7 @@ namespace iPem.Site.Controllers {
                 //预约机房
                 var roomNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Room);
                 var roomMatchs = from node in roomNodes
-                                  join room in _workContext.RoleRooms on node.NodeId equals room.Current.Id
+                                  join room in _workContext.Rooms on node.NodeId equals room.Current.Id
                                   select room.Current;
 
                 data.data.rooms = roomMatchs.Any() ? string.Join(",", roomMatchs.Select(a => a.Name)) : "无机房";
@@ -480,7 +473,7 @@ namespace iPem.Site.Controllers {
                 //预约设备
                 var deviceNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Device);
                 var deviceMatchs = from node in deviceNodes
-                                    join device in _workContext.RoleDevices on node.NodeId equals device.Current.Id
+                                    join device in _workContext.Devices on node.NodeId equals device.Current.Id
                                     select device.Current;
 
                 data.data.devices = deviceMatchs.Any() ? string.Join(",", deviceMatchs.Select(a => a.Name)) : "无设备";
@@ -494,13 +487,13 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult SaveAppointment(AppointmentModel appointment, int action) {
+        public JsonResult SaveReservation(ReservationModel model, int action) {
             try {
-                if(appointment == null)
-                    throw new ArgumentException("参数无效 appointment");
+                if(model == null)
+                    throw new ArgumentException("model");
 
-                var startTime = DateTime.Parse(appointment.startDate);
-                var endTime = DateTime.Parse(appointment.endDate);
+                var startTime = DateTime.Parse(model.startDate);
+                var endTime = DateTime.Parse(model.endDate);
                 var interval = endTime.Subtract(startTime);
                 if(interval.TotalSeconds < 0)
                     throw new ArgumentException("预约结束时间不能早于预约开始时间！");
@@ -508,23 +501,23 @@ namespace iPem.Site.Controllers {
                 if(interval.TotalSeconds > 86400)
                     throw new ArgumentException("预约总时长不能超过24个小时！");
 
-                if(appointment.nodes == null || appointment.nodes.Length == 0)
+                if(model.nodes == null || model.nodes.Length == 0)
                     throw new ArgumentException("未勾选需要预约的监控点！");
 
                 if(action == (int)EnmAction.Add) {
                     var newOne = new M_Reservation {
-                        Id = Guid.NewGuid(),
+                        Id = Guid.NewGuid().ToString(),
                         StartTime = startTime,
                         EndTime = endTime,
-                        ProjectId = new Guid(appointment.projectId),
+                        ProjectId = model.projectId,
                         Creator = _workContext.Employee.Name,
                         CreatedTime = DateTime.Now,
-                        Comment = appointment.comment,
-                        Enabled = appointment.enabled
+                        Comment = model.comment,
+                        Enabled = model.enabled
                     };
 
                     var nodes = new List<M_NodeInReservation>();
-                    foreach(var node in appointment.nodes) {
+                    foreach(var node in model.nodes) {
                          var keys = Common.SplitKeys(node);
                          if(keys.Length == 2) {
                              var type = int.Parse(keys[0]);
@@ -536,23 +529,23 @@ namespace iPem.Site.Controllers {
                          }
                     }
 
-                    _appointmentService.Add(newOne);
-                    _nodesInAppointmentService.Add(nodes);
+                    _reservationService.Add(newOne);
+                    _nodesInReservationService.Add(nodes.ToArray());
                     _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功！" });
                 } else if(action == (int)EnmAction.Edit) {
-                    var existed = _appointmentService.GetAppointment(new Guid(appointment.id));
+                    var existed = _reservationService.GetReservation(model.id);
                     if(existed.Creator != _workContext.Employee.Name)
                         throw new iPemException("您没有操作权限！");
 
                     existed.StartTime = startTime;
                     existed.EndTime = endTime;
-                    existed.ProjectId = new Guid(appointment.projectId);
-                    existed.Comment = appointment.comment;
-                    existed.Enabled = appointment.enabled;
+                    existed.ProjectId = model.projectId;
+                    existed.Comment = model.comment;
+                    existed.Enabled = model.enabled;
 
                     var nodes = new List<M_NodeInReservation>();
-                    foreach(var node in appointment.nodes) {
+                    foreach(var node in model.nodes) {
                         var keys = Common.SplitKeys(node);
                         if(keys.Length == 2) {
                             var type = int.Parse(keys[0]);
@@ -564,14 +557,14 @@ namespace iPem.Site.Controllers {
                         }
                     }
 
-                    _appointmentService.Update(existed);
-                    _nodesInAppointmentService.Remove(existed.Id);
-                    _nodesInAppointmentService.Add(nodes);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", appointment.id), null, _workContext.User.Id);
+                    _reservationService.Update(existed);
+                    _nodesInReservationService.Remove(existed.Id);
+                    _nodesInReservationService.Add(nodes.ToArray());
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", model.id), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "更新成功！" });
                 }
 
-                throw new ArgumentException("参数无效 action");
+                throw new ArgumentException("action");
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
@@ -580,21 +573,18 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult DeleteAppointment(string id) {
+        public JsonResult DeleteReservation(string id) {
             try {
                 if(string.IsNullOrWhiteSpace(id))
-                    throw new ArgumentException("参数无效 id");
+                    throw new ArgumentException("id");
 
-                var appointment = _appointmentService.GetAppointment(new Guid(id));
-
-                if(appointment.Creator != _workContext.Employee.Name)
+                var reservation = _reservationService.GetReservation(id);
+                if (reservation == null) throw new iPemException("预约不存在，删除失败！");
+                if(reservation.Creator != _workContext.Employee.Name)
                     throw new ArgumentException("您没有操作权限！");
 
-                if(appointment == null)
-                    throw new iPemException("预约不存在，删除失败！");
-
-                _appointmentService.Delete(appointment);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", appointment.Id), null, _workContext.User.Id);
+                _reservationService.Delete(reservation);
+                _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", reservation.Id), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功！" });
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -604,25 +594,22 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadAppointments(DateTime startDate, DateTime endDate, int type, string keyWord) {
+        public ActionResult DownloadReservations(DateTime startDate, DateTime endDate, int type, string keyWord) {
             try {
                 startDate = startDate.Date;
                 endDate = endDate.Date.AddSeconds(86399);
 
-                var appointments = _appointmentService.GetAppointmentsAsList(startDate, endDate);
-                var projects = _projectsService.GetAllProjectsAsList();
-                var result = (from app in appointments
-                              join pro in projects on app.ProjectId equals pro.Id
-                              select new {
-                                  Appointment = app,
-                                  Project = pro
-                              }).ToList();
+                var reservations = _reservationService.GetReservationsInSpan(startDate, endDate);
+                var projects = _projectService.GetProjects();
+                var result = (from res in reservations
+                              join pro in projects on res.ProjectId equals pro.Id
+                              select new {Reservation = res,Project = pro}).ToList();
 
                 if(!string.IsNullOrWhiteSpace(keyWord)) {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
                     if(type == (int)EnmSSH.Area) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Area);
-                        var areas = _workContext.RoleAreas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Area);
+                        var areas = _workContext.Areas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
@@ -631,10 +618,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Device) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Device);
-                        var devices = _workContext.RoleDevices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Device);
+                        var devices = _workContext.Devices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
@@ -643,10 +630,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Room) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Room);
-                        var rooms = _workContext.RoleRooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Room);
+                        var rooms = _workContext.Rooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
@@ -655,10 +642,10 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Station) {
-                        var nodes = _nodesInAppointmentService.GetNodesAsList(EnmSSH.Station);
-                        var stations = _workContext.RoleStations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Station);
+                        var stations = _workContext.Stations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
@@ -667,30 +654,30 @@ namespace iPem.Site.Controllers {
                                    group node by node.ReservationId into g
                                    select g.Key).ToArray();
 
-                        result = result.FindAll(a => ids.Contains(a.Appointment.Id));
+                        result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else {
                         result = result.FindAll(a => CommonHelper.ConditionContain(a.Project.Name, keyWords));
                     }
                 }
 
-                var models = new List<AppointmentModel>();
+                var models = new List<ReservationModel>();
                 if(result.Count > 0) {
                     for(int i = 0; i < result.Count; i++) {
-                        models.Add(new AppointmentModel {
+                        models.Add(new ReservationModel {
                             index = i + 1,
-                            id = result[i].Appointment.Id.ToString(),
-                            startDate = CommonHelper.DateTimeConverter(result[i].Appointment.StartTime),
-                            endDate = CommonHelper.DateTimeConverter(result[i].Appointment.EndTime),
+                            id = result[i].Reservation.Id.ToString(),
+                            startDate = CommonHelper.DateTimeConverter(result[i].Reservation.StartTime),
+                            endDate = CommonHelper.DateTimeConverter(result[i].Reservation.EndTime),
                             projectName = result[i].Project.Name,
-                            creator = result[i].Appointment.Creator,
-                            createdTime = CommonHelper.DateTimeConverter(result[i].Appointment.CreatedTime),
-                            comment = result[i].Appointment.Comment,
-                            enabled = result[i].Appointment.Enabled,
+                            creator = result[i].Reservation.Creator,
+                            createdTime = CommonHelper.DateTimeConverter(result[i].Reservation.CreatedTime),
+                            comment = result[i].Reservation.Comment,
+                            enabled = result[i].Reservation.Enabled,
                         });
                     }
                 }
 
-                using(var ms = _excelManager.Export<AppointmentModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<ReservationModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {

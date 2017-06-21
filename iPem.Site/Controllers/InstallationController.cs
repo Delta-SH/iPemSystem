@@ -274,11 +274,11 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("数据库尚未配置，请完成配置后重试。");
 
                 var model = JsonConvert.DeserializeObject<iPem.Site.Models.Installation.RoleModel>(data);
-                var repository = new RoleRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
+                var repository = new U_RoleRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
                 var service = new RoleService(repository, _cacheManager);
                 var installed = (type == 0);
 
-                var entity = service.GetRole(U_Role.SuperId);
+                var entity = service.GetRoleById(U_Role.SuperId);
                 if(entity != null) service.Remove(entity);
 
                 entity = new U_Role() {
@@ -315,7 +315,7 @@ namespace iPem.Site.Controllers {
                 var service = new UserService(repository, _cacheManager);
                 var installed = (type == 0);
 
-                var entity = service.GetUser(model.name);
+                var entity = service.GetUserByName(model.name);
                 if(entity != null) service.Remove(entity);
 
                 service.Add(new U_User() {

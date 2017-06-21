@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly ID_DeviceRepository _deviceRepository;
+        private readonly ID_DeviceRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public DeviceService(
-            ID_DeviceRepository deviceRepository,
+            ID_DeviceRepository repository,
             ICacheManager cacheManager) {
-            this._deviceRepository = deviceRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,23 +33,19 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public D_Device GetDevice(string id) {
-            return _deviceRepository.GetEntity(id);
+            return _repository.GetDevice(id);
         }
 
-        public IPagedList<D_Device> GetAllDevices(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<D_Device>(this.GetAllDevicesAsList(), pageIndex, pageSize);
+        public List<D_Device> GetDevicesInRoom(string id) {
+            return _repository.GetDevicesInRoom(id);
         }
 
-        public List<D_Device> GetAllDevicesAsList() {
-            return _deviceRepository.GetDevices();
+        public List<D_Device> GetDevices() {
+            return _repository.GetDevices();
         }
 
-        public IPagedList<D_Device> GetDevices(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<D_Device>(this.GetDevicesAsList(parent), pageIndex, pageSize);
-        }
-
-        public List<D_Device> GetDevicesAsList(string parent) {
-            return _deviceRepository.GetDevices(parent);
+        public IPagedList<D_Device> GetPagedDevices(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<D_Device>(this.GetDevices(), pageIndex, pageSize);
         }
 
         #endregion

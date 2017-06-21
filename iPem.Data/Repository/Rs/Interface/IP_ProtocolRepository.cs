@@ -10,7 +10,6 @@ namespace iPem.Data.Repository.Rs {
         /// <summary>
         /// 获得所有的设备模版
         /// </summary>
-        /// <returns></returns>
         List<P_Protocol> GetProtocols();
     }
 }

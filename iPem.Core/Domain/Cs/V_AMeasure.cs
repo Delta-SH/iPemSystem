@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iPem.Core.Enum;
+using System;
 
 namespace iPem.Core.Domain.Cs {
     /// <summary>
@@ -50,6 +51,11 @@ namespace iPem.Core.Domain.Cs {
         /// 信号描述(单位)
         /// </summary>
         public string SignalDesc { get; set; }
+
+        /// <summary>
+        /// 监测值状态
+        /// </summary>
+        public EnmState Status { get; set; }
 
         /// <summary>
         /// 监测值

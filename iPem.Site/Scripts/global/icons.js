@@ -6,6 +6,7 @@
 
 window.$$iPems.icons = {
     Add: '/content/themes/icons/add.png',
+    All: '/content/themes/icons/all.png',
     Cancel: '/content/themes/icons/cancel.png',
     Clear: '/content/themes/icons/clear.png',
     Cog: '/content/themes/icons/cog.png',
@@ -19,6 +20,7 @@ window.$$iPems.icons = {
     Error: '/content/themes/icons/error.png',
     Excel: '/content/themes/icons/excel.png',
     Exit: '/content/themes/icons/exit.png',
+    Filter: '/content/themes/icons/filter.png',
     Home: '/content/themes/icons/home.png',
     Jifang: '/content/themes/icons/jifang.png',
     Junheng: '/content/themes/icons/junheng.png',

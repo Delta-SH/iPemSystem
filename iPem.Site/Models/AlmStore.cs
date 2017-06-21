@@ -7,8 +7,6 @@ namespace iPem.Site.Models {
     public class AlmStore<T> where T : class {
         public T Current { get; set; }
 
-        public ExtAlarm ExtSet { get; set; }
-
         public P_Point Point { get; set; }
 
         public D_Device Device { get; set; }

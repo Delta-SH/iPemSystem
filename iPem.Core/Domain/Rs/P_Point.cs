@@ -48,11 +48,6 @@ namespace iPem.Core.Domain.Rs {
         public string NMAlarmId { get; set; }
 
         /// <summary>
-        /// 站点类型
-        /// </summary>
-        public C_StationType StationType { get; set; }
-
-        /// <summary>
         /// 设备类型
         /// </summary>
         public C_DeviceType DeviceType { get; set; }
@@ -83,19 +78,6 @@ namespace iPem.Core.Domain.Rs {
         public string BusiEffect { get; set; }
 
         /// <summary>
-        /// 告警级别
-        /// </summary>
-        public EnmAlarm AlarmLevel { get; set; }
-
-        /// <summary>
-        /// 触发模式
-        /// </summary>
-        /// <remarks>
-        /// >、<、=、！= (针对遥信)
-        /// </remarks>
-        public int TriggerTypeId { get; set; }
-
-        /// <summary>
         /// 信号说明
         /// </summary>
         public string Comment { get; set; }
@@ -104,46 +86,6 @@ namespace iPem.Core.Domain.Rs {
         /// 信号解释
         /// </summary>
         public string Interpret { get; set; }
-
-        /// <summary>
-        /// 告警门限
-        /// </summary>
-        public double AlarmLimit { get; set; }
-
-        /// <summary>
-        /// 告警回差
-        /// </summary>
-        public double AlarmReturnDiff { get; set; }
-
-        /// <summary>
-        /// 告警恢复延时（秒）
-        /// </summary>
-        public int AlarmRecoveryDelay { get; set; }
-
-        /// <summary>
-        /// 告警延时（秒）
-        /// </summary>
-        public int AlarmDelay { get; set; }
-
-        /// <summary>
-        /// 存储周期（秒）
-        /// </summary>
-        public int SavedPeriod { get; set; }
-
-        /// <summary>
-        /// 统计周期(分钟，5的倍数)
-        /// </summary>
-        public int StaticPeriod { get; set; }
-
-        /// <summary>
-        /// 绝对阀值
-        /// </summary>
-        public double AbsoluteThreshold { get; set; }
-
-        /// <summary>
-        /// 百分比阀值
-        /// </summary>
-        public double PerThreshold { get; set; }
 
         /// <summary>
         /// 扩展设置1

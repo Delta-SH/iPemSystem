@@ -4,15 +4,28 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 设备信息API
+    /// </summary>
     public partial interface IDeviceService {
+        /// <summary>
+        /// 获得指定的设备
+        /// </summary>
         D_Device GetDevice(string id);
 
-        IPagedList<D_Device> GetAllDevices(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定机房下的设备
+        /// </summary>
+        List<D_Device> GetDevicesInRoom(string id);
 
-        List<D_Device> GetAllDevicesAsList();
+        /// <summary>
+        /// 获得所有的设备
+        /// </summary>
+        List<D_Device> GetDevices();
 
-        IPagedList<D_Device> GetDevices(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        List<D_Device> GetDevicesAsList(string parent);
+        /// <summary>
+        /// 获得所有的设备（分页）
+        /// </summary>
+        IPagedList<D_Device> GetPagedDevices(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

@@ -365,6 +365,10 @@ div.help-tip div.help-tip-content p {
     background-color : #87ceeb; 
 }
 
+.alm-reservation {
+    color:#157fcc;
+}
+
 /**custom button css*/
 a.custom-button {
   display: inline-block;

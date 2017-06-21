@@ -265,16 +265,16 @@
                             total0 += item.models[0].value;
                             total1 += item.models[1].value;
 
-                            if (item.index == $$iPems.AlmLevel.Level1) {
+                            if (item.index == $$iPems.Level.Level1) {
                                 data0[0] = item.models[0].value;
                                 data1[0] = item.models[1].value;
-                            } else if (item.index == $$iPems.AlmLevel.Level2) {
+                            } else if (item.index == $$iPems.Level.Level2) {
                                 data0[1] = item.models[0].value;
                                 data1[1] = item.models[1].value;
-                            } else if (item.index == $$iPems.AlmLevel.Level3) {
+                            } else if (item.index == $$iPems.Level.Level3) {
                                 data0[2] = item.models[0].value;
                                 data1[2] = item.models[1].value;
-                            } else if (item.index == $$iPems.AlmLevel.Level4) {
+                            } else if (item.index == $$iPems.Level.Level4) {
                                 data0[3] = item.models[0].value;
                                 data1[3] = item.models[1].value;
                             }

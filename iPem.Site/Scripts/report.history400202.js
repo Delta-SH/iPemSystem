@@ -302,13 +302,13 @@
                             pieOption.series[0].data[2].value = 0;
                             pieOption.series[0].data[3].value = 0;
                             Ext.Array.each(data.chart[0], function (item, index) {
-                                if (item.index == $$iPems.AlmLevel.Level1)
+                                if (item.index == $$iPems.Level.Level1)
                                     pieOption.series[0].data[0].value = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level2)
+                                else if (item.index == $$iPems.Level.Level2)
                                     pieOption.series[0].data[1].value = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                else if (item.index == $$iPems.Level.Level3)
                                     pieOption.series[0].data[2].value = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                else if (item.index == $$iPems.Level.Level4)
                                     pieOption.series[0].data[3].value = item.value;
                             });
                             pieChart.setOption(pieOption);
@@ -334,13 +334,13 @@
                                     };
                                 }
 
-                                if (item.index == $$iPems.AlmLevel.Level1)
+                                if (item.index == $$iPems.Level.Level1)
                                     groups[item.name].L1 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level2)
+                                else if (item.index == $$iPems.Level.Level2)
                                     groups[item.name].L2 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                else if (item.index == $$iPems.Level.Level3)
                                     groups[item.name].L3 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                else if (item.index == $$iPems.Level.Level4)
                                     groups[item.name].L4 = item.value;
                             });
 
@@ -446,7 +446,7 @@
                     trackOver: true,
                     emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                     getRowClass: function (record, rowIndex, rowParams, store) {
-                        return $$iPems.GetAlmLevelCls(record.get("levelid"));
+                        return $$iPems.GetLevelCls(record.get("levelid"));
                     }
                 },
                 listeners: {

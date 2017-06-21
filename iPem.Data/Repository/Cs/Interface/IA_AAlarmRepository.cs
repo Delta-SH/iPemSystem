@@ -56,5 +56,10 @@ namespace iPem.Data.Repository.Cs {
         /// 获取指定告警的过滤告警
         /// </summary>
         List<A_AAlarm> GetFilterAlarms(string id);
+
+        /// <summary>
+        /// 确认指定的告警
+        /// </summary>
+        void Confirm(IList<A_AAlarm> alarms);
     }
 }

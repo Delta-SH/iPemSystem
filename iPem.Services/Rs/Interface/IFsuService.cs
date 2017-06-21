@@ -4,17 +4,43 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// Fsu信息API
+    /// </summary>
     public partial interface IFsuService {
+        /// <summary>
+        /// 获得指定的FSU
+        /// </summary>
         D_Fsu GetFsu(string id);
 
-        IPagedList<D_Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定机房下的FSU
+        /// </summary>
+        List<D_Fsu> GetFsuInRoom(string id);
 
-        List<D_Fsu> GetAllFsusAsList();
+        /// <summary>
+        /// 获得所有的FSU
+        /// </summary>
+        List<D_Fsu> GetFsus();
 
-        D_ExtFsu GetFsuExt(string id);
+        /// <summary>
+        /// 获得指定的FSU扩展信息
+        /// </summary>
+        D_ExtFsu GetExtFsu(string id);
 
-        IPagedList<D_ExtFsu> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的FSU扩展信息
+        /// </summary>
+        List<D_ExtFsu> GetExtFsus();
 
-        List<D_ExtFsu> GetAllExtendsAsList();
+        /// <summary>
+        /// 获得所有的FSU(分页)
+        /// </summary>
+        IPagedList<D_Fsu> GetPagedFsus(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
+        /// 获得所有的FSU扩展信息(分页)
+        /// </summary>
+        IPagedList<D_ExtFsu> GetPagedExtFsus(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

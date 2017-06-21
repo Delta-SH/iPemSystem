@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_DeviceTypeRepository _typeRepository;
+        private readonly IC_DeviceTypeRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public DeviceTypeService(
-            IC_DeviceTypeRepository typeRepository,
+            IC_DeviceTypeRepository repository,
             ICacheManager cacheManager) {
-            this._typeRepository = typeRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,43 +33,45 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_DeviceType GetDeviceType(string id) {
-            return _typeRepository.GetEntity(id);
+            return _repository.GetDeviceType(id);
         }
 
         public C_SubDeviceType GetSubDeviceType(string id) {
-            return _typeRepository.GetSubEntity(id);
+            return _repository.GetSubDeviceType(id);
         }
 
-        public IPagedList<C_DeviceType> GetAllDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_DeviceType>(this.GetAllDeviceTypesAsList(), pageIndex, pageSize);
-        }
-
-        public List<C_DeviceType> GetAllDeviceTypesAsList() {
+        public List<C_DeviceType> GetDeviceTypes() {
             List<C_DeviceType> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_DeviceTypeRepository)) {
-                result = _cacheManager.Get<List<C_DeviceType>>(GlobalCacheKeys.Rs_DeviceTypeRepository);
+            var key = GlobalCacheKeys.Rs_DeviceTypeRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<C_DeviceType>>(key);
             } else {
-                result = _typeRepository.GetEntities();
-                _cacheManager.Set<List<C_DeviceType>>(GlobalCacheKeys.Rs_DeviceTypeRepository, result);
+                result = _repository.GetDeviceTypes();
+                _cacheManager.Set<List<C_DeviceType>>(key, result);
             }
 
             return result;
         }
 
-        public IPagedList<C_SubDeviceType> GetAllSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_SubDeviceType>(this.GetAllSubDeviceTypesAsList(), pageIndex, pageSize);
-        }
-
-        public List<C_SubDeviceType> GetAllSubDeviceTypesAsList() {
+        public List<C_SubDeviceType> GetSubDeviceTypes() {
             List<C_SubDeviceType> result = null;
-            if(_cacheManager.IsSet(GlobalCacheKeys.Rs_SubDeviceTypesRepository)) {
-                result = _cacheManager.Get<List<C_SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository);
+            var key = GlobalCacheKeys.Rs_SubDeviceTypesRepository;
+            if (_cacheManager.IsSet(key)) {
+                result = _cacheManager.Get<List<C_SubDeviceType>>(key);
             } else {
-                result = _typeRepository.GetSubEntities();
-                _cacheManager.Set<List<C_SubDeviceType>>(GlobalCacheKeys.Rs_SubDeviceTypesRepository, result);
+                result = _repository.GetSubDeviceTypes();
+                _cacheManager.Set<List<C_SubDeviceType>>(key, result);
             }
 
             return result;
+        }
+
+        public IPagedList<C_DeviceType> GetPagedDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_DeviceType>(this.GetDeviceTypes(), pageIndex, pageSize);
+        }
+
+        public IPagedList<C_SubDeviceType> GetPagedSubDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_SubDeviceType>(this.GetSubDeviceTypes(), pageIndex, pageSize);
         }
 
         #endregion

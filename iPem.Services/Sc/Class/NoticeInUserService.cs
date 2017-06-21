@@ -10,7 +10,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly INoticeInUserRepository _noticesInUsersRepository;
+        private readonly IH_NoticeInUserRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,9 +21,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public NoticeInUserService(
-            INoticeInUserRepository noticesInUsersRepository,
+            IH_NoticeInUserRepository repository,
             ICacheManager cacheManager) {
-            this._noticesInUsersRepository = noticesInUsersRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -31,62 +31,33 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual IPagedList<H_NoticeInUser> GetAllNotices(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<H_NoticeInUser>(this.GetAllNoticesAsList(), pageIndex, pageSize);
+        public List<H_NoticeInUser> GetNoticesInUsers() {
+            return _repository.GetNoticesInUsers();
         }
 
-        public virtual List<H_NoticeInUser> GetAllNoticesAsList() {
-            return _noticesInUsersRepository.GetEntities();
+        public List<H_NoticeInUser> GetNoticesInUser(Guid uid) {
+            return _repository.GetNoticesInUser(uid);
         }
 
-        public virtual IPagedList<H_NoticeInUser> GetNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<H_NoticeInUser>(this.GetNoticesAsList(uid), pageIndex, pageSize);
-        }
-
-        public virtual List<H_NoticeInUser> GetNoticesAsList(Guid uid) {
-            return _noticesInUsersRepository.GetEntities(uid);
-        }
-
-        public virtual void Add(H_NoticeInUser notice) {
-            if(notice == null)
-                throw new ArgumentNullException("notice");
-
-            _noticesInUsersRepository.Insert(notice);
-        }
-
-        public virtual void AddRange(List<H_NoticeInUser> notices) {
-            if(notices == null)
-                throw new ArgumentNullException("notice");
-
-            _noticesInUsersRepository.Insert(notices);
-        }
-
-        public virtual void Update(H_NoticeInUser notice) {
-            if(notice == null)
-                throw new ArgumentNullException("notice");
-
-            _noticesInUsersRepository.Update(notice);
-        }
-
-        public virtual void UpdateRange(List<H_NoticeInUser> notices) {
-            if(notices == null)
+        public void Add(params H_NoticeInUser[] notices) {
+            if (notices == null || notices.Length == 0)
                 throw new ArgumentNullException("notices");
 
-            _noticesInUsersRepository.Update(notices);
+            _repository.Insert(notices);
         }
 
-        public virtual void Remove(H_NoticeInUser notice) {
-            if(notice == null)
-                throw new ArgumentNullException("notice");
-
-            _noticesInUsersRepository.Delete(notice);
-        }
-
-        public virtual void RemoveRange(List<H_NoticeInUser> notices) {
-            if(notices == null)
+        public void Update(params H_NoticeInUser[] notices) {
+            if (notices == null || notices.Length == 0)
                 throw new ArgumentNullException("notices");
 
-            _noticesInUsersRepository.Delete(notices);
+            _repository.Update(notices);
+        }
+
+        public void Remove(params H_NoticeInUser[] notices) {
+            if (notices == null || notices.Length == 0)
+                throw new ArgumentNullException("notices");
+
+            _repository.Delete(notices);
         }
 
         #endregion

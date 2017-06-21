@@ -210,15 +210,15 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetOperationDisplay(EnmOperation op) {
+        public static string GetPermissionDisplay(EnmPermission op) {
             switch(op) {
-                case EnmOperation.Control:
+                case EnmPermission.Control:
                     return "信号遥控";
-                case EnmOperation.Adjust:
+                case EnmPermission.Adjust:
                     return "信号遥调";
-                case EnmOperation.Confirm:
+                case EnmPermission.Confirm:
                     return "告警确认";
-                case EnmOperation.Threshold:
+                case EnmPermission.Threshold:
                     return "门限设置";
                 default:
                     return "其他";
@@ -235,6 +235,8 @@ namespace iPem.Site.Infrastructure {
                     return "遥信";
                 case EnmPoint.DO:
                     return "遥控";
+                case EnmPoint.AL:
+                    return "告警";
                 default:
                     return "未定义";
             }
@@ -261,7 +263,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetAlarmLevelDisplay(EnmAlarm level) {
+        public static string GetAlarmDisplay(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level0:
                     return "无告警";
@@ -278,7 +280,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetConfirmStatusDisplay(EnmConfirm status) {
+        public static string GetConfirmDisplay(EnmConfirm status) {
             switch(status) {
                 case EnmConfirm.Confirmed:
                     return "已确认";
@@ -289,8 +291,19 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetFtpEventDisplay(EnmFsuEvent evt) {
-            switch (evt) {
+        public static string GetReservationDisplay(EnmReservation reservation) {
+            switch (reservation) {
+                case EnmReservation.UnReservation:
+                    return "非工程告警";
+                case EnmReservation.Reservation:
+                    return "工程告警";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetFsuEventDisplay(EnmFsuEvent evet) {
+            switch (evet) {
                 case EnmFsuEvent.FTP:
                     return "FTP操作";
                 case EnmFsuEvent.Undefined:
@@ -347,26 +360,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static string GetEndTypeDisplay(EnmAlarmEndType type) {
-            switch(type) {
-                case EnmAlarmEndType.Normal:
-                    return "正常结束";
-                case EnmAlarmEndType.UpLevel:
-                    return "升级结束";
-                case EnmAlarmEndType.Filter:
-                    return "过滤结束";
-                case EnmAlarmEndType.Mask:
-                    return "手动屏蔽结束";
-                case EnmAlarmEndType.NodeRemove:
-                    return "节点删除";
-                case EnmAlarmEndType.DeviceRemove:
-                    return "设备删除";
-                default:
-                    return "未定义";
-            }
-        }
-
-        public static Color GetAlarmLevelColor(EnmAlarm level) {
+        public static Color GetAlarmColor(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level1:
                     return Color.Red;
@@ -381,7 +375,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static Color GetPointStatusColor(EnmState status) {
+        public static Color GetPointColor(EnmState status) {
             switch(status) {
                 case EnmState.Normal:
                     return Color.LimeGreen;
@@ -389,6 +383,23 @@ namespace iPem.Site.Infrastructure {
                     return Color.LightGray;
                 default:
                     return Color.White;
+            }
+        }
+
+        public static EnmState LevelToState(EnmAlarm level) {
+            switch (level) {
+                case EnmAlarm.Level0:
+                    return EnmState.Normal;
+                case EnmAlarm.Level1:
+                    return EnmState.Level1;
+                case EnmAlarm.Level2:
+                    return EnmState.Level2;
+                case EnmAlarm.Level3:
+                    return EnmState.Level3;
+                case EnmAlarm.Level4:
+                    return EnmState.Level4;
+                default:
+                    return EnmState.Invalid;
             }
         }
 

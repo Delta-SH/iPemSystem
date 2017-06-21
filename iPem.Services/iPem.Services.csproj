@@ -40,65 +40,67 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Am\Class\AmDeviceService.cs" />
-    <Compile Include="Am\Class\AmStationService.cs" />
-    <Compile Include="Am\Interface\IAmDeviceService.cs" />
-    <Compile Include="Am\Interface\IAmStationService.cs" />
     <Compile Include="Common\CacheKeys.cs" />
-    <Compile Include="Cs\Class\ActAlmService.cs" />
-    <Compile Include="Cs\Class\HisBatTimeService.cs" />
-    <Compile Include="Cs\Class\HisElecService.cs" />
-    <Compile Include="Cs\Class\HisFtpService.cs" />
-    <Compile Include="Cs\Class\HisLoadRateService.cs" />
-    <Compile Include="Cs\Interface\IHisBatTimeService.cs" />
-    <Compile Include="Cs\Interface\IHisElecService.cs" />
-    <Compile Include="Cs\Interface\IHisFtpService.cs" />
-    <Compile Include="Cs\Interface\IHisLoadRateService.cs" />
-    <Compile Include="Sc\Class\ExtAlarmService.cs" />
-    <Compile Include="Cs\Class\HisAlmService.cs" />
-    <Compile Include="Cs\Class\HisBatService.cs" />
-    <Compile Include="Cs\Class\HisStaticService.cs" />
-    <Compile Include="Cs\Class\HisValueService.cs" />
-    <Compile Include="Cs\Interface\IActAlmService.cs" />
+    <Compile Include="Cs\Class\AAlarmService.cs" />
+    <Compile Include="Cs\Class\AMeasureService.cs" />
+    <Compile Include="Cs\Class\BatTimeService.cs" />
+    <Compile Include="Cs\Class\ElecService.cs" />
+    <Compile Include="Cs\Class\FsuEventService.cs" />
+    <Compile Include="Cs\Class\LoadService.cs" />
+    <Compile Include="Cs\Class\HIDeviceService.cs" />
+    <Compile Include="Cs\Class\HIStationService.cs" />
+    <Compile Include="Cs\Interface\IAMeasureService.cs" />
+    <Compile Include="Cs\Interface\IBatTimeService.cs" />
+    <Compile Include="Cs\Interface\IElecService.cs" />
+    <Compile Include="Cs\Interface\IFsuEventService.cs" />
+    <Compile Include="Cs\Interface\ILoadService.cs" />
+    <Compile Include="Cs\Interface\IHIDeviceService.cs" />
+    <Compile Include="Cs\Interface\IHIStationService.cs" />
+    <Compile Include="Rs\Class\RedefinePointService.cs" />
+    <Compile Include="Rs\Class\SCVendorService.cs" />
+    <Compile Include="Rs\Interface\IRedefinePointService.cs" />
+    <Compile Include="Rs\Interface\ISCVendorService.cs" />
+    <Compile Include="Cs\Class\HAlarmService.cs" />
+    <Compile Include="Cs\Class\BatService.cs" />
+    <Compile Include="Cs\Class\StaticService.cs" />
+    <Compile Include="Cs\Class\HMeasureService.cs" />
+    <Compile Include="Cs\Interface\IAAlarmService.cs" />
+    <Compile Include="Sc\Class\FollowPointService.cs" />
     <Compile Include="Sc\Class\FormulaService.cs" />
-    <Compile Include="Sc\Interface\IExtAlarmService.cs" />
-    <Compile Include="Cs\Interface\IHisAlmService.cs" />
-    <Compile Include="Cs\Interface\IHisBatService.cs" />
-    <Compile Include="Cs\Interface\IHisStaticService.cs" />
-    <Compile Include="Cs\Interface\IHisValueService.cs" />
-    <Compile Include="Sc\Class\AppointmentService.cs" />
-    <Compile Include="Sc\Class\AreasInRoleService.cs" />
+    <Compile Include="Cs\Interface\IHAlarmService.cs" />
+    <Compile Include="Cs\Interface\IBatService.cs" />
+    <Compile Include="Cs\Interface\IStaticService.cs" />
+    <Compile Include="Cs\Interface\IHMeasureService.cs" />
+    <Compile Include="Sc\Class\ReservationService.cs" />
+    <Compile Include="Sc\Class\EntitiesInRoleService.cs" />
     <Compile Include="Sc\Class\DictionaryService.cs" />
-    <Compile Include="Sc\Class\NodesInAppointmentService.cs" />
+    <Compile Include="Sc\Class\NodeInReservationService.cs" />
     <Compile Include="Sc\Class\ProfileService.cs" />
-    <Compile Include="Sc\Class\ProjectsService.cs" />
-    <Compile Include="Sc\Interface\IAppointmentService.cs" />
-    <Compile Include="Sc\Interface\IAreasInRoleService.cs" />
+    <Compile Include="Sc\Class\ProjectService.cs" />
+    <Compile Include="Sc\Interface\IFollowPointService.cs" />
+    <Compile Include="Sc\Interface\IReservationService.cs" />
+    <Compile Include="Sc\Interface\IEntitiesInRoleService.cs" />
     <Compile Include="Sc\Interface\IDictionaryService.cs" />
     <Compile Include="Sc\Interface\IFormulaService.cs" />
     <Compile Include="Sc\Interface\IMenuService.cs" />
-    <Compile Include="Sc\Interface\IMenusInRoleService.cs" />
-    <Compile Include="Sc\Interface\INodesInAppointmentService.cs" />
+    <Compile Include="Sc\Interface\INodeInReservationService.cs" />
     <Compile Include="Sc\Interface\INoticeService.cs" />
     <Compile Include="Sc\Interface\INoticeInUserService.cs" />
-    <Compile Include="Sc\Interface\IOperateInRoleService.cs" />
     <Compile Include="Rs\Interface\IPointService.cs" />
     <Compile Include="Sc\Interface\IProfileService.cs" />
     <Compile Include="Sc\Interface\IProjectService.cs" />
     <Compile Include="Rs\Interface\IProtocolService.cs" />
     <Compile Include="Sc\Interface\IRoleService.cs" />
     <Compile Include="Sc\Interface\IUserService.cs" />
-    <Compile Include="Sc\Interface\IWebLogger.cs" />
+    <Compile Include="Sc\Interface\IWebEventService.cs" />
     <Compile Include="Sc\Class\MenuService.cs" />
-    <Compile Include="Sc\Class\MenusInRoleService.cs" />
     <Compile Include="Sc\Class\NoticeService.cs" />
     <Compile Include="Sc\Class\NoticeInUserService.cs" />
-    <Compile Include="Sc\Class\OperateInRoleService.cs" />
     <Compile Include="Rs\Class\PointService.cs" />
     <Compile Include="Rs\Class\ProtocolService.cs" />
     <Compile Include="Sc\Class\RoleService.cs" />
     <Compile Include="Sc\Class\UserService.cs" />
-    <Compile Include="Sc\Class\WebLogger.cs" />
+    <Compile Include="Sc\Class\WebEventService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rs\Class\AreaService.cs" />
     <Compile Include="Rs\Class\BrandService.cs" />
@@ -107,7 +109,7 @@
     <Compile Include="Rs\Class\DeviceTypeService.cs" />
     <Compile Include="Rs\Class\DutyService.cs" />
     <Compile Include="Rs\Class\EmployeeService.cs" />
-    <Compile Include="Rs\Class\EnumMethodsService.cs" />
+    <Compile Include="Rs\Class\EnumMethodService.cs" />
     <Compile Include="Rs\Class\FsuService.cs" />
     <Compile Include="Rs\Class\LogicTypeService.cs" />
     <Compile Include="Rs\Class\ProductorService.cs" />
@@ -123,7 +125,7 @@
     <Compile Include="Rs\Interface\IDeviceTypeService.cs" />
     <Compile Include="Rs\Interface\IDutyService.cs" />
     <Compile Include="Rs\Interface\IEmployeeService.cs" />
-    <Compile Include="Rs\Interface\IEnumMethodsService.cs" />
+    <Compile Include="Rs\Interface\IEnumMethodService.cs" />
     <Compile Include="Rs\Interface\IFsuService.cs" />
     <Compile Include="Rs\Interface\ILogicTypeService.cs" />
     <Compile Include="Rs\Interface\IProductorService.cs" />
@@ -147,9 +149,6 @@
       <Project>{1e554760-f4cf-4f93-9989-055371db2cfe}</Project>
       <Name>iPem.Data</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

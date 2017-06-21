@@ -143,11 +143,11 @@ namespace iPem.Data.Common {
             return Enum.IsDefined(typeof(EnmMarriage), v) ? (EnmMarriage)v : EnmMarriage.Other;
         }
 
-        public static EnmOperation DBNullEnmOperationHandler(object val) {
-            if(val == DBNull.Value) { return EnmOperation.Confirm; }
+        public static EnmPermission DBNullEnmPermissionHandler(object val) {
+            if(val == DBNull.Value) { return EnmPermission.Confirm; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmOperation), v) ? (EnmOperation)v : EnmOperation.Confirm;
+            return Enum.IsDefined(typeof(EnmPermission), v) ? (EnmPermission)v : EnmPermission.Confirm;
         }
 
         public static EnmPoint DBNullEnmPointHandler(object val) {

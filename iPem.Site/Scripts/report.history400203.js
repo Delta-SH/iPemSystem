@@ -269,16 +269,16 @@
 
                         barOption.series[0].data = [0, 0, 0, 0];
                         Ext.Array.each(data.chart, function (item, index) {
-                            if (item.index == $$iPems.AlmLevel.Level1) {
+                            if (item.index == $$iPems.Level.Level1) {
                                 pieOption.series[0].data[0].value = item.value;
                                 barOption.series[0].data[0] = item.value;
-                            } else if (item.index == $$iPems.AlmLevel.Level2) {
+                            } else if (item.index == $$iPems.Level.Level2) {
                                 pieOption.series[0].data[1].value = item.value;
                                 barOption.series[0].data[1] = item.value;
-                            } else if (item.index == $$iPems.AlmLevel.Level3) {
+                            } else if (item.index == $$iPems.Level.Level3) {
                                 pieOption.series[0].data[2].value = item.value;
                                 barOption.series[0].data[2] = item.value;
-                            } else if (item.index == $$iPems.AlmLevel.Level4) {
+                            } else if (item.index == $$iPems.Level.Level4) {
                                 pieOption.series[0].data[3].value = item.value;
                                 barOption.series[0].data[3] = item.value;
                             }

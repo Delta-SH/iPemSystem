@@ -21,7 +21,6 @@ namespace iPem.Data.Repository.Rs {
         /// <summary>
         /// 获得所有的枚举定义
         /// </summary>
-        /// <returns></returns>
         List<C_EnumMethod> GetEnums();
     }
 }

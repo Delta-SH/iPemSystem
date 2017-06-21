@@ -4,15 +4,28 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 机房信息API
+    /// </summary>
     public partial interface IRoomService {
+        /// <summary>
+        /// 获得指定的机房
+        /// </summary>
         S_Room GetRoom(string id);
 
-        IPagedList<S_Room> GetAllRooms(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得指定的站点下的机房
+        /// </summary>
+        List<S_Room> GetRoomsInStation(string id);
 
-        List<S_Room> GetAllRoomsAsList();
+        /// <summary>
+        /// 获得所有的机房
+        /// </summary>
+        List<S_Room> GetRooms();
 
-        IPagedList<S_Room> GetRooms(string parent, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        List<S_Room> GetRoomsAsList(string parent);
+        /// <summary>
+        /// 获得所有的机房(分页)
+        /// </summary>
+        IPagedList<S_Room> GetPagedRooms(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

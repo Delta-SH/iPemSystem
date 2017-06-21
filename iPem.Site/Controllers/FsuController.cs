@@ -8,7 +8,7 @@ using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
-using iPem.Site.Models.Organization;
+using iPem.Site.Models.SSH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +24,10 @@ namespace iPem.Site.Controllers {
         private readonly IExcelManager _excelManager;
         private readonly ICacheManager _cacheManager;
         private readonly IWorkContext _workContext;
-        private readonly IWebLogger _webLogger;
+        private readonly IWebEventService _webLogger;
         private readonly IDictionaryService _dictionaryService;
         private readonly IFsuService _fsuService;
-        private readonly IHisFtpService _ftpService;
+        private readonly IFsuEventService _ftpService;
 
         #endregion
 
@@ -37,9 +37,9 @@ namespace iPem.Site.Controllers {
             IExcelManager excelManager,
             ICacheManager cacheManager,
             IWorkContext workContext,
-            IWebLogger webLogger,
+            IWebEventService webLogger,
             IFsuService fsuService,
-            IHisFtpService ftpService,
+            IFsuEventService ftpService,
             IDictionaryService dictionaryService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -55,14 +55,23 @@ namespace iPem.Site.Controllers {
         #region Actions
 
         public ActionResult Index(int? id) {
+            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2001))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
         public ActionResult Configuration(int? id) {
+            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2002))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
         public ActionResult Ftp(int? id) {
+            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2003))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
@@ -156,9 +165,9 @@ namespace iPem.Site.Controllers {
 
         private List<FsuModel> GetFsus(string parent, int[] status, int filter, string keywords) {
             var result = new List<FsuModel>();
-            var fsus = new List<OrgFsu>();
+            var fsus = new List<SSHFsu>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                fsus = _workContext.RoleFsus;
+                fsus = _workContext.Fsus;
             } else {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -166,13 +175,12 @@ namespace iPem.Site.Controllers {
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                     if(nodeType == EnmSSH.Area) {
-                        var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
-                        if(current != null)
-                            fsus = _workContext.RoleFsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                        var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                        if(current != null) fsus = _workContext.Fsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                     } else if(nodeType == EnmSSH.Station) {
-                        fsus = _workContext.RoleFsus.FindAll(d => d.Current.StationId == id);
+                        fsus = _workContext.Fsus.FindAll(d => d.Current.StationId == id);
                     } else if(nodeType == EnmSSH.Room) {
-                        var current = _workContext.RoleRooms.Find(a => a.Current.Id == id);
+                        var current = _workContext.Rooms.Find(a => a.Current.Id == id);
                         if(current != null) fsus = current.Fsus;
                     }
                 }
@@ -192,22 +200,20 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var extends = _fsuService.GetAllExtendsAsList();
+            var extFsus = _fsuService.GetExtFsus();
             if(status != null && status.Length > 0)
-                extends = extends.FindAll(e => (status.Contains(1) && e.Status) || (status.Contains(0) && !e.Status));
+                extFsus = extFsus.FindAll(e => (status.Contains(1) && e.Status) || (status.Contains(0) && !e.Status));
 
             var stores = from fsu in fsus
-                         join ext in extends on fsu.Current.Id equals ext.Id
-                         join room in _workContext.RoleRooms on fsu.Current.RoomId equals room.Current.Id
-                         join station in _workContext.RoleStations on fsu.Current.StationId equals station.Current.Id
-                         join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
+                         join ext in extFsus on fsu.Current.Id equals ext.Id
+                         join area in _workContext.Areas on fsu.Current.AreaId equals area.Current.Id
                          select new FsuModel {
                              id = fsu.Current.Id,
                              code = fsu.Current.Code,
                              name = fsu.Current.Name,
                              area = area.ToString(),
-                             station = station.Current.Name,
-                             room = room.Current.Name,
+                             station = fsu.Current.StationName,
+                             room = fsu.Current.RoomName,
                              ip = ext.IP ?? string.Empty,
                              port = ext.Port,
                              last = CommonHelper.DateTimeConverter(ext.LastTime),
@@ -242,9 +248,9 @@ namespace iPem.Site.Controllers {
             endDate = endDate.AddDays(1).AddMilliseconds(-1);
 
             var result = new List<FtpModel>();
-            var fsus = new List<OrgFsu>();
+            var fsus = new List<SSHFsu>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                fsus = _workContext.RoleFsus;
+                fsus = _workContext.Fsus;
             } else {
                 var keys = Common.SplitKeys(parent);
                 if(keys.Length == 2) {
@@ -252,13 +258,13 @@ namespace iPem.Site.Controllers {
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                     if(nodeType == EnmSSH.Area) {
-                        var current = _workContext.RoleAreas.Find(a => a.Current.Id == id);
+                        var current = _workContext.Areas.Find(a => a.Current.Id == id);
                         if(current != null)
-                            fsus = _workContext.RoleFsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                            fsus = _workContext.Fsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
                     } else if(nodeType == EnmSSH.Station) {
-                        fsus = _workContext.RoleFsus.FindAll(d => d.Current.StationId == id);
+                        fsus = _workContext.Fsus.FindAll(d => d.Current.StationId == id);
                     } else if(nodeType == EnmSSH.Room) {
-                        var current = _workContext.RoleRooms.Find(a => a.Current.Id == id);
+                        var current = _workContext.Rooms.Find(a => a.Current.Id == id);
                         if(current != null) fsus = current.Fsus;
                     }
                 }
@@ -278,15 +284,15 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var events = _ftpService.GetEventsAsList(startDate, endDate, EnmFsuEvent.FTP);
+            var events = _ftpService.GetEventsInType(startDate, endDate, EnmFsuEvent.FTP);
             if (types != null && types.Length > 0)
                 events = events.FindAll(e => types.Contains((int)e.EventType));
 
             var stores = from evt in events
                          join fsu in fsus on evt.FsuId equals fsu.Current.Id
-                         join room in _workContext.RoleRooms on fsu.Current.RoomId equals room.Current.Id
-                         join station in _workContext.RoleStations on fsu.Current.StationId equals station.Current.Id
-                         join area in _workContext.RoleAreas on fsu.Current.AreaId equals area.Current.Id
+                         join room in _workContext.Rooms on fsu.Current.RoomId equals room.Current.Id
+                         join station in _workContext.Stations on fsu.Current.StationId equals station.Current.Id
+                         join area in _workContext.Areas on fsu.Current.AreaId equals area.Current.Id
                          select new FtpModel {
                              id = fsu.Current.Id,
                              code = fsu.Current.Code,
@@ -294,7 +300,7 @@ namespace iPem.Site.Controllers {
                              area = area.ToString(),
                              station = station.Current.Name,
                              room = room.Current.Name,
-                             type = Common.GetFtpEventDisplay(evt.EventType),
+                             type = Common.GetFsuEventDisplay(evt.EventType),
                              message = evt.Message ?? string.Empty,
                              time = CommonHelper.DateTimeConverter(evt.EventTime)
                          };

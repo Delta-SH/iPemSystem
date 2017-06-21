@@ -1,5 +1,6 @@
 ﻿using iPem.Core.Domain.Rs;
-using iPem.Site.Models.Organization;
+using iPem.Core.Enum;
+using iPem.Site.Models.SSH;
 using System;
 
 namespace iPem.Site.Models {
@@ -7,14 +8,14 @@ namespace iPem.Site.Models {
     public class PointStore<T> where T : class {
         public T Current { get; set; }
 
-        public D_Device Device { get; set; }
+        public EnmPoint Type { get; set; }
 
-        public A_Area Area { get; set; }
+        public SSHDevice Device { get; set; }
 
-        public bool RssPoint { get; set; }
+        public SSHArea Area { get; set; }
 
-        public bool RssFrom { get; set; }
+        public bool Followed { get; set; }
 
-        public String AreaFullName { get; set; }
+        public bool FollowedOnly { get; set; }
     }
 }

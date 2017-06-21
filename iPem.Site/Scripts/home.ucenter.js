@@ -62,7 +62,7 @@
                     height: 60,
                     width: 60,
                     margin: '20 0 0 28',
-                    src: '/Account/GetCurrentPhoto',
+                    src: '/Account/GetUserPhoto',
                     style: {
                         'border-radius': '60px',
                     }

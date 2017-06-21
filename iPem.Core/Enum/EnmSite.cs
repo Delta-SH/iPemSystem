@@ -34,7 +34,7 @@
     /// <summary>
     /// 信号操作类型
     /// </summary>
-    public enum EnmOperation {
+    public enum EnmPermission {
         /// <summary>
         /// 遥控
         /// </summary>
@@ -88,6 +88,10 @@
     /// 信号类型
     /// </summary>
     public enum EnmPoint {
+        /// <summary>
+        /// 告警-0
+        /// </summary>
+        AL = 0,
         /// <summary>
         /// 遥控-1
         /// </summary>
@@ -178,6 +182,20 @@
         /// 已确认
         /// </summary>
         Confirmed
+    }
+
+    /// <summary>
+    /// 告警工程状态
+    /// </summary>
+    public enum EnmReservation {
+        /// <summary>
+        /// 非工程告警
+        /// </summary>
+        UnReservation,
+        /// <summary>
+        /// 工程告警
+        /// </summary>
+        Reservation
     }
 
     /// <summary>

@@ -49,7 +49,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<H_FsuEvent> GetEvents(DateTime start, DateTime end, EnmFsuEvent type) {
+        public List<H_FsuEvent> GetEventsInType(DateTime start, DateTime end, EnmFsuEvent type) {
             SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime),
                                      new SqlParameter("@EventType", SqlDbType.Int) };

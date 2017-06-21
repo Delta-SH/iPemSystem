@@ -76,9 +76,6 @@ namespace iPem.Site {
 
             if(!dbManager.DatabaseIsInstalled())
                 return;
-
-            if(!dbManager.DatabaseIsInstalled())
-                return;
         }
 
         protected void Application_EndRequest(object sender, EventArgs e) {
@@ -100,7 +97,7 @@ namespace iPem.Site {
                 return;
 
             try {
-                var logger = EngineContext.Current.Resolve<IWebLogger>();
+                var logger = EngineContext.Current.Resolve<IWebEventService>();
                 logger.Error(EnmEventType.Exception, exception.Message, exception);
             } catch(Exception) {
                 //don't throw new exception if occurs

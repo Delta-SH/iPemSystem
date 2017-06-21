@@ -10,7 +10,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IProfileRepository _profileRepository;
+        private readonly IU_ProfileRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -21,9 +21,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public ProfileService(
-            IProfileRepository profileRepository,
+            IU_ProfileRepository repository,
             ICacheManager cacheManager) {
-            this._profileRepository = profileRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -32,15 +32,15 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public U_Profile GetProfile(Guid uid) {
-            return _profileRepository.GetEntity(uid);
+            return _repository.GetProfile(uid);
         }
 
         public void Save(U_Profile profile) {
-            _profileRepository.Save(profile);
+            _repository.Save(profile);
         }
 
         public void Remove(Guid uid) {
-            _profileRepository.Delete(uid);
+            _repository.Delete(uid);
         }
 
         #endregion

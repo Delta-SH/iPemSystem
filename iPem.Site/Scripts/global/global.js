@@ -235,48 +235,13 @@ Ext.override(Ext.view.Table, {
     }
 });
 
-/*ajax action*/
-window.$$iPems.Action = {
-    Add: 0,
-    Edit: 1,
-    Delete: 2
-};
+window.$$iPems.Action = { Add: 0, Edit: 1, Delete: 2 };
+window.$$iPems.SSH = { Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4, Point: 5 };
+window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
+window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
+window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
+window.$$iPems.Period = { Year: 0, Month: 1, Week: 2, Day: 3 };
 
-/*organization*/
-window.$$iPems.Organization = {
-    Area: 0,
-    Station: 1,
-    Room: 2,
-    Device: 3,
-    Point: 4
-};
-
-/** 
-Point Type
-4-遥信信号（DI）
-3-遥测信号（AI）
-1-遥控信号（DO）
-2-遥调信号（AO）
-*/
-window.$$iPems.Point = {
-    DI: 4,
-    AI: 3,
-    DO: 1,
-    AO: 2
-};
-
-/*Point State*/
-window.$$iPems.State = {
-    Normal: 0,
-    Level1: 1,
-    Level2: 2,
-    Level3: 3,
-    Level4: 4,
-    Opevent: 5,
-    Invalid: 6
-};
-
-/*State Css*/
 window.$$iPems.GetStateCls = function (value) {
     switch (value) {
         case $$iPems.State.Normal:
@@ -298,50 +263,32 @@ window.$$iPems.GetStateCls = function (value) {
     }
 };
 
-/*Alarm Level*/
-window.$$iPems.AlmLevel = {
-    Level0: 0,
-    Level1: 1,
-    Level2: 2,
-    Level3: 3,
-    Level4: 4
-};
-
-/*Alarm Css Class*/
-window.$$iPems.GetAlmLevelCls = function (value) {
+window.$$iPems.GetLevelCls = function (value) {
     switch (value) {
-        case $$iPems.AlmLevel.Level0:
+        case $$iPems.Level.Level0:
             return 'alm-level0';
-        case $$iPems.AlmLevel.Level1:
+        case $$iPems.Level.Level1:
             return 'alm-level1';
-        case $$iPems.AlmLevel.Level2:
+        case $$iPems.Level.Level2:
             return 'alm-level2';
-        case $$iPems.AlmLevel.Level3:
+        case $$iPems.Level.Level3:
             return 'alm-level3';
-        case $$iPems.AlmLevel.Level4:
+        case $$iPems.Level.Level4:
             return 'alm-level4';
         default:
             return '';
     }
 };
 
-/*Period*/
-window.$$iPems.Period = {
-    Year: 0,
-    Month: 1,
-    Week: 2,
-    Day: 3
-};
+/*global delimiter*/
+window.$$iPems.Delimiter = ';';
+window.$$iPems.Separator = '┆';
 
 /*Split Node Keys*/
 window.$$iPems.SplitKeys = function (key) {
     if(Ext.isEmpty(key)) return [];
     return key.split($$iPems.Separator);
 };
-
-/*global delimiter*/
-window.$$iPems.Delimiter = ';';
-window.$$iPems.Separator = '┆';
 
 /*download files via ajax*/
 window.$$iPems.download = function (config) {

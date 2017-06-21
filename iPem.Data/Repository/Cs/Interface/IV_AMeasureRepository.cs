@@ -8,6 +8,11 @@ namespace iPem.Data.Repository.Cs {
     /// </summary>
     public partial interface IV_AMeasureRepository {
         /// <summary>
+        /// 获得指定设备下单信号的性能数据
+        /// </summary>
+        V_AMeasure GetMeasure(string device, string signalId, string signalNumber);
+
+        /// <summary>
         /// 获得指定区域(第三级区域)的性能数据
         /// </summary>
         List<V_AMeasure> GetMeasuresInArea(string id);
@@ -26,11 +31,6 @@ namespace iPem.Data.Repository.Cs {
         /// 获得指定设备的性能数据
         /// </summary>
         List<V_AMeasure> GetMeasuresInDevice(string id);
-
-        /// <summary>
-        /// 获得指定设备下单信号的性能数据
-        /// </summary>
-        List<V_AMeasure> GetMeasuresInPoint(string device, string point);
 
         /// <summary>
         /// 获得所有的性能数据

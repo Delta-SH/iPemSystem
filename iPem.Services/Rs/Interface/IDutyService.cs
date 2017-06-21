@@ -4,11 +4,23 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 职位信息API
+    /// </summary>
     public partial interface IDutyService {
+        /// <summary>
+        /// 获得指定的职位信息
+        /// </summary>
         C_Duty GetDuty(string id);
 
-        IPagedList<C_Duty> GetAllDuties(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的职位信息
+        /// </summary>
+        List<C_Duty> GetDuties();
 
-        List<C_Duty> GetAllDutiesAsList();
+        /// <summary>
+        /// 获得所有的职位信息（分页）
+        /// </summary>
+        IPagedList<C_Duty> GetPagedDuties(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

@@ -39,7 +39,7 @@ namespace iPem.Site.Models {
         public string time { get; set; }
 
         [ExcelIgnore]
-        public string devid { get; set; }
+        public string deviceid { get; set; }
 
         [ExcelIgnore]
         public string pointid { get; set; }
@@ -51,13 +51,10 @@ namespace iPem.Site.Models {
         public int statusid { get; set; }
 
         [ExcelIgnore]
-        public int level { get; set; }
+        public bool followed { get; set; }
 
         [ExcelIgnore]
-        public bool rsspoint { get; set; }
-
-        [ExcelIgnore]
-        public bool rssfrom { get; set; }
+        public bool followedOnly { get; set; }
 
         [ExcelIgnore]
         public string timestamp { get; set; }

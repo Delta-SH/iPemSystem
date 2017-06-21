@@ -277,8 +277,7 @@ Ext.define('Ext.ux.TreePicker', {
                 if (parent && parent.hasChildNodes()) {
                     parent.eachChild(function (c) {
                         c.cascadeBy(function (n) {
-                            var checked = n.get('checked');
-                            if (checked !== null) {
+                            if (n.get('checked') !== null) {
                                 n.set('checked', Ext.Array.contains(value, n.data.id));
                             }
                         });
@@ -374,8 +373,7 @@ Ext.define('Ext.ux.TreePicker', {
                 if (root.hasChildNodes()) {
                     root.eachChild(function (c) {
                         c.cascadeBy(function (n) {
-                            var checked = n.get('checked');
-                            if (checked !== null) {
+                            if (n.get('checked') !== null) {
                                 n.set('checked', false);
                             }
                         });
@@ -411,7 +409,6 @@ Ext.define('Ext.ux.TreePicker', {
             nodes = me.picker.getChecked();
 
         me.setValue(nodes, false);
-        //me.inputEl.focus();
         me.fireEvent('checkchange', me, nodes);
     },
 
@@ -421,12 +418,23 @@ Ext.define('Ext.ux.TreePicker', {
             value = me.value;
 
         if (me.multiSelect === true) {
+            var root = picker.getRootNode();
+            if (root && root.hasChildNodes()) {
+                root.eachChild(function (c) {
+                    c.cascadeBy(function (n) {
+                        if (n.get('checked') !== null) {
+                            n.set('checked', Ext.Array.contains(value, n.data.id));
+                        }
+                    });
+                });
+            }
+
             var nodes = picker.getChecked();
             Ext.Array.each(nodes, function (item, index, items) {
                 picker.selectPath(item.getPath());
             });
         } else {
-            value = Ext.isArray(value) ? value[0] : value;
+            value = Ext.isArray(value) ? (value.length > 0 ? value[0] : null) : value;
             if (value) {
                 var node = me.findRecord(value);
                 if (node) picker.selectPath(node.getPath());

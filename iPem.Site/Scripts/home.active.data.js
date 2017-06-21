@@ -25,7 +25,7 @@
                             fontSize: 16
                         }
                     },
-                    data: [{ value: 0, name: '无数据' }]
+                    data: [{ value: 0, name: '' }]
                 }
             ]
         },
@@ -45,7 +45,7 @@
                 type: 'category',
                 boundaryGap: false,
                 splitLine: { show: false },
-                data: ['无数据']
+                data: ['00′00″']
             }],
             yAxis: [{
                 type: 'value'
@@ -68,31 +68,31 @@
             ]
         };
 
-    var resetChart = function () {
+    var resetChart = function (fill) {
+        fill = fill || false;
+
         gaugeOption.series[0].min = 0;
         gaugeOption.series[0].max = 100;
         gaugeOption.series[0].name = '';
-        gaugeOption.series[0].data[0] = {};
+        gaugeOption.series[0].data[0] = { value: 0, name: '' };
         gaugeChart.setOption(gaugeOption, true);
 
         lineOption.series[0].name = '';
-        lineOption.series[0].data = [];
-        lineOption.xAxis[0].data = [];
+        lineOption.series[0].data = fill ? [0] : [];
+        lineOption.xAxis[0].data = fill ? ['00′00″'] : [];
         lineChart.setOption(lineOption, true);
     };
 
     var loadChart = function (record) {
         if (record != null) {
-            var maxcount = 60,
+            var maxcount = 90,
                 timestamp = record.get('timestamp'),
                 point = record.get('point'),
                 value = record.get('value'),
                 unit = record.get('unit');
 
-            if (value === 'NULL') {
-                gaugeOption.series[0].min = 0;
-                gaugeOption.series[0].max = 100;
-            } else if (value >= 0) {
+            if (value === 'NULL') value = 0;
+            if (value >= 0) {
                 if (value <= 100) {
                     gaugeOption.series[0].min = 0;
                     gaugeOption.series[0].max = 100;
@@ -133,7 +133,7 @@
             gaugeOption.series[0].data[0].value = value;
             gaugeChart.setOption(gaugeOption, true);
 
-            if (lineOption.series[0].data.length > maxcount) {
+            if (lineOption.series[0].data.length >= maxcount) {
                 lineOption.series[0].data.shift();
                 lineOption.xAxis[0].data.shift();
             }
@@ -159,13 +159,12 @@
             { name: 'unit', type: 'string' },
             { name: 'status', type: 'string' },
             { name: 'time', type: 'string' },
-            { name: 'devid', type: 'string' },
+            { name: 'deviceid', type: 'string' },
             { name: 'pointid', type: 'string' },
             { name: 'typeid', type: 'int' },
             { name: 'statusid', type: 'int' },
-            { name: 'level', type: 'int' },
-            { name: 'rsspoint', type: 'boolean' },
-            { name: 'rssfrom', type: 'boolean' },
+            { name: 'followed', type: 'boolean' },
+            { name: 'followedOnly', type: 'boolean' },
             { name: 'timestamp', type: 'string' }
         ],
         idProperty: 'index'
@@ -175,11 +174,13 @@
         var me = pagingtoolbar.store,
             id = node.getId(),
             ids = $$iPems.SplitKeys(id),
-            columns = Ext.getCmp('points-grid').columns;
+            grid = Ext.getCmp('points-grid'),
+            columns = grid.columns,
+            selection = grid.getSelectionModel();
 
         if (id !== 'root'
             && ids.length === 2
-            && parseInt(ids[0]) === $$iPems.Organization.Device) {
+            && parseInt(ids[0]) === $$iPems.SSH.Device) {
             columns[1].hide();
             columns[2].hide();
             columns[3].hide();
@@ -191,7 +192,11 @@
             columns[4].show();
         }
 
-        resetChart();
+        if (selection.hasSelection()) {
+            selection.clearSelections();
+        }
+
+        resetChart(true);
         me.proxy.extraParams.node = node.getId();
         me.loadPage(1);
     };
@@ -215,7 +220,7 @@
             },
             extraParams: {
                 node: 'root',
-                types: [$$iPems.Point.DI, $$iPems.Point.AI, $$iPems.Point.AO, $$iPems.Point.DO]
+                types: [$$iPems.Point.DI, $$iPems.Point.AI, $$iPems.Point.AO, $$iPems.Point.DO, $$iPems.Point.AL]
             },
             simpleSortMode: true
         },
@@ -410,115 +415,6 @@
         ]
     });
 
-    var thresholdWnd = Ext.create('Ext.window.Window', {
-        title: '设置门限',
-        height: 250,
-        width: 400,
-        glyph: 0xf002,
-        modal: true,
-        border: false,
-        hidden: true,
-        closeAction: 'hide',
-        items: [{
-            xtype: 'form',
-            itemId: 'thresholdForm',
-            border: false,
-            layout: {
-                type: 'vbox',
-                align: 'center'
-            },
-            fieldDefaults: {
-                labelWidth: 100,
-                labelAlign: 'left',
-                margin: '15 15 15 15',
-                width: '100%'
-            },
-            items: [{
-                xtype: 'hiddenfield',
-                itemId: 'device',
-                name: 'device'
-            }, {
-                xtype: 'hiddenfield',
-                itemId: 'point',
-                name: 'point'
-            }, {
-                xtype: 'textfield',
-                itemId: 'nmid',
-                name: 'nmid',
-                fieldLabel: '网管告警编号'
-            }, {
-                xtype: 'AlarmLevelCombo',
-                itemId: 'level',
-                name: 'level',
-                fieldLabel: '告 警 等 级',
-                all: false,
-                width: '100%'
-            }, {
-                xtype: 'numberfield',
-                itemId: 'threshold',
-                name: 'threshold',
-                fieldLabel: '告警门限阈值',
-                value: -1,
-                allowBlank: false,
-                allowOnlyWhitespace: false
-            }]
-        }],
-        buttons: [
-          { id: 'thresholdResult', xtype: 'iconlabel', text: '' },
-          { xtype: 'tbfill' },
-          {
-              xtype: 'button',
-              text: '保存',
-              handler: function (el, e) {
-                  var form = thresholdWnd.getComponent('thresholdForm'),
-                      baseForm = form.getForm(),
-                      device = form.getComponent('device').getValue(),
-                      point = form.getComponent('point').getValue(),
-                      nmalarmID = form.getComponent('nmid').getValue(),
-                      alarmLevel = form.getComponent('level').getValue(),
-                      threshold = form.getComponent('threshold').getValue(),
-                      result = Ext.getCmp('thresholdResult');
-
-                  result.setTextWithIcon('', '');
-                  if (baseForm.isValid()) {
-                      result.setTextWithIcon('正在处理...', 'x-icon-loading');
-                      baseForm.submit({
-                          submitEmptyText: false,
-                          clientValidation: true,
-                          preventWindow: true,
-                          url: '/Home/SetThreshold',
-                          params: {
-                              device: device,
-                              point: point,
-                              nmalarmID: nmalarmID,
-                              alarmLevel: alarmLevel,
-                              threshold: threshold
-                          },
-                          success: function (form, action) {
-                              result.setTextWithIcon(action.result.message, 'x-icon-accept');
-                          },
-                          failure: function (form, action) {
-                              var message = 'undefined error.';
-                              if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
-                                  message = action.result.message;
-
-                              result.setTextWithIcon(message, 'x-icon-error');
-                          }
-                      });
-                  } else {
-                      result.setTextWithIcon('表单填写错误', 'x-icon-error');
-                  }
-              }
-          }, {
-              xtype: 'button',
-              text: '取消',
-              handler: function (el, e) {
-                  thresholdWnd.close();
-              }
-          }
-        ]
-    });
-
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
             id: 'currentLayout',
@@ -694,6 +590,7 @@
                                             { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                             { xtype: 'checkboxfield', boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                             { xtype: 'checkboxfield', boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                            { xtype: 'checkboxfield', boxLabel: '告警', inputValue: $$iPems.Point.AL, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                         ],
                                         listeners: {
                                             change: function (me, newValue, oldValue) {
@@ -756,33 +653,6 @@
                                     menuText: '操作',
                                     text: '操作',
                                     items: [{
-                                        tooltip: '设置门限',
-                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('level') > 0 && $$iPems.ThresholdOperation) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
-                                        },
-                                        handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            view.getSelectionModel().select(record);
-                                            var form = thresholdWnd.getComponent('thresholdForm'),
-                                                device = form.getComponent('device'),
-                                                point = form.getComponent('point'),
-                                                result = Ext.getCmp('thresholdResult');
-
-                                            device.setValue(record.get('devid'));
-                                            point.setValue(record.get('pointid'));
-                                            result.setTextWithIcon('', '')
-
-                                            form.load({
-                                                url: '/Home/GetThreshold',
-                                                params: { device: device.getValue(), point: point.getValue() },
-                                                waitMsg: '正在处理...',
-                                                waitTitle: '系统提示',
-                                                success: function (form, action) {
-                                                    form.clearInvalid();
-                                                    thresholdWnd.show();
-                                                }
-                                            })
-                                        }
-                                    }, {
                                         tooltip: '遥控',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
                                             return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
@@ -794,7 +664,7 @@
                                                 point = form.getComponent('point'),
                                                 result = Ext.getCmp('controlResult');
 
-                                            device.setValue(record.get('devid'));
+                                            device.setValue(record.get('deviceid'));
                                             point.setValue(record.get('pointid'));
                                             result.setTextWithIcon('', '')
                                             controlWnd.show();
@@ -811,24 +681,24 @@
                                                 point = form.getComponent('point'),
                                                 result = Ext.getCmp('adjustResult');
 
-                                            device.setValue(record.get('devid'));
+                                            device.setValue(record.get('deviceid'));
                                             point.setValue(record.get('pointid'));
                                             result.setTextWithIcon('', '')
                                             adjustWnd.show();
                                         }
                                     }, {
                                         getTip: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('rsspoint') === true) ? '已关注' : '关注';
+                                            return (r.get('followed') === true) ? '已关注' : '关注';
                                         },
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('rssfrom') === false) ? ((r.get('rsspoint') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
+                                            return (r.get('followedOnly') === false) ? ((r.get('followed') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
                                         },
                                         handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            if (record.get('rsspoint')) return false;
+                                            if (record.get('followed')) return false;
 
                                             Ext.Ajax.request({
-                                                url: '/Home/AddRssPoint',
-                                                params: { device: record.get('devid'), point: record.get('pointid') },
+                                                url: '/Home/AddFollowPoint',
+                                                params: { device: record.get('deviceid'), point: record.get('pointid') },
                                                 mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
                                                 success: function (response, options) {
                                                     var data = Ext.decode(response.responseText, true);
@@ -843,12 +713,12 @@
                                     }, {
                                         tooltip: '取消关注',
                                         getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('rssfrom') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
+                                            return (r.get('followedOnly') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
                                         },
                                         handler: function (view, rowIndex, colIndex, item, event, record) {
                                             Ext.Ajax.request({
-                                                url: '/Home/RemoveRssPoint',
-                                                params: { device: record.get('devid'), point: record.get('pointid') },
+                                                url: '/Home/RemoveFollowPoint',
+                                                params: { device: record.get('deviceid'), point: record.get('pointid') },
                                                 mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
                                                 success: function (response, options) {
                                                     var data = Ext.decode(response.responseText, true);

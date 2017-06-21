@@ -398,6 +398,7 @@
             { name: 'area', type: 'string' },
             { name: 'station', type: 'string' },
             { name: 'room', type: 'string' },
+            { name: 'vendor', type: 'string' },
             { name: 'name', type: 'string' },
             { name: 'time', type: 'string' },
             { name: 'interval', type: 'string' }
@@ -768,7 +769,7 @@
                             text: '所属区域',
                             dataIndex: 'area',
                             align: 'left',
-                            flex: 1,
+                            width: 120,
                             sortable: true
                         }, {
                             text: '所属站点',
@@ -779,6 +780,12 @@
                         }, {
                             text: '所属机房',
                             dataIndex: 'room',
+                            align: 'left',
+                            width: 120,
+                            sortable: true
+                        }, {
+                            text: '所属厂家',
+                            dataIndex: 'vendor',
                             align: 'left',
                             width: 120,
                             sortable: true

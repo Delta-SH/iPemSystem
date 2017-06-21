@@ -449,13 +449,13 @@ var now = new Date(),
                         forceSelection: true,
                         labelWidth: 60,
                         width: 280,
-                        value: $$iPems.Organization.Area,
+                        value: $$iPems.SSH.Area,
                         store: Ext.create('Ext.data.Store', {
                             fields: ['id', 'text'],
                             data: [
-                                { id: $$iPems.Organization.Area, text: '区域' },
-                                { id: $$iPems.Organization.Station, text: '站点' },
-                                { id: $$iPems.Organization.Room, text: '机房' },
+                                { id: $$iPems.SSH.Area, text: '区域' },
+                                { id: $$iPems.SSH.Station, text: '站点' },
+                                { id: $$iPems.SSH.Room, text: '机房' },
                             ]
                         })
                     }, {

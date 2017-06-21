@@ -13,9 +13,9 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IA_AreaRepository _areaRepository;
+        private readonly IA_AreaRepository _repository;
         private readonly ICacheManager _cacheManager;
-        private readonly IEnumMethodsService _methodsService;
+        private readonly IEnumMethodService _enumService;
 
         #endregion
 
@@ -25,12 +25,12 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public AreaService(
-            IA_AreaRepository areaRepository,
+            IA_AreaRepository repository,
             ICacheManager cacheManager,
-            IEnumMethodsService methodsService) {
-            this._areaRepository = areaRepository;
+            IEnumMethodService enumService) {
+            this._repository = repository;
             this._cacheManager = cacheManager;
-            this._methodsService = methodsService;
+            this._enumService = enumService;
         }
 
         #endregion
@@ -38,21 +38,17 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public A_Area GetArea(string id) {
-            var current = _areaRepository.GetArea(id);
+            var current = _repository.GetArea(id);
             if(current != null) {
-                var type = _methodsService.GetValue(current.Type.Id);
+                var type = _enumService.GetEnumById(current.Type.Id);
                 if(type != null) current.Type.Value = type.Name;
             }
             return current;
         }
 
-        public IPagedList<A_Area> GetAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<A_Area>(this.GetAreasAsList(), pageIndex, pageSize);
-        }
-
-        public List<A_Area> GetAreasAsList() {
-            var result = _areaRepository.GetAreas();
-            var types = _methodsService.GetValuesAsList(EnmMethodType.Area, "类型");
+        public List<A_Area> GetAreas() {
+            var result = _repository.GetAreas();
+            var types = _enumService.GetEnumsByType(EnmMethodType.Area, "类型");
             for(var i = 0; i < result.Count; i++) {
                 var current = result[i];
                 var type = types.Find(t => t.Id == current.Type.Id);
@@ -60,6 +56,10 @@ namespace iPem.Services.Rs {
                 current.Type.Value = type.Name;
             }
             return result;
+        }
+
+        public IPagedList<A_Area> GetPagedAreas(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<A_Area>(this.GetAreas(), pageIndex, pageSize);
         }
 
         #endregion

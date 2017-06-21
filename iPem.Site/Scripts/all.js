@@ -646,6 +646,10 @@ Ext.define("Ext.ux.MultiCombo", {
         Ext.each(this.valueModels, function (r) {
             this.selectRecord(r);
         }, this);
+
+        if (this.picker && this.picker.rendered) {
+            this.picker.refresh();
+        }
     },
     reset: function () {
         this.callParent(arguments);
@@ -979,8 +983,7 @@ Ext.define('Ext.ux.TreePicker', {
                 if (parent && parent.hasChildNodes()) {
                     parent.eachChild(function (c) {
                         c.cascadeBy(function (n) {
-                            var checked = n.get('checked');
-                            if (checked !== null) {
+                            if (n.get('checked') !== null) {
                                 n.set('checked', Ext.Array.contains(value, n.data.id));
                             }
                         });
@@ -1076,8 +1079,7 @@ Ext.define('Ext.ux.TreePicker', {
                 if (root.hasChildNodes()) {
                     root.eachChild(function (c) {
                         c.cascadeBy(function (n) {
-                            var checked = n.get('checked');
-                            if (checked !== null) {
+                            if (n.get('checked') !== null) {
                                 n.set('checked', false);
                             }
                         });
@@ -1113,7 +1115,6 @@ Ext.define('Ext.ux.TreePicker', {
             nodes = me.picker.getChecked();
 
         me.setValue(nodes, false);
-        //me.inputEl.focus();
         me.fireEvent('checkchange', me, nodes);
     },
 
@@ -1123,12 +1124,23 @@ Ext.define('Ext.ux.TreePicker', {
             value = me.value;
 
         if (me.multiSelect === true) {
+            var root = picker.getRootNode();
+            if (root && root.hasChildNodes()) {
+                root.eachChild(function (c) {
+                    c.cascadeBy(function (n) {
+                        if (n.get('checked') !== null) {
+                            n.set('checked', Ext.Array.contains(value, n.data.id));
+                        }
+                    });
+                });
+            }
+
             var nodes = picker.getChecked();
             Ext.Array.each(nodes, function (item, index, items) {
                 picker.selectPath(item.getPath());
             });
         } else {
-            value = Ext.isArray(value) ? value[0] : value;
+            value = Ext.isArray(value) ? (value.length > 0 ? value[0] : null) : value;
             if (value) {
                 var node = me.findRecord(value);
                 if (node) picker.selectPath(node.getPath());
@@ -1242,6 +1254,7 @@ Ext.define('Ext.ux.TreePicker', {
 
 window.$$iPems.icons = {
     Add: '/content/themes/icons/add.png',
+    All: '/content/themes/icons/all.png',
     Cancel: '/content/themes/icons/cancel.png',
     Clear: '/content/themes/icons/clear.png',
     Cog: '/content/themes/icons/cog.png',
@@ -1255,6 +1268,7 @@ window.$$iPems.icons = {
     Error: '/content/themes/icons/error.png',
     Excel: '/content/themes/icons/excel.png',
     Exit: '/content/themes/icons/exit.png',
+    Filter: '/content/themes/icons/filter.png',
     Home: '/content/themes/icons/home.png',
     Jifang: '/content/themes/icons/jifang.png',
     Junheng: '/content/themes/icons/junheng.png',
@@ -1511,48 +1525,13 @@ Ext.override(Ext.view.Table, {
     }
 });
 
-/*ajax action*/
-window.$$iPems.Action = {
-    Add: 0,
-    Edit: 1,
-    Delete: 2
-};
+window.$$iPems.Action = { Add: 0, Edit: 1, Delete: 2 };
+window.$$iPems.SSH = { Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4, Point: 5 };
+window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
+window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
+window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
+window.$$iPems.Period = { Year: 0, Month: 1, Week: 2, Day: 3 };
 
-/*organization*/
-window.$$iPems.Organization = {
-    Area: 0,
-    Station: 1,
-    Room: 2,
-    Device: 3,
-    Point: 4
-};
-
-/** 
-Point Type
-4-遥信信号（DI）
-3-遥测信号（AI）
-1-遥控信号（DO）
-2-遥调信号（AO）
-*/
-window.$$iPems.Point = {
-    DI: 4,
-    AI: 3,
-    DO: 1,
-    AO: 2
-};
-
-/*Point State*/
-window.$$iPems.State = {
-    Normal: 0,
-    Level1: 1,
-    Level2: 2,
-    Level3: 3,
-    Level4: 4,
-    Opevent: 5,
-    Invalid: 6
-};
-
-/*State Css*/
 window.$$iPems.GetStateCls = function (value) {
     switch (value) {
         case $$iPems.State.Normal:
@@ -1574,50 +1553,32 @@ window.$$iPems.GetStateCls = function (value) {
     }
 };
 
-/*Alarm Level*/
-window.$$iPems.AlmLevel = {
-    Level0: 0,
-    Level1: 1,
-    Level2: 2,
-    Level3: 3,
-    Level4: 4
-};
-
-/*Alarm Css Class*/
-window.$$iPems.GetAlmLevelCls = function (value) {
+window.$$iPems.GetLevelCls = function (value) {
     switch (value) {
-        case $$iPems.AlmLevel.Level0:
+        case $$iPems.Level.Level0:
             return 'alm-level0';
-        case $$iPems.AlmLevel.Level1:
+        case $$iPems.Level.Level1:
             return 'alm-level1';
-        case $$iPems.AlmLevel.Level2:
+        case $$iPems.Level.Level2:
             return 'alm-level2';
-        case $$iPems.AlmLevel.Level3:
+        case $$iPems.Level.Level3:
             return 'alm-level3';
-        case $$iPems.AlmLevel.Level4:
+        case $$iPems.Level.Level4:
             return 'alm-level4';
         default:
             return '';
     }
 };
 
-/*Period*/
-window.$$iPems.Period = {
-    Year: 0,
-    Month: 1,
-    Week: 2,
-    Day: 3
-};
+/*global delimiter*/
+window.$$iPems.Delimiter = ';';
+window.$$iPems.Separator = '┆';
 
 /*Split Node Keys*/
 window.$$iPems.SplitKeys = function (key) {
     if(Ext.isEmpty(key)) return [];
     return key.split($$iPems.Separator);
 };
-
-/*global delimiter*/
-window.$$iPems.Delimiter = ';';
-window.$$iPems.Separator = '┆';
 
 /*download files via ajax*/
 window.$$iPems.download = function (config) {
@@ -2164,6 +2125,114 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetAlarmLevels';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all },
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
+Ext.define("Ext.ux.ConfirmMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "ConfirmMultiCombo",
+    fieldLabel: '确认状态',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetConfirms';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all }
+        });
+    }
+});
+
+Ext.define("Ext.ux.ConfirmComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "ConfirmCombo",
+    fieldLabel: '确认状态',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetConfirms';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all },
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
+Ext.define("Ext.ux.ReservationMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "ReservationMultiCombo",
+    fieldLabel: '工程状态',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetReservations';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all }
+        });
+    }
+});
+
+Ext.define("Ext.ux.ReservationComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "ReservationCombo",
+    fieldLabel: '工程状态',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetReservations';
         me.callParent(arguments);
         me.store.load({
             scope: me,

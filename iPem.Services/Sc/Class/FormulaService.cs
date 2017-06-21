@@ -11,7 +11,7 @@ namespace iPem.Services.Sc {
 
         #region Fields
 
-        private readonly IFormulaRepository _formulaRepository;
+        private readonly IM_FormulaRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Sc {
         /// Ctor
         /// </summary>
         public FormulaService(
-            IFormulaRepository formulaRepository,
+            IM_FormulaRepository repository,
             ICacheManager cacheManager) {
-            this._formulaRepository = formulaRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -32,38 +32,27 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public virtual M_Formula GetFormula(string id, EnmSSH type, EnmFormula formulaType) {
-            return _formulaRepository.GetEntity(id, type, formulaType);
+        public M_Formula GetFormula(string id, EnmSSH type, EnmFormula formulaType) {
+            return _repository.GetFormula(id, type, formulaType);
         }
 
-        public virtual IPagedList<M_Formula> GetFormulas(string id, EnmSSH type, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<M_Formula>(this.GetFormulasAsList(id, type), pageIndex, pageSize);
+        public List<M_Formula> GetFormulas(string id, EnmSSH type) {
+            return _repository.GetFormulas(id, type);
         }
 
-        public virtual List<M_Formula> GetFormulasAsList(string id, EnmSSH type) {
-            return _formulaRepository.GetEntities(id, type);
+        public List<M_Formula> GetAllFormulas() {
+            return _repository.GetAllFormulas();
         }
 
-        public virtual IPagedList<M_Formula> GetAllFormulas(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<M_Formula>(this.GetAllFormulasAsList(), pageIndex, pageSize);
+        public IPagedList<M_Formula> GetPagedFormulas(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<M_Formula>(this.GetAllFormulas(), pageIndex, pageSize);
         }
 
-        public virtual List<M_Formula> GetAllFormulasAsList() {
-            return _formulaRepository.GetEntities();
-        }
-
-        public virtual void Save(M_Formula formula) {
-            if(formula == null)
-                throw new ArgumentNullException("formula");
-
-            _formulaRepository.Save(formula);
-        }
-
-        public virtual void SaveRange(List<M_Formula> formulas) {
-            if(formulas == null)
+        public void Save(params M_Formula[] formulas) {
+            if (formulas == null || formulas.Length == 0)
                 throw new ArgumentNullException("formulas");
 
-            _formulaRepository.Save(formulas);
+            _repository.Save(formulas);
         }
 
         #endregion

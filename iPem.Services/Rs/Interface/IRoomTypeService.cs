@@ -4,11 +4,23 @@ using System;
 using System.Collections.Generic;
 
 namespace iPem.Services.Rs {
+    /// <summary>
+    /// 机房类型API
+    /// </summary>
     public partial interface IRoomTypeService {
+        /// <summary>
+        /// 获得指定的机房类型
+        /// </summary>
         C_RoomType GetRoomType(string id);
 
-        IPagedList<C_RoomType> GetAllRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue);
+        /// <summary>
+        /// 获得所有的机房类型
+        /// </summary>
+        List<C_RoomType> GetRoomTypes();
 
-        List<C_RoomType> GetAllRoomTypesAsList();
+        /// <summary>
+        /// 获得所有的机房类型
+        /// </summary>
+        IPagedList<C_RoomType> GetPagedRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

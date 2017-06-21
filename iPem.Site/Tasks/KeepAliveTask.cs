@@ -45,7 +45,7 @@ namespace iPem.Site.Tasks {
                     wc.DownloadString(keepAliveUrl);
                 }
             } catch(Exception exc) {
-                var logger = EngineContext.Current.Resolve<IWebLogger>();
+                var logger = EngineContext.Current.Resolve<IWebEventService>();
                 logger.Error(EnmEventType.Exception, "", "#task.alive.keep", "KeepAliveTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), exc);
             }
         }

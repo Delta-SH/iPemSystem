@@ -4,74 +4,38 @@ using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Site.Models;
-using iPem.Site.Models.Organization;
+using iPem.Site.Models.SSH;
 using System;
 using System.Collections.Generic;
 
 namespace iPem.Site.Infrastructure {
     /// <summary>
-    /// Work context
+    /// 应用程序上下文
     /// </summary>
     public interface IWorkContext {
-        /// <summary>
-        /// Gets whether the user has been authenticated
-        /// </summary>
         Boolean IsAuthenticated { get; }
-        
-        /// <summary>
-        /// Gets the current identifier
-        /// </summary>
+
         Guid Identifier { get; }
 
-        /// <summary>
-        /// Gets the current store
-        /// </summary>
-        Store Store { get; }
-
-        /// <summary>
-        /// Gets the current role
-        /// </summary>
         U_Role Role { get; }
 
-        /// <summary>
-        /// Gets the current user
-        /// </summary>
         U_User User { get; }
 
-        /// <summary>
-        /// Gets the current employee
-        /// </summary>
         U_Employee Employee { get; }
 
-        /// <summary>
-        /// Gets the current user profile
-        /// </summary>
-        ProfileValues Profile { get; }
+        iProfile Profile { get; }
 
-        /// <summary>
-        /// Gets the current webservice values
-        /// </summary>
+        U_EntitiesInRole Authorizations { get; }
+
+        DateTime LastNoticeTime { get; set; }
+
+        DateTime LastSpeechTime { get; set; }
+
         WsValues WsValues { get; }
 
-        /// <summary>
-        /// Gets the current speech values
-        /// </summary>
         TsValues TsValues { get; }
 
-        /// <summary>
-        /// Gets the current report values
-        /// </summary>
         RtValues RtValues { get; }
-
-        /// <summary>
-        /// Gets the current menus
-        /// </summary>
-        List<U_Menu> Menus { get; }
-
-        /// <summary>
-        /// Gets the current operations
-        /// </summary>
-        HashSet<EnmOperation> Operations { get; }
 
         List<C_LogicType> LogicTypes { get; }
 
@@ -87,34 +51,58 @@ namespace iPem.Site.Infrastructure {
 
         List<C_EnumMethod> AreaTypes { get; }
 
+        List<SSHProtocol> AllProtocols { get; }
+
+        List<SSHDevice> AllDevices { get; }
+
+        List<SSHFsu> AllFsus { get; }
+
+        List<SSHRoom> AllRooms { get; }
+
+        List<SSHStation> AllStations { get; }
+
+        List<SSHArea> AllAreas { get; }
+
+        List<SSHArea> Areas { get; }
+
+        List<SSHStation> Stations { get; }
+
+        List<SSHRoom> Rooms { get; }
+
+        List<SSHFsu> Fsus { get; }
+
+        List<SSHDevice> Devices { get; }
+
         List<P_Point> Points { get; }
 
-        List<OrgProtocol> Protocols { get; }
+        List<P_SubPoint> SubPoints { get; }
 
-        List<OrgDevice> Devices { get; }
+        List<P_Point> AI { get; }
 
-        List<OrgFsu> Fsus { get; }
+        List<P_Point> AO { get; }
 
-        List<OrgRoom> Rooms { get; }
+        List<P_Point> DI { get; }
 
-        List<OrgStation> Stations { get; }
+        List<P_Point> DO { get; }
 
-        List<OrgArea> Areas { get; }
+        List<P_Point> AL { get; }
 
-        List<OrgArea> RoleAreas { get; }
+        List<AlmStore<A_AAlarm>> ActAlarms { get; }
 
-        List<OrgStation> RoleStations { get; }
+        void ResetRole();
 
-        List<OrgRoom> RoleRooms { get; }
+        void ResetUser();
 
-        List<OrgFsu> RoleFsus { get; }
+        void ResetEmployee();
 
-        List<OrgDevice> RoleDevices { get; }
+        void ResetProfile();
 
-        List<AlmStore<A_AAlarm>> ActAlmStore { get; }
+        void ResetAuthorizations();
 
-        List<AlmStore<A_AAlarm>> GetActAlmStore(List<A_AAlarm> alarms);
+        List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms);
 
-        List<AlmStore<A_HAlarm>> GetHisAlmStore(List<A_HAlarm> alarms, DateTime start, DateTime end);
+        Dictionary<string, AlmStore<A_AAlarm>> AlarmsToDictionary(List<AlmStore<A_AAlarm>> alarms, bool primaryKey = true);
+
+        Dictionary<string, AlmStore<A_HAlarm>> AlarmsToDictionary(List<AlmStore<A_HAlarm>> alarms, bool primaryKey = true);
     }
 }

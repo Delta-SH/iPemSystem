@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly ID_FsuRepository _fsuRepository;
+        private readonly ID_FsuRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public FsuService(
-            ID_FsuRepository fsuRepository,
+            ID_FsuRepository repository,
             ICacheManager cacheManager) {
-            this._fsuRepository = fsuRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,27 +33,31 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public D_Fsu GetFsu(string id) {
-            return _fsuRepository.GetFsu(id);
+            return _repository.GetFsu(id);
         }
 
-        public IPagedList<D_Fsu> GetAllFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<D_Fsu>(this.GetAllFsusAsList(), pageIndex, pageSize);
+        public List<D_Fsu> GetFsuInRoom(string id) {
+            return _repository.GetFsuInRoom(id);
         }
 
-        public List<D_Fsu> GetAllFsusAsList() {
-            return _fsuRepository.GetFsus();
+        public List<D_Fsu> GetFsus() {
+            return _repository.GetFsus();
         }
 
-        public D_ExtFsu GetFsuExt(string id) {
-            return _fsuRepository.GetExtFsu(id);
+        public D_ExtFsu GetExtFsu(string id) {
+            return _repository.GetExtFsu(id);
         }
 
-        public IPagedList<D_ExtFsu> GetAllExtends(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<D_ExtFsu>(this.GetAllExtendsAsList(), pageIndex, pageSize);
+        public List<D_ExtFsu> GetExtFsus() {
+            return _repository.GetExtFsus();
         }
 
-        public List<D_ExtFsu> GetAllExtendsAsList() {
-            return _fsuRepository.GetExtFsus();
+        public IPagedList<D_Fsu> GetPagedFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<D_Fsu>(this.GetFsus(), pageIndex, pageSize);
+        }
+
+        public IPagedList<D_ExtFsu> GetPagedExtFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<D_ExtFsu>(this.GetExtFsus(), pageIndex, pageSize);
         }
 
         #endregion

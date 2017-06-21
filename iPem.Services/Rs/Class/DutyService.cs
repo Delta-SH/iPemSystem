@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IC_DutyRepository _dutyRepository;
+        private readonly IC_DutyRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public DutyService(
-            IC_DutyRepository dutyRepository,
+            IC_DutyRepository repository,
             ICacheManager cacheManager) {
-            this._dutyRepository = dutyRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,15 +33,15 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_Duty GetDuty(string id) {
-            return _dutyRepository.GetEntity(id);
+            return _repository.GetDuty(id);
         }
 
-        public IPagedList<C_Duty> GetAllDuties(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<C_Duty>(this.GetAllDutiesAsList(), pageIndex, pageSize);
+        public List<C_Duty> GetDuties() {
+            return _repository.GetDuties();
         }
 
-        public List<C_Duty> GetAllDutiesAsList() {
-            return _dutyRepository.GetEntities();
+        public IPagedList<C_Duty> GetPagedDuties(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<C_Duty>(this.GetDuties(), pageIndex, pageSize);
         }
 
         #endregion

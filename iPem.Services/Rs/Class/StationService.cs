@@ -11,7 +11,7 @@ namespace iPem.Services.Rs {
 
         #region Fields
 
-        private readonly IS_StationRepository _stationRepository;
+        private readonly IS_StationRepository _repository;
         private readonly ICacheManager _cacheManager;
 
         #endregion
@@ -22,9 +22,9 @@ namespace iPem.Services.Rs {
         /// Ctor
         /// </summary>
         public StationService(
-            IS_StationRepository stationRepository,
+            IS_StationRepository repository,
             ICacheManager cacheManager) {
-            this._stationRepository = stationRepository;
+            this._repository = repository;
             this._cacheManager = cacheManager;
         }
 
@@ -33,23 +33,19 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public S_Station GetStation(string id) {
-            return _stationRepository.GetEntity(id);
+            return _repository.GetStation(id);
         }
 
-        public IPagedList<S_Station> GetAllStations(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<S_Station>(this.GetAllStationsAsList(), pageIndex, pageSize);
+        public List<S_Station> GetStationsInArea(string id) {
+            return _repository.GetStationsInArea(id);
         }
 
-        public List<S_Station> GetAllStationsAsList() {
-            return _stationRepository.GetEntities();
+        public List<S_Station> GetStations() {
+            return _repository.GetStations();
         }
 
-        public IPagedList<S_Station> GetStations(string parent, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<S_Station>(this.GetStationsAsList(parent), pageIndex, pageSize);
-        }
-
-        public List<S_Station> GetStationsAsList(string parent) {
-            return _stationRepository.GetEntities(parent);
+        public IPagedList<S_Station> GetPagedStations(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<S_Station>(this.GetStations(), pageIndex, pageSize);
         }
 
         #endregion

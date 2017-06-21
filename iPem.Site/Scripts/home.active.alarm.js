@@ -1,176 +1,32 @@
 ﻿(function () {
-    var pieChart = null,
-        lineChart = null,
-        pieOption = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{b} <br/>{a}: {c} ({d}%)"
-            },
-            legend: {
-                orient: 'vertical',
-                x: 'left',
-                y: 'center',
-                data: ['一级告警', '二级告警', '三级告警', '四级告警']
-            },
-            series: [
-                {
-                    name: '数量(占比)',
-                    type: 'pie',
-                    radius: ['45%', '85%'],
-                    center: ['60%', '50%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        normal: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            show: true,
-                            textStyle: {
-                                fontSize: '13',
-                                fontWeight: 'bold'
-                            }
-                        }
-                    },
-                    labelLine: {
-                        normal: {
-                            show: false
-                        }
-                    },
-                    data: [
-                        {
-                            value: 0,
-                            name: '一级告警',
-                            itemStyle: {
-                                normal: {
-                                    color: '#f04b51'
-                                }
-                            }
-                        },
-                        {
-                            value: 0,
-                            name: '二级告警',
-                            itemStyle: {
-                                normal: {
-                                    color: '#efa91f'
-                                }
-                            }
-                        },
-                        {
-                            value: 0,
-                            name: '三级告警',
-                            itemStyle: {
-                                normal: {
-                                    color: '#f5d313'
-                                }
-                            }
-                        },
-                        {
-                            value: 0,
-                            name: '四级告警',
-                            itemStyle: {
-                                normal: {
-                                    color: '#0892cd'
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        lineOption = {
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow'
-                }
-            },
-            grid: {
-                top: 15,
-                left: 0,
-                right: 5,
-                bottom: 0,
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    data: ['无数据'],
-                    splitLine: { show: false }
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value'
-                }
-            ],
-            series: [
-                {
-                    name: '一级告警',
-                    type: 'bar',
-                    itemStyle: {
-                        normal: {
-                            color: '#f04b51'
-                        }
-                    },
-                    data: [0]
-                },
-                {
-                    name: '二级告警',
-                    type: 'bar',
-                    itemStyle: {
-                        normal: {
-                            color: '#efa91f'
-                        }
-                    },
-                    data: [0]
-                },
-                {
-                    name: '三级告警',
-                    type: 'bar',
-                    itemStyle: {
-                        normal: {
-                            color: '#f5d313'
-                        }
-                    },
-                    data: [0]
-                },
-                {
-                    name: '四级告警',
-                    type: 'bar',
-                    itemStyle: {
-                        normal: {
-                            color: '#0892cd'
-                        }
-                    },
-                    data: [0]
-                }
-            ]
-        };
-
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
-            { name: 'fsuid', type: 'string' },
-			{ name: 'id', type: 'string' },
-            { name: 'level', type: 'string' },
-            { name: 'levelid', type: 'int' },
-            { name: 'nmid', type: 'string' },
-            { name: 'start', type: 'string' },
-            { name: 'area', type: 'string' },
-            { name: 'station', type: 'string' },
-			{ name: 'room', type: 'string' },
-            { name: 'device', type: 'string' },
-            { name: 'point', type: 'string' },
+            { name: 'nmalarmid', type: 'string' },
+			{ name: 'level', type: 'string' },
+            { name: 'time', type: 'string' },
+            { name: 'interval', type: 'string' },
             { name: 'comment', type: 'string' },
             { name: 'value', type: 'string' },
-            { name: 'frequency', type: 'int' },
-            { name: 'interval', type: 'string' },
+            { name: 'point', type: 'string' },
+            { name: 'device', type: 'string' },
+			{ name: 'room', type: 'string' },
+            { name: 'station', type: 'string' },
+            { name: 'area', type: 'string' },
             { name: 'confirmed', type: 'string' },
             { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
-            { name: 'project', type: 'string' }
+            { name: 'reservation', type: 'string' },
+            { name: 'reversal', type: 'int' },
+            { name: 'id', type: 'string' },
+            { name: 'areaid', type: 'string' },
+            { name: 'stationid', type: 'string' },
+            { name: 'roomid', type: 'string' },
+            { name: 'fsuid', type: 'string' },
+            { name: 'deviceid', type: 'string' },
+            { name: 'pointid', type: 'string' },
+            { name: 'levelid', type: 'int' }
         ],
         idProperty: 'index'
     });
@@ -206,12 +62,7 @@
         me.loadPage(1);
     };
 
-    var print = function (store) {
-        $$iPems.download({
-            url: '/Home/DownloadActAlms',
-            params: store.proxy.extraParams
-        });
-    };
+    
 
     var confirm = function (pagingtoolbar) {
         var grid = Ext.getCmp('alarms-grid'),
@@ -344,13 +195,13 @@
                             pieOption.series[0].data[2].value = 0;
                             pieOption.series[0].data[3].value = 0;
                             Ext.Array.each(data.chart[0], function (item, index) {
-                                if (item.index == $$iPems.AlmLevel.Level1)
+                                if (item.index == $$iPems.Level.Level1)
                                     pieOption.series[0].data[0].value = item.value;
-                                else if(item.index == $$iPems.AlmLevel.Level2)
+                                else if(item.index == $$iPems.Level.Level2)
                                     pieOption.series[0].data[1].value = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                else if (item.index == $$iPems.Level.Level3)
                                     pieOption.series[0].data[2].value = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                else if (item.index == $$iPems.Level.Level4)
                                     pieOption.series[0].data[3].value = item.value;
                             });
                             pieChart.setOption(pieOption);
@@ -376,13 +227,13 @@
                                     };
                                 }
 
-                                if (item.index == $$iPems.AlmLevel.Level1)
+                                if (item.index == $$iPems.Level.Level1)
                                     groups[item.name].L1 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level2)
+                                else if (item.index == $$iPems.Level.Level2)
                                     groups[item.name].L2 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level3)
+                                else if (item.index == $$iPems.Level.Level3)
                                     groups[item.name].L3 = item.value;
-                                else if (item.index == $$iPems.AlmLevel.Level4)
+                                else if (item.index == $$iPems.Level.Level4)
                                     groups[item.name].L4 = item.value;
                             });
 
@@ -620,7 +471,7 @@
                             preserveScrollOnRefresh: true,
                             emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
                             getRowClass: function (record, rowIndex, rowParams, store) {
-                                return $$iPems.GetAlmLevelCls(record.get("levelid"));
+                                return $$iPems.GetLevelCls(record.get("levelid"));
                             }
                         },
                         listeners: {
