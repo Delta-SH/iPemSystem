@@ -405,14 +405,21 @@ namespace iPem.Site.Infrastructure {
 
         public static string[] SplitCondition(string conditions) {
             if(string.IsNullOrWhiteSpace(conditions))
-                return new string[] { };
+                return new string[0];
 
             return conditions.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static string JoinCondition(params string[] conditions) {
+            if (conditions == null || conditions.Length == 0)
+                return string.Empty;
+
+            return string.Join(";", conditions);
+        }
+
         public static string[] SplitKeys(string key) {
             if(string.IsNullOrWhiteSpace(key))
-                return new string[] { };
+                return new string[0];
 
             return key.Split(new string[] { GlobalSeparator }, StringSplitOptions.RemoveEmptyEntries);
         }

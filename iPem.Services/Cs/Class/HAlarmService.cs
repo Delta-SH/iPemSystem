@@ -55,11 +55,31 @@ namespace iPem.Services.Cs {
             return _repository.GetAlarms(start, end);
         }
 
+        public List<A_HAlarm> GetAllAlarms(DateTime start, DateTime end) {
+            return _repository.GetAllAlarms(start, end);
+        }
+
+        public List<A_HAlarm> GetPrimaryAlarms(string id, DateTime start, DateTime end) {
+            return _repository.GetPrimaryAlarms(id, start, end);
+        }
+
+        public List<A_HAlarm> GetRelatedAlarms(string id, DateTime start, DateTime end) {
+            return _repository.GetRelatedAlarms(id, start, end);
+        }
+
+        public List<A_HAlarm> GetFilterAlarms(string id, DateTime start, DateTime end) {
+            return _repository.GetFilterAlarms(id, start, end);
+        }
+
+        public List<A_HAlarm> GetReversalAlarms(string id, DateTime start, DateTime end) {
+            return _repository.GetReversalAlarms(id, start, end);
+        }
+
         public IPagedList<A_HAlarm> GetPagedAlarms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<A_HAlarm>(this.GetAlarms(start, end), pageIndex, pageSize);
         }
 
         #endregion
-
+        
     }
 }

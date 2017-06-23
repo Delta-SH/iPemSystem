@@ -189,6 +189,7 @@
     <Compile Include="Infrastructure\IWorkContext.cs" />
     <Compile Include="Extensions\JsonNetResult.cs" />
     <Compile Include="Infrastructure\Store.cs" />
+    <Compile Include="Models\ActAlmCondition.cs" />
     <Compile Include="Models\ActAlmModel.cs" />
     <Compile Include="Models\AlmStore.cs" />
     <Compile Include="Models\ActPointModel.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Models\AjaxChartModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
     <Compile Include="Models\AppointmentDetailModel.cs" />
+    <Compile Include="Models\HisAlmModel.cs" />
     <Compile Include="Models\ReservationModel.cs" />
     <Compile Include="Models\AuthModel.cs" />
     <Compile Include="Models\BadgeModel.cs" />
@@ -883,7 +885,7 @@
     <Content Include="Scripts\global\all.js" />
     <Content Include="Scripts\global\global.js" />
     <Content Include="Scripts\help.js" />
-    <Content Include="Scripts\home.active.alarm1.js" />
+    <Content Include="Scripts\home.active.alarm.js" />
     <Content Include="Scripts\home.active.data.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\home.notice.js" />
@@ -1037,7 +1039,6 @@
     <Content Include="Scripts\kpi.base500103.js" />
     <Content Include="Scripts\kpi.base500102.js" />
     <Content Include="Scripts\kpi.base500101.js" />
-    <Content Include="Scripts\home.active.alarm.js" />
     <Content Include="Scripts\account.notice.js" />
     <Content Include="Scripts\kpi.performance500301.js" />
     <Content Include="Scripts\kpi.performance500303.js" />

@@ -31,6 +31,8 @@ namespace iPem.Site.Infrastructure {
 
         DateTime LastSpeechTime { get; set; }
 
+        DateTime LastLoginTime { get; }
+
         WsValues WsValues { get; }
 
         TsValues TsValues { get; }
@@ -98,6 +100,8 @@ namespace iPem.Site.Infrastructure {
         void ResetProfile();
 
         void ResetAuthorizations();
+
+        List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms);
 
         List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms);
 

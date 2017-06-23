@@ -39,6 +39,31 @@ namespace iPem.Services.Cs {
         List<A_HAlarm> GetAlarms(DateTime start, DateTime end);
 
         /// <summary>
+        /// 获得指定时段内的所有告警(包括次告警、关联告警、屏蔽告警等)
+        /// </summary>
+        List<A_HAlarm> GetAllAlarms(DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获取指定告警的次告警
+        /// </summary>
+        List<A_HAlarm> GetPrimaryAlarms(string id, DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获取指定告警的关联告警
+        /// </summary>
+        List<A_HAlarm> GetRelatedAlarms(string id, DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获取指定告警的过滤告警
+        /// </summary>
+        List<A_HAlarm> GetFilterAlarms(string id, DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获取指定告警的翻转告警
+        /// </summary>
+        List<A_HAlarm> GetReversalAlarms(string id, DateTime start, DateTime end);
+
+        /// <summary>
         /// 获得所有的告警(分页)
         /// </summary>
         IPagedList<A_HAlarm> GetPagedAlarms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);

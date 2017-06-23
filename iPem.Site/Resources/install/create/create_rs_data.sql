@@ -1,262 +1,13 @@
 /*
-* Web Default Data Sql Script Library v1.0.0
-* Copyright 2016, Delta
-* Author: Steven
-* Date: 2016/11/15
+* iPemRs Data Script Library v1.0.0
+* Copyright 2017, Delta
+* Author: Guo.Jing
+* Date: 2017/06/23
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[C_Department]
-DELETE FROM [dbo].[C_Department];
-GO
-
-INSERT INTO [dbo].[C_Department]([Id],[Code],[Name],[TypeDesc],[Phone],[PostCode],[ParentId],[Desc],[Enabled]) VALUES('001','X001',N'默认部门',NULL,NULL,NULL,0,NULL,1);
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[C_Duty]
-DELETE FROM [dbo].[C_Duty];
-GO
-
-INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('001', N'董事长', 1, NULL, 1);
-INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('002', N'总经理', 2, NULL, 1);
-INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('003', N'部门经理', 3, NULL, 1);
-INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('004', N'员工', 4, NULL, 1);
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[C_EnumMethods]
-DELETE FROM [dbo].[C_EnumMethods];
-GO
-
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(1001,1,'1', '省','类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(1002,2,'1', '市','类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(1003,3,'1', '县','类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(2001,1,'2', '地埋','市电引入方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(2002,2,'2', '架空','市电引入方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(2003,1,'2', '转供','供电性质');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(2004,2,'2', '直供','供电性质');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(3001,1,'3', '自建','产权');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(3002,2,'3', '购买','产权');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(3003,3,'3', '租用','产权');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(4001,1,'4', '禁用','权限');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(4002,2,'4', '只读','权限');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(4003,3,'4', '读写','权限');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(5001,1,'5', 'N+1(N>1)','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(5002,2,'5', '1+1主从','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(5003,3,'5', '单机1+1','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(5004,4,'5', '均分','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(5005,5,'5', '双母线','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(6001,1,'6', '干式','类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(6002,2,'6', '油浸式','类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(7001,1,'7', '自动启动','启动方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(7002,2,'7', '手动启动','启动方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(7003,1,'7', '风冷','冷却方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(7004,2,'7', '水冷','冷却方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(8001,1,'8', '水平轴','风机类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(8002,2,'8', '垂直轴','风机类型');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(9001,1,'9', '三相','端子极数');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(9002,2,'9', '单相','端子极数');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(9003,1,'9', '直流','交直流方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(9004,2,'9', '交流','交直流方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10001,1,'10', '自购','来源');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10002,2,'10', '租用','来源');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10003,1,'10', '柴油机','油机种类');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10004,2,'10', '汽油机','油机种类');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10005,1,'10', '单相','相数');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(10006,2,'10', '三相','相数');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(11001,1,'11', '活塞式','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(11002,2,'11', '涡旋式','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(11003,3,'11', '单螺杆式','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(11004,4,'11', '双螺杆式','工作方式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(12001,1,'12', '油机与市电','切换对象');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(12002,2,'12', '油机与油机','切换对象');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13001,0,'13', '在用-良好','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13002,1,'13', '在用-故障','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13003,2,'13', '闲置-良好','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13004,3,'13', '闲置-故障','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13005,4,'13', '返修','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(13006,5,'13', '报废','使用状态');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(14001,1,'14', '>','触发模式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(14002,2,'14', '<','触发模式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(14003,3,'14', '=','触发模式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(14004,4,'14', '!=','触发模式');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15001,0,'15', '高中','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15002,1,'15', '大专','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15003,2,'15', '本科','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15004,3,'15', '研究生','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15005,4,'15', '博士或博士后','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15006,5,'15', '其他','学历');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15007,0,'15', '否','婚姻状况');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15008,1,'15', '已婚','婚姻状况');
-INSERT INTO [dbo].[C_EnumMethods]([ID],[Index],[TypeID],[Name],[Desc]) VALUES(15009,2,'15', '其他','婚姻状况');
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[C_SCVendor]
-DELETE FROM [dbo].[C_SCVendor];
-GO
-
-INSERT INTO [dbo].[C_SCVendor]([ID],[Name]) VALUES('03','中达');
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[Sys_Menu]
-DELETE FROM [dbo].[Sys_Menu];
-GO
-
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('100',1,'1',1,'区域','Area.png','Area_GrdPanel','1' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('101',1,'1',1,'站点','Station.png','Station_Panel','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('102',1,'1',1,'机房','Room.png','Room_Panel','3' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('103',1,'1',1,'设备','Device.png','Device_Panel','4' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('200',1,'2',2,'员工','Employee.png','Employee_Panel','1' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('201',1,'2',2,'用户','User.png','User_Panel','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('1',1,'0',1,'中心资产','Assets.png','Asset_Panel','0' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('2',1,'0',2,'人员管理','Users.png','','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('3',1,'0',3,'字典配置','Books.png','','1' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('4',1,'0',4,'维护工具','Tools.png','','3' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('300',1,'3',3,'站点类型','Book.png','StaType_GrdPanel','0' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('301',1,'3',3,'机房类型','Book.png','RoomType_GrdPanel','1' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('302',1,'3',3,'设备类型','Book.png','DevType_GrdPanel','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('303',1,'3',3,'设备子类','Book.png','SubDevType_GrdPanel','3' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('304',0,'3',3,'设备状态','Book.png','DevStatus_GrdPanel','4' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('305',1,'3',3,'逻辑分类','Book.png','LogicType_GrdPanel','5' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('306',1,'3',3,'枚举类型','Book.png','EnumMethod_GrdPanel','6' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('307',1,'3',3,'部门','Book.png','Department_GrdPanel','7' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('308',1,'3',3,'职位','Book.png','Duty_GrdPanel','8' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('309',1,'3',3,'单位','Book.png','Unit_GrdPanel','9' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('310',1,'3',3,'生产厂家','Book.png','Productor_GrdPanel','10' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('311',1,'3',3,'品牌','Book.png','Brand_GrdPanel','11' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('312',1,'3',3,'供应商','Book.png','Supplier_GrdPanel','12' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('313',1,'3',3,'代维公司','Book.png','SubCompany_GrdPanel','13' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('314',1,'3',3,'逻辑子类','Book.png','SubLogicType_GrdPanel','5' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10300',1,'103',1,'FSU','DevType.png','FSU_Panel','0' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10301',1,'103',1,'UPS','DevType.png','UPS_Panel','1' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10302',1,'103',1,'变压器','DevType.png','Transformer_Panel','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10303',1,'103',1,'电池恒温箱','DevType.png','BattTempBox_Panel','3' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10304',1,'103',1,'发电机组','DevType.png','GeneratorGroup_Panel','4' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10305',1,'103',1,'分列开关电源系统','DevType.png','DivSwitElecSour_Panel','5' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10306',1,'103',1,'组合开关电源系统','DevType.png','CombSwitElecSour_Panel','6' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10307',1,'103',1,'风电控制器','DevType.png','WindPowerCon_Panel','7' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10308',1,'103',1,'风光互补控制器','DevType.png','WindLightCompCon_Panel','8' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10309',1,'103',1,'风能设备','DevType.png','WindEnerEqui_Panel','9' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10310',1,'103',1,'高压配电柜','DevType.png','HighVoltDistBox_Panel','10' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10311',1,'103',1,'换热系统','DevType.png','ChangeHeat_Panel','11' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10312',1,'103',1,'交流配电箱','DevType.png','ACDistBox_Panel','12' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10313',1,'103',1,'开关熔丝','DevType.png','SwitchFuse_Panel','24' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10314',1,'103',1,'逆变器','DevType.png','Inverter_Panel','14' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10315',1,'103',1,'普通空调','DevType.png','OrdiAirCond_Panel','15' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10316',1,'103',1,'低压配电柜','DevType.png','LowDistCabinet_Panel','16' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10317',1,'103',1,'太阳能控制器','DevType.png','SolarController_Panel','17' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10318',1,'103',1,'太阳能设备','DevType.png','SolarEqui_Panel','18' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10319',1,'103',1,'通风系统','DevType.png','Ventilation_Panel','19' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10320',0,'103',1,'监控设备','DevType.png','','20' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10321',1,'103',1,'稳压器','DevType.png','Manostat_Panel','21' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10322',1,'103',1,'蓄电池组','DevType.png','BattGroup_Panel','22' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10323',1,'103',1,'移动发电机','DevType.png','MobiGenerator_Panel','23' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10324',1,'103',1,'直流配电箱','DevType.png','DCDistBox_Panel','13' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10325',1,'103',1,'中央空调风柜系统','DevType.png','AirCondWindCabi_Panel','25' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10326',1,'103',1,'中央空调风冷却系统','DevType.png','AirCondWindCool_Panel','26' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10327',1,'103',1,'中央空调主机系统','DevType.png','AirCondHost_Panel','27' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10328',1,'103',1,'专用空调','DevType.png','SpecAirCond_Panel','28' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('10329',1,'103',1,'自动电源切换柜','DevType.png','ElecSourCabi_Panel','29' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('402',1,'4',4,'登录日志','UserLog.png','UserLog_Panel','2' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('104',1,'1',1,'协议','Protocol.png','Protocol_View','6' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('105',1,'1',1,'信号','Point.png','Point_View','5' );
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index]) VALUES('202',1,'2',2,'角色','Role.png','Role_Panel','3' );
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[U_Employee]
-DELETE FROM [dbo].[U_Employee];
-GO
-
-INSERT INTO [dbo].[U_Employee]([Id],[Name],[EngName],[UsedName],[EmpNo],[DeptId],[DutyId],[ICardId],[Sex],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled]) 
-VALUES('00001','默认员工','Default Employee',NULL,'W00001','001','001','310000198501010001',0,'1985-01-01',4,1,N'中国',N'上海',N'江苏',N'上海市浦东新区','200000','68120000','58660000','13800138000','13800138000@vip.com',NULL,0,'2010-01-01','2050-01-01',1,NULL,1);
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[U_User]
-DELETE FROM [dbo].[U_User];
-GO
-
-INSERT INTO [dbo].[U_User](ID,[Enabled],EmpID,[UID],PWD,PwdFormat,PwdSalt,RoleID,LimitTime,CreateTime,FailedPwdAttemptCount,IsLockedOut) values(0,1,'00001','PECS','PECS@1234',0,'',0,'2020-1-1',getdate(),0,0);
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[U_Role]
-DELETE FROM [dbo].[U_Role];
-GO
-
-INSERT INTO [dbo].[U_Role]([ID],[Enabled],[Name],[Authority],[Desc]) VALUES(0,'True','超级管理员','All','');
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[U_MenusInRole]
-DELETE FROM [dbo].[U_MenusInRole];
-GO
-
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  '0','1');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'100');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'101');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'102');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'103');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10300');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10301');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10302');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10303');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10304');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10305');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10306');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10307');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10308');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10309');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10310');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10311');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10312');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10313');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10314');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10315');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10316');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10317');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10318');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10319');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10321');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10322');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10323');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10324');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10325');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10326');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10327');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10328');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'10329');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'104');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'105');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'2');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'200');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'201');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'202');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'3');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'300');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'301');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'302');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'303');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'305');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'306');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'307');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'308');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'309');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'310');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'311');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'312');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'313');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'314');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'4');
-INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(  0,'402');
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加默认值[dbo].[C_AreaType]
-DELETE FROM [dbo].[C_AreaType];
+DELETE FROM [dbo].[C_AreaType]
 GO
 
 INSERT INTO [dbo].[C_AreaType]([Name],[Id]) VALUES('北京市','110000');
@@ -3769,4 +3520,352 @@ INSERT INTO [dbo].[C_AreaType]([Name],[Id]) VALUES('五家渠市','659004');
 INSERT INTO [dbo].[C_AreaType]([Name],[Id]) VALUES('台湾省','710000');
 INSERT INTO [dbo].[C_AreaType]([Name],[Id]) VALUES('香港特别行政区','810000');
 INSERT INTO [dbo].[C_AreaType]([Name],[Id]) VALUES('澳门特别行政区','820000');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_Department]
+DELETE FROM [dbo].[C_Department];
+GO
+
+INSERT INTO [dbo].[C_Department]([Id],[Code],[Name],[TypeDesc],[Phone],[PostCode],[ParentId],[Desc],[Enabled]) VALUES('001','X001',N'默认部门',NULL,NULL,NULL,0,NULL,1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_Duty]
+DELETE FROM [dbo].[C_Duty];
+GO
+
+INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('001', N'董事长', 1, NULL, 1);
+INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('002', N'总经理', 2, NULL, 1);
+INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('003', N'部门经理', 3, NULL, 1);
+INSERT INTO [dbo].[C_Duty]([Id],[Name],[Level],[Desc],[Enabled]) VALUES('004', N'员工', 4, NULL, 1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_DeviceType]
+DELETE FROM [dbo].[C_DeviceType]
+GO
+
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('001', '高压配电','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('002', '低压交流配电','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('003', '变压器','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('004', '低压直流配电','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('005', '发电机组','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('006', '开关电源','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('007', '铅酸电池','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('008', 'UPS设备','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('009', 'UPS配电','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('011', '机房专用空调','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('012', '中央空调末端','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('013', '中央空调主机','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('014', '变换设备','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('015', '普通空调','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('016', '极早期烟感','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('017', '机房环境','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('018', '电池恒温柜','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('068', '锂电池','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('076', '动环监控','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('077', '智能通风换热','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('078', '风光设备','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('087', '高压直流','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('088', '高压直流电源配电','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('092', '智能电表','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('093', '智能门禁','');
+INSERT INTO [dbo].[C_DeviceType]([Id],[Name],[Desc]) VALUES('38', 'FSU','');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_EnumMethods]
+DELETE FROM [dbo].[C_EnumMethods]
+GO
+
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(1001,1,'1', '省','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(1002,2,'1', '市','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(1003,3,'1', '区/县','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(2001,1,'2', '地埋','市电引入方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(2002,2,'2', '架空','市电引入方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(2003,1,'2', '转供','供电性质');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(2004,2,'2', '直供','供电性质');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(3001,1,'3', '自建','产权');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(3002,2,'3', '购买','产权');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(3003,3,'3', '租用','产权');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(4001,1,'4', '禁用','权限');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(4002,2,'4', '只读','权限');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(4003,3,'4', '读写','权限');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(5001,1,'5', 'N+1(N>1)','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(5002,2,'5', '1+1主从','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(5003,3,'5', '单机1+1','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(5004,4,'5', '均分','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(5005,5,'5', '双母线','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(6001,1,'6', '干式','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(6002,2,'6', '油浸式','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(7001,1,'7', '自动启动','启动方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(7002,2,'7', '手动启动','启动方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(7003,1,'7', '风冷','冷却方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(7004,2,'7', '水冷','冷却方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(8001,1,'8', '水平轴','风机类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(8002,2,'8', '垂直轴','风机类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(9001,1,'9', '三相','端子极数');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(9002,2,'9', '单相','端子极数');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(9003,1,'9', '直流','交直流方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(9004,2,'9', '交流','交直流方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10001,1,'10', '自购','来源');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10002,2,'10', '租用','来源');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10003,1,'10', '柴油机','油机种类');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10004,2,'10', '汽油机','油机种类');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10005,1,'10', '单相','相数');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(10006,2,'10', '三相','相数');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(11001,1,'11', '活塞式','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(11002,2,'11', '涡旋式','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(11003,3,'11', '单螺杆式','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(11004,4,'11', '双螺杆式','工作方式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(12001,1,'12', '油机与市电','切换对象');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(12002,2,'12', '油机与油机','切换对象');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13001,0,'13', '在用-良好','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13002,1,'13', '在用-故障','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13003,2,'13', '闲置-良好','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13004,3,'13', '闲置-故障','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13005,4,'13', '返修','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(13006,5,'13', '报废','使用状态');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(14001,1,'14', '>','触发模式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(14002,2,'14', '<','触发模式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(14003,3,'14', '=','触发模式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(14004,4,'14', '!=','触发模式');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15001,0,'15', '高中','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15002,1,'15', '大专','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15003,2,'15', '本科','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15004,3,'15', '研究生','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15005,4,'15', '博士或博士后','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15006,5,'15', '其他','学历');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15007,0,'15', '否','婚姻状况');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15008,1,'15', '已婚','婚姻状况');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(15009,2,'15', '其他','婚姻状况');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(16001,0,'16', '移动B接口','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(16002,1,'16', '电信B接口','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(16003,2,'16', '联通B接口','类型');
+INSERT INTO [dbo].[C_EnumMethods]([Id],[Index],[TypeId],[Name],[Desc]) VALUES(16004,3,'16', '自有接口','类型');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_RoomType]
+DELETE FROM [dbo].[C_RoomType]
+GO
+
+INSERT INTO [dbo].[C_RoomType]([Id],[Name],[Desc]) VALUES(02, '节点机房','')
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_SCVendor]
+DELETE FROM [dbo].[C_SCVendor]
+GO
+
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('01','中兴');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('02','艾默生');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('03','中达');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('04','盈佳');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('05','威克姆');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('06','四维安通');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('07','大唐');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('08','瑞笛恩');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('09','高新兴');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('10','康大奈特');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('11','合广');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('12','业通达');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('13','上海长电');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('14','佳讯');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('15','大诚');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('16','电源中心');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('17','移联信达');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('19','邦讯');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('20','亚澳');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('21','天河');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('22','南方');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('23','栅格');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('24','世纪瑞尔');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('25','大华');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('26','亿阳');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('27','江苏云博');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('28','艾赛');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('29','华为');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('70','华创');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('71','卫东');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('72','创立');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('73','恒成');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('74','天羚');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('75','维创');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('76','鑫天兴');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('77','维安');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('78','美迪特');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('79','大光明');
+INSERT INTO C_SCVendor([Id],[Name]) VALUES('99','中国铁塔');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_StationType]
+DELETE FROM [dbo].[C_StationType]
+GO
+
+INSERT INTO [dbo].[C_StationType]([Id],[Name],[Desc]) VALUES(0001, '通信机楼','')
+INSERT INTO [dbo].[C_StationType]([Id],[Name],[Desc]) VALUES(0002, '传输节点','')
+INSERT INTO [dbo].[C_StationType]([Id],[Name],[Desc]) VALUES(0003, '通信基站','')
+GO
+
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[Sys_Menu]
+DELETE FROM [dbo].[Sys_Menu]
+GO
+
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('100',1,'1',1,'区域','Area.png','Area_GrdPanel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('101',1,'1',1,'站点','Station.png','Station_Panel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('102',1,'1',1,'机房','Room.png','Room_Panel','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('103',1,'1',1,'设备','Device.png','Device_Panel','4',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40103',1,'401',2,'员工','User.png','Employee_Panel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('403',1,'4',4,'账号','UID.png','User_Panel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('1',1,'0',1,'中心资产','Assets.png','Asset_Panel','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('401',1,'4',4,'人员','Users.png','','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('3',1,'0',3,'字典配置','Books.png','','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('4',1,'0',4,'系统管理','Sys.png','','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('300',1,'3',3,'站点类型','Book.png','StaType_GrdPanel','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('301',1,'3',3,'机房类型','Book.png','RoomType_GrdPanel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('302',1,'3',3,'设备类型','Book.png','DevType_GrdPanel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('303',1,'3',3,'设备子类','Book.png','SubDevType_GrdPanel','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('308',1,'3',3,'采集组群','Book.png','GroupForm','10',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('304',1,'3',3,'逻辑分类','Book.png','LogicType_GrdPanel','5',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('307',1,'3',3,'枚举类型','Book.png','EnumMethod_GrdPanel','9',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40102',1,'401',2,'部门','Department.png','Department_GrdPanel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40101',1,'401',2,'职位','Duty.png','Duty_GrdPanel','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('306',1,'3',3,'信号单位','Book.png','Unit_GrdPanel','8',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('200',1,'2',2,'生产厂家','DevTool.png','Productor_GrdPanel','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('201',1,'2',2,'品牌','DevTool.png','Brand_GrdPanel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('202',1,'2',2,'供应商','DevTool.png','Supplier_GrdPanel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('203',1,'2',2,'代维公司','DevTool.png','SubCompany_GrdPanel','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('305',1,'3',3,'逻辑子类','Book.png','SubLogicType_GrdPanel','6',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10300',1,'103',1,'FSU','DevType.png','FSU_Panel','0',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10301',1,'103',1,'UPS','DevType.png','UPS_Panel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10302',1,'103',1,'变压器','DevType.png','Transformer_Panel','2',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10303',1,'103',1,'电池恒温箱','DevType.png','BattTempBox_Panel','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10304',1,'103',1,'发电机组','DevType.png','GeneratorGroup_Panel','4',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10305',1,'103',1,'分列开关电源系统','DevType.png','DivSwitElecSour_Panel','5',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10306',1,'103',1,'组合开关电源系统','DevType.png','CombSwitElecSour_Panel','6',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10307',1,'103',1,'风电控制器','DevType.png','WindPowerCon_Panel','7',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10308',1,'103',1,'风光互补控制器','DevType.png','WindLightCompCon_Panel','8',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10309',1,'103',1,'风能设备','DevType.png','WindEnerEqui_Panel','9',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10310',1,'103',1,'高压配电柜','DevType.png','HighVoltDistBox_Panel','10',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10311',1,'103',1,'换热系统','DevType.png','ChangeHeat_Panel','11',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10312',1,'103',1,'交流配电箱','DevType.png','ACDistBox_Panel','12',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10313',1,'103',1,'开关熔丝','DevType.png','SwitchFuse_Panel','24',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10314',1,'103',1,'逆变器','DevType.png','Inverter_Panel','14',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10315',1,'103',1,'普通空调','DevType.png','OrdiAirCond_Panel','15',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10316',1,'103',1,'低压配电柜','DevType.png','LowDistCabinet_Panel','16',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10317',1,'103',1,'太阳能控制器','DevType.png','SolarController_Panel','17',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10318',1,'103',1,'太阳能设备','DevType.png','SolarEqui_Panel','18',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10319',1,'103',1,'通风系统','DevType.png','Ventilation_Panel','19',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10320',0,'103',1,'监控设备','DevType.png','','20',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10321',1,'103',1,'稳压器','DevType.png','Manostat_Panel','21',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10322',1,'103',1,'蓄电池组','DevType.png','BattGroup_Panel','22',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10323',1,'103',1,'移动发电机','DevType.png','MobiGenerator_Panel','23',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10324',1,'103',1,'直流配电箱','DevType.png','DCDistBox_Panel','13',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10325',1,'103',1,'中央空调风柜系统','DevType.png','AirCondWindCabi_Panel','25',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10326',1,'103',1,'中央空调风冷却系统','DevType.png','AirCondWindCool_Panel','26',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10327',1,'103',1,'中央空调主机系统','DevType.png','AirCondHost_Panel','27',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10328',1,'103',1,'专用空调','DevType.png','SpecAirCond_Panel','28',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10329',1,'103',1,'自动电源切换柜','DevType.png','ElecSourCabi_Panel','29',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('404',1,'4',4,'日志','UserLog.png','UserLog_Panel','3',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('104',1,'1',1,'协议','Protocol.png','Protocol_View','6',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('105',1,'1',1,'信号','Point.png','Point_View','5',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('402',1,'4',4,'角色','Role.png','Role_Panel','1',getdate(),'' );
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('2',1,'0',2,'设备工具','Tools.png','','1',getdate(),'' );
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_Employee]
+DELETE FROM [dbo].[U_Employee];
+GO
+
+INSERT INTO [dbo].[U_Employee]([Id],[Name],[EngName],[UsedName],[EmpNo],[DeptId],[DutyId],[ICardId],[Sex],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled]) 
+VALUES('00001','默认员工','Default Employee',NULL,'W00001','001','001','310000198501010001',0,'1985-01-01',4,1,N'中国',N'上海',N'江苏',N'上海市浦东新区','200000','68120000','58660000','13800138000','13800138000@vip.com',NULL,0,'2010-01-01','2050-01-01',1,NULL,1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_User]
+DELETE FROM [dbo].[U_User];
+GO
+
+INSERT INTO [dbo].[U_User]([ID],[Enabled],[EmpID],[UID],[PWD],[PwdFormat],[PwdSalt],[RoleID],[LimitTime],[CreateTime],[FailedPwdAttemptCount],[IsLockedOut]) VALUES(0,1,'00001','PECS','PECS@1234',0,'',0,'2020-1-1',GETDATE(),0,0);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_Role]
+DELETE FROM [dbo].[U_Role];
+GO
+
+INSERT INTO [dbo].[U_Role]([ID],[Enabled],[Name],[Authority],[Desc]) VALUES(0,'True','超级管理员','All','');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_MenusInRole]
+DELETE FROM [dbo].[U_MenusInRole]
+GO
+
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'1');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'100');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'101');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'102');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'103');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10300');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10301');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10302');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10303');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10304');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10305');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10306');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10307');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10308');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10309');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10310');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10311');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10312');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10313');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10314');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10315');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10316');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10317');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10318');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10319');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10321');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10322');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10323');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10324');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10325');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10326');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10327');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10328');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10329');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'104');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'105');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'10500');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'2');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'200');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'201');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'202');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'203');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'3');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'300');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'301');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'302');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'303');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'304');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'305');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'306');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'307');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'308');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'4');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'401');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'40101');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'40102');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'40103');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'402');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'403');
+INSERT INTO [dbo].[U_MenusInRole]([RoleID],[MenuID]) VALUES(0,'404');
 GO

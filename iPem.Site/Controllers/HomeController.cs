@@ -39,6 +39,7 @@ namespace iPem.Site.Controllers {
         private readonly IFollowPointService _followPointService;
         private readonly IProjectService _projectService;
         private readonly IAAlarmService _actAlarmService;
+        private readonly IHAlarmService _hisAlarmService;
         private readonly IPointService _pointService;
         private readonly IFsuService _fsuService;
         private readonly IElecService _elecService;
@@ -61,6 +62,7 @@ namespace iPem.Site.Controllers {
             IFollowPointService followPointService,
             IProjectService projectService,
             IAAlarmService actAlarmService,
+            IHAlarmService hisAlarmService,
             IPointService pointService,
             IFsuService fsuService,
             IElecService elecService,
@@ -77,6 +79,7 @@ namespace iPem.Site.Controllers {
             this._followPointService = followPointService;
             this._projectService = projectService;
             this._actAlarmService = actAlarmService;
+            this._hisAlarmService = hisAlarmService;
             this._pointService = pointService;
             this._fsuService = fsuService;
             this._elecService = elecService;
@@ -422,17 +425,16 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActAlarms(string node, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project, int start, int limit) {
-            var data = new AjaxChartModel<List<ActAlmModel>, List<ChartModel>[]> {
+        public JsonResult RequestActAlarms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations, int start, int limit) {
+            var data = new AjaxDataModel<List<ActAlmModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<ActAlmModel>(),
-                chart = new List<ChartModel>[2]
+                data = new List<ActAlmModel>()
             };
 
             try {
-                var stores = this.GetActAlmStore(node, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
+                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations);
                 if(stores != null) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -443,12 +445,34 @@ namespace iPem.Site.Controllers {
 
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
-                            index = i + 1
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = stores[i].Current.AlarmValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId
                         });
                     }
-
-                    data.chart[0] = this.GetActAlmChart1(stores);
-                    data.chart[1] = this.GetActAlmChart2(node, stores);
                 }
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -461,22 +485,414 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadActAlms(string node, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project) {
+        public ActionResult DownloadActAlms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations) {
             try {
                 var models = new List<ActAlmModel>();
-                var stores = this.GetActAlmStore(node, statype, roomtype, devtype, almlevel, logictype, pointname, confirm, project);
-                if(stores != null && stores.Count > 0) {
-                    for(int i = 0; i < stores.Count; i++) {
+                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations);
+                if (stores != null) {
+                    for (int i = 0; i < stores.Count; i++) {
                         models.Add(new ActAlmModel {
                             index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = stores[i].Current.AlarmValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId,
+                            background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
                         });
                     }
                 }
+                
 
                 using(var ms = _excelManager.Export<ActAlmModel>(models, "实时告警列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult RequestRecoveries(ActAlmCondition condition, int start, int limit) {
+            var data = new AjaxDataModel<List<HisAlmModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HisAlmModel>()
+            };
+
+            try {
+                var stores = this.GetRecoveryStore(condition);
+                if (stores != null) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new HisAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            startvalue = stores[i].Current.StartValue.ToString(),
+                            endvalue = stores[i].Current.EndValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadRecoveries(ActAlmCondition condition) {
+            try {
+                var models = new List<HisAlmModel>();
+                var stores = this.GetRecoveryStore(condition);
+                if (stores != null && stores.Count > 0) {
+                    for (int i = 0; i < stores.Count; i++) {
+                        models.Add(new HisAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            startvalue = stores[i].Current.StartValue.ToString(),
+                            endvalue = stores[i].Current.EndValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId,
+                            background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
+                        });
+                    }
+                }
+
+                using (var ms = _excelManager.Export<HisAlmModel>(models, "恢复告警列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult RequestActAlmDetail(string id, string title, bool primary, bool related, bool filter, int start, int limit) {
+            var data = new AjaxDataModel<List<ActAlmModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ActAlmModel>()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(id))  
+                    throw new ArgumentException("id");
+                
+                List<AlmStore<A_AAlarm>> stores = null;
+                if (primary)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetPrimaryAlarms(id));
+                else if(related)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetRelatedAlarms(id));
+                else if(filter)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetFilterAlarms(id));
+
+                if (stores != null) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new ActAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = stores[i].Current.AlarmValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadActAlmDetail(string id, string title, bool primary, bool related, bool filter) {
+            try {
+                if (string.IsNullOrWhiteSpace(id))
+                    throw new ArgumentException("id");
+
+                List<AlmStore<A_AAlarm>> stores = null;
+                if (primary)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetPrimaryAlarms(id));
+                else if (related)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetRelatedAlarms(id));
+                else if (filter)
+                    stores = _workContext.AlarmsToStore(_actAlarmService.GetFilterAlarms(id));
+
+                var models = new List<ActAlmModel>();
+                if (stores != null) {
+                    for (int i = 0; i < stores.Count; i++) {
+                        models.Add(new ActAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            value = stores[i].Current.AlarmValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId,
+                            background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
+                        });
+                    }
+                }
+
+                using (var ms = _excelManager.Export<ActAlmModel>(models, title ?? "告警详单", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult RequestHisAlmDetail(string id, string title, bool reversal, int start, int limit) {
+            var data = new AjaxDataModel<List<HisAlmModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HisAlmModel>()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(id))
+                    throw new ArgumentException("id");
+
+                List<AlmStore<A_HAlarm>> stores = null;
+                if (reversal) stores = _workContext.AlarmsToStore(_hisAlarmService.GetReversalAlarms(id, DateTime.Now.AddDays(-1), DateTime.Now));
+
+                if (stores != null) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new HisAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            startvalue = stores[i].Current.StartValue.ToString(),
+                            endvalue = stores[i].Current.EndValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHisAlmDetail(string id, string title, bool reversal) {
+            try {
+                if (string.IsNullOrWhiteSpace(id))
+                    throw new ArgumentException("id");
+
+                List<AlmStore<A_HAlarm>> stores = null;
+                if (reversal) stores = _workContext.AlarmsToStore(_hisAlarmService.GetReversalAlarms(id, DateTime.Now.AddDays(-1), DateTime.Now));
+
+                var models = new List<HisAlmModel>();
+                if (stores != null && stores.Count > 0) {
+                    for (int i = 0; i < stores.Count; i++) {
+                        models.Add(new HisAlmModel {
+                            index = i + 1,
+                            nmalarmid = stores[i].Current.NMAlarmId,
+                            level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
+                            starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
+                            endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
+                            comment = stores[i].Current.AlarmDesc,
+                            startvalue = stores[i].Current.StartValue.ToString(),
+                            endvalue = stores[i].Current.EndValue.ToString(),
+                            point = stores[i].Point.Name,
+                            device = stores[i].Device.Name,
+                            room = stores[i].Room.Name,
+                            station = stores[i].Station.Name,
+                            area = stores[i].Area.Name,
+                            confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
+                            confirmer = stores[i].Current.Confirmer,
+                            confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
+                            reservation = stores[i].Current.ReservationId,
+                            reversalcount = stores[i].Current.ReversalCount,
+                            id = stores[i].Current.Id,
+                            areaid = stores[i].Area.Id,
+                            stationid = stores[i].Station.Id,
+                            roomid = stores[i].Room.Id,
+                            fsuid = stores[i].Current.FsuId,
+                            deviceid = stores[i].Device.Id,
+                            pointid = stores[i].Point.Id,
+                            levelid = (int)stores[i].Current.AlarmLevel,
+                            reversalid = stores[i].Current.ReversalId,
+                            background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
+                        });
+                    }
+                }
+
+                using (var ms = _excelManager.Export<HisAlmModel>(models, title ?? "告警详单", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -511,10 +927,10 @@ namespace iPem.Site.Controllers {
                         var ptPoints = points.FindAll(p => p.Type != EnmPoint.AL);
                         if (ptPoints.Count > 0) {
                             var values = new List<V_AMeasure>();
-                            var pointsInDevices = ptPoints.GroupBy(g => g.Device.Current.Id);
+                            var pointsInDevices = ptPoints.GroupBy(g => g.Device.Id);
                             if (pointsInDevices.Count() > 5) {
                                 foreach (var point in ptPoints) {
-                                    values.Add(_aMeasureService.GetMeasure(point.Device.Current.Id, point.Current.Code, point.Current.Number));
+                                    values.Add(_aMeasureService.GetMeasure(point.Device.Id, point.Current.Code, point.Current.Number));
                                 }
                             } else {
                                 foreach (var pointsInDevice in pointsInDevices) {
@@ -523,7 +939,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var pValues = from point in ptPoints
-                                          join val in values on new { DeviceId = point.Device.Current.Id, SignalId = point.Current.Code, SignalNumber = point.Current.Number } equals new { val.DeviceId, val.SignalId, val.SignalNumber } into lt
+                                          join val in values on new { DeviceId = point.Device.Id, SignalId = point.Current.Code, SignalNumber = point.Current.Number } equals new { val.DeviceId, val.SignalId, val.SignalNumber } into lt
                                           from def in lt.DefaultIfEmpty()
                                           select new {
                                               Point = point,
@@ -537,17 +953,17 @@ namespace iPem.Site.Controllers {
 
                                 data.data.Add(new ActPointModel {
                                     index = ++start,
-                                    area = pv.Point.Area.ToString(),
-                                    station = pv.Point.Device.Current.StationName,
-                                    room = pv.Point.Device.Current.RoomName,
-                                    device = pv.Point.Device.Current.Name,
+                                    area = pv.Point.Area.Name,
+                                    station = pv.Point.Device.StationName,
+                                    room = pv.Point.Device.RoomName,
+                                    device = pv.Point.Device.Name,
                                     point = pv.Point.Current.Name,
                                     type = Common.GetPointTypeDisplay(pv.Point.Type),
                                     value = value,
                                     unit = Common.GetUnitDisplay(pv.Point.Current.Type, value, pv.Point.Current.UnitState),
                                     status = Common.GetPointStatusDisplay(status),
                                     time = CommonHelper.DateTimeConverter(time),
-                                    deviceid = pv.Point.Device.Current.Id,
+                                    deviceid = pv.Point.Device.Id,
                                     pointid = pv.Point.Current.Id,
                                     typeid = (int)pv.Point.Type,
                                     statusid = (int)status,
@@ -568,17 +984,17 @@ namespace iPem.Site.Controllers {
                             foreach (var point in alPoints) {
                                 var model = new ActPointModel {
                                     index = ++start,
-                                    area = point.Area.ToString(),
-                                    station = point.Device.Current.StationName,
-                                    room = point.Device.Current.RoomName,
-                                    device = point.Device.Current.Name,
+                                    area = point.Area.Name,
+                                    station = point.Device.StationName,
+                                    room = point.Device.RoomName,
+                                    device = point.Device.Name,
                                     point = point.Current.Name,
                                     type = Common.GetPointTypeDisplay(point.Type),
                                     value = "0",
                                     unit = "正常",
                                     status = Common.GetPointStatusDisplay(EnmState.Normal),
                                     time = CommonHelper.DateTimeConverter(DateTime.Now),
-                                    deviceid = point.Device.Current.Id,
+                                    deviceid = point.Device.Id,
                                     pointid = point.Current.Id,
                                     typeid = (int)point.Type,
                                     statusid = (int)EnmState.Normal,
@@ -587,7 +1003,7 @@ namespace iPem.Site.Controllers {
                                     timestamp = CommonHelper.ShortTimeConverter(DateTime.Now)
                                 };
 
-                                var key = Common.JoinKeys(point.Device.Current.Id, point.Current.Id);
+                                var key = Common.JoinKeys(point.Device.Id, point.Current.Id);
                                 if (almKeys.ContainsKey(key)) {
                                     var alarm = almKeys[key];
                                     var status = Common.LevelToState(alarm.Current.AlarmLevel);
@@ -798,7 +1214,31 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult GetReservationDetail(string id) {
+        public JsonResult ConfirmAllAlarms(bool onlyReservation) {
+            try {
+                var entities = new List<A_AAlarm>();
+                foreach (var alarm in _workContext.ActAlarms) {
+                    if (onlyReservation && string.IsNullOrWhiteSpace(alarm.Current.ReservationId)) continue;
+ 
+                    entities.Add(new A_AAlarm {
+                        Id = alarm.Current.Id,
+                        Confirmed = EnmConfirm.Confirmed,
+                        ConfirmedTime = DateTime.Now,
+                        Confirmer = _workContext.Employee.Name
+                    });
+                }
+
+                _actAlarmService.Confirm(entities.ToArray());
+                return Json(new AjaxResultModel { success = true, code = 200, message = "告警确认成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult GetReservation(string id) {
             var data = new AjaxDataModel<ReservationModel> {
                 success = true,
                 message = "200 OK",
@@ -810,20 +1250,20 @@ namespace iPem.Site.Controllers {
                 if(string.IsNullOrWhiteSpace(id))
                     throw new ArgumentException("id");
 
-                var reservation = _reservationService.GetReservation(id);
-                if(reservation == null) throw new iPemException("未找到数据对象");
+                var current = _reservationService.GetReservation(id);
+                if(current == null) throw new iPemException("未找到数据对象");
+                var project = _projectService.GetProject(current.ProjectId);
 
-                var project = _projectService.GetProject(reservation.ProjectId);
-
-                data.data.id = reservation.Id.ToString();
-                data.data.startDate = CommonHelper.DateTimeConverter(reservation.StartTime);
-                data.data.endDate = CommonHelper.DateTimeConverter(reservation.EndTime);
-                data.data.projectId = reservation.ProjectId.ToString();
+                data.data.id = current.Id;
+                data.data.name = current.Name;
+                data.data.startDate = CommonHelper.DateTimeConverter(current.StartTime);
+                data.data.endDate = CommonHelper.DateTimeConverter(current.EndTime);
+                data.data.projectId = current.ProjectId;
                 data.data.projectName = project != null ? project.Name : "";
-                data.data.creator = reservation.Creator;
-                data.data.createdTime = CommonHelper.DateTimeConverter(reservation.CreatedTime);
-                data.data.comment = reservation.Comment;
-                data.data.enabled = reservation.Enabled;
+                data.data.creator = current.Creator;
+                data.data.createdTime = CommonHelper.DateTimeConverter(current.CreatedTime);
+                data.data.comment = current.Comment;
+                data.data.enabled = current.Enabled;
                 return Json(data);
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1128,7 +1568,7 @@ namespace iPem.Site.Controllers {
 
                 var roots = _workContext.Areas.FindAll(a => !a.HasParents);
                 foreach(var root in roots) {
-                    var alarmsInRoot = _workContext.ActAlarms.FindAll(alarm => root.Keys.Contains(alarm.Current.AreaId));
+                    var alarmsInRoot = _workContext.ActAlarms.FindAll(alarm => root.Keys.Contains(alarm.Area.Id));
 
                     var alarmsInArea = new HomeAreaAlmModel();
                     alarmsInArea.name = root.Current.Name;
@@ -1409,76 +1849,203 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        private List<AlmStore<A_AAlarm>> GetActAlmStore(string node, string[] statype, string[] roomtype, string[] devtype, int[] almlevel, string[] logictype, string pointname, string confirm, string project) {
-            var stores = new List<AlmStore<A_AAlarm>>();
-            if(node == "root") {
-                stores = _workContext.ActAlarms;
-            } else {
-                var keys = Common.SplitKeys(node);
-                if(keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
-                        var current = _workContext.Areas.Find(a => a.Current.Id == id);
-                        if(current != null) stores = _workContext.ActAlarms.FindAll(a => current.Keys.Contains(a.Area.Id));
-                    } else if(nodeType == EnmSSH.Station) {
-                        stores = _workContext.ActAlarms.FindAll(a => a.Station.Id == id);
-                    } else if(nodeType == EnmSSH.Room) {
-                        stores = _workContext.ActAlarms.FindAll(a => a.Room.Id == id);
-                    } else if(nodeType == EnmSSH.Device) {
-                        stores = _workContext.ActAlarms.FindAll(a => a.Device.Id == id);
-                    }
+        private List<AlmStore<A_AAlarm>> GetActAlmStore(ActAlmCondition condition, bool onlyConfirms = false, bool onlyReservations = false) {
+            if (condition.stationTypes == null) condition.stationTypes = new string[0];
+            if (condition.roomTypes == null) condition.roomTypes = new string[0];
+            if (condition.subDeviceTypes == null) condition.subDeviceTypes = new string[0];
+            if (condition.subLogicTypes == null) condition.subLogicTypes = new string[0];
+            if (condition.points == null) condition.points = new string[0];
+            if (condition.levels == null) condition.levels = new int[0];
+            if (condition.confirms == null) condition.confirms = new int[0];
+            if (condition.reservations == null) condition.reservations = new int[0];
+            if (condition.keywords == null) condition.keywords = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(condition.seniorNode) && condition.seniorNode != "root") {
+                var seniorCondition = _workContext.Profile.Settings.SeniorConditions.Find(c => c.id == condition.seniorNode);
+                if (seniorCondition != null) {
+                    if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0) 
+                        condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
+
+                    if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
+                        condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
+
+                    if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
+                        condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
+
+                    if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
+                        condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
+
+                    if (seniorCondition.points != null && seniorCondition.points.Length > 0)
+                        condition.points = condition.points.Union(seniorCondition.points).ToArray();
+
+                    if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
+                        condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
+
+                    if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
+                        condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
+
+                    if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
+                        condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
+
+                    if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
+                        condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
                 }
             }
 
-            if(statype != null && statype.Length > 0)
-                stores = stores.FindAll(s => statype.Contains(s.Station.Type.Id));
+            var stores = _workContext.ActAlarms;
+            if (condition.stationTypes.Length > 0)
+                stores = stores.FindAll(a => condition.stationTypes.Contains(a.Station.Type.Id));
 
-            if(roomtype != null && roomtype.Length > 0)
-                stores = stores.FindAll(s => roomtype.Contains(s.Room.Type.Id));
+            if (condition.roomTypes.Length > 0)
+                stores = stores.FindAll(a => condition.roomTypes.Contains(a.Room.Type.Id));
 
-            if(devtype != null && devtype.Length > 0)
-                stores = stores.FindAll(s => devtype.Contains(s.Device.Type.Id));
+            if (condition.subDeviceTypes.Length > 0)
+                stores = stores.FindAll(a => condition.subDeviceTypes.Contains(a.Device.SubType.Id));
 
-            if(logictype != null && logictype.Length > 0)
-                stores = stores.FindAll(s => logictype.Contains(s.Point.LogicType.Id));
+            if (condition.subLogicTypes.Length > 0)
+                stores = stores.FindAll(a => condition.subLogicTypes.Contains(a.Device.SubLogicType.Id));
 
-            if(!string.IsNullOrWhiteSpace(pointname)) {
-                var names = Common.SplitCondition(pointname);
-                if(names.Length > 0)
-                    stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
+            if (condition.points.Length > 0)
+                stores = stores.FindAll(a => condition.points.Contains(a.Point.Id));
+
+            if (condition.levels.Length > 0)
+                stores = stores.FindAll(a => condition.levels.Contains((int)a.Current.AlarmLevel));
+
+            if (onlyConfirms)
+                stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Confirmed);
+            else if (condition.confirms.Length > 0)
+                stores = stores.FindAll(a => condition.confirms.Contains((int)a.Current.Confirmed));
+
+            if (onlyReservations)
+                stores = stores.FindAll(a => !string.IsNullOrWhiteSpace(a.Current.ReservationId));
+            else if (condition.reservations.Length > 0)
+                stores = stores.FindAll(a => (condition.reservations.Contains((int)EnmReservation.UnReservation) && string.IsNullOrWhiteSpace(a.Current.ReservationId)) || (condition.reservations.Contains((int)EnmReservation.Reservation) && !string.IsNullOrWhiteSpace(a.Current.ReservationId)));
+
+            if (!string.IsNullOrWhiteSpace(condition.keywords)) {
+                var matchs = Common.SplitCondition(condition.keywords);
+                if (matchs.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, matchs));
             }
 
-            if(almlevel != null && almlevel.Length > 0)
-                stores = stores.FindAll(s => almlevel.Contains((int)s.Current.AlarmLevel));
+            if (condition.baseNode == "root")
+                return stores;
 
-            if(confirm == "confirm")
-                stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Confirmed);
-
-            if(confirm == "unconfirm")
-                stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Unconfirmed);
-
-            if(project == "project")
-                stores = stores.FindAll(a => !string.IsNullOrWhiteSpace(a.Current.ReservationId));
-
-            if(project == "unproject")
-                stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
+            var keys = Common.SplitKeys(condition.baseNode);
+            if (keys.Length == 2) {
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if (nodeType == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                    if (current != null) stores = stores.FindAll(a => current.Keys.Contains(a.Area.Id));
+                } else if (nodeType == EnmSSH.Station) {
+                    stores = stores.FindAll(a => a.Station.Id == id);
+                } else if (nodeType == EnmSSH.Room) {
+                    stores = stores.FindAll(a => a.Room.Id == id);
+                } else if (nodeType == EnmSSH.Device) {
+                    stores = stores.FindAll(a => a.Device.Id == id);
+                }
+            }
 
             return stores;
         }
 
-        private List<ChartModel> GetActAlmChart1(List<AlmStore<A_AAlarm>> stores) {
-            var level1 = new ChartModel { index = (int)EnmAlarm.Level1, name = Common.GetAlarmDisplay(EnmAlarm.Level1), value = stores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1) };
-            var level2 = new ChartModel { index = (int)EnmAlarm.Level2, name = Common.GetAlarmDisplay(EnmAlarm.Level2), value = stores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2) };
-            var level3 = new ChartModel { index = (int)EnmAlarm.Level3, name = Common.GetAlarmDisplay(EnmAlarm.Level3), value = stores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3) };
-            var level4 = new ChartModel { index = (int)EnmAlarm.Level4, name = Common.GetAlarmDisplay(EnmAlarm.Level4), value = stores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level4) };
-            return new List<ChartModel>() { level1, level2, level3, level4 };
-        }
+        private List<AlmStore<A_HAlarm>> GetRecoveryStore(ActAlmCondition condition) {
+            if (condition.stationTypes == null) condition.stationTypes = new string[0];
+            if (condition.roomTypes == null) condition.roomTypes = new string[0];
+            if (condition.subDeviceTypes == null) condition.subDeviceTypes = new string[0];
+            if (condition.subLogicTypes == null) condition.subLogicTypes = new string[0];
+            if (condition.points == null) condition.points = new string[0];
+            if (condition.levels == null) condition.levels = new int[0];
+            if (condition.confirms == null) condition.confirms = new int[0];
+            if (condition.reservations == null) condition.reservations = new int[0];
+            if (condition.keywords == null) condition.keywords = string.Empty;
 
-        private List<ChartModel> GetActAlmChart2(string node, List<AlmStore<A_AAlarm>> stores) {
-            var models = new List<ChartModel>();
-            return models;
+            if (!string.IsNullOrWhiteSpace(condition.seniorNode) && condition.seniorNode != "root") {
+                var seniorCondition = _workContext.Profile.Settings.SeniorConditions.Find(c => c.id == condition.seniorNode);
+                if (seniorCondition != null) {
+                    if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0)
+                        condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
+
+                    if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
+                        condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
+
+                    if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
+                        condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
+
+                    if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
+                        condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
+
+                    if (seniorCondition.points != null && seniorCondition.points.Length > 0)
+                        condition.points = condition.points.Union(seniorCondition.points).ToArray();
+
+                    if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
+                        condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
+
+                    if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
+                        condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
+
+                    if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
+                        condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
+
+                    if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
+                        condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
+                }
+            }
+
+            var start = DateTime.Now.Subtract(_workContext.LastLoginTime).TotalHours > 2 ? DateTime.Now.AddHours(-2) : _workContext.LastLoginTime;
+            var end = DateTime.Now;
+
+            var stores = _workContext.AlarmsToStore(_hisAlarmService.GetAlarms(start, end));
+            if (condition.stationTypes.Length > 0)
+                stores = stores.FindAll(a => condition.stationTypes.Contains(a.Station.Type.Id));
+
+            if (condition.roomTypes.Length > 0)
+                stores = stores.FindAll(a => condition.roomTypes.Contains(a.Room.Type.Id));
+
+            if (condition.subDeviceTypes.Length > 0)
+                stores = stores.FindAll(a => condition.subDeviceTypes.Contains(a.Device.SubType.Id));
+
+            if (condition.subLogicTypes.Length > 0)
+                stores = stores.FindAll(a => condition.subLogicTypes.Contains(a.Device.SubLogicType.Id));
+
+            if (condition.points.Length > 0)
+                stores = stores.FindAll(a => condition.points.Contains(a.Point.Id));
+
+            if (condition.levels.Length > 0)
+                stores = stores.FindAll(a => condition.levels.Contains((int)a.Current.AlarmLevel));
+
+            if (condition.confirms.Length > 0)
+                stores = stores.FindAll(a => condition.confirms.Contains((int)a.Current.Confirmed));
+
+            if (condition.reservations.Length > 0)
+                stores = stores.FindAll(a => (condition.reservations.Contains((int)EnmReservation.UnReservation) && string.IsNullOrWhiteSpace(a.Current.ReservationId)) || (condition.reservations.Contains((int)EnmReservation.Reservation) && !string.IsNullOrWhiteSpace(a.Current.ReservationId)));
+
+            if (!string.IsNullOrWhiteSpace(condition.keywords)) {
+                var matchs = Common.SplitCondition(condition.keywords);
+                if (matchs.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, matchs));
+            }
+
+            if (condition.baseNode == "root")
+                return stores;
+
+            var keys = Common.SplitKeys(condition.baseNode);
+            if (keys.Length == 2) {
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if (nodeType == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                    if (current != null) stores = stores.FindAll(a => current.Keys.Contains(a.Area.Id));
+                } else if (nodeType == EnmSSH.Station) {
+                    stores = stores.FindAll(a => a.Station.Id == id);
+                } else if (nodeType == EnmSSH.Room) {
+                    stores = stores.FindAll(a => a.Room.Id == id);
+                } else if (nodeType == EnmSSH.Device) {
+                    stores = stores.FindAll(a => a.Device.Id == id);
+                }
+            }
+
+            return stores;
         }
 
         private List<PointStore<P_Point>> GetActPoints(string node, int[] types) {
@@ -1502,8 +2069,16 @@ namespace iPem.Site.Controllers {
                                     stores.Add(new PointStore<P_Point>() {
                                         Current = point,
                                         Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
-                                        Device = current,
-                                        Area = area,
+                                        Device = current.Current,
+                                        Area = new A_Area {
+                                            Id = area.Current.Id,
+                                            Code = area.Current.Code,
+                                            Name = area.ToString(),
+                                            Type = area.Current.Type,
+                                            ParentId = area.Current.ParentId,
+                                            Comment = area.Current.Comment,
+                                            Enabled = area.Current.Enabled
+                                        },
                                         Followed = followKeys.Contains(string.Format("{0}-{1}", current.Current.Id, point.Id)),
                                         FollowedOnly = false
                                     });
@@ -1532,8 +2107,16 @@ namespace iPem.Site.Controllers {
                       select new PointStore<P_Point> {
                           Current = point,
                           Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
-                          Device = device,
-                          Area = area,
+                          Device = device.Current,
+                          Area = new A_Area {
+                              Id = area.Current.Id,
+                              Code = area.Current.Code,
+                              Name = area.ToString(),
+                              Type = area.Current.Type,
+                              ParentId = area.Current.ParentId,
+                              Comment = area.Current.Comment,
+                              Enabled = area.Current.Enabled
+                          },
                           Followed = true,
                           FollowedOnly = true
                       }).ToList();
@@ -1541,11 +2124,11 @@ namespace iPem.Site.Controllers {
             if(node == "root") return stores;
             if(type == EnmSSH.Area) {
                 var current = _workContext.Areas.Find(a => a.Current.Id == node);
-                if(current != null) stores = stores.FindAll(p => current.Keys.Contains(p.Area.Current.Id));
+                if(current != null) stores = stores.FindAll(p => current.Keys.Contains(p.Area.Id));
             } else if(type == EnmSSH.Station) {
-                stores = stores.FindAll(p => p.Device.Current.StationId == node);
+                stores = stores.FindAll(p => p.Device.StationId == node);
             } else if(type == EnmSSH.Room) {
-                stores = stores.FindAll(p => p.Device.Current.RoomId == node);
+                stores = stores.FindAll(p => p.Device.RoomId == node);
             }
 
             return stores;

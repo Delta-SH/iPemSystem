@@ -1,12 +1,11 @@
 ﻿using iPem.Core.NPOI;
-using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
-    public class ActAlmModel {
+    public class HisAlmModel {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
@@ -17,8 +16,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("告警级别")]
         public string level { get; set; }
 
-        [ExcelDisplayName("告警时间")]
-        public string time { get; set; }
+        [ExcelDisplayName("开始时间")]
+        public string starttime { get; set; }
+
+        [ExcelDisplayName("结束时间")]
+        public string endtime { get; set; }
 
         [ExcelDisplayName("告警历时")]
         public string interval { get; set; }
@@ -26,8 +28,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("告警描述")]
         public string comment { get; set; }
 
-        [ExcelDisplayName("触发值")]
-        public string value { get; set; }
+        [ExcelDisplayName("开始值")]
+        public string startvalue { get; set; }
+
+        [ExcelDisplayName("结束值")]
+        public string endvalue { get; set; }
 
         [ExcelDisplayName("信号名称")]
         public string point { get; set; }

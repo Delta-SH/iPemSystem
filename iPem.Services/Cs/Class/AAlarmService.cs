@@ -56,6 +56,22 @@ namespace iPem.Services.Cs {
             return _repository.GetAlarms();
         }
 
+        public List<A_AAlarm> GetAllAlarms() {
+            return _repository.GetAllAlarms();
+        }
+
+        public List<A_AAlarm> GetPrimaryAlarms(string id) {
+            return _repository.GetPrimaryAlarms(id);
+        }
+
+        public List<A_AAlarm> GetRelatedAlarms(string id) {
+            return _repository.GetRelatedAlarms(id);
+        }
+
+        public List<A_AAlarm> GetFilterAlarms(string id) {
+            return _repository.GetFilterAlarms(id);
+        }
+
         public IPagedList<A_AAlarm> GetPagedAlarms(int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<A_AAlarm>(this.GetAlarms(), pageIndex, pageSize);
         }

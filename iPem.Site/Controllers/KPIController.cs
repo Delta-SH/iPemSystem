@@ -3191,7 +3191,7 @@ namespace iPem.Site.Controllers {
                 #region root
                 var leaies = _workContext.Areas.FindAll(a => a.Current.Type.Id == size);
                 foreach(var leaf in leaies) {
-                    var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
+                    var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Area.Id));
                     var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                     var total = childStores.Count;
                     result.Add(new Model500403 {
@@ -3211,7 +3211,7 @@ namespace iPem.Site.Controllers {
                         #region children
                         var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
                         foreach(var leaf in leaies) {
-                            var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Current.AreaId));
+                            var childStores = stores.FindAll(a => leaf.Keys.Contains(a.Area.Id));
                             var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                             var total = childStores.Count;
                             result.Add(new Model500403 {
@@ -3226,7 +3226,7 @@ namespace iPem.Site.Controllers {
                         #endregion
                     } else {
                         #region self
-                        var childStores = stores.FindAll(a => a.Current.AreaId == current.Current.Id);
+                        var childStores = stores.FindAll(a => a.Area.Id == current.Current.Id);
                         var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
                         var total = childStores.Count;
                         result.Add(new Model500403 {

@@ -10,9 +10,9 @@ namespace iPem.Site.Models {
 
         public EnmPoint Type { get; set; }
 
-        public SSHDevice Device { get; set; }
+        public D_Device Device { get; set; }
 
-        public SSHArea Area { get; set; }
+        public A_Area Area { get; set; }
 
         public bool Followed { get; set; }
 

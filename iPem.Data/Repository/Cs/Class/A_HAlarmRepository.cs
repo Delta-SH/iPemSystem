@@ -65,7 +65,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -110,7 +110,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -155,7 +155,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -200,7 +200,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -245,7 +245,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -288,7 +288,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -331,7 +331,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -376,7 +376,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -421,7 +421,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -466,7 +466,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -511,7 +511,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
                     entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
                     entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReversalId"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }

@@ -319,6 +319,10 @@ namespace iPem.Site.Infrastructure {
             set { this.Store.LastSpeechTime = value; }
         }
 
+        public DateTime LastLoginTime {
+            get { return this.Store.CreatedTime; }
+        }
+
         public WsValues WsValues {
             get {
                 if(_cachedWsValues != null)
@@ -802,9 +806,9 @@ namespace iPem.Site.Infrastructure {
                     _activeAlarms = (from alarm in allAlarms
                                      join point in this.AL on alarm.PointId equals point.Id
                                      join device in this.AllDevices on alarm.DeviceId equals device.Current.Id
-                                     join room in this.AllRooms on alarm.RoomId equals room.Current.Id
-                                     join station in this.AllStations on alarm.StationId equals station.Current.Id
-                                     join area in this.AllAreas on alarm.AreaId equals area.Current.Id
+                                     join room in this.AllRooms on device.Current.RoomId equals room.Current.Id
+                                     join station in this.AllStations on room.Current.StationId equals station.Current.Id
+                                     join area in this.AllAreas on station.Current.AreaId equals area.Current.Id
                                      orderby alarm.AlarmTime descending
                                      select new AlmStore<A_AAlarm> {
                                          Current = alarm,
@@ -859,6 +863,35 @@ namespace iPem.Site.Infrastructure {
             this.Store.Authorizations = null;
         }
 
+        public List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms) {
+            if (alarms == null || alarms.Count == 0)
+                return new List<AlmStore<A_AAlarm>>();
+
+            return (from alarm in alarms
+                    join point in this.AL on alarm.PointId equals point.Id
+                    join device in this.Devices on alarm.DeviceId equals device.Current.Id
+                    join room in this.Rooms on device.Current.RoomId equals room.Current.Id
+                    join station in this.Stations on room.Current.StationId equals station.Current.Id
+                    join area in this.Areas on station.Current.AreaId equals area.Current.Id
+                    orderby alarm.AlarmTime descending
+                    select new AlmStore<A_AAlarm> {
+                        Current = alarm,
+                        Point = point,
+                        Device = device.Current,
+                        Room = room.Current,
+                        Station = station.Current,
+                        Area = new A_Area {
+                            Id = area.Current.Id,
+                            Code = area.Current.Code,
+                            Name = area.ToString(),
+                            Type = area.Current.Type,
+                            ParentId = area.Current.ParentId,
+                            Comment = area.Current.Comment,
+                            Enabled = area.Current.Enabled
+                        }
+                    }).ToList();
+        }
+
         public List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms) {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<A_HAlarm>>();
@@ -866,9 +899,9 @@ namespace iPem.Site.Infrastructure {
             return (from alarm in alarms
                     join point in this.AL on alarm.PointId equals point.Id
                     join device in this.Devices on alarm.DeviceId equals device.Current.Id
-                    join room in this.Rooms on alarm.RoomId equals room.Current.Id
-                    join station in this.Stations on alarm.StationId equals station.Current.Id
-                    join area in this.Areas on alarm.AreaId equals area.Current.Id
+                    join room in this.Rooms on device.Current.RoomId equals room.Current.Id
+                    join station in this.Stations on room.Current.StationId equals station.Current.Id
+                    join area in this.Areas on station.Current.AreaId equals area.Current.Id
                     orderby alarm.StartTime descending
                     select new AlmStore<A_HAlarm> {
                         Current = alarm,

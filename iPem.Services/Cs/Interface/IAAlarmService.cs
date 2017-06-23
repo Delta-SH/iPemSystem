@@ -39,6 +39,26 @@ namespace iPem.Services.Cs {
         List<A_AAlarm> GetAlarms();
 
         /// <summary>
+        /// 获取全部告警(包括次告警、关联告警、屏蔽告警等)
+        /// </summary>
+        List<A_AAlarm> GetAllAlarms();
+
+        /// <summary>
+        /// 获取指定告警的次告警
+        /// </summary>
+        List<A_AAlarm> GetPrimaryAlarms(string id);
+
+        /// <summary>
+        /// 获取指定告警的关联告警
+        /// </summary>
+        List<A_AAlarm> GetRelatedAlarms(string id);
+
+        /// <summary>
+        /// 获取指定告警的过滤告警
+        /// </summary>
+        List<A_AAlarm> GetFilterAlarms(string id);
+
+        /// <summary>
         /// 获得所有的告警(分页)
         /// </summary>
         IPagedList<A_AAlarm> GetPagedAlarms(int pageIndex = 0, int pageSize = int.MaxValue);
