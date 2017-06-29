@@ -4,6 +4,7 @@ using iPem.Services.Common;
 using iPem.Site.Models;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace iPem.Site.Infrastructure {
     /// <summary>
@@ -71,6 +72,7 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// 创建新的Store对象
         /// </summary>
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static Store CreateInstance(Guid? id = null) {
             var store = new Store {
                 Id = id.HasValue ? id.Value : Guid.NewGuid(),

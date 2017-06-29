@@ -26,6 +26,7 @@
     /// </summary>
     public enum EnmFsuEvent {
         Undefined,
-        FTP
+        FTP,
+        FSU
     }
 }

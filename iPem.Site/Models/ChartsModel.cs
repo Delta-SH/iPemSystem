@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace iPem.Site.Models {
+    [Serializable]
     public class ChartsModel {
         public int index { get; set; }
 

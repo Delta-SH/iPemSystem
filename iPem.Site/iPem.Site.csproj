@@ -196,7 +196,8 @@
     <Compile Include="Models\AjaxDataModel.cs" />
     <Compile Include="Models\AjaxChartModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
-    <Compile Include="Models\AppointmentDetailModel.cs" />
+    <Compile Include="Models\ReservationDetailModel.cs" />
+    <Compile Include="Models\FtpFileModel.cs" />
     <Compile Include="Models\HisAlmModel.cs" />
     <Compile Include="Models\ReservationModel.cs" />
     <Compile Include="Models\AuthModel.cs" />
@@ -217,7 +218,7 @@
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\FormulaModel.cs" />
     <Compile Include="Models\FsuModel.cs" />
-    <Compile Include="Models\FtpModel.cs" />
+    <Compile Include="Models\FsuEventModel.cs" />
     <Compile Include="Models\HomeAlmModel.cs" />
     <Compile Include="Models\HomeAreaAlmModel.cs" />
     <Compile Include="Models\HomeEnergyModel.cs" />
@@ -240,7 +241,6 @@
     <Compile Include="Models\Model400201.cs" />
     <Compile Include="Models\Model400202.cs" />
     <Compile Include="Models\Model400203.cs" />
-    <Compile Include="Models\Model400204.cs" />
     <Compile Include="Models\Model400205.cs" />
     <Compile Include="Models\Model400206.cs" />
     <Compile Include="Models\Model400207.cs" />
@@ -437,6 +437,7 @@
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\authentication.js" />
     <Content Include="Scripts\components\all.js" />
+    <Content Include="Scripts\components\VendorComponent.js" />
     <Content Include="Scripts\ext-4.2.1\locale\ext-lang-cn.min.js" />
     <Content Include="Scripts\ext-4.2.1\theme\css\ext-all-neptune.css" />
     <Content Include="Scripts\framework\bootstrap-3.3.5.js" />
@@ -880,7 +881,7 @@
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window\window-default-sides.gif" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.min.js" />
-    <Content Include="Scripts\fsu.ftp.js" />
+    <Content Include="Scripts\fsu.event.js" />
     <Content Include="Scripts\fsu.js" />
     <Content Include="Scripts\global\all.js" />
     <Content Include="Scripts\global\global.js" />
@@ -1090,7 +1091,7 @@
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\bg.jpg" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\datepicker.css" />
     <Content Include="Scripts\My97DatePicker\开发包\skin\whyGreen\img.gif" />
-    <Content Include="Scripts\project.appointment.js" />
+    <Content Include="Scripts\project.reservation.js" />
     <Content Include="Scripts\project.js" />
     <Content Include="Scripts\report.base400103.js" />
     <Content Include="Scripts\report.base400104.js" />
@@ -1168,7 +1169,6 @@
     <Content Include="Views\Report\chart400303.cshtml" />
     <Content Include="Views\Report\custom400401.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
-    <Content Include="Views\Project\Appointment.cshtml" />
     <Content Include="Views\Home\Speech.cshtml" />
     <Content Include="Views\Report\custom400402.cshtml" />
     <Content Include="Views\Report\custom400403.cshtml" />
@@ -1200,7 +1200,8 @@
     <Content Include="Views\Installation\Authentication.cshtml" />
     <Content Include="Views\Fsu\Index.cshtml" />
     <Content Include="Views\Fsu\Configuration.cshtml" />
-    <Content Include="Views\Fsu\Ftp.cshtml" />
+    <Content Include="Views\Fsu\Event.cshtml" />
+    <Content Include="Views\Project\Reservation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

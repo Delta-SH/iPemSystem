@@ -11,7 +11,12 @@ namespace iPem.Services.Cs {
         /// <summary>
         /// 获得指定设备类型所包含的设备
         /// </summary>
-        List<H_IDevice> GetDevicesInType(string type);
+        List<H_IDevice> GetDevicesInTypeId(string type);
+
+        /// <summary>
+        /// 获得指定设备类型所包含的设备
+        /// </summary>
+        List<H_IDevice> GetDevicesInTypeName(string type);
 
         /// <summary>
         /// 获得指定站点下所包含的设备

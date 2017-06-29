@@ -16,28 +16,16 @@
 }
 
 @font-face {
-    font-family: 'ipems-icon-font'; 
+	font-family: 'ipems-icon-font';  /* project id 64245 */
     src: url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.eot');
     src: url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.eot?#iefix') format('embedded-opentype'),
          url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.woff') format('woff'),
          url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.ttf') format('truetype'),
          url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.svg#ipems-icon-font') format('svg');
 
-    font-weight: normal;
-    font-style: normal;
-}
-
-/*@font-face {
-	font-family: 'ipems-icon-font';
-	src: url('/Content/ux/fonts/iconfont.eot');
-	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
-		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
-		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
-		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
-
 	font-weight: normal;
 	font-style: normal;
-}*/
+}
 
 [class^="icon-topbar-"], [class*=" icon-topbar-"] {
 	font-family: 'top-nav-font';
@@ -193,14 +181,25 @@
 }
 
 .x-grid-expander .x-grid-rowbody {
+    font: 11px/12px helvetica,arial,verdana,sans-serif;
+    padding: 5px;
+    color: #333;
     background-color: #f8f8f8;
-    color: #666;
-    font: 12px/15px helvetica,arial,verdana,sans-serif;
-    padding: 5px 10px;
 }
 
-.x-grid-expander .row-table td {
-    padding: 5px 5px 5px 0;
+.x-grid-expander table.gridtable {
+    border:1px solid #666;
+	border-collapse: collapse;
+}
+.x-grid-expander table.gridtable th {
+	padding: 8px;
+    border:1px solid #666;
+	background-color: #dedede;
+}
+.x-grid-expander table.gridtable td {
+	padding: 8px;
+    border:1px solid #666;
+	background-color: #fff;
 }
 
 .x-cell-icon {

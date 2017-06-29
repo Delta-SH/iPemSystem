@@ -306,6 +306,8 @@ namespace iPem.Site.Infrastructure {
             switch (evet) {
                 case EnmFsuEvent.FTP:
                     return "FTP操作";
+                case EnmFsuEvent.FSU:
+                    return "FSU日志";
                 case EnmFsuEvent.Undefined:
                 default:
                     return "未定义";

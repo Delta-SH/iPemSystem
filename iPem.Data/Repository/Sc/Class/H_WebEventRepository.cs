@@ -78,7 +78,7 @@ namespace iPem.Data.Repository.Sc {
             }
 
             var orders = new List<String>();
-            orders.Add(@"[CreatedTime] ASC");
+            orders.Add(@"[CreatedTime] DESC");
             
             if (conditions.Count > 0)
                 query += @" WHERE " + string.Join(@" AND ", conditions);

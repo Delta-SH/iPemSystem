@@ -69,8 +69,19 @@
     padding: 5px 10px;
 }
 
-.x-grid-expander .row-table td {
-    padding: 5px 5px 5px 0;
+.x-grid-expander table.gridtable {
+    border:1px solid #666;
+	border-collapse: collapse;
+}
+.x-grid-expander table.gridtable th {
+	padding: 8px;
+    border:1px solid #666;
+	background-color: #dedede;
+}
+.x-grid-expander table.gridtable td {
+	padding: 8px;
+    border:1px solid #666;
+	background-color: #fff;
 }
 
 .x-cell-icon {

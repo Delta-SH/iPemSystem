@@ -1,5 +1,8 @@
-﻿using iPem.Core.NPOI;
+﻿using iPem.Core.Domain.Cs;
+using iPem.Core.NPOI;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Web.Script.Serialization;
 
@@ -9,68 +12,48 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
-        [ExcelIgnore]
-        public string fsuid { get; set; }
-
-        [ExcelIgnore]
-        public string id { get; set; }
-
-        [ExcelColor]
-        [ExcelDisplayName("告警级别")]
-        public string level { get; set; }
-
-        [ExcelIgnore]
-        public int levelid { get; set; }
-
-        [ExcelDisplayName("开始时间")]
-        public string startDate { get; set; }
-
-        [ExcelDisplayName("结束时间")]
-        public string endDate { get; set; }
-
-        [ExcelDisplayName("告警管理编号")]
-        public string nmid { get; set; }
-
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
+
+        [ExcelIgnore]
+        public string stationid { get; set; }
 
         [ExcelDisplayName("所属站点")]
         public string station { get; set; }
 
-        [ExcelDisplayName("所属机房")]
-        public string room { get; set; }
+        [ExcelDisplayName("一级告警")]
+        public int level1 { get; set; }
 
-        [ExcelDisplayName("所属设备")]
-        public string device { get; set; }
+        [JsonIgnore]
+        [ExcelIgnore]
+        public List<AlmStore<A_HAlarm>> alarms1 { get; set; }
 
-        [ExcelDisplayName("信号名称")]
-        public string point { get; set; }
+        [ExcelDisplayName("二级告警")]
+        public int level2 { get; set; }
 
-        [ExcelDisplayName("触发值")]
-        public string startValue { get; set; }
+        [JsonIgnore]
+        [ExcelIgnore]
+        public List<AlmStore<A_HAlarm>> alarms2 { get; set; }
 
-        [ExcelDisplayName("结束值")]
-        public string endValue { get; set; }
+        [ExcelDisplayName("三级告警")]
+        public int level3 { get; set; }
 
-        [ExcelDisplayName("告警描述")]
-        public string comment { get; set; }
+        [JsonIgnore]
+        [ExcelIgnore]
+        public List<AlmStore<A_HAlarm>> alarms3 { get; set; }
 
-        [ExcelDisplayName("告警历时")]
-        public string interval { get; set; }
+        [ExcelDisplayName("四级告警")]
+        public int level4 { get; set; }
 
-        [ExcelDisplayName("触发频次")]
-        public int frequency { get; set; }
+        [JsonIgnore]
+        [ExcelIgnore]
+        public List<AlmStore<A_HAlarm>> alarms4 { get; set; }
 
-        [ExcelDisplayName("确认状态")]
-        public string confirmed { get; set; }
+        [ExcelDisplayName("总计")]
+        public int total { get; set; }
 
-        [ExcelDisplayName("确认人员")]
-        public string confirmer { get; set; }
-
-        [ExcelDisplayName("确认时间")]
-        public string confirmedtime { get; set; }
-
-        [ExcelDisplayName("工程预约")]
-        public string project { get; set; }
+        [JsonIgnore]
+        [ExcelIgnore]
+        public List<AlmStore<A_HAlarm>> alarms { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             var entity = new U_EntitiesInRole() { RoleId = id, Menus = new List<U_Menu>(), Areas = new List<string>(), Permissions = new List<EnmPermission>() };
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Menu_Repository_GetMenusInRole, parms)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_GetEntitiesInRole, parms)) {
                 while (rdr.Read()) {
                     var menu = new U_Menu();
                     menu.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);

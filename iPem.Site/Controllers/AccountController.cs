@@ -452,7 +452,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetAllOperates() {
+        public JsonNetResult GetAllPermissions() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -495,10 +495,10 @@ namespace iPem.Site.Controllers {
                 if(role == null) throw new ArgumentException("role");
 
                 if(role.menus == null || role.menus.Length == 0)
-                    throw new iPemException("无效的菜单权限，保存失败。");
+                    throw new iPemException("尚未选择菜单权限");
 
                 if(role.areas == null || role.areas.Length == 0)
-                    throw new iPemException("无效的区域权限，保存失败。");
+                    throw new iPemException("尚未选择区域权限");
 
                 var permission = new U_EntitiesInRole {
                     RoleId = new Guid(role.id),
@@ -509,7 +509,7 @@ namespace iPem.Site.Controllers {
 
                 if(action == (int)EnmAction.Add) {
                     var existed = _roleService.GetRoleByName(role.name);
-                    if(existed != null) throw new iPemException("角色已存在，保存失败。");
+                    if(existed != null) throw new iPemException("角色已存在");
 
                     var newRole = new U_Role {
                         Id = new Guid(role.id),
@@ -524,7 +524,7 @@ namespace iPem.Site.Controllers {
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _roleService.GetRoleByName(role.name);
-                    if(existed == null) throw new iPemException("角色不存在，保存失败。");
+                    if(existed == null) throw new iPemException("角色不存在");
 
                     //existedRole.Id = new Guid(role.id);
                     existed.Name = role.name;
@@ -550,9 +550,8 @@ namespace iPem.Site.Controllers {
         public JsonResult DeleteRole(string id) {
             try {
                 if(string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
-
                 var existed = _roleService.GetRoleById(new Guid(id));
-                if(existed == null) throw new iPemException("角色不存在，删除失败");
+                if(existed == null) throw new iPemException("角色不存在");
 
                 var usersInRole = _userService.GetUsers(existed.Id, false, 0, 5);
                 if(usersInRole.TotalCount > 0) throw new iPemException("存在隶属该角色的用户，禁止删除");
@@ -776,7 +775,7 @@ namespace iPem.Site.Controllers {
 
                 if(action == (int)EnmAction.Add) {
                     var existed = _userService.GetUserByName(user.uid);
-                    if(existed != null) throw new iPemException("用户已存在，保存失败。");
+                    if(existed != null) throw new iPemException("用户已存在");
 
                     var newUser = new U_User {
                         Id = new Guid(user.id),
@@ -801,7 +800,7 @@ namespace iPem.Site.Controllers {
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existedUser = _userService.GetUserByName(user.uid);
-                    if(existedUser == null) throw new iPemException("用户不存在，保存失败。");
+                    if(existedUser == null) throw new iPemException("用户不存在");
 
                     existedUser.RoleId = new Guid(user.roleId);
                     existedUser.LimitedDate = DateTime.Parse(user.limited);
@@ -833,7 +832,7 @@ namespace iPem.Site.Controllers {
 
                 var existed = _userService.GetUserById(new Guid(id));
                 if(existed == null)
-                    throw new iPemException("用户不存在，删除失败");
+                    throw new iPemException("用户不存在");
 
                 if(_workContext.User.Uid.Equals(existed.Uid, StringComparison.CurrentCultureIgnoreCase))
                     throw new iPemException("无法删除当前用户");
@@ -858,7 +857,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentException("password");
 
                 var existed = _userService.GetUserById(new Guid(id));
-                if(existed == null) throw new iPemException("用户不存在，重置失败");
+                if(existed == null) throw new iPemException("用户不存在");
 
                 _userService.ForcePassword(existed, password);
                 _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existed.Uid), null, _workContext.User.Id);
@@ -883,7 +882,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentException("password");
 
                 var existed = _userService.GetUserById(new Guid(id));
-                if(existed == null) throw new iPemException("用户不存在，修改失败");
+                if(existed == null) throw new iPemException("用户不存在");
 
                 var result = _userService.ChangePassword(existed, origin, password);
                 if(result == EnmChangeResults.Successful) {
@@ -1427,15 +1426,15 @@ namespace iPem.Site.Controllers {
                 message = "200 Ok",
                 total = 0,
                 data = new TsValues {
-                    basic = new int[] { },
-                    levels = new int[] { },
-                    contents = new int[] { },
-                    stationTypes = new string[] { },
-                    roomTypes = new string[] { },
-                    deviceTypes = new string[] { },
-                    logicTypes = new string[] { },
-                    pointNames = "",
-                    pointExtset = ""
+                    bases = new int[0],
+                    levels = new int[0],
+                    contents = new int[0],
+                    stationTypes = new string[0],
+                    roomTypes = new string[0],
+                    subDeviceTypes = new string[0],
+                    subLogicTypes = new string[0],
+                    points = new string[0],
+                    keywords = ""
                 }
             };
 
@@ -1485,10 +1484,7 @@ namespace iPem.Site.Controllers {
                     whlHuLue = 0,
                     jslGuiDing = 0,
                     jslHuLue = 0,
-                    jslQueRen = 0,
-                    qtxdchbschglMax = 0,
-                    qtxdchbschglMin = 0,
-                    qtxdchbschglFenZhong = 0
+                    jslQueRen = 0
                 }
             };
 

@@ -1,6 +1,7 @@
 ﻿using iPem.Core.NPOI;
 using System;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
@@ -11,8 +12,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 
-        [ExcelDisplayName("站点名称")]
-        public string name { get; set; }
+        [ExcelIgnore]
+        public string stationid { get; set; }
+
+        [ExcelDisplayName("所属站点")]
+        public string station { get; set; }
 
         [ExcelDisplayName("站点类型")]
         public string type { get; set; }
@@ -23,6 +27,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("发电时长")]
         public string interval { get; set; }
 
+        [ScriptIgnore]
         [ExcelIgnore]
         public List<ShiDianModel> details { get; set; }
     }

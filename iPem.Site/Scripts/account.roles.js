@@ -78,7 +78,7 @@ var areaStore = Ext.create('Ext.data.TreeStore',{
     }
 });
 
-var operateStore = Ext.create('Ext.data.TreeStore', {
+var permissionStore = Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     root: {
         id: -10078,
@@ -88,7 +88,7 @@ var operateStore = Ext.create('Ext.data.TreeStore', {
     },
     proxy: {
         type: 'ajax',
-        url: '/Account/GetAllOperates',
+        url: '/Account/GetAllPermissions',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -219,11 +219,11 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 }
             }
         }, {
-            id: 'operateMenus',
+            id: 'permissionMenus',
             xtype: 'treepanel',
             title: '操作权限',
             glyph: 0xf028,
-            store: operateStore,
+            store: permissionStore,
             listeners: {
                 load: function (el, node, records, successful) {
                     if (successful)
@@ -263,7 +263,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       return false;
                   }
 
-                  var operates = Ext.getCmp('operateMenus').getChecked();
+                  var permissions = Ext.getCmp('permissionMenus').getChecked();
 
                   var menuIds = [];
                   menus.forEach(function (m) {
@@ -275,9 +275,9 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       areaIds.push(m.data.id);
                   });
 
-                  var operateIds = [];
-                  operates.forEach(function (m) {
-                      operateIds.push(m.data.id);
+                  var permissionIds = [];
+                  permissions.forEach(function (m) {
+                      permissionIds.push(m.data.id);
                   });
 
                   result.setTextWithIcon('正在处理...', 'x-icon-loading');
@@ -289,7 +289,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       params: {
                           menus: menuIds,
                           areas: areaIds,
-                          operates: operateIds,
+                          permissions: permissionIds,
                           action: saveWnd.opaction
                       },
                       success: function (form, action) {
@@ -345,9 +345,9 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             if (!Ext.isEmpty(action.result.data.areas))
                 areaIds = action.result.data.areas;
 
-            var operateIds = [];
-            if (!Ext.isEmpty(action.result.data.operates))
-                operateIds = action.result.data.operates;
+            var permissionIds = [];
+            if (!Ext.isEmpty(action.result.data.permissions))
+                permissionIds = action.result.data.permissions;
 
             var root1 = Ext.getCmp('treeMenus').getRootNode();
             if (root1.hasChildNodes()) {
@@ -369,11 +369,11 @@ var editCellClick = function (grid, rowIndex, colIndex) {
                 });
             }
 
-            var root3 = Ext.getCmp('operateMenus').getRootNode();
+            var root3 = Ext.getCmp('permissionMenus').getRootNode();
             if (root3.hasChildNodes()) {
                 root3.eachChild(function (c) {
                     c.cascadeBy(function (n) {
-                        var checked = Ext.Array.contains(operateIds, n.data.id);
+                        var checked = Ext.Array.contains(permissionIds, n.data.id);
                         n.set('checked', checked);
                     });
                 });
@@ -503,9 +503,9 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                         if (!Ext.isEmpty(action.result.data.areas))
                             areaIds = action.result.data.areas;
 
-                        var operateIds = [];
-                        if (!Ext.isEmpty(action.result.data.operates))
-                            operateIds = action.result.data.operates;
+                        var permissionIds = [];
+                        if (!Ext.isEmpty(action.result.data.permissions))
+                            permissionIds = action.result.data.permissions;
 
                         var root1 = Ext.getCmp('treeMenus').getRootNode();
                         if (root1.hasChildNodes()) {
@@ -527,11 +527,11 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                             });
                         }
 
-                        var root3 = Ext.getCmp('operateMenus').getRootNode();
+                        var root3 = Ext.getCmp('permissionMenus').getRootNode();
                         if (root3.hasChildNodes()) {
                             root3.eachChild(function (c) {
                                 c.cascadeBy(function (n) {
-                                    var checked = Ext.Array.contains(operateIds, n.data.id);
+                                    var checked = Ext.Array.contains(permissionIds, n.data.id);
                                     n.set('checked', checked);
                                 });
                             });
@@ -585,6 +585,6 @@ Ext.onReady(function () {
         currentStore.load();
         menuStore.load();
         areaStore.load();
-        operateStore.load();
+        permissionStore.load();
     }
 });

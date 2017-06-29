@@ -160,10 +160,9 @@ namespace iPem.Site.Controllers {
 
             try {
                 var config = _workContext.TsValues;
-                if(config == null)
-                    return Json(data, JsonRequestBehavior.AllowGet);
+                if(config == null) return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.basic == null || !config.basic.Contains(1))
+                if(config.bases == null || !config.bases.Contains(1))
                     return Json(data, JsonRequestBehavior.AllowGet);
 
                 if(config.levels == null || config.levels.Length == 0)
@@ -174,9 +173,9 @@ namespace iPem.Site.Controllers {
 
                 var start = _workContext.LastSpeechTime; var end = DateTime.Now;
                 var stores = _workContext.ActAlarms.FindAll(a => a.Current.CreatedTime >= start && a.Current.CreatedTime < end && config.levels.Contains((int)a.Current.AlarmLevel));
-                if(config.basic.Contains(3))
+                if(config.bases.Contains(3))
                     stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
-                if(config.basic.Contains(4))
+                if(config.bases.Contains(4))
                     stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Unconfirmed);
 
                 if(config.stationTypes != null && config.stationTypes.Length > 0)
@@ -185,20 +184,18 @@ namespace iPem.Site.Controllers {
                 if(config.roomTypes != null && config.roomTypes.Length > 0)
                     stores = stores.FindAll(a => config.roomTypes.Contains(a.Room.Type.Id));
 
-                if(config.deviceTypes != null && config.deviceTypes.Length > 0)
-                    stores = stores.FindAll(a => config.deviceTypes.Contains(a.Device.Type.Id));
+                if(config.subDeviceTypes != null && config.subDeviceTypes.Length > 0)
+                    stores = stores.FindAll(a => config.subDeviceTypes.Contains(a.Device.SubType.Id));
 
-                if(config.logicTypes != null && config.logicTypes.Length > 0)
-                    stores = stores.FindAll(a => config.logicTypes.Contains(a.Point.LogicType.Id));
+                if(config.subLogicTypes != null && config.subLogicTypes.Length > 0)
+                    stores = stores.FindAll(a => config.subLogicTypes.Contains(a.Device.SubLogicType.Id));
 
-                if(!string.IsNullOrWhiteSpace(config.pointNames)) {
-                    var names = Common.SplitCondition(config.pointNames);
-                    if(names.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, names));
-                }
+                if (config.points != null && config.points.Length > 0)
+                    stores = stores.FindAll(a => config.points.Contains(a.Point.Id));
 
-                if(!string.IsNullOrWhiteSpace(config.pointExtset)) {
-                    var extsets = Common.SplitCondition(config.pointExtset);
-                    if(extsets.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.ExtSet1, extsets) || CommonHelper.ConditionContain(a.Point.ExtSet2, extsets));
+                if(!string.IsNullOrWhiteSpace(config.keywords)) {
+                    var keywords = Common.SplitCondition(config.keywords);
+                    if(keywords.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, keywords));
                 }
 
                 foreach(var store in stores) {
@@ -230,7 +227,7 @@ namespace iPem.Site.Controllers {
                     data.data.Add(string.Join("，", contents));
                 }
 
-                if(!config.basic.Contains(2)) _workContext.LastSpeechTime = end;
+                if(!config.bases.Contains(2)) _workContext.LastSpeechTime = end;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1191,6 +1188,9 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult ConfirmAlarms(string[] keys) {
             try {
+                if (!_workContext.Authorizations.Permissions.Contains(EnmPermission.Confirm))
+                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
+
                 if(keys == null || keys.Length == 0)
                     throw new ArgumentException("keys");
 
@@ -1216,6 +1216,9 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult ConfirmAllAlarms(bool onlyReservation) {
             try {
+                if (!_workContext.Authorizations.Permissions.Contains(EnmPermission.Confirm))
+                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
+
                 var entities = new List<A_AAlarm>();
                 foreach (var alarm in _workContext.ActAlarms) {
                     if (onlyReservation && string.IsNullOrWhiteSpace(alarm.Current.ReservationId)) continue;

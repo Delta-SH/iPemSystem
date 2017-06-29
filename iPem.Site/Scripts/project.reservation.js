@@ -1,12 +1,13 @@
-﻿Ext.define('AppointmentModel', {
+﻿Ext.define('ReservationModel', {
     extend: 'Ext.data.Model',
     fields: [
         { name: 'index', type: 'int' },
         { name: 'id', type: 'string' },
+        { name: 'name', type: 'string' },
         { name: 'startDate', type: 'string' },
         { name: 'endDate', type: 'string' },
-        { name: 'projectName', type: 'string' },
         { name: 'projectId', type: 'string' },
+        { name: 'projectName', type: 'string' },
         { name: 'creator', type: 'string' },
         { name: 'createdTime', type: 'string' },
         { name: 'comment', type: 'string' },
@@ -30,20 +31,19 @@ var query = function (store) {
 };
 
 var download = function (store) {
-    var params = store.getProxy().extraParams;
     $$iPems.download({
-        url: '/Project/DownloadAppointments',
-        params: params
+        url: '/Project/DownloadReservations',
+        params: store.getProxy().extraParams
     });
 };
 
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
-    model: 'AppointmentModel',
+    model: 'ReservationModel',
     proxy: {
         type: 'ajax',
-        url: '/Project/GetAppointments',
+        url: '/Project/GetReservations',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -92,12 +92,6 @@ var projectStore = Ext.create('Ext.data.Store', {
             totalProperty: 'total',
             root: 'data'
         }
-    },
-    listeners: {
-        load: function (store, records, successful) {
-            if (successful && !Ext.isEmpty(records) && records.length > 0)
-                Ext.getCmp('projectId').select(records[0]);
-        }
     }
 });
 
@@ -109,7 +103,7 @@ var submit = function (form, nodes, result) {
         submitEmptyText: false,
         clientValidation: true,
         preventWindow: true,
-        url: '/Project/SaveAppointment',
+        url: '/Project/SaveReservation',
         params: {
             nodes: nodes,
             action: saveWnd.opaction
@@ -144,6 +138,10 @@ var detailWnd = Ext.create('Ext.window.Window', {
     layout: 'form',
     defaultType: 'displayfield',
     items: [{
+        itemId: 'detail_name',
+        labelWidth: 60,
+        fieldLabel: '预约名称'
+    }, {
         itemId: 'detail_area',
         labelWidth: 60,
         fieldLabel: '预约区域'
@@ -171,7 +169,7 @@ var detailWnd = Ext.create('Ext.window.Window', {
 });
 
 var saveWnd = Ext.create('Ext.window.Window', {
-    title: 'Role',
+    title: 'Reservation',
     height: 400,
     width: 600,
     modal: true,
@@ -217,6 +215,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 triggerAction: 'all',
                 selectOnFocus: true,
                 forceSelection: true,
+                allowBlank: false
+            },
+            {
+                id: 'name',
+                name: 'name',
+                xtype: 'textfield',
+                fieldLabel: '预约名称',
                 allowBlank: false
             },
             {
@@ -387,7 +392,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               var ckNodes = tree.getChecked();
               if (ckNodes.length === 0) {
-                  result.setTextWithIcon('请勾选需要预约的监控点', 'x-icon-error');
+                  result.setTextWithIcon('请选择需要预约的监控点', 'x-icon-error');
                   return false;
               }
 
@@ -427,17 +432,19 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
     if (Ext.isEmpty(record)) return false;
 
     Ext.Ajax.request({
-        url: '/Project/GetAppointmentDetails',
+        url: '/Project/GetReservationDetails',
         Method: 'POST',
         params:{id: record.data.id},
         success: function (response, options) {
             var data = Ext.decode(response.responseText, true);
             if (data.success) {
+                var detailname = detailWnd.getComponent('detail_name');
                 var detailarea = detailWnd.getComponent('detail_area');
                 var detailstation = detailWnd.getComponent('detail_station');
                 var detailroom = detailWnd.getComponent('detail_room');
                 var detaildevice = detailWnd.getComponent('detail_device');
 
+                detailname.setValue(data.data.name);
                 detailarea.setValue(data.data.areas);
                 detailstation.setValue(data.data.stations);
                 detailroom.setValue(data.data.rooms);
@@ -468,7 +475,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
     }
 
     basic.load({
-        url: '/Project/GetAppointment',
+        url: '/Project/GetReservation',
         params:{id: record.data.id,action: $$iPems.Action.Edit},
         waitMsg: '正在处理...',
         waitTitle: '系统提示',
@@ -501,6 +508,8 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
             form.clearInvalid();
             Ext.getCmp('saveResult').setTextWithIcon('', '');
+            Ext.getCmp('name').setReadOnly(false);
+
             saveWnd.setGlyph(0xf002);
             saveWnd.setTitle('编辑预约');
             saveWnd.opaction = $$iPems.Action.Edit;
@@ -516,7 +525,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
         if (buttonId === 'yes') {
             Ext.Ajax.request({
-                url: '/Project/DeleteAppointment',
+                url: '/Project/DeleteReservation',
                 params: { id: record.raw.id },
                 mask: new Ext.LoadMask(grid, { msg: '正在处理...' }),
                 success: function (response, options) {
@@ -531,7 +540,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     });
 };
 
-var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
+var currentPanel = Ext.create('Ext.grid.Panel', {
     glyph: 0xf045,
     title: '工程预约管理',
     region: 'center',
@@ -553,8 +562,8 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
         width: 60,
         sortable: true
     }, {
-        text: '预约编号',
-        dataIndex: 'id',
+        text: '预约名称',
+        dataIndex: 'name',
         sortable: false
     }, {
         text: '开始时间',
@@ -565,11 +574,11 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
         dataIndex: 'endDate',
         sortable: true
     }, {
-        text: '工程名称',
+        text: '关联工程',
         dataIndex: 'projectName',
         sortable: true
     }, {
-        text: '创建人',
+        text: '创建人员',
         dataIndex: 'creator',
         sortable: true
     }, {
@@ -698,13 +707,13 @@ var appointmentGridPanel = Ext.create('Ext.grid.Panel', {
                             }
 
                             basic.load({
-                                url: '/Project/GetAppointment',
+                                url: '/Project/GetReservation',
                                 params:{ action: $$iPems.Action.Add },
                                 waitMsg: '正在处理...',
                                 waitTitle: '系统提示',
                                 success: function (form, action) {
                                     form.clearInvalid();
-                                    Ext.getCmp('projectId').setReadOnly(false);
+                                    Ext.getCmp('name').setReadOnly(false);
                                     Ext.getCmp('saveResult').setTextWithIcon('', '');
 
                                     var combo = Ext.getCmp('projectId'),
@@ -732,7 +741,7 @@ Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
-        pageContentPanel.add(appointmentGridPanel);
+        pageContentPanel.add(currentPanel);
 
         //load data
         projectStore.load();

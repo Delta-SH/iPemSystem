@@ -7,7 +7,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
-        [ExcelDisplayName("预约编号")]
+        [ExcelIgnore]
         public string id { get; set; }
 
         [ExcelDisplayName("预约名称")]
@@ -22,10 +22,10 @@ namespace iPem.Site.Models {
         [ExcelIgnore]
         public string projectId { get; set; }
 
-        [ExcelDisplayName("所属工程")]
+        [ExcelDisplayName("关联工程")]
         public string projectName { get; set; }
 
-        [ExcelDisplayName("创建人")]
+        [ExcelDisplayName("创建人员")]
         public string creator { get; set; }
 
         [ExcelDisplayName("创建时间")]

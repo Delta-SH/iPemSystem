@@ -55,10 +55,6 @@ namespace iPem.Services.Cs {
             return _repository.GetAlarms(start, end);
         }
 
-        public List<A_HAlarm> GetAllAlarms(DateTime start, DateTime end) {
-            return _repository.GetAllAlarms(start, end);
-        }
-
         public List<A_HAlarm> GetPrimaryAlarms(string id, DateTime start, DateTime end) {
             return _repository.GetPrimaryAlarms(id, start, end);
         }

@@ -49,6 +49,6 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets or sets the work stores
         /// </summary>
-        IDictionary<Guid, Store> WorkStores { get; }
+        Dictionary<Guid, Store> WorkStores { get; }
     }
 }

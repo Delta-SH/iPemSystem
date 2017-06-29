@@ -3,7 +3,7 @@ using System;
 
 namespace iPem.Site.Models {
     [Serializable]
-    public class FtpModel {
+    public class FsuEventModel {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
@@ -15,6 +15,9 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("名称")]
         public string name { get; set; }
+
+        [ExcelDisplayName("所属厂家")]
+        public string vendor { get; set; }
 
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }

@@ -1,55 +1,15 @@
-﻿//Ext.define('AppointmentModel', {
-//    extend: 'Ext.data.Model',
-//    belongsTo: 'ReportModel',
-//    fields: [
-//        { name: 'index', type: 'int' },
-//        { name: 'id', type: 'string' },
-//        { name: 'startTime', type: 'string' },
-//        { name: 'endTime', type: 'string' },
-//        { name: 'projectName', type: 'string' },
-//        { name: 'projectId', type: 'string' },
-//        { name: 'creator', type: 'string' },
-//        { name: 'createdTime', type: 'string' },
-//        { name: 'comment', type: 'string' },
-//        { name: 'enabled', type: 'boolean' }
-//    ]
-//});
-
-Ext.define('ReportModel', {
+﻿Ext.define('ReportModel', {
     extend: 'Ext.data.Model',
-    //hasMany: { model: 'AppointmentModel', name: 'appointments', associationKey: 'appointments' },
     fields: [
         { name: 'index', type: 'int' },
-        { name: 'type', type: 'string' },
-        { name: 'name', type: 'string' },
+        { name: 'area', type: 'string' },
+        { name: 'stationid', type: 'string' },
+        { name: 'station', type: 'string' },
         { name: 'count', type: 'int' },
         { name: 'interval', type: 'string' },
-        { name: 'appointments', type: 'auto' }
+        { name: 'reservations', type: 'auto' }
     ]
 });
-
-var query = function (pagingtoolbar) {
-    var range = Ext.getCmp('rangePicker'),
-        start = Ext.getCmp('startField'),
-        end = Ext.getCmp('endField');
-
-    if (!range.isValid()) return;
-    if (!start.isValid()) return;
-    if (!end.isValid()) return;
-
-    var me = pagingtoolbar.store;
-    me.proxy.extraParams.parent = range.getValue();
-    me.proxy.extraParams.starttime = start.getRawValue();
-    me.proxy.extraParams.endtime = end.getRawValue();
-    me.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/Report/DownloadHistory400206',
-        params: store.proxy.extraParams
-    });
-};
 
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
@@ -87,18 +47,18 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     plugins: [{
         ptype: 'rowexpander',
         rowBodyTpl: new Ext.XTemplate(
-            '<table class="row-table" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
-            '<tpl if="this.isEmpty(appointments)">',
+            '<table class="gridtable" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
+            '<tpl if="this.isEmpty(reservations)">',
                 '<tbody><tr><td>没有数据记录</td><tr/></tbody>',
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                        '<td>#</td><td>开始时间</td><td>结束时间</td><td>预约工程</td><td>创建人员</td><td>创建时间</td>',
+                        '<th>#</th><th>预约名称</th><th>开始时间</th><th>结束时间</th><th>关联工程</th><th>创建人员</th><th>创建时间</th>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
-                    '<tpl for="appointments">',
-                        '<tr><td>{#}</td><td>{startDate}</td><td>{endDate}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
+                    '<tpl for="reservations">',
+                        '<tr><td>{#}</td><td>{name}</td><td>{startDate}</td><td>{endDate}</td><td>{projectName}</td><td>{creator}</td><td>{createdTime}</td><tr/>',
                     '</tpl>',
                 '</tbody>',
             '</tpl>',
@@ -119,31 +79,27 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '序号',
         dataIndex: 'index',
         width: 60,
-        align: 'left',
-        sortable: true
+        align: 'left'
     }, {
-        text: '类型',
-        dataIndex: 'type',
+        text: '所属区域',
+        dataIndex: 'area',
         align: 'left',
-        sortable: true
+        flex: 1
     }, {
-        text: '名称',
-        dataIndex: 'name',
+        text: '所属站点',
+        dataIndex: 'station',
         align: 'left',
-        flex: 1,
-        sortable: true
+        width: 200
     }, {
         text: '预约数量',
         dataIndex: 'count',
         align: 'left',
-        width: 150,
-        sortable: true
-    },{
+        width: 150
+    }, {
         text: '预约时长',
         dataIndex: 'interval',
         align: 'left',
-        width: 150,
-        sortable: true
+        width: 150
     }],
     dockedItems: [{
         xtype: 'panel',
@@ -155,12 +111,8 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 items: [
                     {
                         id: 'rangePicker',
-                        xtype: 'StationPicker',
-                        selectAll: false,
-                        allowBlank: false,
-                        emptyText: '请选择查询范围...',
+                        xtype: 'AreaPicker',
                         fieldLabel: '查询范围',
-                        labelWidth: 60,
                         width: 448,
                     },
                     {
@@ -168,7 +120,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         glyph: 0xf005,
                         text: '数据查询',
                         handler: function (me, event) {
-                            query(currentPagingToolbar);
+                            query();
                         }
                     }
                 ]
@@ -202,7 +154,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         glyph: 0xf010,
                         text: '数据导出',
                         handler: function (me, event) {
-                            print(currentStore);
+                            print();
                         }
                     }
                 ]
@@ -210,11 +162,36 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         ]
     }],
     bbar: currentPagingToolbar
-})
+});
+
+var query = function () {
+    var range = Ext.getCmp('rangePicker'),
+        start = Ext.getCmp('startField'),
+        end = Ext.getCmp('endField');
+
+    if (!range.isValid()) return;
+    if (!start.isValid()) return;
+    if (!end.isValid()) return;
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = range.getValue();
+    proxy.extraParams.startDate = start.getRawValue();
+    proxy.extraParams.endDate = end.getRawValue();
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Report/DownloadHistory400206',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
+
+    query();
 });

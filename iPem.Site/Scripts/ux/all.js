@@ -646,10 +646,6 @@ Ext.define("Ext.ux.MultiCombo", {
         Ext.each(this.valueModels, function (r) {
             this.selectRecord(r);
         }, this);
-
-        if (this.picker && this.picker.rendered) {
-            this.picker.refresh();
-        }
     },
     reset: function () {
         this.callParent(arguments);

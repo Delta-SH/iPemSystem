@@ -28,7 +28,7 @@ namespace iPem.Site.Infrastructure {
 
         private ContainerManager _containerManager;
         private iPemStore _appStore;
-        private IDictionary<Guid, Store> _workStores;
+        private Dictionary<Guid, Store> _workStores;
 
         #endregion
 
@@ -270,7 +270,7 @@ namespace iPem.Site.Infrastructure {
         /// <summary>
         /// Gets or sets the work stores
         /// </summary>
-        public IDictionary<Guid, Store> WorkStores {
+        public Dictionary<Guid, Store> WorkStores {
             get { return _workStores; }
         }
 

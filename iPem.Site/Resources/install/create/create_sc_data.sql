@@ -10,7 +10,7 @@
 DELETE FROM [dbo].[M_Dictionary];
 GO
 
-INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(1,N'数据通信',NULL,NULL,GETDATE());
+INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(1,N'数据管理',NULL,NULL,GETDATE());
 INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(2,N'语音播报',NULL,NULL,GETDATE());
 INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(3,N'能耗分类',NULL,NULL,GETDATE());
 INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(4,N'报表参数',NULL,NULL,GETDATE());
@@ -30,14 +30,14 @@ INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1002,N'用户管理','/content/themes/icons/menu-yhgl.png','/Account/Users',N'用户是指登录系统所需的账号密码信息，用户必须隶属于某个角色并继承该角色所拥有的系统权限。用户管理主要实现了用户信息的新增、编辑、删除及密码重置等功能。',2,1,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1003,N'日志管理','/content/themes/icons/menu-rzgl.png','/Account/Events',N'日志管理是对系统中记录的系统异常、操作事件等日志信息进行管理维护。用户可以查询、导出系统日志记录，定期删除过期的日志记录等操作。',3,1,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1004,N'消息管理','/content/themes/icons/menu-xxgl.png','/Account/Notice',N'消息管理是对站内的公开消息、公告、通知、提示等信息进行发布管理。用户可以查询、发布、更新、删除站内的广播消息。',4,1,1);
-INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1005,N'系统参数','/content/themes/icons/menu-csgl.png','/Account/Dictionary',N'系统参数是对系统运行所需的各类参数进行管理维护，用户可根据系统实际的业务逻辑需求配置适合的参数。<br/>能耗公式说明:<br/>1. 公式中以“@设备名称>>信号名称”的形式映射一个具体设备的信号点。<br/>2. 设备和信号名称中禁止出现“@”、“>>”、“+”、“-”、“*”、“/”、“(”、“)”等符号。<br/>公式示例: ((@设备1>>信号1 + @设备2>>信号2 - @设备3>>信号3) * @设备4>>信号4) / @设备5>>信号5',5,1,1);
+INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1005,N'参数管理','/content/themes/icons/menu-csgl.png','/Account/Dictionary',N'参数管理是对系统运行所需的各类参数进行管理维护，用户可根据系统实际的业务逻辑需求配置适合的参数。<br/>能耗公式说明:<br/>1. 公式中以“@设备名称>>信号名称”的形式映射一个具体设备的信号点。<br/>2. 设备和信号名称中禁止出现“@”、“>>”、“+”、“-”、“*”、“/”、“(”、“)”等符号。<br/>公式示例: ((@设备1>>信号1 + @设备2>>信号2 - @设备3>>信号3) * @设备4>>信号4) / @设备5>>信号5',5,1,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2001,N'FSU信息管理','/content/themes/icons/menu-fsucx.png','/Fsu/Index',N'FSU信息查询是指对系统内符合查询条件的FSU进行查询展现，提供FSU的编码、IP、端口、是否离线、离线时间等相关信息。',1,2,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2002,N'FSU配置管理','/content/themes/icons/menu-fsupz.png','/Fsu/Configuration',N'FSU在线管理是指对系统内符合查询条件的FSU进行在线配置管理，提供修改单个或批量修改多个FSU相关配置的能力。',2,2,1);
-INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2003,N'FTP日志管理','/content/themes/icons/menu-fsuftp.png','/Fsu/Ftp',N'FTP日志是指SC对FSU中的FTP文件下载、解析、操作的日志记录；FTP日志管理提供对FTP日志记录的筛选、查询、导出等功能。',3,2,1);
+INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2003,N'FSU日志管理','/content/themes/icons/menu-fsuftp.png','/Fsu/Event',N'FSU日志是指SC对FSU中的FTP文件下载、解析、操作的日志记录；FTP日志管理提供对FTP日志记录的筛选、查询、导出等功能。',3,2,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2004,N'机房管理','/content/themes/icons/leaf.png','/Account/2004',N'机房管理',4,2,0);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2005,N'设备管理','/content/themes/icons/leaf.png','/Account/2005',N'设备管理',5,2,0);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2006,N'工程信息管理','/content/themes/icons/menu-gcgl.png','/Project/Index',N'工程信息管理是对系统所涉及的工程项目进行维护管理，以完善后续的报表统计功能。注：因工程预约需要引用工程信息，为了保证工程预约信息的完整性，暂不提供删除工程功能。',6,2,1);
-INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2007,N'工程预约管理','/content/themes/icons/menu-gcyy.png','/Project/Appointment',N'工程预约管理是对施工过程中所影响到的区域、站点、机房、设备等进行提前预约，系统会根据预约信息将其产生的告警标识为工程告警，为后续报表统计提供数据支持。注：因告警信息需要引用工程预约信息，为了保证告警信息的完整性，暂不提供删除预约功能。',7,2,1);
+INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2007,N'工程预约管理','/content/themes/icons/menu-gcyy.png','/Project/Reservation',N'工程预约管理是对施工过程中所影响到的区域、站点、机房、设备等进行提前预约，系统会根据预约信息将其产生的告警标识为工程告警，为后续报表统计提供数据支持。注：因告警信息需要引用工程预约信息，为了保证告警信息的完整性，暂不提供删除预约功能。',7,2,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(3001,N'图形组态','/content/themes/icons/menu-txzt.png','/Configuration/Index',N'图形组态提供了更加灵活多样化、更加直观的图形方式展示系统中设备的物理拓扑图以及设备信号的实时测值。',1,3,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(3002,N'电子地图','/content/themes/icons/menu-dzdt.png','/Configuration/Map',N'电子地图提供了系统中各站点的地理位置、路线指导、站点概况、实时告警等信息的概览功能。<br/>注：在使用电子地图之前，请为站点设置经纬度信息。',2,3,1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(4001,N'基础报表','/content/themes/icons/menu-report-jc.png',NULL,N'基础报表',1,4,1);

@@ -53,6 +53,8 @@ namespace iPem.Site.Infrastructure {
 
         List<C_EnumMethod> AreaTypes { get; }
 
+        List<C_SCVendor> Vendors { get; }
+
         List<SSHProtocol> AllProtocols { get; }
 
         List<SSHDevice> AllDevices { get; }

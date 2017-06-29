@@ -29,10 +29,9 @@ var query = function (store) {
 };
 
 var download = function (store) {
-    var params = store.getProxy().extraParams;
     $$iPems.download({
         url: '/Project/DownloadProjects',
-        params: params
+        params: store.getProxy().extraParams
     });
 };
 
@@ -198,8 +197,6 @@ var saveWnd = Ext.create('Ext.window.Window', {
                           result.setTextWithIcon(message, 'x-icon-error');
                       }
                   });
-              } else {
-                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       },
@@ -257,34 +254,29 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '工程标识',
-        dataIndex: 'id',
-        align: 'left',
-        sortable: false
-    }, {
         text: '工程名称',
         dataIndex: 'name',
         align: 'left',
-        sortable: false
+        width: 200
     }, {
         text: '开始时间',
         dataIndex: 'start',
         align: 'center',
-        sortable: true
+        width: 150
     }, {
         text: '结束时间',
         dataIndex: 'end',
         align: 'center',
-        sortable: true
+        width: 150
     }, {
         text: '负责人员',
         dataIndex: 'responsible',
-        align: 'left',
+        align: 'center',
         sortable: true
     }, {
         text: '联系电话',
         dataIndex: 'contact',
-        align: 'left',
+        align: 'center',
         sortable: true
     }, {
         text: '施工公司',
@@ -294,13 +286,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     }, {
         text: '创建人员',
         dataIndex: 'creator',
-        align: 'left',
+        align: 'center',
         sortable: true
     }, {
         text: '创建时间',
         dataIndex: 'createdtime',
-        align: 'left',
-        sortable: true
+        align: 'center',
+        width: 150
     }, {
         text: '备注信息',
         dataIndex: 'comment',
@@ -309,8 +301,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     }, {
         text: '工程状态',
         dataIndex: 'enabled',
-        align: 'left',
-        sortable: true,
+        align: 'center',
         renderer: function (value) {
             return value ? '有效' : '禁用';
         }
@@ -395,6 +386,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                             waitTitle: '系统提示',
                             success: function (form, action) {
                                 form.clearInvalid();
+                                Ext.getCmp('name').setReadOnly(false);
                                 Ext.getCmp('saveResult').setTextWithIcon('', '');
 
                                 saveWnd.setGlyph(0xf001);

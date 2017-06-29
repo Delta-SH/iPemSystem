@@ -2,6 +2,7 @@
 using iPem.Core.Caching;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
+using iPem.Services.Common;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
@@ -68,7 +69,7 @@ namespace iPem.Site.Controllers {
             return View();
         }
 
-        public ActionResult Ftp(int? id) {
+        public ActionResult Event(int? id) {
             if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2003))
                 throw new HttpException(404, "Page not found.");
 
@@ -76,7 +77,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestFsu(int start, int limit, string parent, int[] status, int filter, string keywords) {
+        public JsonResult RequestFsu(int start, int limit, string parent, int[] status, string[] vendors, int filter, string keywords) {
             var data = new AjaxDataModel<List<FsuModel>> {
                 success = true,
                 message = "无数据",
@@ -85,7 +86,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = this.GetFsus(parent, status, filter, keywords);
+                var models = this.GetFsus(parent, status, vendors, filter, keywords);
                 if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -107,9 +108,9 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        public ActionResult DownloadFsu(string parent, int[] status, int filter, string keywords) {
+        public ActionResult DownloadFsu(string parent, int[] status, string[] vendors, int filter, string keywords) {
             try {
-                var models = this.GetFsus(parent, status, filter, keywords);
+                var models = this.GetFsus(parent, status, vendors, filter, keywords);
                 using(var ms = _excelManager.Export<FsuModel>(models, "FSU信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
@@ -120,16 +121,69 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestFtp(int start, int limit, string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
-            var data = new AjaxDataModel<List<FtpModel>> {
+        public JsonResult RequestFtpFiles(int start, int limit, string id) {
+            var data = new AjaxDataModel<List<FtpFileModel>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<FtpModel>()
+                data = new List<FtpFileModel>()
             };
 
             try {
-                var models = this.GetFtps(parent, types, startDate, endDate, filter, keywords);
+                var models = this.GetFtpFiles(id);
+                if (models != null) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadFtpFile(string fsu, string path) {
+            try {
+                if (string.IsNullOrWhiteSpace(fsu)) throw new ArgumentNullException("fsu");
+                if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException("path");
+
+                var current = _workContext.Fsus.Find(f => f.Current.Id == fsu);
+                if (current == null) throw new iPemException("未找到FSU");
+                var ext = _fsuService.GetExtFsu(current.Current.Id);
+                if (ext == null) throw new iPemException("未找到FSU");
+                if (!ext.Status) throw new iPemException("FSU通信中断");
+
+                var helper = new FtpHelper(ext.IP, string.IsNullOrWhiteSpace(current.Current.FtpFilePath) ? "logs" : string.Format("{0}/logs", current.Current.FtpFilePath), current.Current.FtpUid ?? "", current.Current.FtpPwd ?? "");
+                using (var ms = helper.Download(path)) {
+                    return File(ms.ToArray(), "application/octet-stream", path);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestFsuEvents(int start, int limit, string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
+            var data = new AjaxDataModel<List<FsuEventModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<FsuEventModel>()
+            };
+
+            try {
+                var models = this.GetFsuEvents(parent, types, startDate, endDate, filter, keywords);
                 if(models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -151,10 +205,10 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        public ActionResult DownloadFtp(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
+        public ActionResult DownloadFsuEvents(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
             try {
-                var models = this.GetFtps(parent, types, startDate, endDate, filter, keywords);
-                using(var ms = _excelManager.Export<FtpModel>(models, "FTP日志信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                var models = this.GetFsuEvents(parent, types, startDate, endDate, filter, keywords);
+                using(var ms = _excelManager.Export<FsuEventModel>(models, "FSU日志信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -163,32 +217,32 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        private List<FsuModel> GetFsus(string parent, int[] status, int filter, string keywords) {
+        private List<FsuModel> GetFsus(string parent, int[] status, string[] vendors, int filter, string keywords) {
             var result = new List<FsuModel>();
             var fsus = new List<SSHFsu>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 fsus = _workContext.Fsus;
             } else {
                 var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+                if (keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
+                    if (nodeType == EnmSSH.Area) {
                         var current = _workContext.Areas.Find(a => a.Current.Id == id);
-                        if(current != null) fsus = _workContext.Fsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
-                    } else if(nodeType == EnmSSH.Station) {
+                        if (current != null) fsus = _workContext.Fsus.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                    } else if (nodeType == EnmSSH.Station) {
                         fsus = _workContext.Fsus.FindAll(d => d.Current.StationId == id);
-                    } else if(nodeType == EnmSSH.Room) {
+                    } else if (nodeType == EnmSSH.Room) {
                         var current = _workContext.Rooms.Find(a => a.Current.Id == id);
-                        if(current != null) fsus = current.Fsus;
+                        if (current != null) fsus = current.Fsus;
                     }
                 }
             }
 
-            if(!string.IsNullOrWhiteSpace(keywords)) {
+            if (!string.IsNullOrWhiteSpace(keywords)) {
                 var conditions = Common.SplitCondition(keywords);
-                switch(filter) {
+                switch (filter) {
                     case 1:
                         fsus = fsus.FindAll(f => CommonHelper.ConditionContain(f.Current.Code, conditions));
                         break;
@@ -200,8 +254,11 @@ namespace iPem.Site.Controllers {
                 }
             }
 
+            if (vendors != null && vendors.Length > 0)
+                fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
+
             var extFsus = _fsuService.GetExtFsus();
-            if(status != null && status.Length > 0)
+            if (status != null && status.Length > 0)
                 extFsus = extFsus.FindAll(e => (status.Contains(1) && e.Status) || (status.Contains(0) && !e.Status));
 
             var stores = from fsu in fsus
@@ -214,6 +271,7 @@ namespace iPem.Site.Controllers {
                              area = area.ToString(),
                              station = fsu.Current.StationName,
                              room = fsu.Current.RoomName,
+                             vendor = fsu.Current.VendorName,
                              ip = ext.IP ?? string.Empty,
                              port = ext.Port,
                              last = CommonHelper.DateTimeConverter(ext.LastTime),
@@ -223,7 +281,7 @@ namespace iPem.Site.Controllers {
                          };
 
             var index = 0;
-            foreach(var store in stores.OrderBy(s=>s.code)) {
+            foreach (var store in stores.OrderBy(s => s.code)) {
                 result.Add(new FsuModel {
                     index = ++index,
                     id = store.id,
@@ -232,6 +290,7 @@ namespace iPem.Site.Controllers {
                     area = store.area,
                     station = store.station,
                     room = store.room,
+                    vendor = store.vendor,
                     ip = store.ip,
                     port = store.port,
                     last = store.last,
@@ -244,10 +303,38 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private List<FtpModel> GetFtps(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
+        private List<FtpFileModel> GetFtpFiles(string id) {
+            var result = new List<FtpFileModel>();
+            var current = _workContext.Fsus.Find(f=>f.Current.Id == id);
+            if (current == null) return result;
+            var ext = _fsuService.GetExtFsu(id);
+            if (ext == null) return result;
+            if (!ext.Status) return result;
+
+            var key = string.Format(GlobalCacheKeys.Global_FsuFtpFiles, current.Current.Id);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FtpFileModel>>(key);
+
+            var helper = new FtpHelper(ext.IP, string.IsNullOrWhiteSpace(current.Current.FtpFilePath) ? "logs" : string.Format("{0}/logs", current.Current.FtpFilePath), current.Current.FtpUid ?? "", current.Current.FtpPwd ?? "");
+            var files = helper.GetFtpFiles().OrderByDescending(f => f.Name);
+            var index = 0;
+            foreach (var file in files) {
+                result.Add(new FtpFileModel {
+                    index = ++index,
+                    name = file.Name,
+                    size = file.Size,
+                    path = file.Path,
+                    time = CommonHelper.DateTimeConverter(file.CreatedTime)
+                });
+            }
+
+            if(result.Count > 0) _cacheManager.Set<List<FtpFileModel>>(key, result, CachedIntervals.Global_SiteResult_Intervals);
+            return result;
+        }
+
+        private List<FsuEventModel> GetFsuEvents(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
             endDate = endDate.AddDays(1).AddMilliseconds(-1);
 
-            var result = new List<FtpModel>();
+            var result = new List<FsuEventModel>();
             var fsus = new List<SSHFsu>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 fsus = _workContext.Fsus;
@@ -284,19 +371,19 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var events = _ftpService.GetEventsInType(startDate, endDate, EnmFsuEvent.FTP);
-            if (types != null && types.Length > 0)
-                events = events.FindAll(e => types.Contains((int)e.EventType));
+            var events = _ftpService.GetEvents(startDate, endDate);
+            if (types != null && types.Length > 0) events = events.FindAll(e => types.Contains((int)e.EventType));
 
             var stores = from evt in events
                          join fsu in fsus on evt.FsuId equals fsu.Current.Id
                          join room in _workContext.Rooms on fsu.Current.RoomId equals room.Current.Id
                          join station in _workContext.Stations on fsu.Current.StationId equals station.Current.Id
                          join area in _workContext.Areas on fsu.Current.AreaId equals area.Current.Id
-                         select new FtpModel {
+                         select new FsuEventModel {
                              id = fsu.Current.Id,
                              code = fsu.Current.Code,
                              name = fsu.Current.Name,
+                             vendor = fsu.Current.VendorName,
                              area = area.ToString(),
                              station = station.Current.Name,
                              room = room.Current.Name,
@@ -307,11 +394,12 @@ namespace iPem.Site.Controllers {
 
             var index = 0;
             foreach (var store in stores.OrderByDescending(s => s.time)) {
-                result.Add(new FtpModel {
+                result.Add(new FsuEventModel {
                     index = ++index,
                     id = store.id,
                     code = store.code,
                     name = store.name,
+                    vendor = store.vendor,
                     area = store.area,
                     station = store.station,
                     room = store.room,

@@ -27,19 +27,40 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public List<H_IStation> GetStationsInType(string type) {
-            SqlParameter[] parms = { new SqlParameter("@Type", SqlDbType.VarChar, 200) };
+        public List<H_IStation> GetStationsInTypeId(string type) {
+            SqlParameter[] parms = { new SqlParameter("@TypeId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
 
             var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInType, parms)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeId, parms)) {
                 while (rdr.Read()) {
                     var entity = new H_IStation();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullStringHandler(rdr["Type"]);
-                    entity.Parent = SqlTypeConverter.DBNullStringHandler(rdr["Parent"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
+                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<H_IStation> GetStationsInTypeName(string type) {
+            SqlParameter[] parms = { new SqlParameter("@TypeName", SqlDbType.VarChar, 200) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
+
+            var entities = new List<H_IStation>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeName, parms)) {
+                while (rdr.Read()) {
+                    var entity = new H_IStation();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
+                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entities.Add(entity);
                 }
             }
@@ -47,7 +68,7 @@ namespace iPem.Data.Repository.Cs {
         }
 
         public List<H_IStation> GetStationsInParent(string parent) {
-            SqlParameter[] parms = { new SqlParameter("@Parent", SqlDbType.VarChar, 200) };
+            SqlParameter[] parms = { new SqlParameter("@AreaName", SqlDbType.VarChar, 200) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
 
             var entities = new List<H_IStation>();
@@ -56,9 +77,10 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new H_IStation();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullStringHandler(rdr["Type"]);
-                    entity.Parent = SqlTypeConverter.DBNullStringHandler(rdr["Parent"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
+                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entities.Add(entity);
                 }
             }
@@ -72,9 +94,10 @@ namespace iPem.Data.Repository.Cs {
                     var entity = new H_IStation();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = SqlTypeConverter.DBNullStringHandler(rdr["Type"]);
-                    entity.Parent = SqlTypeConverter.DBNullStringHandler(rdr["Parent"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
+                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entities.Add(entity);
                 }
             }

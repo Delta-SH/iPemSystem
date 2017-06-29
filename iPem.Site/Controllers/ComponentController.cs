@@ -183,6 +183,67 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetVendors(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<string, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<string, string>>()
+            };
+
+            try {
+                var models = _workContext.Vendors;
+                if (models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = models[i].Name
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFsuEvents(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach (EnmFsuEvent evt in Enum.GetValues(typeof(EnmFsuEvent))) {
+                    if (evt == EnmFsuEvent.Undefined) continue;
+                    data.data.Add(new ComboItem<int, string>() { id = (int)evt, text = Common.GetFsuEventDisplay(evt) });
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonResult GetAlarmLevels(int start, int limit, bool all = false) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,

@@ -638,7 +638,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {
@@ -766,7 +766,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {
@@ -894,7 +894,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {
@@ -1033,7 +1033,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {
@@ -1156,7 +1156,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {
@@ -1292,7 +1292,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '<a class="alm-reservation" href="javascript:void(0);">查看</a>';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {

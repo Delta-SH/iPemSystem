@@ -15,7 +15,5 @@ namespace iPem.Site.Models {
         public S_Station Station { get; set; }
 
         public A_Area Area { get; set; }
-
-        public String AreaFullName { get; set; }
     }
 }

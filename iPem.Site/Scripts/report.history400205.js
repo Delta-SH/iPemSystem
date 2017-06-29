@@ -1,29 +1,10 @@
-﻿//Ext.define('ProjectModel', {
-//    extend: 'Ext.data.Model',
-//    belongsTo: 'ReportModel',
-//    fields: [
-//        { name: 'Index', type: 'int' },
-//        { name: 'Id', type: 'string' },
-//        { name: 'Name', type: 'string' },
-//        { name: 'StartTime', type: 'string' },
-//        { name: 'EndTime', type: 'string' },
-//        { name: 'Responsible', type: 'string' },
-//        { name: 'ContactPhone', type: 'string' },
-//        { name: 'Company', type: 'string' },
-//        { name: 'Creator', type: 'string' },
-//        { name: 'CreatedTime', type: 'string' },
-//        { name: 'Comment', type: 'string' },
-//        { name: 'Enabled', type: 'boolean' }
-//    ]
-//});
-
-Ext.define('ReportModel', {
+﻿Ext.define('ReportModel', {
     extend: 'Ext.data.Model',
-    //hasMany: { model: 'ProjectModel', name: 'projects', associationKey: 'projects' },
     fields: [
         { name: 'index', type: 'int' },
-        { name: 'type', type: 'string' },
-        { name: 'name', type: 'string' },
+        { name: 'area', type: 'string' },
+        { name: 'stationid', type: 'string' },
+        { name: 'station', type: 'string' },
         { name: 'count', type: 'int' },
         { name: 'interval', type: 'string' },
         { name: 'timeout', type: 'int' },
@@ -31,29 +12,6 @@ Ext.define('ReportModel', {
         { name: 'projects', type: 'auto' }
     ]
 });
-
-var query = function (pagingtoolbar) {
-    var range = Ext.getCmp('rangePicker'),
-        start = Ext.getCmp('startField'),
-        end = Ext.getCmp('endField');
-
-    if (!range.isValid()) return;
-    if (!start.isValid()) return;
-    if (!end.isValid()) return;
-
-    var me = pagingtoolbar.store;
-    me.proxy.extraParams.parent = range.getValue();
-    me.proxy.extraParams.starttime = start.getRawValue();
-    me.proxy.extraParams.endtime = end.getRawValue();
-    me.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/Report/DownloadHistory400205',
-        params: store.proxy.extraParams
-    });
-};
 
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
@@ -92,13 +50,13 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     plugins: [{
         ptype: 'rowexpander',
         rowBodyTpl: new Ext.XTemplate(
-            '<table class="row-table" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
+            '<table class="gridtable" cellspacing="0" cellpadding="0" border="0" style="width:100%;">',
             '<tpl if="this.isEmpty(projects)">',
                 '<tbody><tr><td>没有数据记录</td><tr/></tbody>',
             '<tpl else>',
                 '<thead>',
                     '<tr>',
-                        '<td>#</td><td>工程名称</td><td>开始时间</td><td>结束时间</td><td>负责人员</td><td>联系电话</td><td>施工公司</td><td>超时工程</td>',
+                        '<th>#</th><th>工程名称</th><th>开始时间</th><th>结束时间</th><th>负责人员</th><th>联系电话</th><th>施工公司</th><th>超时工程</th>',
                     '<tr/>',
                 '</thead>',
                 '<tbody>',
@@ -127,42 +85,36 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '序号',
         dataIndex: 'index',
         width: 60,
-        align: 'left',
-        sortable: true
+        align: 'left'
     }, {
-        text: '类型',
-        dataIndex: 'type',
+        text: '所属区域',
+        dataIndex: 'area',
         align: 'left',
-        sortable: true
+        flex: 1
     }, {
-        text: '名称',
-        dataIndex: 'name',
+        text: '所属站点',
+        dataIndex: 'station',
         align: 'left',
-        flex: 1,
-        sortable: true
+        width: 150
     }, {
         text: '工程数量',
         dataIndex: 'count',
-        align: 'left',
-        sortable: true
+        align: 'left'
     }, {
         text: '平均历时',
         dataIndex: 'interval',
         align: 'left',
-        width: 150,
-        sortable: true
+        width: 150
     }, {
         text: '超时工程数量',
         dataIndex: 'timeout',
         align: 'left',
-        width: 150,
-        sortable: true
+        width: 150
     }, {
         text: '超时工程占比',
         dataIndex: 'rate',
         align: 'left',
-        width: 150,
-        sortable: true
+        width: 150
     }],
     dockedItems: [{
         xtype: 'panel',
@@ -174,12 +126,8 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 items: [
                     {
                         id: 'rangePicker',
-                        xtype: 'StationPicker',
-                        selectAll: false,
-                        allowBlank: false,
-                        emptyText: '请选择查询范围...',
+                        xtype: 'AreaPicker',
                         fieldLabel: '查询范围',
-                        labelWidth: 60,
                         width: 448,
                     },
                     {
@@ -221,7 +169,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         glyph: 0xf010,
                         text: '数据导出',
                         handler: function (me, event) {
-                            print(currentStore);
+                            print();
                         }
                     }
                 ]
@@ -229,11 +177,36 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         ]
     }],
     bbar: currentPagingToolbar
-})
+});
+
+var query = function () {
+    var range = Ext.getCmp('rangePicker'),
+        start = Ext.getCmp('startField'),
+        end = Ext.getCmp('endField');
+
+    if (!range.isValid()) return;
+    if (!start.isValid()) return;
+    if (!end.isValid()) return;
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = range.getValue();
+    proxy.extraParams.startDate = start.getRawValue();
+    proxy.extraParams.endDate = end.getRawValue();
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Report/DownloadHistory400205',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
+
+    query();
 });

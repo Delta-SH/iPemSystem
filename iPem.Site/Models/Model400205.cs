@@ -8,11 +8,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
-        [ExcelDisplayName("类型")]
-        public string type { get; set; }
+        [ExcelDisplayName("所属区域")]
+        public string area { get; set; }
 
-        [ExcelDisplayName("名称")]
-        public string name { get; set; }
+        [ExcelIgnore]
+        public string stationid { get; set; }
+
+        [ExcelDisplayName("所属站点")]
+        public string station { get; set; }
 
         [ExcelDisplayName("工程数量")]
         public int count { get; set; }

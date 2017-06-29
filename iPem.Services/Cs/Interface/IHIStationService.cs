@@ -11,7 +11,12 @@ namespace iPem.Services.Cs {
         /// <summary>
         /// 获得指定站点类型所包含的站点
         /// </summary>
-        List<H_IStation> GetStationsInType(string type);
+        List<H_IStation> GetStationsInTypeId(string type);
+
+        /// <summary>
+        /// 获得指定站点类型所包含的站点
+        /// </summary>
+        List<H_IStation> GetStationsInTypeName(string type);
 
         /// <summary>
         /// 获得指定区域下所包含的站点

@@ -1509,7 +1509,7 @@ namespace iPem.Site.Controllers {
             }
 
             var index = 0;
-            var tdAlarms = _hisAlarmService.GetAlarmsInPoint(rtValues.tingDianXinHao, startDate, endDate);
+            var tdAlarms = _hisAlarmService.GetAlarmsInPoint(rtValues.tingDianXinHao[0], startDate, endDate);
             foreach(var station in stations) {
                 var alarms = tdAlarms.FindAll(a => a.StationId == station.Current.Id);
                 var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
@@ -1548,7 +1548,7 @@ namespace iPem.Site.Controllers {
                     }
 
                     var curStations = _workContext.Stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var lastStations = stations.FindAll(s => keys.Contains(s.Parent));
+                    var lastStations = stations.FindAll(s => keys.Contains(s.AreaName));
                     
                     if(types.Length > 0)
                         curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1578,7 +1578,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var curStations = _workContext.Stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var lastStations = stations.FindAll(s => keys.Contains(s.Parent));
+                            var lastStations = stations.FindAll(s => keys.Contains(s.AreaName));
 
                             if(types.Length > 0)
                                 curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1597,7 +1597,7 @@ namespace iPem.Site.Controllers {
                         #region self
                         var stations = _hIStationService.GetStations();
                         var curStations = _workContext.Stations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var lastStations = stations.FindAll(s => s.Parent == current.Current.Name);
+                        var lastStations = stations.FindAll(s => s.AreaName == current.Current.Name);
 
                         if(types.Length > 0)
                             curStations = curStations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -1633,9 +1633,9 @@ namespace iPem.Site.Controllers {
             var devices = stations.SelectMany(d=>d.Rooms).SelectMany(r=>r.Devices).Where(d => devTypeIds.Contains(d.Current.SubType.Id)).ToList();
 
             var iStations = _hIStationService.GetStations();
-            var iDevices = _hIDeviceService.GetDevices().FindAll(d => devTypeNames.Contains(d.Type));
+            var iDevices = _hIDeviceService.GetDevices().FindAll(d => devTypeNames.Contains(d.TypeName));
             var iFullDevices = (from amd in iDevices
-                                join ams in iStations on amd.ParentId equals ams.Id
+                                join ams in iStations on amd.StationId equals ams.Id
                                 select new { Device = amd, Station = ams }).ToList();
             
             var index = 0;
@@ -1650,7 +1650,7 @@ namespace iPem.Site.Controllers {
                     }
 
                     var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
-                    var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+                    var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.AreaName)).ToList();
 
                     result.Add(new Model500202 {
                         index = ++index,
@@ -1676,7 +1676,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var curDevices = devices.FindAll(d => leaf.Keys.Contains(d.Current.AreaId));
-                            var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.Parent)).ToList();
+                            var lastDevices = iFullDevices.FindAll(d => keys.Contains(d.Station.AreaName)).ToList();
 
                             result.Add(new Model500202 {
                                 index = ++index,
@@ -1691,7 +1691,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var curDevices = devices.FindAll(d => d.Current.AreaId == current.Current.Id);
-                        var lastDevices = iFullDevices.FindAll(d => d.Station.Parent == current.Current.Name);
+                        var lastDevices = iFullDevices.FindAll(d => d.Station.AreaName == current.Current.Name);
 
                         result.Add(new Model500202 {
                             index = ++index,
@@ -1717,7 +1717,7 @@ namespace iPem.Site.Controllers {
             var stations = _workContext.Stations;
             if(types != null && types.Length > 0) stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
             stations = (from sta in stations
-                        join ams in iStations on new { Name = sta.Current.Name, Type = sta.Current.Type.Name } equals new { Name = ams.Name, Type = ams.Type }
+                        join ams in iStations on new { Name = sta.Current.Name, Type = sta.Current.Type.Name } equals new { Name = ams.Name, Type = ams.TypeName }
                         select sta).ToList();
 
             var index = 0;
@@ -1732,7 +1732,7 @@ namespace iPem.Site.Controllers {
                     }
 
                     var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                    var lastStations = iStations.FindAll(s => keys.Contains(s.Parent));
+                    var lastStations = iStations.FindAll(s => keys.Contains(s.AreaName));
 
                     result.Add(new Model500203 {
                         index = ++index,
@@ -1758,7 +1758,7 @@ namespace iPem.Site.Controllers {
                             }
 
                             var curStations = stations.FindAll(s => leaf.Keys.Contains(s.Current.AreaId));
-                            var lastStations = iStations.FindAll(s => keys.Contains(s.Parent));
+                            var lastStations = iStations.FindAll(s => keys.Contains(s.AreaName));
 
                             result.Add(new Model500203 {
                                 index = ++index,
@@ -1773,7 +1773,7 @@ namespace iPem.Site.Controllers {
                     } else {
                         #region self
                         var curStations = stations.FindAll(s => s.Current.AreaId == current.Current.Id);
-                        var lastStations = iStations.FindAll(s => s.Parent == current.Current.Name);
+                        var lastStations = iStations.FindAll(s => s.AreaName == current.Current.Name);
 
                         result.Add(new Model500203 {
                             name = current.ToString(),
@@ -1876,8 +1876,8 @@ namespace iPem.Site.Controllers {
                 return result;
 
             var values = _batTimeService.GetValues(startDate, endDate);
-            var ovalues1 = values.FindAll(b => b.EndTime.Subtract(b.StartTime).TotalMinutes >= _workContext.RtValues.qtxdchbschglFenZhong);
-            var ovalues2 = ovalues1.FindAll(v => v.EndValue >= _workContext.RtValues.qtxdchbschglMin);
+            var ovalues1 = values.FindAll(b => b.EndTime.Subtract(b.StartTime).TotalMinutes >= _workContext.RtValues.qtxdchbschglShiJian);
+            var ovalues2 = ovalues1.FindAll(v => v.EndValue >= _workContext.RtValues.qtxdchbschglDianYa);
             var matchs1 = from o in ovalues1 group o by o.StationId into g select g.Key;
             var matchs2 = from o in ovalues2 group o by o.StationId into g select g.Key;
 

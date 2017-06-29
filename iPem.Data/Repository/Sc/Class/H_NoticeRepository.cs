@@ -66,7 +66,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(start);
-            parms[0].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeChecker(end);
 
             var entities = new List<H_Notice>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNoticesInSpan, parms)) {
@@ -107,7 +107,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
 
             var entities = new List<H_Notice>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNoticesInUser, parms)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetUnreadNotices, parms)) {
                 while (rdr.Read()) {
                     var entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);

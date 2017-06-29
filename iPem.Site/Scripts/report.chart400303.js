@@ -2,7 +2,7 @@
     var lineChart = null,
         lineOption = {
             tooltip: {
-                trigger: 'item',
+                trigger: 'axis',
                 formatter: function (params) {
                     if (lineOption.series.length > 0) {
                         if (!Ext.isArray(params))
@@ -59,7 +59,110 @@
             series: []
         };
 
-    var query = function (target) {
+    var currentLayout = Ext.create('Ext.panel.Panel', {
+        id: 'currentLayout',
+        region: 'center',
+        border: false,
+        bodyCls: 'x-border-body-panel',
+        layout: 'fit',
+        items: [{
+            xtype: 'panel',
+            glyph: 0xf031,
+            title: '放电曲线',
+            collapsible: true,
+            collapseFirst: false,
+            margin: '5 0 0 0',
+            layout: 'fit',
+            items: [{
+                xtype: 'container',
+                contentEl: 'line-chart'
+            }],
+            listeners: {
+                resize: function (me, width, height, oldWidth, oldHeight) {
+                    var lineContainer = Ext.get('line-chart');
+                    lineContainer.setHeight(height - 40);
+                    if (lineChart) lineChart.resize();
+                }
+            }
+        }],
+        dockedItems: [{
+            xtype: 'panel',
+            glyph: 0xf034,
+            title: '筛选条件',
+            collapsible: true,
+            collapsed: false,
+            dock: 'top',
+            items: [
+                {
+                    xtype: 'toolbar',
+                    border: false,
+                    items: [
+                        {
+                            id: 'devicePicker',
+                            xtype: 'DevicePicker',
+                            allowBlank: false,
+                            emptyText: '请选择设备...',
+                            selectOnLeaf: true,
+                            selectAll: false,
+                            listeners: {
+                                select: function (me, record) {
+                                    var keys = $$iPems.SplitKeys(record.data.id);
+                                    if (keys.length == 2) {
+                                        var pointCombo = Ext.getCmp('pointCombo');
+                                        pointCombo.bind(keys[1], true, false, true, false);
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            id: 'pointCombo',
+                            xtype: 'PointMultiCombo',
+                            allowBlank: false,
+                            emptyText: '请选择信号...',
+                            labelWidth: 60,
+                            width: 280,
+                        },
+                        {
+                            xtype: 'button',
+                            glyph: 0xf005,
+                            text: '数据查询',
+                            handler: function (me, event) {
+                                query();
+                            }
+                        }
+                    ]
+                },
+                {
+                    xtype: 'toolbar',
+                    border: false,
+                    items: [
+                        {
+                            id: 'startField',
+                            xtype: 'datetimepicker',
+                            fieldLabel: '开始时间',
+                            labelWidth: 60,
+                            width: 280,
+                            value: Ext.ux.DateTime.addDays(Ext.ux.DateTime.today(), -1),
+                            editable: false,
+                            allowBlank: false
+                        },
+                        {
+                            id: 'endField',
+                            xtype: 'datetimepicker',
+                            fieldLabel: '结束时间',
+                            labelWidth: 60,
+                            width: 280,
+                            value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
+                            editable: false,
+                            allowBlank: false
+                        }
+                    ]
+                }
+            ]
+        }]
+    });
+
+    var query = function () {
         var device = Ext.getCmp('devicePicker'),
             point = Ext.getCmp('pointCombo'),
             start = Ext.getCmp('startField'),
@@ -76,7 +179,7 @@
         Ext.Ajax.request({
             url: '/Report/RequestChart400303',
             params: { device: device, points: points, starttime: starttime, endtime: endtime },
-            mask: new Ext.LoadMask(target, { msg: '正在处理...' }),
+            mask: new Ext.LoadMask(currentLayout, { msg: '正在处理...' }),
             success: function (response, options) {
                 var data = Ext.decode(response.responseText, true);
                 if (data.success) {
@@ -114,109 +217,6 @@
     };
 
     Ext.onReady(function () {
-        var currentLayout = Ext.create('Ext.panel.Panel', {
-            id: 'currentLayout',
-            region: 'center',
-            border: false,
-            bodyCls: 'x-border-body-panel',
-            layout: 'fit',
-            items: [{
-                xtype: 'panel',
-                glyph: 0xf031,
-                title: '放电曲线',
-                collapsible: true,
-                collapseFirst: false,
-                margin: '5 0 0 0',
-                layout: 'fit',
-                items: [{
-                    xtype: 'container',
-                    contentEl: 'line-chart'
-                }],
-                listeners: {
-                    resize: function (me, width, height, oldWidth, oldHeight) {
-                        var lineContainer = Ext.get('line-chart');
-                        lineContainer.setHeight(height - 40);
-                        if (lineChart) lineChart.resize();
-                    }
-                }
-            }],
-            dockedItems: [{
-                xtype: 'panel',
-                glyph: 0xf034,
-                title: '筛选条件',
-                collapsible: true,
-                collapsed: false,
-                dock: 'top',
-                items: [
-                    {
-                        xtype: 'toolbar',
-                        border: false,
-                        items: [
-                            {
-                                id: 'devicePicker',
-                                xtype: 'DevicePicker',
-                                allowBlank: false,
-                                emptyText: '请选择设备...',
-                                selectOnLeaf: true,
-                                selectAll: false,
-                                listeners: {
-                                    select: function (me, record) {
-                                        var keys = $$iPems.SplitKeys(record.data.id);
-                                        if (keys.length == 2) {
-                                            var pointCombo = Ext.getCmp('pointCombo');
-                                            pointCombo.bind(keys[1], true, false, true, false);
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                id: 'pointCombo',
-                                xtype: 'PointMultiCombo',
-                                allowBlank: false,
-                                emptyText: '请选择信号...',
-                                labelWidth: 60,
-                                width: 280,
-                            },
-                            {
-                                xtype: 'button',
-                                glyph: 0xf005,
-                                text: '数据查询',
-                                handler: function (me, event) {
-                                    query(currentLayout);
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'toolbar',
-                        border: false,
-                        items: [
-                            {
-                                id: 'startField',
-                                xtype: 'datetimepicker',
-                                fieldLabel: '开始时间',
-                                labelWidth: 60,
-                                width: 280,
-                                value: Ext.ux.DateTime.addDays(Ext.ux.DateTime.today(), -1),
-                                editable: false,
-                                allowBlank: false
-                            },
-                            {
-                                id: 'endField',
-                                xtype: 'datetimepicker',
-                                fieldLabel: '结束时间',
-                                labelWidth: 60,
-                                width: 280,
-                                value: Ext.ux.DateTime.addSeconds(Ext.ux.DateTime.today(), -1),
-                                editable: false,
-                                allowBlank: false
-                            }
-                        ]
-                    }
-                ]
-            }]
-        });
-
         /*add components to viewport panel*/
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {

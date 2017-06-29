@@ -31,8 +31,12 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public List<H_IStation> GetStationsInType(string type) {
-            return _repository.GetStationsInType(type);
+        public List<H_IStation> GetStationsInTypeId(string type) {
+            return _repository.GetStationsInTypeId(type);
+        }
+
+        public List<H_IStation> GetStationsInTypeName(string type) {
+            return _repository.GetStationsInTypeName(type);
         }
 
         public List<H_IStation> GetStationsInParent(string parent) {

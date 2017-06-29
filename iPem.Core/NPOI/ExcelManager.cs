@@ -143,6 +143,9 @@ namespace iPem.Core.NPOI {
 
             var columns = new List<DataColumn>();
             for(var i = 0; i < data.Columns.Count; i++) {
+                if (data.Columns[i].ExtendedProperties.ContainsKey("ExcelIgnore")) 
+                    continue;
+
                 columns.Add(data.Columns[i]);
             }
 
@@ -170,7 +173,8 @@ namespace iPem.Core.NPOI {
             ctrow.HeightInPoints = 20;
             for(var i = 0; i < columns.Count; i++) {
                 var cell = ctrow.CreateCell(i);
-                cell.SetCellValue(columns[i].ColumnName);
+                var properties = columns[i].ExtendedProperties;
+                cell.SetCellValue(properties.ContainsKey("ExcelDisplayName") ? properties["ExcelDisplayName"].ToString() : columns[i].ColumnName);
                 cell.CellStyle = converter.CellTitle;
 
                 //set cell column width
@@ -185,7 +189,7 @@ namespace iPem.Core.NPOI {
                     var cell = row.CreateCell(g);
                     var column = columns[g];
                     var type = column.DataType;
-                    var value = data.Rows[k][g];
+                    var value = data.Rows[k][column.ColumnName];
 
                     cell.CellStyle = converter.GetCellStyle(Color.Empty, false);
                     if(value == null) continue;

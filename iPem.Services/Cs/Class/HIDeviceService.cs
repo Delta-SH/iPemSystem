@@ -31,8 +31,12 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public List<H_IDevice> GetDevicesInType(string type) {
-            return _repository.GetDevicesInType(type);
+        public List<H_IDevice> GetDevicesInTypeId(string type) {
+            return _repository.GetDevicesInTypeId(type);
+        }
+
+        public List<H_IDevice> GetDevicesInTypeName(string type) {
+            return _repository.GetDevicesInTypeName(type);
         }
 
         public List<H_IDevice> GetDevicesInParent(string parent) {

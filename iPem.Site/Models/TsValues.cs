@@ -2,7 +2,7 @@
 
 namespace iPem.Site.Models {
     public class TsValues {
-        public int[] basic { get; set; }
+        public int[] bases { get; set; }
 
         public int[] levels { get; set; }
 
@@ -12,12 +12,12 @@ namespace iPem.Site.Models {
 
         public string[] roomTypes { get; set; }
 
-        public string[] deviceTypes { get; set; }
+        public string[] subDeviceTypes { get; set; }
 
-        public string[] logicTypes { get; set; }
+        public string[] subLogicTypes { get; set; }
 
-        public string pointNames { get; set; }
+        public string[] points { get; set; }
 
-        public string pointExtset { get; set; }
+        public string keywords { get; set; }
     }
 }

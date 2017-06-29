@@ -45,6 +45,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IProtocolService _protocolService;
         private readonly IRoomService _roomService;
         private readonly IRoomTypeService _roomTypeService;
+        private readonly ISCVendorService _scVendorService;
         private readonly IStationService _stationService;
         private readonly IStationTypeService _stationTypeService;
 
@@ -87,6 +88,7 @@ namespace iPem.Site.Infrastructure {
         private List<C_RoomType> _cachedRoomTypes;
         private List<C_StationType> _cachedStationTypes;
         private List<C_EnumMethod> _cachedAreaTypes;
+        private List<C_SCVendor> _cachedVendors;
         private List<SSHProtocol> _cachedAllProtocols;
         private List<SSHDevice> _cachedAllDevices;
         private List<SSHFsu> _cachedAllFsus;
@@ -125,6 +127,7 @@ namespace iPem.Site.Infrastructure {
             IProtocolService protocolService,
             IRoomService roomService,
             IRoomTypeService roomTypeService,
+            ISCVendorService scVendorService,
             IStationService stationService,
             IStationTypeService stationTypeService,
             IAAlarmService actAlarmService,
@@ -147,6 +150,7 @@ namespace iPem.Site.Infrastructure {
             this._protocolService = protocolService;
             this._roomService = roomService;
             this._roomTypeService = roomTypeService;
+            this._scVendorService = scVendorService;
             this._stationService = stationService;
             this._stationTypeService = stationTypeService;
             this._actAlarmService = actAlarmService;
@@ -429,6 +433,16 @@ namespace iPem.Site.Infrastructure {
 
                 _cachedAreaTypes = _enumMethodService.GetEnumsByType(EnmMethodType.Area, "类型");
                 return _cachedAreaTypes;
+            }
+        }
+
+        public List<C_SCVendor> Vendors {
+            get {
+                if (_cachedVendors != null)
+                    return _cachedVendors;
+
+                _cachedVendors = _scVendorService.GetVendors();
+                return _cachedVendors;
             }
         }
 
