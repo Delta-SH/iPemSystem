@@ -12,34 +12,6 @@ Ext.define('ReportModel', {
     idProperty: 'index'
 });
 
-var query = function (store) {
-    var range = Ext.getCmp('rangePicker'),
-        types = Ext.getCmp('stationTypeMultiCombo'),
-        size = Ext.getCmp('areaTypeCombo'),
-        start = Ext.getCmp('startField'),
-        end = Ext.getCmp('endField');
-
-    if (!range.isValid()) return;
-    if (!types.isValid()) return;
-    if (!size.isValid()) return;
-    if (!start.isValid()) return;
-    if (!end.isValid()) return;
-
-    store.proxy.extraParams.parent = range.getValue();
-    store.proxy.extraParams.types = types.getValue();
-    store.proxy.extraParams.size = size.getValue();
-    store.proxy.extraParams.startDate = start.getRawValue();
-    store.proxy.extraParams.endDate = end.getRawValue();
-    store.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/KPI/Download500209',
-        params: store.proxy.extraParams
-    });
-};
-
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
@@ -134,7 +106,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 glyph: 0xf005,
                 text: '数据查询',
                 handler: function (me, event) {
-                    query(currentStore);
+                    query();
                 }
             }]
         }, {
@@ -155,7 +127,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 glyph: 0xf010,
                 text: '数据导出',
                 handler: function (me, event) {
-                    print(currentStore);
+                    print();
                 }
             }]
         }, {
@@ -183,11 +155,42 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         }]
     }],
     bbar: currentPagingToolbar
-})
+});
+
+var query = function () {
+    var range = Ext.getCmp('rangePicker'),
+        types = Ext.getCmp('stationTypeMultiCombo'),
+        size = Ext.getCmp('areaTypeCombo'),
+        start = Ext.getCmp('startField'),
+        end = Ext.getCmp('endField');
+
+    if (!range.isValid()) return;
+    if (!types.isValid()) return;
+    if (!size.isValid()) return;
+    if (!start.isValid()) return;
+    if (!end.isValid()) return;
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = range.getValue();
+    proxy.extraParams.types = types.getValue();
+    proxy.extraParams.size = size.getValue();
+    proxy.extraParams.startDate = start.getRawValue();
+    proxy.extraParams.endDate = end.getRawValue();
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/KPI/Download500209',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
+
+    Ext.defer(query, 500);
 });

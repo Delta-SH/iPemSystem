@@ -17,24 +17,6 @@
     idProperty: 'id'
 });
 
-var query = function (store) {
-    var namesfield = Ext.getCmp('names-textfield'),
-        startDate = Ext.getCmp('start-datefield'),
-        endDate = Ext.getCmp('end-datefield');
-
-    store.getProxy().extraParams.name = namesfield.getRawValue();
-    store.getProxy().extraParams.startDate = startDate.getRawValue();
-    store.getProxy().extraParams.endDate = endDate.getRawValue();
-    store.loadPage(1);
-};
-
-var download = function (store) {
-    $$iPems.download({
-        url: '/Project/DownloadProjects',
-        params: store.getProxy().extraParams
-    });
-};
-
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
@@ -342,14 +324,14 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                     text: '数据查询',
                     glyph: 0xf005,
                     handler: function (el, e) {
-                        query(currentStore);
+                        query();
                     }
                 }, '-', {
                     xtype: 'button',
                     text: '数据导出',
                     glyph: 0xf010,
                     handler: function (el, e) {
-                        download(currentStore);
+                        print();
                     }
                 }]
             }),
@@ -401,7 +383,26 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         ]
     }],
     bbar: currentPagingToolbar
-})
+});
+
+var query = function () {
+    var namesfield = Ext.getCmp('names-textfield'),
+        startDate = Ext.getCmp('start-datefield'),
+        endDate = Ext.getCmp('end-datefield');
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.name = namesfield.getRawValue();
+    proxy.extraParams.startDate = startDate.getRawValue();
+    proxy.extraParams.endDate = endDate.getRawValue();
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Project/DownloadProjects',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -409,6 +410,6 @@ Ext.onReady(function () {
         pageContentPanel.add(currentPanel);
 
         //load data
-        query(currentStore);
+        Ext.defer(query, 500);
     }
 });

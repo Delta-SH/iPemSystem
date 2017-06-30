@@ -17,27 +17,6 @@
         idProperty: 'id'
     });
 
-    var query = function (store) {
-        var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
-            types = Ext.getCmp('types-multicombo').getSelectedValues(),
-            startDate = Ext.getCmp('begin-datefield').getRawValue(),
-            endDate = Ext.getCmp('end-datefield').getRawValue();
-
-        store.getProxy().extraParams.levels = levels;
-        store.getProxy().extraParams.types = types;
-        store.getProxy().extraParams.startDate = startDate;
-        store.getProxy().extraParams.endDate = endDate;
-        store.loadPage(1);
-    };
-
-    var download = function (store) {
-        var params = store.getProxy().extraParams;
-        $$iPems.download({
-            url: '/Account/DownloadEvents',
-            params: params
-        });
-    };
-
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
@@ -250,14 +229,14 @@
                         glyph: 0xf005,
                         text: '数据查询',
                         handler: function (el, e) {
-                            query(currentStore);
+                            query();
                         }
                     }, '-', {
                         xtype: 'button',
                         glyph: 0xf010,
                         text: '数据导出',
                         handler: function (el, e) {
-                            download(currentStore);
+                            print();
                         }
                     }]
                 }),
@@ -309,6 +288,27 @@
         bbar: currentPagingToolbar
     });
 
+    var query = function () {
+        var levels = Ext.getCmp('levels-multicombo').getSelectedValues(),
+            types = Ext.getCmp('types-multicombo').getSelectedValues(),
+            startDate = Ext.getCmp('begin-datefield').getRawValue(),
+            endDate = Ext.getCmp('end-datefield').getRawValue();
+
+        var me = currentStore, proxy = me.getProxy();
+        proxy.extraParams.levels = levels;
+        proxy.extraParams.types = types;
+        proxy.extraParams.startDate = startDate;
+        proxy.extraParams.endDate = endDate;
+        me.loadPage(1);
+    };
+
+    var print = function () {
+        $$iPems.download({
+            url: '/Account/DownloadEvents',
+            params: currentStore.getProxy().extraParams
+        });
+    };
+
     Ext.onReady(function () {
         /*add components to viewport panel*/
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -318,7 +318,7 @@
             //load store data
             comboLevelStore.load();
             comboTypeStore.load();
-            query(currentStore);
+            Ext.defer(query, 500);
         }
     });
 })();

@@ -12,15 +12,6 @@
 		idProperty: 'id'
 	});
 
-	var query = function(store){
-	    var startDate = Ext.getCmp('begin-datefield').getRawValue(),
-            endDate = Ext.getCmp('end-datefield').getRawValue();
-
-	    store.getProxy().extraParams.startDate = startDate;
-	    store.getProxy().extraParams.endDate = endDate;
-	    store.loadPage(1);
-	};
-
 	var currentStore = Ext.create('Ext.data.Store', {
 		autoLoad: false,
 		pageSize: 20,
@@ -356,12 +347,22 @@
 				text: '数据查询',
 				glyph: 0xf005,
 				handler: function (el, e) {
-				    query(currentStore);
+				    query();
 				}
 			}]
 		}),
 		bbar: currentPagingToolbar
 	});
+
+	var query = function () {
+	    var startDate = Ext.getCmp('begin-datefield').getRawValue(),
+            endDate = Ext.getCmp('end-datefield').getRawValue();
+
+	    var me = currentStore, proxy = me.getProxy();
+	    proxy.extraParams.startDate = startDate;
+	    proxy.extraParams.endDate = endDate;
+	    me.loadPage(1);
+	};
 
 	Ext.onReady(function () {
 		/*add components to viewport panel*/
@@ -371,7 +372,7 @@
 
 			//load store data
 			noticeRoleStore.load();
-			query(currentStore);
+			Ext.defer(query, 500);
 		}
 	});
 })();

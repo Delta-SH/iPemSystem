@@ -16,27 +16,6 @@
     idProperty: 'id'
 });
 
-var query = function (store) {
-    var start = Ext.getCmp('start-datefield').getRawValue(),
-        end = Ext.getCmp('end-datefield').getRawValue(),
-        type = Ext.getCmp('type-combobox').getValue(),
-        keyWord = Ext.getCmp('keyword-textbox').getRawValue();
-
-    var proxy = store.getProxy();
-    proxy.extraParams.startDate = start;
-    proxy.extraParams.endDate = end;
-    proxy.extraParams.type = type;
-    proxy.extraParams.keyWord = keyWord;
-    currentStore.loadPage(1);
-};
-
-var download = function (store) {
-    $$iPems.download({
-        url: '/Project/DownloadReservations',
-        params: store.getProxy().extraParams
-    });
-};
-
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
@@ -96,34 +75,6 @@ var projectStore = Ext.create('Ext.data.Store', {
 });
 
 var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
-
-var submit = function (form, nodes, result) {
-    result.setTextWithIcon('正在处理...', 'x-icon-loading');
-    form.submit({
-        submitEmptyText: false,
-        clientValidation: true,
-        preventWindow: true,
-        url: '/Project/SaveReservation',
-        params: {
-            nodes: nodes,
-            action: saveWnd.opaction
-        },
-        success: function (form, action) {
-            result.setTextWithIcon(action.result.message, 'x-icon-accept');
-            if (saveWnd.opaction == $$iPems.Action.Add)
-                currentStore.loadPage(1);
-            else
-                currentPagingToolbar.doRefresh();
-        },
-        failure: function (form, action) {
-            var message = 'undefined error.';
-            if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
-                message = action.result.message;
-
-            result.setTextWithIcon(message, 'x-icon-error');
-        }
-    });
-};
 
 var detailWnd = Ext.create('Ext.window.Window', {
     title: '预约详情',
@@ -656,14 +607,14 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
                         text: '数据查询',
                         glyph: 0xf005,
                         handler: function (el, e) {
-                            query(currentStore);
+                            query();
                         }
                     }, '-', {
                         xtype: 'button',
                         text: '数据导出',
                         glyph: 0xf010,
                         handler: function (el, e) {
-                            download(currentStore);
+                            print();
                         }
                     }]
             }),
@@ -737,6 +688,55 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
     bbar: currentPagingToolbar
 });
 
+var query = function () {
+    var start = Ext.getCmp('start-datefield').getRawValue(),
+        end = Ext.getCmp('end-datefield').getRawValue(),
+        type = Ext.getCmp('type-combobox').getValue(),
+        keyWord = Ext.getCmp('keyword-textbox').getRawValue();
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.startDate = start;
+    proxy.extraParams.endDate = end;
+    proxy.extraParams.type = type;
+    proxy.extraParams.keyWord = keyWord;
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Project/DownloadReservations',
+        params: currentStore.getProxy().extraParams
+    });
+};
+
+var submit = function (form, nodes, result) {
+    result.setTextWithIcon('正在处理...', 'x-icon-loading');
+    form.submit({
+        submitEmptyText: false,
+        clientValidation: true,
+        preventWindow: true,
+        url: '/Project/SaveReservation',
+        params: {
+            nodes: nodes,
+            action: saveWnd.opaction
+        },
+        success: function (form, action) {
+            result.setTextWithIcon(action.result.message, 'x-icon-accept');
+            if (saveWnd.opaction == $$iPems.Action.Add)
+                currentStore.loadPage(1);
+            else
+                currentPagingToolbar.doRefresh();
+        },
+        failure: function (form, action) {
+            var message = 'undefined error.';
+            if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+                message = action.result.message;
+
+            result.setTextWithIcon(message, 'x-icon-error');
+        }
+    });
+};
+
 Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -745,6 +745,6 @@ Ext.onReady(function () {
 
         //load data
         projectStore.load();
-        query(currentStore);
+        Ext.defer(query, 500);
     }
 });

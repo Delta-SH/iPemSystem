@@ -2,7 +2,8 @@
     extend: 'Ext.data.Model',
     fields: [
         { name: 'index', type: 'int' },
-        { name: 'name', type: 'string' },
+        { name: 'area', type: 'string' },
+        { name: 'station', type: 'string' },
         { name: 'type', type: 'string' },
         { name: 'almTime', type: 'string' },
         { name: 'runTime', type: 'string' },
@@ -12,30 +13,6 @@
     ],
     idProperty: 'index'
 });
-
-var query = function (store) {
-    var range = Ext.getCmp('rangePicker'),
-        types = Ext.getCmp('stationTypeMultiCombo'),
-        start = Ext.getCmp('startField'),
-        end = Ext.getCmp('endField');
-
-    if (!range.isValid()) return;
-    if (!start.isValid()) return;
-    if (!end.isValid()) return;
-
-    store.proxy.extraParams.parent = range.getValue();
-    store.proxy.extraParams.types = types.getValue();
-    store.proxy.extraParams.startDate = start.getRawValue();
-    store.proxy.extraParams.endDate = end.getRawValue();
-    store.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/KPI/Download500102',
-        params: store.proxy.extraParams
-    });
-};
 
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
@@ -72,7 +49,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     loadMask: true,
     forceFit: false,
     viewConfig: {
-        forceFit: false,
+        forceFit: true,
         trackOver: true,
         stripeRows: true,
         emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
@@ -84,15 +61,19 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '站点名称',
-        dataIndex: 'name',
+        text: '所属区域',
+        dataIndex: 'area',
         align: 'left',
-        width: 150,
+        flex: 1,
+        sortable: true
+    }, {
+        text: '站点名称',
+        dataIndex: 'station',
+        align: 'left',
         sortable: true
     }, {
         text: '站点类型',
         dataIndex: 'type',
-        width: 150,
         align: 'left',
         sortable: true
     }, {
@@ -110,7 +91,6 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     }, {
         text: '蓄电池组数',
         dataIndex: 'count',
-        width: 150,
         align: 'left',
         sortable: true
     }, {
@@ -122,7 +102,6 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
     }, {
         text: '交流不间断系统可用度',
         dataIndex: 'rate',
-        width: 150,
         align: 'left',
         sortable: true
     }],
@@ -150,7 +129,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 glyph: 0xf005,
                 text: '数据查询',
                 handler: function (me, event) {
-                    query(currentStore);
+                    query();
                 }
             }]
         }, {
@@ -179,17 +158,44 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 glyph: 0xf010,
                 text: '数据导出',
                 handler: function (me, event) {
-                    print(currentStore);
+                    print();
                 }
             }]
         }]
     }],
     bbar: currentPagingToolbar
-})
+});
+
+var query = function () {
+    var range = Ext.getCmp('rangePicker'),
+        types = Ext.getCmp('stationTypeMultiCombo'),
+        start = Ext.getCmp('startField'),
+        end = Ext.getCmp('endField');
+
+    if (!range.isValid()) return;
+    if (!start.isValid()) return;
+    if (!end.isValid()) return;
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = range.getValue();
+    proxy.extraParams.types = types.getValue();
+    proxy.extraParams.startDate = start.getRawValue();
+    proxy.extraParams.endDate = end.getRawValue();
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/KPI/Download500102',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
+
+    Ext.defer(query, 500);
 });

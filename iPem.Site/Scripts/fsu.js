@@ -31,34 +31,6 @@ Ext.define('FileModel', {
     idProperty: 'index'
 });
 
-var query = function (store) {
-    var rangeField = Ext.getCmp('rangeField'),
-        statusField = Ext.getCmp('statusField'),
-        vendorField = Ext.getCmp('vendorField'),
-        filterField = Ext.getCmp('filterField'),
-        keywordsField = Ext.getCmp('keywordsField'),
-        parent = rangeField.getValue(),
-        status = statusField.getValue(),
-        vendors = vendorField.getValue(),
-        filter = filterField.getValue(),
-        keywords = keywordsField.getRawValue();
-
-    var proxy = store.getProxy();
-    proxy.extraParams.parent = parent;
-    proxy.extraParams.status = status;
-    proxy.extraParams.vendors = vendors;
-    proxy.extraParams.filter = filter;
-    proxy.extraParams.keywords = keywords;
-    store.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/Fsu/DownloadFsu',
-        params: store.proxy.extraParams
-    });
-};
-
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
@@ -267,7 +239,7 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                 text: '数据查询',
                 glyph: 0xf005,
                 handler: function (el, e) {
-                    query(currentStore);
+                    query();
                 }
             }]
         }, {
@@ -305,7 +277,7 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                 text: '数据导出',
                 glyph: 0xf010,
                 handler: function (el, e) {
-                    print(currentStore);
+                    print();
                 }
             }]
         }]
@@ -406,7 +378,7 @@ var showFileDetail = function (id, ip) {
     fileWnd.fsu = id;
     fileWnd.setTitle(Ext.String.format("日志列表[{0}]", ip || "--"));
     fileWnd.show();
-}
+};
 
 var downloadFile = function (path) {
     if (Ext.isEmpty(path)) return false;
@@ -419,7 +391,35 @@ var downloadFile = function (path) {
             path: path
         }
     });
-}
+};
+
+var query = function () {
+    var rangeField = Ext.getCmp('rangeField'),
+        statusField = Ext.getCmp('statusField'),
+        vendorField = Ext.getCmp('vendorField'),
+        filterField = Ext.getCmp('filterField'),
+        keywordsField = Ext.getCmp('keywordsField'),
+        parent = rangeField.getValue(),
+        status = statusField.getValue(),
+        vendors = vendorField.getValue(),
+        filter = filterField.getValue(),
+        keywords = keywordsField.getRawValue();
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = parent;
+    proxy.extraParams.status = status;
+    proxy.extraParams.vendors = vendors;
+    proxy.extraParams.filter = filter;
+    proxy.extraParams.keywords = keywords;
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Fsu/DownloadFsu',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     /*add components to viewport panel*/
@@ -428,6 +428,6 @@ Ext.onReady(function () {
         pageContentPanel.add(currentLayout);
 
         //load data
-        query(currentStore);
+        Ext.defer(query, 500);
     }
 });

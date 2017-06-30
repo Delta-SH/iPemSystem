@@ -640,7 +640,7 @@
             pageContentPanel.add(currentLayout);
             
             //load data
-            query();
+            Ext.defer(query, 500);
         }
     });
 

@@ -424,7 +424,7 @@
                             glyph: 0xf010,
                             text: '数据导出',
                             handler: function (me, event) {
-                                print(currentStore);
+                                print();
                             }
                         }
                     ]
@@ -600,7 +600,7 @@
             pageContentPanel.add(currentLayout);
 
             //load data
-            query();
+            Ext.defer(query, 500);
         }
     });
 

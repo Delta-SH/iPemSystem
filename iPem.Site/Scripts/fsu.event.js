@@ -16,37 +16,6 @@
     idProperty: 'index'
 });
 
-var query = function (store) {
-    var rangeField = Ext.getCmp('rangeField'),
-        typesField = Ext.getCmp('typesField'),
-        filterField = Ext.getCmp('filterField'),
-        keywordsField = Ext.getCmp('keywordsField'),
-        startField = Ext.getCmp('startField'),
-        endField = Ext.getCmp('endField'),
-        parent = rangeField.getValue(),
-        types = typesField.getValue(),
-        filter = filterField.getValue(),
-        keywords = keywordsField.getRawValue(),
-        startDate = startField.getRawValue(),
-        endDate = endField.getRawValue();
-
-    var proxy = store.getProxy();
-    proxy.extraParams.parent = parent;
-    proxy.extraParams.types = types;
-    proxy.extraParams.filter = filter;
-    proxy.extraParams.keywords = keywords;
-    proxy.extraParams.startDate = startDate;
-    proxy.extraParams.endDate = endDate;
-    store.loadPage(1);
-};
-
-var print = function (store) {
-    $$iPems.download({
-        url: '/Fsu/DownloadFsuEvents',
-        params: store.proxy.extraParams
-    });
-};
-
 var currentStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 20,
@@ -173,7 +142,7 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                 text: '数据查询',
                 glyph: 0xf005,
                 handler: function (el, e) {
-                    query(currentStore);
+                    query();
                 }
             }]
         }, {
@@ -202,7 +171,7 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                 text: '数据导出',
                 glyph: 0xf010,
                 handler: function (el, e) {
-                    print(currentStore);
+                    print();
                 }
             }]
         }, {
@@ -241,6 +210,37 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
     bbar: currentPagingToolbar
 });
 
+var query = function () {
+    var rangeField = Ext.getCmp('rangeField'),
+        typesField = Ext.getCmp('typesField'),
+        filterField = Ext.getCmp('filterField'),
+        keywordsField = Ext.getCmp('keywordsField'),
+        startField = Ext.getCmp('startField'),
+        endField = Ext.getCmp('endField'),
+        parent = rangeField.getValue(),
+        types = typesField.getValue(),
+        filter = filterField.getValue(),
+        keywords = keywordsField.getRawValue(),
+        startDate = startField.getRawValue(),
+        endDate = endField.getRawValue();
+
+    var me = currentStore, proxy = me.getProxy();
+    proxy.extraParams.parent = parent;
+    proxy.extraParams.types = types;
+    proxy.extraParams.filter = filter;
+    proxy.extraParams.keywords = keywords;
+    proxy.extraParams.startDate = startDate;
+    proxy.extraParams.endDate = endDate;
+    me.loadPage(1);
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Fsu/DownloadFsuEvents',
+        params: currentStore.getProxy().extraParams
+    });
+};
+
 Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -248,6 +248,6 @@ Ext.onReady(function () {
         pageContentPanel.add(currentLayout);
 
         //load data
-        query(currentStore);
+        Ext.defer(query, 500);
     }
 });
