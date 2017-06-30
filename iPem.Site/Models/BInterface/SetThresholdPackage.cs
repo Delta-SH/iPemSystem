@@ -21,7 +21,7 @@ namespace iPem.Site.Models.BInterface {
             root.AppendChild(PK_Type);
 
             var Name = xmlDoc.CreateElement("Name");
-            Name.InnerText = EnmPackType.SET_THRESHOLD.ToString();
+            Name.InnerText = EnmBIPackType.SET_THRESHOLD.ToString();
             PK_Type.AppendChild(Name);
 
             var Info = xmlDoc.CreateElement("Info");

@@ -2,10 +2,10 @@
 using System;
 
 namespace iPem.Site.Models.BInterface {
-    public partial class TThreshold {
-        public string Id { get; set; }
+    public partial class TSignal {
+        public TSignalMeasurementId TSignalId { get; set; }
 
-        public string SignalNumber { get; set; }
+        public string SignalName { get; set; }
 
         public EnmBIPoint Type { get; set; }
 

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace iPem.Site.Models.BInterface {
-    public partial class SetPointPackage {
+    public partial class SetStorageRulePackage {
         public string FsuId { get; set; }
 
-        public List<SetPointDevice> DeviceList { get; set; }
+        public List<SetStorageRuleDevice> DeviceList { get; set; }
 
         public virtual string ToXml() {
             var xmlDoc = new XmlDocument();
@@ -21,7 +21,7 @@ namespace iPem.Site.Models.BInterface {
             root.AppendChild(PK_Type);
 
             var Name = xmlDoc.CreateElement("Name");
-            Name.InnerText = EnmBIPackType.SET_POINT.ToString();
+            Name.InnerText = EnmBIPackType.SET_STORAGERULE.ToString();
             PK_Type.AppendChild(Name);
 
             var Info = xmlDoc.CreateElement("Info");
@@ -37,21 +37,21 @@ namespace iPem.Site.Models.BInterface {
             var DeviceList = xmlDoc.CreateElement("DeviceList");
             Value.AppendChild(DeviceList);
 
-            if(this.DeviceList != null) {
-                foreach(var device in this.DeviceList) {
+            if (this.DeviceList != null) {
+                foreach (var device in this.DeviceList) {
                     var Device = xmlDoc.CreateElement("Device");
                     Device.SetAttribute("ID", device.Id ?? "");
-                    if(device.Values != null) {
-                        foreach(var tSemaphore in device.Values) {
-                            var TSemaphore = xmlDoc.CreateElement("TSemaphore");
-                            TSemaphore.SetAttribute("ID", tSemaphore.Id ?? "");
-                            TSemaphore.SetAttribute("SignalNumber", tSemaphore.SignalNumber ?? "");
-                            TSemaphore.SetAttribute("Type", ((int)tSemaphore.Type).ToString());
-                            TSemaphore.SetAttribute("MeasuredVal", tSemaphore.MeasuredVal);
-                            TSemaphore.SetAttribute("SetupVal", tSemaphore.SetupVal);
-                            TSemaphore.SetAttribute("Status", ((int)tSemaphore.Status).ToString());
-                            TSemaphore.SetAttribute("Time", tSemaphore.Time.ToString("yyyy-MM-dd HH:mm:ss"));
-                            Device.AppendChild(TSemaphore);
+                    if (device.Rules != null) {
+                        foreach (var rule in device.Rules) {
+                            var tStorageRule = xmlDoc.CreateElement("TStorageRule");
+                            tStorageRule.SetAttribute("ID", rule.Id);
+                            tStorageRule.SetAttribute("SignalNumber", rule.SignalNumber);
+                            tStorageRule.SetAttribute("Type", ((int)rule.Type).ToString());
+                            tStorageRule.SetAttribute("AbsoluteVal", rule.AbsoluteVal);
+                            tStorageRule.SetAttribute("RelativeVal", rule.RelativeVal);
+                            tStorageRule.SetAttribute("StorageInterval", rule.StorageInterval);
+                            tStorageRule.SetAttribute("StorageRefTime", rule.StorageRefTime);
+                            Device.AppendChild(tStorageRule);
                         }
                     }
 
@@ -63,9 +63,9 @@ namespace iPem.Site.Models.BInterface {
         }
     }
 
-    public partial class SetPointDevice {
+    public partial class SetStorageRuleDevice {
         public string Id { get; set; }
 
-        public List<TSemaphore> Values { get; set; }
+        public List<TStorageRule> Rules { get; set; }
     }
 }

@@ -191,6 +191,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
                     entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
+                    entity.GroupId = SqlTypeConverter.DBNullStringHandler(rdr["GroupId"]);
                 }
             }
             return entity;
@@ -208,6 +209,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
                     entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
+                    entity.GroupId = SqlTypeConverter.DBNullStringHandler(rdr["GroupId"]);
                     entities.Add(entity);
                 }
             }

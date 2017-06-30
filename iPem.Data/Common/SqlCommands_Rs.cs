@@ -47,6 +47,12 @@ namespace iPem.Data.Common {
         public const string Sql_C_EnumMethod_Repository_GetEnums = @"SELECT * FROM [dbo].[C_EnumMethods] ORDER BY [TypeId],[Desc],[Index];";
 
         /// <summary>
+        /// SC组信息表
+        /// </summary>
+        public const string Sql_C_Group_Repository_GetGroup = @"SELECT * FROM [dbo].[C_Group] WHERE [Id] = @Id;";
+        public const string Sql_C_Group_Repository_GetGroups = @"SELECT * FROM [dbo].[C_Group];";
+
+        /// <summary>
         /// 逻辑分类/逻辑子类信息表
         /// </summary>
         public const string Sql_C_LogicType_Repository_GetLogicType = @"SELECT * FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
@@ -162,9 +168,9 @@ namespace iPem.Data.Common {
         INNER JOIN [dbo].[C_SCVendor] CS ON F.[VendorId] = CS.[Id]
         WHERE D.[Enabled] = 1;";
         public const string Sql_D_Fsu_Repository_GetExtFsu = @"
-        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
+        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
         public const string Sql_D_Fsu_Repository_GetExtFsus = @"
-        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment] FROM [dbo].[D_Fsu];";
+        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu];";
 
         /// <summary>
         /// 信号重定义表
@@ -195,16 +201,16 @@ namespace iPem.Data.Common {
         INNER JOIN [dbo].[C_DeviceType] DT ON P.[DeviceTypeId] = DT.[Id]
         WHERE P.[Enabled] = 1;";
         public const string Sql_P_Point_Repository_GetSubPoint = @"
-        SELECT PS.[PointId],PS.[StationTypeId],ST.[Name] AS [StationTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
-        INNER JOIN [dbo].[C_StationType] ST ON PS.[StationTypeId] = ST.[Id]
-        WHERE PS.[PointId]=@PointId AND PS.[StationTypeId]=@StationTypeId;";
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id]
+        WHERE PS.[PointId]=@PointId AND PS.[StaTypeId]=@StaTypeId;";
         public const string Sql_P_Point_Repository_GetSubPointsInPoint = @"
-        SELECT PS.[PointId],PS.[StationTypeId],ST.[Name] AS [StationTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
-        INNER JOIN [dbo].[C_StationType] ST ON PS.[StationTypeId] = ST.[Id]
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id]
         WHERE PS.[PointId]=@PointId;";
         public const string Sql_P_Point_Repository_GetSubPoints = @"
-        SELECT PS.[PointId],PS.[StationTypeId],ST.[Name] AS [StationTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
-        INNER JOIN [dbo].[C_StationType] ST ON PS.[StationTypeId] = ST.[Id];";
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id];";
 
         /// <summary>
         /// 设备模版表

@@ -44,6 +44,8 @@ namespace iPem.Site.Controllers {
         private readonly IFsuService _fsuService;
         private readonly IElecService _elecService;
         private readonly IAMeasureService _aMeasureService;
+        private readonly IGroupService _groupService;
+        private readonly IPackMgr _packMgr;
 
         #endregion
 
@@ -66,7 +68,9 @@ namespace iPem.Site.Controllers {
             IPointService pointService,
             IFsuService fsuService,
             IElecService elecService,
-            IAMeasureService aMeasureService) {
+            IAMeasureService aMeasureService,
+            IGroupService groupService,
+            IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -84,6 +88,8 @@ namespace iPem.Site.Controllers {
             this._fsuService = fsuService;
             this._elecService = elecService;
             this._aMeasureService = aMeasureService;
+            this._groupService = groupService;
+            this._packMgr = packMgr;
         }
 
         #endregion
@@ -1293,7 +1299,11 @@ namespace iPem.Site.Controllers {
 
                 var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
                 if(curExtFsu == null) throw new iPemException("未找到Fsu");
-                if(!curExtFsu.Status) throw new iPemException("Fsu通信中断");
+                if (!curExtFsu.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
 
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
@@ -1310,7 +1320,7 @@ namespace iPem.Site.Controllers {
                                     Type = EnmBIPoint.DO,
                                     MeasuredVal = "NULL",
                                     SetupVal = ctrl.ToString(),
-                                    Status = EnmState.Normal,
+                                    Status = EnmBIState.NOALARM,
                                     Time = DateTime.Now
                                 }
                             }
@@ -1318,9 +1328,11 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.SetPoint(curExtFsu, _workContext.WsValues, package);
+
+                //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port).ToString(), package);
                 if(result != null) {
-                    if(result.Result == EnmResult.Failure) throw new iPemException(result.FailureCause ?? "参数设置失败");
+                    if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
                         if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))
@@ -1354,6 +1366,10 @@ namespace iPem.Site.Controllers {
                 if(curExtFsu == null) throw new iPemException("未找到Fsu");
                 if(!curExtFsu.Status) throw new iPemException("Fsu通信中断");
 
+                var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
                 var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
                 if(curPoint == null) throw new iPemException("未找到信号");
 
@@ -1369,7 +1385,7 @@ namespace iPem.Site.Controllers {
                                     Type = EnmBIPoint.AO,
                                     MeasuredVal = "NULL",
                                     SetupVal = adjust.ToString(),
-                                    Status = EnmState.Normal,
+                                    Status = EnmBIState.NOALARM,
                                     Time = DateTime.Now
                                 }
                             }
@@ -1377,135 +1393,10 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                var result = BIPackMgr.SetPoint(curExtFsu, _workContext.WsValues, package);
+                //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port).ToString(), package);
                 if(result != null) {
-                    if(result.Result == EnmResult.Failure) throw new iPemException(result.FailureCause ?? "参数设置失败");
-                    if(result.DeviceList != null) {
-                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
-                        if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))
-                            return Json(new AjaxResultModel { success = true, code = 200, message = "参数设置成功" });
-                    }
-                }
-
-                throw new iPemException("参数设置失败");
-            } catch(Exception exc) {
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult GetThreshold(string device, string point) {
-            var data = new AjaxDataModel<ThresholdModel> {
-                success = true,
-                message = "200 OK",
-                total = 0,
-                data = null
-            };
-
-            try {
-                if (!_workContext.Authorizations.Permissions.Contains(EnmPermission.Threshold))
-                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
-
-                if(string.IsNullOrWhiteSpace(device)) throw new ArgumentException("device");
-                if(string.IsNullOrWhiteSpace(point)) throw new ArgumentException("point");
-
-                var curDevice = _workContext.Devices.Find(d => d.Current.Id == device);
-                if(curDevice == null) throw new iPemException("未找到设备");
-
-                var curFsu = _workContext.Fsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
-                if(curFsu == null) throw new iPemException("未找到Fsu");
-
-                var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
-                if(curExtFsu == null) throw new iPemException("未找到Fsu");
-                if(!curExtFsu.Status) throw new iPemException("Fsu通信中断");
-
-                var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
-                if(curPoint == null) throw new iPemException("未找到信号");
-
-                var package = new GetThresholdPackage() {
-                    FsuId = curFsu.Current.Code,
-                    DeviceList = new List<GetThresholdDevice>() {
-                        new GetThresholdDevice() {
-                            Id = curDevice.Current.Code,
-                            Ids = new List<string>(){ curPoint.Code }
-                        }
-                    }
-                };
-
-                var result = BIPackMgr.GetThreshold(curExtFsu, _workContext.WsValues, package);
-                if(result != null ) {
-                    if(result.Result == EnmResult.Failure) throw new iPemException(result.FailureCause ?? "参数设置失败");
-                    if(result.DeviceList != null) {
-                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
-                        if(devResult != null) {
-                            var dResult = devResult.Values.Find(d => d.Id == curPoint.Code && d.SignalNumber == curPoint.Number);
-                            if(dResult != null) {
-                                data.data = new ThresholdModel {
-                                    id = dResult.Id,
-                                    number = dResult.SignalNumber,
-                                    type = (int)dResult.Type,
-                                    threshold = dResult.Threshold,
-                                    level = ((int)dResult.AlarmLevel).ToString(),
-                                    nmid = dResult.NMAlarmID
-                                };
-                                return Json(data, JsonRequestBehavior.AllowGet);
-                            }
-                        }
-                    }
-                }
-
-                throw new iPemException("获取数据失败");
-            } catch(Exception exc) {
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult SetThreshold(string device, string point, double threshold, int alarmLevel, string nmalarmID) {
-            try {
-                if (!_workContext.Authorizations.Permissions.Contains(EnmPermission.Threshold))
-                    return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
-
-                if(string.IsNullOrWhiteSpace(device)) throw new ArgumentException("device");
-                if(string.IsNullOrWhiteSpace(point)) throw new ArgumentException("point");
-
-                var curDevice = _workContext.Devices.Find(d => d.Current.Id == device);
-                if(curDevice == null) throw new iPemException("未找到设备");
-
-                var curFsu = _workContext.Fsus.Find(f => f.Current.Id == curDevice.Current.FsuId);
-                if(curFsu == null) throw new iPemException("未找到Fsu");
-
-                var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
-                if(curExtFsu == null) throw new iPemException("未找到Fsu");
-                if(!curExtFsu.Status) throw new iPemException("Fsu通信中断");
-
-                var curPoint = curDevice.Protocol.Points.Find(p => p.Id == point);
-                if(curPoint == null) throw new iPemException("未找到信号");
-
-                var package = new SetThresholdPackage() {
-                    FsuId = curFsu.Current.Code,
-                    DeviceList = new List<SetThresholdDevice>() {
-                        new SetThresholdDevice() {
-                            Id = curDevice.Current.Code,
-                            Values = new List<TThreshold>() {
-                                new TThreshold() {
-                                    Id = curPoint.Code,
-                                    SignalNumber = curPoint.Number,
-                                    Type = EnmBIPoint.AL,
-                                    Threshold = threshold.ToString(),
-                                    AlarmLevel = Enum.IsDefined(typeof(EnmAlarm), alarmLevel) ? (EnmAlarm)alarmLevel : EnmAlarm.Level0,
-                                    NMAlarmID = nmalarmID
-                                }
-                            }
-                        }
-                    }
-                };
-
-                var result = BIPackMgr.SetThreshold(curExtFsu, _workContext.WsValues, package);
-                if(result != null) {
-                    if(result.Result == EnmResult.Failure) throw new iPemException(result.FailureCause ?? "参数设置失败");
+                    if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
                         if(devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number))

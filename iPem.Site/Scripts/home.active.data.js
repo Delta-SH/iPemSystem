@@ -415,349 +415,349 @@
         ]
     });
 
-    Ext.onReady(function () {
-        var currentLayout = Ext.create('Ext.panel.Panel', {
-            id: 'currentLayout',
-            region: 'center',
-            layout: 'border',
-            border: false,
-            items: [
-                {
-                    id: 'organization',
-                    region: 'west',
-                    xtype: 'treepanel',
-                    title: '系统层级',
-                    glyph: 0xf011,
-                    width: 220,
-                    split: true,
-                    collapsible: true,
-                    collapsed: false,
-                    autoScroll: true,
-                    useArrows: false,
-                    rootVisible: true,
-                    root: {
-                        id: 'root',
-                        text: '全部',
-                        expanded: true,
-                        icon: $$iPems.icons.Home
-                    },
-                    viewConfig: {
-                        loadMask: true
-                    },
-                    store: Ext.create('Ext.data.TreeStore', {
-                        autoLoad: false,
-                        nodeParam: 'node',
-                        proxy: {
-                            type: 'ajax',
-                            url: '/Component/GetDevices',
-                            reader: {
-                                type: 'json',
-                                successProperty: 'success',
-                                messageProperty: 'message',
-                                totalProperty: 'total',
-                                root: 'data'
+    var currentLayout = Ext.create('Ext.panel.Panel', {
+        id: 'currentLayout',
+        region: 'center',
+        layout: 'border',
+        border: false,
+        items: [
+            {
+                id: 'organization',
+                region: 'west',
+                xtype: 'treepanel',
+                title: '系统层级',
+                glyph: 0xf011,
+                width: 220,
+                split: true,
+                collapsible: true,
+                collapsed: false,
+                autoScroll: true,
+                useArrows: false,
+                rootVisible: true,
+                root: {
+                    id: 'root',
+                    text: '全部',
+                    expanded: true,
+                    icon: $$iPems.icons.Home
+                },
+                viewConfig: {
+                    loadMask: true
+                },
+                store: Ext.create('Ext.data.TreeStore', {
+                    autoLoad: false,
+                    nodeParam: 'node',
+                    proxy: {
+                        type: 'ajax',
+                        url: '/Component/GetDevices',
+                        reader: {
+                            type: 'json',
+                            successProperty: 'success',
+                            messageProperty: 'message',
+                            totalProperty: 'total',
+                            root: 'data'
+                        }
+                    }
+                }),
+                listeners: {
+                    select: function (me, record, index) {
+                        change(record, currentPagingToolbar);
+                    }
+                },
+                tbar: [
+                    {
+                        id: 'organization-search-field',
+                        xtype: 'textfield',
+                        emptyText: '请输入筛选条件...',
+                        flex: 1,
+                        listeners: {
+                            change: function (me, newValue, oldValue, eOpts) {
+                                delete me._filterData;
+                                delete me._filterIndex;
                             }
                         }
-                    }),
-                    listeners: {
-                        select: function (me, record, index) {
-                            change(record, currentPagingToolbar);
-                        }
                     },
-                    tbar: [
-                        {
-                            id: 'organization-search-field',
-                            xtype: 'textfield',
-                            emptyText: '请输入筛选条件...',
-                            flex: 1,
-                            listeners: {
-                                change: function (me, newValue, oldValue, eOpts) {
-                                    delete me._filterData;
-                                    delete me._filterIndex;
-                                }
+                    {
+                        id: 'point-search-button',
+                        xtype: 'button',
+                        glyph: 0xf005,
+                        handler: function () {
+                            var tree = Ext.getCmp('organization'),
+                                search = Ext.getCmp('organization-search-field'),
+                                text = search.getRawValue();
+
+                            if (Ext.isEmpty(text, false)) {
+                                return;
                             }
-                        },
-                        {
-                            id: 'point-search-button',
-                            xtype: 'button',
-                            glyph: 0xf005,
-                            handler: function () {
-                                var tree = Ext.getCmp('organization'),
-                                    search = Ext.getCmp('organization-search-field'),
-                                    text = search.getRawValue();
 
-                                if (Ext.isEmpty(text, false)) {
-                                    return;
+                            if (text.length < 2) {
+                                return;
+                            }
+
+                            if (search._filterData != null
+                                && search._filterIndex != null) {
+                                var index = search._filterIndex + 1;
+                                var paths = search._filterData;
+                                if (index >= paths.length) {
+                                    index = 0;
+                                    Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                 }
 
-                                if (text.length < 2) {
-                                    return;
-                                }
-
-                                if (search._filterData != null
-                                    && search._filterIndex != null) {
-                                    var index = search._filterIndex + 1;
-                                    var paths = search._filterData;
-                                    if (index >= paths.length) {
-                                        index = 0;
-                                        Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-                                    }
-
-                                    $$iPems.selectNodePath(tree, paths[index]);
-                                    search._filterIndex = index;
-                                } else {
-                                    Ext.Ajax.request({
-                                        url: '/Component/FilterRoomPath',
-                                        params: { text: text },
-                                        mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
-                                        success: function (response, options) {
-                                            var data = Ext.decode(response.responseText, true);
-                                            if (data.success) {
-                                                var len = data.data.length;
-                                                if (len > 0) {
-                                                    $$iPems.selectNodePath(tree, data.data[0]);
-                                                    search._filterData = data.data;
-                                                    search._filterIndex = 0;
-                                                } else {
-                                                    Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-                                                }
+                                $$iPems.selectNodePath(tree, paths[index]);
+                                search._filterIndex = index;
+                            } else {
+                                Ext.Ajax.request({
+                                    url: '/Component/FilterRoomPath',
+                                    params: { text: text },
+                                    mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
+                                    success: function (response, options) {
+                                        var data = Ext.decode(response.responseText, true);
+                                        if (data.success) {
+                                            var len = data.data.length;
+                                            if (len > 0) {
+                                                $$iPems.selectNodePath(tree, data.data[0]);
+                                                search._filterData = data.data;
+                                                search._filterIndex = 0;
                                             } else {
-                                                Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                                Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                             }
+                                        } else {
+                                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                         }
-                                    });
-                                }
+                                    }
+                                });
                             }
                         }
-                    ]
-                }, {
-                    region: 'center',
-                    xtype: 'panel',
-                    border: false,
-                    bodyCls: 'x-border-body-panel',
-                    layout: {
-                        type: 'vbox',
-                        align: 'stretch',
-                        pack: 'start'
+                    }
+                ]
+            }, {
+                region: 'center',
+                xtype: 'panel',
+                border: false,
+                bodyCls: 'x-border-body-panel',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch',
+                    pack: 'start'
+                },
+                items: [
+                    {
+                        xtype: 'panel',
+                        glyph: 0xf039,
+                        title: '实时图表',
+                        collapsible: true,
+                        collapseFirst: false,
+                        layout: {
+                            type: 'hbox',
+                            align: 'stretch',
+                            pack: 'start'
+                        },
+                        items: [
+                            {
+                                xtype: 'container',
+                                flex: 1,
+                                contentEl: 'gauge-chart'
+                            }, {
+                                xtype: 'container',
+                                flex: 3,
+                                contentEl: 'line-chart'
+                            }
+                        ],
+                        listeners: {
+                            resize: function (me, width, height, oldWidth, oldHeight) {
+                                if (gaugeChart) gaugeChart.resize();
+                                if (lineChart) lineChart.resize();
+                            }
+                        }
                     },
-                    items: [
-                        {
-                            xtype: 'panel',
-                            glyph: 0xf039,
-                            title: '实时图表',
-                            collapsible: true,
-                            collapseFirst: false,
-                            layout: {
-                                type: 'hbox',
-                                align: 'stretch',
-                                pack: 'start'
-                            },
+                    {
+                        id: 'points-grid',
+                        xtype: 'grid',
+                        collapsible: true,
+                        collapseFirst: false,
+                        layout: 'fit',
+                        margin: '5 0 0 0',
+                        flex: 2,
+                        header: {
+                            glyph: 0xf029,
+                            title: '实时测值',
                             items: [
                                 {
-                                    xtype: 'container',
-                                    flex: 1,
-                                    contentEl: 'gauge-chart'
-                                }, {
-                                    xtype: 'container',
-                                    flex: 3,
-                                    contentEl: 'line-chart'
+                                    xtype: 'checkboxgroup',
+                                    width: 240,
+                                    items: [
+                                        { xtype: 'checkboxfield', boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                        { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                        { xtype: 'checkboxfield', boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                        { xtype: 'checkboxfield', boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                        { xtype: 'checkboxfield', boxLabel: '告警', inputValue: $$iPems.Point.AL, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                    ],
+                                    listeners: {
+                                        change: function (me, newValue, oldValue) {
+                                            var types = [];
+                                            Ext.Object.each(newValue, function (key, value, myself) {
+                                                types.push(value);
+                                            });
+
+                                            currentStore.proxy.extraParams.types = types;
+                                            currentStore.loadPage(1);
+                                        }
+                                    }
                                 }
-                            ],
-                            listeners: {
-                                resize: function (me, width, height, oldWidth, oldHeight) {
-                                    if (gaugeChart) gaugeChart.resize();
-                                    if (lineChart) lineChart.resize();
+
+                            ]
+                        },
+                        tools: [
+                            {
+                                type: 'refresh',
+                                tooltip: '刷新',
+                                handler: function (event, toolEl, panelHeader) {
+                                    currentPagingToolbar.doRefresh();
                                 }
                             }
+                        ],
+                        store: currentStore,
+                        viewConfig: {
+                            loadMask: false,
+                            preserveScrollOnRefresh: true,
+                            stripeRows: true,
+                            trackOver: true,
+                            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+                            getRowClass: function (record, rowIndex, rowParams, store) {
+                                return $$iPems.GetStateCls(record.get("statusid"));
+                            }
                         },
-                        {
-                            id: 'points-grid',
-                            xtype: 'grid',
-                            collapsible: true,
-                            collapseFirst: false,
-                            layout: 'fit',
-                            margin: '5 0 0 0',
-                            flex: 2,
-                            header: {
-                                glyph: 0xf029,
-                                title: '实时测值',
-                                items: [
-                                    {
-                                        xtype: 'checkboxgroup',
-                                        width: 240,
-                                        items: [
-                                            { xtype: 'checkboxfield', boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                            { xtype: 'checkboxfield', boxLabel: '告警', inputValue: $$iPems.Point.AL, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                        ],
-                                        listeners: {
-                                            change: function (me, newValue, oldValue) {
-                                                var types = [];
-                                                Ext.Object.each(newValue, function (key, value, myself) {
-                                                    types.push(value);
-                                                });
+                        features: [{
+                            ftype: 'grouping',
+                            groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
+                            hideGroupedHeader: false,
+                            startCollapsed: false
+                        }],
+                        columns: [
+                            { text: '序号', dataIndex: 'index', width: 60 },
+                            { text: '所属区域', dataIndex: 'area' },
+                            { text: '所属站点', dataIndex: 'station' },
+                            { text: '所属机房', dataIndex: 'room' },
+                            { text: '所属设备', dataIndex: 'device' },
+                            { text: '信号名称', dataIndex: 'point' },
+                            { text: '信号类型', dataIndex: 'type' },
+                            { text: '信号测值', dataIndex: 'value' },
+                            { text: '单位/描述', dataIndex: 'unit' },
+                            { text: '信号状态', dataIndex: 'status', tdCls: 'x-status-cell', align: 'center' },
+                            { text: '测值时间', dataIndex: 'time', width: 150 },
+                            {
+                                xtype: 'actioncolumn',
+                                width: 100,
+                                align: 'center',
+                                menuDisabled: true,
+                                menuText: '操作',
+                                text: '操作',
+                                items: [{
+                                    tooltip: '遥控',
+                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                                        return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
+                                    },
+                                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                                        view.getSelectionModel().select(record);
+                                        var form = controlWnd.getComponent('controlForm'),
+                                            device = form.getComponent('device'),
+                                            point = form.getComponent('point'),
+                                            result = Ext.getCmp('controlResult');
 
-                                                currentStore.proxy.extraParams.types = types;
-                                                currentStore.loadPage(1);
+                                        device.setValue(record.get('deviceid'));
+                                        point.setValue(record.get('pointid'));
+                                        result.setTextWithIcon('', '')
+                                        controlWnd.show();
+                                    }
+                                }, {
+                                    tooltip: '遥调',
+                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                                        return (r.get('typeid') === $$iPems.Point.AO && $$iPems.AdjustOperation) ? 'x-cell-icon x-icon-remote-setting' : 'x-cell-icon x-icon-hidden';
+                                    },
+                                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                                        view.getSelectionModel().select(record);
+                                        var form = adjustWnd.getComponent('adjustForm'),
+                                            device = form.getComponent('device'),
+                                            point = form.getComponent('point'),
+                                            result = Ext.getCmp('adjustResult');
+
+                                        device.setValue(record.get('deviceid'));
+                                        point.setValue(record.get('pointid'));
+                                        result.setTextWithIcon('', '')
+                                        adjustWnd.show();
+                                    }
+                                }, {
+                                    getTip: function (v, metadata, r, rowIndex, colIndex, store) {
+                                        return (r.get('followed') === true) ? '已关注' : '关注';
+                                    },
+                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                                        return (r.get('followedOnly') === false) ? ((r.get('followed') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
+                                    },
+                                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                                        if (record.get('followed')) return false;
+
+                                        Ext.Ajax.request({
+                                            url: '/Home/AddFollowPoint',
+                                            params: { device: record.get('deviceid'), point: record.get('pointid') },
+                                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
+                                            success: function (response, options) {
+                                                var data = Ext.decode(response.responseText, true);
+                                                if (data.success) {
+                                                    currentPagingToolbar.doRefresh();
+                                                } else {
+                                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                                }
                                             }
-                                        }
+                                        });
                                     }
-                                    
-                                ]
-                            },
-                            tools: [
-                                {
-                                    type: 'refresh',
-                                    tooltip: '刷新',
-                                    handler: function (event, toolEl, panelHeader) {
-                                        currentPagingToolbar.doRefresh();
-                                    }
-                                }
-                            ],
-                            store: currentStore,
-                            viewConfig: {
-                                loadMask: false,
-                                preserveScrollOnRefresh: true,
-                                stripeRows: true,
-                                trackOver: true,
-                                emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                                getRowClass: function (record, rowIndex, rowParams, store) {
-                                    return $$iPems.GetStateCls(record.get("statusid"));
-                                }
-                            },
-                            features: [{
-                                ftype: 'grouping',
-                                groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
-                                hideGroupedHeader: false,
-                                startCollapsed: false
-                            }],
-                            columns: [
-                                { text: '序号', dataIndex: 'index', width:60 },
-                                { text: '所属区域', dataIndex: 'area' },
-                                { text: '所属站点', dataIndex: 'station' },
-                                { text: '所属机房', dataIndex: 'room' },
-                                { text: '所属设备', dataIndex: 'device' },
-                                { text: '信号名称', dataIndex: 'point' },
-                                { text: '信号类型', dataIndex: 'type' },
-                                { text: '信号测值', dataIndex: 'value' },
-                                { text: '单位/描述', dataIndex: 'unit' },
-                                { text: '信号状态', dataIndex: 'status', tdCls: 'x-status-cell', align: 'center' },
-                                { text: '测值时间', dataIndex: 'time', width: 150 },
-                                {
-                                    xtype: 'actioncolumn',
-                                    width: 100,
-                                    align: 'center',
-                                    menuDisabled: true,
-                                    menuText: '操作',
-                                    text: '操作',
-                                    items: [{
-                                        tooltip: '遥控',
-                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
-                                        },
-                                        handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            view.getSelectionModel().select(record);
-                                            var form = controlWnd.getComponent('controlForm'),
-                                                device = form.getComponent('device'),
-                                                point = form.getComponent('point'),
-                                                result = Ext.getCmp('controlResult');
-
-                                            device.setValue(record.get('deviceid'));
-                                            point.setValue(record.get('pointid'));
-                                            result.setTextWithIcon('', '')
-                                            controlWnd.show();
-                                        }
-                                    }, {
-                                        tooltip: '遥调',
-                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('typeid') === $$iPems.Point.AO && $$iPems.AdjustOperation) ? 'x-cell-icon x-icon-remote-setting' : 'x-cell-icon x-icon-hidden';
-                                        },
-                                        handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            view.getSelectionModel().select(record);
-                                            var form = adjustWnd.getComponent('adjustForm'),
-                                                device = form.getComponent('device'),
-                                                point = form.getComponent('point'),
-                                                result = Ext.getCmp('adjustResult');
-
-                                            device.setValue(record.get('deviceid'));
-                                            point.setValue(record.get('pointid'));
-                                            result.setTextWithIcon('', '')
-                                            adjustWnd.show();
-                                        }
-                                    }, {
-                                        getTip: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('followed') === true) ? '已关注' : '关注';
-                                        },
-                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('followedOnly') === false) ? ((r.get('followed') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
-                                        },
-                                        handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            if (record.get('followed')) return false;
-
-                                            Ext.Ajax.request({
-                                                url: '/Home/AddFollowPoint',
-                                                params: { device: record.get('deviceid'), point: record.get('pointid') },
-                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
-                                                success: function (response, options) {
-                                                    var data = Ext.decode(response.responseText, true);
-                                                    if (data.success) {
-                                                        currentPagingToolbar.doRefresh();
-                                                    } else {
-                                                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                                    }
+                                }, {
+                                    tooltip: '取消关注',
+                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                                        return (r.get('followedOnly') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
+                                    },
+                                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                                        Ext.Ajax.request({
+                                            url: '/Home/RemoveFollowPoint',
+                                            params: { device: record.get('deviceid'), point: record.get('pointid') },
+                                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
+                                            success: function (response, options) {
+                                                var data = Ext.decode(response.responseText, true);
+                                                if (data.success) {
+                                                    currentPagingToolbar.doRefresh();
+                                                } else {
+                                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                                 }
-                                            });
-                                        }
-                                    }, {
-                                        tooltip: '取消关注',
-                                        getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                            return (r.get('followedOnly') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
-                                        },
-                                        handler: function (view, rowIndex, colIndex, item, event, record) {
-                                            Ext.Ajax.request({
-                                                url: '/Home/RemoveFollowPoint',
-                                                params: { device: record.get('deviceid'), point: record.get('pointid') },
-                                                mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
-                                                success: function (response, options) {
-                                                    var data = Ext.decode(response.responseText, true);
-                                                    if (data.success) {
-                                                        currentPagingToolbar.doRefresh();
-                                                    } else {
-                                                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }]
-                                }
-                            ],
-                            bbar: currentPagingToolbar,
-                            listeners: {
-                                selectionchange: function (model, selected) {
-                                    resetChart();
-                                    if (selected.length > 0) {
-                                        loadChart(selected[0]);
+                                            }
+                                        });
                                     }
+                                }]
+                            }
+                        ],
+                        bbar: currentPagingToolbar,
+                        listeners: {
+                            selectionchange: function (model, selected) {
+                                resetChart();
+                                if (selected.length > 0) {
+                                    loadChart(selected[0]);
                                 }
                             }
                         }
-                    ]
-                }
-            ]
-        });
+                    }
+                ]
+            }
+        ]
+    });
 
-        $$iPems.Tasks.actPointTask.run = function () {
-            currentPagingToolbar.doRefresh();
-        };
-        $$iPems.Tasks.actPointTask.start();
-
+    Ext.onReady(function () {
         /*add components to viewport panel*/
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
+
+        $$iPems.Tasks.actPointTask.run = function () {
+            currentPagingToolbar.doRefresh();
+        };
+        $$iPems.Tasks.actPointTask.start();
     });
 
     Ext.onReady(function () {

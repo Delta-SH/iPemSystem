@@ -62,8 +62,10 @@
     <Compile Include="Repository\Cs\Interface\IH_IDeviceRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IStationRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_AMeasureRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Interface\ID_RedefinePointRepository.cs" />
     <Compile Include="Repository\Cs\Class\A_HAlarmRepository.cs" />

@@ -6,7 +6,7 @@ using System.Xml;
 namespace iPem.Site.Models.BInterface {
     public partial class GetThresholdAckPackage {
         public GetThresholdAckPackage(string xmlData) {
-            this.Result = EnmResult.Failure;
+            this.Result = EnmBIResult.FAILURE;
 
             if(string.IsNullOrWhiteSpace(xmlData))
                 return;
@@ -17,7 +17,7 @@ namespace iPem.Site.Models.BInterface {
             var Name = xmlDoc.SelectSingleNode("/Response/PK_Type/Name");
             if(Name == null) return;
 
-            if(!Name.InnerText.Equals(EnmPackType.GET_THRESHOLD_ACK.ToString()))
+            if(!Name.InnerText.Equals(EnmBIPackType.GET_THRESHOLD_ACK.ToString()))
                 return;
 
             var FsuId = xmlDoc.SelectSingleNode("/Response/Info/FSUID");
@@ -26,7 +26,7 @@ namespace iPem.Site.Models.BInterface {
             var Result = xmlDoc.SelectSingleNode("/Response/Info/Result");
             if(Result != null) {
                 var result = int.Parse(Result.InnerText);
-                this.Result = Enum.IsDefined(typeof(EnmResult), result) ? (EnmResult)result : EnmResult.Failure;
+                this.Result = Enum.IsDefined(typeof(EnmBIResult), result) ? (EnmBIResult)result : EnmBIResult.FAILURE;
             }
 
             var FailureCause = xmlDoc.SelectSingleNode("/Response/Info/FailureCause");
@@ -43,14 +43,15 @@ namespace iPem.Site.Models.BInterface {
                     if(node.HasChildNodes) {
                         foreach(XmlNode child in node.ChildNodes) {
                             var tThreshold = new TThreshold();
-                            tThreshold.Id = child.Attributes["ID"] != null ? child.Attributes["ID"].InnerText : string.Empty;
-                            tThreshold.SignalNumber = child.Attributes["SignalNumber"] != null ? child.Attributes["SignalNumber"].InnerText : string.Empty;
                             var type = child.Attributes["Type"] != null ? int.Parse(child.Attributes["Type"].InnerText) : (int)EnmBIPoint.AL;
+                            var level = child.Attributes["AlarmLevel"] != null ? int.Parse(child.Attributes["AlarmLevel"].InnerText) : (int)EnmBILevel.HINT;
+
+                            tThreshold.Id = child.Attributes["ID"].InnerText;
+                            tThreshold.SignalNumber = child.Attributes["SignalNumber"].InnerText;
                             tThreshold.Type = Enum.IsDefined(typeof(EnmBIPoint), type) ? (EnmBIPoint)type : EnmBIPoint.AL;
-                            tThreshold.Threshold = child.Attributes["Threshold"] != null ? child.Attributes["Threshold"].InnerText : "";
-                            var level = child.Attributes["AlarmLevel"] != null ? int.Parse(child.Attributes["AlarmLevel"].InnerText) : (int)EnmAlarm.Level0;
-                            tThreshold.AlarmLevel = Enum.IsDefined(typeof(EnmAlarm), level) ? (EnmAlarm)level : EnmAlarm.Level0;
-                            tThreshold.NMAlarmID = child.Attributes["NMAlarmID"] != null ? child.Attributes["NMAlarmID"].InnerText : "";
+                            tThreshold.Threshold = child.Attributes["Threshold"].InnerText;
+                            tThreshold.AlarmLevel = Enum.IsDefined(typeof(EnmBILevel), level) ? (EnmBILevel)level : EnmBILevel.HINT;
+                            tThreshold.NMAlarmID = child.Attributes["NMAlarmID"].InnerText;
                             device.Values.Add(tThreshold);
                         }
                     }
@@ -62,7 +63,7 @@ namespace iPem.Site.Models.BInterface {
 
         public string FsuId { get; set; }
 
-        public EnmResult Result { get; set; }
+        public EnmBIResult Result { get; set; }
 
         public string FailureCause { get; set; }
 

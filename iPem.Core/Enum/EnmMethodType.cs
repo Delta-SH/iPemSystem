@@ -64,6 +64,10 @@ namespace iPem.Core.Enum {
         /// <summary>
         /// 员工
         /// </summary>
-        Employee = 15
+        Employee = 15,
+        /// <summary>
+        /// SC组类型
+        /// </summary>
+        Group = 16
     }
 }

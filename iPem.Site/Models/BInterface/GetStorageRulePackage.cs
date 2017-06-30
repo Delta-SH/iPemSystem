@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace iPem.Site.Models.BInterface {
-    public partial class GetDataPackage {
+    public partial class GetStorageRulePackage {
         public string FsuId { get; set; }
 
-        public List<GetDataDevice> DeviceList { get; set; }
+        public List<GetStorageDevice> DeviceList { get; set; }
 
         public virtual string ToXml() {
             var xmlDoc = new XmlDocument();
@@ -21,7 +21,7 @@ namespace iPem.Site.Models.BInterface {
             root.AppendChild(PK_Type);
 
             var Name = xmlDoc.CreateElement("Name");
-            Name.InnerText = EnmBIPackType.GET_DATA.ToString();
+            Name.InnerText = EnmBIPackType.GET_STORAGERULE.ToString();
             PK_Type.AppendChild(Name);
 
             var Info = xmlDoc.CreateElement("Info");
@@ -34,15 +34,16 @@ namespace iPem.Site.Models.BInterface {
             var DeviceList = xmlDoc.CreateElement("DeviceList");
             Info.AppendChild(DeviceList);
 
-            if(this.DeviceList != null) {
-                foreach(var device in this.DeviceList) {
+            if (this.DeviceList != null) {
+                foreach (var device in this.DeviceList) {
                     var Device = xmlDoc.CreateElement("Device");
                     Device.SetAttribute("ID", device.Id ?? "");
 
-                    if(device.Ids != null) {
-                        foreach(var id in device.Ids) {
-                            var ID = xmlDoc.CreateElement("ID");
-                            ID.InnerText = id ?? "";
+                    if (device.Signals != null) {
+                        foreach (var signal in device.Signals) {
+                            var ID = xmlDoc.CreateElement("TSignalMeasurementId");
+                            ID.SetAttribute("ID", signal.Id ?? "");
+                            ID.SetAttribute("SignalNumber", signal.SignalNumber ?? "");
                             Device.AppendChild(ID);
                         }
                     }
@@ -54,9 +55,9 @@ namespace iPem.Site.Models.BInterface {
         }
     }
 
-    public partial class GetDataDevice {
+    public partial class GetStorageDevice {
         public string Id { get; set; }
 
-        public List<string> Ids { get; set; }
+        public List<TSignalMeasurementId> Signals { get; set; }
     }
 }

@@ -110,6 +110,7 @@
     <Compile Include="Domain\Cs\H_IDevice.cs" />
     <Compile Include="Domain\Cs\H_IStation.cs" />
     <Compile Include="Domain\Cs\V_AMeasure.cs" />
+    <Compile Include="Domain\Rs\C_Group.cs" />
     <Compile Include="Domain\Rs\C_SCVendor.cs" />
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />

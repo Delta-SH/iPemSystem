@@ -77,6 +77,9 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<ExcelManager>().As<IExcelManager>().SingleInstance();
             builder.RegisterType<iPemWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
 
+            //register bi class
+            builder.RegisterType<BIPackMgr>().As<IPackMgr>().InstancePerLifetimeScope();
+
             var dbManager = new SqlDbManager(new SqliteDataProvider());
             if(dbManager.IsValid(EnmDbType.Rs)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Rs];
@@ -88,6 +91,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IC_DeviceTypeRepository>(c => new C_DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_DutyRepository>(c => new C_DutyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_EnumMethodRepository>(c => new C_EnumMethodRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_GroupRepository>(c => new C_GroupRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IC_LogicTypeRepository>(c => new C_LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_ProductorRepository>(c => new C_ProductorRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_RoomTypeRepository>(c => new C_RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
@@ -114,6 +118,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<DutyService>().As<IDutyService>().InstancePerLifetimeScope();
                 builder.RegisterType<EmployeeService>().As<IEmployeeService>().InstancePerLifetimeScope();
                 builder.RegisterType<EnumMethodService>().As<IEnumMethodService>().InstancePerLifetimeScope();
+                builder.RegisterType<GroupService>().As<IGroupService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuService>().As<IFsuService>().InstancePerLifetimeScope();
                 builder.RegisterType<LogicTypeService>().As<ILogicTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();

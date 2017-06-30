@@ -13,7 +13,7 @@ namespace iPem.Site.Models.BInterface {
 
         public string SetupVal { get; set; }
 
-        public EnmState Status { get; set; }
+        public EnmBIState Status { get; set; }
 
         public DateTime Time { get; set; }
     }

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace iPem.Site.Models.BInterface {
-    public partial class SetPointActPackage {
-        public SetPointActPackage(string xmlData) {
+    public partial class SetStorageRuleAckPackage {
+        public SetStorageRuleAckPackage(string xmlData) {
             this.Result = EnmBIResult.FAILURE;
 
             if(string.IsNullOrWhiteSpace(xmlData))
@@ -17,7 +17,7 @@ namespace iPem.Site.Models.BInterface {
             var Name = xmlDoc.SelectSingleNode("/Response/PK_Type/Name");
             if(Name == null) return;
 
-            if(!Name.InnerText.Equals(EnmBIPackType.SET_POINT_ACK.ToString())) 
+            if(!Name.InnerText.Equals(EnmBIPackType.SET_STORAGERULE_ACK.ToString())) 
                 return;
 
             var FsuId = xmlDoc.SelectSingleNode("/Response/Info/FSUID");
@@ -34,9 +34,9 @@ namespace iPem.Site.Models.BInterface {
 
             var DeviceList = xmlDoc.SelectNodes("/Response/Info/DeviceList/Device");
             if(DeviceList != null && DeviceList.Count > 0) {
-                this.DeviceList = new List<SetPointActDevice>();
+                this.DeviceList = new List<SetStorageRuleAckDevice>();
                 foreach(XmlNode node in DeviceList) {
-                    var device = new SetPointActDevice();
+                    var device = new SetStorageRuleAckDevice();
                     device.Id = node.Attributes["ID"].InnerText;
                     device.SuccessList = new List<TSignalMeasurementId>();
                     device.FailList = new List<TSignalMeasurementId>();
@@ -72,10 +72,10 @@ namespace iPem.Site.Models.BInterface {
 
         public string FailureCause { get; set; }
 
-        public List<SetPointActDevice> DeviceList { get; set; }
+        public List<SetStorageRuleAckDevice> DeviceList { get; set; }
     }
 
-    public partial class SetPointActDevice {
+    public partial class SetStorageRuleAckDevice {
         public string Id { get; set; }
 
         public List<TSignalMeasurementId> SuccessList { get; set; }

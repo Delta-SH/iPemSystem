@@ -491,8 +491,8 @@
                         name: 'fsuPath',
                         xtype: 'textfield',
                         fieldLabel: 'FSU 虚拟路径',
-                        emptyText: '示例： /Services/FSUService',
-                        allowBlank: false
+                        emptyText: '示例： /Services/',
+                        allowBlank: true
                     },
                     {
                         itemId: 'uid',

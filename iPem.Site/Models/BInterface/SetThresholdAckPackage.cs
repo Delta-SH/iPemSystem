@@ -6,7 +6,7 @@ using System.Xml;
 namespace iPem.Site.Models.BInterface {
     public partial class SetThresholdAckPackage {
         public SetThresholdAckPackage(string xmlData) {
-            this.Result = EnmResult.Failure;
+            this.Result = EnmBIResult.FAILURE;
 
             if(string.IsNullOrWhiteSpace(xmlData))
                 return;
@@ -17,7 +17,7 @@ namespace iPem.Site.Models.BInterface {
             var Name = xmlDoc.SelectSingleNode("/Response/PK_Type/Name");
             if(Name == null) return;
 
-            if(!Name.InnerText.Equals(EnmPackType.SET_THRESHOLD_ACK.ToString())) 
+            if(!Name.InnerText.Equals(EnmBIPackType.SET_THRESHOLD_ACK.ToString())) 
                 return;
 
             var FsuId = xmlDoc.SelectSingleNode("/Response/Info/FSUID");
@@ -26,7 +26,7 @@ namespace iPem.Site.Models.BInterface {
             var Result = xmlDoc.SelectSingleNode("/Response/Info/Result");
             if(Result != null) {
                 var result = int.Parse(Result.InnerText);
-                this.Result = Enum.IsDefined(typeof(EnmResult), result) ? (EnmResult)result : EnmResult.Failure;
+                this.Result = Enum.IsDefined(typeof(EnmBIResult), result) ? (EnmBIResult)result : EnmBIResult.FAILURE;
             }
 
             var FailureCause = xmlDoc.SelectSingleNode("/Response/Info/FailureCause");
@@ -68,7 +68,7 @@ namespace iPem.Site.Models.BInterface {
 
         public string FsuId { get; set; }
 
-        public EnmResult Result { get; set; }
+        public EnmBIResult Result { get; set; }
 
         public string FailureCause { get; set; }
 

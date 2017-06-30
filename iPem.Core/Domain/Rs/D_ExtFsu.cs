@@ -40,5 +40,10 @@ namespace iPem.Core.Domain.Rs {
         /// 状态(在线、离线)
         /// </summary>
         public bool Status { get; set; }
+
+        /// <summary>
+        /// SC组编号
+        /// </summary>
+        public string GroupId { get; set; }
     }
 }
