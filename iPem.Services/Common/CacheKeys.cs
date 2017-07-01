@@ -69,6 +69,12 @@ namespace iPem.Services.Common {
         public const string Report_Cache_400401 = @"ipems:report:400401@{0}@user";
         public const string Report_Cache_400402 = @"ipems:report:400402@{0}@user";
         public const string Report_Cache_400403 = @"ipems:report:400403@{0}@user";
+
+        /// <summary>
+        /// Fsu相关查询结果缓存
+        /// </summary>
+        public const string Fsu_Cache_Points = @"ipems:fsu:points@{0}@user";
+        public const string Fsu_Cache_AlarmPoints = @"ipems:fsu:alarm-points@{0}@user";
     }
 
     /// <summary>

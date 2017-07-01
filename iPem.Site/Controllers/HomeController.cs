@@ -1330,7 +1330,7 @@ namespace iPem.Site.Controllers {
 
 
                 //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
-                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port).ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
                 if(result != null) {
                     if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {
@@ -1394,7 +1394,7 @@ namespace iPem.Site.Controllers {
                 };
 
                 //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
-                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port).ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
                 if(result != null) {
                     if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {

@@ -17,11 +17,11 @@
 
 @font-face {
 	font-family: 'ipems-icon-font';  /* project id 64245 */
-    src: url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.eot');
-    src: url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.eot?#iefix') format('embedded-opentype'),
-         url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.woff') format('woff'),
-         url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.ttf') format('truetype'),
-         url('//at.alicdn.com/t/font_lnk1iun9zw4gqfr.svg#ipems-icon-font') format('svg');
+    src: url('//at.alicdn.com/t/font_wxhxur7gqif3whfr.eot');
+    src: url('//at.alicdn.com/t/font_wxhxur7gqif3whfr.eot?#iefix') format('embedded-opentype'),
+         url('//at.alicdn.com/t/font_wxhxur7gqif3whfr.woff') format('woff'),
+         url('//at.alicdn.com/t/font_wxhxur7gqif3whfr.ttf') format('truetype'),
+         url('//at.alicdn.com/t/font_wxhxur7gqif3whfr.svg#ipems-icon-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;
@@ -181,10 +181,10 @@
 }
 
 .x-grid-expander .x-grid-rowbody {
-    font: 11px/12px helvetica,arial,verdana,sans-serif;
-    padding: 5px;
-    color: #333;
     background-color: #f8f8f8;
+    color: #666;
+    font: 12px/15px helvetica,arial,verdana,sans-serif;
+    padding: 5px 10px;
 }
 
 .x-grid-expander table.gridtable {

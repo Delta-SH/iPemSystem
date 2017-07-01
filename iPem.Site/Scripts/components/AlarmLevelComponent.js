@@ -58,6 +58,54 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
     }
 });
 
+Ext.define("Ext.ux.BIAlarmLevelMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "BIAlarmLevelMultiCombo",
+    fieldLabel: '告警等级',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetBIAlarmLevels';
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.BIAlarmLevelComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "BIAlarmLevelCombo",
+    fieldLabel: '告警等级',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetBIAlarmLevels';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
 Ext.define("Ext.ux.ConfirmMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "ConfirmMultiCombo",

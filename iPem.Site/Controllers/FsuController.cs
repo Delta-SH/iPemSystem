@@ -9,6 +9,7 @@ using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
+using iPem.Site.Models.BInterface;
 using iPem.Site.Models.SSH;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,8 @@ namespace iPem.Site.Controllers {
         private readonly IDictionaryService _dictionaryService;
         private readonly IFsuService _fsuService;
         private readonly IFsuEventService _ftpService;
+        private readonly IGroupService _groupService;
+        private readonly IPackMgr _packMgr;
 
         #endregion
 
@@ -41,7 +44,9 @@ namespace iPem.Site.Controllers {
             IWebEventService webLogger,
             IFsuService fsuService,
             IFsuEventService ftpService,
-            IDictionaryService dictionaryService) {
+            IDictionaryService dictionaryService,
+            IGroupService groupService,
+            IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -49,6 +54,8 @@ namespace iPem.Site.Controllers {
             this._fsuService = fsuService;
             this._ftpService = ftpService;
             this._dictionaryService = dictionaryService;
+            this._groupService = groupService;
+            this._packMgr = packMgr;
         }
 
         #endregion
@@ -212,6 +219,651 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult Reboot(string id) {
+            try {
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
+
+                var curFsu = _workContext.Fsus.Find(f => f.Current.Id == id);
+                if (curFsu == null) throw new iPemException("未找到Fsu");
+
+                var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                if (curExtFsu == null) throw new iPemException("未找到Fsu");
+                if (!curExtFsu.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var package = new SetFsuRebootPackage() { FsuId = curFsu.Current.Code };
+                var result = _packMgr.SetFsuReboot(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                if (result == null) throw new iPemException("响应超时");
+                if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "重启失败");
+
+                _webLogger.Information(EnmEventType.Operating, string.Format("FSU重启成功[{0}]", curFsu.Current.Code), null, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "重启成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestPoints(string parent, int[] types, string[] points, string[] vendors, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<FsuPointModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<FsuPointModel>()
+            };
+
+            try {
+                var models = this.GetFsuPoints(parent, types, points, vendors, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        
+        [HttpPost]
+        public ActionResult DownloadPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                var models = this.GetFsuPoints(parent, types, points, vendors, cache);
+                using (var ms = _excelManager.Export<FsuPointModel>(models, "存储规则信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestAlarmPoints(string parent, int[] types, string[] points, string[] vendors, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<FsuAlmPointModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<FsuAlmPointModel>()
+            };
+
+            try {
+                var models = this.GetFsuAlmPoints(parent, types, points, vendors, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadAlarmPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                var models = this.GetFsuAlmPoints(parent, types, points, vendors, cache);
+                using (var ms = _excelManager.Export<FsuAlmPointModel>(models, "告警门限信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestRemotePoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                var models = this.GetFsuPoints(parent, types, points, vendors, cache);
+                if (models == null || models.Count == 0) throw new iPemException("未找到信号列表");
+
+                #region 组包
+                var packages = new List<GetStorageRulePackage>();
+                var groups = models.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new GetStorageRulePackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<GetStorageRuleDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new GetStorageRuleDevice {
+                            Id = devGroup.Key,
+                            Signals = devGroup.Select(s => new TSignalMeasurementId { Id = s.pointcode, SignalNumber = s.pointnumber }).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 获取存储规则
+
+                #region 请求数据
+                var values = new List<FsuPointModel>();
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,读取存储规则配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,读取存储规则配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,读取存储规则配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,读取存储规则配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,读取存储规则配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.GetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.Rules != null && device.Rules.Count > 0) {
+                                    foreach (var rule in device.Rules) {
+                                        values.Add(new FsuPointModel {
+                                            fsucode = package.FsuId,
+                                            devicecode = device.Id,
+                                            pointcode = rule.Id,
+                                            pointnumber = rule.SignalNumber,
+                                            absolute = rule.AbsoluteVal,
+                                            relative = rule.RelativeVal,
+                                            interval = rule.StorageInterval,
+                                            reftime = rule.StorageRefTime,
+                                            remote = true
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+                #endregion
+
+                #region 关联数据
+                models = (from model in models
+                          join value in values on new { model.fsucode, model.devicecode, model.pointcode, model.pointnumber } equals new { value.fsucode, value.devicecode, value.pointcode, value.pointnumber } into lt
+                          from def in lt.DefaultIfEmpty()
+                          select new FsuPointModel {
+                              index = model.index,
+                              fsuid = model.fsuid,
+                              fsucode = model.fsucode,
+                              fsu = model.fsu,
+                              vendor = model.vendor,
+                              deviceid = model.deviceid,
+                              devicecode = model.devicecode,
+                              device = model.device,
+                              pointid = model.pointid,
+                              pointcode = model.pointcode,
+                              pointnumber = model.pointnumber,
+                              point = model.point,
+                              typeid = model.typeid,
+                              type = model.type,
+                              absolute = def != null ? def.absolute : "57.668",
+                              relative = def != null ? def.relative : "99.999",
+                              interval = def != null ? def.interval : "25",
+                              reftime = def != null ? def.reftime : "2017-01-01 00:00:00",
+                              remote = def != null ? def.remote : true
+                          }).ToList();
+                #endregion
+
+                #endregion
+
+                var key = string.Format(GlobalCacheKeys.Fsu_Cache_Points, _workContext.Identifier);
+                if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+                _cacheManager.Set<List<FsuPointModel>>(key, models, CachedIntervals.Global_SiteResult_Intervals);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult SetRemotePoints(List<FsuPointModel> settings) {
+            try {
+                if (settings == null || settings.Count == 0) throw new iPemException("未找到配置信息");
+
+                #region 组包
+                var packages = new List<SetStorageRulePackage>();
+                var groups = settings.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new SetStorageRulePackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<SetStorageRuleDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new SetStorageRuleDevice {
+                            Id = devGroup.Key,
+                            Rules = devGroup.Select(s => new TStorageRule {
+                                Id = s.pointcode,
+                                SignalNumber = s.pointnumber,
+                                Type = Enum.IsDefined(typeof(EnmBIPoint), s.typeid) ? (EnmBIPoint)s.typeid : EnmBIPoint.AI,
+                                AbsoluteVal = s.absolute ?? "",
+                                RelativeVal = s.relative ?? "",
+                                StorageInterval = s.interval ?? "",
+                                StorageRefTime = s.reftime ?? ""
+                            }).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 下发存储规则
+
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,下发存储规则配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,下发存储规则配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,下发存储规则配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发存储规则配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发存储规则配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.SuccessList != null && device.SuccessList.Count > 0) {
+                                    foreach (var s in device.SuccessList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+
+                                if (device.FailList != null && device.FailList.Count > 0) {
+                                    foreach (var f in device.FailList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+
+                #endregion
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult SetRemoteAllPoints(TStorageRule rule, string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                if (rule == null) throw new iPemException("未获得存储规则配置参数");
+                var settings = this.GetFsuPoints(parent, types, points, vendors, cache);
+                if (settings == null || settings.Count == 0) throw new iPemException("未找到信号列表");
+
+                #region 组包
+                var packages = new List<SetStorageRulePackage>();
+                var groups = settings.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new SetStorageRulePackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<SetStorageRuleDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new SetStorageRuleDevice {
+                            Id = devGroup.Key,
+                            Rules = devGroup.Select(s => new TStorageRule {
+                                Id = s.pointcode,
+                                SignalNumber = s.pointnumber,
+                                Type = Enum.IsDefined(typeof(EnmBIPoint), s.typeid) ? (EnmBIPoint)s.typeid : EnmBIPoint.AI,
+                                AbsoluteVal = rule.AbsoluteVal ?? "",
+                                RelativeVal = rule.RelativeVal ?? "",
+                                StorageInterval = rule.StorageInterval ?? "",
+                                StorageRefTime = rule.StorageRefTime ?? ""
+                            }).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 下发存储规则
+
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,下发存储规则配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,下发存储规则配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,下发存储规则配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发存储规则配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发存储规则配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.SuccessList != null && device.SuccessList.Count > 0) {
+                                    foreach (var s in device.SuccessList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+
+                                if (device.FailList != null && device.FailList.Count > 0) {
+                                    foreach (var f in device.FailList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+
+                #endregion
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestRemoteAlmPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                var models = this.GetFsuAlmPoints(parent, types, points, vendors, cache);
+                if (models == null || models.Count == 0) throw new iPemException("未找到信号列表");
+
+                #region 组包
+                var packages = new List<GetThresholdPackage>();
+                var groups = models.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new GetThresholdPackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<GetThresholdDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new GetThresholdDevice {
+                            Id = devGroup.Key,
+                            Ids = devGroup.Select(s => s.pointcode).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 获取告警门限
+
+                #region 请求数据
+                var values = new List<FsuAlmPointModel>();
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,读取告警门限配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,读取告警门限配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,读取告警门限配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,读取告警门限配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,读取告警门限配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.GetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.Values != null && device.Values.Count > 0) {
+                                    foreach (var val in device.Values) {
+                                        values.Add(new FsuAlmPointModel {
+                                            fsucode = package.FsuId,
+                                            devicecode = device.Id,
+                                            pointcode = val.Id,
+                                            pointnumber = val.SignalNumber,
+                                            threshold = val.Threshold,
+                                            level = ((int)val.AlarmLevel).ToString(),
+                                            nmid = val.NMAlarmID,
+                                            remote = true
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+                #endregion
+
+                #region 关联数据
+                models = (from model in models
+                          join value in values on new { model.fsucode, model.devicecode, model.pointcode, model.pointnumber } equals new { value.fsucode, value.devicecode, value.pointcode, value.pointnumber } into lt
+                          from def in lt.DefaultIfEmpty()
+                          select new FsuAlmPointModel {
+                              index = model.index,
+                              fsuid = model.fsuid,
+                              fsucode = model.fsucode,
+                              fsu = model.fsu,
+                              vendor = model.vendor,
+                              deviceid = model.deviceid,
+                              devicecode = model.devicecode,
+                              device = model.device,
+                              pointid = model.pointid,
+                              pointcode = model.pointcode,
+                              pointnumber = model.pointnumber,
+                              point = model.point,
+                              typeid = model.typeid,
+                              type = model.type,
+                              threshold = def != null ? def.threshold : "88.668",
+                              level = def != null ? def.level : "3",
+                              nmid = def != null ? def.nmid : "63-01-20937-23994",
+                              remote = def != null ? def.remote : true
+                          }).ToList();
+                #endregion
+
+                #endregion
+
+                var key = string.Format(GlobalCacheKeys.Fsu_Cache_AlarmPoints, _workContext.Identifier);
+                if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+                _cacheManager.Set<List<FsuAlmPointModel>>(key, models, CachedIntervals.Global_SiteResult_Intervals);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult SetRemoteAlmPoints(List<FsuAlmPointModel> settings) {
+            try {
+                if (settings == null || settings.Count == 0) throw new iPemException("未找到告警门限配置信息");
+
+                #region 组包
+                var packages = new List<SetThresholdPackage>();
+                var groups = settings.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new SetThresholdPackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<SetThresholdDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new SetThresholdDevice {
+                            Id = devGroup.Key,
+                            Values = devGroup.Select(s => new TThreshold {
+                                Id = s.pointcode,
+                                SignalNumber = s.pointnumber,
+                                Type = EnmBIPoint.AL,
+                                Threshold = s.threshold ?? "",
+                                AlarmLevel = this.ParseBILevel(s.level),
+                                NMAlarmID = s.nmid ?? ""
+                            }).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 下发告警门限
+
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,下发告警门限配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,下发告警门限配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,下发告警门限配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发告警门限配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发告警门限配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.SuccessList != null && device.SuccessList.Count > 0) {
+                                    foreach (var s in device.SuccessList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+
+                                if (device.FailList != null && device.FailList.Count > 0) {
+                                    foreach (var f in device.FailList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+
+                #endregion
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult SetRemoteAllAlmPoints(TThreshold tthreshold, string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            try {
+                if (tthreshold == null) throw new iPemException("未获得告警门限配置参数");
+                var settings = this.GetFsuAlmPoints(parent, types, points, vendors, cache);
+                if (settings == null || settings.Count == 0) throw new iPemException("未找到信号列表");
+
+                #region 组包
+                var packages = new List<SetThresholdPackage>();
+                var groups = settings.GroupBy(m => m.fsucode);
+                foreach (var group in groups) {
+                    var package = new SetThresholdPackage {
+                        FsuId = group.Key,
+                        DeviceList = new List<SetThresholdDevice>()
+                    };
+
+                    var devGroups = group.GroupBy(d => d.devicecode);
+                    foreach (var devGroup in devGroups) {
+                        package.DeviceList.Add(new SetThresholdDevice {
+                            Id = devGroup.Key,
+                            Values = devGroup.Select(s => new TThreshold {
+                                Id = s.pointcode,
+                                SignalNumber = s.pointnumber,
+                                Type = EnmBIPoint.AL,
+                                Threshold = tthreshold.Threshold ?? "",
+                                AlarmLevel = tthreshold.AlarmLevel,
+                                NMAlarmID = tthreshold.NMAlarmID ?? ""
+                            }).ToList()
+                        });
+                    }
+
+                    packages.Add(package);
+                }
+                #endregion
+
+                #region 下发告警门限
+
+                foreach (var package in packages) {
+                    try {
+                        var curFsu = _workContext.Fsus.Find(f => f.Current.Code == package.FsuId);
+                        if (curFsu == null) throw new iPemException(string.Format("未找到Fsu,下发告警门限配置失败({0})", package.FsuId));
+                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                        if (curExtFsu == null) throw new iPemException(string.Format("未找到Fsu,下发告警门限配置失败({0})", package.FsuId));
+                        if (!curExtFsu.Status) throw new iPemException(string.Format("Fsu通信中断,下发告警门限配置失败({0})", package.FsuId));
+
+                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                        if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发告警门限配置失败({0})", curExtFsu.GroupId));
+                        if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发告警门限配置失败({0})", curExtFsu.GroupId));
+
+                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
+                            foreach (var device in result.DeviceList) {
+                                if (device.SuccessList != null && device.SuccessList.Count > 0) {
+                                    foreach (var s in device.SuccessList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+
+                                if (device.FailList != null && device.FailList.Count > 0) {
+                                    foreach (var f in device.FailList) {
+                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User.Id);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception exc) {
+                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                    }
+                }
+
+                #endregion
+
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
+            } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -410,6 +1062,150 @@ namespace iPem.Site.Controllers {
             }
 
             return result;
+        }
+
+        private List<FsuPointModel> GetFsuPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            var key = string.Format(GlobalCacheKeys.Fsu_Cache_Points, _workContext.Identifier);
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FsuPointModel>>(key);
+
+            var result = new List<FsuPointModel>();
+            if((string.IsNullOrWhiteSpace(parent) || parent == "root") && ((points == null || points.Length == 0)))
+                return result;
+
+            var devices = _workContext.Devices;
+            if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+                var keys = Common.SplitKeys(parent);
+                if (keys.Length != 2) return result;
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if ((points == null || points.Length == 0) && nodeType != EnmSSH.Device) return result;
+
+                if (nodeType == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                    if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                } else if (nodeType == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId == id);
+                } else if (nodeType == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId == id);
+                } else if (nodeType == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id == id);
+                }
+            }
+
+            var fsus = _workContext.Fsus;
+            if (vendors != null && vendors.Length > 0) fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
+
+            var deviceWfsu = from device in devices
+                             join fsu in fsus on device.Current.FsuId equals fsu.Current.Id
+                             select new { Fsu = fsu.Current, Device = device };
+
+            var index = 0;
+            foreach (var dwf in deviceWfsu) {
+                foreach (var point in dwf.Device.Protocol.Points) {
+                    if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
+                    if (point.Type != EnmPoint.AI && point.Type != EnmPoint.DI) continue;
+
+                    var type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type;
+                    if (types != null && types.Length > 0 && !types.Contains((int)type)) continue;
+
+                    result.Add(new FsuPointModel {
+                        index = ++index,
+                        fsuid = dwf.Fsu.Id,
+                        fsucode = dwf.Fsu.Code,
+                        fsu = dwf.Fsu.Name,
+                        vendor = dwf.Fsu.VendorName,
+                        deviceid = dwf.Device.Current.Id,
+                        devicecode = dwf.Device.Current.Code,
+                        device = dwf.Device.Current.Name,
+                        pointid = point.Id,
+                        pointcode = point.Code,
+                        pointnumber = point.Number,
+                        point = point.Name,
+                        typeid = (int)type,
+                        type = Common.GetPointTypeDisplay(type),
+                        remote = false
+                    });
+                }
+            }
+
+            _cacheManager.Set<List<FsuPointModel>>(key, result, CachedIntervals.Global_SiteResult_Intervals);
+            return result;
+        }
+
+        private List<FsuAlmPointModel> GetFsuAlmPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
+            var key = string.Format(GlobalCacheKeys.Fsu_Cache_AlarmPoints, _workContext.Identifier);
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FsuAlmPointModel>>(key);
+
+            var result = new List<FsuAlmPointModel>();
+            if ((string.IsNullOrWhiteSpace(parent) || parent == "root") && ((points == null || points.Length == 0)))
+                return result;
+
+            var devices = _workContext.Devices;
+            if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+                var keys = Common.SplitKeys(parent);
+                if (keys.Length != 2) return result;
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if ((points == null || points.Length == 0) && nodeType != EnmSSH.Device) return result;
+
+                if (nodeType == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                    if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                } else if (nodeType == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId == id);
+                } else if (nodeType == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId == id);
+                } else if (nodeType == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id == id);
+                }
+            }
+
+            var fsus = _workContext.Fsus;
+            if (vendors != null && vendors.Length > 0) fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
+
+            var deviceWfsu = from device in devices
+                             join fsu in fsus on device.Current.FsuId equals fsu.Current.Id
+                             select new { Fsu = fsu.Current, Device = device };
+
+            var index = 0;
+            foreach (var dwf in deviceWfsu) {
+                foreach (var point in dwf.Device.Protocol.Points) {
+                    if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
+                    if (point.Type != EnmPoint.DI) continue;
+                    if (string.IsNullOrWhiteSpace(point.AlarmId)) continue;
+
+                    result.Add(new FsuAlmPointModel {
+                        index = ++index,
+                        fsuid = dwf.Fsu.Id,
+                        fsucode = dwf.Fsu.Code,
+                        fsu = dwf.Fsu.Name,
+                        vendor = dwf.Fsu.VendorName,
+                        deviceid = dwf.Device.Current.Id,
+                        devicecode = dwf.Device.Current.Code,
+                        device = dwf.Device.Current.Name,
+                        pointid = point.Id,
+                        pointcode = point.Code,
+                        pointnumber = point.Number,
+                        point = point.Name,
+                        typeid = (int)EnmPoint.AL,
+                        type = Common.GetPointTypeDisplay(EnmPoint.AL),
+                        remote = false
+                    });
+                }
+            }
+
+            _cacheManager.Set<List<FsuAlmPointModel>>(key, result, CachedIntervals.Global_SiteResult_Intervals);
+            return result;
+        }
+
+        private EnmBILevel ParseBILevel(string level) {
+            if (string.IsNullOrWhiteSpace(level)) return EnmBILevel.HINT;
+            var val = int.Parse(level);
+            return Enum.IsDefined(typeof(EnmBILevel), val) ? (EnmBILevel)val : EnmBILevel.HINT;
         }
 
         #endregion

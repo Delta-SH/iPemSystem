@@ -658,6 +658,12 @@ Ext.define("Ext.ux.MultiCombo", {
         if (this.picker && this.picker.rendered) {
             this.picker.refresh();
         }
+    },
+    onExpand: function () {
+        this.callParent(arguments);
+        if (this.picker && this.picker.rendered) {
+            this.picker.refresh();
+        }
     }
 });
 

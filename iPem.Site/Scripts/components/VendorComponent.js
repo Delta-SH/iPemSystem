@@ -7,7 +7,7 @@
 Ext.define("Ext.ux.VendorMultiCombo", {
     extend: "Ext.ux.MultiCombo",
     xtype: "VendorMultiCombo",
-    fieldLabel: '所属厂家',
+    fieldLabel: 'FSU厂家',
     valueField: 'id',
     displayField: 'text',
     delimiter: $$iPems.Delimiter,
@@ -28,7 +28,7 @@ Ext.define("Ext.ux.VendorMultiCombo", {
 Ext.define("Ext.ux.VendorComboBox", {
     extend: "Ext.ux.SingleCombo",
     xtype: "VendorCombo",
-    fieldLabel: '所属厂家',
+    fieldLabel: 'FSU厂家',
     displayField: 'text',
     valueField: 'id',
     typeAhead: true,

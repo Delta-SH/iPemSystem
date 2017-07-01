@@ -280,6 +280,21 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetBIAlarmDisplay(EnmBILevel level) {
+            switch (level) {
+                case EnmBILevel.CRITICAL:
+                    return "一级告警";
+                case EnmBILevel.MAJOR:
+                    return "二级告警";
+                case EnmBILevel.MINOR:
+                    return "三级告警";
+                case EnmBILevel.HINT:
+                    return "四级告警";
+                default:
+                    return "无告警";
+            }
+        }
+
         public static string GetConfirmDisplay(EnmConfirm status) {
             switch(status) {
                 case EnmConfirm.Confirmed:

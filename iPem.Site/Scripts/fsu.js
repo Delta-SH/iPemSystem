@@ -176,22 +176,26 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
         dataIndex: 'id',
         renderer: function (value, p, record) {
             if (Ext.isEmpty(value)) return Ext.emptyString;
-            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">查看</a>', value);
+            return '<a data="logger" class="grid-link" href="javascript:void(0);">查看</a>';
+        }
+    }, {
+        text: '操作',
+        align: 'center',
+        dataIndex: 'id',
+        renderer: function (value, p, record) {
+            if (Ext.isEmpty(value)) return Ext.emptyString;
+            return '<a data="reboot" class="grid-link" href="javascript:void(0);">重启</a>';
         }
     }],
     listeners: {
         cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
-            var columns = view.getGridColumns(),
-                fieldName = columns[cellIndex].dataIndex;
-
-            if (fieldName !== 'id')
-                return;
-
-            var fieldValue = record.get(fieldName);
-            if (Ext.isEmpty(fieldValue))
-                return;
-
-            showFileDetail(fieldValue, record.get('ip'));
+            var elements = Ext.fly(td).select('a.grid-link');
+            if (elements.getCount() == 0) return false;
+            var action = elements.first().getAttribute('data');
+            if (action === "logger")
+                showFileDetail(record.get('id'), record.get('ip'));
+            else if (action === "reboot")
+                rebootFsu(record.get('id'));
         }
     },
     dockedItems: [{
@@ -378,6 +382,28 @@ var showFileDetail = function (id, ip) {
     fileWnd.fsu = id;
     fileWnd.setTitle(Ext.String.format("日志列表[{0}]", ip || "--"));
     fileWnd.show();
+};
+
+var rebootFsu = function(id) {
+    if (Ext.isEmpty(id)) return false;
+    Ext.Msg.confirm('确认对话框', '您确认要重启吗？', function (buttonId, text) {
+        if (buttonId === 'yes') {
+            Ext.Ajax.request({
+                url: '/Fsu/Reboot',
+                params: { id: id },
+                mask: new Ext.LoadMask(currentLayout, { msg: '正在处理...' }),
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success) {
+                        Ext.Msg.show({ title: '系统提示', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                        currentPagingToolbar.doRefresh();
+                    } else {
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                }
+            });
+        }
+    });
 };
 
 var downloadFile = function (path) {

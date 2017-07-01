@@ -271,6 +271,32 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetBIAlarmLevels(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach (EnmBILevel level in Enum.GetValues(typeof(EnmBILevel))) {
+                    data.data.Add(new ComboItem<int, string>() { id = (int)level, text = Common.GetBIAlarmDisplay(level) });
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonResult GetConfirms(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,

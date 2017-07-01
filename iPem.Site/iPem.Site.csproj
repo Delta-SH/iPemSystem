@@ -209,6 +209,8 @@
     <Compile Include="Models\BInterface\TDevConf.cs" />
     <Compile Include="Models\BInterface\TSignal.cs" />
     <Compile Include="Models\BInterface\TStorageRule.cs" />
+    <Compile Include="Models\FsuAlmPointModel.cs" />
+    <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
     <Compile Include="Models\HisAlmModel.cs" />

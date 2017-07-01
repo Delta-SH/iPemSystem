@@ -7,7 +7,7 @@ namespace iPem.Site.Models.BInterface {
     public partial class GetStorageRulePackage {
         public string FsuId { get; set; }
 
-        public List<GetStorageDevice> DeviceList { get; set; }
+        public List<GetStorageRuleDevice> DeviceList { get; set; }
 
         public virtual string ToXml() {
             var xmlDoc = new XmlDocument();
@@ -55,7 +55,7 @@ namespace iPem.Site.Models.BInterface {
         }
     }
 
-    public partial class GetStorageDevice {
+    public partial class GetStorageRuleDevice {
         public string Id { get; set; }
 
         public List<TSignalMeasurementId> Signals { get; set; }

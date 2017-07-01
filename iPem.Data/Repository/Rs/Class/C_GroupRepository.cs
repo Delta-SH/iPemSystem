@@ -34,7 +34,7 @@ namespace iPem.Data.Repository.Rs {
                     entity = new C_Group();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.TypeId = SqlTypeConverter.DBNullInt32Handler(rdr["TypeID"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
                     entity.Port = SqlTypeConverter.DBNullInt32Handler(rdr["Port"]);
                     entity.ChangeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ChangeTime"]);
@@ -53,7 +53,7 @@ namespace iPem.Data.Repository.Rs {
                     var entity = new C_Group();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullInt32Handler(rdr["Type"]);
+                    entity.TypeId = SqlTypeConverter.DBNullInt32Handler(rdr["TypeID"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
                     entity.Port = SqlTypeConverter.DBNullInt32Handler(rdr["Port"]);
                     entity.ChangeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ChangeTime"]);
