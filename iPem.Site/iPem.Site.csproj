@@ -211,6 +211,8 @@
     <Compile Include="Models\BInterface\TStorageRule.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
+    <Compile Include="Models\HomeCuttingModel.cs" />
+    <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
     <Compile Include="Models\HisAlmModel.cs" />
@@ -299,6 +301,7 @@
     <Compile Include="Models\RtValues.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\ShiDianModel.cs" />
+    <Compile Include="Models\SSH\SSHSystem.cs" />
     <Compile Include="Models\ThresholdModel.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Models\RoleModel.cs" />

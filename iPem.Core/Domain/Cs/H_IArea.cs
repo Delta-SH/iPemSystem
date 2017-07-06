@@ -2,33 +2,33 @@
 
 namespace iPem.Core.Domain.Cs {
     /// <summary>
-    /// 资管接口设备表
+    /// 资管接口区域表
     /// </summary>
     [Serializable]
-    public partial class H_IDevice : BaseEntity {
+    public partial class H_IArea : BaseEntity {
         /// <summary>
-        /// 设备编号
+        /// 区域编号
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// 设备名称
+        /// 区域名称
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// 设备类型编号
+        /// 区域类型编号
         /// </summary>
         public string TypeId { get; set; }
 
         /// <summary>
-        /// 设备类型名称
+        /// 区域类型名称
         /// </summary>
         public string TypeName { get; set; }
 
         /// <summary>
-        /// 站点编号
+        /// 上级编号（当为根节点时，此值为0）
         /// </summary>
-        public string StationId { get; set; }
+        public string ParentId { get; set; }
     }
 }

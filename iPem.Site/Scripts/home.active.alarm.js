@@ -104,7 +104,8 @@
                 reservations: [],
                 keywords: Ext.emptyString,
                 onlyConfirms: false,
-                onlyReservations: false
+                onlyReservations: false,
+                onlySystem: false
             },
             simpleSortMode: true
         },
@@ -151,7 +152,8 @@
                 reservations: [],
                 keywords: Ext.emptyString,
                 onlyConfirms: true,
-                onlyReservations: false
+                onlyReservations: false,
+                onlySystem: false
             },
             simpleSortMode: true
         },
@@ -198,7 +200,8 @@
                 reservations: [],
                 keywords: Ext.emptyString,
                 onlyConfirms: false,
-                onlyReservations: true
+                onlyReservations: true,
+                onlySystem: false
             },
             simpleSortMode: true
         },
@@ -244,6 +247,54 @@
                 confirms: [],
                 reservations: [],
                 keywords: Ext.emptyString
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    $$iPems.Tasks.actAlmTask.fireOnStart = false;
+                    $$iPems.Tasks.actAlmTask.restart();
+                }
+            }
+        }
+    });
+
+    var currentStore_4 = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'ActAlarmModel',
+        proxy: {
+            type: 'ajax',
+            actionMethods: {
+                create: 'POST',
+                read: 'POST',
+                update: 'POST',
+                destroy: 'POST'
+            },
+            url: '/Home/RequestActAlarms',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                baseNode: 'root',
+                seniorNode: 'root',
+                stationTypes: [],
+                roomTypes: [],
+                subDeviceTypes: [],
+                subLogicTypes: [],
+                points: [],
+                levels: [],
+                confirms: [],
+                reservations: [],
+                keywords: Ext.emptyString,
+                onlyConfirms: false,
+                onlyReservations: false,
+                onlySystem: true
             },
             simpleSortMode: true
         },
@@ -323,6 +374,7 @@
     var currentPagingToolbar_1 = $$iPems.clonePagingToolbar(currentStore_1);
     var currentPagingToolbar_2 = $$iPems.clonePagingToolbar(currentStore_2);
     var currentPagingToolbar_3 = $$iPems.clonePagingToolbar(currentStore_3);
+    var currentPagingToolbar_4 = $$iPems.clonePagingToolbar(currentStore_4);
     var detailPagingToolbar_0 = $$iPems.clonePagingToolbar(detailStore_0);
     var detailPagingToolbar_1 = $$iPems.clonePagingToolbar(detailStore_1);
     //#endregion
@@ -1059,6 +1111,95 @@
         }
     });
 
+    var centerGrid_4 = Ext.create('Ext.grid.Panel', {
+        title: '系统告警',
+        glyph: 0xf063,
+        selType: 'checkboxmodel',
+        border: false,
+        store: currentStore_4,
+        bbar: currentPagingToolbar_4,
+        pager: currentPagingToolbar_4,
+        downloadURL: '/Home/DownloadActAlms',
+        viewConfig: {
+            loadMask: false,
+            stripeRows: true,
+            trackOver: true,
+            preserveScrollOnRefresh: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+            getRowClass: function (record, rowIndex, rowParams, store) {
+                return $$iPems.GetLevelCls(record.get("levelid"));
+            }
+        },
+        columns: [
+            {
+                text: '序号',
+                dataIndex: 'index',
+                width: 60
+            },
+            {
+                text: '告警管理编号',
+                dataIndex: 'nmalarmid',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警级别',
+                dataIndex: 'level',
+                align: 'center',
+                tdCls: 'x-level-cell'
+            },
+            {
+                text: '告警时间',
+                dataIndex: 'time',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警历时',
+                dataIndex: 'interval',
+                align: 'center',
+                width: 120
+            },
+            {
+                text: '告警描述',
+                dataIndex: 'comment'
+            },
+            {
+                text: '触发值',
+                dataIndex: 'value',
+                align: 'center'
+            },
+            {
+                text: '信号名称',
+                dataIndex: 'point'
+            },
+            {
+                text: '所属设备',
+                dataIndex: 'device'
+            },
+            {
+                text: '确认状态',
+                dataIndex: 'confirmed',
+                align: 'center'
+            },
+            {
+                text: '确认人员',
+                dataIndex: 'confirmer',
+                align: 'center'
+            },
+            {
+                text: '确认时间',
+                dataIndex: 'confirmedtime',
+                align: 'center'
+            }
+        ],
+        listeners: {
+            itemcontextmenu: function (me, record, item, index, e) {
+                showAlarmContextMenu(me, record, item, index, e);
+            }
+        }
+    });
+
     var detailGrid_0 = Ext.create('Ext.grid.Panel', {
         region: 'center',
         border: false,
@@ -1322,7 +1463,7 @@
         xtype: 'tabpanel',
         margin: '5 0 0 0',
         flex: 1,
-        items: [centerGrid_0, centerGrid_1, centerGrid_2, centerGrid_3],
+        items: [centerGrid_0, centerGrid_1, centerGrid_2, centerGrid_3, centerGrid_4],
         listeners: {
             tabchange: function (me, newCard, oldCard) {
                 refresh(newCard);
@@ -1871,7 +2012,7 @@
                 confirmAll(me.source);
             }
         }, '-', {
-            itemId: 'primary',
+            itemId: 'subalarms',
             glyph: 0xf029,
             text: '查看告警',
             hideOnClick: false,
@@ -1907,7 +2048,7 @@
                 }, {
                     itemId: 'filter',
                     glyph: 0xf029,
-                    text: '屏蔽告警',
+                    text: '过滤告警',
                     handler: function () {
                         var me = almContextMenu;
                         if (me.record == null) return false;
@@ -1916,7 +2057,7 @@
                         var name = me.record.get('point');
                         if (Ext.isEmpty(name)) name = '--';
 
-                        showActDetail(id, Ext.String.format('屏蔽告警详单({0})', name), false, false, true);
+                        showActDetail(id, Ext.String.format('过滤告警详单({0})', name), false, false, true);
                     }
                 }, {
                     itemId: 'reversal',
@@ -2139,7 +2280,7 @@
             if (buttonId === 'yes') {
                 Ext.Ajax.request({
                     url: '/Home/ConfirmAllAlarms',
-                    params: { onlyReservation: current == centerGrid_2 },
+                    params: { onlyReservation: current == centerGrid_2, olnySystem: current == centerGrid_4 },
                     mask: new Ext.LoadMask(current.getView(), { msg: '正在处理...' }),
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);

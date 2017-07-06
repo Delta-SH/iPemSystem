@@ -630,6 +630,18 @@ window.$$iPems.Tasks = {
             interval: 15000,
             repeat: 1
         }),
+        cuttingTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
+        powerTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
         offTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,

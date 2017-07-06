@@ -29,6 +29,7 @@ namespace iPem.Services.Common {
         public const string SSH_Rooms = @"ipems:global:ssh-rooms@application";
         public const string SSH_Fsus = @"ipems:global:ssh-fsus@application";
         public const string SSH_Devices = @"ipems:global:ssh-devices@application";
+        public const string SSH_Groups = @"ipems:global:ssh-groups@{0}@application";
         public const string SSH_Protocols = @"ipems:global:ssh-protocols@application";
         public const string SSH_Points = @"ipems:global:ssh-points@application";
         public const string SSH_SubPoints = @"ipems:global:ssh-subpoints@application";

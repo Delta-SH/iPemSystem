@@ -142,14 +142,17 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IA_AAlarmRepository>(c => new A_AAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IA_HAlarmRepository>(c => new A_HAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_FsuEventRepository>(c => new H_FsuEventRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IH_IDeviceRepository>(c => new H_IDeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IStationRepository>(c => new H_IStationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_AMeasureRepository>(c => new V_AMeasureRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatRepository>(c => new V_BatRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatTimeRepository>(c => new V_BatTimeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_CutRepository>(c => new V_CutRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_ElecRepository>(c => new V_ElecRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_HMeasureRepository>(c => new V_HMeasureRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_LoadRepository>(c => new V_LoadRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_ParamDiffRepository>(c => new V_ParamDiffRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_StaticRepository>(c => new V_StaticRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
@@ -157,13 +160,16 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<AMeasureService>().As<IAMeasureService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatService>().As<IBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatTimeService>().As<IBatTimeService>().InstancePerLifetimeScope();
+                builder.RegisterType<CutService>().As<ICutService>().InstancePerLifetimeScope();
                 builder.RegisterType<ElecService>().As<IElecService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuEventService>().As<IFsuEventService>().InstancePerLifetimeScope();
                 builder.RegisterType<HAlarmService>().As<IHAlarmService>().InstancePerLifetimeScope();
+                builder.RegisterType<HIAreaService>().As<IHIAreaService>().InstancePerLifetimeScope();
                 builder.RegisterType<HIDeviceService>().As<IHIDeviceService>().InstancePerLifetimeScope();
                 builder.RegisterType<HIStationService>().As<IHIStationService>().InstancePerLifetimeScope();
                 builder.RegisterType<HMeasureService>().As<IHMeasureService>().InstancePerLifetimeScope();
                 builder.RegisterType<LoadRateService>().As<ILoadService>().InstancePerLifetimeScope();
+                builder.RegisterType<ParamDiffService>().As<IParamDiffService>().InstancePerLifetimeScope();
                 builder.RegisterType<StaticService>().As<IStaticService>().InstancePerLifetimeScope();
             }
 

@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 namespace iPem.Data.Repository.Cs {
-    public partial class H_IStationRepository : IH_IStationRepository {
+    public partial class H_IAreaRepository : IH_IAreaRepository {
 
         #region Fields
 
@@ -19,7 +19,7 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// Ctor
         /// </summary>
-        public H_IStationRepository(string databaseConnectionString) {
+        public H_IAreaRepository(string databaseConnectionString) {
             this._databaseConnectionString = databaseConnectionString;
         }
 
@@ -27,73 +27,73 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public List<H_IStation> GetStationsInTypeId(string type) {
+        public List<H_IArea> GetAreasInTypeId(string type) {
             SqlParameter[] parms = { new SqlParameter("@TypeId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
 
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeId, parms)) {
+            var entities = new List<H_IArea>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IArea_Repository_GetAreasInTypeId, parms)) {
                 while (rdr.Read()) {
-                    var entity = new H_IStation();
+                    var entity = new H_IArea();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
                     entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public List<H_IStation> GetStationsInTypeName(string type) {
-            SqlParameter[] parms = { new SqlParameter("@TypeName", SqlDbType.VarChar, 200) };
+        public List<H_IArea> GetAreasInTypeName(string type) {
+            SqlParameter[] parms = { new SqlParameter("@TypeName", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
 
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeName, parms)) {
+            var entities = new List<H_IArea>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IArea_Repository_GetAreasInTypeName, parms)) {
                 while (rdr.Read()) {
-                    var entity = new H_IStation();
+                    var entity = new H_IArea();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
                     entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public List<H_IStation> GetStationsInArea(string id) {
-            SqlParameter[] parms = { new SqlParameter("@AreaId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+        public List<H_IArea> GetAreasInParent(string parent) {
+            SqlParameter[] parms = { new SqlParameter("@ParentId", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
 
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInArea, parms)) {
+            var entities = new List<H_IArea>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IArea_Repository_GetAreasInParent, parms)) {
                 while (rdr.Read()) {
-                    var entity = new H_IStation();
+                    var entity = new H_IArea();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
                     entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entities.Add(entity);
                 }
             }
             return entities;
         }
 
-        public List<H_IStation> GetStations() {
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStations, null)) {
+        public List<H_IArea> GetAreas() {
+            var entities = new List<H_IArea>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IArea_Repository_GetAreas, null)) {
                 while (rdr.Read()) {
-                    var entity = new H_IStation();
+                    var entity = new H_IArea();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
                     entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entities.Add(entity);
                 }
             }

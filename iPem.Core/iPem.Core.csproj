@@ -103,13 +103,17 @@
   <ItemGroup>
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\A_AAlarm.cs" />
+    <Compile Include="Domain\Cs\H_IArea.cs" />
     <Compile Include="Domain\Cs\V_BatTime.cs" />
+    <Compile Include="Domain\Cs\V_Cuted.cs" />
+    <Compile Include="Domain\Cs\V_Cutting.cs" />
     <Compile Include="Domain\Cs\V_Elec.cs" />
     <Compile Include="Domain\Cs\H_FsuEvent.cs" />
     <Compile Include="Domain\Cs\V_Load.cs" />
     <Compile Include="Domain\Cs\H_IDevice.cs" />
     <Compile Include="Domain\Cs\H_IStation.cs" />
     <Compile Include="Domain\Cs\V_AMeasure.cs" />
+    <Compile Include="Domain\Cs\V_ParamDiff.cs" />
     <Compile Include="Domain\Rs\C_Group.cs" />
     <Compile Include="Domain\Rs\C_SCVendor.cs" />
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />

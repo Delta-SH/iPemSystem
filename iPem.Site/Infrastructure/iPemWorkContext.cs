@@ -40,6 +40,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IEmployeeService _employeeService;
         private readonly IEnumMethodService _enumMethodService;
         private readonly IFsuService _fsuService;
+        private readonly IGroupService _groupService;
         private readonly ILogicTypeService _logicTypeService;
         private readonly IPointService _pointService;
         private readonly IProtocolService _protocolService;
@@ -100,6 +101,7 @@ namespace iPem.Site.Infrastructure {
         private List<SSHRoom> _cachedRooms;
         private List<SSHFsu> _cachedFsus;
         private List<SSHDevice> _cachedDevices;
+        private List<C_Group> _cachedGroups;
         private List<P_Point> _cachedPoints;
         private List<P_SubPoint> _cachedSubPoints;
         private List<P_Point> _cachedAI;
@@ -122,6 +124,7 @@ namespace iPem.Site.Infrastructure {
             IEmployeeService employeeService,
             IEnumMethodService enumMethodService,
             IFsuService fsuService,
+            IGroupService groupService,
             ILogicTypeService rsLogicTypeService,
             IPointService pointService,
             IProtocolService protocolService,
@@ -145,6 +148,7 @@ namespace iPem.Site.Infrastructure {
             this._employeeService = employeeService;
             this._enumMethodService = enumMethodService;
             this._fsuService = fsuService;
+            this._groupService = groupService;
             this._logicTypeService = rsLogicTypeService;
             this._pointService = pointService;
             this._protocolService = protocolService;
@@ -728,6 +732,20 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public List<C_Group> Groups {
+            get {
+                if (_cachedGroups != null)
+                    return _cachedGroups;
+
+                if (_cacheManager.IsSet(GlobalCacheKeys.SSH_Groups))
+                    return _cachedGroups = _cacheManager.Get<List<C_Group>>(GlobalCacheKeys.SSH_Groups);
+
+                _cachedGroups = _groupService.GetGroups();
+                _cacheManager.Set<List<C_Group>>(GlobalCacheKeys.SSH_Groups, _cachedGroups, CachedIntervals.Global_Default_Intervals);
+                return _cachedGroups;
+            }
+        }
+
         public List<P_Point> Points {
             get {
                 if (_cachedPoints != null)
@@ -817,30 +835,46 @@ namespace iPem.Site.Infrastructure {
                     _activeAlarms = _cacheManager.Get<List<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Global_ActiveAlarms);
                 } else {
                     var allAlarms = _actAlarmService.GetAlarms();
-                    _activeAlarms = (from alarm in allAlarms
-                                     join point in this.AL on alarm.PointId equals point.Id
-                                     join device in this.AllDevices on alarm.DeviceId equals device.Current.Id
-                                     join room in this.AllRooms on device.Current.RoomId equals room.Current.Id
-                                     join station in this.AllStations on room.Current.StationId equals station.Current.Id
-                                     join area in this.AllAreas on station.Current.AreaId equals area.Current.Id
-                                     orderby alarm.AlarmTime descending
-                                     select new AlmStore<A_AAlarm> {
-                                         Current = alarm,
-                                         Point = point,
-                                         Device = device.Current,
-                                         Room = room.Current,
-                                         Station = station.Current,
-                                         Area = new A_Area {
-                                             Id = area.Current.Id,
-                                             Code = area.Current.Code,
-                                             Name = area.ToString(),
-                                             Type = area.Current.Type,
-                                             ParentId = area.Current.ParentId,
-                                             Comment = area.Current.Comment,
-                                             Enabled = area.Current.Enabled
-                                         }
-                                     }).ToList();
+                    var sysAlarms = allAlarms.FindAll(a => a.RoomId == "-1");
+                    var nomAlarms = from alarm in allAlarms
+                                    join point in this.AL on alarm.PointId equals point.Id
+                                    join device in this.AllDevices on alarm.DeviceId equals device.Current.Id
+                                    join room in this.AllRooms on device.Current.RoomId equals room.Current.Id
+                                    join station in this.AllStations on room.Current.StationId equals station.Current.Id
+                                    join area in this.AllAreas on station.Current.AreaId equals area.Current.Id
+                                    select new AlmStore<A_AAlarm> {
+                                        Current = alarm,
+                                        Point = point,
+                                        Device = device.Current,
+                                        Room = room.Current,
+                                        Station = station.Current,
+                                        Area = new A_Area {
+                                            Id = area.Current.Id,
+                                            Code = area.Current.Code,
+                                            Name = area.ToString(),
+                                            Type = area.Current.Type,
+                                            ParentId = area.Current.ParentId,
+                                            Comment = area.Current.Comment,
+                                            Enabled = area.Current.Enabled
+                                        }
+                                    };
 
+                    if (sysAlarms.Count > 0) {
+                        _activeAlarms = nomAlarms.Concat(from alarm in sysAlarms
+                                                         join point in this.AL on alarm.PointId equals point.Id
+                                                         join gp in this.Groups on alarm.DeviceId equals gp.Id
+                                                         select new AlmStore<A_AAlarm> {
+                                                             Current = alarm,
+                                                             Point = point,
+                                                             Device = SSHSystem.SC(gp.Id, gp.Name),
+                                                             Room = SSHSystem.Room,
+                                                             Station = SSHSystem.Station,
+                                                             Area = SSHSystem.Area
+                                                         }).OrderByDescending(a => a.Current.AlarmTime).ToList();
+                    } else {
+                        _activeAlarms = nomAlarms.OrderByDescending(a => a.Current.AlarmTime).ToList();
+                    }
+                    
                     _cacheManager.Set<List<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Global_ActiveAlarms, _activeAlarms, CachedIntervals.Global_ActiveAlarm_Intervals);
                 }
 

@@ -56,6 +56,10 @@ namespace iPem.Services.Cs {
             return _repository.GetAlarms();
         }
 
+        public List<A_AAlarm> GetSystemAlarms() {
+            return _repository.GetSystemAlarms();
+        }
+
         public List<A_AAlarm> GetAllAlarms() {
             return _repository.GetAllAlarms();
         }

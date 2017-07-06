@@ -40,7 +40,7 @@ namespace iPem.Services.Cs {
         }
 
         public List<H_IStation> GetStationsInParent(string parent) {
-            return _repository.GetStationsInParent(parent);
+            return _repository.GetStationsInArea(parent);
         }
 
         public List<H_IStation> GetStations() {

@@ -40,7 +40,7 @@ namespace iPem.Services.Cs {
         }
 
         public List<H_IDevice> GetDevicesInParent(string parent) {
-            return _repository.GetDevicesInParent(parent);
+            return _repository.GetDevicesInStation(parent);
         }
 
         public List<H_IDevice> GetDevices() {

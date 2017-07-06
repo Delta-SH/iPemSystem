@@ -48,6 +48,7 @@
     <Compile Include="Installation\IDbInstaller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Cs\Class\A_AAlarmRepository.cs" />
+    <Compile Include="Repository\Cs\Class\H_IAreaRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_BatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_ElecRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_FsuEventRepository.cs" />
@@ -55,13 +56,18 @@
     <Compile Include="Repository\Cs\Class\H_IDeviceRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_IStationRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_AMeasureRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_ParamDiffRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IH_IAreaRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatTimeRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_CutRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_ElecRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_FsuEventRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_LoadRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IDeviceRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IStationRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_AMeasureRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_CutRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_ParamDiffRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />

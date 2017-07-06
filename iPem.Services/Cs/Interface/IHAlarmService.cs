@@ -39,6 +39,16 @@ namespace iPem.Services.Cs {
         List<A_HAlarm> GetAlarms(DateTime start, DateTime end);
 
         /// <summary>
+        /// 获得所有的告警(包括系统告警、次告警、关联告警、过滤告警、屏蔽告警)
+        /// </summary>
+        List<A_HAlarm> GetAllAlarms(DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获得非正常告警(包括系统告警、屏蔽告警)
+        /// </summary>
+        List<A_HAlarm> GetNonAlarms(DateTime start, DateTime end);
+
+        /// <summary>
         /// 获取指定告警的次告警
         /// </summary>
         List<A_HAlarm> GetPrimaryAlarms(string id, DateTime start, DateTime end);

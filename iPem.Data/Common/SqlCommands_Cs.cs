@@ -9,16 +9,17 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 活动告警表
         /// </summary>
-        public const string Sql_A_AAlarm_Repository_GetAlarmsInArea = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AreaId] = @AreaId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarmsInStation = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [StationId] = @StationId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarmsInRoom = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RoomId] = @RoomId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarmsInDevice = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [DeviceId] = @DeviceId AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarmsInSpan = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AlarmTime] BETWEEN @Start AND @End AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarmsInArea = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AreaId] = @AreaId AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarmsInStation = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [StationId] = @StationId AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarmsInRoom = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RoomId] = @RoomId AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarmsInDevice = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [DeviceId] = @DeviceId AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarmsInSpan = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AlarmTime] BETWEEN @Start AND @End AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetSystemAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RoomId] = '-1' ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAllAlarms = @"SELECT * FROM [dbo].[A_AAlarm] ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetPrimaryAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [PrimaryId] = @PrimaryId ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetRelatedAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RelatedId] = @RelatedId ORDER BY [AlarmTime] DESC;";
-        public const string Sql_A_AAlarm_Repository_GetFilterAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [FilterId] = @FilterId ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetPrimaryAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [PrimaryId] = @PrimaryId ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetRelatedAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [RelatedId] = @RelatedId ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetFilterAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [FilterId] = @FilterId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_Confirm = @"UPDATE [dbo].[A_AAlarm] SET [Confirmed] = @Confirmed,[Confirmer] = @Confirmer,[ConfirmedTime] = @ConfirmedTime WHERE [Id] = @Id;";
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ''' + @AreaId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [AreaId] = ''' + @AreaId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -59,7 +60,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetAlarmsInStation = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -79,7 +79,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ''' + @StationId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [StationId] = ''' + @StationId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -95,7 +95,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetAlarmsInRoom = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -115,7 +114,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ''' + @RoomId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [RoomId] = ''' + @RoomId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -131,7 +130,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetAlarmsInDevice = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -151,7 +149,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -167,7 +165,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetAlarmsInPoint = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -187,7 +184,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PointId] = ''' + @PointId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [PointId] = ''' + @PointId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -203,8 +200,42 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetAlarms = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[A_HAlarm'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND  [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Alarms AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_A_HAlarm_Repository_GetAllAlarms = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -239,7 +270,41 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+        public const string Sql_A_HAlarm_Repository_GetNonAlarms = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
 
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[A_HAlarm'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE ([RoomId] = ''-1'' OR [Masked] = 1) AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Alarms AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
         public const string Sql_A_HAlarm_Repository_GetPrimaryAlarms = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -275,7 +340,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetRelatedAlarms = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -311,7 +375,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetFilterAlarms = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -347,7 +410,6 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
         public const string Sql_A_HAlarm_Repository_GetReversalAlarms = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
@@ -391,11 +453,19 @@ namespace iPem.Data.Common {
         public const string Sql_H_FsuEvent_Repository_GetEventsInType = @"SELECT [FsuId],[EventType],[EventDesc] AS [Message],[EventTime] FROM [dbo].[H_FsuEvent] WHERE [EventTime] BETWEEN @Start AND @End AND [EventType] = @EventType;";
 
         /// <summary>
+        /// 资管接口区域表
+        /// </summary>
+        public const string Sql_H_IArea_Repository_GetAreasInTypeId = @"SELECT * FROM [dbo].[H_IArea] WHERE [TypeId] = @TypeId;";
+        public const string Sql_H_IArea_Repository_GetAreasInTypeName = @"SELECT * FROM [dbo].[H_IArea] WHERE [TypeName] = @TypeName;";
+        public const string Sql_H_IArea_Repository_GetAreasInParent = @"SELECT * FROM [dbo].[H_IArea] WHERE [ParentId] = @ParentId;";
+        public const string Sql_H_IArea_Repository_GetAreas = @"SELECT * FROM [dbo].[H_IArea];";
+
+        /// <summary>
         /// 资管接口站点表
         /// </summary>
         public const string Sql_H_IStation_Repository_GetStationsInTypeId = @"SELECT * FROM [dbo].[H_IStation] WHERE [TypeId] = @TypeId;";
         public const string Sql_H_IStation_Repository_GetStationsInTypeName = @"SELECT * FROM [dbo].[H_IStation] WHERE [TypeName] = @TypeName;";
-        public const string Sql_H_IStation_Repository_GetStationsInParent = @"SELECT * FROM [dbo].[H_IStation] WHERE [AreaName] = @AreaName;";
+        public const string Sql_H_IStation_Repository_GetStationsInArea = @"SELECT * FROM [dbo].[H_IStation] WHERE [AreaId] = @AreaId;";
         public const string Sql_H_IStation_Repository_GetStations = @"SELECT * FROM [dbo].[H_IStation];";
 
         /// <summary>
@@ -630,6 +700,82 @@ namespace iPem.Data.Common {
 			        ' + @SQL + N'
 		        )
 		        SELECT * FROM hisBatTime ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
+        /// <summary>
+        /// 断站、停电、发电表
+        /// </summary>
+        public const string Sql_V_Cut_Repository_GetCuttings = @"SELECT * FROM [dbo].[V_Cutting];";
+        public const string Sql_V_Cut_Repository_GetCuttingsInType = @"SELECT * FROM [dbo].[V_Cutting] WHERE [Type]=@Type;";
+        public const string Sql_V_Cut_Repository_GetCuteds = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Cuted'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Values AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM Values ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Cut_Repository_GetCutedsInType = @"
+        DECLARE @tpDate DATETIME,
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Cuted'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Type] = '+ @Type + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Values AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM Values ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1244,5 +1390,14 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
+
+        /// <summary>
+        /// 参数自检表
+        /// </summary>
+        public const string Sql_V_ParamDiff_Repository_GetDiffs = @"
+        IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_ParamDiff{0}]') AND type in (N'U'))
+        BEGIN
+            SELECT * FROM [dbo].[V_ParamDiff{0}];
+        END";
     }
 }

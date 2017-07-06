@@ -72,7 +72,7 @@ namespace iPem.Data.Common {
         }
 
         public static object DBNullDateTimeNullableChecker(DateTime? val) {
-            if(!val.HasValue) { return DBNull.Value; }
+            if (!val.HasValue || val == default(DateTime)) { return DBNull.Value; }
             return val.Value;
         }
 
@@ -197,6 +197,13 @@ namespace iPem.Data.Common {
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmFsuEvent), v) ? (EnmFsuEvent)v : EnmFsuEvent.Undefined;
+        }
+
+        public static EnmCutType DBNullEnmCutTypeHandler(object val) {
+            if (val == DBNull.Value) { return EnmCutType.Cut; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmCutType), v) ? (EnmCutType)v : EnmCutType.Cut;
         }
     }
 }

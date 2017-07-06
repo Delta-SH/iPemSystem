@@ -1922,6 +1922,18 @@ window.$$iPems.Tasks = {
             interval: 15000,
             repeat: 1
         }),
+        cuttingTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
+        powerTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 15000,
+            repeat: 1
+        }),
         offTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
@@ -2137,6 +2149,56 @@ Ext.define("Ext.ux.AlarmLevelComboBox", {
             }
         });
     }
+});
+
+Ext.define("Ext.ux.AlarmTypeMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "AlarmTypeMultiCombo",
+    fieldLabel: '告警类型',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    store: Ext.create('Ext.data.Store', {
+        fields: [
+             { name: 'id', type: 'int' },
+             { name: 'text', type: 'string' }
+        ],
+        data: [
+            { "id": 1, "text": '系统告警' },
+            { "id": 2, "text": '屏蔽告警' }
+        ]
+    })
+});
+
+Ext.define("Ext.ux.AlarmTypeComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "AlarmTypeCombo",
+    fieldLabel: '告警类型',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    store: Ext.create('Ext.data.Store', {
+        fields: [
+             { name: 'id', type: 'int' },
+             { name: 'text', type: 'string' }
+        ],
+        data: [
+            { "id": 1, "text": '系统告警' },
+            { "id": 2, "text": '屏蔽告警' }
+        ]
+    })
 });
 
 Ext.define("Ext.ux.BIAlarmLevelMultiCombo", {

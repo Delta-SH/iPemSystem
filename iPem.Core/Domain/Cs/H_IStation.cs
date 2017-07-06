@@ -7,7 +7,7 @@ namespace iPem.Core.Domain.Cs {
     [Serializable]
     public partial class H_IStation : BaseEntity {
         /// <summary>
-        /// 站点编码
+        /// 站点编号
         /// </summary>
         public string Id { get; set; }
 
@@ -27,13 +27,8 @@ namespace iPem.Core.Domain.Cs {
         public string TypeName { get; set; }
 
         /// <summary>
-        /// 所属区域编号
+        /// 区域编号
         /// </summary>
         public string AreaId { get; set; }
-
-        /// <summary>
-        /// 所属区域名称
-        /// </summary>
-        public string AreaName { get; set; }
     }
 }

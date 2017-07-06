@@ -267,4 +267,15 @@
         Week,
         Day
     }
+
+    /// <summary>
+    /// 断站-0
+    /// 停电-1
+    /// 发电-2
+    /// </summary>
+    public enum EnmCutType {
+        Off,
+        Cut,
+        Power
+    }
 }

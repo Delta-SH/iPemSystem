@@ -20,8 +20,8 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// 获得指定站点下所包含的设备
         /// </summary>
-        /// <param name="parent">站点编号</param>
-        List<H_IDevice> GetDevicesInParent(string parent);
+        /// <param name="id">站点编号</param>
+        List<H_IDevice> GetDevicesInStation(string id);
 
         /// <summary>
         /// 获得所有的设备

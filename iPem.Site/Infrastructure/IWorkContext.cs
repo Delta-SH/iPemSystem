@@ -77,6 +77,8 @@ namespace iPem.Site.Infrastructure {
 
         List<SSHDevice> Devices { get; }
 
+        List<C_Group> Groups { get; }
+
         List<P_Point> Points { get; }
 
         List<P_SubPoint> SubPoints { get; }

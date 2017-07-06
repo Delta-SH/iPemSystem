@@ -45,6 +45,7 @@ namespace iPem.Site.Controllers {
         private readonly IElecService _elecService;
         private readonly IAMeasureService _aMeasureService;
         private readonly IGroupService _groupService;
+        private readonly ICutService _cutService;
         private readonly IPackMgr _packMgr;
 
         #endregion
@@ -70,6 +71,7 @@ namespace iPem.Site.Controllers {
             IElecService elecService,
             IAMeasureService aMeasureService,
             IGroupService groupService,
+            ICutService cutService,
             IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -89,6 +91,7 @@ namespace iPem.Site.Controllers {
             this._elecService = elecService;
             this._aMeasureService = aMeasureService;
             this._groupService = groupService;
+            this._cutService = cutService;
             this._packMgr = packMgr;
         }
 
@@ -428,7 +431,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActAlarms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations, int start, int limit) {
+        public JsonResult RequestActAlarms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations,bool onlySystem , int start, int limit) {
             var data = new AjaxDataModel<List<ActAlmModel>> {
                 success = true,
                 message = "无数据",
@@ -437,7 +440,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations);
+                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations, onlySystem);
                 if(stores != null) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
@@ -488,10 +491,10 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadActAlms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations) {
+        public ActionResult DownloadActAlms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations, bool onlySystem) {
             try {
                 var models = new List<ActAlmModel>();
-                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations);
+                var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations, onlySystem);
                 if (stores != null) {
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new ActAlmModel {
@@ -1220,7 +1223,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult ConfirmAllAlarms(bool onlyReservation) {
+        public JsonResult ConfirmAllAlarms(bool onlyReservation, bool onlySystem) {
             try {
                 if (!_workContext.Authorizations.Permissions.Contains(EnmPermission.Confirm))
                     return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
@@ -1228,7 +1231,8 @@ namespace iPem.Site.Controllers {
                 var entities = new List<A_AAlarm>();
                 foreach (var alarm in _workContext.ActAlarms) {
                     if (onlyReservation && string.IsNullOrWhiteSpace(alarm.Current.ReservationId)) continue;
- 
+                    if (onlySystem && alarm.Room != null) continue;
+
                     entities.Add(new A_AAlarm {
                         Id = alarm.Current.Id,
                         Confirmed = EnmConfirm.Confirmed,
@@ -1646,46 +1650,38 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var extFsus = _fsuService.GetExtFsus();
-                var allFsus = from fsu in _workContext.Fsus
-                              join ext in extFsus on fsu.Current.Id equals ext.Id
-                              select new { Fsu = fsu, Ext = ext };
-
-                var unStations = new List<IdValuePair<S_Station, DateTime>>();
-                foreach(var station in _workContext.Stations) {
-                    if(!allFsus.Any(f => f.Fsu.Current.StationId == station.Current.Id && f.Ext.Status)) {
-                        var staFsus = allFsus.Where(f => f.Fsu.Current.StationId == station.Current.Id);
-                        if(staFsus.Any()) {
-                            unStations.Add(new IdValuePair<S_Station, DateTime> {
-                                Id = station.Current,
-                                Value = staFsus.Max(f => f.Ext.LastTime)
-                            });
-                        }
-                    }
+                var cuttings = _cutService.GetCuttings(EnmCutType.Off).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomeUnconnectedModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomeUnconnectedModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
                 }
 
                 data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations.Count - unStations.Count };
                 data.chart[1] = new ChartModel { index = 2, name = "断站", value = unStations.Count };
 
-                var stations = (from station in unStations
-                                join area in _workContext.Areas on station.Id.AreaId equals area.Current.Id
-                                select new { Station = station, Area = area }).ToList();
-
-                if(stations.Count > 0) {
+                if (unStations.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = stations.Count;
+                    data.total = unStations.Count;
 
                     var end = start + limit;
-                    if(end > stations.Count)
-                        end = stations.Count;
+                    if (end > unStations.Count)
+                        end = unStations.Count;
 
                     for(int i = start; i < end; i++) {
                         data.data.Add(new HomeUnconnectedModel {
                             index = i + 1,
-                            area = stations[i].Area.ToString(),
-                            station = stations[i].Station.Id.Name,
-                            time = CommonHelper.DateTimeConverter(stations[i].Station.Value),
-                            interval = CommonHelper.IntervalConverter(stations[i].Station.Value)
+                            area = unStations[i].area,
+                            station = unStations[i].station,
+                            time = unStations[i].time,
+                            interval = unStations[i].interval
                         });
                     }
                 }
@@ -1701,40 +1697,21 @@ namespace iPem.Site.Controllers {
         [HttpPost]
         public ActionResult DownloadHomeUnconnected() {
             try {
-                var extFsus = _fsuService.GetExtFsus();
-                var allFsus = from fsu in _workContext.Fsus
-                              join ext in extFsus on fsu.Current.Id equals ext.Id
-                              select new { Fsu = fsu, Ext = ext };
-
-                var unStations = new List<IdValuePair<S_Station, DateTime>>();
-                foreach (var station in _workContext.Stations) {
-                    if (!allFsus.Any(f => f.Fsu.Current.StationId == station.Current.Id && f.Ext.Status)) {
-                        var staFsus = allFsus.Where(f => f.Fsu.Current.StationId == station.Current.Id);
-                        if (staFsus.Any()) {
-                            unStations.Add(new IdValuePair<S_Station, DateTime> {
-                                Id = station.Current,
-                                Value = staFsus.Max(f => f.Ext.LastTime)
-                            });
-                        }
-                    }
+                var cuttings = _cutService.GetCuttings(EnmCutType.Off).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomeUnconnectedModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomeUnconnectedModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
                 }
 
-                var stations = (from station in unStations
-                                join area in _workContext.Areas on station.Id.AreaId equals area.Current.Id
-                                select new { Station = station, Area = area }).ToList();
-
-                var models = new List<HomeUnconnectedModel>();
-                for(int i = 0; i < stations.Count; i++) {
-                    models.Add(new HomeUnconnectedModel {
-                        index = i + 1,
-                        area = stations[i].Area.ToString(),
-                        station = stations[i].Station.Id.Name,
-                        time = CommonHelper.DateTimeConverter(stations[i].Station.Value),
-                        interval = CommonHelper.IntervalConverter(stations[i].Station.Value)
-                    });
-                }
-
-                using(var ms = _excelManager.Export<HomeUnconnectedModel>(models, "站点断站列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<HomeUnconnectedModel>(unStations, "站点断站列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -1743,7 +1720,169 @@ namespace iPem.Site.Controllers {
             }
         }
 
-        private List<AlmStore<A_AAlarm>> GetActAlmStore(ActAlmCondition condition, bool onlyConfirms = false, bool onlyReservations = false) {
+        [AjaxAuthorize]
+        public JsonResult RequestHomeCutting(int start, int limit) {
+            var data = new AjaxChartModel<List<HomeCuttingModel>, ChartModel[]> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HomeCuttingModel>(),
+                chart = new ChartModel[2]
+            };
+
+            try {
+                var cuttings = _cutService.GetCuttings(EnmCutType.Cut).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomeCuttingModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomeCuttingModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
+                }
+
+                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations.Count - unStations.Count };
+                data.chart[1] = new ChartModel { index = 2, name = "停电", value = unStations.Count };
+
+                if (unStations.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = unStations.Count;
+
+                    var end = start + limit;
+                    if (end > unStations.Count)
+                        end = unStations.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new HomeCuttingModel {
+                            index = i + 1,
+                            area = unStations[i].area,
+                            station = unStations[i].station,
+                            time = unStations[i].time,
+                            interval = unStations[i].interval
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadHomeCutting() {
+            try {
+                var cuttings = _cutService.GetCuttings(EnmCutType.Cut).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomeCuttingModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomeCuttingModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
+                }
+
+                using (var ms = _excelManager.Export<HomeCuttingModel>(unStations, "站点停电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomePower(int start, int limit) {
+            var data = new AjaxChartModel<List<HomePowerModel>, ChartModel[]> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HomePowerModel>(),
+                chart = new ChartModel[2]
+            };
+
+            try {
+                var cuttings = _cutService.GetCuttings(EnmCutType.Power).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomePowerModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomePowerModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
+                }
+
+                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations.Count - unStations.Count };
+                data.chart[1] = new ChartModel { index = 2, name = "发电", value = unStations.Count };
+
+                if (unStations.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = unStations.Count;
+
+                    var end = start + limit;
+                    if (end > unStations.Count)
+                        end = unStations.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new HomePowerModel {
+                            index = i + 1,
+                            area = unStations[i].area,
+                            station = unStations[i].station,
+                            time = unStations[i].time,
+                            interval = unStations[i].interval
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadHomePower() {
+            try {
+                var cuttings = _cutService.GetCuttings(EnmCutType.Power).GroupBy(c => new { c.AreaId, c.StationId });
+                var unStations = new List<HomePowerModel>();
+                if (cuttings.Any()) {
+                    unStations = (from cut in cuttings
+                                  join sta in _workContext.Stations on cut.Key.StationId equals sta.Current.Id
+                                  join area in _workContext.Areas on cut.Key.AreaId equals area.Current.Id
+                                  select new HomePowerModel {
+                                      area = area.ToString(),
+                                      station = sta.Current.Name,
+                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
+                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
+                                  }).ToList();
+                }
+
+                using (var ms = _excelManager.Export<HomePowerModel>(unStations, "站点发电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        private List<AlmStore<A_AAlarm>> GetActAlmStore(ActAlmCondition condition, bool onlyConfirms = false, bool onlyReservations = false, bool onlySystem = false) {
             if (condition.stationTypes == null) condition.stationTypes = new string[0];
             if (condition.roomTypes == null) condition.roomTypes = new string[0];
             if (condition.subDeviceTypes == null) condition.subDeviceTypes = new string[0];
@@ -1785,6 +1924,8 @@ namespace iPem.Site.Controllers {
                         condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
                 }
             }
+
+            if (onlySystem) return _workContext.ActAlarms.FindAll(a => a.Room.Id == "-1");
 
             var stores = _workContext.ActAlarms;
             if (condition.stationTypes.Length > 0)

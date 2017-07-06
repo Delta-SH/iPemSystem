@@ -91,19 +91,13 @@ namespace iPem.Site.Controllers {
                 });
 
                 if(stations.Count > 0) {
-                    if(stations.Count > 100)
-                        stations = stations.Take(100).ToList();
-
+                    if(stations.Count > 100) stations = stations.Take(100).ToList();
                     data.message = "200 Ok";
                     data.total = stations.Count;
 
-                    var alarms = _actAlmService.GetAlarms();
-                    var almsInSta = from alarm in alarms
-                                    group alarm by alarm.StationId into g
-                                    select new {
-                                        Id = g.Key,
-                                        Alarms = g
-                                    };
+                    var almsInSta = from alarm in _workContext.ActAlarms
+                                    group alarm by alarm.Current.StationId into g
+                                    select new { Id = g.Key, Alarms = g.Select(a => a.Current) };
 
                     foreach(var station in stations) {
                         var model = new MarkerModel() {

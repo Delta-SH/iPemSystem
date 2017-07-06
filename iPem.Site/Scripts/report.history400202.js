@@ -242,6 +242,7 @@
         autoLoad: false,
         pageSize: 20,
         model: 'AlarmModel',
+        DownloadURL: '/Report/DownloadHistory400202',
         proxy: {
             type: 'ajax',
             url: '/Report/RequestHistory400202',
@@ -268,7 +269,42 @@
         }
     });
 
+    var detailStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'AlarmModel',
+        DownloadURL: '/Report/DownloadDetail400202',
+        proxy: {
+            type: 'ajax',
+            actionMethods: {
+                create: 'POST',
+                read: 'POST',
+                update: 'POST',
+                destroy: 'POST'
+            },
+            url: '/Report/RequestDetail400202',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                id: '',
+                title: '',
+                date: '2017-01-01',
+                primary: false,
+                related: false,
+                filter: false,
+                reversal: false
+            },
+            simpleSortMode: true
+        }
+    });
+
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
+    var detailPagingToolbar = $$iPems.clonePagingToolbar(detailStore);
 
     var currentLayout = Ext.create('Ext.panel.Panel', {
         id: 'currentLayout',
@@ -338,7 +374,7 @@
                 type: 'print',
                 tooltip: '数据导出',
                 handler: function (event, toolEl, panelHeader) {
-                    print();
+                    print(currentStore);
                 }
             }],
             viewConfig: {
@@ -463,6 +499,9 @@
                         return;
 
                     showResDetail(fieldValue, view);
+                },
+                itemcontextmenu: function (me, record, item, index, e) {
+                    showContextMenu(me, record, item, index, e);
                 }
             }
         }],
@@ -541,7 +580,7 @@
                             glyph: 0xf010,
                             text: '数据导出',
                             handler: function (me, event) {
-                                print();
+                                print(currentStore);
                             }
                         }
                     ]
@@ -626,6 +665,11 @@
                     border: false,
                     items: [
                         {
+                            id: 'alarm-type-multicombo',
+                            xtype: 'AlarmTypeMultiCombo',
+                            emptyText: '默认不包含以下告警'
+                        },
+                        {
                             id: 'confirmer-keywords',
                             xtype: 'textfield',
                             fieldLabel: '确认人员',
@@ -639,11 +683,241 @@
                             fieldLabel: '关键字',
                             emptyText: '多关键字请以;分隔，例: A;B;C',
                             labelWidth: 60,
-                            width: 448
+                            width: 220
                         }
                     ]
                 }
             ]
+        }]
+    });
+
+    var detailGrid = Ext.create('Ext.grid.Panel', {
+        region: 'center',
+        border: false,
+        store: detailStore,
+        bbar: detailPagingToolbar,
+        viewConfig: {
+            loadMask: false,
+            stripeRows: true,
+            trackOver: true,
+            preserveScrollOnRefresh: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+            getRowClass: function (record, rowIndex, rowParams, store) {
+                return $$iPems.GetLevelCls(record.get("levelid"));
+            }
+        },
+        columns: [
+            {
+                text: '序号',
+                dataIndex: 'index',
+                width: 60
+            },
+            {
+                text: '告警管理编号',
+                dataIndex: 'nmalarmid',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警级别',
+                dataIndex: 'level',
+                align: 'center',
+                tdCls: 'x-level-cell'
+            },
+            {
+                text: '开始时间',
+                dataIndex: 'starttime',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '结束时间',
+                dataIndex: 'endtime',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警历时',
+                dataIndex: 'interval',
+                align: 'center',
+                width: 120
+            },
+            {
+                text: '告警描述',
+                dataIndex: 'comment'
+            },
+            {
+                text: '开始值',
+                dataIndex: 'startvalue',
+                align: 'center'
+            },
+            {
+                text: '结束值',
+                dataIndex: 'endvalue',
+                align: 'center'
+            },
+            {
+                text: '信号名称',
+                dataIndex: 'point'
+            },
+            {
+                text: '所属设备',
+                dataIndex: 'device'
+            },
+            {
+                text: '所属机房',
+                dataIndex: 'room'
+            },
+            {
+                text: '所属站点',
+                dataIndex: 'station'
+            },
+            {
+                text: '所属区域',
+                dataIndex: 'area'
+            },
+            {
+                text: '确认状态',
+                dataIndex: 'confirmed',
+                align: 'center'
+            },
+            {
+                text: '确认人员',
+                dataIndex: 'confirmer',
+                align: 'center'
+            },
+            {
+                text: '确认时间',
+                dataIndex: 'confirmedtime',
+                align: 'center'
+            },
+            {
+                text: '工程状态',
+                dataIndex: 'reservation',
+                align: 'center',
+                renderer: function (value, p, record) {
+                    if (Ext.isEmpty(value)) return Ext.emptyString;
+                    return '工程告警';
+                }
+            },
+            {
+                text: '告警翻转',
+                dataIndex: 'reversalcount',
+                align: 'center'
+            }
+        ]
+    });
+
+    var detailWnd = Ext.create('Ext.window.Window', {
+        title: '告警详情',
+        glyph: 0xf029,
+        height: 500,
+        width: 800,
+        modal: true,
+        border: false,
+        hidden: true,
+        closeAction: 'hide',
+        layout: 'border',
+        items: [detailGrid],
+        buttonAlign: 'right',
+        buttons: [{
+            xtype: 'button',
+            text: '导出',
+            handler: function (el, e) {
+                print(detailStore);
+            }
+        }, {
+            xtype: 'button',
+            text: '关闭',
+            handler: function (el, e) {
+                detailWnd.hide();
+            }
+        }]
+    });
+
+    var almContextMenu = Ext.create('Ext.menu.Menu', {
+        plain: true,
+        border: false,
+        record: null,
+        items: [{
+            itemId: 'subalarms',
+            glyph: 0xf029,
+            text: '查看告警',
+            hideOnClick: false,
+            menu: [
+                {
+                    itemId: 'primary',
+                    glyph: 0xf029,
+                    text: '主次告警',
+                    handler: function () {
+                        var me = almContextMenu;
+                        if (me.record == null) return false;
+                        var id = me.record.get('id');
+                        if (Ext.isEmpty(id)) return false;
+                        var date = me.record.get('starttime');
+                        if (Ext.isEmpty(date)) return false;
+                        var name = me.record.get('point');
+                        if (Ext.isEmpty(name)) name = '--';
+
+                        showDetail(id, Ext.String.format('主次告警详单({0})', name), date, true, false, false, false);
+                    }
+                }, {
+                    itemId: 'related',
+                    glyph: 0xf029,
+                    text: '关联告警',
+                    handler: function () {
+                        var me = almContextMenu;
+                        if (me.record == null) return false;
+                        var id = me.record.get('id');
+                        if (Ext.isEmpty(id)) return false;
+                        var date = me.record.get('starttime');
+                        if (Ext.isEmpty(date)) return false;
+                        var name = me.record.get('point');
+                        if (Ext.isEmpty(name)) name = '--';
+
+                        showDetail(id, Ext.String.format('关联告警详单({0})', name), date, false, true, false, false);
+                    }
+                }, {
+                    itemId: 'filter',
+                    glyph: 0xf029,
+                    text: '过滤告警',
+                    handler: function () {
+                        var me = almContextMenu;
+                        if (me.record == null) return false;
+                        var id = me.record.get('id');
+                        if (Ext.isEmpty(id)) return false;
+                        var date = me.record.get('starttime');
+                        if (Ext.isEmpty(date)) return false;
+                        var name = me.record.get('point');
+                        if (Ext.isEmpty(name)) name = '--';
+
+                        showDetail(id, Ext.String.format('过滤告警详单({0})', name), date, false, false, true, false);
+                    }
+                }, {
+                    itemId: 'reversal',
+                    glyph: 0xf029,
+                    text: '翻转告警',
+                    handler: function () {
+                        var me = almContextMenu;
+                        if (me.record == null) return false;
+                        var id = me.record.get('reversalid');
+                        if (Ext.isEmpty(id)) return false;
+                        var date = me.record.get('starttime');
+                        if (Ext.isEmpty(date)) return false;
+                        var name = me.record.get('point');
+                        if (Ext.isEmpty(name)) name = '--';
+
+                        showDetail(id, Ext.String.format('翻转告警详单({0})', name), date, false, false, false, true);
+                    }
+                }
+            ]
+        }, '-', {
+            itemId: 'export',
+            glyph: 0xf010,
+            text: '数据导出',
+            handler: function () {
+                print(currentStore);
+            }
         }]
     });
 
@@ -657,6 +931,7 @@
             subLogicTypes = Ext.getCmp('sublogic-type-multipicker').getValue(),
             points = Ext.getCmp('point-multipicker').getValue(),
             levels = Ext.getCmp('alarm-level-multicombo').getSelectedValues(),
+            types = Ext.getCmp('alarm-type-multicombo').getSelectedValues(),
             confirmers = Ext.getCmp('confirmer-keywords').getRawValue(),
             keywords = Ext.getCmp('point-keywords').getRawValue(),
             comfirmMenu = Ext.getCmp('confirm-menu'),
@@ -674,6 +949,7 @@
         proxy.extraParams.subLogicTypes = subLogicTypes;
         proxy.extraParams.points = points;
         proxy.extraParams.levels = levels;
+        proxy.extraParams.types = types;
         proxy.extraParams.confirmers = confirmers;
         proxy.extraParams.keywords = keywords;
         proxy.extraParams.cache = false;
@@ -697,10 +973,10 @@
         });
     };
 
-    var print = function () {
+    var print = function (store) {
         $$iPems.download({
-            url: '/Report/DownloadHistory400202',
-            params: currentStore.getProxy().extraParams
+            url: store.DownloadURL,
+            params: store.getProxy().extraParams
         });
     };
 
@@ -766,40 +1042,27 @@
         }
     };
 
-    var showResDetail = function (id, view) {
-        if (Ext.isEmpty(id)) return false;
+    var showContextMenu = function (me, record, item, index, e) {
+        e.stopEvent();
+        almContextMenu.record = record;
+        almContextMenu.showAt(e.getXY());
+    }
 
-        Ext.Ajax.request({
-            url: '/Home/GetReservation',
-            Method: 'POST',
-            params: { id: id },
-            mask: new Ext.LoadMask(view, { msg: '正在处理...' }),
-            success: function (response, options) {
-                var data = Ext.decode(response.responseText, true);
-                if (data.success) {
-                    var id = reservationWnd.getComponent('id'),
-                        name = reservationWnd.getComponent('name'),
-                        start = reservationWnd.getComponent('start'),
-                        end = reservationWnd.getComponent('end'),
-                        project = reservationWnd.getComponent('project'),
-                        creator = reservationWnd.getComponent('creator'),
-                        time = reservationWnd.getComponent('time'),
-                        comment = reservationWnd.getComponent('comment');
+    var showDetail = function (id, title, date, primary, related, filter, reversal) {
+        var store = detailGrid.getStore(),
+            proxy = store.getProxy();
 
-                    id.setValue(data.data.id);
-                    name.setValue(data.data.name);
-                    start.setValue(data.data.startDate);
-                    end.setValue(data.data.endDate);
-                    project.setValue(data.data.projectName);
-                    creator.setValue(data.data.creator);
-                    time.setValue(data.data.createdTime);
-                    comment.setValue(data.data.comment);
-                    reservationWnd.show();
-                } else {
-                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                }
-            }
-        });
+        proxy.extraParams.id = id;
+        proxy.extraParams.title = title;
+        proxy.extraParams.date = date;
+        proxy.extraParams.primary = primary;
+        proxy.extraParams.related = related;
+        proxy.extraParams.filter = filter;
+        proxy.extraParams.reversal = reversal;
+        store.loadPage(1);
+
+        detailWnd.setTitle(title);
+        detailWnd.show();
     }
 
     Ext.onReady(function () {

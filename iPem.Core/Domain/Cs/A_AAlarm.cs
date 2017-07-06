@@ -126,6 +126,11 @@ namespace iPem.Core.Domain.Cs {
         public int ReversalCount { get; set; }
 
         /// <summary>
+        /// 是否为屏蔽告警
+        /// </summary>
+        public bool Masked { get; set; }
+
+        /// <summary>
         /// 告警入库时间
         /// </summary>
         public DateTime CreatedTime { get; set; }

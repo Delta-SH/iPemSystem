@@ -65,9 +65,9 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<H_IDevice> GetDevicesInParent(string parent) {
+        public List<H_IDevice> GetDevicesInStation(string id) {
             SqlParameter[] parms = { new SqlParameter("@StationId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             var entities = new List<H_IDevice>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevicesInParent, parms)) {
