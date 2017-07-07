@@ -54,6 +54,9 @@ namespace iPem.Site.Infrastructure {
         /// 历史数据API
         /// </summary>
         private readonly IAAlarmService _actAlarmService;
+        private readonly IHIDeviceService _iDeviceService;
+        private readonly IHIStationService _iStationService;
+        private readonly IHIAreaService _iAreaService;
 
         /// <summary>
         /// 应用数据API
@@ -134,6 +137,9 @@ namespace iPem.Site.Infrastructure {
             IStationService stationService,
             IStationTypeService stationTypeService,
             IAAlarmService actAlarmService,
+            IHIDeviceService iDeviceService,
+            IHIStationService iStationService,
+            IHIAreaService iAreaService,
             IDictionaryService dictionaryService,
             IEntitiesInRoleService entitiesInRoleService,
             IFollowPointService followPointService,
@@ -158,6 +164,9 @@ namespace iPem.Site.Infrastructure {
             this._stationService = stationService;
             this._stationTypeService = stationTypeService;
             this._actAlarmService = actAlarmService;
+            this._iDeviceService = iDeviceService;
+            this._iStationService = iStationService;
+            this._iAreaService = iAreaService;
             this._dictionaryService = dictionaryService;
             this._entitiesInRoleService = entitiesInRoleService;
             this._followPointService = followPointService;
@@ -909,6 +918,46 @@ namespace iPem.Site.Infrastructure {
 
         public void ResetAuthorizations() {
             this.Store.Authorizations = null;
+        }
+
+        public List<iSSHDevice> iDevices(DateTime date) {
+            var key = string.Format(GlobalCacheKeys.SSH_iDevicesPattern, date.ToString("yyyyMM"));
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<iSSHDevice>>(key);
+
+            var iAreas = _iAreaService.GetAreas(date);
+            var iStations = _iStationService.GetStations(date);
+            var iDevices = _iDeviceService.GetDevices(date);
+            var iFull = (from iDevice in iDevices
+                         join iStation in iStations on iDevice.StationId equals iStation.Id
+                         join iArea in iAreas on iStation.AreaId equals iArea.Id
+                         select new iSSHDevice { Current = iDevice, iStation = iStation, iArea = iArea }).ToList();
+
+            _cacheManager.Set<List<iSSHDevice>>(key, iFull, CachedIntervals.Global_Default_Intervals);
+            return iFull;
+        }
+
+        public List<iSSHStation> iStations(DateTime date) {
+            var key = string.Format(GlobalCacheKeys.SSH_iStationsPattern, date.ToString("yyyyMM"));
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<iSSHStation>>(key);
+
+            var iAreas = _iAreaService.GetAreas(date);
+            var iStations = _iStationService.GetStations(date);
+            var iDevices = _iDeviceService.GetDevices(date);
+            var iFull = (from iStation in iStations
+                         join iArea in iAreas on iStation.AreaId equals iArea.Id
+                         select new iSSHStation { Current = iStation, iArea = iArea }).ToList();
+
+            _cacheManager.Set<List<iSSHStation>>(key, iFull, CachedIntervals.Global_Default_Intervals);
+            return iFull;
+        }
+
+        public List<iSSHArea> iAreas(DateTime date) {
+            var key = string.Format(GlobalCacheKeys.SSH_iAreasPattern, date.ToString("yyyyMM"));
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<iSSHArea>>(key);
+
+            var iAreas = _iAreaService.GetAreas(date).Select(a => new iSSHArea { Current = a }).ToList();
+            _cacheManager.Set<List<iSSHArea>>(key, iAreas, CachedIntervals.Global_Default_Intervals);
+            return iAreas;
         }
 
         public List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms) {

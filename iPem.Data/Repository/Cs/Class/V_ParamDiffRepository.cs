@@ -44,6 +44,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.RelativeVal = SqlTypeConverter.DBNullStringHandler(rdr["RelativeVal"]);
                     entity.StorageInterval = SqlTypeConverter.DBNullStringHandler(rdr["StorageInterval"]);
                     entity.StorageRefTime = SqlTypeConverter.DBNullStringHandler(rdr["StorageRefTime"]);
+                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
                     entities.Add(entity);
                 }
             }

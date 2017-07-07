@@ -31,24 +31,12 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public List<H_IStation> GetStationsInTypeId(string type) {
-            return _repository.GetStationsInTypeId(type);
+        public List<H_IStation> GetStations(DateTime date) {
+            return _repository.GetStations(date);
         }
 
-        public List<H_IStation> GetStationsInTypeName(string type) {
-            return _repository.GetStationsInTypeName(type);
-        }
-
-        public List<H_IStation> GetStationsInParent(string parent) {
-            return _repository.GetStationsInArea(parent);
-        }
-
-        public List<H_IStation> GetStations() {
-            return _repository.GetStations();
-        }
-
-        public IPagedList<H_IStation> GetPagedStations(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<H_IStation>(this.GetStations(), pageIndex, pageSize);
+        public IPagedList<H_IStation> GetPagedStations(DateTime date, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_IStation>(this.GetStations(date), pageIndex, pageSize);
         }
 
         #endregion

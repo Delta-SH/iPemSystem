@@ -45,6 +45,7 @@ namespace iPem.Site.Controllers {
         private readonly IProductorService _productorService;
         private readonly ISubCompanyService _subCompanyService;
         private readonly ISupplierService _supplierService;
+        private readonly ICutService _cutService;
 
         #endregion
 
@@ -68,7 +69,8 @@ namespace iPem.Site.Controllers {
             IPointService pointService,
             IProductorService productorService,
             ISubCompanyService subCompanyService,
-            ISupplierService supplierService) {
+            ISupplierService supplierService,
+            ICutService cutService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -87,6 +89,7 @@ namespace iPem.Site.Controllers {
             this._productorService = productorService;
             this._subCompanyService = subCompanyService;
             this._supplierService = supplierService;
+            this._cutService = cutService;
         }
 
         #endregion
@@ -2807,31 +2810,28 @@ namespace iPem.Site.Controllers {
                 if (current != null) stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
-            var rtValues = _workContext.RtValues;
-            if (rtValues != null && rtValues.tingDianXinHao != null && rtValues.tingDianXinHao.Length > 0) {
-                var index = 0;
-                var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => rtValues.tingDianXinHao.Contains(a.PointId));
-                foreach (var station in stations) {
-                    var details = alarms.FindAll(a => a.StationId == station.Current.Id);
-                    var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+            var index = 0;
+            var cutteds = _cutService.GetCuteds(startDate, endDate, EnmCutType.Cut);
+            foreach (var station in stations) {
+                var details = cutteds.FindAll(a => a.StationId == station.Current.Id);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                    models.Add(new Model400207 {
-                        index = ++index,
+                models.Add(new Model400207 {
+                    index = ++index,
+                    area = area != null ? area.ToString() : "",
+                    stationid = station.Current.Id,
+                    station = station.Current.Name,
+                    type = station.Current.Type.Name,
+                    count = details.Count,
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
+                    details = details.Select(d => new ShiDianModel {
                         area = area != null ? area.ToString() : "",
-                        stationid = station.Current.Id,
                         station = station.Current.Name,
-                        type = station.Current.Type.Name,
-                        count = details.Count,
-                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
-                        details = details.Select(d => new ShiDianModel {
-                            area = area != null ? area.ToString() : "",
-                            station = station.Current.Name,
-                            start = CommonHelper.DateTimeConverter(d.StartTime),
-                            end = CommonHelper.DateTimeConverter(d.EndTime),
-                            timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
-                        }).ToList()
-                    });
-                }
+                        start = CommonHelper.DateTimeConverter(d.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.EndTime),
+                        timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
+                    }).ToList()
+                });
             }
 
             _cacheManager.Set<List<Model400207>>(key, models, CachedIntervals.Global_SiteResult_Intervals);
@@ -2855,31 +2855,28 @@ namespace iPem.Site.Controllers {
                 if (current != null) stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
-            var rtValues = _workContext.RtValues;
-            if (rtValues != null && !string.IsNullOrWhiteSpace(rtValues.faDianXinHao)) {
-                var index = 0;
-                var alarms = _hisAlarmService.GetAlarmsInPoint(rtValues.faDianXinHao, startDate, endDate);
-                foreach (var station in stations) {
-                    var details = alarms.FindAll(a => a.StationId == station.Current.Id);
-                    var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
+            var index = 0;
+            var cutteds = _cutService.GetCuteds(startDate, endDate, EnmCutType.Power);
+            foreach (var station in stations) {
+                var details = cutteds.FindAll(a => a.StationId == station.Current.Id);
+                var area = _workContext.Areas.Find(a => a.Current.Id == station.Current.AreaId);
 
-                    models.Add(new Model400208 {
-                        index = ++index,
+                models.Add(new Model400208 {
+                    index = ++index,
+                    area = area != null ? area.ToString() : "",
+                    stationid = station.Current.Id,
+                    station = station.Current.Name,
+                    type = station.Current.Type.Name,
+                    count = details.Count,
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
+                    details = details.Select(d => new ShiDianModel {
                         area = area != null ? area.ToString() : "",
-                        stationid = station.Current.Id,
                         station = station.Current.Name,
-                        type = station.Current.Type.Name,
-                        count = details.Count,
-                        interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
-                        details = details.Select(d => new ShiDianModel {
-                            area = area != null ? area.ToString() : "",
-                            station = station.Current.Name,
-                            start = CommonHelper.DateTimeConverter(d.StartTime),
-                            end = CommonHelper.DateTimeConverter(d.EndTime),
-                            timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
-                        }).ToList()
-                    });
-                }
+                        start = CommonHelper.DateTimeConverter(d.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.EndTime),
+                        timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
+                    }).ToList()
+                });
             }
 
             _cacheManager.Set<List<Model400208>>(key, models, CachedIntervals.Global_SiteResult_Intervals);

@@ -105,6 +105,12 @@ namespace iPem.Site.Infrastructure {
 
         void ResetAuthorizations();
 
+        List<iSSHDevice> iDevices(DateTime date);
+
+        List<iSSHStation> iStations(DateTime date);
+
+        List<iSSHArea> iAreas(DateTime date);
+
         List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms);
 
         List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms);

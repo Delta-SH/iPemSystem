@@ -31,24 +31,12 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public List<H_IDevice> GetDevicesInTypeId(string type) {
-            return _repository.GetDevicesInTypeId(type);
+        public List<H_IDevice> GetDevices(DateTime date) {
+            return _repository.GetDevices(date);
         }
 
-        public List<H_IDevice> GetDevicesInTypeName(string type) {
-            return _repository.GetDevicesInTypeName(type);
-        }
-
-        public List<H_IDevice> GetDevicesInParent(string parent) {
-            return _repository.GetDevicesInStation(parent);
-        }
-
-        public List<H_IDevice> GetDevices() {
-            return _repository.GetDevices();
-        }
-
-        public IPagedList<H_IDevice> GetPagedDevices(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<H_IDevice>(this.GetDevices(), pageIndex, pageSize);
+        public IPagedList<H_IDevice> GetPagedDevices(DateTime date, int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<H_IDevice>(this.GetDevices(date), pageIndex, pageSize);
         }
 
         #endregion

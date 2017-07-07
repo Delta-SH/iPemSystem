@@ -376,59 +376,59 @@
                 }
             ]
         },
-        powerOption = {
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b}: {c} ({d}%)"
-            },
-            legend: {
-                x: 'center',
-                y: 'bottom',
-                data: ['正常', '发电']
-            },
-            series: [
-                {
-                    name: '站点发电率',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        normal: {
-                            show: false,
-                            position: 'center'
-                        },
-                        emphasis: {
-                            show: true,
-                            textStyle: {
-                                fontSize: '20',
-                                fontWeight: 'bold'
-                            }
-                        }
-                    },
-                    labelLine: {
-                        normal: {
-                            show: false
-                        }
-                    },
-                    data: [
-                        {
-                            value: 0, name: '正常', itemStyle: {
-                                normal: {
-                                    color: '#48ac2e'
-                                }
-                            }
-                        },
-                        {
-                            value: 0, name: '发电', itemStyle: {
-                                normal: {
-                                    color: '#c12e34'
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
+        //powerOption = {
+        //    tooltip: {
+        //        trigger: 'item',
+        //        formatter: "{a} <br/>{b}: {c} ({d}%)"
+        //    },
+        //    legend: {
+        //        x: 'center',
+        //        y: 'bottom',
+        //        data: ['正常', '发电']
+        //    },
+        //    series: [
+        //        {
+        //            name: '站点发电率',
+        //            type: 'pie',
+        //            radius: ['40%', '70%'],
+        //            avoidLabelOverlap: false,
+        //            label: {
+        //                normal: {
+        //                    show: false,
+        //                    position: 'center'
+        //                },
+        //                emphasis: {
+        //                    show: true,
+        //                    textStyle: {
+        //                        fontSize: '20',
+        //                        fontWeight: 'bold'
+        //                    }
+        //                }
+        //            },
+        //            labelLine: {
+        //                normal: {
+        //                    show: false
+        //                }
+        //            },
+        //            data: [
+        //                {
+        //                    value: 0, name: '正常', itemStyle: {
+        //                        normal: {
+        //                            color: '#48ac2e'
+        //                        }
+        //                    }
+        //                },
+        //                {
+        //                    value: 0, name: '发电', itemStyle: {
+        //                        normal: {
+        //                            color: '#c12e34'
+        //                        }
+        //                    }
+        //                }
+        //            ]
+        //        }
+        //    ]
+        //},
         offlineOption = {
             tooltip: {
                 trigger: 'item',
@@ -511,17 +511,17 @@
         idProperty: 'index'
     });
 
-    Ext.define('PowerModel', {
-        extend: 'Ext.data.Model',
-        fields: [
-            { name: 'index', type: 'int' },
-            { name: 'area', type: 'string' },
-            { name: 'station', type: 'string' },
-            { name: 'time', type: 'string' },
-            { name: 'interval', type: 'string' }
-        ],
-        idProperty: 'index'
-    });
+    //Ext.define('PowerModel', {
+    //    extend: 'Ext.data.Model',
+    //    fields: [
+    //        { name: 'index', type: 'int' },
+    //        { name: 'area', type: 'string' },
+    //        { name: 'station', type: 'string' },
+    //        { name: 'time', type: 'string' },
+    //        { name: 'interval', type: 'string' }
+    //    ],
+    //    idProperty: 'index'
+    //});
 
     Ext.define('OffModel', {
         extend: 'Ext.data.Model',
@@ -624,48 +624,48 @@
         }
     });
 
-    var powerStore = Ext.create('Ext.data.Store', {
-        autoLoad: false,
-        pageSize: 20,
-        model: 'PowerModel',
-        proxy: {
-            type: 'ajax',
-            url: '/Home/RequestHomePower',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            },
-            simpleSortMode: true
-        },
-        listeners: {
-            load: function (me, records, successful) {
-                if (successful) {
-                    var data = me.proxy.reader.jsonData;
-                    if (!Ext.isEmpty(data)
-                        && !Ext.isEmpty(data.chart)
-                        && Ext.isArray(data.chart)
-                        && data.chart.length == 2
-                        && powerChart !== null) {
-                        if (!Ext.isEmpty(data.chart[0])) {
-                            powerOption.series[0].data[0].value = data.chart[0].value;
-                        }
+    //var powerStore = Ext.create('Ext.data.Store', {
+    //    autoLoad: false,
+    //    pageSize: 20,
+    //    model: 'PowerModel',
+    //    proxy: {
+    //        type: 'ajax',
+    //        url: '/Home/RequestHomePower',
+    //        reader: {
+    //            type: 'json',
+    //            successProperty: 'success',
+    //            messageProperty: 'message',
+    //            totalProperty: 'total',
+    //            root: 'data'
+    //        },
+    //        simpleSortMode: true
+    //    },
+    //    listeners: {
+    //        load: function (me, records, successful) {
+    //            if (successful) {
+    //                var data = me.proxy.reader.jsonData;
+    //                if (!Ext.isEmpty(data)
+    //                    && !Ext.isEmpty(data.chart)
+    //                    && Ext.isArray(data.chart)
+    //                    && data.chart.length == 2
+    //                    && powerChart !== null) {
+    //                    if (!Ext.isEmpty(data.chart[0])) {
+    //                        powerOption.series[0].data[0].value = data.chart[0].value;
+    //                    }
 
-                        if (!Ext.isEmpty(data.chart[1])) {
-                            powerOption.series[0].data[1].value = data.chart[1].value;
-                        }
+    //                    if (!Ext.isEmpty(data.chart[1])) {
+    //                        powerOption.series[0].data[1].value = data.chart[1].value;
+    //                    }
 
-                        powerChart.setOption(powerOption);
-                    }
+    //                    powerChart.setOption(powerOption);
+    //                }
 
-                    $$iPems.Tasks.homeTasks.powerTask.fireOnStart = false;
-                    $$iPems.Tasks.homeTasks.powerTask.restart();
-                }
-            }
-        }
-    });
+    //                $$iPems.Tasks.homeTasks.powerTask.fireOnStart = false;
+    //                $$iPems.Tasks.homeTasks.powerTask.restart();
+    //            }
+    //        }
+    //    }
+    //});
 
     var offStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
@@ -712,7 +712,7 @@
 
     var unconnectedPagingToolbar = $$iPems.clonePagingToolbar(unconnectedStore);
     var cuttingPagingToolbar = $$iPems.clonePagingToolbar(cuttingStore);
-    var powerPagingToolbar = $$iPems.clonePagingToolbar(powerStore);
+    //var powerPagingToolbar = $$iPems.clonePagingToolbar(powerStore);
     var offPagingToolbar = $$iPems.clonePagingToolbar(offStore);
 
     Ext.onReady(function () {
@@ -1016,88 +1016,91 @@
             }, {
                 xtype: 'component',
                 height: 10
-            }, {
-                xtype: 'panel',
-                glyph: 0xf030,
-                title: '站点发电列表',
-                collapsible: true,
-                collapseFirst: false,
-                layout: {
-                    type: 'hbox',
-                    align: 'stretch'
-                },
-                tools: [{
-                    type: 'print',
-                    tooltip: '数据导出',
-                    handler: function (event, toolEl, panelHeader) {
-                        $$iPems.download({
-                            url: '/Home/DownloadHomePower',
-                            params: powerStore.proxy.extraParams
-                        });
-                    }
-                }],
-                cls: 'powerview',
-                items: [
-                    {
-                        xtype: 'container',
-                        flex: 1,
-                        contentEl: 'power-pie'
-                    }, {
-                        xtype: 'component',
-                        height: 5
-                    }, {
-                        xtype: 'grid',
-                        flex: 3,
-                        store: powerStore,
-                        border: false,
-                        style: {
-                            'border-left': '1px solid #c0c0c0'
-                        },
-                        viewConfig: {
-                            loadMask: false,
-                            trackOver: true,
-                            stripeRows: true,
-                            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                            preserveScrollOnRefresh: true
-                        },
-                        columns: [{
-                            text: '序号',
-                            dataIndex: 'index',
-                            width: 60,
-                            align: 'left',
-                            sortable: true
-                        }, {
-                            text: '所属区域',
-                            dataIndex: 'area',
-                            align: 'left',
-                            flex: 1,
-                            sortable: true
-                        }, {
-                            text: '站点名称',
-                            dataIndex: 'station',
-                            align: 'left',
-                            width: 120,
-                            sortable: true
-                        }, {
-                            text: '发电时间',
-                            dataIndex: 'time',
-                            width: 150,
-                            align: 'left',
-                            sortable: true
-                        }, {
-                            text: '发电时长',
-                            dataIndex: 'interval',
-                            width: 120,
-                            align: 'left',
-                            sortable: true
-                        }],
-                        bbar: powerPagingToolbar
-                    }
-                ]
-            }, {
-                xtype: 'component',
-                height: 10
-            }, {
+            },
+            //{
+            //    xtype: 'panel',
+            //    glyph: 0xf030,
+            //    title: '站点发电列表',
+            //    collapsible: true,
+            //    collapseFirst: false,
+            //    layout: {
+            //        type: 'hbox',
+            //        align: 'stretch'
+            //    },
+            //    tools: [{
+            //        type: 'print',
+            //        tooltip: '数据导出',
+            //        handler: function (event, toolEl, panelHeader) {
+            //            $$iPems.download({
+            //                url: '/Home/DownloadHomePower',
+            //                params: powerStore.proxy.extraParams
+            //            });
+            //        }
+            //    }],
+            //    cls: 'powerview',
+            //    items: [
+            //        {
+            //            xtype: 'container',
+            //            flex: 1,
+            //            contentEl: 'power-pie'
+            //        }, {
+            //            xtype: 'component',
+            //            height: 5
+            //        }, {
+            //            xtype: 'grid',
+            //            flex: 3,
+            //            store: powerStore,
+            //            border: false,
+            //            style: {
+            //                'border-left': '1px solid #c0c0c0'
+            //            },
+            //            viewConfig: {
+            //                loadMask: false,
+            //                trackOver: true,
+            //                stripeRows: true,
+            //                emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+            //                preserveScrollOnRefresh: true
+            //            },
+            //            columns: [{
+            //                text: '序号',
+            //                dataIndex: 'index',
+            //                width: 60,
+            //                align: 'left',
+            //                sortable: true
+            //            }, {
+            //                text: '所属区域',
+            //                dataIndex: 'area',
+            //                align: 'left',
+            //                flex: 1,
+            //                sortable: true
+            //            }, {
+            //                text: '站点名称',
+            //                dataIndex: 'station',
+            //                align: 'left',
+            //                width: 120,
+            //                sortable: true
+            //            }, {
+            //                text: '发电时间',
+            //                dataIndex: 'time',
+            //                width: 150,
+            //                align: 'left',
+            //                sortable: true
+            //            }, {
+            //                text: '发电时长',
+            //                dataIndex: 'interval',
+            //                width: 120,
+            //                align: 'left',
+            //                sortable: true
+            //            }],
+            //            bbar: powerPagingToolbar
+            //        }
+            //    ]
+            //},
+            //{
+            //    xtype: 'component',
+            //    height: 10
+            //},
+            {
                 xtype: 'panel',
                 glyph: 0xf030,
                 title: 'Fsu离线列表',
@@ -1224,7 +1227,7 @@
         energypieChart = echarts.init(document.getElementById("energy-pie"), 'shine');
         unconnectedChart = echarts.init(document.getElementById("unconnected-pie"), 'shine');
         cuttingChart = echarts.init(document.getElementById("cutting-pie"), 'shine');
-        powerChart = echarts.init(document.getElementById("power-pie"), 'shine');
+        //powerChart = echarts.init(document.getElementById("power-pie"), 'shine');
         offlineChart = echarts.init(document.getElementById("offline-pie"), 'shine');
 
         //init charts
@@ -1235,7 +1238,7 @@
         energypieChart.setOption(energypieOption);
         unconnectedChart.setOption(unconnectedOption);
         cuttingChart.setOption(cuttingOption);
-        powerChart.setOption(powerOption);
+        //powerChart.setOption(powerOption);
         offlineChart.setOption(offlineOption);
 
         $$iPems.Tasks.homeTasks.almTask.run = function () {
@@ -1399,9 +1402,9 @@
         };
         $$iPems.Tasks.homeTasks.cuttingTask.start();
 
-        $$iPems.Tasks.homeTasks.powerTask.run = function () {
-            powerPagingToolbar.doRefresh();
-        };
-        $$iPems.Tasks.homeTasks.powerTask.start();
+        //$$iPems.Tasks.homeTasks.powerTask.run = function () {
+        //    powerPagingToolbar.doRefresh();
+        //};
+        //$$iPems.Tasks.homeTasks.powerTask.start();
     });
 })();

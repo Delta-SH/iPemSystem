@@ -209,6 +209,7 @@
     <Compile Include="Models\BInterface\TDevConf.cs" />
     <Compile Include="Models\BInterface\TSignal.cs" />
     <Compile Include="Models\BInterface\TStorageRule.cs" />
+    <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
@@ -288,6 +289,9 @@
     <Compile Include="Models\Model500105.cs" />
     <Compile Include="Models\NoticeModel.cs" />
     <Compile Include="Models\SeniorCondition.cs" />
+    <Compile Include="Models\SSH\iSSHArea.cs" />
+    <Compile Include="Models\SSH\iSSHDevice.cs" />
+    <Compile Include="Models\SSH\iSSHStation.cs" />
     <Compile Include="Models\SSH\SSHArea.cs" />
     <Compile Include="Models\SSH\SSHDevice.cs" />
     <Compile Include="Models\SSH\SSHFsu.cs" />
@@ -900,6 +904,7 @@
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.min.js" />
     <Content Include="Scripts\fsu.event.js" />
     <Content Include="Scripts\fsu.js" />
+    <Content Include="Scripts\fsu.paramdiff.js" />
     <Content Include="Scripts\global\all.js" />
     <Content Include="Scripts\global\global.js" />
     <Content Include="Scripts\help.js" />
@@ -1219,6 +1224,7 @@
     <Content Include="Views\Fsu\Configuration.cshtml" />
     <Content Include="Views\Fsu\Event.cshtml" />
     <Content Include="Views\Project\Reservation.cshtml" />
+    <Content Include="Views\Fsu\ParamDiff.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

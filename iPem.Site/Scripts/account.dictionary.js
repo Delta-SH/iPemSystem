@@ -1286,66 +1286,6 @@
             },
             {
                 xtype: 'fieldset',
-                title: '市电停电',
-                margin: '10 35 20 20',
-                fieldDefaults: {
-                    anchor: '100%',
-                    labelWidth: 80,
-                    labelAlign: 'left'
-                },
-                items: [
-                    {
-                        xtype: 'container',
-                        anchor: '100%',
-                        layout: 'hbox',
-                        margin: '15 15 15 15',
-                        items: [{
-                            name: 'tingDianXinHao',
-                            xtype: 'PointMultiPicker',
-                            fieldLabel: '市电状态',
-                            allowBlank: false,
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: '（注：设置"市电停电告警"信号）',
-                            margin: '0 0 0 15',
-                            flex: 1
-                        }]
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
-                title: '油机发电',
-                margin: '10 35 20 20',
-                fieldDefaults: {
-                    anchor: '100%',
-                    labelWidth: 80,
-                    labelAlign: 'left'
-                },
-                items: [
-                    {
-                        xtype: 'container',
-                        anchor: '100%',
-                        layout: 'hbox',
-                        margin: '15 15 15 15',
-                        items: [{
-                            name: 'faDianXinHao',
-                            xtype: 'PointPicker',
-                            fieldLabel: '油机状态',
-                            allowBlank: false,
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: '（注：设置"油机发电告警"信号）',
-                            margin: '0 0 0 15',
-                            flex: 1
-                        }]
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
                 title: '系统设备完好率',
                 margin: '10 35 20 20',
                 fieldDefaults: {

@@ -27,66 +27,9 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public List<H_IStation> GetStationsInTypeId(string type) {
-            SqlParameter[] parms = { new SqlParameter("@TypeId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
-
+        public List<H_IStation> GetStations(DateTime date) {
             var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeId, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IStation();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IStation> GetStationsInTypeName(string type) {
-            SqlParameter[] parms = { new SqlParameter("@TypeName", SqlDbType.VarChar, 200) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
-
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInTypeName, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IStation();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IStation> GetStationsInArea(string id) {
-            SqlParameter[] parms = { new SqlParameter("@AreaId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
-
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStationsInArea, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IStation();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IStation> GetStations() {
-            var entities = new List<H_IStation>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IStation_Repository_GetStations, null)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, string.Format(SqlCommands_Cs.Sql_H_IStation_Repository_GetStations, date.ToString("yyyyMM")), null)) {
                 while (rdr.Read()) {
                     var entity = new H_IStation();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);

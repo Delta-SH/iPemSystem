@@ -27,66 +27,9 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public List<H_IDevice> GetDevicesInTypeId(string type) {
-            SqlParameter[] parms = { new SqlParameter("@TypeId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
-
+        public List<H_IDevice> GetDevices(DateTime date) {
             var entities = new List<H_IDevice>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevicesInTypeId, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IDevice();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IDevice> GetDevicesInTypeName(string type) {
-            SqlParameter[] parms = { new SqlParameter("@TypeName", SqlDbType.VarChar, 200) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(type);
-
-            var entities = new List<H_IDevice>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevicesInTypeName, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IDevice();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IDevice> GetDevicesInStation(string id) {
-            SqlParameter[] parms = { new SqlParameter("@StationId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
-
-            var entities = new List<H_IDevice>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevicesInParent, parms)) {
-                while (rdr.Read()) {
-                    var entity = new H_IDevice();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.TypeId = SqlTypeConverter.DBNullStringHandler(rdr["TypeId"]);
-                    entity.TypeName = SqlTypeConverter.DBNullStringHandler(rdr["TypeName"]);
-                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
-        public List<H_IDevice> GetDevices() {
-            var entities = new List<H_IDevice>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevices, null)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, string.Format(SqlCommands_Cs.Sql_H_IDevice_Repository_GetDevices, date.ToString("yyyyMM")), null)) {
                 while (rdr.Read()) {
                     var entity = new H_IDevice();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);

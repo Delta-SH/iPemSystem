@@ -42,6 +42,9 @@ namespace iPem.Services.Common {
         public const string SSH_RoomsPattern = @"ipems:global:ssh-rooms@{0}@application";
         public const string SSH_FsusPattern = @"ipems:global:ssh-fsus@{0}@application";
         public const string SSH_DevicesPattern = @"ipems:global:ssh-devices@{0}@application";
+        public const string SSH_iDevicesPattern = @"ipems:global:ssh-idevices@{0}@application";
+        public const string SSH_iStationsPattern = @"ipems:global:ssh-istations@{0}@application";
+        public const string SSH_iAreasPattern = @"ipems:global:ssh-iareas@{0}@application";
 
         /// <summary>
         /// 角色菜单缓存
@@ -76,6 +79,7 @@ namespace iPem.Services.Common {
         /// </summary>
         public const string Fsu_Cache_Points = @"ipems:fsu:points@{0}@user";
         public const string Fsu_Cache_AlarmPoints = @"ipems:fsu:alarm-points@{0}@user";
+        public const string Fsu_Cache_ParamDiff = @"ipems:fsu:param-diff@{0}@user";
     }
 
     /// <summary>

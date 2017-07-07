@@ -455,26 +455,29 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 资管接口区域表
         /// </summary>
-        public const string Sql_H_IArea_Repository_GetAreasInTypeId = @"SELECT * FROM [dbo].[H_IArea] WHERE [TypeId] = @TypeId;";
-        public const string Sql_H_IArea_Repository_GetAreasInTypeName = @"SELECT * FROM [dbo].[H_IArea] WHERE [TypeName] = @TypeName;";
-        public const string Sql_H_IArea_Repository_GetAreasInParent = @"SELECT * FROM [dbo].[H_IArea] WHERE [ParentId] = @ParentId;";
-        public const string Sql_H_IArea_Repository_GetAreas = @"SELECT * FROM [dbo].[H_IArea];";
+        public const string Sql_H_IArea_Repository_GetAreas = @"
+        IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_IArea{0}]') AND type in (N'U'))
+        BEGIN
+	        SELECT * FROM [dbo].[H_IArea{0}];
+        END";
 
         /// <summary>
         /// 资管接口站点表
         /// </summary>
-        public const string Sql_H_IStation_Repository_GetStationsInTypeId = @"SELECT * FROM [dbo].[H_IStation] WHERE [TypeId] = @TypeId;";
-        public const string Sql_H_IStation_Repository_GetStationsInTypeName = @"SELECT * FROM [dbo].[H_IStation] WHERE [TypeName] = @TypeName;";
-        public const string Sql_H_IStation_Repository_GetStationsInArea = @"SELECT * FROM [dbo].[H_IStation] WHERE [AreaId] = @AreaId;";
-        public const string Sql_H_IStation_Repository_GetStations = @"SELECT * FROM [dbo].[H_IStation];";
+        public const string Sql_H_IStation_Repository_GetStations = @"
+        IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_IStation{0}]') AND type in (N'U'))
+        BEGIN
+	        SELECT * FROM [dbo].[H_IStation{0}];
+        END";
 
         /// <summary>
         /// 资管接口设备表
         /// </summary>
-        public const string Sql_H_IDevice_Repository_GetDevicesInTypeId = @"SELECT * FROM [dbo].[H_IDevice] WHERE [TypeId]=@TypeId;";        
-        public const string Sql_H_IDevice_Repository_GetDevicesInTypeName = @"SELECT * FROM [dbo].[H_IDevice] WHERE [TypeName]=@TypeName;";
-        public const string Sql_H_IDevice_Repository_GetDevicesInParent = @"SELECT * FROM [dbo].[H_IDevice] WHERE [StationId]=@StationId;";
-        public const string Sql_H_IDevice_Repository_GetDevices = @"SELECT * FROM [dbo].[H_IDevice];";
+        public const string Sql_H_IDevice_Repository_GetDevices = @"
+        IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_IDevice{0}]') AND type in (N'U'))
+        BEGIN
+	        SELECT * FROM [dbo].[H_IDevice{0}];
+        END";
 
         /// <summary>
         /// 实时性能数据表

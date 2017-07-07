@@ -13,6 +13,7 @@ using iPem.Site.Models.BInterface;
 using iPem.Site.Models.SSH;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -31,6 +32,7 @@ namespace iPem.Site.Controllers {
         private readonly IFsuService _fsuService;
         private readonly IFsuEventService _ftpService;
         private readonly IGroupService _groupService;
+        private readonly IParamDiffService _diffService;
         private readonly IPackMgr _packMgr;
 
         #endregion
@@ -46,6 +48,7 @@ namespace iPem.Site.Controllers {
             IFsuEventService ftpService,
             IDictionaryService dictionaryService,
             IGroupService groupService,
+            IParamDiffService diffService,
             IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -55,6 +58,7 @@ namespace iPem.Site.Controllers {
             this._ftpService = ftpService;
             this._dictionaryService = dictionaryService;
             this._groupService = groupService;
+            this._diffService = diffService;
             this._packMgr = packMgr;
         }
 
@@ -78,6 +82,13 @@ namespace iPem.Site.Controllers {
 
         public ActionResult Event(int? id) {
             if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2003))
+                throw new HttpException(404, "Page not found.");
+
+            return View();
+        }
+
+        public ActionResult ParamDiff(int? id) {
+            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2004))
                 throw new HttpException(404, "Page not found.");
 
             return View();
@@ -869,6 +880,50 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        [AjaxAuthorize]
+        public JsonResult RequestParamDiff(string parent, string[] points, string date, string keywords, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<DiffModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DiffModel>()
+            };
+
+            try {
+                var models = this.GetParamDiff(parent, points, date, keywords, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadParamDiff(string parent, string[] points, string date, string keywords, bool cache) {
+            try {
+                var models = this.GetParamDiff(parent, points, date, keywords, cache);
+                using (var ms = _excelManager.Export<DiffModel>(models, string.Format("{0}参数巡检信息", date ?? DateTime.Today.ToString("yyyyMM")), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
         private List<FsuModel> GetFsus(string parent, int[] status, string[] vendors, int filter, string keywords) {
             var result = new List<FsuModel>();
             var fsus = new List<SSHFsu>();
@@ -1199,6 +1254,76 @@ namespace iPem.Site.Controllers {
             }
 
             _cacheManager.Set<List<FsuAlmPointModel>>(key, result, CachedIntervals.Global_SiteResult_Intervals);
+            return result;
+        }
+
+        private List<DiffModel> GetParamDiff(string parent, string[] points, string date, string keywords, bool cache) {
+            var key = string.Format(GlobalCacheKeys.Fsu_Cache_ParamDiff, _workContext.Identifier);
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<DiffModel>>(key);
+
+            if (string.IsNullOrWhiteSpace(date)) date = DateTime.Today.ToString("yyyyMM");
+            var curDate = DateTime.ParseExact(date, "yyyyMM", CultureInfo.CurrentCulture);
+
+            var result = new List<DiffModel>();
+            var devices = _workContext.Devices;
+            if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+                var keys = Common.SplitKeys(parent);
+                if (keys.Length != 2) return result;
+                var type = int.Parse(keys[0]);
+                var id = keys[1];
+                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                if ((points == null || points.Length == 0) && nodeType != EnmSSH.Device) return result;
+
+                if (nodeType == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                    if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                } else if (nodeType == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId == id);
+                } else if (nodeType == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId == id);
+                } else if (nodeType == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id == id);
+                }
+            }
+
+            var diffs = _diffService.GetDiffs(curDate);
+            if (points != null && points.Length > 0)
+                diffs = diffs.FindAll(d => points.Contains(d.PointId));
+
+            var allpoints = _workContext.Points;
+            if (!string.IsNullOrWhiteSpace(keywords)) {
+                var conditions = Common.SplitCondition(keywords);
+                allpoints = allpoints.FindAll(d => CommonHelper.ConditionContain(d.Name, conditions));
+            }
+
+            var full = from diff in diffs
+                       join point in allpoints on diff.PointId equals point.Id
+                       join device in devices on diff.DeviceId equals device.Current.Id
+                       join area in _workContext.Areas on device.Current.AreaId equals area.Current.Id
+                       select new DiffModel {
+                           area = area.ToString(),
+                           station = device.Current.StationName,
+                           room = device.Current.RoomName,
+                           device = device.Current.Name,
+                           point = point.Name,
+                           threshold = diff.Threshold,
+                           level = diff.AlarmLevel,
+                           nmid = diff.NMAlarmID,
+                           absolute = diff.AbsoluteVal,
+                           relative = diff.RelativeVal,
+                           interval = diff.StorageInterval,
+                           reftime = diff.StorageRefTime,
+                           masked = diff.Masked ? "是" : "否"
+                       };
+
+            var index =0;
+            foreach (var f in full) {
+                f.index = ++index;
+                result.Add(f);
+            }
+
+            _cacheManager.Set<List<DiffModel>>(key, result, CachedIntervals.Global_SiteResult_Intervals);
             return result;
         }
 

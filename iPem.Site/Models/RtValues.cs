@@ -18,16 +18,6 @@ namespace iPem.Site.Models {
         public double chaoChang { get; set; }
 
         /// <summary>
-        /// 市电停电
-        /// </summary>
-        public string[] tingDianXinHao { get; set; }
-
-        /// <summary>
-        /// 油机发电
-        /// </summary>
-        public string faDianXinHao { get; set; }
-
-        /// <summary>
         /// 系统设备完好率
         /// 为了规避频繁告警，报表统计时将忽略告警历时小于该阈值的告警
         /// </summary>

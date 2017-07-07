@@ -50,5 +50,10 @@ namespace iPem.Core.Domain.Cs {
         /// 存储参考时间（格式：新值&旧值）
         /// </summary>
         public string StorageRefTime { get; set; }
+
+        /// <summary>
+        /// 屏蔽信号
+        /// </summary>
+        public bool Masked { get; set; }
     }
 }
