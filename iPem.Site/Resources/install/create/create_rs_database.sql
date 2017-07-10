@@ -1,8 +1,8 @@
 /*
-* iPemRs Database Script Library v1.0.0
+* P2R_V1 Database Script Library v1.0.0
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/06/23
+* Date: 2017/07/10
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -265,16 +265,16 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_Area](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
-	[Name] [varchar](200) NOT NULL,
-	[NodeLevel] [int] NOT NULL,
-	[ParentId] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
 	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[ParentID] [varchar](100) NOT NULL,
+	[NodeLevel] [int] NOT NULL,
+	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_A_Area] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -296,11 +296,11 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_AreaType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
  CONSTRAINT [PK_C_AreaType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -322,14 +322,14 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Brand](
-	[Id] [varchar](100) NOT NULL,
-	[Name] [varchar](200) NOT NULL,
-	[ProductorId] [varchar](100) NULL,
-	[Desc] [varchar](512) NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[ProductorID] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_Brand] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -351,18 +351,18 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Department](
-	[Id] [varchar](100) NOT NULL,
-	[Code] [varchar](50) NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
+	[Code] [varchar](50) NULL,
+	[ParentID] [varchar](100) NOT NULL,
 	[TypeDesc] [varchar](512) NULL,
 	[Phone] [varchar](40) NULL,
 	[PostCode] [varchar](20) NULL,
-	[ParentId] [varchar](100) NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_Department] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -384,12 +384,12 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_DeviceType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_DeviceType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -411,14 +411,14 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Duty](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Level] [varchar](40) NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_Duty] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -440,14 +440,14 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_EnumMethods](
-	[Id] [int] NOT NULL,
-	[Name] [varchar](200) NOT NULL,
-	[TypeId] [int] NOT NULL,
+	[ID] [int] NOT NULL,
 	[Index] [int] NOT NULL,
+	[TypeID] [int] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_EnumMethods] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -469,18 +469,18 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Group](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[Type] [varchar](100) NOT NULL,
+	[TypeID] [int] NOT NULL,
+	[Status] [bit] NOT NULL,
 	[IP] [varchar](20) NULL,
 	[Port] [int] NULL,
-	[Status] [bit] NOT NULL,
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NOT NULL,
  CONSTRAINT [PK_C_Group] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -502,12 +502,12 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_LogicType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[DeviceTypeID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[DeviceTypeId] [varchar](100) NOT NULL,
  CONSTRAINT [PK_C_LogicType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -529,7 +529,8 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Productor](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[EngName] [varchar](200) NULL,
 	[Phone] [varchar](40) NULL,
@@ -537,10 +538,9 @@ CREATE TABLE [dbo].[C_Productor](
 	[Address] [varchar](200) NULL,
 	[PostalCode] [varchar](20) NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_Productor] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -562,12 +562,12 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_RoomType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_RoomType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -589,11 +589,11 @@ SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_SCVendor](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
  CONSTRAINT [PK_C_SCVendor] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -615,12 +615,12 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_StationType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_StationType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -642,7 +642,8 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_SubCompany](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[linkMan] [varchar](40) NULL,
 	[Phone] [varchar](40) NULL,
@@ -651,10 +652,9 @@ CREATE TABLE [dbo].[C_SubCompany](
 	[Level] [int] NULL,
 	[PostalCode] [varchar](20) NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_SubCompany] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -676,13 +676,13 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_SubDeviceType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[DeviceTypeID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[DeviceTypeId] [varchar](100) NOT NULL,
 	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_C_SubDeviceType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -704,12 +704,12 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_SubLogicType](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[LogicTypeID] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[LogicTypeId] [varchar](100) NOT NULL,
  CONSTRAINT [PK_C_SubLogicType] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -731,7 +731,8 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Supplier](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[linkMan] [varchar](40) NULL,
 	[Phone] [varchar](40) NULL,
@@ -740,10 +741,9 @@ CREATE TABLE [dbo].[C_Supplier](
 	[Level] [int] NULL,
 	[PostalCode] [varchar](20) NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_Supplier] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -765,13 +765,13 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[C_Unit](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_C_Unit] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1068,31 +1068,31 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[D_Device](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
+	[RoomID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
+	[GroupID] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL,
+	[SubDeviceTypeID] [varchar](100) NOT NULL,
+	[SubLogicTypeID] [varchar](100) NOT NULL,
+	[FsuID] [varchar](100) NOT NULL,
+	[ProtocolID] [varchar](100) NULL,
 	[SysName] [varchar](200) NOT NULL,
 	[SysCode] [varchar](100) NULL,
-	[SubDeviceTypeId] [varchar](100) NOT NULL,
-	[SubLogicTypeId] [varchar](100) NULL,
 	[Model] [varchar](20) NOT NULL,
-	[ProdId] [varchar](100) NOT NULL,
-	[BrandId] [varchar](100) NOT NULL,
-	[SuppId] [varchar](100) NOT NULL,
-	[SubCompId] [varchar](100) NULL,
+	[ProdID] [varchar](100) NOT NULL,
+	[BrandID] [varchar](100) NOT NULL,
+	[SuppID] [varchar](100) NOT NULL,
+	[SubCompID] [varchar](100) NULL,
 	[StartTime] [datetime] NOT NULL,
 	[ScrapTime] [datetime] NOT NULL,
-	[StatusId] [int] NOT NULL,
+	[StatusID] [int] NOT NULL,
 	[Contact] [varchar](40) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[ProtocolId] [varchar](100) NULL,
-	[FsuId] [varchar](100) NOT NULL,
-	[RoomId] [varchar](100) NOT NULL,
-	[Enabled] [bit] NOT NULL,
-	[GroupID] [varchar](100) NULL,
  CONSTRAINT [PK_D_Device] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1178,7 +1178,9 @@ GO
 CREATE TABLE [dbo].[D_FSU](
 	[DeviceID] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
-	[VendorId] [varchar](100) NULL,
+	[GroupID] [varchar](100) NULL,
+	[VendorID] [varchar](100) NULL,
+	[Status] [bit] NOT NULL,
 	[IP] [varchar](20) NULL,
 	[Port] [int] NULL,
 	[UID] [varchar](20) NULL,
@@ -1189,9 +1191,7 @@ CREATE TABLE [dbo].[D_FSU](
 	[FtpAuthority] [int] NULL,
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
-	[Status] [bit] NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[GroupId] [varchar](100) NULL,
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC
@@ -1419,9 +1419,10 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[D_RedefinePoint](
-	[DeviceId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
+	[DeviceID] [varchar](100) NOT NULL,
+	[PointID] [varchar](100) NOT NULL,
 	[AlarmLevel] [int] NOT NULL,
+	[NMAlarmID] [varchar](100) NULL,
 	[AlarmLimit] [float] NULL,
 	[AlarmReturnDiff] [float] NULL,
 	[AlarmDelay] [int] NULL,
@@ -1435,12 +1436,12 @@ CREATE TABLE [dbo].[D_RedefinePoint](
 	[ConnAlarmStr] [varchar](256) NULL,
 	[AlarmFilteringStr] [varchar](256) NULL,
 	[AlarmReversalStr] [varchar](256) NULL,
-	[Extend] [varchar](max) NULL,
 	[UpdateTime] [datetime] NOT NULL,
+	[Extend] [varchar](max) NULL,
  CONSTRAINT [PK_D_RedefinePoint] PRIMARY KEY CLUSTERED 
 (
-	[DeviceId] ASC,
-	[PointId] ASC
+	[DeviceID] ASC,
+	[PointID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -1778,7 +1779,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[H_Masking](
-	[ID] [varchar](100) NOT NULL,
+	[ID] [varchar](256) NOT NULL,
 	[Type] [int] NOT NULL,
 	[UserID] [varchar](100) NOT NULL,
 	[Time] [datetime] NOT NULL,
@@ -1867,16 +1868,17 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[P_Point](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Code] [varchar](100) NULL,
+	[Number] [varchar](20) NOT NULL,
+	[AlarmID] [varchar](100) NULL,
+	[NMAlarmID] [varchar](100) NULL,
 	[Name] [varchar](200) NOT NULL,
 	[Type] [int] NOT NULL,
+	[DeviceTypeID] [varchar](100) NOT NULL,
+	[LogicTypeID] [varchar](100) NOT NULL,
 	[UnitState] [varchar](160) NULL,
-	[Number] [varchar](20) NOT NULL,
-	[AlarmId] [varchar](100) NULL,
-	[NMAlarmId] [varchar](100) NULL,
-	[DeviceTypeId] [varchar](100) NOT NULL,
-	[LogicTypeId] [varchar](100) NOT NULL,
 	[AlarmTimeDesc] [varchar](40) NULL,
 	[NormalTimeDesc] [varchar](40) NULL,
 	[DeviceEffect] [varchar](100) NULL,
@@ -1886,10 +1888,9 @@ CREATE TABLE [dbo].[P_Point](
 	[Extend1] [text] NULL,
 	[Extend2] [text] NULL,
 	[Desc] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_P_Point] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -1911,13 +1912,13 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[P_PointsInProtocol](
-	[ProtocolId] [varchar](100) NOT NULL,
-	[PointId] [varchar](100) NOT NULL,
+	[ProtocolID] [varchar](100) NOT NULL,
+	[PointID] [varchar](100) NOT NULL,
 	[Desc] [varchar](200) NULL,
  CONSTRAINT [PK_P_PointsInProtocol] PRIMARY KEY CLUSTERED 
 (
-	[ProtocolId] ASC,
-	[PointId] ASC
+	[ProtocolID] ASC,
+	[PointID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1939,14 +1940,14 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[P_Protocol](
-	[Id] [varchar](100) NOT NULL,
-	[Name] [varchar](200) NOT NULL,
-	[SubDeviceTypeId] [varchar](100) NOT NULL,
-	[Desc] [varchar](512) NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Enabled] [bit] NOT NULL,
+	[SubDeviceTypeID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[Desc] [varchar](512) NULL,
  CONSTRAINT [PK_P_Protocol] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -1968,22 +1969,22 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[P_SubPoint](
-	[PointId] [varchar](100) NOT NULL,
-	[StationTypeId] [varchar](100) NOT NULL,
+	[PointID] [varchar](100) NOT NULL,
+	[StaTypeID] [varchar](100) NOT NULL,
 	[AlarmLevel] [int] NOT NULL,
 	[AlarmLimit] [float] NULL,
 	[AlarmReturnDiff] [float] NULL,
 	[AlarmDelay] [int] NULL,
 	[AlarmRecoveryDelay] [int] NULL,
-	[TriggerTypeId] [int] NULL,
+	[TriggerTypeID] [int] NULL,
 	[SavedPeriod] [int] NULL,
 	[AbsoluteThreshold] [float] NULL,
 	[PerThreshold] [float] NULL,
 	[StaticPeriod] [int] NULL,
  CONSTRAINT [PK_P_SubPoint] PRIMARY KEY CLUSTERED 
 (
-	[PointId] ASC,
-	[StationTypeId] ASC
+	[PointID] ASC,
+	[StaTypeID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -2005,12 +2006,16 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[S_Room](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
+	[StationID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[RoomTypeId] [varchar](100) NOT NULL,
+	[GroupID] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL,
 	[Floor] [int] NULL,
-	[PropertyId] [int] NOT NULL,
+	[RoomTypeID] [varchar](100) NOT NULL,
+	[PropertyID] [int] NOT NULL,
 	[Address] [varchar](200) NOT NULL,
 	[Length] [varchar](20) NULL,
 	[Width] [varchar](20) NULL,
@@ -2028,13 +2033,9 @@ CREATE TABLE [dbo].[S_Room](
 	[FireSubMain] [varchar](20) NULL,
 	[AirSubMain] [varchar](20) NULL,
 	[Contact] [varchar](40) NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[StationId] [varchar](100) NOT NULL,
-	[Enabled] [bit] NOT NULL,
-	[GroupID] [varchar](100) NULL,
  CONSTRAINT [PK_S_Room] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -2056,31 +2057,31 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[S_Station](
-	[Id] [varchar](100) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
 	[Code] [varchar](100) NULL,
+	[AreaID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[StaTypeId] [varchar](100) NOT NULL,
+	[GroupID] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL,
+	[StaTypeID] [varchar](100) NOT NULL,
 	[Longitude] [varchar](20) NULL,
 	[Latitude] [varchar](20) NULL,
 	[Altitude] [varchar](20) NULL,
 	[CityElecLoad] [varchar](40) NOT NULL,
 	[Contact] [varchar](20) NULL,
 	[CityElecCap] [varchar](20) NOT NULL,
-	[CityElecLoadTypeId] [int] NOT NULL,
+	[CityElecLoadTypeID] [int] NOT NULL,
 	[CityElectNumber] [int] NOT NULL,
 	[LineRadiusSize] [varchar](20) NULL,
 	[LineLength] [varchar](20) NULL,
-	[SuppPowerTypeId] [int] NULL,
+	[SuppPowerTypeID] [int] NULL,
 	[TranInfo] [varchar](250) NULL,
 	[TranContNo] [varchar](40) NULL,
 	[TranPhone] [varchar](20) NULL,
-	[Desc] [varchar](512) NULL,
-	[AreaId] [varchar](100) NOT NULL,
-	[Enabled] [bit] NOT NULL,
-	[GroupID] [varchar](100) NULL,
  CONSTRAINT [PK_S_Station] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -2136,15 +2137,16 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[U_Employee](
-	[Id] [varchar](100) NOT NULL,
-	[Name] [varchar](200) NOT NULL,
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NULL,
 	[EngName] [varchar](100) NULL,
 	[UsedName] [varchar](200) NULL,
-	[EmpNo] [varchar](20) NOT NULL,
-	[DeptId] [varchar](100) NOT NULL,
-	[DutyId] [varchar](100) NULL,
-	[ICardId] [varchar](20) NULL,
-	[Sex] [int] NOT NULL,
+	[EmpNo] [varchar](20) NULL,
+	[DeptID] [varchar](100) NOT NULL,
+	[DutyID] [varchar](100) NULL,
+	[ICardID] [varchar](20) NULL,
+	[Sex] [int] NULL,
 	[Birthday] [datetime] NULL,
 	[Degree] [int] NULL,
 	[Marriage] [int] NULL,
@@ -2163,10 +2165,9 @@ CREATE TABLE [dbo].[U_Employee](
 	[RetireTime] [datetime] NULL,
 	[IsFormal] [bit] NULL,
 	[Remarks] [varchar](512) NULL,
-	[Enabled] [bit] NOT NULL,
  CONSTRAINT [PK_U_Employee] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -2274,8 +2275,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[C_SubDeviceType]
-ALTER TABLE [dbo].[C_SubDeviceType]  WITH CHECK ADD  CONSTRAINT [FK_C_SubDeviceType_C_DeviceType] FOREIGN KEY([DeviceTypeId])
-REFERENCES [dbo].[C_DeviceType] ([Id])
+ALTER TABLE [dbo].[C_SubDeviceType]  WITH CHECK ADD  CONSTRAINT [FK_C_SubDeviceType_C_DeviceType] FOREIGN KEY([DeviceTypeID])
+REFERENCES [dbo].[C_DeviceType] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2286,8 +2287,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[C_SubLogicType]
-ALTER TABLE [dbo].[C_SubLogicType]  WITH NOCHECK ADD  CONSTRAINT [FK_C_SubLogicType_C_LogicType] FOREIGN KEY([LogicTypeId])
-REFERENCES [dbo].[C_LogicType] ([Id])
+ALTER TABLE [dbo].[C_SubLogicType]  WITH NOCHECK ADD  CONSTRAINT [FK_C_SubLogicType_C_LogicType] FOREIGN KEY([LogicTypeID])
+REFERENCES [dbo].[C_LogicType] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2299,7 +2300,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_ACDistBox]
 ALTER TABLE [dbo].[D_ACDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_ACDistBox_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2311,7 +2312,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_AirCondHost]
 ALTER TABLE [dbo].[D_AirCondHost]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondHost_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2323,7 +2324,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_AirCondWindCabi]
 ALTER TABLE [dbo].[D_AirCondWindCabi]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondWindCabi_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2335,7 +2336,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_AirCondWindCool]
 ALTER TABLE [dbo].[D_AirCondWindCool]  WITH CHECK ADD  CONSTRAINT [FK_D_AirCondWindCool_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2347,7 +2348,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_BattGroup]
 ALTER TABLE [dbo].[D_BattGroup]  WITH CHECK ADD  CONSTRAINT [FK_D_BattGroup_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2359,7 +2360,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_BattTempBox]
 ALTER TABLE [dbo].[D_BattTempBox]  WITH CHECK ADD  CONSTRAINT [FK_D_BattTempBox_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2371,7 +2372,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_ChangeHeat]
 ALTER TABLE [dbo].[D_ChangeHeat]  WITH CHECK ADD  CONSTRAINT [FK_D_ChangeHeat_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2383,7 +2384,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_CombSwitElecSour]
 ALTER TABLE [dbo].[D_CombSwitElecSour]  WITH CHECK ADD  CONSTRAINT [FK_D_CombSwitElecSour_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2395,7 +2396,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_ControlEqui]
 ALTER TABLE [dbo].[D_ControlEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_ControlEqui_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2407,7 +2408,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_DCDistBox]
 ALTER TABLE [dbo].[D_DCDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_DCDistBox_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2418,8 +2419,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_Device]
-ALTER TABLE [dbo].[D_Device]  WITH CHECK ADD  CONSTRAINT [FK_D_Device_S_Room] FOREIGN KEY([RoomId])
-REFERENCES [dbo].[S_Room] ([Id])
+ALTER TABLE [dbo].[D_Device]  WITH CHECK ADD  CONSTRAINT [FK_D_Device_S_Room] FOREIGN KEY([RoomID])
+REFERENCES [dbo].[S_Room] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2431,7 +2432,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_DivSwitElecSour]
 ALTER TABLE [dbo].[D_DivSwitElecSour]  WITH CHECK ADD  CONSTRAINT [FK_D_DivSwitElecSour_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2443,7 +2444,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_ElecSourCabi]
 ALTER TABLE [dbo].[D_ElecSourCabi]  WITH CHECK ADD  CONSTRAINT [FK_D_ElecSourCabi_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2455,7 +2456,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_FSU]
 ALTER TABLE [dbo].[D_FSU]  WITH CHECK ADD  CONSTRAINT [FK_D_FSU_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2467,7 +2468,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_GeneratorGroup]
 ALTER TABLE [dbo].[D_GeneratorGroup]  WITH CHECK ADD  CONSTRAINT [FK_D_GeneratorGroup_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2479,7 +2480,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_HighVoltDistBox]
 ALTER TABLE [dbo].[D_HighVoltDistBox]  WITH CHECK ADD  CONSTRAINT [FK_D_HighVoltDistBox_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2491,7 +2492,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_Inverter]
 ALTER TABLE [dbo].[D_Inverter]  WITH CHECK ADD  CONSTRAINT [FK_D_Inverter_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2503,7 +2504,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_LowDistCabinet]
 ALTER TABLE [dbo].[D_LowDistCabinet]  WITH CHECK ADD  CONSTRAINT [FK_D_LowDistCabinet_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2515,7 +2516,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_Manostat]
 ALTER TABLE [dbo].[D_Manostat]  WITH CHECK ADD  CONSTRAINT [FK_D_Manostat_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2527,7 +2528,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_MobiGenerator]
 ALTER TABLE [dbo].[D_MobiGenerator]  WITH CHECK ADD  CONSTRAINT [FK_D_MobiGenerator_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2539,7 +2540,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_OrdiAirCond]
 ALTER TABLE [dbo].[D_OrdiAirCond]  WITH CHECK ADD  CONSTRAINT [FK_D_OrdiAirCond_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2550,8 +2551,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_RedefinePoint]
-ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_D_Device] FOREIGN KEY([DeviceId])
-REFERENCES [dbo].[D_Device] ([Id])
+ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2560,8 +2561,8 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[
 ALTER TABLE [dbo].[D_RedefinePoint] CHECK CONSTRAINT [FK_D_RedefinePoint_D_Device]
 GO
 
-ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_P_Point] FOREIGN KEY([PointId])
-REFERENCES [dbo].[P_Point] ([Id])
+ALTER TABLE [dbo].[D_RedefinePoint]  WITH CHECK ADD  CONSTRAINT [FK_D_RedefinePoint_P_Point] FOREIGN KEY([PointID])
+REFERENCES [dbo].[P_Point] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2573,7 +2574,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_SolarController]
 ALTER TABLE [dbo].[D_SolarController]  WITH CHECK ADD  CONSTRAINT [FK_D_SolarController_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2585,7 +2586,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_SolarEqui]
 ALTER TABLE [dbo].[D_SolarEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_SolarEqui_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2597,7 +2598,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_SpecAirCond]
 ALTER TABLE [dbo].[D_SpecAirCond]  WITH CHECK ADD  CONSTRAINT [FK_D_SpecAirCond_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2609,7 +2610,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_SwitchFuse]
 ALTER TABLE [dbo].[D_SwitchFuse]  WITH CHECK ADD  CONSTRAINT [FK_D_SwitchFuse_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2621,7 +2622,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_Transformer]
 ALTER TABLE [dbo].[D_Transformer]  WITH CHECK ADD  CONSTRAINT [FK_D_Transformer_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2633,7 +2634,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_UPS]
 ALTER TABLE [dbo].[D_UPS]  WITH CHECK ADD  CONSTRAINT [FK_D_UPS_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2645,7 +2646,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_Ventilation]
 ALTER TABLE [dbo].[D_Ventilation]  WITH CHECK ADD  CONSTRAINT [FK_D_Ventilation_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2657,7 +2658,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_WindEnerEqui]
 ALTER TABLE [dbo].[D_WindEnerEqui]  WITH CHECK ADD  CONSTRAINT [FK_D_WindEnerEqui_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2669,7 +2670,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_WindLightCompCon]
 ALTER TABLE [dbo].[D_WindLightCompCon]  WITH CHECK ADD  CONSTRAINT [FK_D_WindLightCompCon_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2681,7 +2682,7 @@ GO
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_WindPowerCon]
 ALTER TABLE [dbo].[D_WindPowerCon]  WITH CHECK ADD  CONSTRAINT [FK_D_WindPowerCon_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([Id])
+REFERENCES [dbo].[D_Device] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2692,8 +2693,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[P_PointsInProtocol]
-ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Point] FOREIGN KEY([PointId])
-REFERENCES [dbo].[P_Point] ([Id])
+ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Point] FOREIGN KEY([PointID])
+REFERENCES [dbo].[P_Point] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2702,8 +2703,8 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[
 ALTER TABLE [dbo].[P_PointsInProtocol] CHECK CONSTRAINT [FK_P_PointsInProtocol_P_Point]
 GO
 
-ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Protocol] FOREIGN KEY([ProtocolId])
-REFERENCES [dbo].[P_Protocol] ([Id])
+ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Protocol] FOREIGN KEY([ProtocolID])
+REFERENCES [dbo].[P_Protocol] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2714,8 +2715,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[P_SubPoint]
-ALTER TABLE [dbo].[P_SubPoint]  WITH CHECK ADD  CONSTRAINT [FK_P_SubPoint_P_Point] FOREIGN KEY([PointId])
-REFERENCES [dbo].[P_Point] ([Id])
+ALTER TABLE [dbo].[P_SubPoint]  WITH CHECK ADD  CONSTRAINT [FK_P_SubPoint_P_Point] FOREIGN KEY([PointID])
+REFERENCES [dbo].[P_Point] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2726,8 +2727,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[S_Room]
-ALTER TABLE [dbo].[S_Room]  WITH CHECK ADD  CONSTRAINT [FK_S_Room_S_Station] FOREIGN KEY([StationId])
-REFERENCES [dbo].[S_Station] ([Id])
+ALTER TABLE [dbo].[S_Room]  WITH CHECK ADD  CONSTRAINT [FK_S_Room_S_Station] FOREIGN KEY([StationID])
+REFERENCES [dbo].[S_Station] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
@@ -2738,8 +2739,8 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[S_Station]
-ALTER TABLE [dbo].[S_Station]  WITH CHECK ADD  CONSTRAINT [FK_S_Station_A_Area] FOREIGN KEY([AreaId])
-REFERENCES [dbo].[A_Area] ([Id])
+ALTER TABLE [dbo].[S_Station]  WITH CHECK ADD  CONSTRAINT [FK_S_Station_A_Area] FOREIGN KEY([AreaID])
+REFERENCES [dbo].[A_Area] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO

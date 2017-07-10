@@ -2,7 +2,7 @@
 * iPemCs Database Script Library v1.0.0
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/06/23
+* Date: 2017/07/10
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -13,8 +13,10 @@ GO
 
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 SET ANSI_PADDING ON
 GO
 
@@ -27,7 +29,7 @@ CREATE TABLE [dbo].[A_AAlarm](
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[SerialNo] [varchar](100) NOT NULL,
-	[NMAlarmId] [varchar](100) NULL,
+	[NMAlarmId] [varchar](100) NOT NULL,
 	[AlarmTime] [datetime] NOT NULL,
 	[AlarmLevel] [int] NOT NULL,
 	[AlarmValue] [float] NOT NULL,
@@ -41,7 +43,8 @@ CREATE TABLE [dbo].[A_AAlarm](
 	[RelatedId] [varchar](200) NULL,
 	[FilterId] [varchar](200) NULL,
 	[ReversalId] [varchar](200) NULL,
-	[ReversalCount] [int] NULL,
+	[ReversalCount] [int] NOT NULL,
+	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_A_AAlarm] PRIMARY KEY CLUSTERED 
 (
@@ -75,7 +78,7 @@ CREATE TABLE [dbo].[A_HAlarm](
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[SerialNo] [varchar](100) NOT NULL,
-	[NMAlarmId] [varchar](100) NULL,
+	[NMAlarmId] [varchar](100) NOT NULL,
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
 	[AlarmLevel] [int] NOT NULL,
@@ -91,7 +94,8 @@ CREATE TABLE [dbo].[A_HAlarm](
 	[RelatedId] [varchar](200) NULL,
 	[FilterId] [varchar](200) NULL,
 	[ReversalId] [varchar](200) NULL,
-	[ReversalCount] [int] NULL,
+	[ReversalCount] [int] NOT NULL,
+	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_A_HAlarm_1] PRIMARY KEY CLUSTERED 
 (
@@ -124,9 +128,9 @@ CREATE TABLE [dbo].[A_IAlarm](
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[SerialNo] [varchar](100) NOT NULL,
-	[NMAlarmId] [varchar](100) NULL,
-	[AlarmTime] [datetime] NULL,
-	[AlarmLevel] [int] NULL,
+	[NMAlarmId] [varchar](100) NOT NULL,
+	[AlarmTime] [datetime] NOT NULL,
+	[AlarmLevel] [int] NOT NULL,
 	[AlarmFlag] [int] NOT NULL,
 	[AlarmDesc] [varchar](120) NULL,
 	[AlarmValue] [float] NULL,
@@ -138,6 +142,11 @@ CREATE TABLE [dbo].[A_IAlarm](
 	[ReservationName] [varchar](200) NULL,
 	[ReservationStart] [datetime] NULL,
 	[ReservationEnd] [datetime] NULL,
+	[PrimaryId] [varchar](200) NULL,
+	[RelatedId] [varchar](200) NULL,
+	[FilterId] [varchar](200) NULL,
+	[ReversalId] [varchar](200) NULL,
+	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_A_IAlarm] PRIMARY KEY CLUSTERED 
 (
@@ -214,6 +223,34 @@ GO
 SET ANSI_PADDING OFF
 GO
 
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[H_IArea]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_IArea]') AND type in (N'U'))
+DROP TABLE [dbo].[H_IArea]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[H_IArea](
+	[Id] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[TypeId] [varchar](100) NULL,
+	[TypeName] [varchar](200) NULL,
+	[ParentId] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_H_IArea] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[H_IDevice]
@@ -231,9 +268,9 @@ GO
 CREATE TABLE [dbo].[H_IDevice](
 	[Id] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[Type] [varchar](200) NOT NULL,
-	[ParentId] [varchar](100) NOT NULL,
-	[CreatedTime] [datetime] NOT NULL,
+	[TypeId] [varchar](100) NULL,
+	[TypeName] [varchar](200) NULL,
+	[StationId] [varchar](100) NOT NULL,
  CONSTRAINT [PK_H_IDevice] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -260,9 +297,9 @@ GO
 CREATE TABLE [dbo].[H_IStation](
 	[Id] [varchar](100) NOT NULL,
 	[Name] [varchar](200) NOT NULL,
-	[Type] [varchar](200) NOT NULL,
-	[Parent] [varchar](200) NOT NULL,
-	[CreatedTime] [datetime] NOT NULL,
+	[TypeId] [varchar](100) NULL,
+	[TypeName] [varchar](200) NULL,
+	[AreaId] [varchar](100) NOT NULL,
  CONSTRAINT [PK_H_IStation] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -373,6 +410,75 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_Cuted]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Cuted]') AND type in (N'U'))
+DROP TABLE [dbo].[V_Cuted]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[V_Cuted](
+	[Id] [varchar](200) NOT NULL,
+	[Type] [int] NOT NULL,
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[FsuId] [varchar](100) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[StartTime] [datetime] NOT NULL,
+	[EndTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_V_Cut] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC,
+	[Type] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_Cutting]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Cutting]') AND type in (N'U'))
+DROP TABLE [dbo].[V_Cutting]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[V_Cutting](
+	[Id] [varchar](200) NOT NULL,
+	[Type] [int] NOT NULL,
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[FsuId] [varchar](100) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[StartTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_V_Cutting] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC,
+	[Type] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[V_Elec]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Elec]') AND type in (N'U'))
 DROP TABLE [dbo].[V_Elec]
@@ -452,6 +558,41 @@ CREATE TABLE [dbo].[V_Load](
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
 	[Value] [float] NOT NULL
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_ParamDiff]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_ParamDiff]') AND type in (N'U'))
+DROP TABLE [dbo].[V_ParamDiff]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[V_ParamDiff](
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[Threshold] [varchar](20) NULL,
+	[AlarmLevel] [varchar](20) NULL,
+	[NMAlarmID] [varchar](50) NULL,
+	[AbsoluteVal] [varchar](20) NULL,
+	[RelativeVal] [varchar](20) NULL,
+	[StorageInterval] [varchar](20) NULL,
+	[StorageRefTime] [varchar](20) NULL,
+	[Masked] [bit] NULL,
+ CONSTRAINT [PK_V_ParamDiff] PRIMARY KEY CLUSTERED 
+(
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
