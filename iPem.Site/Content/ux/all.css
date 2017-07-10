@@ -16,12 +16,12 @@
 }
 
 @font-face {
-	font-family: 'ipems-icon-font';  /* project id 64245 */
-    src: url('//at.alicdn.com/t/font_t0eutdjs5ekit3xr.eot');
-    src: url('//at.alicdn.com/t/font_t0eutdjs5ekit3xr.eot?#iefix') format('embedded-opentype'),
-         url('//at.alicdn.com/t/font_t0eutdjs5ekit3xr.woff') format('woff'),
-         url('//at.alicdn.com/t/font_t0eutdjs5ekit3xr.ttf') format('truetype'),
-         url('//at.alicdn.com/t/font_t0eutdjs5ekit3xr.svg#ipems-icon-font') format('svg');
+	font-family: 'ipems-icon-font';
+	src: url('/Content/ux/fonts/iconfont.eot');
+	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
+		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
+		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;

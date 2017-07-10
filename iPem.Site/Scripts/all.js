@@ -2170,8 +2170,8 @@ Ext.define("Ext.ux.AlarmTypeMultiCombo", {
              { name: 'text', type: 'string' }
         ],
         data: [
-            { "id": 1, "text": '系统告警' },
-            { "id": 2, "text": '屏蔽告警' }
+            { "id": 1, "text": '包含系统告警' },
+            { "id": 2, "text": '包含屏蔽告警' }
         ]
     })
 });
@@ -2195,8 +2195,8 @@ Ext.define("Ext.ux.AlarmTypeComboBox", {
              { name: 'text', type: 'string' }
         ],
         data: [
-            { "id": 1, "text": '系统告警' },
-            { "id": 2, "text": '屏蔽告警' }
+            { "id": 1, "text": '包含系统告警' },
+            { "id": 2, "text": '包含屏蔽告警' }
         ]
     })
 });
