@@ -189,6 +189,7 @@
     <Compile Include="Infrastructure\iPemWorkContext.cs" />
     <Compile Include="Infrastructure\IWorkContext.cs" />
     <Compile Include="Extensions\JsonNetResult.cs" />
+    <Compile Include="Infrastructure\LSCService.cs" />
     <Compile Include="Infrastructure\SCPackMgr.cs" />
     <Compile Include="Infrastructure\Store.cs" />
     <Compile Include="Models\ActAlmCondition.cs" />

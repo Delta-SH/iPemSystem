@@ -11,7 +11,7 @@
 // 
 // 此源代码由 wsdl 自动生成, Version=4.0.30319.33440。
 // 
-namespace FSUService {
+namespace LSCService {
     using System.Diagnostics;
     using System;
     using System.Xml.Serialization;
@@ -24,21 +24,21 @@ namespace FSUService {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.0.30319.33440")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Web.Services.WebServiceBindingAttribute(Name="FSUServiceSoapBinding", Namespace="http://FSUService.chinamobile.com")]
-    public partial class FSUServiceService : System.Web.Services.Protocols.SoapHttpClientProtocol {
+    [System.Web.Services.WebServiceBindingAttribute(Name="LSCServiceSoapBinding", Namespace="http://LSCService.chinamobile.com")]
+    public partial class LSCServiceService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback invokeOperationCompleted;
         
         /// <remarks/>
-        public FSUServiceService() {
-            this.Url = "http://127.0.0.1:8080/services/FSUService";
+        public LSCServiceService() {
+            this.Url = "http://127.0.0.1:8080/services/LSCService";
         }
         
         /// <remarks/>
         public event invokeCompletedEventHandler invokeCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://FSUService.chinamobile.com", ResponseNamespace="http://FSUService.chinamobile.com")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://LSCService.chinamobile.com", ResponseNamespace="http://LSCService.chinamobile.com")]
         [return: System.Xml.Serialization.SoapElementAttribute("invokeReturn")]
         public string invoke(string xmlData) {
             object[] results = this.Invoke("invoke", new object[] {

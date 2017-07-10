@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace iPem.Core.Domain.Rs {
     /// <summary>
     /// SC组信息
     /// </summary>
     [Serializable]
-    public partial class C_Group {
+    public partial class C_Group : BaseEntity {
         /// <summary>
         /// SC组编号
         /// </summary>

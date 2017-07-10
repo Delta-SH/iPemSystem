@@ -78,7 +78,7 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<iPemWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
 
             //register bi class
-            builder.RegisterType<BIPackMgr>().As<IPackMgr>().InstancePerLifetimeScope();
+            builder.RegisterType<SCPackMgr>().As<IPackMgr>().InstancePerLifetimeScope();
 
             var dbManager = new SqlDbManager(new SqliteDataProvider());
             if(dbManager.IsValid(EnmDbType.Rs)) {
