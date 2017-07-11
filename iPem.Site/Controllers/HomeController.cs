@@ -939,6 +939,32 @@ namespace iPem.Site.Controllers {
                                     values.Add(_aMeasureService.GetMeasure(point.Device.Id, point.Current.Code, point.Current.Number));
                                 }
                             } else {
+                                #region 通知获取数据
+                                var pointsInFsus = ptPoints.GroupBy(p => p.Device.FsuId);
+                                foreach (var pointsInFsu in pointsInFsus) {
+                                    try {
+                                        var curFsu = _workContext.Fsus.Find(f => f.Current.Id == pointsInFsu.Key);
+                                        if (curFsu == null) continue;
+
+                                        var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
+                                        if (curExtFsu == null) continue;
+                                        if (!curExtFsu.Status) continue;
+
+                                        var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                                        if (curGroup == null) continue;
+                                        if (!curGroup.Status) continue;
+
+                                        var devices = pointsInFsu.GroupBy(p => p.Device.Code);
+                                        var package = new GetDataPackage {
+                                            FsuId = curFsu.Current.Code,
+                                            DeviceList = devices.Select(d => new GetDataDevice { Id = d.Key }).ToList()
+                                        };
+
+                                        _packMgr.GetData(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                                    } catch {}
+                                }
+                                #endregion
+
                                 foreach (var pointsInDevice in pointsInDevices) {
                                     values.AddRange(_aMeasureService.GetMeasuresInDevice(pointsInDevice.Key));
                                 }

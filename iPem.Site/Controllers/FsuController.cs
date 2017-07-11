@@ -440,11 +440,11 @@ namespace iPem.Site.Controllers {
                               point = model.point,
                               typeid = model.typeid,
                               type = model.type,
-                              absolute = def != null ? def.absolute : "57.668",
-                              relative = def != null ? def.relative : "99.999",
-                              interval = def != null ? def.interval : "25",
-                              reftime = def != null ? def.reftime : "2017-01-01 00:00:00",
-                              remote = def != null ? def.remote : true
+                              absolute = def != null ? def.absolute : "",
+                              relative = def != null ? def.relative : "",
+                              interval = def != null ? def.interval : "",
+                              reftime = def != null ? def.reftime : "",
+                              remote = def != null ? def.remote : false
                           }).ToList();
                 #endregion
 
@@ -705,10 +705,10 @@ namespace iPem.Site.Controllers {
                               point = model.point,
                               typeid = model.typeid,
                               type = model.type,
-                              threshold = def != null ? def.threshold : "88.668",
-                              level = def != null ? def.level : "3",
-                              nmid = def != null ? def.nmid : "63-01-20937-23994",
-                              remote = def != null ? def.remote : true
+                              threshold = def != null ? def.threshold : "",
+                              level = def != null ? def.level : "",
+                              nmid = def != null ? def.nmid : "",
+                              remote = def != null ? def.remote : false
                           }).ToList();
                 #endregion
 

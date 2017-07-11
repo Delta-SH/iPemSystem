@@ -29,7 +29,7 @@ namespace iPem.Site.Models.BInterface {
             var FailureCause = xmlDoc.SelectSingleNode("/Response/Info/FailureCause");
             if(FailureCause != null) this.FailureCause = FailureCause.InnerText;
 
-            var DeviceList = xmlDoc.SelectNodes("/Response/Info/DeviceList/Device");
+            var DeviceList = xmlDoc.SelectNodes("/Response/Info/Values/DeviceList/Device");
             if(DeviceList != null && DeviceList.Count > 0) {
                 this.DeviceList = new List<GetStorageRuleAckDevice>();
                 foreach(XmlNode node in DeviceList) {
