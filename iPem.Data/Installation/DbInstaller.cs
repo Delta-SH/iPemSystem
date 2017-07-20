@@ -14,11 +14,10 @@ namespace iPem.Data.Installation {
 
         #region Utilities
 
-        protected virtual void ExecuteSqlFile(string path, string connectionString) {
+        protected virtual void ExecuteSqlStream(Stream stream, string connectionString) {
             var statements = new List<string>();
 
-            using (var stream = File.OpenRead(path))
-            using(var reader = new StreamReader(stream, Encoding.Default)) {
+            using (var reader = new StreamReader(stream, Encoding.Default)) {
                 string statement;
                 while ((statement = ReadNextStatementFromStream(reader)) != null) {
                     statements.Add(statement);
@@ -172,9 +171,14 @@ namespace iPem.Data.Installation {
             ExecuteCommands(new List<string>() { cmds }, connectionString);
         }
 
-        public virtual void InstallData(string connectionString, string filePath) {
-            var fullPath = CommonHelper.MapPath(filePath);
-            ExecuteSqlFile(fullPath, connectionString);
+        public virtual void ExecuteScript(string connectionString, string filePath) {
+            using (var stream = File.OpenRead(CommonHelper.MapPath(filePath))) {
+                ExecuteSqlStream(stream, connectionString);
+            }
+        }
+
+        public virtual void ExecuteScript(string connectionString, Stream stream) {
+            ExecuteSqlStream(stream, connectionString);
         }
 
         #endregion

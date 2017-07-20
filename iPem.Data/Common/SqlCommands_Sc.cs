@@ -164,5 +164,13 @@ namespace iPem.Data.Common {
         public const string Sql_U_User_Repository_SetLastLoginDate = @"UPDATE [dbo].[U_Users] SET [LastLoginDate] = @LastLoginDate,[FailedPasswordAttemptCount] = 0 WHERE [Id] = @Id;";
         public const string Sql_U_User_Repository_SetFailedPasswordDate = @"UPDATE [dbo].[U_Users] SET [FailedPasswordAttemptCount] = ISNULL([FailedPasswordAttemptCount], 0) + 1,[FailedPasswordDate] = @FailedPasswordDate WHERE [Id] = @Id;";
         public const string Sql_U_User_Repository_SetLockedOut = @"UPDATE [dbo].[U_Users] SET [IsLockedOut] = @IsLockedOut,[LastLockoutDate] = @LastLockoutDate WHERE [Id] = @Id;";
+
+        /// <summary>
+        /// 脚本升级表
+        /// </summary>
+        public const string Sql_H_DBScript_Repository_GetEntities = @"SELECT * FROM [dbo].[H_DBScript] ORDER BY [ID];";
+        public const string Sql_H_DBScript_Repository_Insert = @"INSERT INTO [dbo].[H_DBScript]([ID],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES(@Id,@Name,@Creator,@CreatedTime,@Executor,@ExecutedTime,@Comment);";
+        public const string Sql_H_DBScript_Repository_Update = @"UPDATE [dbo].[H_DBScript] SET [ExecuteUser] = @Executor WHERE [ID] = @Id;";
+        public const string Sql_H_DBScript_Repository_Delete = @"DELETE FROM [dbo].[H_DBScript] WHERE [ID] = @Id;";
     }
 }

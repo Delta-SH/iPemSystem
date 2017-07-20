@@ -1,5 +1,4 @@
 ﻿(function () {
-
     //#region Global
     var currentFormulaNode = null;
     Ext.apply(Ext.form.field.VTypes, {
@@ -16,6 +15,95 @@
         },
         FormulaText: '公式格式错误'
     });
+    //#endregion
+
+    //#region Model
+    Ext.define('ScriptModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            { name: 'id', type: 'string' },
+            { name: 'name', type: 'string' },
+            { name: 'creator', type: 'string' },
+            { name: 'createdtime', type: 'string' },
+			{ name: 'executor', type: 'string' },
+			{ name: 'executedtime', type: 'string' },
+			{ name: 'comment', type: 'string' }
+        ],
+        idProperty: 'id'
+    });
+    //#endregion
+
+    //#region Store
+    var rsStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        pageSize: 20,
+        model: 'ScriptModel',
+        proxy: {
+            type: 'ajax',
+            url: '/Account/GetRsScripts',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
+            simpleSortMode: true
+        }
+    });
+    var scStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        pageSize: 20,
+        model: 'ScriptModel',
+        proxy: {
+            type: 'ajax',
+            url: '/Account/GetScScripts',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
+            simpleSortMode: true
+        }
+    });
+    var csStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        pageSize: 20,
+        model: 'ScriptModel',
+        proxy: {
+            type: 'ajax',
+            url: '/Account/GetCsScripts',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            listeners: {
+                exception: function (proxy, response, operation) {
+                    Ext.Msg.show({ title: '系统错误', msg: operation.getError(), buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            },
+            simpleSortMode: true
+        }
+    });
+
+    var rsPagingToolbar = $$iPems.clonePagingToolbar(rsStore);
+    var scPagingToolbar = $$iPems.clonePagingToolbar(scStore);
+    var csPagingToolbar = $$iPems.clonePagingToolbar(csStore);
     //#endregion
 
     //#region ContextMenu
@@ -359,6 +447,107 @@
                   formulaWin.close();
               }
           }
+        ]
+    });
+
+    var scriptWin = Ext.create('Ext.window.Window', {
+        title: '脚本升级',
+        glyph: 0xf060,
+        height: 180,
+        width: 400,
+        modal: true,
+        border: false,
+        hidden: true,
+        closeAction: 'hide',
+        store: null,
+        url: null,
+        items: [{
+            itemId: 'scriptForm',
+            xtype: 'form',
+            border: false,
+            defaultType: 'textfield',
+            fieldDefaults: {
+                labelWidth: 60,
+                labelAlign: 'left',
+                margin: '15 15 15 15',
+                anchor: '100%'
+            },
+            items: [
+				{
+				    id: 'scriptFile',
+				    xtype: 'filefield',
+				    allowBlank: false,
+				    emptyText: '请选择升级脚本文件...',
+				    fieldLabel: '升级脚本',
+				    buttonText: '浏览...',
+				    validator: function (v) {
+				        if (!/\.sql/.test(v)) {
+				            return '仅支持*.sql脚本文件';
+				        }
+				        return true;
+				    },
+				    listeners: {
+				        change: function (me, value) {
+				            var newValue = value.replace(/C:\\fakepath\\/g, '');
+				            me.setRawValue(newValue);
+				        }
+				    }
+				},
+				{
+				    id: 'password',
+				    name: 'password',
+				    xtype: 'textfield',
+				    inputType: 'password',
+				    fieldLabel: '鉴权密码',
+				    allowBlank: false
+				}
+            ]
+        }],
+        buttonAlign: 'right',
+        buttons: [
+			{ id: 'scriptResult', xtype: 'iconlabel', text: '' },
+			{ xtype: 'tbfill' },
+			{
+			    xtype: 'button',
+			    text: '升级',
+			    handler: function (el, e) {
+			        var form = scriptWin.getComponent('scriptForm'),
+						baseForm = form.getForm(),
+						scriptResult = Ext.getCmp('scriptResult');
+
+			        scriptResult.setTextWithIcon('', '');
+			        if (baseForm.isValid()) {
+			            Ext.Msg.confirm('确认对话框', '您确认要升级吗？', function (buttonId, text) {
+			                if (buttonId === 'yes') {
+			                    scriptResult.setTextWithIcon('正在升级...', 'x-icon-loading');
+			                    baseForm.submit({
+			                        clientValidation: true,
+			                        submitEmptyText: false,
+			                        preventWindow: true,
+			                        url: scriptWin.url,
+			                        success: function (form, action) {
+			                            scriptResult.setTextWithIcon(action.result.message, 'x-icon-accept');
+			                            scriptWin.store.loadPage(1);
+			                        },
+			                        failure: function (form, action) {
+			                            var message = 'undefined error.';
+			                            if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+			                                message = action.result.message;
+
+			                            scriptResult.setTextWithIcon(message, 'x-icon-error');
+			                        }
+			                    });
+			                }
+			            });
+			        }
+			    }
+			}, {
+			    xtype: 'button',
+			    text: '关闭',
+			    handler: function (el, e) {
+			        scriptWin.hide();
+			    }
+			}
         ]
     });
     //#endregion
@@ -1939,11 +2128,278 @@
         ]
     });
 
+    var dbConfigTab = Ext.create('Ext.panel.Panel', {
+        glyph: 0xf062,
+        title: '脚本升级',
+        overflowY: 'auto',
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        items: [
+            {
+                xtype: 'grid',
+                glyph: 0xf062,
+                title: '资源数据库升级记录',
+                margin: '20 35 10 20',
+                height: 300,
+                store: rsStore,
+                columnLines: true,
+                disableSelection: false,
+                loadMask: true,
+                forceFit: false,
+                listeners: {},
+                viewConfig: {
+                    forceFit: true,
+                    trackOver: true,
+                    stripeRows: true,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+                    preserveScrollOnRefresh: true
+                },
+                columns: [{
+                    text: '脚本编码',
+                    dataIndex: 'id',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '脚本名称',
+                    dataIndex: 'name',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建人',
+                    dataIndex: 'creator',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建时间',
+                    dataIndex: 'createdtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行人',
+                    dataIndex: 'executor',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行时间',
+                    dataIndex: 'executedtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '备注',
+                    dataIndex: 'comment',
+                    flex: 1,
+                    align: 'left',
+                    sortable: false,
+                    renderer: function (value, metadata, record, rowIndex, columnIndex, store, view) {
+                        metadata.tdAttr = Ext.String.format("data-qtip='{0}'", value);
+                        return value;
+                    }
+                }],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [{
+                        xtype: 'button',
+                        text: '升级脚本',
+                        glyph: 0xf060,
+                        handler: function (el, e) {
+                            scriptWin.setTitle('资源数据库脚本升级');
+                            scriptWin.store = rsStore;
+                            scriptWin.url = '/Account/UpdateRsScript';
+                            scriptWin.getComponent('scriptForm').getForm().reset();
+                            Ext.getCmp('scriptResult').setTextWithIcon('', '');
+                            scriptWin.show();
+                        }
+                    }]
+                }],
+                bbar: rsPagingToolbar
+            },
+            {
+                xtype: 'grid',
+                glyph: 0xf062,
+                title: '应用数据库升级记录',
+                margin: '10 35 10 20',
+                height: 300,
+                store: scStore,
+                columnLines: true,
+                disableSelection: false,
+                loadMask: true,
+                forceFit: false,
+                listeners: {},
+                viewConfig: {
+                    forceFit: true,
+                    trackOver: true,
+                    stripeRows: true,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+                    preserveScrollOnRefresh: true
+                },
+                columns: [{
+                    text: '脚本编码',
+                    dataIndex: 'id',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '脚本名称',
+                    dataIndex: 'name',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建人',
+                    dataIndex: 'creator',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建时间',
+                    dataIndex: 'createdtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行人',
+                    dataIndex: 'executor',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行时间',
+                    dataIndex: 'executedtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '备注',
+                    dataIndex: 'comment',
+                    flex: 1,
+                    align: 'left',
+                    sortable: false,
+                    renderer: function (value, metadata, record, rowIndex, columnIndex, store, view) {
+                        metadata.tdAttr = Ext.String.format("data-qtip='{0}'", value);
+                        return value;
+                    }
+                }],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [{
+                        xtype: 'button',
+                        text: '升级脚本',
+                        glyph: 0xf060,
+                        handler: function (el, e) {
+                            scriptWin.setTitle('应用数据库脚本升级');
+                            scriptWin.store = scStore;
+                            scriptWin.url = '/Account/UpdateScScript';
+                            scriptWin.getComponent('scriptForm').getForm().reset();
+                            Ext.getCmp('scriptResult').setTextWithIcon('', '');
+                            scriptWin.show();
+                        }
+                    }]
+                }],
+                bbar: scPagingToolbar
+            },
+            {
+                xtype: 'grid',
+                glyph: 0xf062,
+                title: '历史数据库升级记录',
+                margin: '10 35 20 20',
+                height: 300,
+                store: csStore,
+                columnLines: true,
+                disableSelection: false,
+                loadMask: true,
+                forceFit: false,
+                listeners: {},
+                viewConfig: {
+                    forceFit: true,
+                    trackOver: true,
+                    stripeRows: true,
+                    emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+                    preserveScrollOnRefresh: true
+                },
+                columns: [{
+                    text: '脚本编码',
+                    dataIndex: 'id',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '脚本名称',
+                    dataIndex: 'name',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建人',
+                    dataIndex: 'creator',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '创建时间',
+                    dataIndex: 'createdtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行人',
+                    dataIndex: 'executor',
+                    width: 120,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '执行时间',
+                    dataIndex: 'executedtime',
+                    width: 150,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '备注',
+                    dataIndex: 'comment',
+                    flex: 1,
+                    align: 'left',
+                    sortable: false,
+                    renderer: function (value, metadata, record, rowIndex, columnIndex, store, view) {
+                        metadata.tdAttr = Ext.String.format("data-qtip='{0}'", value);
+                        return value;
+                    }
+                }],
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    items: [{
+                        xtype: 'button',
+                        text: '升级脚本',
+                        glyph: 0xf060,
+                        handler: function (el, e) {
+                            scriptWin.setTitle('历史数据库脚本升级');
+                            scriptWin.store = csStore;
+                            scriptWin.url = '/Account/UpdateCsScript';
+                            scriptWin.getComponent('scriptForm').getForm().reset();
+                            Ext.getCmp('scriptResult').setTextWithIcon('', '');
+                            scriptWin.show();
+                        }
+                    }]
+                }],
+                bbar: csPagingToolbar
+            }
+        ]
+    });
+
     var layout = Ext.create('Ext.tab.Panel', {
         region: 'center',
         border: true,
         plain: true,
-        items: [wsConfigTab, tsConfigTab, fmConfigTab, rtConfigTab]
+        items: [wsConfigTab, tsConfigTab, fmConfigTab, rtConfigTab, dbConfigTab]
     });
     //#endregion
 

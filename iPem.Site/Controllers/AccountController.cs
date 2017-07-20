@@ -1,8 +1,11 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Domain.Cs;
+using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
+using iPem.Data.Installation;
 using iPem.Services.Common;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
@@ -14,6 +17,7 @@ using iPem.Site.Models.SSH;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -38,6 +42,13 @@ namespace iPem.Site.Controllers {
         private readonly INoticeInUserService _noticeInUserService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
+        private readonly IScExecutor _scExecutor;
+        private readonly ICsExecutor _csExecutor;
+        private readonly IRsExecutor _rsExecutor;
+        private readonly IHDBScriptService _hdbScriptService;
+        private readonly IRDBScriptService _rdbScriptService;
+        private readonly ISDBScriptService _sdbScriptService;
+
         private const string _captchaSalt = "w9hRaAIX+tRJ4GD4wnVkVQ==";
 
         #endregion
@@ -57,7 +68,13 @@ namespace iPem.Site.Controllers {
             INoticeService noticeService,
             INoticeInUserService noticeInUserService,
             IRoleService roleService,
-            IUserService userService) {
+            IUserService userService,
+            IScExecutor scExecutor,
+            ICsExecutor csExecutor,
+            IRsExecutor rsExecutor,
+            IHDBScriptService hdbScriptService,
+            IRDBScriptService rdbScriptService,
+            ISDBScriptService sdbScriptService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -71,6 +88,12 @@ namespace iPem.Site.Controllers {
             this._noticeInUserService = noticeInUserService;
             this._roleService = roleService;
             this._userService = userService;
+            this._scExecutor = scExecutor;
+            this._csExecutor = csExecutor;
+            this._rsExecutor = rsExecutor;
+            this._hdbScriptService = hdbScriptService;
+            this._rdbScriptService = rdbScriptService;
+            this._sdbScriptService = sdbScriptService;
         }
 
         #endregion
@@ -1862,6 +1885,177 @@ namespace iPem.Site.Controllers {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult UpdateScScript(string password) {
+            try {
+                if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("鉴权密码验证失败。");
+                if (CommonHelper.CreateDynamicKeys() != password) throw new ArgumentException("鉴权密码验证失败。");
+
+                var current = Request.Files[0];
+                if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
+                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var scripts = _sdbScriptService.GetEntities();
+                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                if (script != null) throw new iPemException("脚本已存在，无需执行。");
+
+                _scExecutor.Execute(current.InputStream);
+                _sdbScriptService.Update(new S_DBScript { Id = key, Executor = _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name });
+                return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetScScripts(int start, int limit) {
+            var data = new AjaxDataModel<List<ScriptModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ScriptModel>()
+            };
+
+            try {
+                var scripts = _sdbScriptService.GetPagedDBScripts(start / limit, limit);
+                if (scripts.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = scripts.TotalCount;
+                    for (var i = 0; i < scripts.Count; i++) {
+                        data.data.Add(new ScriptModel {
+                            id = scripts[i].Id,
+                            name = scripts[i].Name,
+                            creator = scripts[i].Creator,
+                            createdtime = CommonHelper.DateTimeConverter(scripts[i].CreatedTime),
+                            executor = scripts[i].Executor,
+                            executedtime = CommonHelper.DateTimeConverter(scripts[i].ExecutedTime),
+                            comment = scripts[i].Comment
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult UpdateCsScript(string password) {
+            try {
+                if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("鉴权密码验证失败。");
+                if (CommonHelper.CreateDynamicKeys() != password) throw new ArgumentException("鉴权密码验证失败。");
+
+                var current = Request.Files[0];
+                if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
+                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var scripts = _hdbScriptService.GetEntities();
+                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                if (script != null) throw new iPemException("脚本已存在，无需执行。");
+
+                _csExecutor.Execute(current.InputStream);
+                _hdbScriptService.Update(new H_DBScript { Id = key, Executor = _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name });
+                return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetCsScripts(int start, int limit) {
+            var data = new AjaxDataModel<List<ScriptModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ScriptModel>()
+            };
+
+            try {
+                var scripts = _hdbScriptService.GetPagedDBScripts(start / limit, limit);
+                if (scripts.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = scripts.TotalCount;
+                    for (var i = 0; i < scripts.Count; i++) {
+                        data.data.Add(new ScriptModel {
+                            id = scripts[i].Id,
+                            name = scripts[i].Name,
+                            creator = scripts[i].Creator,
+                            createdtime = CommonHelper.DateTimeConverter(scripts[i].CreatedTime),
+                            executor = scripts[i].Executor,
+                            executedtime = CommonHelper.DateTimeConverter(scripts[i].ExecutedTime),
+                            comment = scripts[i].Comment
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult UpdateRsScript(string password) {
+            try {
+                if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("鉴权密码验证失败。");
+                if (CommonHelper.CreateDynamicKeys() != password) throw new ArgumentException("鉴权密码验证失败。");
+
+                var current = Request.Files[0];
+                if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
+                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var scripts = _rdbScriptService.GetEntities();
+                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                if (script != null) throw new iPemException("脚本已存在，无需执行。");
+
+                _rsExecutor.Execute(current.InputStream);
+                _rdbScriptService.Update(new R_DBScript { Id = key, Executor = _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name });
+                return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetRsScripts(int start, int limit) {
+            var data = new AjaxDataModel<List<ScriptModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ScriptModel>()
+            };
+
+            try {
+                var scripts = _rdbScriptService.GetPagedDBScripts(start / limit, limit);
+                if (scripts.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = scripts.TotalCount;
+                    for (var i = 0; i < scripts.Count; i++) {
+                        data.data.Add(new ScriptModel {
+                            id = scripts[i].Id,
+                            name = scripts[i].Name,
+                            creator = scripts[i].Creator,
+                            createdtime = CommonHelper.DateTimeConverter(scripts[i].CreatedTime),
+                            executor = scripts[i].Executor,
+                            executedtime = CommonHelper.DateTimeConverter(scripts[i].ExecutedTime),
+                            comment = scripts[i].Comment
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

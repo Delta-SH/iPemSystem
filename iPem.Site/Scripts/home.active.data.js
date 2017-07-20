@@ -583,7 +583,7 @@
                             items: [
                                 {
                                     xtype: 'checkboxgroup',
-                                    width: 240,
+                                    width: 300,
                                     items: [
                                         { xtype: 'checkboxfield', boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
                                         { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },

@@ -84,6 +84,9 @@ namespace iPem.Site.Infrastructure {
             if(dbManager.IsValid(EnmDbType.Rs)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Rs];
 
+                //register executor
+                builder.Register<IRsExecutor>(c => new RsExecutor(connectionString, c.Resolve<IDbInstaller>())).InstancePerLifetimeScope();
+
                 //register repository
                 builder.Register<IA_AreaRepository>(c => new A_AreaRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_BrandRepository>(c => new C_BrandRepository(connectionString)).InstancePerLifetimeScope();
@@ -105,6 +108,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<ID_RedefinePointRepository>(c => new D_RedefinePointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_PointRepository>(c => new P_PointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_ProtocolRepository>(c => new P_ProtocolRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IR_DBScriptRepository>(c => new R_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IS_RoomRepository>(c => new S_RoomRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IS_StationRepository>(c => new S_StationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_EmployeeRepository>(c => new U_EmployeeRepository(connectionString)).InstancePerLifetimeScope();
@@ -124,6 +128,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProductorService>().As<IProductorService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProtocolService>().As<IProtocolService>().InstancePerLifetimeScope();
+                builder.RegisterType<RDBScriptService>().As<IRDBScriptService>().InstancePerLifetimeScope();                
                 builder.RegisterType<RedefinePointService>().As<IRedefinePointService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoomService>().As<IRoomService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoomTypeService>().As<IRoomTypeService>().InstancePerLifetimeScope();
@@ -138,9 +143,13 @@ namespace iPem.Site.Infrastructure {
             if(dbManager.IsValid(EnmDbType.Cs)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Cs];
 
+                //register executor
+                builder.Register<ICsExecutor>(c => new CsExecutor(connectionString, c.Resolve<IDbInstaller>())).InstancePerLifetimeScope();
+
                 //register repository
                 builder.Register<IA_AAlarmRepository>(c => new A_AAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IA_HAlarmRepository>(c => new A_HAlarmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IH_DBScriptRepository>(c => new H_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_FsuEventRepository>(c => new H_FsuEventRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IH_IDeviceRepository>(c => new H_IDeviceRepository(connectionString)).InstancePerLifetimeScope();
@@ -164,6 +173,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<ElecService>().As<IElecService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuEventService>().As<IFsuEventService>().InstancePerLifetimeScope();
                 builder.RegisterType<HAlarmService>().As<IHAlarmService>().InstancePerLifetimeScope();
+                builder.RegisterType<HDBScriptService>().As<IHDBScriptService>().InstancePerLifetimeScope();
                 builder.RegisterType<HIAreaService>().As<IHIAreaService>().InstancePerLifetimeScope();
                 builder.RegisterType<HIDeviceService>().As<IHIDeviceService>().InstancePerLifetimeScope();
                 builder.RegisterType<HIStationService>().As<IHIStationService>().InstancePerLifetimeScope();
@@ -176,6 +186,9 @@ namespace iPem.Site.Infrastructure {
             if(dbManager.IsValid(EnmDbType.Sc)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Sc];
 
+                //register executor
+                builder.Register<IScExecutor>(c => new ScExecutor(connectionString, c.Resolve<IDbInstaller>())).InstancePerLifetimeScope();
+
                 //register repository
                 builder.Register<IH_NoticeInUserRepository>(c => new H_NoticeInUserRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_NoticeRepository>(c => new H_NoticeRepository(connectionString)).InstancePerLifetimeScope();
@@ -185,6 +198,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IM_NodesInReservationRepository>(c => new M_NodesInReservationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_ProjectRepository>(c => new M_ProjectRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_ReservationRepository>(c => new M_ReservationRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IS_DBScriptRepository>(c => new S_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IU_EntitiesInRoleRepository>(c => new U_EntitiesInRoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_FollowPointRepository>(c => new U_FollowPointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_MenuRepository>(c => new U_MenuRepository(connectionString)).InstancePerLifetimeScope();
@@ -205,6 +219,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<ProjectService>().As<IProjectService>().InstancePerLifetimeScope();
                 builder.RegisterType<ReservationService>().As<IReservationService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoleService>().As<IRoleService>().InstancePerLifetimeScope();
+                builder.RegisterType<SDBScriptService>().As<ISDBScriptService>().InstancePerLifetimeScope();                
                 builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
                 builder.RegisterType<WebEventService>().As<IWebEventService>().InstancePerLifetimeScope();
             }

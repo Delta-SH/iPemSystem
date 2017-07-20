@@ -493,11 +493,11 @@
     var leftSenior = Ext.create('Ext.tree.Panel', {
         id: 'seniorConditionPanel',
         glyph: 0xf034,
-        title: '高级条件',
+        title: '订制条件',
         border: false,
         autoScroll: true,
         useArrows: false,
-        rootVisible: true,
+        rootVisible: false,
         root: {
             id: 'root',
             text: '全部',
@@ -529,12 +529,6 @@
 
                 Ext.getCmp('tbar-edit').setDisabled(disabled);
                 Ext.getCmp('tbar-delete').setDisabled(disabled);
-
-                currentStore_0.getProxy().extraParams.seniorNode = seniorNode;
-                currentStore_1.getProxy().extraParams.seniorNode = seniorNode;
-                currentStore_2.getProxy().extraParams.seniorNode = seniorNode;
-                currentStore_3.getProxy().extraParams.seniorNode = seniorNode;
-                reload();
             },
             itemcontextmenu: function (me, record, item, index, e) {
                 showConditionContextMenu(me, record, item, index, e);
@@ -1512,7 +1506,7 @@
                             {
                                 xtype: 'button',
                                 glyph: 0xf005,
-                                text: '告警查询',
+                                text: '应用条件',
                                 handler: function (me, event) {
                                     var stationTypes = Ext.getCmp('station-type-multicombo').getValue(),
                                         roomTypes = Ext.getCmp('room-type-multicombo').getValue(),
@@ -1522,7 +1516,7 @@
                                         levels = Ext.getCmp('alarm-level-multicombo').getValue(),
                                         confirms = Ext.getCmp('confirm-multicombo').getValue(),
                                         reservations = Ext.getCmp('reservation-multicombo').getValue(),
-                                        keywords = Ext.getCmp('point-keywords').getValue();
+                                        seniorNode = Ext.getCmp('senior-condition').getValue();
 
                                     var proxy0 = currentStore_0.getProxy(),
                                         proxy1 = currentStore_1.getProxy(),
@@ -1569,10 +1563,10 @@
                                     proxy2.extraParams.reservations = 
                                     proxy3.extraParams.reservations = reservations;
 
-                                    proxy0.extraParams.keywords =
-                                    proxy1.extraParams.keywords =
-                                    proxy2.extraParams.keywords =
-                                    proxy3.extraParams.keywords = keywords;
+                                    proxy0.extraParams.seniorNode =
+                                    proxy1.extraParams.seniorNode =
+                                    proxy2.extraParams.seniorNode =
+                                    proxy3.extraParams.seniorNode = seniorNode;
 
                                     reload();
                                 }
@@ -1599,12 +1593,34 @@
                                 id: 'alarm-level-multicombo',
                                 xtype: 'AlarmLevelMultiCombo',
                                 emptyText: '默认全部'
-                            }, {
+                            },
+                            {
                                 xtype: 'button',
-                                glyph: 0xf010,
-                                text: '数据导出',
+                                glyph: 0xf034,
+                                text: '保存条件',
                                 handler: function (me, event) {
-                                    download();
+                                    var active = leftPanel.getActiveTab();
+                                    if (active != leftSenior) leftPanel.setActiveTab(leftSenior);
+
+                                    var stationTypes = Ext.getCmp('station-type-multicombo').getValue(),
+                                        roomTypes = Ext.getCmp('room-type-multicombo').getValue(),
+                                        subDeviceTypes = Ext.getCmp('subdevice-type-multipicker').getValue(),
+                                        subLogicTypes = Ext.getCmp('sublogic-type-multipicker').getValue(),
+                                        points = Ext.getCmp('point-multipicker').getValue(),
+                                        levels = Ext.getCmp('alarm-level-multicombo').getValue(),
+                                        confirms = Ext.getCmp('confirm-multicombo').getValue(),
+                                        reservations = Ext.getCmp('reservation-multicombo').getValue();
+
+                                    conditionAdd({
+                                        stationTypes: stationTypes,
+                                        roomTypes: roomTypes,
+                                        subDeviceTypes: subDeviceTypes,
+                                        subLogicTypes: subLogicTypes,
+                                        points: points,
+                                        levels: levels,
+                                        confirms: confirms,
+                                        reservations: reservations
+                                    });
                                 }
                             }
                         ]
@@ -1624,42 +1640,14 @@
                                 emptyText: '默认全部'
                             },
                             {
-                                id: 'point-keywords',
-                                xtype: 'textfield',
-                                fieldLabel: '关键字',
-                                emptyText: '多关键字请以;分隔，例: A;B;C',
-                                labelWidth: 60,
-                                width: 220
-                            },
-                            {
+                                id: 'senior-condition',
+                                xtype: 'SeniorConditionCombo'
+                            }, {
                                 xtype: 'button',
-                                glyph: 0xf034,
-                                text: '保存条件',
+                                glyph: 0xf010,
+                                text: '数据导出',
                                 handler: function (me, event) {
-                                    var active = leftPanel.getActiveTab();
-                                    if (active != leftSenior) leftPanel.setActiveTab(leftSenior);
-
-                                    var stationTypes = Ext.getCmp('station-type-multicombo').getValue(),
-                                        roomTypes = Ext.getCmp('room-type-multicombo').getValue(),
-                                        subDeviceTypes = Ext.getCmp('subdevice-type-multipicker').getValue(),
-                                        subLogicTypes = Ext.getCmp('sublogic-type-multipicker').getValue(),
-                                        points = Ext.getCmp('point-multipicker').getValue(),
-                                        levels = Ext.getCmp('alarm-level-multicombo').getValue(),
-                                        confirms = Ext.getCmp('confirm-multicombo').getValue(),
-                                        reservations = Ext.getCmp('reservation-multicombo').getValue(),
-                                        keywords = Ext.getCmp('point-keywords').getValue();
-
-                                    conditionAdd({
-                                        stationTypes: stationTypes,
-                                        roomTypes: roomTypes,
-                                        subDeviceTypes: subDeviceTypes,
-                                        subLogicTypes: subLogicTypes,
-                                        points: points,
-                                        levels: levels,
-                                        confirms: confirms,
-                                        reservations: reservations,
-                                        keywords: keywords
-                                    });
+                                    download();
                                 }
                             }
                         ]
@@ -1811,6 +1799,7 @@
                           success: function (form, action) {
                               result.setTextWithIcon(action.result.message, 'x-icon-accept');
                               leftSenior.getStore().reload();
+                              Ext.getCmp('senior-condition').getStore().reload();
                           },
                           failure: function (form, action) {
                               var message = 'undefined error.';
@@ -2188,10 +2177,12 @@
                     mask: new Ext.LoadMask(tree, { msg: '正在处理...' }),
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
-                        if (data.success)
+                        if (data.success) {
                             tree.getStore().reload();
-                        else
+                            Ext.getCmp('senior-condition').getStore().reload();
+                        } else {
                             Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        }
                     }
                 });
             }

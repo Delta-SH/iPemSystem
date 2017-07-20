@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace iPem.Data.Installation {
     public partial interface IDbInstaller {
@@ -6,6 +7,8 @@ namespace iPem.Data.Installation {
 
         void InstallDatabase(string connectionString, string databaseName, string filePath);
 
-        void InstallData(string connectionString, string filePath);
+        void ExecuteScript(string connectionString, string filePath);
+
+        void ExecuteScript(string connectionString, Stream stream);
     }
 }

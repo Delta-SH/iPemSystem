@@ -7,12 +7,14 @@ using iPem.Data.Common;
 using iPem.Data.Installation;
 using iPem.Data.Repository.Sc;
 using iPem.Services.Sc;
+using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
 using iPem.Site.Models.Installation;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -107,7 +109,7 @@ namespace iPem.Site.Controllers {
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
                 using(var scope = new System.Transactions.TransactionScope()) {
                     foreach(var file in scripts) {
-                        _dbInstaller.InstallData(connectionString, file);
+                        _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
                     scope.Complete();
@@ -169,7 +171,7 @@ namespace iPem.Site.Controllers {
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
                 using(var scope = new System.Transactions.TransactionScope()) {
                     foreach(var file in scripts) {
-                        _dbInstaller.InstallData(connectionString, file);
+                        _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
                     scope.Complete();
@@ -231,7 +233,7 @@ namespace iPem.Site.Controllers {
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
                 using(var scope = new System.Transactions.TransactionScope()) {
                     foreach(var file in scripts) {
-                        _dbInstaller.InstallData(connectionString, file);
+                        _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
                     scope.Complete();

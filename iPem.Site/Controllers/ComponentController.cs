@@ -2046,6 +2046,46 @@ namespace iPem.Site.Controllers {
             };
         }
 
+        [AjaxAuthorize]
+        public JsonResult GetSeniorConditionCombo(int start, int limit, bool all = false) {
+            var data = new AjaxDataModel<List<ComboItem<string, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<string, string>>()
+            };
+
+            try {
+                if (_workContext.Profile.Settings != null
+                    && _workContext.Profile.Settings.SeniorConditions != null
+                    && _workContext.Profile.Settings.SeniorConditions.Count > 0) {
+                    var conditions = new List<SeniorCondition>();
+                    if (all) conditions.Add(new SeniorCondition { id = "root", name = "全部" });
+                    conditions.AddRange(_workContext.Profile.Settings.SeniorConditions.OrderBy(s => s.name));
+                    if (conditions.Count > 0) {
+                        data.message = "200 Ok";
+                        data.total = conditions.Count;
+
+                        var end = start + limit;
+                        if (end > conditions.Count)
+                            end = conditions.Count;
+
+                        for (int i = start; i < end; i++) {
+                            data.data.Add(new ComboItem<string, string> {
+                                id = conditions[i].id,
+                                text = conditions[i].name
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         [Authorize]
         public ActionResult SaveCharts(string[] svgs) {

@@ -17,7 +17,7 @@ namespace iPem.Core {
         /// 应用程序名称
         /// </summary>
         public string Name {
-            get { return "智能监控管理系统"; }
+            get { return "动力环境集中监控管理平台"; }
         }
 
         /// <summary>

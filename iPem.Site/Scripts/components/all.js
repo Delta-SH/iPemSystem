@@ -169,15 +169,11 @@ Ext.define("Ext.ux.ConfirmMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
-    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetConfirms';
         me.callParent(arguments);
-        me.store.load({
-            scope: me,
-            params: { all: me.all }
-        });
+        me.store.load();
     }
 });
 
@@ -194,14 +190,12 @@ Ext.define("Ext.ux.ConfirmComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
-    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetConfirms';
         me.callParent(arguments);
         me.store.load({
             scope: me,
-            params: { all: me.all },
             callback: function (records, operation, success) {
                 if (success && records.length > 0)
                     me.select(records[0]);
@@ -223,15 +217,11 @@ Ext.define("Ext.ux.ReservationMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
-    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetReservations';
         me.callParent(arguments);
-        me.store.load({
-            scope: me,
-            params: { all: me.all }
-        });
+        me.store.load();
     }
 });
 
@@ -248,10 +238,58 @@ Ext.define("Ext.ux.ReservationComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
-    all: false,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetReservations';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
+Ext.define("Ext.ux.SeniorConditionMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "SeniorConditionMultiCombo",
+    fieldLabel: '订制条件',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetSeniorConditionCombo';
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.SeniorConditionComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "SeniorConditionCombo",
+    fieldLabel: '订制条件',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: true,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetSeniorConditionCombo';
         me.callParent(arguments);
         me.store.load({
             scope: me,

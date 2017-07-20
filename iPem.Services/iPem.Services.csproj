@@ -48,6 +48,7 @@
     <Compile Include="Cs\Class\ElecService.cs" />
     <Compile Include="Cs\Class\FsuEventService.cs" />
     <Compile Include="Cs\Class\HIAreaService.cs" />
+    <Compile Include="Cs\Class\HDBScriptService.cs" />
     <Compile Include="Cs\Class\LoadService.cs" />
     <Compile Include="Cs\Class\HIDeviceService.cs" />
     <Compile Include="Cs\Class\HIStationService.cs" />
@@ -57,15 +58,18 @@
     <Compile Include="Cs\Interface\ICutService.cs" />
     <Compile Include="Cs\Interface\IElecService.cs" />
     <Compile Include="Cs\Interface\IFsuEventService.cs" />
+    <Compile Include="Cs\Interface\IHDBScriptService.cs" />
     <Compile Include="Cs\Interface\IHIAreaService.cs" />
     <Compile Include="Cs\Interface\ILoadService.cs" />
     <Compile Include="Cs\Interface\IHIDeviceService.cs" />
     <Compile Include="Cs\Interface\IHIStationService.cs" />
     <Compile Include="Cs\Interface\IParamDiffService.cs" />
     <Compile Include="Rs\Class\GroupService.cs" />
+    <Compile Include="Rs\Class\RDBScriptService.cs" />
     <Compile Include="Rs\Class\RedefinePointService.cs" />
     <Compile Include="Rs\Class\SCVendorService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
+    <Compile Include="Rs\Interface\IRDBScriptService.cs" />
     <Compile Include="Rs\Interface\IRedefinePointService.cs" />
     <Compile Include="Rs\Interface\ISCVendorService.cs" />
     <Compile Include="Cs\Class\HAlarmService.cs" />
@@ -85,6 +89,7 @@
     <Compile Include="Sc\Class\NodeInReservationService.cs" />
     <Compile Include="Sc\Class\ProfileService.cs" />
     <Compile Include="Sc\Class\ProjectService.cs" />
+    <Compile Include="Sc\Class\SDBScriptService.cs" />
     <Compile Include="Sc\Interface\IFollowPointService.cs" />
     <Compile Include="Sc\Interface\IReservationService.cs" />
     <Compile Include="Sc\Interface\IEntitiesInRoleService.cs" />
@@ -99,6 +104,7 @@
     <Compile Include="Sc\Interface\IProjectService.cs" />
     <Compile Include="Rs\Interface\IProtocolService.cs" />
     <Compile Include="Sc\Interface\IRoleService.cs" />
+    <Compile Include="Sc\Interface\ISDBScriptService.cs" />
     <Compile Include="Sc\Interface\IUserService.cs" />
     <Compile Include="Sc\Interface\IWebEventService.cs" />
     <Compile Include="Sc\Class\MenuService.cs" />

@@ -96,12 +96,6 @@ ALTER TABLE [dbo].[D_ElecSourCabi] DROP CONSTRAINT [FK_D_ElecSourCabi_D_Device]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---删除外键[dbo].[D_FSU]
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_FSU_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_FSU]'))
-ALTER TABLE [dbo].[D_FSU] DROP CONSTRAINT [FK_D_FSU_D_Device]
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --删除外键[dbo].[D_GeneratorGroup]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_GeneratorGroup_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_GeneratorGroup]'))
 ALTER TABLE [dbo].[D_GeneratorGroup] DROP CONSTRAINT [FK_D_GeneratorGroup_D_Device]
@@ -246,10 +240,6 @@ GO
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_MenusInRole_U_Role]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]'))
 ALTER TABLE [dbo].[U_MenusInRole] DROP CONSTRAINT [FK_U_MenusInRole_U_Role]
 GO
-
-
-
-
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_Area]
@@ -1177,6 +1167,7 @@ GO
 
 CREATE TABLE [dbo].[D_FSU](
 	[DeviceID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
 	[Code] [varchar](100) NULL,
 	[GroupID] [varchar](100) NULL,
 	[VendorID] [varchar](100) NULL,
@@ -2451,18 +2442,6 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_ElecSourCabi_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_ElecSourCabi]'))
 ALTER TABLE [dbo].[D_ElecSourCabi] CHECK CONSTRAINT [FK_D_ElecSourCabi_D_Device]
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加外键[dbo].[D_FSU]
-ALTER TABLE [dbo].[D_FSU]  WITH CHECK ADD  CONSTRAINT [FK_D_FSU_D_Device] FOREIGN KEY([DeviceID])
-REFERENCES [dbo].[D_Device] ([ID])
-ON UPDATE CASCADE
-ON DELETE CASCADE
-GO
-
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_FSU_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_FSU]'))
-ALTER TABLE [dbo].[D_FSU] CHECK CONSTRAINT [FK_D_FSU_D_Device]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

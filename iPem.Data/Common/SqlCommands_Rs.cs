@@ -263,5 +263,13 @@ namespace iPem.Data.Common {
         public const string Sql_U_Employee_Repository_GetEmployeeByCode = @"SELECT [Id],[EmpNo] AS [Code],[Name],[EngName],[UsedName],[Sex],[DeptId],[DutyId],[ICardId],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving] AS [IsLeft],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled] FROM [dbo].[U_Employee] WHERE [EmpNo] = @Code;";
         public const string Sql_U_Employee_Repository_GetEmployeesByDept = @"SELECT [Id],[EmpNo] AS [Code],[Name],[EngName],[UsedName],[Sex],[DeptId],[DutyId],[ICardId],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving] AS [IsLeft],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled] FROM [dbo].[U_Employee] WHERE [Enabled] = 1 AND [DeptId] = @DeptId;";
         public const string Sql_U_Employee_Repository_GetEmployees = @"SELECT [Id],[EmpNo] AS [Code],[Name],[EngName],[UsedName],[Sex],[DeptId],[DutyId],[ICardId],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving] AS [IsLeft],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled] FROM [dbo].[U_Employee] WHERE [Enabled] = 1;";
+
+        /// <summary>
+        /// 脚本升级表
+        /// </summary>
+        public const string Sql_H_DBScript_Repository_GetEntities = @"SELECT * FROM [dbo].[H_DBScript] ORDER BY [ID];";
+        public const string Sql_H_DBScript_Repository_Insert = @"INSERT INTO [dbo].[H_DBScript]([ID],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES(@Id,@Name,@Creator,@CreatedTime,@Executor,@ExecutedTime,@Comment);";
+        public const string Sql_H_DBScript_Repository_Update = @"UPDATE [dbo].[H_DBScript] SET [ExecuteUser] = @Executor WHERE [ID] = @Id;";
+        public const string Sql_H_DBScript_Repository_Delete = @"DELETE FROM [dbo].[H_DBScript] WHERE [ID] = @Id;";
     }
 }

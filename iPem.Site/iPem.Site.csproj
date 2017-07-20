@@ -291,6 +291,7 @@
     <Compile Include="Models\Model500104.cs" />
     <Compile Include="Models\Model500105.cs" />
     <Compile Include="Models\NoticeModel.cs" />
+    <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SeniorCondition.cs" />
     <Compile Include="Models\SSH\iSSHArea.cs" />
     <Compile Include="Models\SSH\iSSHDevice.cs" />
