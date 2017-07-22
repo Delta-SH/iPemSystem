@@ -2058,6 +2058,64 @@ namespace iPem.Site.Controllers {
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult GetNodeIcons(string[] nodes) {
+            var data = new AjaxDataModel<List<NodeIcon>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<NodeIcon>()
+            };
+
+            try {
+                if (nodes != null && nodes.Length > 0) {
+                    var alarms = _workContext.ActAlarms;
+                    if (alarms.Count > 0) {
+                        data.message = "200 Ok";
+                        data.total = nodes.Length;
+
+                        var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, cls = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                        foreach (var node in nodes) {
+                            var target = new NodeIcon { id = node, cls = (int)EnmAlarm.Level0 };
+                            var keys = Common.SplitKeys(node);
+                            if (keys.Length == 2) {
+                                var type = int.Parse(keys[0]); var id = keys[1];
+                                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                                if (nodeType == EnmSSH.Area) {
+                                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                                    if (current != null) {
+                                        if (current.HasChildren) {
+                                            var icons = areaIcons.FindAll(i => current.Keys.Contains(i.id));
+                                            if (icons.Count > 0) target.cls = icons.Min(i => i.cls);
+                                        } else {
+                                            var icon = areaIcons.Find(i=>i.id == current.Current.Id);
+                                            if (icon != null) target.cls = icon.cls;
+                                        }
+                                    }
+                                } else if (nodeType == EnmSSH.Station) {
+                                    var icons = alarms.FindAll(a => a.Current.StationId == id);
+                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
+                                } else if (nodeType == EnmSSH.Room) {
+                                    var icons = alarms.FindAll(a => a.Current.RoomId == id);
+                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
+                                } else if (nodeType == EnmSSH.Device) {
+                                    var icons = alarms.FindAll(a => a.Current.DeviceId == id);
+                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
+                                }
+                            }
+                            data.data.Add(target);
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.DenyGet);
+        }
+
         #endregion
 
     }

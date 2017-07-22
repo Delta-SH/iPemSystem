@@ -1572,6 +1572,70 @@ window.$$iPems.GetLevelCls = function (value) {
     }
 };
 
+window.$$iPems.UpdateIcons = function (tree, nodes) {
+    if (Ext.isEmpty(nodes)) {
+        nodes = [];
+        var root = tree.getRootNode();
+        if (root.hasChildNodes()) {
+            root.eachChild(function (c) {
+                c.cascadeBy(function (n) {
+                    nodes.push(n.getId());
+                });
+            });
+        }
+    }
+
+    if (nodes.length > 0) {
+        Ext.Ajax.request({
+            url: '/Account/GetNodeIcons',
+            method: 'POST',
+            jsonData: nodes,
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    var icons = {};
+                    if (!Ext.isEmpty(data.data)) {
+                        Ext.Array.each(data.data, function (item, index, allItems) {
+                            icons[item.id] = item.cls;
+                        });
+                    }
+
+                    var root = tree.getRootNode(), rootCls = 100;
+                    if (root.hasChildNodes()) {
+                        root.eachChild(function (c) {
+                            var childCls = icons[c.getId()];
+                            if (!Ext.isEmpty(childCls) && childCls < rootCls)
+                                rootCls = childCls;
+
+                            //node cls
+                            c.cascadeBy(function (n) {
+                                $$iPems.SetIcon(n, icons[n.getId()]);
+                            });
+                        });
+                    }
+
+                    //root cls
+                    $$iPems.SetIcon(root, rootCls);
+                }
+            }
+        });
+    }
+};
+
+window.$$iPems.SetIcon = function (node, cls) {
+    if (cls === $$iPems.Level.Level1) {
+        node.set('cls', 'icon-level1');
+    } else if (cls === $$iPems.Level.Level2) {
+        node.set('cls', 'icon-level2');
+    } else if (cls === $$iPems.Level.Level3) {
+        node.set('cls', 'icon-level3');
+    } else if (cls === $$iPems.Level.Level4) {
+        node.set('cls', 'icon-level4');
+    } else {
+        node.set('cls', 'icon-level0');
+    }
+};
+
 /*global delimiter*/
 window.$$iPems.Delimiter = ';';
 window.$$iPems.Separator = '┆';

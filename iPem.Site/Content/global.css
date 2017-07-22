@@ -381,6 +381,22 @@ div.help-tip div.help-tip-content p {
     background-color : #87ceeb; 
 }
 
+.icon-level0 { 
+    color : #32cd32;
+}
+.icon-level1 { 
+    color : #ff0000;
+}
+.icon-level2 { 
+    color : #ffa500; 
+}
+.icon-level3 { 
+    color : #ffff00; 
+}
+.icon-level4 { 
+    color : #87ceeb; 
+}
+
 a.grid-link {
     color:#157fcc;
 }

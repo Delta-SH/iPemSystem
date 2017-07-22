@@ -438,7 +438,7 @@
                     id: 'root',
                     text: '全部',
                     expanded: true,
-                    icon: $$iPems.icons.Home
+                    icon: $$iPems.icons.All
                 },
                 viewConfig: {
                     loadMask: true
@@ -455,6 +455,20 @@
                             messageProperty: 'message',
                             totalProperty: 'total',
                             root: 'data'
+                        }
+                    },
+                    listeners: {
+                        load: function (me, node, records, successful) {
+                            if (successful) {
+                                var nodes = [];
+                                Ext.Array.each(records, function (item, index, allItems) {
+                                    nodes.push(item.getId());
+                                });
+
+                                if (nodes.length > 0) {
+                                    $$iPems.UpdateIcons(Ext.getCmp('organization'), nodes);
+                                }
+                            }
                         }
                     }
                 }),
@@ -756,6 +770,7 @@
 
         $$iPems.Tasks.actPointTask.run = function () {
             currentPagingToolbar.doRefresh();
+            $$iPems.UpdateIcons(Ext.getCmp('organization'), null);
         };
         $$iPems.Tasks.actPointTask.start();
     });

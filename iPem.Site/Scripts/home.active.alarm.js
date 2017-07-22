@@ -410,6 +410,20 @@
                     totalProperty: 'total',
                     root: 'data'
                 }
+            },
+            listeners: {
+                load: function (me, node, records, successful) {
+                    if (successful) {
+                        var nodes = [];
+                        Ext.Array.each(records, function (item, index, allItems) {
+                            nodes.push(item.getId());
+                        });
+
+                        if (nodes.length > 0) {
+                            $$iPems.UpdateIcons(leftBase, nodes);
+                        }
+                    }
+                }
             }
         }),
         listeners: {
@@ -2361,6 +2375,7 @@
 
         $$iPems.Tasks.actAlmTask.run = function () {
             refresh();
+            $$iPems.UpdateIcons(leftBase, null);
         };
         $$iPems.Tasks.actAlmTask.start();
     });

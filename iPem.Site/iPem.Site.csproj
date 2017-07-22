@@ -217,6 +217,7 @@
     <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
+    <Compile Include="Models\NodeIcon.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
     <Compile Include="Models\HisAlmModel.cs" />
