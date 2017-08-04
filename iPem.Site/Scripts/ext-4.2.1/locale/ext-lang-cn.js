@@ -18,14 +18,6 @@ at http://www.sencha.com/contact.
 
 Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
 */
-/**
- * Simplified Chinese translation
- * By DavidHu
- * 09 April 2007
- *
- * update by andy_ghg
- * 2009-10-22 15:00:57
- */
 Ext.onReady(function() {
     var parseCodes;
 
@@ -80,7 +72,6 @@ Ext.define("Ext.locale.zh_CN.form.field.Base", {
     invalidText: "输入值非法"
 });
 
-// changing the msg text below will affect the LoadMask
 Ext.define("Ext.locale.zh_CN.view.AbstractView", {
     override: "Ext.view.AbstractView",
     loadingText: "正在处理..."
@@ -177,7 +168,6 @@ Ext.define("Ext.locale.zh_CN.form.field.VTypes", {
     alphanumText: '该输入项只能包含半角字母,数字和_'
 });
 
-//add HTMLEditor's tips by andy_ghg
 Ext.define("Ext.locale.zh_CN.form.field.HtmlEditor", {
     override: "Ext.form.field.HtmlEditor",
     createLinkText: '添加超级链接:'
@@ -300,8 +290,25 @@ Ext.define("Ext.locale.zh_CN.window.MessageBox", {
     }    
 });
 
-// This is needed until we can refactor all of the locales into individual files
+Ext.define("Ext.locale.zh_CN.ux.form.MultiSelect", {
+    override: "Ext.ux.form.MultiSelect",
+    blankText: '该输入项为必输项',
+    minSelectionsText: '该输入项最少选择 {0} 项',
+    maxSelectionsText: '该输入项最大选择 {0} 项'
+});
+
+Ext.define("Ext.locale.zh_CN.ux.form.ItemSelector", {
+    override: "Ext.ux.form.ItemSelector",
+    buttonsText: {
+        top: "置顶",
+        up: "上移",
+        add: "增加",
+        remove: "删除",
+        down: "下移",
+        bottom: "置底"
+    }
+});
+
 Ext.define("Ext.locale.zh_CN.Component", {	
     override: "Ext.Component"
 });
-

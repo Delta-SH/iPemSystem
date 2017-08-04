@@ -1,0 +1,47 @@
+/*!
+ * itemselector.css
+ * /Content/ux/itemselector.css
+ */
+
+.x-form-multiselect-body .x-boundlist .x-mask {
+    background: none;
+}
+
+.x-form-itemselector-body .x-form-item {
+    margin: 0;
+}
+
+.x-form-itemselector-top,
+.x-form-itemselector-up,
+.x-form-itemselector-add,
+.x-form-itemselector-remove,
+.x-form-itemselector-down,
+.x-form-itemselector-bottom {
+    background-image: url('images/itemselector.png');
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.x-form-itemselector-top {
+    background-position: -57px -5px;
+}
+
+.x-form-itemselector-up {
+    background-position: -57px -31px;
+}
+
+.x-form-itemselector-add {
+    background-position: -31px -31px;
+}
+
+.x-form-itemselector-remove {
+    background-position: -5px -31px;
+}
+
+.x-form-itemselector-down {
+    background-position: -31px -5px;
+}
+
+.x-form-itemselector-bottom {
+    background-position: -5px -5px;
+}

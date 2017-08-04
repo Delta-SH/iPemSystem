@@ -134,36 +134,49 @@
     padding: 6px 0 6px 6px;
 }
 
+.x-layout-split-left,
+.x-layout-split-right,
+.x-layout-split-top,
+.x-layout-split-bottom,
+.x-splitter-collapsed .x-layout-split-left,
+.x-splitter-collapsed .x-layout-split-right,
+.x-splitter-collapsed .x-layout-split-top,
+.x-splitter-collapsed .x-layout-split-bottom {
+    background-image: url('images/spliter.png');
+    background-repeat: no-repeat;
+    display: block;
+}
+
 .x-layout-split-left {
-  background-image: url('images/mini-left.png');
+  background-position: -95px -5px;
 }
 
 .x-layout-split-right {
-  background-image: url('images/mini-right.png');
+  background-position: -110px -5px;
 }
 
 .x-layout-split-top {
-  background-image: url('images/mini-top.png');
+  background-position: -5px -5px;
 }
 
 .x-layout-split-bottom {
-  background-image: url('images/mini-bottom.png');
+  background-position: -50px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-left {
-  background-image: url('images/mini-right.png');
+  background-position: -110px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-right {
-  background-image: url('images/mini-left.png');
+  background-position: -95px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-top {
-  background-image: url('images/mini-bottom.png');
+  background-position: -50px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-bottom {
-  background-image: url('images/mini-top.png');
+  background-position: -5px -5px;
 }
 
 .x-fx-trigger {

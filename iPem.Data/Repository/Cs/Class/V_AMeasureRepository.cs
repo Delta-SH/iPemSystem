@@ -1,4 +1,5 @@
-﻿using iPem.Core.Domain.Cs;
+﻿using iPem.Core;
+using iPem.Core.Domain.Cs;
 using iPem.Core.Enum;
 using iPem.Data.Common;
 using System;
@@ -146,6 +147,41 @@ namespace iPem.Data.Repository.Cs {
 
             var entities = new List<V_AMeasure>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_V_AMeasure_Repository_GetMeasuresInDevice, parms)) {
+                while (rdr.Read()) {
+                    var entity = new V_AMeasure();
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SignalId = SqlTypeConverter.DBNullStringHandler(rdr["SignalId"]);
+                    entity.SignalNumber = SqlTypeConverter.DBNullStringHandler(rdr["SignalNumber"]);
+                    entity.SignalDesc = SqlTypeConverter.DBNullStringHandler(rdr["SignalDesc"]);
+                    entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
+                    entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
+                    entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
+                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<V_AMeasure> GetMeasures(IList<ValuesPair<string, string, string>> keys) {
+            var commands = new string[keys.Count];
+            for (var i = 0; i < keys.Count; i++) {
+                commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [SignalId], '{2}' AS [SignalNumber]", keys[i].Value1, keys[i].Value2, keys[i].Value3);
+            }
+
+            var query = string.Format(@"
+            ;WITH Keys AS (
+                {0}
+            )
+            SELECT VA.* FROM [dbo].[V_AMeasure] VA INNER JOIN Keys K ON VA.[DeviceId]=K.[DeviceId] AND VA.[SignalId]=K.[SignalId] AND VA.[SignalNumber]=K.[SignalNumber];", string.Join(@" UNION ALL ", commands));
+
+            var entities = new List<V_AMeasure>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, null)) {
                 while (rdr.Read()) {
                     var entity = new V_AMeasure();
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);

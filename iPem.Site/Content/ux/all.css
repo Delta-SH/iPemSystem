@@ -16,12 +16,12 @@
 }
 
 @font-face {
-	font-family: 'ipems-icon-font';
-	src: url('/Content/ux/fonts/iconfont.eot');
-	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
-		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
-		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
-		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
+	font-family: 'ipems-icon-font';  /* project id 64245 */
+      src: url('//at.alicdn.com/t/font_m73uy1l6h6j8xgvi.eot');
+      src: url('//at.alicdn.com/t/font_m73uy1l6h6j8xgvi.eot?#iefix') format('embedded-opentype'),
+           url('//at.alicdn.com/t/font_m73uy1l6h6j8xgvi.woff') format('woff'),
+           url('//at.alicdn.com/t/font_m73uy1l6h6j8xgvi.ttf') format('truetype'),
+           url('//at.alicdn.com/t/font_m73uy1l6h6j8xgvi.svg#ipems-icon-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;
@@ -252,36 +252,49 @@
     padding: 6px 0 6px 6px;
 }
 
+.x-layout-split-left,
+.x-layout-split-right,
+.x-layout-split-top,
+.x-layout-split-bottom,
+.x-splitter-collapsed .x-layout-split-left,
+.x-splitter-collapsed .x-layout-split-right,
+.x-splitter-collapsed .x-layout-split-top,
+.x-splitter-collapsed .x-layout-split-bottom {
+    background-image: url('images/spliter.png');
+    background-repeat: no-repeat;
+    display: block;
+}
+
 .x-layout-split-left {
-  background-image: url('images/mini-left.png');
+  background-position: -95px -5px;
 }
 
 .x-layout-split-right {
-  background-image: url('images/mini-right.png');
+  background-position: -110px -5px;
 }
 
 .x-layout-split-top {
-  background-image: url('images/mini-top.png');
+  background-position: -5px -5px;
 }
 
 .x-layout-split-bottom {
-  background-image: url('images/mini-bottom.png');
+  background-position: -50px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-left {
-  background-image: url('images/mini-right.png');
+  background-position: -110px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-right {
-  background-image: url('images/mini-left.png');
+  background-position: -95px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-top {
-  background-image: url('images/mini-bottom.png');
+  background-position: -50px -5px;
 }
 
 .x-splitter-collapsed .x-layout-split-bottom {
-  background-image: url('images/mini-top.png');
+  background-position: -5px -5px;
 }
 
 .x-fx-trigger {
@@ -356,6 +369,55 @@
     background-image: url("../themes/icons/junheng.png") !important;
     background-repeat: no-repeat;
 }
+
+/*!
+ * itemselector.css
+ * /Content/ux/itemselector.css
+ */
+
+.x-form-multiselect-body .x-boundlist .x-mask {
+    background: none;
+}
+
+.x-form-itemselector-body .x-form-item {
+    margin: 0;
+}
+
+.x-form-itemselector-top,
+.x-form-itemselector-up,
+.x-form-itemselector-add,
+.x-form-itemselector-remove,
+.x-form-itemselector-down,
+.x-form-itemselector-bottom {
+    background-image: url('images/itemselector.png');
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.x-form-itemselector-top {
+    background-position: -57px -5px;
+}
+
+.x-form-itemselector-up {
+    background-position: -57px -31px;
+}
+
+.x-form-itemselector-add {
+    background-position: -31px -31px;
+}
+
+.x-form-itemselector-remove {
+    background-position: -5px -31px;
+}
+
+.x-form-itemselector-down {
+    background-position: -31px -5px;
+}
+
+.x-form-itemselector-bottom {
+    background-position: -5px -5px;
+}
+
 
 /*!
  * label.css

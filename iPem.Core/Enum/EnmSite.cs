@@ -59,6 +59,10 @@
     /// </summary>
     public enum EnmSSH {
         /// <summary>
+        /// 全部
+        /// </summary>
+        Root = -1,
+        /// <summary>
         /// 区域
         /// </summary>
         Area,

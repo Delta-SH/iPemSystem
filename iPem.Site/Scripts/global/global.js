@@ -331,7 +331,9 @@ window.$$iPems.UpdateIcons = function (tree, nodes) {
 };
 
 window.$$iPems.SetIcon = function (node, cls) {
-    if (cls === $$iPems.Level.Level1) {
+    if (cls === $$iPems.Level.Level0) {
+        node.set('cls', 'icon-level0');
+    } else if (cls === $$iPems.Level.Level1) {
         node.set('cls', 'icon-level1');
     } else if (cls === $$iPems.Level.Level2) {
         node.set('cls', 'icon-level2');
@@ -339,8 +341,6 @@ window.$$iPems.SetIcon = function (node, cls) {
         node.set('cls', 'icon-level3');
     } else if (cls === $$iPems.Level.Level4) {
         node.set('cls', 'icon-level4');
-    } else {
-        node.set('cls', 'icon-level0');
     }
 };
 

@@ -34,6 +34,11 @@ namespace iPem.Services.Cs {
         List<V_AMeasure> GetMeasuresInDevice(string id);
 
         /// <summary>
+        /// 获得指定关键字多信号的性能数据
+        /// </summary>
+        List<V_AMeasure> GetMeasures(IList<ValuesPair<string, string, string>> keys);
+
+        /// <summary>
         /// 获得所有的性能数据
         /// </summary>
         List<V_AMeasure> GetMeasures();

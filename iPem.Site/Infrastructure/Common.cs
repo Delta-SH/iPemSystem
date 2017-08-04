@@ -448,6 +448,16 @@ namespace iPem.Site.Infrastructure {
             return string.Join(GlobalSeparator, keys);
         }
 
+        public static IdValuePair<EnmSSH, string> ParseNode(string node) {
+            if ("root".Equals(node, StringComparison.CurrentCultureIgnoreCase))
+                return new IdValuePair<EnmSSH, string>(EnmSSH.Root, node);
+
+            var keys = Common.SplitKeys(node);
+            if (keys.Length != 2) throw new iPemException("参数格式错误");
+            if (!Enum.IsDefined(typeof(EnmSSH), int.Parse(keys[0]))) throw new iPemException("无效的参数");
+            return new IdValuePair<EnmSSH, string>((EnmSSH)(int.Parse(keys[0])), keys[1]);
+        }
+
         public static bool SetAllowUnsafeHeaderParsing() {
             //Get the assembly that contains the internal class
             var aNetAssembly = Assembly.GetAssembly(typeof(System.Net.Configuration.SettingsSection));

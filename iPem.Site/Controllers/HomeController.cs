@@ -905,7 +905,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestActPoints(string node, int[] types, int start, int limit) {
+        public JsonResult RequestActPoints(string node, bool normal, int[] types, int start, int limit) {
             var data = new AjaxDataModel<List<ActPointModel>> {
                 success = true,
                 message = "无数据",
@@ -917,28 +917,15 @@ namespace iPem.Site.Controllers {
                 if(types != null && types.Length > 0) {
                     var stores = this.GetActPoints(node, types);
                     if(stores.Count > 0) {
-                        data.message = "200 Ok";
-                        data.total = stores.Count;
-
-                        var end = start + limit;
-                        if(end > stores.Count)
-                            end = stores.Count;
-
-                        var points = new List<PointStore<P_Point>>();
-                        for(var i = start; i < end; i++)
-                            points.Add(stores[i]);
+                        var nodeKey = Common.ParseNode(node);
+                        var models = new List<ActPointModel>();
 
                         #region 标准信号
 
-                        var ptPoints = points.FindAll(p => p.Type != EnmPoint.AL);
+                        var ptPoints = stores.FindAll(p => p.Type != EnmPoint.AL);
                         if (ptPoints.Count > 0) {
-                            var values = new List<V_AMeasure>();
-                            var pointsInDevices = ptPoints.GroupBy(g => g.Device.Id);
-                            if (pointsInDevices.Count() > 5) {
-                                foreach (var point in ptPoints) {
-                                    values.Add(_aMeasureService.GetMeasure(point.Device.Id, point.Current.Code, point.Current.Number));
-                                }
-                            } else {
+                            List<V_AMeasure> values;
+                            if (nodeKey.Id == EnmSSH.Device) {
                                 #region 通知获取数据
                                 var pointsInFsus = ptPoints.GroupBy(p => p.Device.FsuId);
                                 foreach (var pointsInFsu in pointsInFsus) {
@@ -961,30 +948,25 @@ namespace iPem.Site.Controllers {
                                         };
 
                                         _packMgr.GetData(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
-                                    } catch {}
+                                    } catch { }
                                 }
                                 #endregion
-
-                                foreach (var pointsInDevice in pointsInDevices) {
-                                    values.AddRange(_aMeasureService.GetMeasuresInDevice(pointsInDevice.Key));
-                                }
+                                values = _aMeasureService.GetMeasuresInDevice(nodeKey.Value);
+                            } else {
+                                values = _aMeasureService.GetMeasures(ptPoints.Select(p => new ValuesPair<string, string, string>(p.Device.Id, p.Current.Code, p.Current.Number)).ToList());
                             }
 
                             var pValues = from point in ptPoints
                                           join val in values on new { DeviceId = point.Device.Id, SignalId = point.Current.Code, SignalNumber = point.Current.Number } equals new { val.DeviceId, val.SignalId, val.SignalNumber } into lt
                                           from def in lt.DefaultIfEmpty()
-                                          select new {
-                                              Point = point,
-                                              Value = def
-                                          };
+                                          select new { Point = point, Value = def };
 
                             foreach (var pv in pValues) {
                                 var value = pv.Value != null && pv.Value.Value != double.MinValue ? pv.Value.Value.ToString() : "NULL";
                                 var status = pv.Value != null ? pv.Value.Status : EnmState.Invalid;
                                 var time = pv.Value != null ? pv.Value.UpdateTime : DateTime.Now;
 
-                                data.data.Add(new ActPointModel {
-                                    index = ++start,
+                                models.Add(new ActPointModel {
                                     area = pv.Point.Area.Name,
                                     station = pv.Point.Device.StationName,
                                     room = pv.Point.Device.RoomName,
@@ -1010,12 +992,11 @@ namespace iPem.Site.Controllers {
 
                         #region 告警信号
 
-                        var alPoints = points.FindAll(p => p.Type == EnmPoint.AL);
+                        var alPoints = stores.FindAll(p => p.Type == EnmPoint.AL);
                         if (alPoints.Count > 0) {
                             var almKeys = _workContext.AlarmsToDictionary(_workContext.ActAlarms, false);
                             foreach (var point in alPoints) {
                                 var model = new ActPointModel {
-                                    index = ++start,
                                     area = point.Area.Name,
                                     station = point.Device.StationName,
                                     room = point.Device.RoomName,
@@ -1049,11 +1030,25 @@ namespace iPem.Site.Controllers {
                                     model.timestamp = CommonHelper.ShortTimeConverter(time);
                                 }
 
-                                data.data.Add(model);
+                                models.Add(model);
                             }
                         }
 
                         #endregion
+
+                        if (normal) models = models.FindAll(m => m.statusid != (int)EnmState.Invalid);
+                        var end = start + limit;
+                        if (end > models.Count)
+                            end = models.Count;
+
+                        data.message = "200 Ok";
+                        data.total = models.Count;
+
+                        for (var i = start; i < end; i++) {
+                            var model = models[i];
+                            model.index = i + 1;
+                            data.data.Add(model);
+                        }
                     }
                 }
             } catch(Exception exc) {
@@ -1447,6 +1442,9 @@ namespace iPem.Site.Controllers {
                     var follow = new U_FollowPoint { DeviceId = device, PointId = point, UserId = _workContext.User.Id };
                     _workContext.Profile.FollowPoints.Add(follow);
                     _followPointService.Add(follow);
+
+                    var key = string.Format(GlobalCacheKeys.User_Cache_FollowPoints, _workContext.User.Id);
+                    if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "关注成功" }, JsonRequestBehavior.AllowGet);
@@ -1463,6 +1461,9 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     _workContext.Profile.FollowPoints.Remove(current);
                     _followPointService.Remove(current);
+
+                    var key = string.Format(GlobalCacheKeys.User_Cache_FollowPoints, _workContext.User.Id);
+                    if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "已取消关注" }, JsonRequestBehavior.AllowGet);
@@ -2111,45 +2112,37 @@ namespace iPem.Site.Controllers {
 
         private List<PointStore<P_Point>> GetActPoints(string node, int[] types) {
             var stores = new List<PointStore<P_Point>>();
-
-            if(node == "root") {
+            var nodeKey = Common.ParseNode(node);
+            if (nodeKey.Id == EnmSSH.Root) {
                 stores = this.GetFollowPoints(node, EnmSSH.Area);
-            } else {
-                var keys = Common.SplitKeys(node);
-                if(keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Device) {
-                        var current = _workContext.Devices.Find(d => d.Current.Id == id);
-                        if(current != null && current.Protocol != null) {
-                            var area = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
-                            if(area != null) {
-                                var followKeys = new HashSet<string>(_workContext.Profile.FollowPoints.Select(p => string.Format("{0}-{1}", p.DeviceId, p.PointId)));
-                                foreach(var point in current.Protocol.Points) {
-                                    stores.Add(new PointStore<P_Point>() {
-                                        Current = point,
-                                        Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
-                                        Device = current.Current,
-                                        Area = new A_Area {
-                                            Id = area.Current.Id,
-                                            Code = area.Current.Code,
-                                            Name = area.ToString(),
-                                            Type = area.Current.Type,
-                                            ParentId = area.Current.ParentId,
-                                            Comment = area.Current.Comment,
-                                            Enabled = area.Current.Enabled
-                                        },
-                                        Followed = followKeys.Contains(string.Format("{0}-{1}", current.Current.Id, point.Id)),
-                                        FollowedOnly = false
-                                    });
-                                }
-                            }
+            } else if (nodeKey.Id == EnmSSH.Device) {
+                var current = _workContext.Devices.Find(d => d.Current.Id == nodeKey.Value);
+                if (current != null && current.Protocol != null) {
+                    var area = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                    if (area != null) {
+                        var followKeys = new HashSet<string>(_workContext.Profile.FollowPoints.Select(p => string.Format("{0}-{1}", p.DeviceId, p.PointId)));
+                        foreach (var point in current.Protocol.Points) {
+                            stores.Add(new PointStore<P_Point>() {
+                                Current = point,
+                                Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
+                                Device = current.Current,
+                                Area = new A_Area {
+                                    Id = area.Current.Id,
+                                    Code = area.Current.Code,
+                                    Name = area.ToString(),
+                                    Type = area.Current.Type,
+                                    ParentId = area.Current.ParentId,
+                                    Comment = area.Current.Comment,
+                                    Enabled = area.Current.Enabled
+                                },
+                                Followed = followKeys.Contains(string.Format("{0}-{1}", current.Current.Id, point.Id)),
+                                FollowedOnly = false
+                            });
                         }
-                    } else {
-                        stores = this.GetFollowPoints(id, nodeType);
                     }
                 }
+            } else {
+                stores = this.GetFollowPoints(nodeKey.Value, nodeKey.Id);
             }
 
             stores = stores.FindAll(p => types.Contains((int)p.Type)).OrderByDescending(p => (int)p.Type).ToList();
@@ -2157,30 +2150,37 @@ namespace iPem.Site.Controllers {
         }
 
         private List<PointStore<P_Point>> GetFollowPoints(string node, EnmSSH type) {
-            var stores = new List<PointStore<P_Point>>();
-            if(_workContext.Profile == null) return stores;
-            if(_workContext.Profile.FollowPoints.Count == 0) return stores;
+            if (_workContext.Profile == null) return new List<PointStore<P_Point>>();
+            if (_workContext.Profile.FollowPoints.Count == 0) return new List<PointStore<P_Point>>();
 
-            stores = (from follow in _workContext.Profile.FollowPoints
-                      join point in _workContext.Points on follow.PointId equals point.Id
-                      join device in _workContext.Devices on follow.DeviceId equals device.Current.Id
-                      join area in _workContext.Areas on device.Current.AreaId equals area.Current.Id
-                      select new PointStore<P_Point> {
-                          Current = point,
-                          Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
-                          Device = device.Current,
-                          Area = new A_Area {
-                              Id = area.Current.Id,
-                              Code = area.Current.Code,
-                              Name = area.ToString(),
-                              Type = area.Current.Type,
-                              ParentId = area.Current.ParentId,
-                              Comment = area.Current.Comment,
-                              Enabled = area.Current.Enabled
-                          },
-                          Followed = true,
-                          FollowedOnly = true
-                      }).ToList();
+            List<PointStore<P_Point>> stores;
+            var key = string.Format(GlobalCacheKeys.User_Cache_FollowPoints, _workContext.User.Id);
+            if (_cacheManager.IsSet(key)) {
+                stores = _cacheManager.Get<List<PointStore<P_Point>>>(key);
+            } else {
+                stores = (from follow in _workContext.Profile.FollowPoints
+                          join point in _workContext.Points on follow.PointId equals point.Id
+                          join device in _workContext.Devices on follow.DeviceId equals device.Current.Id
+                          join area in _workContext.Areas on device.Current.AreaId equals area.Current.Id
+                          select new PointStore<P_Point> {
+                              Current = point,
+                              Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
+                              Device = device.Current,
+                              Area = new A_Area {
+                                  Id = area.Current.Id,
+                                  Code = area.Current.Code,
+                                  Name = area.ToString(),
+                                  Type = area.Current.Type,
+                                  ParentId = area.Current.ParentId,
+                                  Comment = area.Current.Comment,
+                                  Enabled = area.Current.Enabled
+                              },
+                              Followed = true,
+                              FollowedOnly = true
+                          }).ToList();
+
+                _cacheManager.Set<List<PointStore<P_Point>>>(key, stores, CachedIntervals.Global_Default_Intervals);
+            }
 
             if(node == "root") return stores;
             if(type == EnmSSH.Area) {

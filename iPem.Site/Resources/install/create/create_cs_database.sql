@@ -13,10 +13,8 @@ GO
 
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
-
 SET ANSI_PADDING ON
 GO
 
@@ -49,6 +47,45 @@ CREATE TABLE [dbo].[A_AAlarm](
  CONSTRAINT [PK_A_AAlarm] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
+--´´½¨±í[dbo].[A_FAlarm]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_FAlarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_FAlarm]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[A_FAlarm](
+	[FsuId] [varchar](100) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[SignalId] [varchar](100) NOT NULL,
+	[SignalNumber] [varchar](10) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[NMAlarmId] [varchar](100) NULL,
+	[AlarmTime] [datetime] NULL,
+	[AlarmLevel] [int] NULL,
+	[AlarmFlag] [int] NOT NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmValue] [float] NULL,
+	[AlarmRemark] [varchar](100) NULL,
+ CONSTRAINT [PK_A_FAlarm] PRIMARY KEY CLUSTERED 
+(
+	[FsuId] ASC,
+	[SerialNo] ASC,
+	[AlarmFlag] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

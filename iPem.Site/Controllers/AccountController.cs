@@ -2070,14 +2070,14 @@ namespace iPem.Site.Controllers {
 
             try {
                 if (nodes != null && nodes.Length > 0) {
-                    var alarms = _workContext.ActAlarms;
-                    if (alarms.Count > 0) {
-                        data.message = "200 Ok";
-                        data.total = nodes.Length;
+                    data.message = "200 Ok";
+                    data.total = nodes.Length;
 
-                        var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, cls = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
-                        foreach (var node in nodes) {
-                            var target = new NodeIcon { id = node, cls = (int)EnmAlarm.Level0 };
+                    var alarms = _workContext.ActAlarms;
+                    var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, cls = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                    foreach (var node in nodes) {
+                        var target = new NodeIcon { id = node, cls = (int)EnmAlarm.Level0 };
+                        if (alarms.Count > 0) {
                             var keys = Common.SplitKeys(node);
                             if (keys.Length == 2) {
                                 var type = int.Parse(keys[0]); var id = keys[1];
@@ -2089,7 +2089,7 @@ namespace iPem.Site.Controllers {
                                             var icons = areaIcons.FindAll(i => current.Keys.Contains(i.id));
                                             if (icons.Count > 0) target.cls = icons.Min(i => i.cls);
                                         } else {
-                                            var icon = areaIcons.Find(i=>i.id == current.Current.Id);
+                                            var icon = areaIcons.Find(i => i.id == current.Current.Id);
                                             if (icon != null) target.cls = icon.cls;
                                         }
                                     }
@@ -2104,8 +2104,9 @@ namespace iPem.Site.Controllers {
                                     if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
                                 }
                             }
-                            data.data.Add(target);
                         }
+
+                        data.data.Add(target);
                     }
                 }
             } catch (Exception exc) {

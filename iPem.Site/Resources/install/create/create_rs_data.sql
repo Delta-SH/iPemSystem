@@ -3526,7 +3526,6 @@ GO
 --添加默认值[dbo].[C_Department]
 DELETE FROM [dbo].[C_Department];
 GO
-
 INSERT INTO [dbo].[C_Department]([ID],[Code],[Name],[TypeDesc],[Phone],[PostCode],[ParentId],[Desc],[Enabled]) VALUES('001','X001',N'默认部门',NULL,NULL,NULL,0,NULL,1);
 GO
 
@@ -3539,6 +3538,34 @@ INSERT INTO [dbo].[C_Duty]([ID],[Name],[Level],[Desc],[Enabled]) VALUES('001', N
 INSERT INTO [dbo].[C_Duty]([ID],[Name],[Level],[Desc],[Enabled]) VALUES('002', N'总经理', 2, NULL, 1);
 INSERT INTO [dbo].[C_Duty]([ID],[Name],[Level],[Desc],[Enabled]) VALUES('003', N'部门经理', 3, NULL, 1);
 INSERT INTO [dbo].[C_Duty]([ID],[Name],[Level],[Desc],[Enabled]) VALUES('004', N'员工', 4, NULL, 1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_Productor]
+DELETE FROM [dbo].[C_Productor] WHERE [ID]='00';
+GO
+INSERT INTO [dbo].[C_Productor]([ID],[Enabled],[Name]) VALUES('00',1,'默认生产厂家');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_Brand]
+DELETE FROM [dbo].[C_Brand] WHERE [ID]='00';
+GO
+INSERT INTO [dbo].[C_Brand]([ID],[Enabled],[Name],[ProductorID]) VALUES('00',1,'默认品牌','00');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_Supplier]
+DELETE FROM [dbo].[C_Supplier] WHERE [ID]='00';
+GO
+INSERT INTO [dbo].[C_Supplier]([ID],[Enabled],[Name]) VALUES('00',1,'默认供应商');
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[C_SubCompany]
+DELETE FROM [dbo].[C_SubCompany] WHERE [ID]='00';
+GO
+INSERT INTO [dbo].[C_SubCompany]([ID],[Enabled],[Name]) VALUES('00',1,'默认代维公司');
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

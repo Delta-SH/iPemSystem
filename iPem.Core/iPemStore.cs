@@ -10,7 +10,7 @@ namespace iPem.Core {
         /// 应用程序标识
         /// </summary>
         public Guid Id {
-            get { return new Guid("CBC23C46-D14D-4B05-99DB-243826013069"); }
+            get { return new Guid("cbc23c46-d14d-4b05-99db-243826013069"); }
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace iPem.Core {
         /// 软件版本
         /// </summary>
         public string Version {
-            get { return "V1.0.0 Build170325"; }
+            get { return "V1.0.0 Build170725"; }
         }
 
         /// <summary>

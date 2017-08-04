@@ -435,11 +435,13 @@
     <Content Include="Content\ux\icon.css" />
     <Content Include="Content\ux\images\checked.png" />
     <Content Include="Content\ux\images\fx-trigger.png" />
+    <Content Include="Content\ux\images\itemselector.png" />
     <Content Include="Content\ux\images\unchecked.png" />
     <Content Include="Content\ux\images\mini-bottom.png" />
     <Content Include="Content\ux\images\mini-left.png" />
     <Content Include="Content\ux\images\mini-right.png" />
     <Content Include="Content\ux\images\mini-top.png" />
+    <Content Include="Content\ux\itemselector.css" />
     <Content Include="Content\ux\label.css" />
     <Content Include="Content\ux\multicombo.css" />
     <Content Include="favicon.ico" />
@@ -1140,6 +1142,7 @@
     <Content Include="Scripts\ux\all.js" />
     <Content Include="Scripts\ux\DateTimePicker.js" />
     <Content Include="Scripts\ux\IFrame.js" />
+    <Content Include="Scripts\ux\ItemSelector.js" />
     <Content Include="Scripts\ux\Label.js" />
     <Content Include="Scripts\ux\MultiCombo.js" />
     <Content Include="Scripts\ux\SingleCombo.js" />

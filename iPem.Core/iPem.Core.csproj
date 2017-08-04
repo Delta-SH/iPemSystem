@@ -163,6 +163,7 @@
     <Compile Include="Enum\EnmMethodType.cs" />
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="FtpHelper.cs" />
+    <Compile Include="ValuesPair.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Caching\CacheManager.cs" />

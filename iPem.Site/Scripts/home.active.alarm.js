@@ -379,7 +379,7 @@
     var detailPagingToolbar_1 = $$iPems.clonePagingToolbar(detailStore_1);
     //#endregion
 
-    //#region Left
+    //#region Left UI
     var leftBase = Ext.create('Ext.tree.Panel', {
         id: 'baseConditionPanel',
         glyph: 0xf056,
@@ -598,7 +598,7 @@
     });
     //#endregion
 
-    //#region Center
+    //#region Center UI
     var centerGrid_0 = Ext.create('Ext.grid.Panel', {
         title: '全部告警',
         glyph: 0xf055,
@@ -2285,7 +2285,7 @@
             if (buttonId === 'yes') {
                 Ext.Ajax.request({
                     url: '/Home/ConfirmAllAlarms',
-                    params: { onlyReservation: current == centerGrid_2, olnySystem: current == centerGrid_4 },
+                    params: { onlyReservation: current == centerGrid_2, onlySystem: current == centerGrid_4 },
                     mask: new Ext.LoadMask(current.getView(), { msg: '正在处理...' }),
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);

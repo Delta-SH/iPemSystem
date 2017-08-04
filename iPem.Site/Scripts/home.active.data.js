@@ -1,4 +1,223 @@
 ﻿(function () {
+
+    //#region Model
+    Ext.define('PointModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+			{ name: 'index', type: 'int' },
+            { name: 'area', type: 'string' },
+            { name: 'station', type: 'string' },
+			{ name: 'room', type: 'string' },
+            { name: 'device', type: 'string' },
+            { name: 'point', type: 'string' },
+            { name: 'type', type: 'string' },
+            { name: 'value', type: 'string' },
+            { name: 'unit', type: 'string' },
+            { name: 'status', type: 'string' },
+            { name: 'time', type: 'string' },
+            { name: 'deviceid', type: 'string' },
+            { name: 'pointid', type: 'string' },
+            { name: 'typeid', type: 'int' },
+            { name: 'statusid', type: 'int' },
+            { name: 'followed', type: 'boolean' },
+            { name: 'followedOnly', type: 'boolean' },
+            { name: 'timestamp', type: 'string' }
+        ],
+        idProperty: 'index'
+    });
+
+    Ext.define('ActAlarmModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            { name: 'index', type: 'int' },
+            { name: 'nmalarmid', type: 'string' },
+			{ name: 'level', type: 'string' },
+            { name: 'time', type: 'string' },
+            { name: 'interval', type: 'string' },
+            { name: 'comment', type: 'string' },
+            { name: 'value', type: 'string' },
+            { name: 'point', type: 'string' },
+            { name: 'device', type: 'string' },
+			{ name: 'room', type: 'string' },
+            { name: 'station', type: 'string' },
+            { name: 'area', type: 'string' },
+            { name: 'confirmed', type: 'string' },
+            { name: 'confirmer', type: 'string' },
+            { name: 'confirmedtime', type: 'string' },
+            { name: 'reservation', type: 'string' },
+            { name: 'reversalcount', type: 'int' },
+            { name: 'id', type: 'string' },
+            { name: 'areaid', type: 'string' },
+            { name: 'stationid', type: 'string' },
+            { name: 'roomid', type: 'string' },
+            { name: 'fsuid', type: 'string' },
+            { name: 'deviceid', type: 'string' },
+            { name: 'pointid', type: 'string' },
+            { name: 'levelid', type: 'int' },
+            { name: 'reversalid', type: 'string' }
+        ],
+        idProperty: 'index'
+    });
+    //#endregion
+
+    //#region Store
+    var currentStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'PointModel',
+        groupField: 'type',
+        groupDir: 'undefined',
+        sortOnLoad: false,
+        downloadURL: '',
+        selectPoint: null,
+        proxy: {
+            type: 'ajax',
+            url: '/Home/RequestActPoints',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                node: 'root',
+                normal: false,
+                types: [$$iPems.Point.DI, $$iPems.Point.AI, $$iPems.Point.AO, $$iPems.Point.DO, $$iPems.Point.AL]
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    if (records.length > 0) {
+                        var grid = pointGrid,
+                            selection = grid.getSelectionModel();
+
+                        if (!Ext.isEmpty(me.selectPoint)) {
+                            var record = me.findRecord('pointid', me.selectPoint);
+                            if (!Ext.isEmpty(record)) selection.select(record);
+                            me.selectPoint = null;
+                        }
+
+                        if (!Ext.isEmpty(gaugeChart) && !Ext.isEmpty(lineChart)) {
+                            if (selection.hasSelection()) {
+                                var index = selection.getSelection()[0].get('index');
+                                var record = me.findRecord('index', index);
+                                if (!Ext.isEmpty(record)) loadChart(record);
+                            }
+                        }
+                    }
+
+                    $$iPems.Tasks.actPointTask.fireOnStart = false;
+                    $$iPems.Tasks.actPointTask.restart();
+                }
+            }
+        }
+    });
+
+    var matrixStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        fields: [],
+        downloadURL: '/Home/DownloadActAlms',
+        proxy: {
+            type: 'ajax',
+            url: '/Home/RequestActAlarms',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                node: 'root'
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                //if (successful) {
+                //    $$iPems.Tasks.actPointTask.fireOnStart = false;
+                //    $$iPems.Tasks.actPointTask.restart();
+                //}
+            }
+        }
+    });
+
+    var alarmStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'ActAlarmModel',
+        downloadURL: '/Home/DownloadActAlms',
+        proxy: {
+            type: 'ajax',
+            actionMethods: {
+                create: 'POST',
+                read: 'POST',
+                update: 'POST',
+                destroy: 'POST'
+            },
+            url: '/Home/RequestActAlarms',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                baseNode: 'root',
+                seniorNode: 'root',
+                stationTypes: [],
+                roomTypes: [],
+                subDeviceTypes: [],
+                subLogicTypes: [],
+                points: [],
+                levels: [],
+                confirms: [],
+                reservations: [],
+                keywords: Ext.emptyString,
+                onlyConfirms: false,
+                onlyReservations: false,
+                onlySystem: false
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    $$iPems.Tasks.actPointTask.fireOnStart = false;
+                    $$iPems.Tasks.actPointTask.restart();
+                }
+            }
+        }
+    });
+
+    var columnStore = Ext.create('Ext.data.Store',{
+        data: [
+            { id: '1', name: 'One' },
+            { id: '2', name: 'Two' },
+            { id: '3', name: 'Three' },
+            { id: '4', name: 'Four' },
+            { id: '5', name: 'Five' }
+        ],
+        fields: ['id', 'name'],
+        sortInfo: {
+            field: 'id',
+            direction: 'ASC'
+        }
+    });
+
+    var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
+
+    var matrixPagingToolbar = $$iPems.clonePagingToolbar(matrixStore);
+
+    var alarmPagingToolbar = $$iPems.clonePagingToolbar(alarmStore);
+    //#endregion
+
+    //#region Chart
     var gaugeChart = null,
         lineChart = null,
         gaugeOption = {
@@ -67,186 +286,679 @@
                 }
             ]
         };
+    //#endregion
 
-    var resetChart = function (fill) {
-        fill = fill || false;
-
-        gaugeOption.series[0].min = 0;
-        gaugeOption.series[0].max = 100;
-        gaugeOption.series[0].name = '';
-        gaugeOption.series[0].data[0] = { value: 0, name: '' };
-        gaugeChart.setOption(gaugeOption, true);
-
-        lineOption.series[0].name = '';
-        lineOption.series[0].data = fill ? [0] : [];
-        lineOption.xAxis[0].data = fill ? ['00′00″'] : [];
-        lineChart.setOption(lineOption, true);
-    };
-
-    var loadChart = function (record) {
-        if (record != null) {
-            var maxcount = 90,
-                timestamp = record.get('timestamp'),
-                point = record.get('point'),
-                value = record.get('value'),
-                unit = record.get('unit');
-
-            if (value === 'NULL') value = 0;
-            if (value >= 0) {
-                if (value <= 100) {
-                    gaugeOption.series[0].min = 0;
-                    gaugeOption.series[0].max = 100;
-                } else if (value > 100 && value <= 500) {
-                    gaugeOption.series[0].min = 0;
-                    gaugeOption.series[0].max = 500;
-                } else if (value > 500 && value <= 1000) {
-                    gaugeOption.series[0].min = 0;
-                    gaugeOption.series[0].max = 1000;
-                } else if (value > 1000 && value <= 5000) {
-                    gaugeOption.series[0].min = 0;
-                    gaugeOption.series[0].max = 5000;
-                } else {
-                    gaugeOption.series[0].min = 0;
-                    gaugeOption.series[0].max = 10000;
-                }
-            } else {
-                if (value >= -100) {
-                    gaugeOption.series[0].min = -100;
-                    gaugeOption.series[0].max = 0;
-                } else if (value < -100 && value >= -500) {
-                    gaugeOption.series[0].min = -500;
-                    gaugeOption.series[0].max = 0;
-                } else if (value < -500 && value >= -1000) {
-                    gaugeOption.series[0].min = -1000;
-                    gaugeOption.series[0].max = 0;
-                } else if (value < -1000 && value >= -5000) {
-                    gaugeOption.series[0].min = -5000;
-                    gaugeOption.series[0].max = 0;
-                } else {
-                    gaugeOption.series[0].min = -10000;
-                    gaugeOption.series[0].max = 0;
-                }
-            }
-
-            gaugeOption.series[0].name = unit;
-            gaugeOption.series[0].data[0].name = point;
-            gaugeOption.series[0].data[0].value = value;
-            gaugeChart.setOption(gaugeOption, true);
-
-            if (lineOption.series[0].data.length >= maxcount) {
-                lineOption.series[0].data.shift();
-                lineOption.xAxis[0].data.shift();
-            }
-
-            lineOption.series[0].name = unit;
-            lineOption.series[0].data.push(value);
-            lineOption.xAxis[0].data.push(timestamp);
-            lineChart.setOption(lineOption, true);
-        }
-    };
-
-    Ext.define('PointModel', {
-        extend: 'Ext.data.Model',
-        fields: [
-			{ name: 'index', type: 'int' },
-            { name: 'area', type: 'string' },
-            { name: 'station', type: 'string' },
-			{ name: 'room', type: 'string' },
-            { name: 'device', type: 'string' },
-            { name: 'point', type: 'string' },
-            { name: 'type', type: 'string' },
-            { name: 'value', type: 'string' },
-            { name: 'unit', type: 'string' },
-            { name: 'status', type: 'string' },
-            { name: 'time', type: 'string' },
-            { name: 'deviceid', type: 'string' },
-            { name: 'pointid', type: 'string' },
-            { name: 'typeid', type: 'int' },
-            { name: 'statusid', type: 'int' },
-            { name: 'followed', type: 'boolean' },
-            { name: 'followedOnly', type: 'boolean' },
-            { name: 'timestamp', type: 'string' }
-        ],
-        idProperty: 'index'
-    });
-
-    var change = function (node, pagingtoolbar) {
-        var me = pagingtoolbar.store,
-            id = node.getId(),
-            ids = $$iPems.SplitKeys(id),
-            grid = Ext.getCmp('points-grid'),
-            columns = grid.columns,
-            selection = grid.getSelectionModel();
-
-        if (id !== 'root'
-            && ids.length === 2
-            && parseInt(ids[0]) === $$iPems.SSH.Device) {
-            columns[1].hide();
-            columns[2].hide();
-            columns[3].hide();
-            columns[4].hide();
-        } else {
-            columns[1].show();
-            columns[2].show();
-            columns[3].show();
-            columns[4].show();
-        }
-
-        if (selection.hasSelection()) {
-            selection.clearSelections();
-        }
-
-        resetChart(true);
-        me.proxy.extraParams.node = node.getId();
-        me.loadPage(1);
-    };
-
-    var currentStore = Ext.create('Ext.data.Store', {
-        autoLoad: false,
-        pageSize: 20,
-        model: 'PointModel',
-        groupField: 'type',
-        groupDir: 'undefined',
-        sortOnLoad: false,
-        proxy: {
-            type: 'ajax',
-            url: '/Home/RequestActPoints',
-            reader: {
-                type: 'json',
-                successProperty: 'success',
-                messageProperty: 'message',
-                totalProperty: 'total',
-                root: 'data'
-            },
-            extraParams: {
-                node: 'root',
-                types: [$$iPems.Point.DI, $$iPems.Point.AI, $$iPems.Point.AO, $$iPems.Point.DO, $$iPems.Point.AL]
-            },
-            simpleSortMode: true
+    //#region UI
+    var leftPanel = Ext.create('Ext.tree.Panel', {
+        region: 'west',
+        title: '系统层级',
+        glyph: 0xf011,
+        width: 220,
+        split: true,
+        collapsible: true,
+        collapsed: false,
+        autoScroll: true,
+        useArrows: false,
+        rootVisible: true,
+        root: {
+            id: 'root',
+            text: '全部',
+            expanded: true,
+            icon: $$iPems.icons.All
         },
-        listeners: {
-            load: function (me, records, successful) {
-                if (successful && gaugeChart && lineChart) {
-                    if (records.length > 0) {
-                        var grid = Ext.getCmp('points-grid'),
-                            selection = grid.getSelectionModel();
+        viewConfig: {
+            loadMask: true
+        },
+        store: Ext.create('Ext.data.TreeStore', {
+            autoLoad: false,
+            nodeParam: 'node',
+            proxy: {
+                type: 'ajax',
+                url: '/Component/GetDevices',
+                reader: {
+                    type: 'json',
+                    successProperty: 'success',
+                    messageProperty: 'message',
+                    totalProperty: 'total',
+                    root: 'data'
+                }
+            },
+            listeners: {
+                load: function (me, node, records, successful) {
+                    if (successful) {
+                        var nodes = [];
+                        Ext.Array.each(records, function (item, index, allItems) {
+                            nodes.push(item.getId());
+                        });
 
-                        if (selection.hasSelection()) {
-                            var index = selection.getSelection()[0].get('index');
-                            var record = me.findRecord('index', index);
-                            if (record != null) loadChart(record);
+                        if (nodes.length > 0) {
+                            $$iPems.UpdateIcons(leftPanel, nodes);
                         }
                     }
+                }
+            }
+        }),
+        listeners: {
+            select: function (me, record, index) {
+                select(record);
+            }
+        },
+        tbar: [
+            {
+                id: 'left-search-field',
+                xtype: 'textfield',
+                emptyText: '请输入筛选条件...',
+                flex: 1,
+                listeners: {
+                    change: function (me, newValue, oldValue, eOpts) {
+                        delete me._filterData;
+                        delete me._filterIndex;
+                    }
+                }
+            },
+            {
+                xtype: 'button',
+                glyph: 0xf005,
+                handler: function () {
+                    var tree = leftPanel,
+                        search = Ext.getCmp('left-search-field'),
+                        text = search.getRawValue();
 
-                    $$iPems.Tasks.actPointTask.fireOnStart = false;
-                    $$iPems.Tasks.actPointTask.restart();
+                    if (Ext.isEmpty(text, false)) {
+                        return;
+                    }
+
+                    if (text.length < 2) {
+                        return;
+                    }
+
+                    if (search._filterData != null
+                        && search._filterIndex != null) {
+                        var index = search._filterIndex + 1;
+                        var paths = search._filterData;
+                        if (index >= paths.length) {
+                            index = 0;
+                            Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                        }
+
+                        $$iPems.selectNodePath(tree, paths[index]);
+                        search._filterIndex = index;
+                    } else {
+                        Ext.Ajax.request({
+                            url: '/Component/FilterRoomPath',
+                            params: { text: text },
+                            mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
+                            success: function (response, options) {
+                                var data = Ext.decode(response.responseText, true);
+                                if (data.success) {
+                                    var len = data.data.length;
+                                    if (len > 0) {
+                                        $$iPems.selectNodePath(tree, data.data[0]);
+                                        search._filterData = data.data;
+                                        search._filterIndex = 0;
+                                    } else {
+                                        Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                                    }
+                                } else {
+                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        ]
+    });
+
+    var chartPanel = Ext.create('Ext.panel.Panel', {
+        border: false,
+        layout: {
+            type: 'hbox',
+            align: 'stretch',
+            pack: 'start'
+        },
+        items: [
+            {
+                xtype: 'container',
+                flex: 1,
+                contentEl: 'gauge-chart'
+            }, {
+                xtype: 'container',
+                flex: 3,
+                contentEl: 'line-chart'
+            }
+        ],
+        listeners: {
+            resize: function (me, width, height, oldWidth, oldHeight) {
+                if (gaugeChart) gaugeChart.resize();
+                if (lineChart) lineChart.resize();
+            }
+        }
+    });
+
+    var pointGrid = Ext.create('Ext.grid.Panel', {
+        border: false,
+        flex: 2,
+        header: {
+            items: [
+                {
+                    xtype: 'toolbar',
+                    border: false,
+                    padding: 0,
+                    style: {
+                        padding: 0,
+                        background: 'transparent none repeat scroll 0 0'
+                    },
+                    items: [
+                        {
+                            xtype: 'checkboxgroup',
+                            items: [
+                                { xtype: 'checkboxfield', width: 50, boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                { xtype: 'checkboxfield', width: 50, boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                { xtype: 'checkboxfield', width: 50, boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                { xtype: 'checkboxfield', width: 50, boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
+                                { xtype: 'checkboxfield', width: 50, boxLabel: '告警', inputValue: $$iPems.Point.AL, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' }
+                            ],
+                            listeners: {
+                                change: function (me, newValue, oldValue) {
+                                    var types = [];
+                                    Ext.Object.each(newValue, function (key, value, myself) {
+                                        types.push(value);
+                                    });
+
+                                    currentStore.proxy.extraParams.types = types;
+                                    currentStore.loadPage(1);
+                                }
+                            }
+                        },'-',
+                        {
+                            width: 150,
+                            xtype: 'checkbox',
+                            boxLabel: '仅显示有效数据',
+                            inputValue: false,
+                            checked: false,
+                            boxLabelCls: 'x-label-header x-form-cb-label',
+                            listeners: {
+                                change: function (me, newValue, oldValue) {
+                                    currentStore.proxy.extraParams.normal = newValue;
+                                    currentStore.loadPage(1);
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        tools: [
+            {
+                type: 'maximize',
+                tooltip: '最大化/还原',
+                handler: function (event, toolEl, owner, tool) {
+                    chartPanel.setVisible(!chartPanel.isVisible());
+                    tool.setType(chartPanel.isVisible() ? 'maximize' : 'restore');
+                }
+            }
+        ],
+        store: currentStore,
+        bbar: currentPagingToolbar,
+        viewConfig: {
+            loadMask: false,
+            preserveScrollOnRefresh: true,
+            stripeRows: true,
+            trackOver: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+            getRowClass: function (record, rowIndex, rowParams, store) {
+                return $$iPems.GetStateCls(record.get("statusid"));
+            }
+        },
+        features: [{
+            ftype: 'grouping',
+            groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
+            hideGroupedHeader: false,
+            startCollapsed: false
+        }],
+        columns: [
+            { text: '序号', dataIndex: 'index', width: 60 },
+            { text: '所属区域', dataIndex: 'area' },
+            { text: '所属站点', dataIndex: 'station' },
+            { text: '所属机房', dataIndex: 'room' },
+            { text: '所属设备', dataIndex: 'device' },
+            { text: '信号名称', dataIndex: 'point' },
+            { text: '信号类型', dataIndex: 'type' },
+            { text: '信号测值', dataIndex: 'value' },
+            { text: '单位/描述', dataIndex: 'unit' },
+            { text: '信号状态', dataIndex: 'status', tdCls: 'x-status-cell', align: 'center' },
+            { text: '测值时间', dataIndex: 'time', width: 150 },
+            {
+                xtype: 'actioncolumn',
+                width: 100,
+                align: 'center',
+                menuDisabled: true,
+                menuText: '操作',
+                text: '操作',
+                items: [{
+                    tooltip: '遥控',
+                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                        return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
+                    },
+                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                        view.getSelectionModel().select(record);
+                        var form = controlWnd.getComponent('controlForm'),
+                            device = form.getComponent('device'),
+                            point = form.getComponent('point'),
+                            result = Ext.getCmp('controlResult');
+
+                        device.setValue(record.get('deviceid'));
+                        point.setValue(record.get('pointid'));
+                        result.setTextWithIcon('', '')
+                        controlWnd.show();
+                    }
+                }, {
+                    tooltip: '遥调',
+                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                        return (r.get('typeid') === $$iPems.Point.AO && $$iPems.AdjustOperation) ? 'x-cell-icon x-icon-remote-setting' : 'x-cell-icon x-icon-hidden';
+                    },
+                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                        view.getSelectionModel().select(record);
+                        var form = adjustWnd.getComponent('adjustForm'),
+                            device = form.getComponent('device'),
+                            point = form.getComponent('point'),
+                            result = Ext.getCmp('adjustResult');
+
+                        device.setValue(record.get('deviceid'));
+                        point.setValue(record.get('pointid'));
+                        result.setTextWithIcon('', '')
+                        adjustWnd.show();
+                    }
+                }, {
+                    getTip: function (v, metadata, r, rowIndex, colIndex, store) {
+                        return (r.get('followed') === true) ? '已关注' : '关注';
+                    },
+                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                        return (r.get('followedOnly') === false) ? ((r.get('followed') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
+                    },
+                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                        if (record.get('followed')) return false;
+
+                        Ext.Ajax.request({
+                            url: '/Home/AddFollowPoint',
+                            params: { device: record.get('deviceid'), point: record.get('pointid') },
+                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
+                            success: function (response, options) {
+                                var data = Ext.decode(response.responseText, true);
+                                if (data.success) {
+                                    currentPagingToolbar.doRefresh();
+                                } else {
+                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                }
+                            }
+                        });
+                    }
+                }, {
+                    tooltip: '取消关注',
+                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                        return (r.get('followedOnly') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
+                    },
+                    handler: function (view, rowIndex, colIndex, item, event, record) {
+                        Ext.Ajax.request({
+                            url: '/Home/RemoveFollowPoint',
+                            params: { device: record.get('deviceid'), point: record.get('pointid') },
+                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
+                            success: function (response, options) {
+                                var data = Ext.decode(response.responseText, true);
+                                if (data.success) {
+                                    currentPagingToolbar.doRefresh();
+                                } else {
+                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                }
+                            }
+                        });
+                    }
+                }]
+            }
+        ],
+        listeners: {
+            selectionchange: function (model, selected) {
+                resetChart();
+                if (selected.length > 0) {
+                    loadChart(selected[0]);
                 }
             }
         }
     });
 
-    var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
+    var pointPanel = Ext.create('Ext.panel.Panel', {
+        xtype: 'panel',
+        title: '实时测值',
+        glyph: 0xf039,
+        pager: currentPagingToolbar,
+        layout: {
+            type: 'vbox',
+            align: 'stretch',
+            pack: 'start'
+        },
+        items: [chartPanel, pointGrid]
+    });
 
+    var matrixPanel = Ext.create('Ext.grid.Panel', {
+        title: '综合测值',
+        glyph: 0xf055,
+        border: false,
+        store: matrixStore,
+        bbar: matrixPagingToolbar,
+        pager: matrixPagingToolbar,
+        tbar: [
+            {
+                xtype: 'button',
+                glyph: 0xf008,
+                text: '模版设置',
+                handler: function () {
+                    matrixWnd.show();
+                }
+            }, '-',
+            {
+                xtype: 'button',
+                glyph: 0xf010,
+                text: '数据导出',
+                handler: function () {
+                }
+            }
+        ],
+        viewConfig: {
+            loadMask: false,
+            stripeRows: true,
+            trackOver: true,
+            preserveScrollOnRefresh: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
+        },
+        columns: [],
+        listeners: {
+            cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
+            }
+        }
+    });
+
+    var alarmToolbar = Ext.create('Ext.panel.Panel', {
+        border: false,
+        dock: 'top',
+        items: [
+            {
+                xtype: 'toolbar',
+                border: false,
+                items: [
+                    {
+                        id: 'alarm-station-type-multicombo',
+                        xtype: 'StationTypeMultiCombo',
+                        emptyText: '默认全部'
+                    },
+                    {
+                        id: 'alarm-room-type-multicombo',
+                        xtype: 'RoomTypeMultiCombo',
+                        emptyText: '默认全部'
+                    },
+                    {
+                        id: 'alarm-subdevice-type-multipicker',
+                        xtype: 'SubDeviceTypeMultiPicker',
+                        emptyText: '默认全部',
+                        width: 220
+                    },
+                    {
+                        xtype: 'button',
+                        glyph: 0xf005,
+                        text: '应用条件',
+                        handler: function (me, event) {
+                            var stationTypes = Ext.getCmp('alarm-station-type-multicombo').getValue(),
+                                roomTypes = Ext.getCmp('alarm-room-type-multicombo').getValue(),
+                                subDeviceTypes = Ext.getCmp('alarm-subdevice-type-multipicker').getValue(),
+                                subLogicTypes = Ext.getCmp('alarm-sublogic-type-multipicker').getValue(),
+                                points = Ext.getCmp('alarm-point-multipicker').getValue(),
+                                levels = Ext.getCmp('alarm-level-multicombo').getValue(),
+                                confirms = Ext.getCmp('alarm-confirm-multicombo').getValue(),
+                                reservations = Ext.getCmp('alarm-reservation-multicombo').getValue(),
+                                seniorNode = Ext.getCmp('alarm-senior-condition').getValue();
+
+                            var proxy = alarmStore.getProxy();
+                            proxy.extraParams.stationTypes = stationTypes;
+                            proxy.extraParams.roomTypes = roomTypes;
+                            proxy.extraParams.subDeviceTypes = subDeviceTypes;
+                            proxy.extraParams.subLogicTypes = subLogicTypes;
+                            proxy.extraParams.points = points;
+                            proxy.extraParams.levels = levels;
+                            proxy.extraParams.confirms = confirms;
+                            proxy.extraParams.reservations = reservations;
+                            proxy.extraParams.seniorNode = seniorNode;
+                            alarmStore.loadPage(1);
+                        }
+                    }
+                ]
+            },
+            {
+                xtype: 'toolbar',
+                border: false,
+                items: [
+                    {
+                        id: 'alarm-sublogic-type-multipicker',
+                        xtype: 'SubLogicTypeMultiPicker',
+                        emptyText: '默认全部',
+                        width: 220
+                    },
+                    {
+                        id: 'alarm-point-multipicker',
+                        xtype: 'PointMultiPicker',
+                        emptyText: '默认全部',
+                        width: 220
+                    },
+                    {
+                        id: 'alarm-level-multicombo',
+                        xtype: 'AlarmLevelMultiCombo',
+                        emptyText: '默认全部'
+                    }, {
+                        xtype: 'button',
+                        glyph: 0xf010,
+                        text: '数据导出',
+                        handler: function (me, event) {
+                            download();
+                        }
+                    }
+                ]
+            },
+            {
+                xtype: 'toolbar',
+                border: false,
+                items: [
+                    {
+                        id: 'alarm-confirm-multicombo',
+                        xtype: 'ConfirmMultiCombo',
+                        emptyText: '默认全部'
+                    },
+                    {
+                        id: 'alarm-reservation-multicombo',
+                        xtype: 'ReservationMultiCombo',
+                        emptyText: '默认全部'
+                    },
+                    {
+                        id: 'alarm-senior-condition',
+                        xtype: 'SeniorConditionCombo'
+                    }
+                ]
+            }
+        ]
+    });
+
+    var alarmGrid = Ext.create('Ext.grid.Panel', {
+        title: '实时告警信息',
+        glyph: 0xf029,
+        selType: 'checkboxmodel',
+        border: false,
+        flex: 1,
+        store: alarmStore,
+        bbar: alarmPagingToolbar,
+        tools: [
+            {
+                type: 'maximize',
+                tooltip: '最大化/还原',
+                handler: function (event, toolEl, owner, tool) {
+                    alarmToolbar.setVisible(!alarmToolbar.isVisible());
+                    tool.setType(alarmToolbar.isVisible() ? 'maximize' : 'restore');
+                }
+            }
+        ],
+        viewConfig: {
+            loadMask: false,
+            stripeRows: true,
+            trackOver: true,
+            preserveScrollOnRefresh: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
+            getRowClass: function (record, rowIndex, rowParams, store) {
+                return $$iPems.GetLevelCls(record.get("levelid"));
+            }
+        },
+        columns: [
+            {
+                text: '序号',
+                dataIndex: 'index',
+                width: 60
+            },
+            {
+                text: '告警管理编号',
+                dataIndex: 'nmalarmid',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警级别',
+                dataIndex: 'level',
+                align: 'center',
+                tdCls: 'x-level-cell'
+            },
+            {
+                text: '告警时间',
+                dataIndex: 'time',
+                align: 'center',
+                width: 150
+            },
+            {
+                text: '告警历时',
+                dataIndex: 'interval',
+                align: 'center',
+                width: 120
+            },
+            {
+                text: '告警描述',
+                dataIndex: 'comment'
+            },
+            {
+                text: '触发值',
+                dataIndex: 'value',
+                align: 'center'
+            },
+            {
+                text: '信号名称',
+                dataIndex: 'point'
+            },
+            {
+                text: '所属设备',
+                dataIndex: 'device'
+            },
+            {
+                text: '所属机房',
+                dataIndex: 'room'
+            },
+            {
+                text: '所属站点',
+                dataIndex: 'station'
+            },
+            {
+                text: '所属区域',
+                dataIndex: 'area'
+            },
+            {
+                text: '确认状态',
+                dataIndex: 'confirmed',
+                align: 'center'
+            },
+            {
+                text: '确认人员',
+                dataIndex: 'confirmer',
+                align: 'center'
+            },
+            {
+                text: '确认时间',
+                dataIndex: 'confirmedtime',
+                align: 'center'
+            },
+            {
+                text: '工程状态',
+                dataIndex: 'reservation',
+                align: 'center',
+                renderer: function (value, p, record) {
+                    if (Ext.isEmpty(value)) return Ext.emptyString;
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
+                }
+            },
+            {
+                text: '告警翻转',
+                dataIndex: 'reversalcount',
+                align: 'center'
+            }
+        ],
+        listeners: {
+            cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
+                var columns = view.getGridColumns(),
+                    fieldName = columns[cellIndex].dataIndex;
+
+                if (fieldName !== 'reservation')
+                    return;
+
+                var fieldValue = record.get(fieldName);
+                if (Ext.isEmpty(fieldValue))
+                    return;
+
+                showResDetail(fieldValue, view);
+            },
+            itemcontextmenu: function (me, record, item, index, e) {
+                e.stopEvent();
+                almContextMenu.record = record;
+                almContextMenu.showAt(e.getXY());
+            }
+        }
+    });
+
+    var alarmPanel = Ext.create('Ext.panel.Panel', {
+        xtype: 'panel',
+        title: '实时告警',
+        glyph: 0xf065,
+        pager: alarmPagingToolbar,
+        layout: {
+            type: 'vbox',
+            align: 'stretch',
+            pack: 'start'
+        },
+        dockedItems: [alarmToolbar],
+        items: [alarmGrid]
+    });
+
+    var centerPanel = Ext.create('Ext.tab.Panel', {
+        xtype: 'tabpanel',
+        region: 'center',
+        items: [pointPanel, matrixPanel, alarmPanel],
+        listeners: {
+            tabchange: function (me, newCard, oldCard) {
+                refresh(newCard);
+            }
+        }
+    });
+
+    var currentLayout = Ext.create('Ext.panel.Panel', {
+        id: 'currentLayout',
+        region: 'center',
+        layout: 'border',
+        border: false,
+        items: [leftPanel, centerPanel]
+    });
+    //#endregion
+
+    //#region Windows
     var controlWnd = Ext.create('Ext.window.Window', {
         title: '信号遥控',
         height: 250,
@@ -364,7 +1076,7 @@
                     fieldLabel: '模拟量输出值',
                     value: 0,
                     width: 280,
-                    allowOnlyWhitespace:false
+                    allowOnlyWhitespace: false
                 }]
         }],
         buttons: [
@@ -415,25 +1127,81 @@
         ]
     });
 
-    var currentLayout = Ext.create('Ext.panel.Panel', {
-        id: 'currentLayout',
-        region: 'center',
-        layout: 'border',
+    var reservationWnd = Ext.create('Ext.window.Window', {
+        title: '工程状态详情',
+        glyph: 0xf045,
+        height: 320,
+        width: 400,
+        modal: true,
         border: false,
+        hidden: true,
+        closeAction: 'hide',
+        bodyPadding: 10,
+        layout: 'form',
+        defaultType: 'displayfield',
+        items: [{
+            itemId: 'id',
+            labelWidth: 60,
+            fieldLabel: '预约编号'
+        }, {
+            itemId: 'name',
+            labelWidth: 60,
+            fieldLabel: '预约名称'
+        }, {
+            itemId: 'start',
+            labelWidth: 60,
+            fieldLabel: '开始时间'
+        }, {
+            itemId: 'end',
+            labelWidth: 60,
+            fieldLabel: '结束时间'
+        }, {
+            itemId: 'project',
+            labelWidth: 60,
+            fieldLabel: '关联工程'
+        }, {
+            itemId: 'creator',
+            labelWidth: 60,
+            fieldLabel: '创建人员'
+        }, {
+            itemId: 'time',
+            labelWidth: 60,
+            fieldLabel: '创建时间'
+        }, {
+            itemId: 'comment',
+            labelWidth: 60,
+            fieldLabel: '预约备注'
+        }],
+        buttonAlign: 'right',
+        buttons: [{
+            xtype: 'button',
+            text: '关闭',
+            handler: function (el, e) {
+                reservationWnd.hide();
+            }
+        }]
+    });
+
+    var matrixWnd = Ext.create('Ext.window.Window', {
+        title: '模版设置',
+        height: 500,
+        width: 800,
+        glyph: 0xf008,
+        modal: true,
+        border: false,
+        hidden: true,
+        closeAction: 'hide',
+        layout: 'border',
         items: [
             {
-                id: 'organization',
-                region: 'west',
+                id: 'templatesPanel',
                 xtype: 'treepanel',
-                title: '系统层级',
-                glyph: 0xf011,
-                width: 220,
-                split: true,
-                collapsible: true,
-                collapsed: false,
+                region: 'west',
+                margin: '5 0 5 5',
+                width: 200,
                 autoScroll: true,
                 useArrows: false,
-                rootVisible: true,
+                rootVisible: false,
                 root: {
                     id: 'root',
                     text: '全部',
@@ -448,7 +1216,7 @@
                     nodeParam: 'node',
                     proxy: {
                         type: 'ajax',
-                        url: '/Component/GetDevices',
+                        url: '/Component/GetSeniorConditions',
                         reader: {
                             type: 'json',
                             successProperty: 'success',
@@ -456,311 +1224,400 @@
                             totalProperty: 'total',
                             root: 'data'
                         }
-                    },
-                    listeners: {
-                        load: function (me, node, records, successful) {
-                            if (successful) {
-                                var nodes = [];
-                                Ext.Array.each(records, function (item, index, allItems) {
-                                    nodes.push(item.getId());
-                                });
-
-                                if (nodes.length > 0) {
-                                    $$iPems.UpdateIcons(Ext.getCmp('organization'), nodes);
-                                }
-                            }
-                        }
                     }
                 }),
                 listeners: {
-                    select: function (me, record, index) {
-                        change(record, currentPagingToolbar);
+                    select: function (me, record, item, index) {
                     }
                 },
                 tbar: [
-                    {
-                        id: 'organization-search-field',
-                        xtype: 'textfield',
-                        emptyText: '请输入筛选条件...',
-                        flex: 1,
-                        listeners: {
-                            change: function (me, newValue, oldValue, eOpts) {
-                                delete me._filterData;
-                                delete me._filterIndex;
+                        {
+                            id: 'tbar-add',
+                            xtype: 'button',
+                            glyph: 0xf001,
+                            tooltip: '新增模版',
+                            handler: function () {
+                            }
+                        }, '-',
+                        {
+                            id: 'tbar-delete',
+                            xtype: 'button',
+                            glyph: 0xf003,
+                            tooltip: '删除模版',
+                            disabled: true,
+                            handler: function () {
                             }
                         }
-                    },
-                    {
-                        id: 'point-search-button',
-                        xtype: 'button',
-                        glyph: 0xf005,
-                        handler: function () {
-                            var tree = Ext.getCmp('organization'),
-                                search = Ext.getCmp('organization-search-field'),
-                                text = search.getRawValue();
-
-                            if (Ext.isEmpty(text, false)) {
-                                return;
-                            }
-
-                            if (text.length < 2) {
-                                return;
-                            }
-
-                            if (search._filterData != null
-                                && search._filterIndex != null) {
-                                var index = search._filterIndex + 1;
-                                var paths = search._filterData;
-                                if (index >= paths.length) {
-                                    index = 0;
-                                    Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-                                }
-
-                                $$iPems.selectNodePath(tree, paths[index]);
-                                search._filterIndex = index;
-                            } else {
-                                Ext.Ajax.request({
-                                    url: '/Component/FilterRoomPath',
-                                    params: { text: text },
-                                    mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
-                                    success: function (response, options) {
-                                        var data = Ext.decode(response.responseText, true);
-                                        if (data.success) {
-                                            var len = data.data.length;
-                                            if (len > 0) {
-                                                $$iPems.selectNodePath(tree, data.data[0]);
-                                                search._filterData = data.data;
-                                                search._filterIndex = 0;
-                                            } else {
-                                                Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
-                                            }
-                                        } else {
-                                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    }
                 ]
-            }, {
-                region: 'center',
-                xtype: 'panel',
+            },
+            {
+                id: 'templatesForm',
+                xtype: 'form',
                 border: false,
-                bodyCls: 'x-border-body-panel',
+                region: 'center',
+                defaultType: 'textfield',
                 layout: {
                     type: 'vbox',
                     align: 'stretch',
                     pack: 'start'
                 },
+                fieldDefaults: {
+                    labelWidth: 60,
+                    labelAlign: 'left',
+                    anchor: '100%'
+                },
                 items: [
                     {
-                        xtype: 'panel',
-                        glyph: 0xf039,
-                        title: '实时图表',
-                        collapsible: true,
-                        collapseFirst: false,
-                        layout: {
-                            type: 'hbox',
-                            align: 'stretch',
-                            pack: 'start'
-                        },
-                        items: [
-                            {
-                                xtype: 'container',
-                                flex: 1,
-                                contentEl: 'gauge-chart'
-                            }, {
-                                xtype: 'container',
-                                flex: 3,
-                                contentEl: 'line-chart'
-                            }
-                        ],
-                        listeners: {
-                            resize: function (me, width, height, oldWidth, oldHeight) {
-                                if (gaugeChart) gaugeChart.resize();
-                                if (lineChart) lineChart.resize();
-                            }
-                        }
+                        id: 'templatesId',
+                        xtype: 'hiddenfield'
                     },
                     {
-                        id: 'points-grid',
-                        xtype: 'grid',
-                        collapsible: true,
-                        collapseFirst: false,
-                        layout: 'fit',
-                        margin: '5 0 0 0',
-                        flex: 2,
-                        header: {
-                            glyph: 0xf029,
-                            title: '实时测值',
-                            items: [
-                                {
-                                    xtype: 'checkboxgroup',
-                                    width: 300,
-                                    items: [
-                                        { xtype: 'checkboxfield', boxLabel: '遥信', inputValue: $$iPems.Point.DI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                        { xtype: 'checkboxfield', boxLabel: '遥测', inputValue: $$iPems.Point.AI, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                        { xtype: 'checkboxfield', boxLabel: '遥调', inputValue: $$iPems.Point.AO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                        { xtype: 'checkboxfield', boxLabel: '遥控', inputValue: $$iPems.Point.DO, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                        { xtype: 'checkboxfield', boxLabel: '告警', inputValue: $$iPems.Point.AL, checked: true, boxLabelCls: 'x-label-header x-form-cb-label' },
-                                    ],
-                                    listeners: {
-                                        change: function (me, newValue, oldValue) {
-                                            var types = [];
-                                            Ext.Object.each(newValue, function (key, value, myself) {
-                                                types.push(value);
-                                            });
-
-                                            currentStore.proxy.extraParams.types = types;
-                                            currentStore.loadPage(1);
-                                        }
-                                    }
-                                }
-
-                            ]
-                        },
-                        tools: [
-                            {
-                                type: 'refresh',
-                                tooltip: '刷新',
-                                handler: function (event, toolEl, panelHeader) {
-                                    currentPagingToolbar.doRefresh();
-                                }
-                            }
-                        ],
-                        store: currentStore,
-                        viewConfig: {
-                            loadMask: false,
-                            preserveScrollOnRefresh: true,
-                            stripeRows: true,
-                            trackOver: true,
-                            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-                            getRowClass: function (record, rowIndex, rowParams, store) {
-                                return $$iPems.GetStateCls(record.get("statusid"));
-                            }
-                        },
-                        features: [{
-                            ftype: 'grouping',
-                            groupHeaderTpl: '{columnName}: {name} ({rows.length}条)',
-                            hideGroupedHeader: false,
-                            startCollapsed: false
-                        }],
-                        columns: [
-                            { text: '序号', dataIndex: 'index', width: 60 },
-                            { text: '所属区域', dataIndex: 'area' },
-                            { text: '所属站点', dataIndex: 'station' },
-                            { text: '所属机房', dataIndex: 'room' },
-                            { text: '所属设备', dataIndex: 'device' },
-                            { text: '信号名称', dataIndex: 'point' },
-                            { text: '信号类型', dataIndex: 'type' },
-                            { text: '信号测值', dataIndex: 'value' },
-                            { text: '单位/描述', dataIndex: 'unit' },
-                            { text: '信号状态', dataIndex: 'status', tdCls: 'x-status-cell', align: 'center' },
-                            { text: '测值时间', dataIndex: 'time', width: 150 },
-                            {
-                                xtype: 'actioncolumn',
-                                width: 100,
-                                align: 'center',
-                                menuDisabled: true,
-                                menuText: '操作',
-                                text: '操作',
-                                items: [{
-                                    tooltip: '遥控',
-                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                        return (r.get('typeid') === $$iPems.Point.DO && $$iPems.ControlOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
-                                    },
-                                    handler: function (view, rowIndex, colIndex, item, event, record) {
-                                        view.getSelectionModel().select(record);
-                                        var form = controlWnd.getComponent('controlForm'),
-                                            device = form.getComponent('device'),
-                                            point = form.getComponent('point'),
-                                            result = Ext.getCmp('controlResult');
-
-                                        device.setValue(record.get('deviceid'));
-                                        point.setValue(record.get('pointid'));
-                                        result.setTextWithIcon('', '')
-                                        controlWnd.show();
-                                    }
-                                }, {
-                                    tooltip: '遥调',
-                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                        return (r.get('typeid') === $$iPems.Point.AO && $$iPems.AdjustOperation) ? 'x-cell-icon x-icon-remote-setting' : 'x-cell-icon x-icon-hidden';
-                                    },
-                                    handler: function (view, rowIndex, colIndex, item, event, record) {
-                                        view.getSelectionModel().select(record);
-                                        var form = adjustWnd.getComponent('adjustForm'),
-                                            device = form.getComponent('device'),
-                                            point = form.getComponent('point'),
-                                            result = Ext.getCmp('adjustResult');
-
-                                        device.setValue(record.get('deviceid'));
-                                        point.setValue(record.get('pointid'));
-                                        result.setTextWithIcon('', '')
-                                        adjustWnd.show();
-                                    }
-                                }, {
-                                    getTip: function (v, metadata, r, rowIndex, colIndex, store) {
-                                        return (r.get('followed') === true) ? '已关注' : '关注';
-                                    },
-                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                        return (r.get('followedOnly') === false) ? ((r.get('followed') === true) ? 'x-cell-icon x-icon-tick' : 'x-cell-icon x-icon-add') : 'x-cell-icon x-icon-hidden';
-                                    },
-                                    handler: function (view, rowIndex, colIndex, item, event, record) {
-                                        if (record.get('followed')) return false;
-
-                                        Ext.Ajax.request({
-                                            url: '/Home/AddFollowPoint',
-                                            params: { device: record.get('deviceid'), point: record.get('pointid') },
-                                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
-                                            success: function (response, options) {
-                                                var data = Ext.decode(response.responseText, true);
-                                                if (data.success) {
-                                                    currentPagingToolbar.doRefresh();
-                                                } else {
-                                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                                }
-                                            }
-                                        });
-                                    }
-                                }, {
-                                    tooltip: '取消关注',
-                                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                                        return (r.get('followedOnly') === true) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
-                                    },
-                                    handler: function (view, rowIndex, colIndex, item, event, record) {
-                                        Ext.Ajax.request({
-                                            url: '/Home/RemoveFollowPoint',
-                                            params: { device: record.get('deviceid'), point: record.get('pointid') },
-                                            mask: new Ext.LoadMask({ target: view, msg: '正在处理...' }),
-                                            success: function (response, options) {
-                                                var data = Ext.decode(response.responseText, true);
-                                                if (data.success) {
-                                                    currentPagingToolbar.doRefresh();
-                                                } else {
-                                                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
-                                                }
-                                            }
-                                        });
-                                    }
-                                }]
-                            }
-                        ],
-                        bbar: currentPagingToolbar,
-                        listeners: {
-                            selectionchange: function (model, selected) {
-                                resetChart();
-                                if (selected.length > 0) {
-                                    loadChart(selected[0]);
-                                }
-                            }
-                        }
+                        id: 'templatesName',
+                        xtype: 'textfield',
+                        margin: '5 5 5 5',
+                        fieldLabel: '模版名称',
+                        allowBlank: false
+                    },
+                    {
+                        id: 'templatesDeviceTypes',
+                        xtype: 'DeviceTypeCombo',
+                        margin: '5 5 5 5',
+                    },
+                    {
+                        id: 'templatesValues',
+                        xtype: 'itemselector',
+                        margin: '5 5 5 5',
+                        flex: 1,
+                        store: columnStore,
+                        fieldLabel: '列名映射',
+                        fromTitle: '待映射信号',
+                        toTitle: '已映射信号',
+                        displayField: 'name',
+                        valueField: 'id',
+                        value: [],
+                        allowBlank: false,
+                        minSelections: 1,
+                        maxSelections: 20
                     }
                 ]
             }
+        ],
+        buttons: [
+          { id: 'matrixResult', xtype: 'iconlabel', text: '' },
+          { xtype: 'tbfill' },
+          {
+              xtype: 'button',
+              text: '保存',
+              handler: function (el, e) {
+              }
+          }, {
+              xtype: 'button',
+              text: '关闭',
+              handler: function (el, e) {
+                  matrixWnd.close();
+              }
+          }
         ]
     });
+    //#endregion
 
+    //#region ContextMenu
+    var almContextMenu = Ext.create('Ext.menu.Menu', {
+        plain: true,
+        border: false,
+        record: null,
+        items: [{
+            itemId: 'confirm',
+            glyph: 0xf035,
+            text: '选中告警确认',
+            handler: function () {
+                confirm(alarmGrid);
+            }
+        },
+        {
+            itemId: 'allconfirm',
+            glyph: 0xf035,
+            text: '全部告警确认',
+            handler: function () {
+                confirmAll(alarmGrid);
+            }
+        }, '-', {
+            itemId: 'location',
+            glyph: 0xf019,
+            text: '告警定位',
+            handler: function () {
+                locateAlarm(almContextMenu.record);
+            }
+        }, '-', {
+            itemId: 'refresh',
+            glyph: 0xf058,
+            text: '刷新列表',
+            handler: function () {
+                refresh();
+            }
+        }, '-', {
+            itemId: 'export',
+            glyph: 0xf010,
+            text: '数据导出',
+            handler: function () {
+                download();
+            }
+        }]
+    });
+    //#endregion
+
+    //#region Methods
+    var currentTab = function () {
+        return centerPanel.getActiveTab();
+    }
+
+    var resetChart = function (fill) {
+        fill = fill || false;
+
+        gaugeOption.series[0].min = 0;
+        gaugeOption.series[0].max = 100;
+        gaugeOption.series[0].name = '';
+        gaugeOption.series[0].data[0] = { value: 0, name: '' };
+        gaugeChart.setOption(gaugeOption, true);
+
+        lineOption.series[0].name = '';
+        lineOption.series[0].data = fill ? [0] : [];
+        lineOption.xAxis[0].data = fill ? ['00′00″'] : [];
+        lineChart.setOption(lineOption, true);
+    };
+
+    var loadChart = function (record) {
+        if (record != null) {
+            var maxcount = 90,
+                timestamp = record.get('timestamp'),
+                point = record.get('point'),
+                value = record.get('value'),
+                unit = record.get('unit');
+
+            if (value === 'NULL') value = 0;
+            if (value >= 0) {
+                if (value <= 100) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 100;
+                } else if (value > 100 && value <= 500) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 500;
+                } else if (value > 500 && value <= 1000) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 1000;
+                } else if (value > 1000 && value <= 5000) {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 5000;
+                } else {
+                    gaugeOption.series[0].min = 0;
+                    gaugeOption.series[0].max = 10000;
+                }
+            } else {
+                if (value >= -100) {
+                    gaugeOption.series[0].min = -100;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -100 && value >= -500) {
+                    gaugeOption.series[0].min = -500;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -500 && value >= -1000) {
+                    gaugeOption.series[0].min = -1000;
+                    gaugeOption.series[0].max = 0;
+                } else if (value < -1000 && value >= -5000) {
+                    gaugeOption.series[0].min = -5000;
+                    gaugeOption.series[0].max = 0;
+                } else {
+                    gaugeOption.series[0].min = -10000;
+                    gaugeOption.series[0].max = 0;
+                }
+            }
+
+            gaugeOption.series[0].name = unit;
+            gaugeOption.series[0].data[0].name = point;
+            gaugeOption.series[0].data[0].value = value;
+            gaugeChart.setOption(gaugeOption, true);
+
+            if (lineOption.series[0].data.length >= maxcount) {
+                lineOption.series[0].data.shift();
+                lineOption.xAxis[0].data.shift();
+            }
+
+            lineOption.series[0].name = unit;
+            lineOption.series[0].data.push(value);
+            lineOption.xAxis[0].data.push(timestamp);
+            lineChart.setOption(lineOption, true);
+        }
+    };
+
+    var select = function (node) {
+        resetPointGrid(node);
+
+        var proxy0 = currentStore.getProxy(),
+            proxy1 = matrixStore.getProxy(),
+            proxy2 = alarmStore.getProxy();
+
+        proxy0.extraParams.node =
+        proxy1.extraParams.node =
+        proxy2.extraParams.baseNode = node.getId();
+        reload();
+    };
+
+    var refresh = function (current) {
+        //var pager = (current || currentTab()).pager;
+        //pager.doRefresh();
+    };
+
+    var reload = function (current) {
+        //var pager = (current || currentTab()).pager, store = pager.getStore();
+        //store.loadPage(1);
+    };
+
+    var download = function (current) {
+        var pager = (current || currentTab()).pager,
+            store = pager.getStore();
+
+        if (Ext.isEmpty(store.downloadURL)) return;
+        $$iPems.download({
+            url: store.downloadURL,
+            params: store.getProxy().extraParams
+        });
+    };
+
+    var resetPointGrid = function (node) {
+        var id = node.getId(),
+            ids = $$iPems.SplitKeys(id),
+            columns = pointGrid.columns,
+            selection = pointGrid.getSelectionModel();
+
+        if (ids.length === 2 && parseInt(ids[0]) === $$iPems.SSH.Device) {
+            columns[1].hide();
+            columns[2].hide();
+            columns[3].hide();
+            columns[4].hide();
+        } else {
+            columns[1].show();
+            columns[2].show();
+            columns[3].show();
+            columns[4].show();
+        }
+
+        if (selection.hasSelection()) {
+            selection.clearSelections();
+            resetChart(true);
+        }
+    }
+
+    var confirm = function (current) {
+        var selection = current.getSelectionModel();
+        if (!selection.hasSelection()) {
+            Ext.Msg.show({ title: '系统警告', msg: '请勾选需要确认的告警', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING });
+            return false;
+        }
+
+        var keys = [], models = selection.getSelection();
+        Ext.Msg.confirm('确认对话框', Ext.String.format('确认选中的{0}条告警，您确定吗？', models.length), function (buttonId, text) {
+            if (buttonId === 'yes') {
+                Ext.Array.each(models, function (item, index, allItems) {
+                    keys.push(item.get('id'));
+                });
+
+                Ext.Ajax.request({
+                    url: '/Home/ConfirmAlarms',
+                    params: { keys: keys },
+                    mask: new Ext.LoadMask(current.getView(), { msg: '正在处理...' }),
+                    success: function (response, options) {
+                        var data = Ext.decode(response.responseText, true);
+                        if (data.success)
+                            refresh();
+                        else
+                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                });
+            }
+        });
+    };
+
+    var confirmAll = function (current) {
+        Ext.Msg.confirm('确认对话框', '您确定要全部确认吗？', function (buttonId, text) {
+            if (buttonId === 'yes') {
+                Ext.Ajax.request({
+                    url: '/Home/ConfirmAllAlarms',
+                    params: { onlyReservation: false, onlySystem: false },
+                    mask: new Ext.LoadMask(current.getView(), { msg: '正在处理...' }),
+                    success: function (response, options) {
+                        var data = Ext.decode(response.responseText, true);
+                        if (data.success)
+                            refresh();
+                        else
+                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                });
+            }
+        });
+    };
+
+    var showResDetail = function (id, view) {
+        if (Ext.isEmpty(id)) return false;
+        Ext.Ajax.request({
+            url: '/Home/GetReservation',
+            Method: 'POST',
+            params: { id: id },
+            mask: new Ext.LoadMask(view, { msg: '正在处理...' }),
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    var id = reservationWnd.getComponent('id'),
+                        name = reservationWnd.getComponent('name'),
+                        start = reservationWnd.getComponent('start'),
+                        end = reservationWnd.getComponent('end'),
+                        project = reservationWnd.getComponent('project'),
+                        creator = reservationWnd.getComponent('creator'),
+                        time = reservationWnd.getComponent('time'),
+                        comment = reservationWnd.getComponent('comment');
+
+                    id.setValue(data.data.id);
+                    name.setValue(data.data.name);
+                    start.setValue(data.data.startDate);
+                    end.setValue(data.data.endDate);
+                    project.setValue(data.data.projectName);
+                    creator.setValue(data.data.creator);
+                    time.setValue(data.data.createdTime);
+                    comment.setValue(data.data.comment);
+                    reservationWnd.show();
+                } else {
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            }
+        });
+    };
+
+    var locateAlarm = function (record) {
+        if (Ext.isEmpty(record)) return;
+        var device = record.get('deviceid'),
+            point = record.get('pointid'),
+            tree = leftPanel;
+
+        Ext.Ajax.request({
+            url: '/Component/GetDevicePath',
+            params: { nodes: [Ext.String.format('{0}{1}{2}', $$iPems.SSH.Device, $$iPems.Separator, device)] },
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    Ext.each(data.data, function (item, index, all) {
+                        item = Ext.Array.from(item);
+                        if (item.length > 0) {
+                            $$iPems.selectNodePath(tree, item, function () {
+                                currentStore.selectPoint = point;
+                                centerPanel.setActiveTab(pointPanel);
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    };
+    //#endregion
+
+    //#region onReady
     Ext.onReady(function () {
         /*add components to viewport panel*/
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -768,11 +1625,11 @@
             pageContentPanel.add(currentLayout);
         }
 
-        $$iPems.Tasks.actPointTask.run = function () {
-            currentPagingToolbar.doRefresh();
-            $$iPems.UpdateIcons(Ext.getCmp('organization'), null);
-        };
-        $$iPems.Tasks.actPointTask.start();
+        //$$iPems.Tasks.actPointTask.run = function () {
+        //    refresh();
+        //    $$iPems.UpdateIcons(leftPanel, null);
+        //};
+        //$$iPems.Tasks.actPointTask.start();
     });
 
     Ext.onReady(function () {
@@ -783,4 +1640,6 @@
         gaugeChart.setOption(gaugeOption);
         lineChart.setOption(lineOption);
     });
+    //#endregion
+
 })();

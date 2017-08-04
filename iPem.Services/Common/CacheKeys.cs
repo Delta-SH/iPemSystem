@@ -80,6 +80,11 @@ namespace iPem.Services.Common {
         public const string Fsu_Cache_Points = @"ipems:fsu:points@{0}@user";
         public const string Fsu_Cache_AlarmPoints = @"ipems:fsu:alarm-points@{0}@user";
         public const string Fsu_Cache_ParamDiff = @"ipems:fsu:param-diff@{0}@user";
+
+        /// <summary>
+        /// 用户相关查询结果缓存
+        /// </summary>
+        public const string User_Cache_FollowPoints = @"ipems:user:follow-points@{0}@user";        
     }
 
     /// <summary>
