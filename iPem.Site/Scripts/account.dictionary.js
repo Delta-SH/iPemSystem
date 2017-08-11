@@ -1316,6 +1316,64 @@
             },
             {
                 xtype: 'fieldset',
+                title: '室内温度',
+                margin: '10 35 20 10',
+                fieldDefaults: {
+                    anchor: '100%',
+                    labelWidth: 40,
+                    labelAlign: 'left'
+                },
+                items: [
+                    {
+                        name: 'snwdFormulas',
+                        xtype: 'triggerfield',
+                        fieldLabel: '公式',
+                        triggerCls: 'x-fx-trigger',
+                        vtype: 'Formula',
+                        margin: '10 10 0 10',
+                        onTriggerClick: function () {
+                            showFormulaWnd(currentFormulaNode, this);
+                        }
+                    },
+                    {
+                        name: 'snwdRemarks',
+                        xtype: 'textfield',
+                        fieldLabel: '备注',
+                        margin: '10 10 10 10'
+                    }
+                ]
+            },
+            {
+                xtype: 'fieldset',
+                title: '室内湿度',
+                margin: '10 35 20 10',
+                fieldDefaults: {
+                    anchor: '100%',
+                    labelWidth: 40,
+                    labelAlign: 'left'
+                },
+                items: [
+                    {
+                        name: 'snsdFormulas',
+                        xtype: 'triggerfield',
+                        fieldLabel: '公式',
+                        triggerCls: 'x-fx-trigger',
+                        vtype: 'Formula',
+                        margin: '10 10 0 10',
+                        onTriggerClick: function () {
+                            showFormulaWnd(currentFormulaNode, this);
+                        }
+                    },
+                    {
+                        name: 'snsdRemarks',
+                        xtype: 'textfield',
+                        fieldLabel: '备注',
+                        margin: '10 10 10 10'
+                    }
+                ]
+            },
+            {
+                xtype: 'fieldset',
                 title: 'PUE',
                 margin: '10 35 20 10',
                 fieldDefaults: {

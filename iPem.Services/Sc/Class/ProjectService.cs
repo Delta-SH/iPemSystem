@@ -40,6 +40,10 @@ namespace iPem.Services.Sc {
             return _repository.GetProjects();
         }
 
+        public List<M_Project> GetValidProjects() {
+            return _repository.GetValidProjects();
+        }
+
         public List<M_Project> GetProjectsInSpan(DateTime start, DateTime end) {
             return _repository.GetProjectsInSpan(start, end);
         }

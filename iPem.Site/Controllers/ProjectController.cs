@@ -1,8 +1,10 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
+using iPem.Services.Rs;
 using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
@@ -27,6 +29,7 @@ namespace iPem.Site.Controllers {
         private readonly IReservationService _reservationService;
         private readonly INodeInReservationService _nodesInReservationService;
         private readonly IProjectService _projectService;
+        private readonly INoteService _noteService;
 
         #endregion
 
@@ -39,7 +42,8 @@ namespace iPem.Site.Controllers {
             IWebEventService webLogger,
             IReservationService reservationService,
             INodeInReservationService nodesInReservationService,
-            IProjectService projectService) {
+            IProjectService projectService,
+            INoteService noteService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -47,6 +51,7 @@ namespace iPem.Site.Controllers {
             this._reservationService = reservationService;
             this._nodesInReservationService = nodesInReservationService;
             this._projectService = projectService;
+            this._noteService = noteService;
         }
 
         #endregion
@@ -367,7 +372,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _projectService.GetProjects().OrderByDescending(p => p.CreatedTime).Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
+                var models = _projectService.GetValidProjects().OrderByDescending(p => p.CreatedTime).Select(p => new ComboItem<string, string> { id = p.Id.ToString(), text = p.Name });
                 var result = new PagedList<ComboItem<string, string>>(models, start / limit, limit, models.Count());
                 if(result.Count > 0) {
                     data.message = "200 Ok";
@@ -511,9 +516,14 @@ namespace iPem.Site.Controllers {
                 var startTime = DateTime.Parse(model.startDate);
                 var endTime = DateTime.Parse(model.endDate);
                 var interval = endTime.Subtract(startTime);
-                if(interval.TotalSeconds < 0) throw new ArgumentException("预约结束时间不能早于预约开始时间！");
-                if(interval.TotalSeconds > 86400) throw new ArgumentException("预约总时长不能超过24个小时！");
-                if(model.nodes == null || model.nodes.Length == 0) throw new ArgumentException("未选择需要预约的监控点！");
+                if(interval.TotalSeconds < 0) throw new iPemException("预约结束时间不能早于预约开始时间");
+                if (interval.TotalSeconds > 86400) throw new iPemException("预约总时长不能超过24个小时");
+                if (model.nodes == null || model.nodes.Length == 0) throw new iPemException("未选择需要预约的监控节点");
+
+                var project = _projectService.GetProject(model.projectId);
+                if (project == null) throw new iPemException("未找到所关联的工程信息");
+                if (!(project.StartTime <= startTime && project.EndTime > endTime))
+                    throw new iPemException("预约时间已超出关联的工程时间");
 
                 if(action == (int)EnmAction.Add) {
                     var newOne = new M_Reservation {
@@ -521,7 +531,7 @@ namespace iPem.Site.Controllers {
                         Name = model.name,
                         StartTime = startTime,
                         EndTime = endTime,
-                        ProjectId = model.projectId,
+                        ProjectId = project.Id,
                         Creator = _workContext.Employee.Name,
                         CreatedTime = DateTime.Now,
                         Comment = model.comment,
@@ -543,6 +553,7 @@ namespace iPem.Site.Controllers {
 
                     _reservationService.Add(newOne);
                     _nodesInReservationService.Add(nodes.ToArray());
+                    _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
                     _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
@@ -553,7 +564,7 @@ namespace iPem.Site.Controllers {
                     existed.Name = model.name;
                     existed.StartTime = startTime;
                     existed.EndTime = endTime;
-                    existed.ProjectId = model.projectId;
+                    existed.ProjectId = project.Id;
                     existed.Comment = model.comment;
                     existed.Enabled = model.enabled;
 
@@ -573,6 +584,7 @@ namespace iPem.Site.Controllers {
                     _reservationService.Update(existed);
                     _nodesInReservationService.Remove(existed.Id);
                     _nodesInReservationService.Add(nodes.ToArray());
+                    _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
                     _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", model.id), null, _workContext.User.Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
@@ -593,6 +605,7 @@ namespace iPem.Site.Controllers {
                 if (reservation == null) throw new iPemException("预约不存在，删除失败。");
                 if(reservation.Creator != _workContext.Employee.Name) throw new ArgumentException("您没有操作权限。");
                 _reservationService.Delete(reservation);
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
                 _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", reservation.Id), null, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功" });
             } catch(Exception exc) {

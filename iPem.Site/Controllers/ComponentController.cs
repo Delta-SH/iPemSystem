@@ -2013,25 +2013,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if (!string.IsNullOrWhiteSpace(node)) {
-                    if (node == "root") {
-                        if (_workContext.Profile.Settings != null 
-                            && _workContext.Profile.Settings.SeniorConditions != null
-                            && _workContext.Profile.Settings.SeniorConditions.Count > 0) {
-                            var conditions = _workContext.Profile.Settings.SeniorConditions.OrderBy(s=>s.name).ToArray();
-                            data.success = true;
-                            data.message = "200 Ok";
-                            data.total = conditions.Length;
-                            for (var i = 0; i < conditions.Length; i++) {
-                                var root = new TreeModel {
-                                    id = conditions[i].id,
-                                    text = conditions[i].name,
-                                    icon = Icons.Query,
-                                    leaf = true
-                                };
-
-                                data.data.Add(root);
-                            }
+                if (!string.IsNullOrWhiteSpace(node) && node == "root") {
+                    if (_workContext.Profile.Settings != null
+                        && _workContext.Profile.Settings.SeniorConditions != null
+                        && _workContext.Profile.Settings.SeniorConditions.Count > 0) {
+                        var conditions = _workContext.Profile.Settings.SeniorConditions;
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = conditions.Count;
+                        foreach (var condition in conditions) {
+                            data.data.Add(new TreeModel {
+                                id = condition.id,
+                                text = condition.name,
+                                icon = Icons.Query,
+                                leaf = true
+                            });
                         }
                     }
                 }
@@ -2084,6 +2080,81 @@ namespace iPem.Site.Controllers {
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetMatrixTemplates() {
+            var data = new AjaxDataModel<List<TreeCustomModel<MatrixTemplate>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeCustomModel<MatrixTemplate>>()
+            };
+
+            try {
+                if (_workContext.Profile.Settings != null
+                    && _workContext.Profile.Settings.MatrixTemplates != null
+                    && _workContext.Profile.Settings.MatrixTemplates.Count > 0) {
+                    var templates = _workContext.Profile.Settings.MatrixTemplates;
+                    data.success = true;
+                    data.message = "200 Ok";
+                    data.total = templates.Count;
+                    foreach (var template in templates) {
+                        data.data.Add(new TreeCustomModel<MatrixTemplate> {
+                            id = template.id,
+                            text = template.name,
+                            icon = Icons.All,
+                            leaf = true,
+                            custom = template
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult GetPointInDevType(string node) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if (!string.IsNullOrWhiteSpace(node)) {
+                    var children = _workContext.Points.FindAll(p => p.DeviceType.Id == node && (p.Type == EnmPoint.AI || p.Type == EnmPoint.DI));
+                    if (children.Count > 0) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = children.Count;
+                        foreach (var child in children) {
+                            data.data.Add(new TreeModel {
+                                id = child.Id,
+                                text = child.Name,
+                                icon = Icons.Signal,
+                                leaf = true
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
         }
 
         [HttpPost]

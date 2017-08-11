@@ -42,13 +42,13 @@ namespace iPem.Site.Controllers {
         private readonly INoticeInUserService _noticeInUserService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
+        private readonly INoteService _noteService;
         private readonly IScExecutor _scExecutor;
         private readonly ICsExecutor _csExecutor;
         private readonly IRsExecutor _rsExecutor;
         private readonly IHDBScriptService _hdbScriptService;
         private readonly IRDBScriptService _rdbScriptService;
         private readonly ISDBScriptService _sdbScriptService;
-
         private const string _captchaSalt = "w9hRaAIX+tRJ4GD4wnVkVQ==";
 
         #endregion
@@ -69,6 +69,7 @@ namespace iPem.Site.Controllers {
             INoticeInUserService noticeInUserService,
             IRoleService roleService,
             IUserService userService,
+            INoteService noteService,
             IScExecutor scExecutor,
             ICsExecutor csExecutor,
             IRsExecutor rsExecutor,
@@ -88,6 +89,7 @@ namespace iPem.Site.Controllers {
             this._noticeInUserService = noticeInUserService;
             this._roleService = roleService;
             this._userService = userService;
+            this._noteService = noteService;
             this._scExecutor = scExecutor;
             this._csExecutor = csExecutor;
             this._rsExecutor = rsExecutor;
@@ -1595,6 +1597,14 @@ namespace iPem.Site.Controllers {
                                     data.data.zlFormulas = formula.FormulaText;
                                     data.data.zlRemarks = formula.Comment;
                                     break;
+                                case EnmFormula.SNWD:
+                                    data.data.snwdFormulas = formula.FormulaText;
+                                    data.data.snwdRemarks = formula.Comment;
+                                    break;
+                                case EnmFormula.SNSD:
+                                    data.data.snsdFormulas = formula.FormulaText;
+                                    data.data.snsdRemarks = formula.Comment;
+                                    break;
                                 case EnmFormula.PUE:
                                     data.data.pueFormulas = formula.FormulaText;
                                     data.data.pueRemarks = formula.Comment;
@@ -1643,8 +1653,11 @@ namespace iPem.Site.Controllers {
                 formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
                 formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
                 formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SNWD, FormulaText = formula.snwdFormulas, Comment = formula.snwdRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SNSD, FormulaText = formula.snsdFormulas, Comment = formula.snsdRemarks, CreatedTime = DateTime.Now });
                 formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.PUE, FormulaText = formula.pueFormulas, Comment = formula.pueRemarks, CreatedTime = DateTime.Now });
                 _formulaService.Save(formulas.ToArray());
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -1686,6 +1699,7 @@ namespace iPem.Site.Controllers {
                 }
                 
                 _formulaService.Save(formulas.ToArray());
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "粘贴成功" });
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
@@ -2074,35 +2088,36 @@ namespace iPem.Site.Controllers {
                     data.total = nodes.Length;
 
                     var alarms = _workContext.ActAlarms;
-                    var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, cls = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                    var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                    data.data.Add(new NodeIcon { id = "root", level = areaIcons.Min(a => a.level), type = (int)EnmSSH.Root });
                     foreach (var node in nodes) {
-                        var target = new NodeIcon { id = node, cls = (int)EnmAlarm.Level0 };
+                        var keys = Common.SplitKeys(node);
+                        if(keys.Length != 2) continue;
+                        var type = int.Parse(keys[0]); var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                        var target = new NodeIcon { id = node, level = (int)EnmAlarm.Level0, type = (int)nodeType };
+
                         if (alarms.Count > 0) {
-                            var keys = Common.SplitKeys(node);
-                            if (keys.Length == 2) {
-                                var type = int.Parse(keys[0]); var id = keys[1];
-                                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                                if (nodeType == EnmSSH.Area) {
-                                    var current = _workContext.Areas.Find(a => a.Current.Id == id);
-                                    if (current != null) {
-                                        if (current.HasChildren) {
-                                            var icons = areaIcons.FindAll(i => current.Keys.Contains(i.id));
-                                            if (icons.Count > 0) target.cls = icons.Min(i => i.cls);
-                                        } else {
-                                            var icon = areaIcons.Find(i => i.id == current.Current.Id);
-                                            if (icon != null) target.cls = icon.cls;
-                                        }
+                            if (nodeType == EnmSSH.Area) {
+                                var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                                if (current != null) {
+                                    if (current.HasChildren) {
+                                        var icons = areaIcons.FindAll(i => current.Keys.Contains(i.id));
+                                        if (icons.Count > 0) target.level = icons.Min(i => i.level);
+                                    } else {
+                                        var icon = areaIcons.Find(i => i.id == current.Current.Id);
+                                        if (icon != null) target.level = icon.level;
                                     }
-                                } else if (nodeType == EnmSSH.Station) {
-                                    var icons = alarms.FindAll(a => a.Current.StationId == id);
-                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
-                                } else if (nodeType == EnmSSH.Room) {
-                                    var icons = alarms.FindAll(a => a.Current.RoomId == id);
-                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
-                                } else if (nodeType == EnmSSH.Device) {
-                                    var icons = alarms.FindAll(a => a.Current.DeviceId == id);
-                                    if (icons.Count > 0) target.cls = icons.Min(i => (int)i.Current.AlarmLevel);
                                 }
+                            } else if (nodeType == EnmSSH.Station) {
+                                var icons = alarms.FindAll(a => a.Current.StationId == id);
+                                if (icons.Count > 0) target.level = icons.Min(i => (int)i.Current.AlarmLevel);
+                            } else if (nodeType == EnmSSH.Room) {
+                                var icons = alarms.FindAll(a => a.Current.RoomId == id);
+                                if (icons.Count > 0) target.level = icons.Min(i => (int)i.Current.AlarmLevel);
+                            } else if (nodeType == EnmSSH.Device) {
+                                var icons = alarms.FindAll(a => a.Current.DeviceId == id);
+                                if (icons.Count > 0) target.level = icons.Min(i => (int)i.Current.AlarmLevel);
                             }
                         }
 

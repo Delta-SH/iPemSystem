@@ -79,6 +79,7 @@
     <Compile Include="Repository\Rs\Class\C_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
+    <Compile Include="Repository\Rs\Class\H_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Class\R_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_SCVendorRepository.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Repository\Cs\Class\V_StaticRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_HMeasureRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IA_AAlarmRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IH_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IR_DBScriptRepository.cs" />
     <Compile Include="Repository\Sc\Class\M_FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Class\S_DBScriptRepository.cs" />

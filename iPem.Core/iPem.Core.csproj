@@ -119,6 +119,7 @@
     <Compile Include="Domain\Rs\C_SCVendor.cs" />
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />
+    <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\P_SubPoint.cs" />
     <Compile Include="Domain\Rs\R_DBScript.cs" />
     <Compile Include="Domain\Sc\S_DBScript.cs" />

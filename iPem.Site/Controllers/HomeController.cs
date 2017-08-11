@@ -947,17 +947,17 @@ namespace iPem.Site.Controllers {
                                             DeviceList = devices.Select(d => new GetDataDevice { Id = d.Key }).ToList()
                                         };
 
-                                        _packMgr.GetData(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                                        _packMgr.GetData(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                                     } catch { }
                                 }
                                 #endregion
                                 values = _aMeasureService.GetMeasuresInDevice(nodeKey.Value);
                             } else {
-                                values = _aMeasureService.GetMeasures(ptPoints.Select(p => new ValuesPair<string, string, string>(p.Device.Id, p.Current.Code, p.Current.Number)).ToList());
+                                values = _aMeasureService.GetMeasures(ptPoints.Select(p => new IdValuePair<string, string>(p.Device.Id, p.Current.Id)).ToList());
                             }
 
                             var pValues = from point in ptPoints
-                                          join val in values on new { DeviceId = point.Device.Id, SignalId = point.Current.Code, SignalNumber = point.Current.Number } equals new { val.DeviceId, val.SignalId, val.SignalNumber } into lt
+                                          join val in values on new { DeviceId = point.Device.Id, PointId = point.Current.Id } equals new { val.DeviceId, val.PointId } into lt
                                           from def in lt.DefaultIfEmpty()
                                           select new { Point = point, Value = def };
 
@@ -1127,6 +1127,7 @@ namespace iPem.Site.Controllers {
         [HttpPost]
         [AjaxAuthorize]
         public JsonResult SaveSeniorCondition(SeniorCondition condition, int action) {
+
             try {
                 if (condition == null) throw new ArgumentException("condition");
                 if (condition.id == "root") throw new iPemException("无法保存根节点");
@@ -1230,7 +1231,7 @@ namespace iPem.Site.Controllers {
                         Id = key,
                         Confirmed = EnmConfirm.Confirmed,
                         ConfirmedTime = DateTime.Now,
-                        Confirmer = _workContext.Employee.Name
+                        Confirmer = _workContext.Employee != null ? _workContext.Employee.Name : _workContext.User.Uid
                     });
                 }
 
@@ -1258,7 +1259,7 @@ namespace iPem.Site.Controllers {
                         Id = alarm.Current.Id,
                         Confirmed = EnmConfirm.Confirmed,
                         ConfirmedTime = DateTime.Now,
-                        Confirmer = _workContext.Employee.Name
+                        Confirmer = _workContext.Employee != null ? _workContext.Employee.Name : _workContext.User.Uid
                     });
                 }
 
@@ -1354,8 +1355,7 @@ namespace iPem.Site.Controllers {
                 };
 
 
-                //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
-                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                 if(result != null) {
                     if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {
@@ -1418,8 +1418,7 @@ namespace iPem.Site.Controllers {
                     }
                 };
 
-                //var result = _packMgr.SetPoint(new UriBuilder("http", curExtFsu.IP, curExtFsu.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
-                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                 if(result != null) {
                     if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
                     if(result.DeviceList != null) {
@@ -1903,6 +1902,63 @@ namespace iPem.Site.Controllers {
                 using (var ms = _excelManager.Export<HomePowerModel>(unStations, "站点发电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult CreateMatrixTemplate(int index) {
+            var defaultDevType = _workContext.DeviceTypes.FirstOrDefault();
+            var template = new MatrixTemplate {
+                id = CommonHelper.GetIdAsString(),
+                name = string.Format("新建模版({0})", index),
+                type = defaultDevType != null ? defaultDevType.Id : "0",
+                points = new string[0]
+            };
+
+            return new JsonNetResult {
+                Data = new AjaxDataModel<TreeCustomModel<MatrixTemplate>> {
+                    success = true,
+                    message = "200 Ok",
+                    total = 1,
+                    data = new TreeCustomModel<MatrixTemplate> {
+                        id = template.id,
+                        text = template.name,
+                        icon = Icons.All,
+                        leaf = true,
+                        custom = template
+                    }
+                },
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveMatrixTemplates(MatrixTemplate[] templates) {
+            try {
+                if (templates == null) throw new ArgumentException("templates");
+                if (templates.Length == 0) throw new ArgumentException("未配置模版，无需保存。");
+
+                var profile = _profileService.GetProfile(_workContext.User.Id);
+                if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson)) {
+                    profile = new U_Profile {
+                        UserId = _workContext.User.Id,
+                        ValuesJson = JsonConvert.SerializeObject(new Setting { MatrixTemplates = new List<MatrixTemplate>(templates) }),
+                        LastUpdatedDate = DateTime.Now
+                    };
+                } else {
+                    var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
+                    settings.MatrixTemplates = new List<MatrixTemplate>(templates);
+                    profile.ValuesJson = JsonConvert.SerializeObject(settings);
+                    profile.LastUpdatedDate = DateTime.Now;
+                }
+
+                _profileService.Save(profile);
+                _workContext.ResetProfile();
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });

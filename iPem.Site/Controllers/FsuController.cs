@@ -252,7 +252,7 @@ namespace iPem.Site.Controllers {
                 if (!curGroup.Status) throw new iPemException("SC通信中断");
 
                 var package = new SetFsuRebootPackage() { FsuId = curFsu.Current.Code };
-                var result = _packMgr.SetFsuReboot(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                var result = _packMgr.SetFsuReboot(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                 if (result == null) throw new iPemException("响应超时");
                 if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "重启失败");
 
@@ -395,7 +395,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,读取存储规则配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,读取存储规则配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.GetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.GetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.Rules != null && device.Rules.Count > 0) {
@@ -508,7 +508,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发存储规则配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发存储规则配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
@@ -588,7 +588,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发存储规则配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发存储规则配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.SetStorageRule(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
@@ -661,7 +661,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,读取告警门限配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,读取告警门限配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.GetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.GetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.Values != null && device.Values.Count > 0) {
@@ -771,7 +771,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发告警门限配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发告警门限配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
@@ -850,7 +850,7 @@ namespace iPem.Site.Controllers {
                         if (curGroup == null) throw new iPemException(string.Format("未找到SC采集组,下发告警门限配置失败({0})", curExtFsu.GroupId));
                         if (!curGroup.Status) throw new iPemException(string.Format("SC通信中断,下发告警门限配置失败({0})", curExtFsu.GroupId));
 
-                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, _workContext.WsValues.fsuPath ?? "").ToString(), package);
+                        var result = _packMgr.SetThreshold(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues != null && _workContext.WsValues.fsuPath != null) ? _workContext.WsValues.fsuPath : "").ToString(), package);
                         if (result != null && result.Result == EnmBIResult.SUCCESS && result.DeviceList != null) {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {

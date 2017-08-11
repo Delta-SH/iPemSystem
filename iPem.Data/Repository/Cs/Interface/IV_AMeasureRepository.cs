@@ -11,7 +11,7 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// 获得指定设备下单信号的性能数据
         /// </summary>
-        V_AMeasure GetMeasure(string device, string signalId, string signalNumber);
+        V_AMeasure GetMeasure(string device, string point);
 
         /// <summary>
         /// 获得指定区域(第三级区域)的性能数据
@@ -36,7 +36,7 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// 获得指定关键字多信号的性能数据
         /// </summary>
-        List<V_AMeasure> GetMeasures(IList<ValuesPair<string, string, string>> keys);
+        List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys);
 
         /// <summary>
         /// 获得所有的性能数据

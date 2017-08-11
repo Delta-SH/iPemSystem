@@ -52,6 +52,18 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("总电量公式备注")]
         public string zlRemarks { get; set; }
 
+        [ExcelDisplayName("室内温度公式")]
+        public string snwdFormulas { get; set; }
+
+        [ExcelDisplayName("室内温度公式备注")]
+        public string snwdRemarks { get; set; }
+
+        [ExcelDisplayName("室内湿度公式")]
+        public string snsdFormulas { get; set; }
+
+        [ExcelDisplayName("室内湿度公式备注")]
+        public string snsdRemarks { get; set; }
+
         [ExcelDisplayName("PUE公式")]
         public string pueFormulas { get; set; }
 

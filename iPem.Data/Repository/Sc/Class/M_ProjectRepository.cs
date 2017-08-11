@@ -73,6 +73,28 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
+        public List<M_Project> GetValidProjects() {
+            var entities = new List<M_Project>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_M_Project_Repository_GetValidProjects, null)) {
+                while (rdr.Read()) {
+                    var entity = new M_Project();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
+                    entity.Responsible = SqlTypeConverter.DBNullStringHandler(rdr["Responsible"]);
+                    entity.ContactPhone = SqlTypeConverter.DBNullStringHandler(rdr["ContactPhone"]);
+                    entity.Company = SqlTypeConverter.DBNullStringHandler(rdr["Company"]);
+                    entity.Creator = SqlTypeConverter.DBNullStringHandler(rdr["Creator"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                    entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
+                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
         public List<M_Project> GetProjectsInSpan(DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@StartTime",SqlDbType.DateTime),
                                      new SqlParameter("@EndTime",SqlDbType.DateTime) };

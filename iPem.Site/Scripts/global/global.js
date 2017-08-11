@@ -236,7 +236,7 @@ Ext.override(Ext.view.Table, {
 });
 
 window.$$iPems.Action = { Add: 0, Edit: 1, Delete: 2 };
-window.$$iPems.SSH = { Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4, Point: 5 };
+window.$$iPems.SSH = { Root: -1, Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4, Point: 5 };
 window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
 window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
 window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
@@ -281,8 +281,9 @@ window.$$iPems.GetLevelCls = function (value) {
 };
 
 window.$$iPems.UpdateIcons = function (tree, nodes) {
-    if (Ext.isEmpty(nodes)) {
-        nodes = [];
+    nodes = nodes || [];
+
+    if (nodes.length === 0) {
         var root = tree.getRootNode();
         if (root.hasChildNodes()) {
             root.eachChild(function (c) {
@@ -293,55 +294,61 @@ window.$$iPems.UpdateIcons = function (tree, nodes) {
         }
     }
 
-    if (nodes.length > 0) {
-        Ext.Ajax.request({
-            url: '/Account/GetNodeIcons',
-            method: 'POST',
-            jsonData: nodes,
-            success: function (response, options) {
-                var data = Ext.decode(response.responseText, true);
-                if (data.success) {
-                    var icons = {};
-                    if (!Ext.isEmpty(data.data)) {
-                        Ext.Array.each(data.data, function (item, index, allItems) {
-                            icons[item.id] = item.cls;
+    if (nodes.length === 0) return;
+
+    Ext.Ajax.request({
+        url: '/Account/GetNodeIcons',
+        method: 'POST',
+        jsonData: nodes,
+        success: function (response, options) {
+            var data = Ext.decode(response.responseText, true);
+            if (data.success) {
+                var icons = {},
+                    root = tree.getRootNode();
+
+                Ext.each(data.data, function (item, index, allItems) {
+                    icons[item.id] = item;
+                });
+
+                $$iPems.SetIcon(root, icons[root.getId()]);
+                if (root.hasChildNodes()) {
+                    root.eachChild(function (c) {
+                        c.cascadeBy(function (n) {
+                            $$iPems.SetIcon(n, icons[n.getId()]);
                         });
-                    }
-
-                    var root = tree.getRootNode(), rootCls = 100;
-                    if (root.hasChildNodes()) {
-                        root.eachChild(function (c) {
-                            var childCls = icons[c.getId()];
-                            if (!Ext.isEmpty(childCls) && childCls < rootCls)
-                                rootCls = childCls;
-
-                            //node cls
-                            c.cascadeBy(function (n) {
-                                $$iPems.SetIcon(n, icons[n.getId()]);
-                            });
-                        });
-                    }
-
-                    //root cls
-                    $$iPems.SetIcon(root, rootCls);
+                    });
                 }
             }
-        });
-    }
+        }
+    });
 };
 
-window.$$iPems.SetIcon = function (node, cls) {
-    if (cls === $$iPems.Level.Level0) {
-        node.set('cls', 'icon-level0');
-    } else if (cls === $$iPems.Level.Level1) {
-        node.set('cls', 'icon-level1');
-    } else if (cls === $$iPems.Level.Level2) {
-        node.set('cls', 'icon-level2');
-    } else if (cls === $$iPems.Level.Level3) {
-        node.set('cls', 'icon-level3');
-    } else if (cls === $$iPems.Level.Level4) {
-        node.set('cls', 'icon-level4');
-    }
+window.$$iPems.SetIcon = function (node, icon) {
+    if (Ext.isEmpty(icon)) return;
+
+    var prefix = '', type = icon.type, level = icon.level;
+
+    if (type === $$iPems.SSH.Root)
+        prefix = 'all'
+    else if (type === $$iPems.SSH.Area)
+        prefix = 'diqiu'
+    else if (type === $$iPems.SSH.Station)
+        prefix = 'juzhan'
+    else if (type === $$iPems.SSH.Room)
+        prefix = 'room'
+    else if (type === $$iPems.SSH.Device)
+        prefix = 'device'
+
+    if (level === $$iPems.Level.Level0)
+        node.set('iconCls', Ext.String.format('{0}-level-0', prefix));
+    else if (level === $$iPems.Level.Level1)
+        node.set('iconCls', Ext.String.format('{0}-level-1', prefix));
+    else if (level === $$iPems.Level.Level2)
+        node.set('iconCls', Ext.String.format('{0}-level-2', prefix));
+    else if (level === $$iPems.Level.Level3)
+        node.set('iconCls', Ext.String.format('{0}-level-3', prefix));
+    else if (level === $$iPems.Level.Level4)
+        node.set('iconCls', Ext.String.format('{0}-level-4', prefix));
 };
 
 /*global delimiter*/

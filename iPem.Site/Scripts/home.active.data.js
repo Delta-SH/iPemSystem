@@ -58,6 +58,14 @@
         ],
         idProperty: 'index'
     });
+
+    Ext.define('TemplateModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            { name: 'text', type: 'string' },
+            { name: 'custom', type: 'auto' }
+        ]
+    })
     //#endregion
 
     //#region Store
@@ -196,17 +204,29 @@
     });
 
     var columnStore = Ext.create('Ext.data.Store',{
-        data: [
-            { id: '1', name: 'One' },
-            { id: '2', name: 'Two' },
-            { id: '3', name: 'Three' },
-            { id: '4', name: 'Four' },
-            { id: '5', name: 'Five' }
-        ],
-        fields: ['id', 'name'],
-        sortInfo: {
-            field: 'id',
-            direction: 'ASC'
+        autoLoad: false,
+        fields: ['id','text'],
+        proxy: {
+            type: 'ajax',
+            url: '/Component/GetPointInDevType',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: {
+                node: ''
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+
+                }
+            }
         }
     });
 
@@ -653,6 +673,7 @@
                 glyph: 0xf008,
                 text: '模版设置',
                 handler: function () {
+                    resetMatrixTree();
                     matrixWnd.show();
                 }
             }, '-',
@@ -1192,9 +1213,11 @@
         hidden: true,
         closeAction: 'hide',
         layout: 'border',
+        currentNode: null,
+        createCount: 1,
         items: [
             {
-                id: 'templatesPanel',
+                id: 'templatePanel',
                 xtype: 'treepanel',
                 region: 'west',
                 margin: '5 0 5 5',
@@ -1212,11 +1235,12 @@
                     loadMask: true
                 },
                 store: Ext.create('Ext.data.TreeStore', {
+                    model: 'TemplateModel',
                     autoLoad: false,
                     nodeParam: 'node',
                     proxy: {
                         type: 'ajax',
-                        url: '/Component/GetSeniorConditions',
+                        url: '/Component/GetMatrixTemplates',
                         reader: {
                             type: 'json',
                             successProperty: 'success',
@@ -1227,7 +1251,14 @@
                     }
                 }),
                 listeners: {
-                    select: function (me, record, item, index) {
+                    select: function (me, record, index) {
+                        matrixWnd.currentNode = record;
+                        var values = record.get('custom'),
+                            basic = Ext.getCmp('templateForm').getForm();
+
+                        if (!Ext.isEmpty(values)) {
+                            basic.setValues(values);
+                        }
                     }
                 },
                 tbar: [
@@ -1237,6 +1268,24 @@
                             glyph: 0xf001,
                             tooltip: '新增模版',
                             handler: function () {
+                                var template = Ext.getCmp('templatePanel');
+                                Ext.Ajax.request({
+                                    url: '/Home/CreateMatrixTemplate',
+                                    params: { index: matrixWnd.createCount++ },
+                                    mask: new Ext.LoadMask(template.getView(), { msg: '正在处理...' }),
+                                    success: function (response, options) {
+                                        var data = Ext.decode(response.responseText, true);
+                                        if (data.success){
+                                            var root = template.getRootNode(),
+                                                current = root.createNode(data.data);
+
+                                            root.appendChild(current);
+                                            template.getSelectionModel().select(current);
+                                        } else {
+                                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                                        }
+                                    }
+                                });
                             }
                         }, '-',
                         {
@@ -1244,14 +1293,48 @@
                             xtype: 'button',
                             glyph: 0xf003,
                             tooltip: '删除模版',
-                            disabled: true,
                             handler: function () {
+                                if (matrixWnd.currentNode == null) {
+                                    Ext.Msg.show({ title: '系统警告', msg: '请选择需要删除的模版', buttons: Ext.Msg.OK, icon: Ext.Msg.WARNING });
+                                    return false;
+                                }
+
+                                Ext.Msg.confirm('确认对话框', '您确定要删除模版吗？', function (buttonId, text) {
+                                    if (buttonId === 'yes') {
+                                        var template = Ext.getCmp('templatePanel'),
+                                            root = template.getRootNode();
+
+                                        if (root.hasChildNodes()) {
+                                            var current = matrixWnd.currentNode,
+                                                next = current.nextSibling || current.previousSibling;
+
+                                            root.removeChild(current);
+                                            matrixWnd.currentNode = null;
+
+                                            if (next !== null) {
+                                                template.getSelectionModel().select(next);
+                                            } else {
+                                                resetMatrixForm();
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }, '-',
+                        {
+                            id: 'tbar-refresh',
+                            xtype: 'button',
+                            glyph: 0xf058,
+                            tooltip: '重置模版',
+                            handler: function () {
+                                resetMatrixTree();
+                                resetMatrixForm();
                             }
                         }
                 ]
             },
             {
-                id: 'templatesForm',
+                id: 'templateForm',
                 xtype: 'form',
                 border: false,
                 region: 'center',
@@ -1268,23 +1351,57 @@
                 },
                 items: [
                     {
-                        id: 'templatesId',
-                        xtype: 'hiddenfield'
-                    },
-                    {
-                        id: 'templatesName',
+                        id: 'templateName',
+                        name: 'name',
                         xtype: 'textfield',
                         margin: '5 5 5 5',
                         fieldLabel: '模版名称',
-                        allowBlank: false
+                        allowBlank: false,
+                        listeners: {
+                            change: {
+                                fn: function (me, newValue, oldValue) {
+                                    if (matrixWnd.currentNode != null) {
+                                        var current = matrixWnd.currentNode,
+                                            values = current.get('custom');
+
+                                        values.name = newValue;
+                                        current.set('text', newValue);
+                                        current.set('custom', values);
+                                    }
+                                },
+                                buffer: 500
+                            }
+                        }
                     },
                     {
-                        id: 'templatesDeviceTypes',
+                        id: 'templateDeviceType',
+                        name: 'type',
                         xtype: 'DeviceTypeCombo',
                         margin: '5 5 5 5',
+                        listeners: {
+                            change: function (me, newValue, oldValue) {
+                                if (matrixWnd.currentNode != null) {
+                                    var current = matrixWnd.currentNode,
+                                        values = current.get('custom');
+
+                                    if (values.type !== newValue) {
+                                        values.type = newValue;
+                                        values.points = [];
+                                        current.set('custom', values);
+                                    }
+                                }
+
+                                var store = columnStore,
+                                    proxy = store.getProxy();
+                                
+                                proxy.extraParams.node = newValue;
+                                store.load();
+                            }
+                        }
                     },
                     {
-                        id: 'templatesValues',
+                        id: 'templateValues',
+                        name: 'points',
                         xtype: 'itemselector',
                         margin: '5 5 5 5',
                         flex: 1,
@@ -1292,16 +1409,32 @@
                         fieldLabel: '列名映射',
                         fromTitle: '待映射信号',
                         toTitle: '已映射信号',
-                        displayField: 'name',
+                        displayField: 'text',
                         valueField: 'id',
                         value: [],
                         allowBlank: false,
                         minSelections: 1,
-                        maxSelections: 20
+                        maxSelections: 20,
+                        listeners: {
+                            change: function (me, newValue, oldValue) {
+                                if (matrixWnd.currentNode != null) {
+                                    var current = matrixWnd.currentNode,
+                                        values = current.get('custom');
+
+                                    values.points = newValue;
+                                    current.set('custom', values);
+                                }
+                            }
+                        }
                     }
                 ]
             }
         ],
+        listeners: {
+            close: function (panel) {
+                resetMatrixForm();
+            }
+        },
         buttons: [
           { id: 'matrixResult', xtype: 'iconlabel', text: '' },
           { xtype: 'tbfill' },
@@ -1309,6 +1442,50 @@
               xtype: 'button',
               text: '保存',
               handler: function (el, e) {
+                  var result = Ext.getCmp('matrixResult'),
+                      root = Ext.getCmp('templatePanel').getRootNode(),
+                      datas = [];
+
+                  var isValid = true;
+                  if (root.hasChildNodes()) {
+                      root.eachChild(function (c) {
+                          var value = c.get('custom'),
+                              name = value.name,
+                              points = value.points;
+
+                          if (Ext.isEmpty(points) || points.length === 0) {
+                              result.setTextWithIcon(Ext.String.format('{0}映射信号最少选择1项', name), 'x-icon-error');
+                              return isValid = false;
+                          }
+
+                          if (points.length > 20) {
+                              result.setTextWithIcon(Ext.String.format('{0}映射信号最多选择20项', name), 'x-icon-error');
+                              return isValid = false;
+                          }
+
+                          datas.push(value);
+                      });
+                  }
+
+                  if (isValid === false) return false;
+                  if (datas.length === 0) {
+                      result.setTextWithIcon('未添加模版，无需保存。', 'x-icon-error');
+                      return false;
+                  }
+
+                  result.setTextWithIcon('正在处理...', 'x-icon-loading');
+                  Ext.Ajax.request({
+                      url: '/Home/SaveMatrixTemplates',
+                      method: 'POST',
+                      jsonData: datas,
+                      success: function (response, options) {
+                          var data = Ext.decode(response.responseText, true);
+                          result.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');
+                      },
+                      failure: function (response, options) {
+                          result.setTextWithIcon('unknown error.', 'x-icon-error');
+                      }
+                  });
               }
           }, {
               xtype: 'button',
@@ -1614,6 +1791,25 @@
                 }
             }
         });
+    };
+
+    var resetMatrixTree = function () {
+        var template = Ext.getCmp('templatePanel'),
+            templateStore = template.getStore();
+
+        matrixWnd.currentNode = null;
+        templateStore.load();
+    };
+
+    var resetMatrixForm = function () {
+        var templateBasic = Ext.getCmp('templateForm').getForm(),
+            templateDevType = Ext.getCmp('templateDeviceType'),
+            templateDevStore = templateDevType.getStore(),
+            templateResult = Ext.getCmp('matrixResult');
+
+        templateBasic.reset();
+        templateResult.setTextWithIcon('', '');
+        if (templateDevStore.getCount()) templateDevType.select(templateDevStore.getAt(0));
     };
     //#endregion
 

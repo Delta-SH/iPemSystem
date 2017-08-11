@@ -1500,7 +1500,7 @@ namespace iPem.Site.Controllers {
                             var curPoints = curDevice.Protocol.Points.FindAll(p => points.Contains(p.Id));
                             var curValues = _measureService.GetMeasuresInDevice(curDevice.Current.Id, startDate, endDate);
                             for (var i = 0; i < curPoints.Count; i++) {
-                                var values = curValues.FindAll(v => v.SignalId == curPoints[i].Code && v.SignalNumber == curPoints[i].Number);
+                                var values = curValues.FindAll(v => v.PointId == curPoints[i].Id);
                                 var models = new List<ChartModel>();
                                 for (var k = 0; k < values.Count; k++) {
                                     models.Add(new ChartModel {
@@ -2290,7 +2290,7 @@ namespace iPem.Site.Controllers {
             }
 
             var stores = (from val in values
-                          join pt in _points on new { val.SignalId, val.SignalNumber } equals new { SignalId = pt.Code, SignalNumber = pt.Number }
+                          join pt in _points on val.PointId equals pt.Id
                           join device in devices on val.DeviceId equals device.Current.Id
                           join room in rooms on device.Current.RoomId equals room.Current.Id
                           join station in stations on room.Current.StationId equals station.Current.Id

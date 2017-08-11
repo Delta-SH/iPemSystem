@@ -19,6 +19,11 @@ namespace iPem.Services.Sc {
         List<M_Project> GetProjects();
 
         /// <summary>
+        /// 获得有效的工程信息
+        /// </summary>
+        List<M_Project> GetValidProjects();
+
+        /// <summary>
         /// 获得指定时间内的工程信息
         /// </summary>
         List<M_Project> GetProjectsInSpan(DateTime start, DateTime end);

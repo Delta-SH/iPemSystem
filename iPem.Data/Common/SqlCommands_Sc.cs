@@ -67,6 +67,7 @@ namespace iPem.Data.Common {
         /// 工程信息表
         /// </summary>
         public const string Sql_M_Project_Repository_GetProjects = @"SELECT * FROM [dbo].[M_Projects] ORDER BY [CreatedTime];";
+        public const string Sql_M_Project_Repository_GetValidProjects = @"SELECT * FROM [dbo].[M_Projects] WHERE [EndTime]>GETDATE() ORDER BY [CreatedTime];";
         public const string Sql_M_Project_Repository_GetProjectsInSpan = @"SELECT * FROM [dbo].[M_Projects] WHERE [StartTime]>=@StartTime AND [EndTime]<=@EndTime ORDER BY [Name];";
         public const string Sql_M_Project_Repository_GetProject = @"SELECT * FROM [dbo].[M_Projects] WHERE [Id]=@Id";
         public const string Sql_M_Project_Repository_Insert = @"INSERT INTO [dbo].[M_Projects]([Id],[Name],[StartTime],[EndTime],[Responsible],[ContactPhone],[Company],[Creator],[CreatedTime],[Comment],[Enabled]) VALUES(@Id,@Name,@StartTime,@EndTime,@Responsible,@ContactPhone,@Company,@Creator,@CreatedTime,@Comment,@Enabled);";

@@ -180,6 +180,18 @@ namespace iPem.Data.Common {
         public const string Sql_D_RedefinePoint_Repository_GetRedefinePoints = @"SELECT * FROM [dbo].[D_RedefinePoint];";
 
         /// <summary>
+        /// 配置同步表
+        /// </summary>
+        public const string Sql_H_Note_Repository_GetEntities = @"SELECT * FROM [dbo].[H_Note] WHERE [SysType] = 2;";
+        public const string Sql_H_Note_Repository_Insert = @"
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[H_Note] WHERE [SysType]=@SysType AND CONVERT(VARCHAR(MAX),[Name]) = @Name)
+        BEGIN
+	        INSERT INTO [dbo].[H_Note]([SysType],[GroupID],[Name],[DtType],[OpType],[Time],[Desc]) VALUES(@SysType,@GroupID,@Name,@DtType,@OpType,@Time,@Desc);	
+        END";
+        public const string Sql_H_Note_Repository_Delete = @"DELETE FROM [dbo].[H_Note] WHERE [ID]=@Id;";
+        public const string Sql_H_Note_Repository_Clear = @"DELETE FROM [dbo].[H_Note] WHERE [SysType] = 2;";
+
+        /// <summary>
         /// 标准信号表
         /// </summary>
         public const string Sql_P_Point_Repository_GetPointsInDevice = @"

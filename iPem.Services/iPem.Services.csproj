@@ -65,10 +65,12 @@
     <Compile Include="Cs\Interface\IHIStationService.cs" />
     <Compile Include="Cs\Interface\IParamDiffService.cs" />
     <Compile Include="Rs\Class\GroupService.cs" />
+    <Compile Include="Rs\Class\NoteService.cs" />
     <Compile Include="Rs\Class\RDBScriptService.cs" />
     <Compile Include="Rs\Class\RedefinePointService.cs" />
     <Compile Include="Rs\Class\SCVendorService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
+    <Compile Include="Rs\Interface\INoteService.cs" />
     <Compile Include="Rs\Interface\IRDBScriptService.cs" />
     <Compile Include="Rs\Interface\IRedefinePointService.cs" />
     <Compile Include="Rs\Interface\ISCVendorService.cs" />

@@ -29,14 +29,12 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public V_AMeasure GetMeasure(string device, string signalId, string signalNumber) {
+        public V_AMeasure GetMeasure(string device, string point) {
             SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@SignalId", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@SignalNumber", SqlDbType.VarChar, 10) };
+                                     new SqlParameter("@PointId", SqlDbType.VarChar, 100) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
-            parms[1].Value = SqlTypeConverter.DBNullStringChecker(signalId);
-            parms[2].Value = SqlTypeConverter.DBNullStringChecker(signalNumber);
+            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
 
             V_AMeasure entity = null;
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_V_AMeasure_Repository_GetMeasure, parms)) {
@@ -168,17 +166,17 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_AMeasure> GetMeasures(IList<ValuesPair<string, string, string>> keys) {
+        public List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys) {
             var commands = new string[keys.Count];
             for (var i = 0; i < keys.Count; i++) {
-                commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [SignalId], '{2}' AS [SignalNumber]", keys[i].Value1, keys[i].Value2, keys[i].Value3);
+                commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [PointId]", keys[i].Id, keys[i].Value);
             }
 
             var query = string.Format(@"
             ;WITH Keys AS (
                 {0}
             )
-            SELECT VA.* FROM [dbo].[V_AMeasure] VA INNER JOIN Keys K ON VA.[DeviceId]=K.[DeviceId] AND VA.[SignalId]=K.[SignalId] AND VA.[SignalNumber]=K.[SignalNumber];", string.Join(@" UNION ALL ", commands));
+            SELECT VA.* FROM [dbo].[V_AMeasure] VA INNER JOIN Keys K ON VA.[DeviceId]=K.[DeviceId] AND VA.[PointId]=K.[PointId];", string.Join(@" UNION ALL ", commands));
 
             var entities = new List<V_AMeasure>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, null)) {

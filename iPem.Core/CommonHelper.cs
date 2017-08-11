@@ -284,5 +284,19 @@ namespace iPem.Core {
             var rate = (double)computer.AvailablePhysicalMemory / (double)computer.TotalPhysicalMemory;
             return Math.Round((1d - rate) * 100, 2);
         }
+
+        /// <summary>
+        /// 获得流水号
+        /// </summary>
+        public static string GetIdAsString() {
+            return GetIdAsLong().ToString();
+        }
+
+        /// <summary>
+        /// 获得流水号
+        /// </summary>
+        public static long GetIdAsLong() {
+            return Math.Abs(DateTime.Now.Subtract(new DateTime(2017, 6, 21)).Ticks);
+        }
     }
 }

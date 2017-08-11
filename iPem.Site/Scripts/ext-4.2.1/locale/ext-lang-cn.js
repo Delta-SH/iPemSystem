@@ -93,9 +93,9 @@ Ext.define("Ext.locale.zh_CN.picker.Date", {
     todayTip: "{0} (空格键选择)",
     format: "y年m月d日",
     ariaTitle: '{0}',
-    ariaTitleDateFormat: 'Y\u5e74m\u6708d\u65e5',
-    longDayFormat: 'Y\u5e74m\u6708d\u65e5',
-    monthYearFormat: 'Y\u5e74m\u6708',
+    ariaTitleDateFormat: 'Y年m月d日',
+    longDayFormat: 'Y年m月d日',
+    monthYearFormat: 'Y年m月',
     getDayInitial: function (value) {
         // Grab the last character
         return value.substr(value.length - 1);

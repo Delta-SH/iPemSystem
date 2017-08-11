@@ -24,7 +24,7 @@ namespace iPem.Core.Enum {
     }
 
     /// <summary>
-    /// 公式类型
+    /// 能耗公式类型
     /// </summary>
     public enum EnmFormula {
         /// <summary>
@@ -59,6 +59,14 @@ namespace iPem.Core.Enum {
         /// 总量
         /// </summary>
         ZL,
+        /// <summary>
+        /// 室内温度
+        /// </summary>
+        SNWD,
+        /// <summary>
+        /// 室内湿度
+        /// </summary>
+        SNSD,
         /// <summary>
         /// PUE
         /// </summary>

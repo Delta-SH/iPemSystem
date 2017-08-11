@@ -536,9 +536,8 @@ Ext.define('Ext.ux.form.ItemSelector', {
         me.ddGroup = me.id + '-dd';
         me.callParent();
 
-        // bindStore must be called after the fromField has been created because
-        // it copies records from our configured Store into the fromField's Store
-        me.bindStore(me.store);
+        me.store.on('beforeload', me.cleanStore, me);
+        me.store.on('load', me.bindStore, me);
     },
 
     createList: function(title){
@@ -618,14 +617,6 @@ Ext.define('Ext.ux.form.ItemSelector', {
         return buttons;
     },
 
-    /**
-     * Get the selected records from the specified list.
-     * 
-     * Records will be returned *in store order*, not in order of selection.
-     * @param {Ext.view.BoundList} list The list to read selections from.
-     * @return {Ext.data.Model[]} The selected records in store order.
-     * 
-     */
     getSelections: function(list) {
         var store = list.getStore();
 
@@ -751,7 +742,6 @@ Ext.define('Ext.ux.form.ItemSelector', {
         me.syncValue();
     },
 
-    // Synchronizes the submit value with the current state of the toStore
     syncValue: function() {
         var me = this; 
         me.mixins.field.setValue.call(me, me.setupValue(me.toField.store.getRange()));
@@ -817,15 +807,8 @@ Ext.define('Ext.ux.form.ItemSelector', {
         var me = this;
 
         if (me.fromField) {
-            me.fromField.store.removeAll()
-            me.toField.store.removeAll();
-
-            // Add everything to the from field as soon as the Store is loaded
-            if (store.getCount()) {
-                me.populateFromStore(store);
-            } else {
-                me.store.on('load', me.populateFromStore, me);
-            }
+            me.cleanStore();
+            me.populateFromStore(store);
         }
     },
 
@@ -839,6 +822,16 @@ Ext.define('Ext.ux.form.ItemSelector', {
 
         // setValue waits for the from Store to be loaded
         fromStore.fireEvent('load', fromStore);
+    },
+
+    cleanStore: function () {
+        var me = this;
+
+        if (me.fromField) {
+            me.fromField.store.removeAll()
+            me.toField.store.removeAll();
+            me.fromStorePopulated = false;
+        }
     },
 
     onEnable: function(){

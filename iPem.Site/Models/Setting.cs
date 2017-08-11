@@ -8,5 +8,7 @@ namespace iPem.Site.Models {
     [Serializable]
     public class Setting {
         public List<SeniorCondition> SeniorConditions { get; set; }
+
+        public List<MatrixTemplate> MatrixTemplates { get; set; }
     }
 }

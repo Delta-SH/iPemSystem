@@ -31,8 +31,8 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public V_AMeasure GetMeasure(string device, string signalId, string signalNumber) {
-            return _repository.GetMeasure(device, signalId, signalNumber);
+        public V_AMeasure GetMeasure(string device, string point) {
+            return _repository.GetMeasure(device, point);
         }
 
         public List<V_AMeasure> GetMeasuresInArea(string id) {
@@ -51,7 +51,7 @@ namespace iPem.Services.Cs {
             return _repository.GetMeasuresInDevice(id);
         }
 
-        public List<V_AMeasure> GetMeasures(IList<ValuesPair<string, string, string>> keys) {
+        public List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys) {
             return _repository.GetMeasures(keys);
         }
 

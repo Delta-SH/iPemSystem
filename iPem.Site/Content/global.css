@@ -381,20 +381,109 @@ div.help-tip div.help-tip-content p {
     background-color : #87ceeb; 
 }
 
-.icon-level0 { 
-    color : #32cd32;
+.all-level-0 { 
+    background-image: url("themes/icons/all-level-0.png") !important;
+    background-repeat: no-repeat;
 }
-.icon-level1 { 
-    color : #ff0000;
+.all-level-1 { 
+    background-image: url("themes/icons/all-level-1.png") !important;
+    background-repeat: no-repeat;
 }
-.icon-level2 { 
-    color : #ffa500; 
+.all-level-2 { 
+    background-image: url("themes/icons/all-level-2.png") !important;
+    background-repeat: no-repeat;
 }
-.icon-level3 { 
-    color : #ffff00; 
+.all-level-3 { 
+    background-image: url("themes/icons/all-level-3.png") !important;
+    background-repeat: no-repeat;
 }
-.icon-level4 { 
-    color : #87ceeb; 
+.all-level-4 { 
+    background-image: url("themes/icons/all-level-4.png") !important;
+    background-repeat: no-repeat;
+}
+
+.diqiu-level-0 { 
+    background-image: url("themes/icons/diqiu-level-0.png") !important;
+    background-repeat: no-repeat;
+}
+.diqiu-level-1 { 
+    background-image: url("themes/icons/diqiu-level-1.png") !important;
+    background-repeat: no-repeat;
+}
+.diqiu-level-2 { 
+    background-image: url("themes/icons/diqiu-level-2.png") !important;
+    background-repeat: no-repeat;
+}
+.diqiu-level-3 { 
+    background-image: url("themes/icons/diqiu-level-3.png") !important;
+    background-repeat: no-repeat;
+}
+.diqiu-level-4 { 
+    background-image: url("themes/icons/diqiu-level-4.png") !important;
+    background-repeat: no-repeat;
+}
+
+.juzhan-level-0 { 
+    background-image: url("themes/icons/juzhan-level-0.png") !important;
+    background-repeat: no-repeat;
+}
+.juzhan-level-1 { 
+    background-image: url("themes/icons/juzhan-level-1.png") !important;
+    background-repeat: no-repeat;
+}
+.juzhan-level-2 { 
+    background-image: url("themes/icons/juzhan-level-2.png") !important;
+    background-repeat: no-repeat;
+}
+.juzhan-level-3 { 
+    background-image: url("themes/icons/juzhan-level-3.png") !important;
+    background-repeat: no-repeat;
+}
+.juzhan-level-4 { 
+    background-image: url("themes/icons/juzhan-level-4.png") !important;
+    background-repeat: no-repeat;
+}
+
+.room-level-0 { 
+    background-image: url("themes/icons/room-level-0.png") !important;
+    background-repeat: no-repeat;
+}
+.room-level-1 { 
+    background-image: url("themes/icons/room-level-1.png") !important;
+    background-repeat: no-repeat;
+}
+.room-level-2 { 
+    background-image: url("themes/icons/room-level-2.png") !important;
+    background-repeat: no-repeat;
+}
+.room-level-3 { 
+    background-image: url("themes/icons/room-level-3.png") !important;
+    background-repeat: no-repeat;
+}
+.room-level-4 { 
+    background-image: url("themes/icons/room-level-4.png") !important;
+    background-repeat: no-repeat;
+}
+
+.device-level-0 { 
+    background-image: url("themes/icons/device-level-0.png") !important;
+    background-repeat: no-repeat;
+}
+.device-level-1 { 
+    background-image: url("themes/icons/device-level-1.png") !important;
+    background-repeat: no-repeat;
+}
+.device-level-2 { 
+    background-image: url("themes/icons/device-level-2.png") !important;
+    background-repeat: no-repeat;
+}
+.device-level-3 { 
+    background-image: url("themes/icons/device-level-3.png") !important;
+    background-repeat: no-repeat;
+}
+.device-level-4 { 
+    background-image: url("themes/icons/device-level-4.png") !important;
+    background-repeat: no-repeat;
 }
 
 a.grid-link {

@@ -5,6 +5,8 @@ namespace iPem.Site.Models {
     public class NodeIcon {
         public string id { get; set; }
 
-        public int cls { get; set; }
+        public int level { get; set; }
+
+        public int type { get; set; }
     }
 }
