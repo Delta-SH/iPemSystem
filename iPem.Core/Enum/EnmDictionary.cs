@@ -20,7 +20,11 @@ namespace iPem.Core.Enum {
         /// <summary>
         /// 报表相关参数
         /// </summary>
-        Report
+        Report,
+        /// <summary>
+        /// 脚本升级功能
+        /// </summary>
+        Script
     }
 
     /// <summary>
@@ -30,7 +34,7 @@ namespace iPem.Core.Enum {
         /// <summary>
         /// 空调
         /// </summary>
-        KT,
+        KT = 1001,
         /// <summary>
         /// 照明
         /// </summary>
@@ -40,7 +44,7 @@ namespace iPem.Core.Enum {
         /// </summary>
         BG,
         /// <summary>
-        /// 设备
+        /// IT设备
         /// </summary>
         SB,
         /// <summary>
@@ -58,18 +62,20 @@ namespace iPem.Core.Enum {
         /// <summary>
         /// 总量
         /// </summary>
-        ZL,
+        ZL
+    }
+
+    /// <summary>
+    /// 公式运算方式
+    /// </summary>
+    public enum EnmCompute {
         /// <summary>
-        /// 室内温度
+        /// 电表电度
         /// </summary>
-        SNWD,
+        Diff,
         /// <summary>
-        /// 室内湿度
+        /// 电压电流
         /// </summary>
-        SNSD,
-        /// <summary>
-        /// PUE
-        /// </summary>
-        PUE
+        Avg
     }
 }

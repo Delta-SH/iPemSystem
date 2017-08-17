@@ -114,6 +114,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'AreaPicker',
                         fieldLabel: '查询范围',
                         width: 448,
+                        pickerWidth: 383
                     },
                     {
                         xtype: 'button',
@@ -193,5 +194,5 @@ Ext.onReady(function () {
         pageContentPanel.add(currentPanel);
     }
 
-    Ext.defer(query, 500);
+    Ext.defer(query, 2000);
 });

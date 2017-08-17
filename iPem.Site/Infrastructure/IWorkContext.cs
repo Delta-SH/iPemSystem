@@ -111,6 +111,10 @@ namespace iPem.Site.Infrastructure {
 
         List<iSSHArea> iAreas(DateTime date);
 
+        List<P_Point> GetPoints(bool _ai, bool _ao, bool _di, bool _do, bool _al);
+
+        EnmPoint GetPointType(P_Point point);
+
         List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms);
 
         List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms);

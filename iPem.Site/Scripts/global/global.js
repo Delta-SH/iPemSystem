@@ -661,19 +661,19 @@ window.$$iPems.Tasks = {
             });
         },
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actAlmTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actPointTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     homeTasks: {
@@ -686,7 +686,7 @@ window.$$iPems.Tasks = {
         svrTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 10000,
+            interval: 15000,
             repeat: 1
         }),
         energyTask: Ext.util.TaskManager.newTask({

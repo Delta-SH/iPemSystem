@@ -188,5 +188,5 @@ Ext.onReady(function () {
         pageContentPanel.add(currentPanel);
     }
 
-    Ext.defer(query, 500);
+    Ext.defer(query, 2000);
 });

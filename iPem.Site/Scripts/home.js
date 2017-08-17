@@ -1,4 +1,6 @@
 ﻿(function () {
+
+    //#region Chart
     var almChart = null,
         cpuChart = null,
         memoryChart = null,
@@ -194,7 +196,7 @@
                         { value: 0, name: '空调' },
                         { value: 0, name: '照明' },
                         { value: 0, name: '办公' },
-                        { value: 0, name: '设备' },
+                        { value: 0, name: 'IT设备' },
                         { value: 0, name: '开关电源' },
                         { value: 0, name: 'UPS' },
                         { value: 0, name: '其他' }
@@ -210,11 +212,11 @@
                 }
             },
             legend: {
-                data: ['空调', '照明', '办公', '设备', '开关电源', 'UPS', '其他'],
+                data: ['空调', '照明', '办公', 'IT设备', '开关电源', 'UPS', '其他'],
                 align: 'left'
             },
             grid: {
-                top: 25,
+                top: 30,
                 left: 5,
                 right: 5,
                 bottom: 5,
@@ -229,7 +231,17 @@
             ],
             yAxis: [
                 {
-                    type: 'value'
+                    type: 'value',
+                    name: '能耗',
+                    interval: 50,
+                    axisLabel: {
+                        formatter: '{value} kW·h'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: 'PUE',
+                    interval: 1
                 }
             ],
             series: [
@@ -249,7 +261,7 @@
                     data: [0]
                 },
                 {
-                    name: '设备',
+                    name: 'IT设备',
                     type: 'bar',
                     data: [0]
                 },
@@ -266,6 +278,20 @@
                 {
                     name: '其他',
                     type: 'bar',
+                    data: [0]
+                },
+                {
+                    name: 'PUE',
+                    type: 'line',
+                    smooth: true,
+                    yAxisIndex: 1,
+                    data: [0]
+                },
+                {
+                    name: '能效',
+                    type: 'line',
+                    smooth: true,
+                    yAxisIndex: 1,
                     data: [0]
                 }
             ]
@@ -376,59 +402,59 @@
                 }
             ]
         },
-        //powerOption = {
-        //    tooltip: {
-        //        trigger: 'item',
-        //        formatter: "{a} <br/>{b}: {c} ({d}%)"
-        //    },
-        //    legend: {
-        //        x: 'center',
-        //        y: 'bottom',
-        //        data: ['正常', '发电']
-        //    },
-        //    series: [
-        //        {
-        //            name: '站点发电率',
-        //            type: 'pie',
-        //            radius: ['40%', '70%'],
-        //            avoidLabelOverlap: false,
-        //            label: {
-        //                normal: {
-        //                    show: false,
-        //                    position: 'center'
-        //                },
-        //                emphasis: {
-        //                    show: true,
-        //                    textStyle: {
-        //                        fontSize: '20',
-        //                        fontWeight: 'bold'
-        //                    }
-        //                }
-        //            },
-        //            labelLine: {
-        //                normal: {
-        //                    show: false
-        //                }
-        //            },
-        //            data: [
-        //                {
-        //                    value: 0, name: '正常', itemStyle: {
-        //                        normal: {
-        //                            color: '#48ac2e'
-        //                        }
-        //                    }
-        //                },
-        //                {
-        //                    value: 0, name: '发电', itemStyle: {
-        //                        normal: {
-        //                            color: '#c12e34'
-        //                        }
-        //                    }
-        //                }
-        //            ]
-        //        }
-        //    ]
-        //},
+        powerOption = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                x: 'center',
+                y: 'bottom',
+                data: ['正常', '发电']
+            },
+            series: [
+                {
+                    name: '站点发电率',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '20',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: [
+                        {
+                            value: 0, name: '正常', itemStyle: {
+                                normal: {
+                                    color: '#48ac2e'
+                                }
+                            }
+                        },
+                        {
+                            value: 0, name: '发电', itemStyle: {
+                                normal: {
+                                    color: '#c12e34'
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         offlineOption = {
             tooltip: {
                 trigger: 'item',
@@ -486,7 +512,9 @@
                 }
             ]
         };
+    //#endregion
 
+    //#region Model
     Ext.define('UnconnectedModel', {
         extend: 'Ext.data.Model',
         fields: [
@@ -511,17 +539,17 @@
         idProperty: 'index'
     });
 
-    //Ext.define('PowerModel', {
-    //    extend: 'Ext.data.Model',
-    //    fields: [
-    //        { name: 'index', type: 'int' },
-    //        { name: 'area', type: 'string' },
-    //        { name: 'station', type: 'string' },
-    //        { name: 'time', type: 'string' },
-    //        { name: 'interval', type: 'string' }
-    //    ],
-    //    idProperty: 'index'
-    //});
+    Ext.define('PowerModel', {
+        extend: 'Ext.data.Model',
+        fields: [
+            { name: 'index', type: 'int' },
+            { name: 'area', type: 'string' },
+            { name: 'station', type: 'string' },
+            { name: 'time', type: 'string' },
+            { name: 'interval', type: 'string' }
+        ],
+        idProperty: 'index'
+    });
 
     Ext.define('OffModel', {
         extend: 'Ext.data.Model',
@@ -537,7 +565,9 @@
         ],
         idProperty: 'index'
     });
+    //#endregion
 
+    //#region Store
     var unconnectedStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
@@ -624,48 +654,48 @@
         }
     });
 
-    //var powerStore = Ext.create('Ext.data.Store', {
-    //    autoLoad: false,
-    //    pageSize: 20,
-    //    model: 'PowerModel',
-    //    proxy: {
-    //        type: 'ajax',
-    //        url: '/Home/RequestHomePower',
-    //        reader: {
-    //            type: 'json',
-    //            successProperty: 'success',
-    //            messageProperty: 'message',
-    //            totalProperty: 'total',
-    //            root: 'data'
-    //        },
-    //        simpleSortMode: true
-    //    },
-    //    listeners: {
-    //        load: function (me, records, successful) {
-    //            if (successful) {
-    //                var data = me.proxy.reader.jsonData;
-    //                if (!Ext.isEmpty(data)
-    //                    && !Ext.isEmpty(data.chart)
-    //                    && Ext.isArray(data.chart)
-    //                    && data.chart.length == 2
-    //                    && powerChart !== null) {
-    //                    if (!Ext.isEmpty(data.chart[0])) {
-    //                        powerOption.series[0].data[0].value = data.chart[0].value;
-    //                    }
+    var powerStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'PowerModel',
+        proxy: {
+            type: 'ajax',
+            url: '/Home/RequestHomePower',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            simpleSortMode: true
+        },
+        listeners: {
+            load: function (me, records, successful) {
+                if (successful) {
+                    var data = me.proxy.reader.jsonData;
+                    if (!Ext.isEmpty(data)
+                        && !Ext.isEmpty(data.chart)
+                        && Ext.isArray(data.chart)
+                        && data.chart.length == 2
+                        && powerChart !== null) {
+                        if (!Ext.isEmpty(data.chart[0])) {
+                            powerOption.series[0].data[0].value = data.chart[0].value;
+                        }
 
-    //                    if (!Ext.isEmpty(data.chart[1])) {
-    //                        powerOption.series[0].data[1].value = data.chart[1].value;
-    //                    }
+                        if (!Ext.isEmpty(data.chart[1])) {
+                            powerOption.series[0].data[1].value = data.chart[1].value;
+                        }
 
-    //                    powerChart.setOption(powerOption);
-    //                }
+                        powerChart.setOption(powerOption);
+                    }
 
-    //                $$iPems.Tasks.homeTasks.powerTask.fireOnStart = false;
-    //                $$iPems.Tasks.homeTasks.powerTask.restart();
-    //            }
-    //        }
-    //    }
-    //});
+                    $$iPems.Tasks.homeTasks.powerTask.fireOnStart = false;
+                    $$iPems.Tasks.homeTasks.powerTask.restart();
+                }
+            }
+        }
+    });
 
     var offStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
@@ -712,9 +742,11 @@
 
     var unconnectedPagingToolbar = $$iPems.clonePagingToolbar(unconnectedStore);
     var cuttingPagingToolbar = $$iPems.clonePagingToolbar(cuttingStore);
-    //var powerPagingToolbar = $$iPems.clonePagingToolbar(powerStore);
+    var powerPagingToolbar = $$iPems.clonePagingToolbar(powerStore);
     var offPagingToolbar = $$iPems.clonePagingToolbar(offStore);
+    //#endregion
 
+    //#region Ready
     Ext.onReady(function () {
         var currentLayout = Ext.create('Ext.panel.Panel', {
             region: 'center',
@@ -1331,7 +1363,7 @@
                     if (data.success) {
                         if (!Ext.isEmpty(data.data) && Ext.isArray(data.data)) {
 
-                            var xaxis = [], kt = [], zm = [], bg = [], sb = [], kgdy = [], ups = [], qt = []
+                            var xaxis = [], kt = [], zm = [], bg = [], sb = [], kgdy = [], ups = [], qt = [], pue = [], eer = []
                             , ttkt = 0, ttzm = 0, ttbg = 0, ttsb = 0, ttkgdy = 0, ttups = 0, ttqt = 0;
                             Ext.Array.each(data.data, function (item, index) {
                                 xaxis.push(item.name);
@@ -1355,6 +1387,9 @@
 
                                 qt.push(item.qt);
                                 ttqt += item.qt;
+
+                                pue.push(item.pue);
+                                eer.push(item.eer);
                             });
 
                             energybarOption.xAxis[0].data = xaxis;
@@ -1365,6 +1400,8 @@
                             energybarOption.series[4].data = kgdy;
                             energybarOption.series[5].data = ups;
                             energybarOption.series[6].data = qt;
+                            energybarOption.series[7].data = pue;
+                            energybarOption.series[8].data = eer;
                             energybarChart.setOption(energybarOption, true);
 
                             energypieOption.series[0].data[0].value = ttkt;
@@ -1407,4 +1444,6 @@
         //};
         //$$iPems.Tasks.homeTasks.powerTask.start();
     });
+    //#endregion
+
 })();

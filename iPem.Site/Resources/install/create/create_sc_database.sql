@@ -236,6 +236,7 @@ CREATE TABLE [dbo].[M_Formulas](
 	[Id] [varchar](100) NOT NULL,
 	[Type] [int] NOT NULL,
 	[FormulaType] [int] NOT NULL,
+	[ComputeType] [int] NOT NULL,
 	[Formula] [varchar](max) NULL,
 	[Comment] [varchar](1024) NULL,
 	[CreatedTime] [datetime] NOT NULL,

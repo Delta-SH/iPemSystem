@@ -509,7 +509,7 @@ var now = new Date(),
             pageContentPanel.add(currentLayout);
         }
 
-        Ext.defer(query, 500);
+        Ext.defer(query, 2000);
     });
 
     Ext.onReady(function () {

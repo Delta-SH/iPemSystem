@@ -23,6 +23,11 @@ namespace iPem.Core.Domain.Sc {
         public EnmFormula FormulaType { get; set; }
 
         /// <summary>
+        /// 运算方式(差值运算、均值运算)
+        /// </summary>
+        public EnmCompute ComputeType { get; set; }
+
+        /// <summary>
         /// 公式信息
         /// </summary>
         public string FormulaText { get; set; }

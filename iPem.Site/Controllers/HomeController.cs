@@ -16,6 +16,8 @@ using iPem.Site.Models.BInterface;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -1490,9 +1492,9 @@ namespace iPem.Site.Controllers {
                 model.total = model.total1 + model.total2 + model.total3 + model.total4;
                 model.alarms = new List<HomeAreaAlmModel>();
 
-                var roots = _workContext.Areas.FindAll(a => !a.HasParents);
+                var roots = _workContext.Areas.FindAll(a => !a.HasChildren);
                 foreach(var root in roots) {
-                    var alarmsInRoot = _workContext.ActAlarms.FindAll(alarm => root.Keys.Contains(alarm.Area.Id));
+                    var alarmsInRoot = _workContext.ActAlarms.FindAll(alarm => alarm.Area.Id == root.Current.Id);
 
                     var alarmsInArea = new HomeAreaAlmModel();
                     alarmsInArea.name = root.Current.Name;
@@ -1553,21 +1555,26 @@ namespace iPem.Site.Controllers {
 
             try {
                 var energies = _elecService.GetEnergies(EnmSSH.Station, new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1), DateTime.Now);
-                var roots = _workContext.Areas.FindAll(a => !a.HasParents);
+                var roots = _workContext.Areas.FindAll(a => !a.HasChildren);
                 foreach(var root in roots) {
-                    var children = _workContext.Stations.FindAll(s => root.Keys.Contains(s.Current.AreaId)).Select(s => s.Current.Id);
+                    var children = _workContext.Stations.FindAll(s => s.Current.AreaId == root.Current.Id).Select(s => s.Current.Id);
                     var categories = energies.FindAll(e => children.Contains(e.Id));
 
-                    data.data.Add(new HomeEnergyModel {
-                        name = root.ToString(),
+                    var model = new HomeEnergyModel {
+                        name = root.Current.Name,
                         kt = categories.FindAll(c => c.FormulaType == EnmFormula.KT).Sum(c => c.Value),
                         zm = categories.FindAll(c => c.FormulaType == EnmFormula.ZM).Sum(c => c.Value),
                         bg = categories.FindAll(c => c.FormulaType == EnmFormula.BG).Sum(c => c.Value),
                         sb = categories.FindAll(c => c.FormulaType == EnmFormula.SB).Sum(c => c.Value),
                         kgdy = categories.FindAll(c => c.FormulaType == EnmFormula.KGDY).Sum(c => c.Value),
                         ups = categories.FindAll(c => c.FormulaType == EnmFormula.UPS).Sum(c => c.Value),
-                        qt = categories.FindAll(c => c.FormulaType == EnmFormula.QT).Sum(c => c.Value)
-                    });
+                        qt = categories.FindAll(c => c.FormulaType == EnmFormula.QT).Sum(c => c.Value),
+                        zl = categories.FindAll(c => c.FormulaType == EnmFormula.ZL).Sum(c => c.Value)
+                    };
+
+                    if (model.sb > 0) model.pue = Math.Round(model.zl / model.sb, 2);
+                    if (model.zl > 0) model.eer = Math.Round(model.sb / model.zl, 2);
+                    data.data.Add(model);
                 }
 
                 data.total = data.data.Count;
@@ -1965,6 +1972,127 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        [AjaxAuthorize]
+        public JsonResult GetMatrixColumns(string id) {
+            var data = new AjaxDataModel<List<GridColumn>> {
+                success = true,
+                message = "无数据",
+                total = 4,
+                data = new List<GridColumn> { 
+                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
+                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 200 },
+                    new GridColumn { name = "deviceid", type = "string" },
+                    new GridColumn { name = "device", type = "string", column = "所属设备", width = 100 }
+                }
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException("id");
+                if (_workContext.Profile.Settings != null
+                    && _workContext.Profile.Settings.MatrixTemplates != null
+                    && _workContext.Profile.Settings.MatrixTemplates.Count > 0) {
+                    var template = _workContext.Profile.Settings.MatrixTemplates.Find(t => t.id == id);
+                    if (template != null && template.points != null) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        var pDictionary = _workContext.Points.FindAll(p => p.Type == EnmPoint.AI || p.Type == EnmPoint.DI).ToDictionary(k => k.Id, v => v.Name);
+                        foreach (var point in template.points) {
+                            if (pDictionary.ContainsKey(point)) {
+                                data.data.Add(new GridColumn { name = point, type = "string", column = pDictionary[point], width = 100 });
+                                data.total++;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonNetResult RequestMatrixValues(string node, string id, int start, int limit) {
+            var data = new AjaxDataModel<DataTable> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = null
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(node)) throw new ArgumentNullException("node");
+                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException("id");
+                if (_workContext.Profile.Settings == null) throw new iPemException("尚未配置测值模版");
+                if (_workContext.Profile.Settings.MatrixTemplates == null) throw new iPemException("尚未配置测值模版");
+                if (_workContext.Profile.Settings.MatrixTemplates.Count == 0) throw new iPemException("尚未配置测值模版");
+                var template = _workContext.Profile.Settings.MatrixTemplates.Find(t => t.id == id);
+                if (template == null) throw new iPemException("未找到需要应用的测值模版");
+                if (template.points == null || template.points.Length == 0) throw new iPemException("尚未映射测值模版信号列");
+
+                var devices = _workContext.Devices.FindAll(d => d.Current.Type.Id == template.type);
+                var nodeKey = Common.ParseNode(node);
+                if (nodeKey.Id == EnmSSH.Area) {
+                    var current = _workContext.Areas.Find(a => a.Current.Id == nodeKey.Value);
+                    if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                } else if (nodeKey.Id == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId == nodeKey.Value);
+                } else if (nodeKey.Id == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId == nodeKey.Value);
+                } else if (nodeKey.Id == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id == nodeKey.Value);
+                }
+
+                if (devices.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = devices.Count;
+                    data.data = this.GetMatrixModel(template.points);
+
+                    var stores = devices.OrderBy(d => d.Current.StationId).OrderBy(d => d.Current.RoomId).Skip(start).Take(limit);
+                    var parms = new List<IdValuePair<string, string>>();
+                    foreach (var store in stores) {
+                        foreach (var point in template.points) {
+                            parms.Add(new IdValuePair<string, string>(store.Current.Id, point));
+                        }
+                    }
+
+                    if (parms.Count > 0) {
+                        var values = _aMeasureService.GetMeasures(parms);
+                        var points = _workContext.Points.FindAll(p => template.points.Contains(p.Id));
+                        foreach (var store in stores) {
+                            var row = data.data.NewRow();
+                            row[1] = string.Format("{0},{1}", store.Current.StationName, store.Current.RoomName);
+                            row[2] = store.Current.Id;
+                            row[3] = store.Current.Name;
+                            for (var k = 4; k < data.data.Columns.Count; k++) {
+                                var column = data.data.Columns[k];
+                                var point = points.Find(p => p.Id == column.ColumnName);
+                                if (point != null) {
+                                    var current = values.Find(v => v.DeviceId == store.Current.Id && v.PointId == point.Id);
+                                    if (current != null) {
+                                        row[k] = Common.GetValueDisplay(point.Type, current.Value.ToString(), point.UnitState);
+                                    }
+                                }
+                            }
+                            data.data.Rows.Add(row);
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                data.success = false; data.message = exc.Message;
+                data.total = 0; data.data = null;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
+            };
+        }
+
         private List<AlmStore<A_AAlarm>> GetActAlmStore(ActAlmCondition condition, bool onlyConfirms = false, bool onlyReservations = false, bool onlySystem = false) {
             if (condition.stationTypes == null) condition.stationTypes = new string[0];
             if (condition.roomTypes == null) condition.roomTypes = new string[0];
@@ -2180,7 +2308,7 @@ namespace iPem.Site.Controllers {
                         foreach (var point in current.Protocol.Points) {
                             stores.Add(new PointStore<P_Point>() {
                                 Current = point,
-                                Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
+                                Type = _workContext.GetPointType(point),
                                 Device = current.Current,
                                 Area = new A_Area {
                                     Id = area.Current.Id,
@@ -2220,7 +2348,7 @@ namespace iPem.Site.Controllers {
                           join area in _workContext.Areas on device.Current.AreaId equals area.Current.Id
                           select new PointStore<P_Point> {
                               Current = point,
-                              Type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type,
+                              Type = _workContext.GetPointType(point),
                               Device = device.Current,
                               Area = new A_Area {
                                   Id = area.Current.Id,
@@ -2249,6 +2377,31 @@ namespace iPem.Site.Controllers {
             }
 
             return stores;
+        }
+
+        private DataTable GetMatrixModel(string[] keys) {
+            var model = new DataTable("MatrixModel");
+            var column0 = new DataColumn("index", typeof(int));
+            column0.AutoIncrement = true;
+            column0.AutoIncrementSeed = 1;
+            model.Columns.Add(column0);
+
+            var column1 = new DataColumn("station", typeof(string));
+            model.Columns.Add(column1);
+
+            var column2 = new DataColumn("deviceid", typeof(string));
+            model.Columns.Add(column2);
+
+            var column3 = new DataColumn("device", typeof(string));
+            model.Columns.Add(column3);
+
+            foreach (var key in keys) {
+                var column = new DataColumn(key, typeof(string));
+                column.DefaultValue = "--";
+                model.Columns.Add(column);
+            }
+
+            return model;
         }
 
         #endregion

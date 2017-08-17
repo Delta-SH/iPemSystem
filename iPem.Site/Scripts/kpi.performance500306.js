@@ -50,6 +50,12 @@
                     type: 'line',
                     yAxisIndex: 1,
                     data: [0]
+                },
+                {
+                    name: '能效',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    data: [0]
                 }
             ]
         };
@@ -62,7 +68,8 @@
             { name: 'period', type: 'string' },
             { name: 'device', type: 'float' },
             { name: 'total', type: 'float' },
-            { name: 'pue', type: 'float' }
+            { name: 'pue', type: 'float' },
+            { name: 'eer', type: 'float' }
         ],
         idProperty: 'index'
     });
@@ -92,13 +99,14 @@
             load: function (me, records, successful) {
                 if (successful && barChart) {
                     var data = me.proxy.reader.jsonData;
-                    var xaxis = [], series0 = [], series1 = [], series2 = [];
+                    var xaxis = [], series0 = [], series1 = [], series2 = [], series3 = [];
                     if (!Ext.isEmpty(data) && Ext.isArray(data.chart)) {
                         Ext.Array.each(data.chart, function (item) {
                             xaxis.push(item.name);
                             series0.push(item.models[0].value);
                             series1.push(item.models[1].value);
                             series2.push(item.models[2].value);
+                            series3.push(item.models[3].value);
                         });
                     }
 
@@ -106,11 +114,13 @@
                     if (series0.length == 0) series0.push(0);
                     if (series1.length == 0) series1.push(0);
                     if (series2.length == 0) series2.push(0);
+                    if (series3.length == 0) series3.push(0);
 
                     barOption.xAxis[0].data = xaxis;
                     barOption.series[0].data = series0;
                     barOption.series[1].data = series1;
                     barOption.series[2].data = series2;
+                    barOption.series[3].data = series3;
                     barChart.setOption(barOption, true);
                 }
             }
@@ -216,6 +226,12 @@
                 width: 150,
                 align: 'left',
                 sortable: true
+            }, {
+                text: '能效',
+                dataIndex: 'eer',
+                width: 150,
+                align: 'left',
+                sortable: true
             }],
             bbar: currentPagingToolbar,
         }],
@@ -237,6 +253,7 @@
                     emptyText: '请选择查询范围...',
                     fieldLabel: '查询范围',
                     width: 568,
+                    pickerWidth: 503
                 }, {
                     xtype: 'button',
                     glyph: 0xf005,
@@ -308,7 +325,7 @@
             pageContentPanel.add(currentLayout);
         }
 
-        Ext.defer(query, 500);
+        Ext.defer(query, 2000);
     });
 
     Ext.onReady(function () {

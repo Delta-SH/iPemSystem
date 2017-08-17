@@ -102,6 +102,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 emptyText: '请选择查询范围...',
                 fieldLabel: '查询范围',
                 width: 568,
+                pickerWidth: 503
             }, {
                 xtype: 'button',
                 glyph: 0xf005,
@@ -192,5 +193,5 @@ Ext.onReady(function () {
         pageContentPanel.add(currentPanel);
     }
 
-    Ext.defer(query, 500);
+    Ext.defer(query, 2000);
 });

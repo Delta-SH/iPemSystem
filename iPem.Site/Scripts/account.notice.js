@@ -372,7 +372,7 @@
 
 			//load store data
 			noticeRoleStore.load();
-			Ext.defer(query, 500);
+			Ext.defer(query, 2000);
 		}
 	});
 })();

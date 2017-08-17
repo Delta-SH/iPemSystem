@@ -128,10 +128,9 @@
         autoLoad: false,
         pageSize: 20,
         fields: [],
-        downloadURL: '/Home/DownloadActAlms',
         proxy: {
             type: 'ajax',
-            url: '/Home/RequestActAlarms',
+            url: '/Home/RequestMatrixValues',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -146,10 +145,10 @@
         },
         listeners: {
             load: function (me, records, successful) {
-                //if (successful) {
-                //    $$iPems.Tasks.actPointTask.fireOnStart = false;
-                //    $$iPems.Tasks.actPointTask.restart();
-                //}
+                if (successful) {
+                    $$iPems.Tasks.actPointTask.fireOnStart = false;
+                    $$iPems.Tasks.actPointTask.restart();
+                }
             }
         }
     });
@@ -220,11 +219,46 @@
                 node: ''
             },
             simpleSortMode: true
+        }
+    });
+
+    var templateStore = Ext.create('Ext.data.Store', {
+        autoLoad: true,
+        pageSize: 1024,
+        fields: [
+            { name: 'id', type: 'auto' },
+            { name: 'text', type: 'string' },
+            { name: 'comment', type: 'string' }
+        ],
+        proxy: {
+            type: 'ajax',
+            url: '/Component/GetMatrixTemplates',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            }
         },
         listeners: {
-            load: function (me, records, successful) {
-                if (successful) {
+            load: function (me, records, success) {
+                if (success && records.length > 0) {
+                    var templates = Ext.getCmp('matrixTemplates'),
+                        tempcookie = Ext.util.Cookies.get('ipems.matrix.template');
+                    
+                    var template = null;
+                    if (Ext.isEmpty(tempcookie)) {
+                        templates.select(records[0]);
+                        template = records[0].getId();
+                    } else {
+                        templates.select(tempcookie);
+                        template = tempcookie;
+                    }
 
+                    if (!Ext.isEmpty(template)) {
+                        loadMatrixColumn(template);
+                    }
                 }
             }
         }
@@ -664,6 +698,7 @@
         title: '综合测值',
         glyph: 0xf055,
         border: false,
+        selType: 'cellmodel',
         store: matrixStore,
         bbar: matrixPagingToolbar,
         pager: matrixPagingToolbar,
@@ -678,17 +713,45 @@
                 }
             }, '-',
             {
+                id: 'matrixTemplates',
+                xtype: "combo",
+                fieldLabel: '测值模版',
+                displayField: 'text',
+                valueField: 'id',
+                typeAhead: true,
+                queryMode: 'local',
+                triggerAction: 'all',
+                selectOnFocus: true,
+                forceSelection: true,
+                labelWidth: 60,
+                width: 365,
+                store: templateStore
+            },
+            {
                 xtype: 'button',
-                glyph: 0xf010,
-                text: '数据导出',
+                glyph: 0xf005,
+                text: '应用模版',
                 handler: function () {
+                    var me = Ext.getCmp('matrixTemplates'),
+                        template = me.getValue();
+
+                    Ext.util.Cookies.set('ipems.matrix.template', template);
+                    loadMatrixColumn(template);
+                }
+            }, '-',
+            {
+                xtype: 'button',
+                glyph: 0xf058,
+                text: '刷新数据',
+                handler: function () {
+                    refresh(matrixPanel);
                 }
             }
         ],
         viewConfig: {
             loadMask: false,
             stripeRows: true,
-            trackOver: true,
+            trackOver: false,
             preserveScrollOnRefresh: true,
             emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
         },
@@ -1480,7 +1543,12 @@
                       jsonData: datas,
                       success: function (response, options) {
                           var data = Ext.decode(response.responseText, true);
-                          result.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');
+                          if (data.success === true) {
+                              templateStore.reload();
+                              result.setTextWithIcon(data.message, 'x-icon-accept');
+                          } else {
+                              result.setTextWithIcon(data.message, 'x-icon-error');
+                          }
                       },
                       failure: function (response, options) {
                           result.setTextWithIcon('unknown error.', 'x-icon-error');
@@ -1639,13 +1707,15 @@
     };
 
     var refresh = function (current) {
-        //var pager = (current || currentTab()).pager;
-        //pager.doRefresh();
+        var pager = (current || currentTab()).pager;
+        pager.doRefresh();
     };
 
     var reload = function (current) {
-        //var pager = (current || currentTab()).pager, store = pager.getStore();
-        //store.loadPage(1);
+        var pager = (current || currentTab()).pager, 
+            store = pager.getStore();
+
+        store.loadPage(1);
     };
 
     var download = function (current) {
@@ -1794,11 +1864,11 @@
     };
 
     var resetMatrixTree = function () {
-        var template = Ext.getCmp('templatePanel'),
-            templateStore = template.getStore();
+        var me = Ext.getCmp('templatePanel'),
+            store = me.getStore();
 
         matrixWnd.currentNode = null;
-        templateStore.load();
+        store.load();
     };
 
     var resetMatrixForm = function () {
@@ -1811,6 +1881,40 @@
         templateResult.setTextWithIcon('', '');
         if (templateDevStore.getCount()) templateDevType.select(templateDevStore.getAt(0));
     };
+
+    var loadMatrixColumn = function (template) {
+        var me = matrixStore,
+            grid = matrixPanel,
+            view = grid.getView(),
+            mask = new Ext.LoadMask({ target: view, msg: '获取列名...' });
+
+        Ext.Ajax.request({
+            url: '/Home/GetMatrixColumns',
+            params: { id: template },
+            mask: grid.rendered === true ? mask : null,
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success) {
+                    me.model.prototype.fields.clear();
+                    me.removeAll();
+                    var columns = [];
+                    if (data.data && Ext.isArray(data.data)) {
+                        Ext.Array.each(data.data, function (item, index) {
+                            me.model.prototype.fields.replace({ name: item.name, type: item.type });
+                            if (Ext.isEmpty(item.column)) return true;
+                            columns.push({ text: item.column, dataIndex: item.name, width: item.width });
+                        });
+                    }
+
+                    grid.reconfigure(me, columns);
+                    me.getProxy().extraParams.id = template;
+                    me.loadPage(1);
+                } else {
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            }
+        });
+    };
     //#endregion
 
     //#region onReady
@@ -1821,11 +1925,11 @@
             pageContentPanel.add(currentLayout);
         }
 
-        //$$iPems.Tasks.actPointTask.run = function () {
-        //    refresh();
-        //    $$iPems.UpdateIcons(leftPanel, null);
-        //};
-        //$$iPems.Tasks.actPointTask.start();
+        $$iPems.Tasks.actPointTask.run = function () {
+            refresh();
+            $$iPems.UpdateIcons(leftPanel, null);
+        };
+        $$iPems.Tasks.actPointTask.start();
     });
 
     Ext.onReady(function () {

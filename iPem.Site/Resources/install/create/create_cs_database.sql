@@ -563,9 +563,16 @@ CREATE TABLE [dbo].[V_Elec](
 	[Id] [varchar](100) NOT NULL,
 	[Type] [int] NOT NULL,
 	[FormulaType] [int] NOT NULL,
+	[ComputeType] [int] NOT NULL,
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
-	[Value] [float] NOT NULL
+	[Value] [float] NOT NULL,
+ CONSTRAINT [PK_V_Elec] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC,
+	[Type] ASC,
+	[FormulaType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 

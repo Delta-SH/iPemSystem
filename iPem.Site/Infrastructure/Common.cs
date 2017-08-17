@@ -317,6 +317,17 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetComputeDisplay(EnmCompute compute) {
+            switch (compute) {
+                case EnmCompute.Diff:
+                    return "电表电度运算";
+                case EnmCompute.Avg:
+                    return "电压电流运算";
+                default:
+                    return "未定义";
+            }
+        }
+
         public static string GetFsuEventDisplay(EnmFsuEvent evet) {
             switch (evet) {
                 case EnmFsuEvent.FTP:

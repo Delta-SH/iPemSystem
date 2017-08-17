@@ -1122,6 +1122,12 @@ namespace iPem.Site.Controllers {
                             value = model.pue
                         });
 
+                        chart.models.Add(new ChartModel {
+                            index = 3,
+                            name = "能效",
+                            value = model.eer
+                        });
+
                         data.chart.Add(chart);
                     }
                 }
@@ -2961,7 +2967,8 @@ namespace iPem.Site.Controllers {
                         period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
                         device = deviceValue,
                         total = totalValue,
-                        pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d
+                        pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d,
+                        eer = totalValue > 0 ? Math.Round(deviceValue / totalValue, 2) : 0d
                     });
                 }
                 #endregion
@@ -2985,7 +2992,8 @@ namespace iPem.Site.Controllers {
                             period = string.Format("{0} ~ {1}", CommonHelper.DateConverter(startDate), CommonHelper.DateConverter(endDate)),
                             device = deviceValue,
                             total = totalValue,
-                            pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d
+                            pue = deviceValue > 0 ? Math.Round(totalValue / deviceValue, 2) : 0d,
+                            eer = totalValue > 0 ? Math.Round(deviceValue / totalValue, 2) : 0d
                         });
                     }
                 }

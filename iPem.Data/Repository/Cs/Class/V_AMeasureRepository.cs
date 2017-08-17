@@ -167,6 +167,7 @@ namespace iPem.Data.Repository.Cs {
         }
 
         public List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys) {
+            if (keys == null || keys.Count == 0) throw new ArgumentNullException("keys");
             var commands = new string[keys.Count];
             for (var i = 0; i < keys.Count; i++) {
                 commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [PointId]", keys[i].Id, keys[i].Value);
@@ -177,7 +178,7 @@ namespace iPem.Data.Repository.Cs {
                 {0}
             )
             SELECT VA.* FROM [dbo].[V_AMeasure] VA INNER JOIN Keys K ON VA.[DeviceId]=K.[DeviceId] AND VA.[PointId]=K.[PointId];", string.Join(@" UNION ALL ", commands));
-
+            
             var entities = new List<V_AMeasure>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, null)) {
                 while (rdr.Read()) {

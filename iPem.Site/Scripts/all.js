@@ -893,14 +893,6 @@ Ext.define('Ext.ux.form.ItemSelector', {
         return buttons;
     },
 
-    /**
-     * Get the selected records from the specified list.
-     * 
-     * Records will be returned *in store order*, not in order of selection.
-     * @param {Ext.view.BoundList} list The list to read selections from.
-     * @return {Ext.data.Model[]} The selected records in store order.
-     * 
-     */
     getSelections: function(list) {
         var store = list.getStore();
 
@@ -1026,7 +1018,6 @@ Ext.define('Ext.ux.form.ItemSelector', {
         me.syncValue();
     },
 
-    // Synchronizes the submit value with the current state of the toStore
     syncValue: function() {
         var me = this; 
         me.mixins.field.setValue.call(me, me.setupValue(me.toField.store.getRange()));
@@ -1560,7 +1551,7 @@ Ext.define("Ext.ux.SingleCombo", {
             me.store = Ext.create('Ext.data.Store', {
                 pageSize: 1024,
                 fields: [
-                    { name: 'id', type: 'string' },
+                    { name: 'id', type: 'auto' },
                     { name: 'text', type: 'string' },
                     { name: 'comment', type: 'string' }
                 ],
@@ -1649,10 +1640,16 @@ Ext.define('Ext.ux.TreePicker', {
     pickerHeight: 300,
 
     /**
-    * @cfg {Number} minWidth
-    * The min width of the tree dropdown. Defaults to 215.
+    * @cfg {Number} pickerWidth
+    * The width of the tree dropdown. Defaults to 215.
     */
-    minWidth: 215,
+    pickerWidth: 215,
+
+    /**
+    * @cfg {Boolean} matchFieldWidth
+    * Whether the picker dropdown's width should be explicitly set to match the width of the field. Defaults to true.
+    */
+    matchFieldWidth: false,
 
     /**
     * @cfg {Boolean} selectOnLeaf
@@ -1906,8 +1903,10 @@ Ext.define('Ext.ux.TreePicker', {
             focusOnToFront: false,
             pageSize: me.pageSize,
             height: me.pickerHeight,
-            minWidth: me.minWidth,
+            width: me.pickerWidth,
+            minWidth: me.pickerWidth,
             shadow: false,
+            resizable: true,
             viewConfig: {
                 loadMask: true,
                 preserveScrollOnRefresh: true
@@ -2829,19 +2828,19 @@ window.$$iPems.Tasks = {
             });
         },
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actAlmTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     actPointTask: Ext.util.TaskManager.newTask({
         run: Ext.emptyFn,
         fireOnStart: true,
-        interval: 10000,
+        interval: 15000,
         repeat: 1
     }),
     homeTasks: {
@@ -2854,7 +2853,7 @@ window.$$iPems.Tasks = {
         svrTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 10000,
+            interval: 15000,
             repeat: 1
         }),
         energyTask: Ext.util.TaskManager.newTask({
@@ -3657,6 +3656,60 @@ Ext.define("Ext.ux.EmployeeTreePanel", {
 
         me.callParent(arguments);
         me.store.load();
+    }
+});
+
+/* ========================================================================
+ * Components: FormulaComponent.js
+ * /Scripts/components/FormulaComponent.js
+ * ========================================================================
+ */
+
+Ext.define("Ext.ux.ComputeMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "ComputeMultiCombo",
+    fieldLabel: '运算方式',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetComputes';
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.ComputeComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "ComputeCombo",
+    fieldLabel: '运算方式',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetComputes';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
     }
 });
 

@@ -46,6 +46,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
+                    entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
@@ -75,6 +76,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
+                    entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
@@ -102,6 +104,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
+                    entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
@@ -127,6 +130,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
+                    entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
@@ -150,6 +154,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
+                    entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);

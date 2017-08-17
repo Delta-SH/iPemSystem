@@ -215,6 +215,7 @@
     <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
+    <Compile Include="Models\GridColumn.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\NodeIcon.cs" />
@@ -490,6 +491,7 @@
     <Content Include="Scripts\all.js" />
     <Content Include="Scripts\authentication.js" />
     <Content Include="Scripts\components\all.js" />
+    <Content Include="Scripts\components\FormulaComponent.js" />
     <Content Include="Scripts\components\VendorComponent.js" />
     <Content Include="Scripts\ext-4.2.1\locale\ext-lang-cn.min.js" />
     <Content Include="Scripts\ext-4.2.1\theme\css\ext-all-neptune.css" />

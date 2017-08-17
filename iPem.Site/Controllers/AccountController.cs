@@ -1567,47 +1567,43 @@ namespace iPem.Site.Controllers {
                             switch(formula.FormulaType) {
                                 case EnmFormula.KT:
                                     data.data.ktFormulas = formula.FormulaText;
+                                    data.data.ktCompute = (int)formula.ComputeType;
                                     data.data.ktRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.ZM:
                                     data.data.zmFormulas = formula.FormulaText;
+                                    data.data.zmCompute = (int)formula.ComputeType;
                                     data.data.zmRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.BG:
                                     data.data.bgFormulas = formula.FormulaText;
+                                    data.data.bgCompute = (int)formula.ComputeType;
                                     data.data.bgRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.SB:
                                     data.data.sbFormulas = formula.FormulaText;
+                                    data.data.sbCompute = (int)formula.ComputeType;
                                     data.data.sbRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.KGDY:
                                     data.data.kgdyFormulas = formula.FormulaText;
+                                    data.data.kgdyCompute = (int)formula.ComputeType;
                                     data.data.kgdyRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.UPS:
                                     data.data.upsFormulas = formula.FormulaText;
+                                    data.data.upsCompute = (int)formula.ComputeType;
                                     data.data.upsRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.QT:
                                     data.data.qtFormulas = formula.FormulaText;
+                                    data.data.qtCompute = (int)formula.ComputeType;
                                     data.data.qtRemarks = formula.Comment;
                                     break;
                                 case EnmFormula.ZL:
                                     data.data.zlFormulas = formula.FormulaText;
+                                    data.data.zlCompute = (int)formula.ComputeType;
                                     data.data.zlRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.SNWD:
-                                    data.data.snwdFormulas = formula.FormulaText;
-                                    data.data.snwdRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.SNSD:
-                                    data.data.snsdFormulas = formula.FormulaText;
-                                    data.data.snsdRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.PUE:
-                                    data.data.pueFormulas = formula.FormulaText;
-                                    data.data.pueRemarks = formula.Comment;
                                     break;
                                 default:
                                     break;
@@ -1642,20 +1638,18 @@ namespace iPem.Site.Controllers {
                 var type = int.Parse(keys[0]);
                 var id = keys[1];
                 var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                if(nodeType != EnmSSH.Station && nodeType != EnmSSH.Room) throw new ArgumentException("能耗对象仅支持站点、机房");
+                if(nodeType != EnmSSH.Station && nodeType != EnmSSH.Room) 
+                    throw new ArgumentException("能耗公式仅支持站点、机房。");
 
                 var formulas = new List<M_Formula>();
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SNWD, FormulaText = formula.snwdFormulas, Comment = formula.snwdRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SNSD, FormulaText = formula.snsdFormulas, Comment = formula.snsdRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.PUE, FormulaText = formula.pueFormulas, Comment = formula.pueRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, ComputeType = (EnmCompute)formula.ktCompute, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, ComputeType = (EnmCompute)formula.zmCompute, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, ComputeType = (EnmCompute)formula.bgCompute, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, ComputeType = (EnmCompute)formula.sbCompute, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, ComputeType = (EnmCompute)formula.kgdyCompute, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, ComputeType = (EnmCompute)formula.upsCompute, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, ComputeType = (EnmCompute)formula.qtCompute, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
+                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, ComputeType = (EnmCompute)formula.zlCompute, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
                 _formulaService.Save(formulas.ToArray());
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
@@ -1695,6 +1689,8 @@ namespace iPem.Site.Controllers {
                 if(formulas.Count == 0) throw new ArgumentException("复制的能耗对象未配置公式");
 
                 for(var i = 0; i < formulas.Count; i++) {
+                    formulas[i].Comment = string.Format("批量复制({0})", formulas[i].Id);
+                    formulas[i].CreatedTime = DateTime.Now;
                     formulas[i].Id = tgtId;
                 }
                 

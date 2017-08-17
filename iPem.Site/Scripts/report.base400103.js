@@ -467,7 +467,7 @@
             pageContentPanel.add(currentLayout);
             
             //load data
-            Ext.defer(query, 500);
+            Ext.defer(query, 2000);
         }
     });
 

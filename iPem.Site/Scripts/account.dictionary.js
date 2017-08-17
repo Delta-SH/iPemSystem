@@ -844,11 +844,13 @@
                                     {
                                         name: 'subDeviceTypes',
                                         xtype: 'SubDeviceTypeMultiPicker',
+                                        matchFieldWidth: true,
                                         emptyText: '默认全部'
                                     },
                                     {
                                         name: 'points',
                                         xtype: 'PointMultiPicker',
+                                        matchFieldWidth: true,
                                         emptyText: '默认全部'
                                     }
                                 ]
@@ -866,6 +868,7 @@
                                     {
                                         name: 'subLogicTypes',
                                         xtype: 'SubLogicTypeMultiPicker',
+                                        matchFieldWidth: true,
                                         emptyText: '默认全部'
                                     },
                                     {
@@ -1104,6 +1107,12 @@
                         }
                     },
                     {
+                        name: 'ktCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
+                    },
+                    {
                         name: 'ktRemarks',
                         xtype: 'textfield',
                         fieldLabel: '备注',
@@ -1131,6 +1140,12 @@
                         onTriggerClick: function () {
                             showFormulaWnd(currentFormulaNode, this);
                         }
+                    },
+                    {
+                        name: 'zmCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
                     },
                     {
                         name: 'zmRemarks',
@@ -1162,6 +1177,12 @@
                         }
                     },
                     {
+                        name: 'bgCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
+                    },
+                    {
                         name: 'bgRemarks',
                         xtype: 'textfield',
                         fieldLabel: '备注',
@@ -1171,7 +1192,7 @@
             },
             {
                 xtype: 'fieldset',
-                title: '设备能耗',
+                title: 'IT设备能耗',
                 margin: '10 35 20 10',
                 fieldDefaults: {
                     anchor: '100%',
@@ -1189,6 +1210,12 @@
                         onTriggerClick: function () {
                             showFormulaWnd(currentFormulaNode, this);
                         }
+                    },
+                    {
+                        name: 'sbCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
                     },
                     {
                         name: 'sbRemarks',
@@ -1220,6 +1247,12 @@
                         }
                     },
                     {
+                        name: 'kgdyCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
+                    },
+                    {
                         name: 'kgdyRemarks',
                         xtype: 'textfield',
                         fieldLabel: '备注',
@@ -1247,6 +1280,12 @@
                         onTriggerClick: function () {
                             showFormulaWnd(currentFormulaNode, this);
                         }
+                    },
+                    {
+                        name: 'upsCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
                     },
                     {
                         name: 'upsRemarks',
@@ -1278,6 +1317,12 @@
                         }
                     },
                     {
+                        name: 'qtCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
+                    },
+                    {
                         name: 'qtRemarks',
                         xtype: 'textfield',
                         fieldLabel: '备注',
@@ -1307,94 +1352,13 @@
                         }
                     },
                     {
+                        name: 'zlCompute',
+                        xtype: 'ComputeCombo',
+                        fieldLabel: '运算',
+                        margin: '10 10 0 10'
+                    },
+                    {
                         name: 'zlRemarks',
-                        xtype: 'textfield',
-                        fieldLabel: '备注',
-                        margin: '10 10 10 10'
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
-                title: '室内温度',
-                margin: '10 35 20 10',
-                fieldDefaults: {
-                    anchor: '100%',
-                    labelWidth: 40,
-                    labelAlign: 'left'
-                },
-                items: [
-                    {
-                        name: 'snwdFormulas',
-                        xtype: 'triggerfield',
-                        fieldLabel: '公式',
-                        triggerCls: 'x-fx-trigger',
-                        vtype: 'Formula',
-                        margin: '10 10 0 10',
-                        onTriggerClick: function () {
-                            showFormulaWnd(currentFormulaNode, this);
-                        }
-                    },
-                    {
-                        name: 'snwdRemarks',
-                        xtype: 'textfield',
-                        fieldLabel: '备注',
-                        margin: '10 10 10 10'
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
-                title: '室内湿度',
-                margin: '10 35 20 10',
-                fieldDefaults: {
-                    anchor: '100%',
-                    labelWidth: 40,
-                    labelAlign: 'left'
-                },
-                items: [
-                    {
-                        name: 'snsdFormulas',
-                        xtype: 'triggerfield',
-                        fieldLabel: '公式',
-                        triggerCls: 'x-fx-trigger',
-                        vtype: 'Formula',
-                        margin: '10 10 0 10',
-                        onTriggerClick: function () {
-                            showFormulaWnd(currentFormulaNode, this);
-                        }
-                    },
-                    {
-                        name: 'snsdRemarks',
-                        xtype: 'textfield',
-                        fieldLabel: '备注',
-                        margin: '10 10 10 10'
-                    }
-                ]
-            },
-            {
-                xtype: 'fieldset',
-                title: 'PUE',
-                margin: '10 35 20 10',
-                fieldDefaults: {
-                    anchor: '100%',
-                    labelWidth: 40,
-                    labelAlign: 'left'
-                },
-                items: [
-                    {
-                        name: 'pueFormulas',
-                        xtype: 'triggerfield',
-                        fieldLabel: '公式',
-                        triggerCls: 'x-fx-trigger',
-                        vtype: 'Formula',
-                        margin: '10 10 0 10',
-                        onTriggerClick: function () {
-                            showFormulaWnd(currentFormulaNode, this);
-                        }
-                    },
-                    {
-                        name: 'pueRemarks',
                         xtype: 'textfield',
                         fieldLabel: '备注',
                         margin: '10 10 10 10'
@@ -1666,6 +1630,7 @@
                             name: 'hxzlxtkydLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1684,6 +1649,7 @@
                             name: 'hxzlxtkydXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -1714,6 +1680,7 @@
                             name: 'hxjlxtkydLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1732,6 +1699,7 @@
                             name: 'hxjlxtkydXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -1750,6 +1718,7 @@
                             name: 'hxjlxtkydPangLuXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '旁路信号',
                             allowBlank: false
                         }, {
@@ -1780,6 +1749,7 @@
                             name: 'hxwkxtkydLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1798,6 +1768,7 @@
                             name: 'hxwkxtkydXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -1828,6 +1799,7 @@
                             name: 'hxjkkydXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -1846,6 +1818,7 @@
                             name: 'hxjkkydLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1876,6 +1849,7 @@
                             name: 'qtgjjkcdjrlLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1906,6 +1880,7 @@
                             name: 'qtkgdydzhglLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -1923,6 +1898,7 @@
                             name: 'qtkgdydzhglztXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '工作状态',
                             allowBlank: false
                         }, {
@@ -1941,6 +1917,7 @@
                             name: 'qtkgdydzhglfzXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '负载电流',
                             allowBlank: false
                         }, {
@@ -1971,6 +1948,7 @@
                             name: 'qtxdchbschglXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '电压信号',
                             allowBlank: false
                         }, {
@@ -2041,6 +2019,7 @@
                             name: 'qtwkrlhglLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -2058,6 +2037,7 @@
                             name: 'qtwkrlhglXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -2088,6 +2068,7 @@
                             name: 'qtzlxtkydXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {
@@ -2106,6 +2087,7 @@
                             name: 'qtzlxtkydLeiXing',
                             xtype: 'SubDeviceTypeMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '设备类型',
                             allowBlank: false
                         }, {
@@ -2136,6 +2118,7 @@
                             name: 'qtjkgzcljslXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
+                            matchFieldWidth: true,
                             fieldLabel: '告警信号',
                             allowBlank: false
                         }, {

@@ -21,5 +21,8 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("PUE")]
         public double pue { get; set; }
+
+        [ExcelDisplayName("能效")]
+        public double eer { get; set; }
     }
 }

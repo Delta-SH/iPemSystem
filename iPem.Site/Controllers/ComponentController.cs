@@ -68,7 +68,7 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id.ToString(),
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -102,7 +102,7 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id,
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -136,7 +136,7 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id,
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -170,7 +170,7 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id,
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -204,7 +204,7 @@ namespace iPem.Site.Controllers {
                     for (int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id,
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -370,7 +370,7 @@ namespace iPem.Site.Controllers {
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ComboItem<string, string> {
                             id = models[i].Id,
-                            text = models[i].Name
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
                 }
@@ -401,6 +401,32 @@ namespace iPem.Site.Controllers {
                     data.message = "200 Ok";
                 }
             } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetComputes(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach (EnmCompute compute in Enum.GetValues(typeof(EnmCompute))) {
+                    data.data.Add(new ComboItem<int, string>() { id = (int)compute, text = Common.GetComputeDisplay(compute) });
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch (Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1477,7 +1503,7 @@ namespace iPem.Site.Controllers {
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
                                     id = Common.JoinKeys((int)EnmLTH.DevType, roots[i].Id),
-                                    text = roots[i].Name,
+                                    text = string.Format("{0}-{1}", roots[i].Id, roots[i].Name),
                                     icon = Icons.Device,
                                     expanded = false,
                                     leaf = false
@@ -1500,7 +1526,7 @@ namespace iPem.Site.Controllers {
                                     for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
                                             id = children[i].Id,
-                                            text = children[i].Name,
+                                            text = string.Format("{0}-{1}", children[i].Id, children[i].Name),
                                             icon = Icons.Category,
                                             leaf = true
                                         };
@@ -1606,7 +1632,7 @@ namespace iPem.Site.Controllers {
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
                                     id = Common.JoinKeys((int)EnmLTH.DevType, roots[i].Id),
-                                    text = roots[i].Name,
+                                    text = string.Format("{0}-{1}", roots[i].Id, roots[i].Name),
                                     icon = Icons.Device,
                                     expanded = false,
                                     leaf = false
@@ -1629,7 +1655,7 @@ namespace iPem.Site.Controllers {
                                     for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
                                             id = Common.JoinKeys((int)EnmLTH.Logic, children[i].Id),
-                                            text = children[i].Name,
+                                            text = string.Format("{0}-{1}", children[i].Id, children[i].Name),
                                             icon = Icons.Category,
                                             expanded = false,
                                             leaf = false
@@ -1647,7 +1673,7 @@ namespace iPem.Site.Controllers {
                                     for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
                                             id = children[i].Id,
-                                            text = children[i].Name,
+                                            text = string.Format("{0}-{1}", children[i].Id, children[i].Name),
                                             icon = Icons.Category,
                                             leaf = true
                                         };
@@ -1759,7 +1785,7 @@ namespace iPem.Site.Controllers {
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
                                     id = Common.JoinKeys((int)EnmPTH.DevType, roots[i].Id),
-                                    text = roots[i].Name,
+                                    text = string.Format("{0}-{1}", roots[i].Id, roots[i].Name),
                                     icon = Icons.Category,
                                     expanded = false,
                                     leaf = false
@@ -1894,7 +1920,7 @@ namespace iPem.Site.Controllers {
                             for(var i = 0; i < roots.Count; i++) {
                                 var root = new TreeModel {
                                     id = Common.JoinKeys((int)EnmDTH.DevType, roots[i].Id),
-                                    text = roots[i].Name,
+                                    text = string.Format("{0}-{1}", roots[i].Id, roots[i].Name),
                                     icon = Icons.Category,
                                     expanded = false,
                                     leaf = false
@@ -1917,7 +1943,7 @@ namespace iPem.Site.Controllers {
                                     for(var i = 0; i < children.Count; i++) {
                                         var child = new TreeModel {
                                             id = children[i].Id,
-                                            text = children[i].Name,
+                                            text = string.Format("{0}-{1}", children[i].Id, children[i].Name),
                                             icon = Icons.Category,
                                             leaf = true
                                         };
@@ -2131,7 +2157,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 if (!string.IsNullOrWhiteSpace(node)) {
-                    var children = _workContext.Points.FindAll(p => p.DeviceType.Id == node && (p.Type == EnmPoint.AI || p.Type == EnmPoint.DI));
+                    var children = _workContext.GetPoints(true, false, true, false, false).FindAll(p => p.DeviceType.Id == node);
                     if (children.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";

@@ -27,5 +27,14 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("其他")]
         public double qt { get; set; }
+
+        [ExcelDisplayName("总能耗")]
+        public double zl { get; set; }
+
+        [ExcelDisplayName("PUE")]
+        public double pue { get; set; }
+
+        [ExcelDisplayName("能效")]
+        public double eer { get; set; }
     }
 }

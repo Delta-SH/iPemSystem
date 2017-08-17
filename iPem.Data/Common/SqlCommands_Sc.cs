@@ -48,10 +48,10 @@ namespace iPem.Data.Common {
         public const string Sql_M_Formula_Repository_GetFormulas = @"SELECT * FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type;";
         public const string Sql_M_Formula_Repository_GetAllFormulas = @"SELECT * FROM [dbo].[M_Formulas];";
         public const string Sql_M_Formula_Repository_Save = @"
-        UPDATE [dbo].[M_Formulas] SET [Formula]=@Formula,[Comment]=@Comment,[CreatedTime]=@CreatedTime WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;
+        UPDATE [dbo].[M_Formulas] SET [ComputeType]=@ComputeType,[Formula]=@Formula,[Comment]=@Comment,[CreatedTime]=@CreatedTime WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;
         IF(@@ROWCOUNT = 0)
         BEGIN
-	        INSERT INTO [dbo].[M_Formulas]([Id],[Type],[FormulaType],[Formula],[Comment],[CreatedTime]) VALUES(@Id,@Type,@FormulaType,@Formula,@Comment,@CreatedTime);
+	        INSERT INTO [dbo].[M_Formulas]([Id],[Type],[FormulaType],[ComputeType],[Formula],[Comment],[CreatedTime]) VALUES(@Id,@Type,@FormulaType,@ComputeType,@Formula,@Comment,@CreatedTime);
         END";
 
         /// <summary>

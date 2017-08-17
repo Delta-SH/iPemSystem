@@ -318,7 +318,7 @@
             //load store data
             comboLevelStore.load();
             comboTypeStore.load();
-            Ext.defer(query, 500);
+            Ext.defer(query, 2000);
         }
     });
 })();

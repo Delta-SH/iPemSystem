@@ -65,10 +65,16 @@ Ext.define('Ext.ux.TreePicker', {
     pickerHeight: 300,
 
     /**
-    * @cfg {Number} minWidth
-    * The min width of the tree dropdown. Defaults to 215.
+    * @cfg {Number} pickerWidth
+    * The width of the tree dropdown. Defaults to 215.
     */
-    minWidth: 215,
+    pickerWidth: 215,
+
+    /**
+    * @cfg {Boolean} matchFieldWidth
+    * Whether the picker dropdown's width should be explicitly set to match the width of the field. Defaults to true.
+    */
+    matchFieldWidth: false,
 
     /**
     * @cfg {Boolean} selectOnLeaf
@@ -322,8 +328,10 @@ Ext.define('Ext.ux.TreePicker', {
             focusOnToFront: false,
             pageSize: me.pageSize,
             height: me.pickerHeight,
-            minWidth: me.minWidth,
+            width: me.pickerWidth,
+            minWidth: me.pickerWidth,
             shadow: false,
+            resizable: true,
             viewConfig: {
                 loadMask: true,
                 preserveScrollOnRefresh: true

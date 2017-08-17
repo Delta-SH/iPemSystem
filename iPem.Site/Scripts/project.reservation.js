@@ -745,6 +745,6 @@ Ext.onReady(function () {
 
         //load data
         projectStore.load();
-        Ext.defer(query, 500);
+        Ext.defer(query, 2000);
     }
 });

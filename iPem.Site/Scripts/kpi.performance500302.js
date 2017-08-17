@@ -159,6 +159,7 @@
                     emptyText: '请选择查询范围...',
                     fieldLabel: '查询范围',
                     width: 568,
+                    pickerWidth: 503
                 }, {
                     xtype: 'button',
                     glyph: 0xf005,
@@ -308,7 +309,7 @@
             pageContentPanel.add(currentLayout);
         }
 
-        Ext.defer(query, 500);
+        Ext.defer(query, 2000);
     });
 
     Ext.onReady(function () {

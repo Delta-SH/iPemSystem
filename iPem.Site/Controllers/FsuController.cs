@@ -1162,7 +1162,7 @@ namespace iPem.Site.Controllers {
                     if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
                     if (point.Type != EnmPoint.AI && point.Type != EnmPoint.DI) continue;
 
-                    var type = (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId)) ? EnmPoint.AL : point.Type;
+                    var type = _workContext.GetPointType(point);
                     if (types != null && types.Length > 0 && !types.Contains((int)type)) continue;
 
                     result.Add(new FsuPointModel {
@@ -1230,8 +1230,8 @@ namespace iPem.Site.Controllers {
             foreach (var dwf in deviceWfsu) {
                 foreach (var point in dwf.Device.Protocol.Points) {
                     if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
-                    if (point.Type != EnmPoint.DI) continue;
-                    if (string.IsNullOrWhiteSpace(point.AlarmId)) continue;
+                    var type = _workContext.GetPointType(point);
+                    if (type != EnmPoint.AL) continue;
 
                     result.Add(new FsuAlmPointModel {
                         index = ++index,

@@ -960,6 +960,23 @@ namespace iPem.Site.Infrastructure {
             return iAreas;
         }
 
+        public List<P_Point> GetPoints(bool _ai, bool _ao, bool _di, bool _do, bool _al) {
+            return this.Points.FindAll(p => 
+                   (_ai && p.Type == EnmPoint.AI)
+                || (_ao && p.Type == EnmPoint.AO)
+                || (_di && p.Type == EnmPoint.DI && string.IsNullOrWhiteSpace(p.AlarmId))
+                || (_do && p.Type == EnmPoint.DO)
+                || (_al && p.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(p.AlarmId))
+            );
+        }
+
+        public EnmPoint GetPointType(P_Point point) {
+            if (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId))
+                return EnmPoint.AL;
+
+            return point.Type;
+        }
+
         public List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms) {
             if (alarms == null || alarms.Count == 0)
                 return new List<AlmStore<A_AAlarm>>();
