@@ -56,7 +56,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.AreaTypes;
+                var models = _workContext.AreaTypes();
                 if(models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -90,7 +90,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.StationTypes;
+                var models = _workContext.StationTypes();
                 if(models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -124,7 +124,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.RoomTypes;
+                var models = _workContext.RoomTypes();
                 if(models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -158,7 +158,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.DeviceTypes;
+                var models = _workContext.DeviceTypes();
                 if(models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -192,7 +192,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.Vendors;
+                var models = _workContext.Vendors();
                 if (models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -358,7 +358,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var models = _workContext.LogicTypes;
+                var models = _workContext.LogicTypes();
                 if(models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -446,7 +446,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
+                    var roots = _workContext.Areas().FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -469,7 +469,7 @@ namespace iPem.Site.Controllers {
                     #endregion
                 } else if(!string.IsNullOrWhiteSpace(node)) {
                     #region area organization
-                    var current = _workContext.Areas.Find(a => a.Current.Id == node);
+                    var current = _workContext.Areas().Find(a => a.Current.Id == node);
                     if(current != null && current.HasChildren) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -513,7 +513,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _workContext.Areas.Find(a => a.Current.Id == node);
+                    var current = _workContext.Areas().Find(a => a.Current.Id == node);
                     if(current != null)
                         data.data.Add(current.ToPath());
                 }
@@ -543,7 +543,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.Areas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    var matchs = _workContext.Areas().FindAll(a => a.Current.Name.ToLower().Contains(text));
                     foreach(var match in matchs)
                         data.data.Add(match.ToPath());
                 }
@@ -572,7 +572,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
+                    var roots = _workContext.Areas().FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -603,7 +603,7 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                         if(nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
                             if(current != null) {
                                 if(current.HasChildren) {
                                     data.success = true;
@@ -632,8 +632,8 @@ namespace iPem.Site.Controllers {
                                         data.total = current.Stations.Count;
                                         for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Current.Id),
-                                                text = current.Stations[i].Current.Name,
+                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Id),
+                                                text = current.Stations[i].Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
                                                 leaf = true
@@ -680,7 +680,7 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                         if(nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
                             if(current != null) {
                                 var paths = current.ToPath();
                                 for(var i = 0; i < paths.Length; i++) {
@@ -692,10 +692,10 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Station) {
                             #region station organization
-                            var current = _workContext.Stations.Find(s => s.Current.Id == id);
+                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                                var parent = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
                                 if(parent != null) {
                                     var parentPaths = parent.ToPath();
                                     foreach(var pp in parentPaths) {
@@ -736,7 +736,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var areaMatchs = _workContext.Areas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    var areaMatchs = _workContext.Areas().FindAll(a => a.Current.Name.ToLower().Contains(text));
                     foreach(var current in areaMatchs) {
                         var paths = current.ToPath();
                         for(var i = 0; i < paths.Length; i++) {
@@ -746,10 +746,10 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths);
                     }
 
-                    var staMatchs = _workContext.Stations.FindAll(s => s.Current.Name.ToLower().Contains(text));
+                    var staMatchs = _workContext.Stations().FindAll(s => s.Current.Name.ToLower().Contains(text));
                     foreach(var current in staMatchs) {
                         var paths = new List<string>();
-                        var parent = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                        var parent = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
                         if(parent != null) {
                             var parentPaths = parent.ToPath();
                             foreach(var pp in parentPaths) {
@@ -786,7 +786,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(node == "root") {
                     #region root organization
-                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
+                    var roots = _workContext.Areas().FindAll(a => !a.HasParents);
                     if(roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
@@ -817,7 +817,7 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                         if(nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
                             if(current != null) {
                                 if(current.HasChildren) {
                                     data.success = true;
@@ -846,8 +846,8 @@ namespace iPem.Site.Controllers {
                                         data.total = current.Stations.Count;
                                         for(var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Current.Id),
-                                                text = current.Stations[i].Current.Name,
+                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Id),
+                                                text = current.Stations[i].Name,
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
                                                 leaf = false
@@ -866,7 +866,7 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Station) {
                             #region station organization
-                            var current = _workContext.Stations.Find(s => s.Current.Id == id);
+                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
                             if(current != null) {
                                 if(current.Rooms.Count > 0) {
                                     data.success = true;
@@ -874,8 +874,8 @@ namespace iPem.Site.Controllers {
                                     data.total = current.Rooms.Count;
                                     for(var i = 0; i < current.Rooms.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Current.Id),
-                                            text = current.Rooms[i].Current.Name,
+                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Id),
+                                            text = current.Rooms[i].Name,
                                             icon = Icons.Room,
                                             expanded = false,
                                             leaf = true
@@ -921,7 +921,7 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                         if(nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
                             if(current != null) {
                                 var paths = current.ToPath();
                                 for(var i = 0; i < paths.Length; i++) {
@@ -933,10 +933,10 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Station) {
                             #region station organization
-                            var current = _workContext.Stations.Find(s => s.Current.Id == id);
+                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                                var parent = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
                                 if(parent != null) {
                                     var parentPaths = parent.ToPath();
                                     foreach(var pp in parentPaths) {
@@ -950,12 +950,12 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Room) {
                             #region room organization
-                            var current = _workContext.Rooms.Find(r => r.Current.Id == id);
+                            var current = _workContext.Rooms().Find(r => r.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Stations.Find(s => s.Current.Id == current.Current.StationId);
+                                var parent = _workContext.Stations().Find(s => s.Current.Id == current.Current.StationId);
                                 if(parent != null) {
-                                    var pparent = _workContext.Areas.Find(a => a.Current.Id == parent.Current.AreaId);
+                                    var pparent = _workContext.Areas().Find(a => a.Current.Id == parent.Current.AreaId);
                                     if(pparent != null) {
                                         var pparentPaths = pparent.ToPath();
                                         foreach(var pp in pparentPaths) {
@@ -999,7 +999,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var areaMatchs = _workContext.Areas.FindAll(a => a.Current.Name.ToLower().Contains(text));
+                    var areaMatchs = _workContext.Areas().FindAll(a => a.Current.Name.ToLower().Contains(text));
                     foreach(var current in areaMatchs) {
                         var paths = current.ToPath();
                         for(var i = 0; i < paths.Length; i++) {
@@ -1009,10 +1009,10 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths);
                     }
 
-                    var staMatchs = _workContext.Stations.FindAll(s => s.Current.Name.ToLower().Contains(text));
+                    var staMatchs = _workContext.Stations().FindAll(s => s.Current.Name.ToLower().Contains(text));
                     foreach(var current in staMatchs) {
                         var paths = new List<string>();
-                        var parent = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                        var parent = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
                         if(parent != null) {
                             var parentPaths = parent.ToPath();
                             foreach(var pp in parentPaths) {
@@ -1024,12 +1024,12 @@ namespace iPem.Site.Controllers {
                         data.data.Add(paths.ToArray());
                     }
 
-                    var roomMatchs = _workContext.Rooms.FindAll(r => r.Current.Name.ToLower().Contains(text));
+                    var roomMatchs = _workContext.Rooms().FindAll(r => r.Current.Name.ToLower().Contains(text));
                     foreach(var current in roomMatchs) {
                         var paths = new List<string>();
-                        var parent = _workContext.Stations.Find(s => s.Current.Id == current.Current.StationId);
+                        var parent = _workContext.Stations().Find(s => s.Current.Id == current.Current.StationId);
                         if(parent != null) {
-                            var pparent = _workContext.Areas.Find(a => a.Current.Id == parent.Current.AreaId);
+                            var pparent = _workContext.Areas().Find(a => a.Current.Id == parent.Current.AreaId);
                             if(pparent != null) {
                                 var pparentPaths = pparent.ToPath();
                                 foreach(var pp in pparentPaths) {
@@ -1067,24 +1067,24 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(node == "root") {
+                if (node == "root") {
                     #region root organization
-                    var roots = _workContext.Areas.FindAll(a => !a.HasParents);
-                    if(roots.Count > 0) {
+                    var roots = _workContext.Areas().FindAll(a => !a.HasParents);
+                    if (roots.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = roots.Count;
-                        for(var i = 0; i < roots.Count; i++) {
+                        for (var i = 0; i < roots.Count; i++) {
                             var root = new TreeModel {
                                 id = Common.JoinKeys((int)EnmSSH.Area, roots[i].Current.Id),
-                                text = roots[i].Current.Name,
+                                text = Common.GetNodeName(roots[i].Current.Name, roots[i].Current.Vendor),
                                 icon = Icons.Diqiu,
                                 expanded = false,
                                 leaf = false
                             };
 
-                            if(multiselect.HasValue && multiselect.Value) {
-                                if(!leafselect.HasValue || !leafselect.Value)
+                            if (multiselect.HasValue && multiselect.Value) {
+                                if (!leafselect.HasValue || !leafselect.Value)
                                     root.selected = false;
                             }
 
@@ -1092,52 +1092,52 @@ namespace iPem.Site.Controllers {
                         }
                     }
                     #endregion
-                } else if(!string.IsNullOrWhiteSpace(node)) {
+                } else if (!string.IsNullOrWhiteSpace(node)) {
                     var keys = Common.SplitKeys(node);
-                    if(keys.Length == 2) {
+                    if (keys.Length == 2) {
                         var type = int.Parse(keys[0]);
                         var id = keys[1];
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                        if(nodeType == EnmSSH.Area) {
+                        if (nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
-                            if(current != null) {
-                                if(current.HasChildren) {
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                            if (current != null) {
+                                if (current.HasChildren) {
                                     data.success = true;
                                     data.message = "200 Ok";
                                     data.total = current.ChildRoot.Count;
-                                    for(var i = 0; i < current.ChildRoot.Count; i++) {
+                                    for (var i = 0; i < current.ChildRoot.Count; i++) {
                                         var root = new TreeModel {
                                             id = Common.JoinKeys((int)EnmSSH.Area, current.ChildRoot[i].Current.Id),
-                                            text = current.ChildRoot[i].Current.Name,
+                                            text = Common.GetNodeName(current.ChildRoot[i].Current.Name, current.ChildRoot[i].Current.Vendor),
                                             icon = Icons.Diqiu,
                                             expanded = false,
                                             leaf = false
                                         };
 
-                                        if(multiselect.HasValue && multiselect.Value) {
-                                            if(!leafselect.HasValue || !leafselect.Value)
+                                        if (multiselect.HasValue && multiselect.Value) {
+                                            if (!leafselect.HasValue || !leafselect.Value)
                                                 root.selected = false;
                                         }
 
                                         data.data.Add(root);
                                     }
                                 } else {
-                                    if(current.Stations.Count > 0) {
+                                    if (current.Stations.Count > 0) {
                                         data.success = true;
                                         data.message = "200 Ok";
                                         data.total = current.Stations.Count;
-                                        for(var i = 0; i < current.Stations.Count; i++) {
+                                        for (var i = 0; i < current.Stations.Count; i++) {
                                             var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Current.Id),
-                                                text = current.Stations[i].Current.Name,
+                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Id),
+                                                text = Common.GetNodeName(current.Stations[i].Name, current.Stations[i].Vendor),
                                                 icon = Icons.Juzhan,
                                                 expanded = false,
                                                 leaf = false
                                             };
 
-                                            if(multiselect.HasValue && multiselect.Value) {
-                                                if(!leafselect.HasValue || !leafselect.Value)
+                                            if (multiselect.HasValue && multiselect.Value) {
+                                                if (!leafselect.HasValue || !leafselect.Value)
                                                     root.selected = false;
                                             }
 
@@ -1147,24 +1147,24 @@ namespace iPem.Site.Controllers {
                                 }
                             }
                             #endregion
-                        } else if(nodeType == EnmSSH.Station) {
+                        } else if (nodeType == EnmSSH.Station) {
                             #region station organization
-                            var current = _workContext.Stations.Find(s => s.Current.Id == id);
-                            if(current != null) {
-                                if(current.Rooms.Count > 0) {
+                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
+                            if (current != null) {
+                                if (current.Rooms.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
                                     data.total = current.Rooms.Count;
-                                    for(var i = 0; i < current.Rooms.Count; i++) {
+                                    for (var i = 0; i < current.Rooms.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Current.Id),
-                                            text = current.Rooms[i].Current.Name,
+                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Id),
+                                            text = Common.GetNodeName(current.Rooms[i].Name, current.Rooms[i].Vendor),
                                             icon = Icons.Room,
                                             expanded = false,
                                             leaf = false
                                         };
 
-                                        if(multiselect.HasValue && multiselect.Value)
+                                        if (multiselect.HasValue && multiselect.Value)
                                             root.selected = false;
 
                                         data.data.Add(root);
@@ -1172,24 +1172,24 @@ namespace iPem.Site.Controllers {
                                 }
                             }
                             #endregion
-                        } else if(nodeType == EnmSSH.Room) {
+                        } else if (nodeType == EnmSSH.Room) {
                             #region room organization
-                            var current = _workContext.Rooms.Find(d => d.Current.Id == id);
-                            if(current != null) {
-                                if(current.Devices.Count > 0) {
+                            var current = _workContext.Rooms().Find(d => d.Current.Id == id);
+                            if (current != null) {
+                                if (current.Devices.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
                                     data.total = current.Devices.Count;
-                                    for(var i = 0; i < current.Devices.Count; i++) {
+                                    for (var i = 0; i < current.Devices.Count; i++) {
                                         var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Device, current.Devices[i].Current.Id),
-                                            text = current.Devices[i].Current.Name,
+                                            id = Common.JoinKeys((int)EnmSSH.Device, current.Devices[i].Id),
+                                            text = Common.GetNodeName(current.Devices[i].Name, current.Devices[i].Vendor),
                                             icon = Icons.Device,
                                             expanded = false,
                                             leaf = true
                                         };
 
-                                        if(multiselect.HasValue && multiselect.Value)
+                                        if (multiselect.HasValue && multiselect.Value)
                                             root.selected = false;
 
                                         data.data.Add(root);
@@ -1200,7 +1200,7 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1229,7 +1229,7 @@ namespace iPem.Site.Controllers {
                         var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
                         if(nodeType == EnmSSH.Area) {
                             #region area organization
-                            var current = _workContext.Areas.Find(a => a.Current.Id == id);
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
                             if(current != null) {
                                 var paths = current.ToPath();
                                 for(var i = 0; i < paths.Length; i++) {
@@ -1241,10 +1241,10 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Station) {
                             #region station organization
-                            var current = _workContext.Stations.Find(s => s.Current.Id == id);
+                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Areas.Find(a => a.Current.Id == current.Current.AreaId);
+                                var parent = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
                                 if(parent != null) {
                                     var parentPaths = parent.ToPath();
                                     foreach(var pp in parentPaths) {
@@ -1258,12 +1258,12 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Room) {
                             #region room organization
-                            var current = _workContext.Rooms.Find(r => r.Current.Id == id);
+                            var current = _workContext.Rooms().Find(r => r.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Stations.Find(s => s.Current.Id == current.Current.StationId);
+                                var parent = _workContext.Stations().Find(s => s.Current.Id == current.Current.StationId);
                                 if(parent != null) {
-                                    var pparent = _workContext.Areas.Find(a => a.Current.Id == parent.Current.AreaId);
+                                    var pparent = _workContext.Areas().Find(a => a.Current.Id == parent.Current.AreaId);
                                     if(pparent != null) {
                                         var pparentPaths = pparent.ToPath();
                                         foreach(var pp in pparentPaths) {
@@ -1280,14 +1280,14 @@ namespace iPem.Site.Controllers {
                             #endregion
                         } else if(nodeType == EnmSSH.Device) {
                             #region device organization
-                            var current = _workContext.Devices.Find(d => d.Current.Id == id);
+                            var current = _workContext.Devices().Find(d => d.Current.Id == id);
                             if(current != null) {
                                 var paths = new List<string>();
-                                var parent = _workContext.Rooms.Find(r => r.Current.Id == current.Current.RoomId);
+                                var parent = _workContext.Rooms().Find(r => r.Current.Id == current.Current.RoomId);
                                 if(parent != null) {
-                                    var pparent = _workContext.Stations.Find(s => s.Current.Id == parent.Current.StationId);
+                                    var pparent = _workContext.Stations().Find(s => s.Current.Id == parent.Current.StationId);
                                     if(pparent != null) {
-                                        var ppparent = _workContext.Areas.Find(a => a.Current.Id == pparent.Current.AreaId);
+                                        var ppparent = _workContext.Areas().Find(a => a.Current.Id == pparent.Current.AreaId);
                                         if(ppparent != null) {
                                             var ppparentPaths = ppparent.ToPath();
                                             foreach(var pp in ppparentPaths) {
@@ -1332,13 +1332,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(!string.IsNullOrWhiteSpace(device)) {
-                    var types = new List<EnmPoint>();
-                    if(AI) types.Add(EnmPoint.AI);
-                    if(AO) types.Add(EnmPoint.AO);
-                    if(DI) types.Add(EnmPoint.DI);
-                    if(DO) types.Add(EnmPoint.DO);
-
-                    var models = _pointService.GetPointsInDevice(device).FindAll(p => types.Contains(p.Type));
+                    var models = _pointService.GetPointsInDevice(device, AI, AO, DI, DO);
                     if(models.Count > 0) {
                         data.message = "200 Ok";
                         data.total = models.Count;
@@ -1412,7 +1406,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1495,7 +1489,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _workContext.DeviceTypes;
+                        var roots = _workContext.DeviceTypes();
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1518,7 +1512,7 @@ namespace iPem.Site.Controllers {
                             var type = int.Parse(keys[0]);
                             var key = keys[1];
                             if((int)EnmLTH.DevType == type) {
-                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == key);
+                                var children = _workContext.LogicTypes().FindAll(l => l.DeviceTypeId == key);
                                 if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
@@ -1542,7 +1536,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1563,7 +1557,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _workContext.LogicTypes.Find(l => l.Id == node);
+                    var current = _workContext.LogicTypes().Find(l => l.Id == node);
                     if(current != null) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmLTH.DevType, current.DeviceTypeId), current.Id });
                     }
@@ -1594,7 +1588,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.LogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
+                    var matchs = _workContext.LogicTypes().FindAll(l => l.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmLTH.DevType, match.DeviceTypeId), match.Id });
                     }
@@ -1624,7 +1618,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _workContext.DeviceTypes;
+                        var roots = _workContext.DeviceTypes();
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1647,7 +1641,7 @@ namespace iPem.Site.Controllers {
                             var type = int.Parse(keys[0]);
                             var key = keys[1];
                             if((int)EnmLTH.DevType == type) {
-                                var children = _workContext.LogicTypes.FindAll(l => l.DeviceTypeId == key);
+                                var children = _workContext.LogicTypes().FindAll(l => l.DeviceTypeId == key);
                                 if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
@@ -1665,7 +1659,7 @@ namespace iPem.Site.Controllers {
                                     }
                                 }
                             } else if((int)EnmLTH.Logic == type) {
-                                var children = _workContext.SubLogicTypes.FindAll(l => l.LogicTypeId == key);
+                                var children = _workContext.SubLogicTypes().FindAll(l => l.LogicTypeId == key);
                                 if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
@@ -1689,7 +1683,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1710,9 +1704,9 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _workContext.SubLogicTypes.Find(l => l.Id == node);
+                    var current = _workContext.SubLogicTypes().Find(l => l.Id == node);
                     if(current != null) {
-                        var parent = _workContext.LogicTypes.Find(l => l.Id == current.LogicTypeId);
+                        var parent = _workContext.LogicTypes().Find(l => l.Id == current.LogicTypeId);
                         if(parent != null) {
                             data.data.Add(new string[] { Common.JoinKeys((int)EnmLTH.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLTH.Logic, parent.Id), current.Id });
                         }
@@ -1744,9 +1738,9 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.SubLogicTypes.FindAll(l => l.Name.ToLower().Contains(text));
+                    var matchs = _workContext.SubLogicTypes().FindAll(l => l.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        var parent = _workContext.LogicTypes.Find(l => l.Id == match.LogicTypeId);
+                        var parent = _workContext.LogicTypes().Find(l => l.Id == match.LogicTypeId);
                         if(parent != null) {
                             data.data.Add(new string[] { Common.JoinKeys((int)EnmLTH.DevType, parent.DeviceTypeId), Common.JoinKeys((int)EnmLTH.Logic, parent.Id), match.Id });
                         }
@@ -1777,7 +1771,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _workContext.DeviceTypes;
+                        var roots = _workContext.DeviceTypes();
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1800,7 +1794,7 @@ namespace iPem.Site.Controllers {
                             var type = int.Parse(keys[0]);
                             var key = keys[1];
                             if((int)EnmPTH.DevType == type) {
-                                var children = _workContext.Points.FindAll(p => p.DeviceType.Id == key);
+                                var children = _workContext.Points().FindAll(p => p.DeviceType.Id == key);
                                 if (children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
@@ -1824,7 +1818,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1845,9 +1839,9 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _workContext.Points.Find(p => p.Id == node);
+                    var current = _workContext.Points().Find(p => p.Id == node);
                     if(current != null) {
-                        var parent = _workContext.DeviceTypes.Find(s => s.Id == current.DeviceType.Id);
+                        var parent = _workContext.DeviceTypes().Find(s => s.Id == current.DeviceType.Id);
                         if(parent != null) {
                             data.data.Add(new string[] { Common.JoinKeys((int)EnmPTH.DevType, parent.Id), current.Id });
                         }
@@ -1879,9 +1873,9 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.Points.FindAll(a => a.Name.ToLower().Contains(text));
+                    var matchs = _workContext.Points().FindAll(a => a.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
-                        var parent = _workContext.DeviceTypes.Find(s => s.Id == match.DeviceType.Id);
+                        var parent = _workContext.DeviceTypes().Find(s => s.Id == match.DeviceType.Id);
                         if(parent != null) {
                             data.data.Add(new string[] { Common.JoinKeys((int)EnmPTH.DevType, parent.Id), match.Id });
                         }
@@ -1912,7 +1906,7 @@ namespace iPem.Site.Controllers {
             try {
                 if(!string.IsNullOrWhiteSpace(node)) {
                     if(node == "root") {
-                        var roots = _workContext.DeviceTypes;
+                        var roots = _workContext.DeviceTypes();
                         if(roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
@@ -1935,7 +1929,7 @@ namespace iPem.Site.Controllers {
                             var type = int.Parse(keys[0]);
                             var key = keys[1];
                             if ((int)EnmDTH.DevType == type) {
-                                var children = _workContext.SubDeviceTypes.FindAll(l => l.DeviceTypeId == key);
+                                var children = _workContext.SubDeviceTypes().FindAll(l => l.DeviceTypeId == key);
                                 if(children.Count > 0) {
                                     data.success = true;
                                     data.message = "200 Ok";
@@ -1959,7 +1953,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1980,7 +1974,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 foreach(var node in nodes) {
-                    var current = _workContext.SubDeviceTypes.Find(s => s.Id == node);
+                    var current = _workContext.SubDeviceTypes().Find(s => s.Id == node);
                     if(current != null) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmDTH.DevType, current.DeviceTypeId), current.Id });
                     }
@@ -2011,7 +2005,7 @@ namespace iPem.Site.Controllers {
                 if(!string.IsNullOrWhiteSpace(text)) {
                     text = text.Trim().ToLower();
 
-                    var matchs = _workContext.SubDeviceTypes.FindAll(s => s.Name.ToLower().Contains(text));
+                    var matchs = _workContext.SubDeviceTypes().FindAll(s => s.Name.ToLower().Contains(text));
                     foreach(var match in matchs) {
                         data.data.Add(new string[] { Common.JoinKeys((int)EnmDTH.DevType, match.DeviceTypeId), match.Id });
                     }
@@ -2040,10 +2034,12 @@ namespace iPem.Site.Controllers {
 
             try {
                 if (!string.IsNullOrWhiteSpace(node) && node == "root") {
-                    if (_workContext.Profile.Settings != null
-                        && _workContext.Profile.Settings.SeniorConditions != null
-                        && _workContext.Profile.Settings.SeniorConditions.Count > 0) {
-                        var conditions = _workContext.Profile.Settings.SeniorConditions;
+                    var profile = _workContext.Profile();
+                    if (profile != null
+                        && profile.Settings != null
+                        && profile.Settings.SeniorConditions != null
+                        && profile.Settings.SeniorConditions.Count > 0) {
+                        var conditions = profile.Settings.SeniorConditions;
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = conditions.Count;
@@ -2058,7 +2054,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2078,12 +2074,14 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if (_workContext.Profile.Settings != null
-                    && _workContext.Profile.Settings.SeniorConditions != null
-                    && _workContext.Profile.Settings.SeniorConditions.Count > 0) {
+                var profile = _workContext.Profile();
+                if (profile != null
+                    && profile.Settings != null
+                    && profile.Settings.SeniorConditions != null
+                    && profile.Settings.SeniorConditions.Count > 0) {
                     var conditions = new List<SeniorCondition>();
                     if (all) conditions.Add(new SeniorCondition { id = "root", name = "全部" });
-                    conditions.AddRange(_workContext.Profile.Settings.SeniorConditions.OrderBy(s => s.name));
+                    conditions.AddRange(profile.Settings.SeniorConditions.OrderBy(s => s.name));
                     if (conditions.Count > 0) {
                         data.message = "200 Ok";
                         data.total = conditions.Count;
@@ -2118,10 +2116,12 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if (_workContext.Profile.Settings != null
-                    && _workContext.Profile.Settings.MatrixTemplates != null
-                    && _workContext.Profile.Settings.MatrixTemplates.Count > 0) {
-                    var templates = _workContext.Profile.Settings.MatrixTemplates;
+                var profile = _workContext.Profile();
+                if (profile != null
+                    && profile.Settings != null
+                    && profile.Settings.MatrixTemplates != null
+                    && profile.Settings.MatrixTemplates.Count > 0) {
+                    var templates = profile.Settings.MatrixTemplates;
                     data.success = true;
                     data.message = "200 Ok";
                     data.total = templates.Count;
@@ -2136,7 +2136,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2173,7 +2173,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2193,7 +2193,7 @@ namespace iPem.Site.Controllers {
 
                 throw new iPemException("An error occurred when trying to generate the image.");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }

@@ -262,6 +262,7 @@ CREATE TABLE [dbo].[A_Area](
 	[ParentID] [varchar](100) NOT NULL,
 	[NodeLevel] [int] NOT NULL,
 	[Desc] [varchar](512) NULL,
+	[VendorID] [varchar](100) NULL,
  CONSTRAINT [PK_A_Area] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -1080,6 +1081,9 @@ CREATE TABLE [dbo].[D_Device](
 	[ScrapTime] [datetime] NOT NULL,
 	[StatusID] [int] NOT NULL,
 	[Contact] [varchar](40) NOT NULL,
+	[Version] [varchar](100) NULL,
+	[VendorID] [varchar](100) NULL,
+	[Index] [int] NOT NULL,
  CONSTRAINT [PK_D_Device] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -1088,6 +1092,9 @@ CREATE TABLE [dbo].[D_Device](
 GO
 
 SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[D_Device] ADD  DEFAULT ((0)) FOR [Index]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -2004,6 +2011,7 @@ CREATE TABLE [dbo].[P_SubPoint](
 	[AbsoluteThreshold] [float] NULL,
 	[PerThreshold] [float] NULL,
 	[StaticPeriod] [int] NULL,
+	[StorageInterval] [int] NULL,
  CONSTRAINT [PK_P_SubPoint] PRIMARY KEY CLUSTERED 
 (
 	[PointID] ASC,
@@ -2056,6 +2064,7 @@ CREATE TABLE [dbo].[S_Room](
 	[FireSubMain] [varchar](20) NULL,
 	[AirSubMain] [varchar](20) NULL,
 	[Contact] [varchar](40) NOT NULL,
+	[VendorID] [varchar](100) NULL,
  CONSTRAINT [PK_S_Room] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -2102,6 +2111,7 @@ CREATE TABLE [dbo].[S_Station](
 	[TranInfo] [varchar](250) NULL,
 	[TranContNo] [varchar](40) NULL,
 	[TranPhone] [varchar](20) NULL,
+	[VendorID] [varchar](100) NULL,
  CONSTRAINT [PK_S_Station] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -2294,6 +2304,90 @@ CREATE TABLE [dbo].[U_User](
 GO
 
 SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建存储过程[dbo].[PI_H_OpEvent]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PI_H_OpEvent]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[PI_H_OpEvent]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ 
+-- =============================================
+-- Author:		Donghua.li
+-- Create date: 2017.08.20
+-- Description:	OpEvent Tables
+-- =============================================
+CREATE PROCEDURE [dbo].[PI_H_OpEvent] 
+    @ID varchar(100),
+    @UserID varchar(100),
+	@NodeID varchar(100),
+	@NodeTable varchar(40),
+	@OpType int,
+	@OpTime datetime,
+	@Desc varchar(512) = NULL
+AS
+BEGIN
+	DECLARE @NAME varchar(40);
+	DECLARE @SQL nvarchar(1000);
+	DECLARE @ParmDefinition nvarchar(1000);
+    SET NOCOUNT ON;
+    SELECT @NAME=MONTH(@OpTime);
+	IF LEN(@NAME)=1 
+	    SELECT @NAME='H_OpEvent'+CAST(YEAR(@OpTime) AS CHAR(4))+'0'+@NAME;
+	ELSE 
+        SELECT @NAME='H_OpEvent'+CAST(YEAR(@OpTime) AS CHAR(4))+@NAME;
+	IF NOT EXISTS(SELECT NAME FROM SYSOBJECTS WHERE XTYPE = 'U' AND NAME = @NAME)
+	BEGIN
+	SELECT @SQL='CREATE TABLE [dbo].['+@NAME+'](
+	  	         [ID] [varchar](100) NOT NULL,
+			     [UserID] [varchar](100) NULL,
+				 [NodeID] [varchar](100) NULL,
+				 [NodeTable] [varchar](40) NULL,
+				 [OpType] [int] NULL,
+			     [OpTime] [datetime] NULL,
+			     [Desc] [varchar](512) NULL,
+			 CONSTRAINT [PK_'+@NAME+'] PRIMARY KEY CLUSTERED 
+			(
+			[ID] ASC
+			)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+			) ON [PRIMARY]'
+		EXEC(@SQL)
+	END
+    SELECT @SQL=N'INSERT INTO '+@NAME+N' VALUES(
+    @ID1,
+    @UserID1,
+	@NodeID1,
+	@NodeTable1,
+	@OpType1,
+	@OpTime1,
+	@Desc1)';
+    
+    SELECT @ParmDefinition=N'
+    @ID1 varchar(100),
+    @UserID1 varchar(100),
+	@NodeID1 varchar(100),
+	@NodeTable1 varchar(40),
+	@OpType1 int,
+	@OpTime1 datetime,
+	@Desc1 varchar(160)';
+
+	EXECUTE sp_executesql @SQL,@ParmDefinition,
+	@ID1 = @ID,
+    @UserID1 = @UserID ,
+	@NodeID1 = @NodeID ,
+	@NodeTable1 = @NodeTable ,
+	@OpType1 = @OpType,
+	@OpTime1 = OpTime,
+	@Desc1 = @Desc;
+ 
+	SET NOCOUNT ON;
+	INSERT INTO [dbo].[H_OpEvent] (ID,UserID,NodeID,NodeTable,OpType,OpTime,[Desc]) VALUES ( @ID,@UserID,@NodeID,@NodeTable ,@OpType,@OpTime,@desc);
+END
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

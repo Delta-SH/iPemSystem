@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class DeviceService : IDeviceService {
@@ -37,11 +38,39 @@ namespace iPem.Services.Rs {
         }
 
         public List<D_Device> GetDevicesInRoom(string id) {
-            return _repository.GetDevicesInRoom(id);
+            var key = GlobalCacheKeys.Rs_DevicesRepository;
+            if (!_cacheManager.IsSet(key)) {
+                return this.GetDevices().FindAll(c => c.RoomId == id);
+            }
+
+            if (_cacheManager.IsHashSet(key, id)) {
+                return _cacheManager.GetFromHash<List<D_Device>>(key, id);
+            } else {
+                var data = _repository.GetDevicesInRoom(id);
+                _cacheManager.SetInHash(key, id, data);
+                return data;
+            }
+        }
+
+        public List<D_Device> GetDevicesInFsu(string id) {
+            var key = GlobalCacheKeys.Rs_DevicesRepository;
+            if (!_cacheManager.IsSet(key)) {
+                return this.GetDevices().FindAll(c => c.FsuId == id);
+            }
+
+            return _repository.GetDevicesInFsu(id);
         }
 
         public List<D_Device> GetDevices() {
-            return _repository.GetDevices();
+            var key = GlobalCacheKeys.Rs_DevicesRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.GetAllFromHash<List<D_Device>>(key).SelectMany(d => d).ToList();
+            } else {
+                var data = _repository.GetDevices();
+                var caches = data.GroupBy(d => d.RoomId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
+                _cacheManager.SetRangeInHash(key, caches);
+                return data;
+            }
         }
 
         public IPagedList<D_Device> GetPagedDevices(int pageIndex = 0, int pageSize = int.MaxValue) {

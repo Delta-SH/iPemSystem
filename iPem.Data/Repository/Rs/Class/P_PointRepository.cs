@@ -43,18 +43,13 @@ namespace iPem.Data.Repository.Rs {
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
-                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.DeviceType = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
-                    entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
-                    entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.DeviceEffect = SqlTypeConverter.DBNullStringHandler(rdr["DeviceEffect"]);
                     entity.BusiEffect = SqlTypeConverter.DBNullStringHandler(rdr["BusiEffect"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Interpret = SqlTypeConverter.DBNullStringHandler(rdr["Interpret"]);
-                    entity.ExtSet1 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet1"]);
-                    entity.ExtSet2 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet2"]);
-                    entity.Description = SqlTypeConverter.DBNullStringHandler(rdr["Description"]);
+                    entity.ExtSet = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -77,18 +72,13 @@ namespace iPem.Data.Repository.Rs {
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
-                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.DeviceType = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
-                    entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
-                    entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.DeviceEffect = SqlTypeConverter.DBNullStringHandler(rdr["DeviceEffect"]);
                     entity.BusiEffect = SqlTypeConverter.DBNullStringHandler(rdr["BusiEffect"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Interpret = SqlTypeConverter.DBNullStringHandler(rdr["Interpret"]);
-                    entity.ExtSet1 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet1"]);
-                    entity.ExtSet2 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet2"]);
-                    entity.Description = SqlTypeConverter.DBNullStringHandler(rdr["Description"]);
+                    entity.ExtSet = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -108,18 +98,13 @@ namespace iPem.Data.Repository.Rs {
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.AlarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
-                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
                     entity.DeviceType = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
-                    entity.AlarmComment = SqlTypeConverter.DBNullStringHandler(rdr["AlarmComment"]);
-                    entity.NormalComment = SqlTypeConverter.DBNullStringHandler(rdr["NormalComment"]);
                     entity.DeviceEffect = SqlTypeConverter.DBNullStringHandler(rdr["DeviceEffect"]);
                     entity.BusiEffect = SqlTypeConverter.DBNullStringHandler(rdr["BusiEffect"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Interpret = SqlTypeConverter.DBNullStringHandler(rdr["Interpret"]);
-                    entity.ExtSet1 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet1"]);
-                    entity.ExtSet2 = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet2"]);
-                    entity.Description = SqlTypeConverter.DBNullStringHandler(rdr["Description"]);
+                    entity.ExtSet = SqlTypeConverter.DBNullStringHandler(rdr["ExtSet"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -150,6 +135,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
                     entity.AbsoluteThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["AbsoluteThreshold"]);
                     entity.PerThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["PerThreshold"]);
+                    entity.StorageInterval = SqlTypeConverter.DBNullInt32Handler(rdr["StorageInterval"]);
                 }
             }
             return entity;
@@ -175,6 +161,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
                     entity.AbsoluteThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["AbsoluteThreshold"]);
                     entity.PerThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["PerThreshold"]);
+                    entity.StorageInterval = SqlTypeConverter.DBNullInt32Handler(rdr["StorageInterval"]);
                     entities.Add(entity);
                 }
             }
@@ -198,6 +185,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
                     entity.AbsoluteThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["AbsoluteThreshold"]);
                     entity.PerThreshold = SqlTypeConverter.DBNullDoubleHandler(rdr["PerThreshold"]);
+                    entity.StorageInterval = SqlTypeConverter.DBNullInt32Handler(rdr["StorageInterval"]);
                     entities.Add(entity);
                 }
             }

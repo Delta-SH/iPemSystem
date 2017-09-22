@@ -37,16 +37,14 @@ namespace iPem.Services.Rs {
         }
 
         public List<C_SCVendor> GetVendors() {
-            List<C_SCVendor> result = null;
             var key = GlobalCacheKeys.Rs_SCVendorRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_SCVendor>>(key);
+                return _cacheManager.Get<List<C_SCVendor>>(key);
             } else {
-                result = _repository.GetVendors();
-                _cacheManager.Set<List<C_SCVendor>>(key, result);
+                var data = _repository.GetVendors();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public IPagedList<C_SCVendor> GetPagedVendors(int pageIndex = 0, int pageSize = int.MaxValue) {

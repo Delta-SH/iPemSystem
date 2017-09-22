@@ -1,6 +1,8 @@
-﻿using NServiceKit.Redis;
+﻿using Newtonsoft.Json;
+using NServiceKit.Redis;
 using NServiceKit.Redis.Support;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace iPem.Core.Caching {
@@ -14,34 +16,44 @@ namespace iPem.Core.Caching {
         private static PooledRedisClientManager _clientManager;
 
         /// <summary>
-        /// ObjectSerializer
-        /// </summary>
-        private static ObjectSerializer _objectSerializer;
-
-        /// <summary>
         /// CacheTime interval
         /// </summary>
         private static TimeSpan _cacheTime = TimeSpan.FromSeconds(300);
+
+        /// <summary>
+        /// JsonSerializerSettings
+        /// </summary>
+        private static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings { 
+            NullValueHandling = NullValueHandling.Ignore, 
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            DateFormatHandling = DateFormatHandling.MicrosoftDateFormat, 
+            DateFormatString = "yyyy-MM-dd HH:mm:ss" 
+        };
 
         /// <summary>
         /// Create client manager
         /// </summary>
         private void CreateClientManager() {
             var config = iPem.Core.Configuration.RedisConfig.GetConfig();
-            if(config != null) {
+            if (config != null) {
                 var writeServers = config.WriteServerList.Split(new char[] { ',' });
                 var readServers = config.ReadServerList.Split(new char[] { ',' });
-                    _cacheTime = TimeSpan.FromSeconds(config.LocalCacheTime);
 
-                _objectSerializer = new ObjectSerializer();
                 _clientManager = new PooledRedisClientManager(writeServers, readServers, new RedisClientManagerConfig { MaxWritePoolSize = config.MaxWritePoolSize, MaxReadPoolSize = config.MaxReadPoolSize, AutoStart = config.AutoStart });
+                _cacheTime = TimeSpan.FromSeconds(config.LocalCacheTime);
             }
         }
 
+        /// <summary>
+        /// Cache
+        /// </summary>
         protected IRedisClient Cache {
             get {
                 if(_clientManager == null) 
                     CreateClientManager();
+
+                if (_clientManager == null)
+                    throw new iPemException("初始化PooledRedisClientManager错误");
 
                 return _clientManager.GetClient();
             }
@@ -56,8 +68,7 @@ namespace iPem.Core.Caching {
         public virtual T Get<T>(string key) {
             using(var client = Cache) {
                 if(client.ContainsKey(key)) {
-                    return (T)_objectSerializer.Deserialize(client.Get<byte[]>(key));
-                    //return client.Get<T>(key);
+                    return JsonConvert.DeserializeObject<T>(client.GetValue(key), _jsonSettings);
                 }
             }
 
@@ -65,24 +76,118 @@ namespace iPem.Core.Caching {
         }
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// Gets or sets the value associated with the specified key.
         /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="data">Data</param>
-        public virtual void Set<T>(string key, T data) {
-            Set<T>(key, data, _cacheTime);
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="hashId">The hashId of the value to get.</param>
+        /// <param name="key">The key of the value to get.</param>
+        /// <returns>The value associated with the specified key.</returns>
+        public virtual T GetFromHash<T>(string hashId, string key) {
+            using (var client = Cache) {
+                if (client.HashContainsEntry(hashId, key)) {
+                    return JsonConvert.DeserializeObject<T>(client.GetValueFromHash(hashId, key), _jsonSettings);
+                }
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// </summary>
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="hashId">The hashId of the value to get.</param>
+        /// <param name="key">The key of the value to get.</param>
+        /// <returns>The value associated with the specified key.</returns>
+        public virtual IList<T> GetAllFromHash<T>(string hashId) {
+            using (var client = Cache) {
+                if (client.ContainsKey(hashId)) {
+                    var valueStrings = client.GetHashValues(hashId);
+                    var values = new List<T>();
+                    foreach (var valueString in valueStrings) {
+                        values.Add(JsonConvert.DeserializeObject<T>(valueString, _jsonSettings));
+                    }
+
+                    return values;
+                }
+            }
+
+            return default(List<T>);
         }
 
         /// <summary>
         /// Adds the specified key and object to the cache.
         /// </summary>
         /// <param name="key">key</param>
-        /// <param name="data">Data</param>
-        /// <param name="cacheTime">Cache time</param>
-        public virtual void Set<T>(string key, T data, TimeSpan cacheTime) {
-            using(var client = Cache) {
-                client.Set<byte[]>(key, _objectSerializer.Serialize(data), cacheTime); 
-                //client.Set<T>(key, data, cacheTime);
+        /// <param name="data">object</param>
+        public virtual void Set(string key, object data) {
+            Set(key, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void Set(string key, object data, TimeSpan cacheTime) {
+            using (var client = Cache) {
+                var valueString = JsonConvert.SerializeObject(data, _jsonSettings);
+                client.SetEntry(key, valueString, cacheTime);
+            }
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        public virtual void SetInHash(string hashId, string key, object data) {
+            SetInHash(hashId, key, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void SetInHash(string hashId, string key, object data, TimeSpan cacheTime) {
+            using (var client = Cache) {
+                var valueString = JsonConvert.SerializeObject(data, _jsonSettings);
+                client.SetEntryInHash(hashId, key, valueString);
+                client.ExpireEntryIn(hashId, cacheTime);
+            }
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        public virtual void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data) {
+            SetRangeInHash(hashId, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data, TimeSpan cacheTime) {
+            using (var client = Cache) {
+                var valueStrings = new List<KeyValuePair<string, string>>();
+                foreach (var value in data) {
+                    valueStrings.Add(new KeyValuePair<string, string>(value.Key, JsonConvert.SerializeObject(value.Value, _jsonSettings)));
+                }
+
+                client.SetRangeInHash(hashId, valueStrings);
+                client.ExpireEntryIn(hashId, cacheTime);
             }
         }
 
@@ -90,10 +195,21 @@ namespace iPem.Core.Caching {
         /// Gets a value indicating whether the value associated with the specified key is cached
         /// </summary>
         /// <param name="key">key</param>
-        /// <returns>Result</returns>
+        /// <returns>true/false</returns>
         public virtual bool IsSet(string key) {
-            using(var client = Cache) {
+            using (var client = Cache) {
                 return client.ContainsKey(key);
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the value associated with the specified key is cached
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <returns>true/false</returns>
+        public virtual bool IsHashSet(string hashId, string key) {
+            using (var client = Cache) {
+                return client.HashContainsEntry(hashId, key);
             }
         }
 
@@ -102,7 +218,7 @@ namespace iPem.Core.Caching {
         /// </summary>
         /// <param name="key">/key</param>
         public virtual void Remove(string key) {
-            using(var client = Cache) {
+            using (var client = Cache) {
                 client.Remove(key);
             }
         }
@@ -113,13 +229,23 @@ namespace iPem.Core.Caching {
         /// <param name="pattern">pattern</param>
         public virtual void RemoveByPattern(string pattern) {
             var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            using(var client = Cache) {
+            using (var client = Cache) {
                 var keys = client.GetAllKeys();
-                foreach(var key in keys) {
-                    if(regex.IsMatch(key)) {
+                foreach (var key in keys) {
+                    if (regex.IsMatch(key)) {
                         client.Remove(key);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Removes the value with the specified key from the cache
+        /// </summary>
+        /// <param name="key">/key</param>
+        public virtual void RemoveHash(string hashId, string key) {
+            using (var client = Cache) {
+                client.RemoveEntryFromHash(hashId, key);
             }
         }
 

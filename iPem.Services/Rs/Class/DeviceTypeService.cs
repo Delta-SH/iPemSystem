@@ -41,29 +41,25 @@ namespace iPem.Services.Rs {
         }
 
         public List<C_DeviceType> GetDeviceTypes() {
-            List<C_DeviceType> result = null;
             var key = GlobalCacheKeys.Rs_DeviceTypeRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_DeviceType>>(key);
+                return _cacheManager.Get<List<C_DeviceType>>(key);
             } else {
-                result = _repository.GetDeviceTypes();
-                _cacheManager.Set<List<C_DeviceType>>(key, result);
+                var data = _repository.GetDeviceTypes();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public List<C_SubDeviceType> GetSubDeviceTypes() {
-            List<C_SubDeviceType> result = null;
             var key = GlobalCacheKeys.Rs_SubDeviceTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_SubDeviceType>>(key);
+                return _cacheManager.Get<List<C_SubDeviceType>>(key);
             } else {
-                result = _repository.GetSubDeviceTypes();
-                _cacheManager.Set<List<C_SubDeviceType>>(key, result);
+                var data = _repository.GetSubDeviceTypes();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public IPagedList<C_DeviceType> GetPagedDeviceTypes(int pageIndex = 0, int pageSize = int.MaxValue) {

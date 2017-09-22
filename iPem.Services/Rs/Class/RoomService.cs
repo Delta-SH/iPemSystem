@@ -2,8 +2,10 @@
 using iPem.Core.Caching;
 using iPem.Core.Domain.Rs;
 using iPem.Data.Repository.Rs;
+using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class RoomService : IRoomService {
@@ -36,11 +38,30 @@ namespace iPem.Services.Rs {
         }
 
         public List<S_Room> GetRoomsInStation(string id) {
-            return _repository.GetRoomsInStation(id);
+            var key = GlobalCacheKeys.Rs_RoomsRepository;
+            if (!_cacheManager.IsSet(key)) {
+                return this.GetRooms().FindAll(c => c.StationId == id);
+            }
+
+            if (_cacheManager.IsHashSet(key, id)) {
+                return _cacheManager.GetFromHash<List<S_Room>>(key, id);
+            } else {
+                var data = _repository.GetRoomsInStation(id);
+                _cacheManager.SetInHash(key, id, data);
+                return data;
+            }
         }
 
         public List<S_Room> GetRooms() {
-            return _repository.GetRooms();
+            var key = GlobalCacheKeys.Rs_RoomsRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.GetAllFromHash<List<S_Room>>(key).SelectMany(d => d).ToList();
+            } else {
+                var data = _repository.GetRooms();
+                var caches = data.GroupBy(d => d.StationId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
+                _cacheManager.SetRangeInHash(key, caches);
+                return data;
+            }
         }
 
         public IPagedList<S_Room> GetPagedRooms(int pageIndex = 0, int pageSize = int.MaxValue) {

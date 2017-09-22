@@ -18,6 +18,11 @@ namespace iPem.Data.Repository.Rs {
         List<D_Device> GetDevicesInRoom(string id);
 
         /// <summary>
+        /// 获得指定FSU下的设备
+        /// </summary>
+        List<D_Device> GetDevicesInFsu(string id);
+
+        /// <summary>
         /// 获得所有的设备
         /// </summary>
         /// <returns></returns>

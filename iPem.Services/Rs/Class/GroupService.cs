@@ -2,6 +2,7 @@
 using iPem.Core.Domain.Rs;
 using iPem.Core.Enum;
 using iPem.Data.Repository.Rs;
+using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
 
@@ -35,24 +36,26 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_Group GetGroup(string id) {
-            var current = _repository.GetGroup(id);
-            if(current != null) {
-                var type = _enumService.GetEnumById(current.TypeId);
-                if(type != null) current.TypeName = type.Name;
-            }
-            return current;
+            return this.GetGroups().Find(g => g.Id == id);
         }
 
         public List<C_Group> GetGroups() {
-            var result = _repository.GetGroups();
-            var types = _enumService.GetEnumsByType(EnmMethodType.Group, "类型");
-            for(var i = 0; i < result.Count; i++) {
-                var current = result[i];
-                var type = types.Find(t => t.Id == current.TypeId);
-                if(type == null) continue;
-                current.TypeName = type.Name;
+            var key = GlobalCacheKeys.Rs_GroupsRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.Get<List<C_Group>>(key);
+            } else {
+                var data = _repository.GetGroups();
+                var types = _enumService.GetEnumsByType(EnmMethodType.Group, "类型");
+                for (var i = 0; i < data.Count; i++) {
+                    var current = data[i];
+                    var type = types.Find(t => t.Id == current.TypeId);
+                    if (type == null) continue;
+                    current.TypeName = type.Name;
+                }
+
+                _cacheManager.Set(key, data);
+                return data;
             }
-            return result;
         }
 
         #endregion

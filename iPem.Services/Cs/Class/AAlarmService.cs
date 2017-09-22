@@ -84,8 +84,8 @@ namespace iPem.Services.Cs {
             if (alarms == null || alarms.Length == 0)
                 throw new ArgumentNullException("alarms");
 
-            if (_cacheManager.IsSet(GlobalCacheKeys.Global_ActiveAlarms))
-                _cacheManager.Remove(GlobalCacheKeys.Global_ActiveAlarms);
+            if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
 
             _repository.Confirm(alarms);
         }

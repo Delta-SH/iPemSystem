@@ -37,16 +37,14 @@ namespace iPem.Services.Rs {
         }
 
         public List<C_RoomType> GetRoomTypes() {
-            List<C_RoomType> result = null;
             var key = GlobalCacheKeys.Rs_RoomTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_RoomType>>(key);
+                return _cacheManager.Get<List<C_RoomType>>(key);
             } else {
-                result = _repository.GetRoomTypes();
-                _cacheManager.Set<List<C_RoomType>>(key, result);
+                var data = _repository.GetRoomTypes();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public IPagedList<C_RoomType> GetPagedRoomTypes(int pageIndex = 0, int pageSize = int.MaxValue) {

@@ -38,31 +38,36 @@ namespace iPem.Services.Sc {
 
         public U_EntitiesInRole GetEntitiesInRole(Guid id) {
             if (id == U_Role.SuperId) {
-                var menus = _menuRepository.GetMenus();
-                var permissions = new List<EnmPermission>();
-                foreach (EnmPermission permission in Enum.GetValues(typeof(EnmPermission))) {
-                    permissions.Add(permission);
+                if (_cacheManager.IsSet(GlobalCacheKeys.SSH_Authorizations)) {
+                    return _cacheManager.Get<U_EntitiesInRole>(GlobalCacheKeys.SSH_Authorizations);
+                } else {
+                    var auth = new U_EntitiesInRole { RoleId = id, Menus = new List<int>(), Permissions = new List<EnmPermission>(), Areas = new List<string>() };
+                    foreach (var menu in _menuRepository.GetMenus()) {
+                        auth.Menus.Add(menu.Id);
+                    }
+                    foreach (EnmPermission permission in Enum.GetValues(typeof(EnmPermission))) {
+                        auth.Permissions.Add(permission);
+                    }
+                    _cacheManager.Set(GlobalCacheKeys.SSH_Authorizations, auth);
+                    return auth;
                 }
-                return new U_EntitiesInRole { RoleId = id, Menus = menus, Permissions = permissions, Areas = new List<string>() };
+            } else {
+                var key = string.Format(GlobalCacheKeys.SSH_AuthorizationsPattern, id);
+                if (_cacheManager.IsSet(key)) {
+                    return _cacheManager.Get<U_EntitiesInRole>(key);
+                } else {
+                    var data = _repository.GetEntitiesInRole(id);
+                    _cacheManager.Set(key, data);
+                    return data;
+                }
             }
-
-            return _repository.GetEntitiesInRole(id);
         }
 
         public void Add(U_EntitiesInRole entities) {
             var key = string.Format(GlobalCacheKeys.SSH_AreasPattern, entities.RoleId);
             if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
-            key = string.Format(GlobalCacheKeys.SSH_StationsPattern, entities.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_RoomsPattern, entities.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_FsusPattern, entities.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_DevicesPattern, entities.RoleId);
+            key = string.Format(GlobalCacheKeys.SSH_AuthorizationsPattern, entities.RoleId);
             if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _repository.Insert(entities);
@@ -72,16 +77,7 @@ namespace iPem.Services.Sc {
             var key = string.Format(GlobalCacheKeys.SSH_AreasPattern, id);
             if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
-            key = string.Format(GlobalCacheKeys.SSH_StationsPattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_RoomsPattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_FsusPattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-
-            key = string.Format(GlobalCacheKeys.SSH_DevicesPattern, id);
+            key = string.Format(GlobalCacheKeys.SSH_AuthorizationsPattern, id);
             if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _repository.Delete(id);

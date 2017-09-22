@@ -81,6 +81,8 @@
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
     <Compile Include="Repository\Rs\Class\H_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Class\R_DBScriptRepository.cs" />
+    <Compile Include="Repository\Rs\Class\V_CameraRepository.cs" />
+    <Compile Include="Repository\Rs\Class\V_ChannelRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Interface\ID_RedefinePointRepository.cs" />
@@ -91,6 +93,8 @@
     <Compile Include="Repository\Cs\Interface\IA_AAlarmRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IH_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IR_DBScriptRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IV_CameraRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IV_ChannelRepository.cs" />
     <Compile Include="Repository\Sc\Class\M_FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Class\S_DBScriptRepository.cs" />
     <Compile Include="Repository\Sc\Class\U_FollowPointRepository.cs" />
@@ -172,7 +176,9 @@
       <Name>iPem.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -37,32 +37,21 @@ namespace iPem.Services.Sc {
         }
 
         public List<U_Menu> GetMenus() {
-            List<U_Menu> result = null;
             var key = GlobalCacheKeys.Sc_MenusRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<U_Menu>>(key);
+                return _cacheManager.Get<List<U_Menu>>(key);
             } else {
-                result = _repository.GetMenus();
-                _cacheManager.Set<List<U_Menu>>(key, result);
+                var data = _repository.GetMenus();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public List<U_Menu> GetMenusInRole(Guid id) {
-            if(id.Equals(U_Role.SuperId))
+            if (U_Role.SuperId.Equals(id))
                 return this.GetMenus();
 
-            List<U_Menu> result = null;
-            var key = string.Format(GlobalCacheKeys.Global_MenusInRolePattern, id);
-            if(_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<U_Menu>>(key);
-            } else {
-                result = _repository.GetMenusInRole(id);
-                _cacheManager.Set<List<U_Menu>>(key, result, CachedIntervals.Global_Default_Intervals);
-            }
-
-            return result;
+            return _repository.GetMenusInRole(id);
         }
 
         public void Add(params U_Menu[] menus) {

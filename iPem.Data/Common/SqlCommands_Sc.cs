@@ -105,7 +105,7 @@ namespace iPem.Data.Common {
         /// 角色对象关系映射表
         /// </summary>
         public const string Sql_U_EntitiesInRole_Repository_GetEntitiesInRole = @"
-        SELECT UM.* FROM [dbo].[U_Menus] UM INNER JOIN [dbo].[U_MenusInRoles] MIR ON UM.[Id] = MIR.[MenuId] WHERE UM.[Enabled]=1 AND MIR.[RoleId]=@RoleId;
+        SELECT * FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_AreasInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;";
         public const string Sql_U_EntitiesInRole_Repository_Insert1 = @"INSERT INTO [dbo].[U_MenusInRoles]([RoleId],[MenuId]) VALUES(@RoleId,@MenuId);";

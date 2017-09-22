@@ -1,0 +1,372 @@
+﻿@model List<iPem.Site.Models.CameraModel>
+@{ 
+    Layout = null; 
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>实时视频</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
+    <link href="@Url.Content("~/Content/framework/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/css/videor.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="videorPanel" class="container hidden">
+        <div class="left-panel nav-bar">
+            <div id="nav-wrapper">
+                <div class="nav-title">
+                    <span class="nav-text">摄像机列表</span>
+                </div>
+                <ul class="nav-menu">
+                    @foreach (var camera in Model) {
+                        <li class="menu-item clearfix">
+                            <a href="javascript:void(0)" data='{"id":"@camera.id","ip":"@camera.ip","port":@camera.port,"uid":"@camera.uid","pwd":"@camera.pwd"}'>
+                                <span class="icon ipems-icon-font ipems-icon-font-video"></span>
+                                <span class="item-title">@camera.name</span>
+                            </a>
+                            <ul class="expandable-level1 collapse">
+                                @foreach (var channel in camera.channels) {
+                                    <li>
+                                        <a href="javascript:void(0)" data='{"ip":"@camera.ip","mask":@channel.mask,"channel":@channel.channel,"zero":@(channel.zero ? "true": "false")}'>
+                                            <span class="icon ipems-icon-font ipems-icon-font-camera"></span>
+                                            <span class="l menu-label">@channel.name</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="center-panel">
+            <div class="main-content">
+                <div class="tabs-header">
+                    <div class="tabs">
+                        <ul class="clearfix">
+                            <li target="previewPanel" class="selected">
+                                <a href="javascript:void(0);">视频预览</a>
+                            </li>
+                            <li target="replayPanel">
+                                <a href="javascript:void(0);">录像回放</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tabs-content">
+                    <div id="previewPanel">
+                        <div id="videor">
+                            <div id="plugin">
+
+                            </div>
+                            <div id="controller">
+                                <a id="play" title="播放/暂停" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-play" aria-hidden="true"></span>
+                                </a>
+                                <a id="stop" title="全部停止" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-stop" aria-hidden="true"></span>
+                                </a>
+                                <a id="capture" title="拍照" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-capture" aria-hidden="true"></span>
+                                </a>
+                                <a id="record" title="录像" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-video" aria-hidden="true"></span>
+                                </a>
+                                <a id="ezoom" title="电子放大" href="javascript:void(0);" class="l ctrl zoom">
+                                    <span class="icon ipems-icon-font ipems-icon-font-zoom" aria-hidden="true"></span>
+                                </a>
+                                <a id="dzoom" title="3D放大" href="javascript:void(0);" class="l ctrl zoom">
+                                    <span class="icon ipems-icon-font ipems-icon-font-3dzoom" aria-hidden="true"></span>
+                                </a>
+                                <a id="voice" title="声音/静音" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-voice" aria-hidden="true"></span>
+                                </a>
+                                <a id="lsetting" title="本地配置" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-cog" aria-hidden="true"></span>
+                                </a>
+                                <a id="rsetting" title="远程配置" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-parameter" aria-hidden="true"></span>
+                                </a>
+
+                                <a id="fullscreen" title="全屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-fullscreen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen16" title="16分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-16screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen9" title="9分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-9screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen4" title="4分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-4screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen1" title="1分屏" href="javascript:void(0);" class="r screen active">
+                                    <span class="icon ipems-icon-font ipems-icon-font-1screen" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="ptz">
+                            <div class="ptz-panel">
+                                <div class="btn-group" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-default ptz-top-left">
+                                        <span class="glyphicon glyphicon-chevron-up" style="transform: rotate(-45deg);" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-top-center">
+                                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-top-right">
+                                        <span class="glyphicon glyphicon-chevron-up" style="transform: rotate(45deg);" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-default ptz-middle-left">
+                                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-middle-center" title="复位">
+                                        <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-middle-right">
+                                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-default ptz-bottom-left">
+                                        <span class="glyphicon glyphicon-chevron-down" style="transform: rotate(45deg);" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-bottom-center">
+                                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default ptz-bottom-right">
+                                        <span class="glyphicon glyphicon-chevron-down" style="transform: rotate(-45deg);" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ptz-ctrl">
+                                <div class="btn-group btn-group-xs row-margin" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-info" title="云台速度-">
+                                        <span class="icon ipems-icon-font ipems-icon-font-kuaitui" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary" title="云台速度+">
+                                        <span class="icon ipems-icon-font ipems-icon-font-kuaijin" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group btn-group-xs row-margin" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-info" title="声音-">
+                                        <span class="icon ipems-icon-font ipems-icon-font-volume1" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary" title="声音+">
+                                        <span class="icon ipems-icon-font ipems-icon-font-volume2" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <hr />
+                                <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-info" title="变倍-">
+                                        <span class="icon ipems-icon-font ipems-icon-font-bianbei1" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary" title="变倍+">
+                                        <span class="icon ipems-icon-font ipems-icon-font-bianbei2" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group btn-group-xs row-margin" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-info" title="变焦-">
+                                        <span class="icon ipems-icon-font ipems-icon-font-jujiao1" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary" title="变焦+">
+                                        <span class="icon ipems-icon-font ipems-icon-font-jujiao2" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group btn-group-xs row-margin" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-info" title="光圈-">
+                                        <span class="icon ipems-icon-font ipems-icon-font-guangquan1" aria-hidden="true"></span>
+                                    </button>
+                                    <button id="test" type="button" class="btn btn-primary" title="光圈+">
+                                        <span class="icon ipems-icon-font ipems-icon-font-guangquan2" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <hr />
+                                <div id="ptz-events" class="panel panel-default" data-toggle="context">
+                                    <div class="panel-body">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="replayPanel" class="collapse">
+                        <div id="replayer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorPanel" class="alert alert-danger fade in hidden" role="alert">
+        <div id="uninstall" class="hidden">
+            <h4>视频插件尚未安装</h4>
+            <p>您的浏览器尚未安装视频插件，请下载并安装视频插件（<strong>安装视频插件前，请先关闭浏览器</strong>）。</p>
+            <p>视频插件安装完成后，请在IE9+浏览器或支持NPAPI插件的非IE浏览器下使用视频功能。</p>
+            <p>
+                <a class="btn btn-info" target="_blank" href="~/Scripts/framework/hikvision/WebComponentsKit.exe" role="button">下载视频插件</a>
+            </p>
+        </div>
+        <div id="unsupport" class="hidden">
+            <h4>视频插件不被支持</h4>
+            <p>您的浏览器不支持视频插件，请在IE9+浏览器或支持NPAPI插件的非IE浏览器下使用视频功能。</p>
+        </div>
+        <div id="upgrade" class="hidden">
+            <h4>视频插件版本更新</h4>
+            <p>检测到需要更新的视频插件，请下载并安装最新版本的视频插件（<strong>安装视频插件前，请先关闭浏览器</strong>）。</p>
+            <p>视频插件安装完成后，请在IE9+浏览器或支持NPAPI插件的非IE浏览器下使用视频功能。</p>
+            <p>
+                <a class="btn btn-success" target="_blank" href="~/Scripts/framework/hikvision/WebComponentsKit.exe" role="button">下载视频插件</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="events-context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a tabindex="-1" href="javascript:void(0);">清屏</a></li>
+        </ul>
+    </div>
+
+    <div id="localCfgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="SettingModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">本地配置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-3 title">播放性能</div>
+                            <div class="col-xs-3">
+                                <select id="netsPreach" name="netsPreach" class="form-control sel">
+                                    <option value="0">最短延时</option>
+                                    <option value="1">实时性好</option>
+                                    <option value="2">均衡</option>
+                                    <option value="3">流畅性好</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3 title">图像尺寸</div>
+                            <div class="col-xs-3">
+                                <select id="wndSize" name="wndSize" class="form-control sel">
+                                    <option value="0">充满</option>
+                                    <option value="1">4:3</option>
+                                    <option value="2">16:9</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">规则信息</div>
+                            <div class="col-xs-3">
+                                <select id="rulesInfo" name="rulesInfo" class="form-control sel">
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3 title">抓图文件格式</div>
+                            <div class="col-xs-3">
+                                <select id="captureFileFormat" name="captureFileFormat" class="form-control sel">
+                                    <option value="0">JPEG</option>
+                                    <option value="1">BMP</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">录像文件打包大小</div>
+                            <div class="col-xs-3">
+                                <select id="packSize" name="packSize" class="form-control sel">
+                                    <option value="0">256M</option>
+                                    <option value="1">512M</option>
+                                    <option value="2">1G</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3 title">协议类型</div>
+                            <div class="col-xs-3">
+                                <select id="protocolType" name="protocolType" class="form-control sel">
+                                    <option value="0">TCP</option>
+                                    <option value="2">UDP</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">录像文件保存路径</div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <input id="recordPath" type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button id="recordPathButton" class="btn btn-default" type="button">浏览</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">回放下载保存路径</div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <input id="downloadPath" type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button id="downloadPathButton" class="btn btn-default" type="button">浏览</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">预览抓图保存路径</div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <input id="previewPicPath" type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button id="previewPicPathButton" class="btn btn-default" type="button">浏览</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">回放抓图保存路径</div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <input id="playbackPicPath" type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button id="playbackPicPathButton" class="btn btn-default" type="button">浏览</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3 title">回放剪辑保存路径</div>
+                            <div class="col-xs-9">
+                                <div class="input-group">
+                                    <input id="playbackFilePath" type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button id="playbackFilePathButton" class="btn btn-default" type="button">浏览</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:100px;">关闭</button>
+                    <button id="savelsetting" type="button" class="btn btn-success" style="width:100px;">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="@Url.Content("~/Scripts/framework/jquery-1.11.3.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/bootstrap-3.3.5.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/bootstrap-contextmenu.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/hikvision/WebVideoCtrl.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/videor.js")" type="text/javascript"></script>
+</body>
+</html>

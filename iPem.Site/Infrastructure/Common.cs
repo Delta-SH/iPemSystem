@@ -1,4 +1,5 @@
 ﻿using iPem.Core;
+using iPem.Core.Domain.Rs;
 using iPem.Core.Enum;
 using iPem.Site.Models.BInterface;
 using System;
@@ -149,10 +150,8 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetCachedKey(string pattern, IWorkContext workContext) {
-            if(!workContext.IsAuthenticated)
-                throw new iPemException("Unauthorized");
-
-            return string.Format(pattern, workContext.Identifier);
+            if(!workContext.IsAuthenticated())throw new iPemException("Unauthorized");
+            return string.Format(pattern, workContext.Identifier());
         }
 
         public static string GetSexDisplay(EnmSex sex) {
@@ -467,6 +466,13 @@ namespace iPem.Site.Infrastructure {
             if (keys.Length != 2) throw new iPemException("参数格式错误");
             if (!Enum.IsDefined(typeof(EnmSSH), int.Parse(keys[0]))) throw new iPemException("无效的参数");
             return new IdValuePair<EnmSSH, string>((EnmSSH)(int.Parse(keys[0])), keys[1]);
+        }
+
+        public static string GetNodeName(string node, C_SCVendor vendor) {
+            if (string.IsNullOrWhiteSpace(node)) node = "未知";
+            if (vendor == null) return node;
+            if (string.IsNullOrWhiteSpace(vendor.Name)) return node;
+            return string.Format("{0}[{1}]", node, vendor.Name);
         }
 
         public static bool SetAllowUnsafeHeaderParsing() {

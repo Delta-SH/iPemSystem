@@ -37,6 +37,11 @@ namespace iPem.Core.Domain.Rs {
         public C_SubLogicType SubLogicType { get; set; }
 
         /// <summary>
+        /// 所属厂家
+        /// </summary>
+        public C_SCVendor Vendor { get; set; }
+
+        /// <summary>
         /// 系统名称
         /// </summary>
         public string SysName { get; set; }
@@ -90,6 +95,11 @@ namespace iPem.Core.Domain.Rs {
         public int StatusId { get; set; }
 
         /// <summary>
+        /// 设备版本
+        /// </summary>
+        public string Version { get; set; }
+
+        /// <summary>
         /// 维护负责人
         /// </summary>
         public string Contact { get; set; }
@@ -125,14 +135,9 @@ namespace iPem.Core.Domain.Rs {
         public string RoomName { get; set; }
 
         /// <summary>
-        /// 所属FSU编码
+        /// 所属FSU
         /// </summary>
         public string FsuId { get; set; }
-
-        /// <summary>
-        /// 所属FSU外部编码
-        /// </summary>
-        public string FsuCode { get; set; }
 
         /// <summary>
         /// 设备模版
@@ -143,6 +148,11 @@ namespace iPem.Core.Domain.Rs {
         /// 备注
         /// </summary>
         public string Comment { get; set; }
+
+        /// <summary>
+        /// 索引
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// 状态

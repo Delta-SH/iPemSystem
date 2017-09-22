@@ -46,7 +46,7 @@ namespace iPem.Services.Rs {
             if(_do) types.Add(EnmPoint.DO);
 
             if(types.Count == 0) return new List<P_Point>();
-            return _repository.GetPointsInDevice(id).FindAll(p => types.Contains(p.Type));
+            return this.GetPointsInDevice(id).FindAll(p => types.Contains(p.Type));
         }
 
         public List<P_Point> GetPointsInProtocol(string id) {
@@ -54,7 +54,14 @@ namespace iPem.Services.Rs {
         }
 
         public List<P_Point> GetPoints() {
-            return _repository.GetPoints();
+            var key = GlobalCacheKeys.Rs_PointsRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.Get<List<P_Point>>(key);
+            } else {
+                var data = _repository.GetPoints();
+                _cacheManager.Set(key, data);
+                return data;
+            }
         }
 
         public P_SubPoint GetSubPoint(string point, string statype) {

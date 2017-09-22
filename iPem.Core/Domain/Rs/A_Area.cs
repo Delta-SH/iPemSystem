@@ -32,6 +32,11 @@ namespace iPem.Core.Domain.Rs {
         public string ParentId { get; set; }
 
         /// <summary>
+        /// 所属厂家
+        /// </summary>
+        public C_SCVendor Vendor { get; set; }
+
+        /// <summary>
         /// 备注
         /// </summary>
         public string Comment { get; set; }

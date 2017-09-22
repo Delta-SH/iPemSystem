@@ -24,11 +24,6 @@ namespace iPem.Services.Rs {
         List<C_LogicType> GetLogicTypes();
 
         /// <summary>
-        /// 获得指定逻辑分类下的所有逻辑子类
-        /// </summary>
-        List<C_SubLogicType> GetSubLogicTypes(string parent);
-
-        /// <summary>
         /// 获得所有的逻辑子类
         /// </summary>
         List<C_SubLogicType> GetSubLogicTypes();

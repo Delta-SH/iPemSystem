@@ -2,6 +2,7 @@
 using iPem.Core.Caching;
 using iPem.Core.Domain.Sc;
 using iPem.Data.Repository.Sc;
+using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
 
@@ -46,6 +47,15 @@ namespace iPem.Services.Sc {
         public void Update(params M_Dictionary[] dictionaries) {
             if (dictionaries == null || dictionaries.Length == 0)
                 throw new ArgumentNullException("dictionaries");
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.Dictionary_Ws))
+                _cacheManager.Remove(GlobalCacheKeys.Dictionary_Ws);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.Dictionary_Ts))
+                _cacheManager.Remove(GlobalCacheKeys.Dictionary_Ts);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.Dictionary_Rt))
+                _cacheManager.Remove(GlobalCacheKeys.Dictionary_Rt);
 
             _repository.Update(dictionaries);
         }

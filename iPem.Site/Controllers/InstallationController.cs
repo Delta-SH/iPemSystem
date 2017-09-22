@@ -6,6 +6,7 @@ using iPem.Core.Enum;
 using iPem.Data.Common;
 using iPem.Data.Installation;
 using iPem.Data.Repository.Sc;
+using iPem.Services.Common;
 using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
@@ -368,10 +369,10 @@ namespace iPem.Site.Controllers {
         }
 
         public ActionResult DbConfiguration() {
-            var cachedKey = string.Format("DbConfiguration-{0}", Session.SessionID);
-            if(!_cacheManager.IsSet(cachedKey)) {
+            var key = string.Format(GlobalCacheKeys.Auth_ConfigurationPattern, Session.SessionID);
+            if(!_cacheManager.IsSet(key)) {
                 return View("Authentication", new AuthModel {
-                    key = cachedKey,
+                    key = key,
                     name = "数据库操作鉴权",
                     service = "/Installation/DbConfiguration"
                 });
@@ -558,7 +559,7 @@ namespace iPem.Site.Controllers {
                     ModelState.AddModelError("", "密码验证失败，请与管理员联系。");
 
                 if(ModelState.IsValid) {
-                    _cacheManager.Set<string>(model.key, "", TimeSpan.FromMinutes(5));
+                    _cacheManager.Set(model.key, "", TimeSpan.FromMinutes(5));
                     return Redirect(model.service);
                 }
             } catch(Exception exc) {

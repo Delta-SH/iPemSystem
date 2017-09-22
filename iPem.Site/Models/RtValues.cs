@@ -73,15 +73,15 @@ namespace iPem.Site.Models {
 
         /// <summary>
         /// 温控系统可用度(核心站点)
-        /// 设备类型
+        /// 温度信号
         /// </summary>
-        public string[] hxwkxtkydLeiXing { get; set; }
+        public string[] hxwkxtkydWenDuXinHao { get; set; }
 
         /// <summary>
         /// 温控系统可用度(核心站点)
         /// 高温告警
         /// </summary>
-        public string[] hxwkxtkydXinHao { get; set; }
+        public string[] hxwkxtkydGaoWenXinHao { get; set; }
 
         /// <summary>
         /// 监控可用度(核心站点)
@@ -103,15 +103,15 @@ namespace iPem.Site.Models {
 
         /// <summary>
         /// 温控容量合格率(其他站点)
-        /// 温度设备类型
+        /// 温度信号
         /// </summary>
-        public string[] qtwkrlhglLeiXing { get; set; }
+        public string[] qtwkrlhglWenDuXinHao { get; set; }
 
         /// <summary>
         /// 温控容量合格率(其他站点)
-        /// 高温告警
+        /// 高温告警信号
         /// </summary>
-        public string[] qtwkrlhglXinHao { get; set; }
+        public string[] qtwkrlhglGaoWenXinHao { get; set; }
 
         /// <summary>
         /// 直流系统可用度(其他站点)

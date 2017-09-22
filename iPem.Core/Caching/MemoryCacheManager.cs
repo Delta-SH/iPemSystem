@@ -13,6 +13,9 @@ namespace iPem.Core.Caching {
         /// </summary>
         private static TimeSpan _cacheTime = TimeSpan.FromSeconds(300);
 
+        /// <summary>
+        /// Cache
+        /// </summary>
         protected ObjectCache Cache {
             get {
                 return MemoryCache.Default;
@@ -30,24 +33,101 @@ namespace iPem.Core.Caching {
         }
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// Gets or sets the value associated with the specified key.
         /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="data">Data</param>
-        public virtual void Set<T>(string key, T data) {
-            Set<T>(key, data, _cacheTime);
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="hashId">The hashId of the value to get.</param>
+        /// <param name="key">The key of the value to get.</param>
+        /// <returns>The value associated with the specified key.</returns>
+        public virtual T GetFromHash<T>(string hashId, string key) {
+            return (T)Cache[string.Format("{0}:{1}", hashId, key)];
+        }
+
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// </summary>
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="hashId">The hashId of the value to get.</param>
+        /// <param name="key">The key of the value to get.</param>
+        /// <returns>The value associated with the specified key.</returns>
+        public virtual IList<T> GetAllFromHash<T>(string hashId) {
+            var values = new List<T>();
+            foreach (var item in Cache) {
+                if (item.Key.StartsWith(string.Format("{0}:", hashId))) {
+                    values.Add((T)item.Value);
+                }
+            }
+
+            return values;
         }
 
         /// <summary>
         /// Adds the specified key and object to the cache.
         /// </summary>
         /// <param name="key">key</param>
-        /// <param name="data">Data</param>
-        /// <param name="cacheTime">Cache time</param>
-        public virtual void Set<T>(string key, T data, TimeSpan cacheTime) {
+        /// <param name="data">object</param>
+        public virtual void Set(string key, object data) {
+            Set(key, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void Set(string key, object data, TimeSpan cacheTime) {
             var policy = new CacheItemPolicy();
             policy.AbsoluteExpiration = DateTime.Now + cacheTime;
             Cache.Add(new CacheItem(key, data), policy);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        public virtual void SetInHash(string hashId, string key, object data) {
+            SetInHash(hashId, key, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void SetInHash(string hashId, string key, object data, TimeSpan cacheTime) {
+            var policy = new CacheItemPolicy();
+            policy.AbsoluteExpiration = DateTime.Now + cacheTime;
+            Cache.Add(new CacheItem(string.Format("{0}:{1}", hashId, key), data), policy);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        public virtual void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data) {
+            SetRangeInHash(hashId, data, _cacheTime);
+        }
+
+        /// <summary>
+        /// Adds the specified key and object to the cache.
+        /// </summary>
+        /// <param name="hashId">hashId</param>
+        /// <param name="key">key</param>
+        /// <param name="data">object</param>
+        /// <param name="cacheTime">cache time</param>
+        public virtual void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data, TimeSpan cacheTime) {
+            foreach (var kv in data) {
+                var policy = new CacheItemPolicy();
+                policy.AbsoluteExpiration = DateTime.Now + cacheTime;
+                Cache.Add(new CacheItem(string.Format("{0}:{1}", hashId, kv.Key), kv.Value), policy);
+            }
         }
 
         /// <summary>
@@ -57,6 +137,15 @@ namespace iPem.Core.Caching {
         /// <returns>Result</returns>
         public virtual bool IsSet(string key) {
             return (Cache.Contains(key));
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the value associated with the specified key is cached
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <returns>true/false</returns>
+        public virtual bool IsHashSet(string hashId, string key) {
+            return (Cache.Contains(string.Format("{0}:{1}", hashId, key)));
         }
 
         /// <summary>
@@ -82,6 +171,14 @@ namespace iPem.Core.Caching {
             foreach (string key in keysToRemove) {
                 Remove(key);
             }
+        }
+
+        /// <summary>
+        /// Removes the value with the specified key from the cache
+        /// </summary>
+        /// <param name="key">/key</param>
+        public virtual void RemoveHash(string hashId, string key) {
+            Cache.Remove(string.Format("{0}:{1}", hashId, key));
         }
 
         /// <summary>

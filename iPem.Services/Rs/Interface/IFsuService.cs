@@ -14,9 +14,9 @@ namespace iPem.Services.Rs {
         D_Fsu GetFsu(string id);
 
         /// <summary>
-        /// 获得指定机房下的FSU
+        /// 获得指定机房的FSU
         /// </summary>
-        List<D_Fsu> GetFsuInRoom(string id);
+        List<D_Fsu> GetFsusInRoom(string id);
 
         /// <summary>
         /// 获得所有的FSU

@@ -56,8 +56,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
@@ -212,12 +212,15 @@
     <Compile Include="Models\BInterface\TDevConf.cs" />
     <Compile Include="Models\BInterface\TSignal.cs" />
     <Compile Include="Models\BInterface\TStorageRule.cs" />
+    <Compile Include="Models\CameraModel.cs" />
+    <Compile Include="Models\ChannelModel.cs" />
     <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\GridColumn.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
+    <Compile Include="Models\iAuth.cs" />
     <Compile Include="Models\NodeIcon.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
@@ -299,10 +302,10 @@
     <Compile Include="Models\SSH\iSSHDevice.cs" />
     <Compile Include="Models\SSH\iSSHStation.cs" />
     <Compile Include="Models\SSH\SSHArea.cs" />
+    <Compile Include="Models\SSH\SSHCamera.cs" />
     <Compile Include="Models\SSH\SSHDevice.cs" />
     <Compile Include="Models\SSH\SSHFsu.cs" />
     <Compile Include="Models\SSH\SSHPoint.cs" />
-    <Compile Include="Models\SSH\SSHProtocol.cs" />
     <Compile Include="Models\SSH\SSHRoom.cs" />
     <Compile Include="Models\SSH\SSHStation.cs" />
     <Compile Include="Models\PointStore.cs" />
@@ -337,6 +340,7 @@
     <Content Include="Content\themes\css\install.configuration.css" />
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
     <Content Include="Content\themes\css\home.speech.css" />
+    <Content Include="Content\themes\css\videor.css" />
     <Content Include="Content\themes\icons\all-level-0.png" />
     <Content Include="Content\themes\icons\all-level-1.png" />
     <Content Include="Content\themes\icons\all-level-2.png" />
@@ -934,6 +938,10 @@
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window-header\window-header-default-top-sides.gif" />
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window\window-default-corners.gif" />
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window\window-default-sides.gif" />
+    <Content Include="Scripts\framework\bootstrap-contextmenu.js" />
+    <Content Include="Scripts\framework\bootstrap-contextmenu.min.js" />
+    <Content Include="Scripts\framework\hikvision\WebComponentsKit.exe" />
+    <Content Include="Scripts\framework\hikvision\WebVideoCtrl.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.min.js" />
     <Content Include="Scripts\fsu.event.js" />
@@ -1175,6 +1183,7 @@
     <Content Include="Scripts\ux\SingleCombo.js" />
     <Content Include="Scripts\ux\TreePicker.js" />
     <Content Include="Scripts\report.base400101.js" />
+    <Content Include="Scripts\videor.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1260,6 +1269,7 @@
     <Content Include="Views\Fsu\Event.cshtml" />
     <Content Include="Views\Project\Reservation.cshtml" />
     <Content Include="Views\Fsu\ParamDiff.cshtml" />
+    <Content Include="Views\Home\Videor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

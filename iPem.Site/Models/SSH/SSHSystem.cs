@@ -37,9 +37,6 @@ namespace iPem.Site.Models.SSH {
             Id = "-1",
             Code = "-1",
             Name = "系统FSU",
-            Type = new C_DeviceType { Id = "-1", Name = "系统FSU" },
-            SubType = new C_SubDeviceType { Id = "-1", Name = "系统FSU" },
-            SubLogicType = new C_SubLogicType { Id = "-1", Name = "系统FSU" },
             AreaId = Area.Id,
             StationId = Station.Id,
             StationName = Station.Name,
@@ -47,8 +44,7 @@ namespace iPem.Site.Models.SSH {
             RoomId = Room.Id,
             RoomName = Room.Name,
             VendorId = "-1",
-            VendorName = "系统厂家",
-            Enabled = true
+            VendorName = "系统厂家"
         };
 
         public static D_Device SC(string id, string name) {
@@ -66,7 +62,6 @@ namespace iPem.Site.Models.SSH {
                 RoomId = Room.Id,
                 RoomName = Room.Name,
                 FsuId = Fsu.Id,
-                FsuCode = Fsu.Code,
                 Enabled = true
             };
         }

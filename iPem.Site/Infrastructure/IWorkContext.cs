@@ -13,87 +13,85 @@ namespace iPem.Site.Infrastructure {
     /// 应用程序上下文
     /// </summary>
     public interface IWorkContext {
-        Boolean IsAuthenticated { get; }
+        Boolean IsAuthenticated();
 
-        Guid Identifier { get; }
+        Guid Identifier();
 
-        U_Role Role { get; }
+        U_Role Role();
 
-        U_User User { get; }
+        U_User User();
 
-        U_Employee Employee { get; }
+        U_Employee Employee();
 
-        iProfile Profile { get; }
+        iProfile Profile();
 
-        U_EntitiesInRole Authorizations { get; }
+        iAuth Authorizations();
 
-        DateTime LastNoticeTime { get; set; }
+        DateTime GetLastNoticeTime();
 
-        DateTime LastSpeechTime { get; set; }
+        void SetLastNoticeTime(DateTime value);
 
-        DateTime LastLoginTime { get; }
+        DateTime GetLastSpeechTime();
 
-        WsValues WsValues { get; }
+        void SetLastSpeechTime(DateTime value);
 
-        TsValues TsValues { get; }
+        DateTime LastLoginTime();
 
-        RtValues RtValues { get; }
+        WsValues WsValues();
 
-        List<C_LogicType> LogicTypes { get; }
+        TsValues TsValues();
 
-        List<C_SubLogicType> SubLogicTypes { get; }
+        RtValues RtValues();
 
-        List<C_DeviceType> DeviceTypes { get; }
+        List<C_LogicType> LogicTypes();
 
-        List<C_SubDeviceType> SubDeviceTypes { get; }
+        List<C_SubLogicType> SubLogicTypes();
 
-        List<C_RoomType> RoomTypes { get; }
+        List<C_DeviceType> DeviceTypes();
 
-        List<C_StationType> StationTypes { get; }
+        List<C_SubDeviceType> SubDeviceTypes();
 
-        List<C_EnumMethod> AreaTypes { get; }
+        List<C_RoomType> RoomTypes();
 
-        List<C_SCVendor> Vendors { get; }
+        List<C_StationType> StationTypes();
 
-        List<SSHProtocol> AllProtocols { get; }
+        List<C_EnumMethod> AreaTypes();
 
-        List<SSHDevice> AllDevices { get; }
+        List<C_SCVendor> Vendors();
 
-        List<SSHFsu> AllFsus { get; }
+        List<SSHArea> AllAreas();
 
-        List<SSHRoom> AllRooms { get; }
+        List<SSHStation> AllStations();
 
-        List<SSHStation> AllStations { get; }
+        List<SSHRoom> AllRooms();
 
-        List<SSHArea> AllAreas { get; }
+        List<SSHFsu> AllFsus();
 
-        List<SSHArea> Areas { get; }
+        List<SSHDevice> AllDevices();
 
-        List<SSHStation> Stations { get; }
+        List<SSHCamera> AllCameras();
 
-        List<SSHRoom> Rooms { get; }
+        List<SSHArea> Areas();
 
-        List<SSHFsu> Fsus { get; }
+        List<SSHStation> Stations();
 
-        List<SSHDevice> Devices { get; }
+        List<SSHRoom> Rooms();
 
-        List<C_Group> Groups { get; }
+        List<SSHFsu> Fsus();
 
-        List<P_Point> Points { get; }
+        List<SSHDevice> Devices();
 
-        List<P_SubPoint> SubPoints { get; }
+        List<SSHCamera> Cameras();
 
-        List<P_Point> AI { get; }
+        List<C_Group> Groups();
 
-        List<P_Point> AO { get; }
+        List<P_Point> Points();
 
-        List<P_Point> DI { get; }
+        List<P_SubPoint> SubPoints();
 
-        List<P_Point> DO { get; }
+        List<P_Point> AL();
 
-        List<P_Point> AL { get; }
-
-        List<AlmStore<A_AAlarm>> ActAlarms { get; }
+        List<AlmStore<A_AAlarm>> ActAlarms();
 
         void ResetRole();
 
@@ -102,8 +100,6 @@ namespace iPem.Site.Infrastructure {
         void ResetEmployee();
 
         void ResetProfile();
-
-        void ResetAuthorizations();
 
         List<iSSHDevice> iDevices(DateTime date);
 
@@ -114,6 +110,8 @@ namespace iPem.Site.Infrastructure {
         List<P_Point> GetPoints(bool _ai, bool _ao, bool _di, bool _do, bool _al);
 
         EnmPoint GetPointType(P_Point point);
+
+        List<S_Station> GetStationsWithPoints(IList<string> points);
 
         List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms);
 

@@ -41,6 +41,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
+                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Desc"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
@@ -58,6 +59,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
+                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Desc"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);

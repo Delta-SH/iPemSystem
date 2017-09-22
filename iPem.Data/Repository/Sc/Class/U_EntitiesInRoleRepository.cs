@@ -32,19 +32,10 @@ namespace iPem.Data.Repository.Sc {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
-            var entity = new U_EntitiesInRole() { RoleId = id, Menus = new List<U_Menu>(), Areas = new List<string>(), Permissions = new List<EnmPermission>() };
+            var entity = new U_EntitiesInRole() { RoleId = id, Menus = new List<int>(), Areas = new List<string>(), Permissions = new List<EnmPermission>() };
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_GetEntitiesInRole, parms)) {
                 while (rdr.Read()) {
-                    var menu = new U_Menu();
-                    menu.Id = SqlTypeConverter.DBNullInt32Handler(rdr["Id"]);
-                    menu.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    menu.Icon = SqlTypeConverter.DBNullStringHandler(rdr["Icon"]);
-                    menu.Url = SqlTypeConverter.DBNullStringHandler(rdr["Url"]);
-                    menu.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    menu.Index = SqlTypeConverter.DBNullInt32Handler(rdr["Index"]);
-                    menu.LastId = SqlTypeConverter.DBNullInt32Handler(rdr["LastId"]);
-                    menu.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
-                    entity.Menus.Add(menu);
+                    entity.Menus.Add(SqlTypeConverter.DBNullInt32Handler(rdr["MenuId"]));
                 }
 
                 if (rdr.NextResult()) {
@@ -73,7 +64,7 @@ namespace iPem.Data.Repository.Sc {
                 try {
                     foreach (var entity in entities.Menus) {
                         parms1[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
-                        parms1[1].Value = SqlTypeConverter.DBNullInt32Checker(entity.Id);
+                        parms1[1].Value = SqlTypeConverter.DBNullInt32Checker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert1, parms1);
                     }
 

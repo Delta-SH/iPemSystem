@@ -1746,15 +1746,15 @@
                         layout: 'hbox',
                         margin: '15 15 0 15',
                         items: [{
-                            name: 'hxwkxtkydLeiXing',
-                            xtype: 'SubDeviceTypeMultiPicker',
+                            name: 'hxwkxtkydWenDuXinHao',
+                            xtype: 'PointMultiPicker',
                             flex: 1,
                             matchFieldWidth: true,
-                            fieldLabel: '设备类型',
+                            fieldLabel: '温度信号',
                             allowBlank: false
                         }, {
                             xtype: 'displayfield',
-                            value: '（注：设置"温度"设备类型）',
+                            value: '（注：设置"温度信号"）',
                             margin: '0 0 0 15',
                             flex: 1
                         }]
@@ -1765,7 +1765,7 @@
                         layout: 'hbox',
                         margin: '15 15 15 15',
                         items: [{
-                            name: 'hxwkxtkydXinHao',
+                            name: 'hxwkxtkydGaoWenXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
                             matchFieldWidth: true,
@@ -1773,7 +1773,7 @@
                             allowBlank: false
                         }, {
                             xtype: 'displayfield',
-                            value: '（注：设置"高温告警"信号）',
+                            value: '（注：设置"高温告警信号"）',
                             margin: '0 0 0 15',
                             flex: 1
                         }]
@@ -2016,15 +2016,15 @@
                         layout: 'hbox',
                         margin: '15 15 0 15',
                         items: [{
-                            name: 'qtwkrlhglLeiXing',
-                            xtype: 'SubDeviceTypeMultiPicker',
+                            name: 'qtwkrlhglWenDuXinHao',
+                            xtype: 'PointMultiPicker',
                             flex: 1,
                             matchFieldWidth: true,
-                            fieldLabel: '设备类型',
+                            fieldLabel: '温度信号',
                             allowBlank: false
                         }, {
                             xtype: 'displayfield',
-                            value: '（注：设置"温度"设备类型）',
+                            value: '（注：设置"温度信号"）',
                             margin: '0 0 0 15',
                             flex: 1
                         }]
@@ -2034,7 +2034,7 @@
                         layout: 'hbox',
                         margin: '15 15 15 15',
                         items: [{
-                            name: 'qtwkrlhglXinHao',
+                            name: 'qtwkrlhglGaoWenXinHao',
                             xtype: 'PointMultiPicker',
                             flex: 1,
                             matchFieldWidth: true,
@@ -2042,7 +2042,7 @@
                             allowBlank: false
                         }, {
                             xtype: 'displayfield',
-                            value: '（注：设置"高温告警"信号）',
+                            value: '（注：设置"高温告警信号"）',
                             margin: '0 0 0 15',
                             flex: 1
                         }]

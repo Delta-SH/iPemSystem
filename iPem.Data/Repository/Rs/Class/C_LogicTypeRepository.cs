@@ -70,23 +70,6 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
-        public List<C_SubLogicType> GetSubLogicTypes(string parent) {
-            SqlParameter[] parms = { new SqlParameter("@LogicTypeId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
-
-            var entities = new List<C_SubLogicType>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_C_LogicType_Repository_GetSubLogicTypesByParent, parms)) {
-                while(rdr.Read()) {
-                    var entity = new C_SubLogicType();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.LogicTypeId = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
         public List<C_SubLogicType> GetSubLogicTypes() {
             var entities = new List<C_SubLogicType>();
             using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_C_LogicType_Repository_GetSubLogicTypes, null)) {

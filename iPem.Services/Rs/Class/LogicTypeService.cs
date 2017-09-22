@@ -41,33 +41,25 @@ namespace iPem.Services.Rs {
         }
 
         public List<C_LogicType> GetLogicTypes() {
-            List<C_LogicType> result = null;
             var key = GlobalCacheKeys.Rs_LogicTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_LogicType>>(key);
+                return _cacheManager.Get<List<C_LogicType>>(key);
             } else {
-                result = _repository.GetLogicTypes();
-                _cacheManager.Set<List<C_LogicType>>(key, result);
+                var data = _repository.GetLogicTypes();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
-        }
-
-        public List<C_SubLogicType> GetSubLogicTypes(string parent) {
-            return _repository.GetSubLogicTypes(parent);
         }
 
         public List<C_SubLogicType> GetSubLogicTypes() {
-            List<C_SubLogicType> result = null;
             var key = GlobalCacheKeys.Rs_SubLogicTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                result = _cacheManager.Get<List<C_SubLogicType>>(key);
+                return _cacheManager.Get<List<C_SubLogicType>>(key);
             } else {
-                result = _repository.GetSubLogicTypes();
-                _cacheManager.Set<List<C_SubLogicType>>(key, result);
+                var data = _repository.GetSubLogicTypes();
+                _cacheManager.Set(key, data);
+                return data;
             }
-
-            return result;
         }
 
         public IPagedList<C_LogicType> GetPagedLogicTypes(int pageIndex = 0, int pageSize = int.MaxValue) {

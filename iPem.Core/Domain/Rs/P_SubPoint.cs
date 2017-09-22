@@ -69,5 +69,10 @@ namespace iPem.Core.Domain.Rs {
         /// 统计周期(分钟，5的倍数)
         /// </summary>
         public int StaticPeriod { get; set; }
+
+        /// <summary>
+        /// 存储间隔
+        /// </summary>
+        public int StorageInterval { get; set; }
     }
 }

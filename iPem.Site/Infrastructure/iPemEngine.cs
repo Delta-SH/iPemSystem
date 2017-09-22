@@ -113,10 +113,14 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IS_RoomRepository>(c => new S_RoomRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IS_StationRepository>(c => new S_StationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_EmployeeRepository>(c => new U_EmployeeRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_CameraRepository>(c => new V_CameraRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_ChannelRepository>(c => new V_ChannelRepository(connectionString)).InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<AreaService>().As<IAreaService>().InstancePerLifetimeScope();
                 builder.RegisterType<BrandService>().As<IBrandService>().InstancePerLifetimeScope();
+                builder.RegisterType<CameraService>().As<ICameraService>().InstancePerLifetimeScope();
+                builder.RegisterType<ChannelService>().As<IChannelService>().InstancePerLifetimeScope();
                 builder.RegisterType<DepartmentService>().As<IDepartmentService>().InstancePerLifetimeScope();
                 builder.RegisterType<DeviceService>().As<IDeviceService>().InstancePerLifetimeScope();
                 builder.RegisterType<DeviceTypeService>().As<IDeviceTypeService>().InstancePerLifetimeScope();

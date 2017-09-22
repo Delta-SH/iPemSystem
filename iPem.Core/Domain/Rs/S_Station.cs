@@ -27,6 +27,11 @@ namespace iPem.Core.Domain.Rs {
         public C_StationType Type { get; set; }
 
         /// <summary>
+        /// 所属厂家
+        /// </summary>
+        public C_SCVendor Vendor { get; set; }
+
+        /// <summary>
         /// 经度
         /// </summary>
         public string Longitude { get; set; }

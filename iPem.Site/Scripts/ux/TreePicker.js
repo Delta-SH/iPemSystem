@@ -331,7 +331,9 @@ Ext.define('Ext.ux.TreePicker', {
             width: me.pickerWidth,
             minWidth: me.pickerWidth,
             shadow: false,
-            resizable: true,
+            resizable: {
+                transparent: true
+            },
             viewConfig: {
                 loadMask: true,
                 preserveScrollOnRefresh: true

@@ -43,11 +43,6 @@ namespace iPem.Core.Domain.Rs {
         public string AlarmId { get; set; }
 
         /// <summary>
-        /// 网管告警编号
-        /// </summary>
-        public string NMAlarmId { get; set; }
-
-        /// <summary>
         /// 设备类型
         /// </summary>
         public C_DeviceType DeviceType { get; set; }
@@ -56,16 +51,6 @@ namespace iPem.Core.Domain.Rs {
         /// 逻辑分类
         /// </summary>
         public C_LogicType LogicType { get; set; }
-
-        /// <summary>
-        /// 告警时描述
-        /// </summary>
-        public string AlarmComment { get; set; }
-
-        /// <summary>
-        /// 正常时描述
-        /// </summary>
-        public string NormalComment { get; set; }
 
         /// <summary>
         /// 告警对设备的影响
@@ -88,19 +73,9 @@ namespace iPem.Core.Domain.Rs {
         public string Interpret { get; set; }
 
         /// <summary>
-        /// 扩展设置1
+        /// 扩展设置
         /// </summary>
-        public string ExtSet1 { get; set; }
-
-        /// <summary>
-        /// 扩展设置2
-        /// </summary>
-        public string ExtSet2 { get; set; }
-
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public string Description { get; set; }
+        public string ExtSet { get; set; }
 
         /// <summary>
         /// 状态

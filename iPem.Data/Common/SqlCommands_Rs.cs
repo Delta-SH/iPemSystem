@@ -9,8 +9,8 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 区域信息表
         /// </summary>
-        public const string Sql_A_Area_Repository_GetArea = @"SELECT * FROM [dbo].[A_Area] WHERE [Id] = @Id;";
-        public const string Sql_A_Area_Repository_GetAreas = @"SELECT * FROM [dbo].[A_Area] WHERE [Enabled] = 1;";
+        public const string Sql_A_Area_Repository_GetArea = @"SELECT A.*,V.[Name] AS [VendorName] FROM [dbo].[A_Area] A LEFT OUTER JOIN [dbo].[C_SCVendor] V ON A.[VendorID]=V.[ID] WHERE [Id] = @Id;";
+        public const string Sql_A_Area_Repository_GetAreas = @"SELECT A.*,V.[Name] AS [VendorName] FROM [dbo].[A_Area] A LEFT OUTER JOIN [dbo].[C_SCVendor] V ON A.[VendorID]=V.[ID] WHERE [Enabled] = 1;";
 
         /// <summary>
         /// 设备品牌表
@@ -58,7 +58,6 @@ namespace iPem.Data.Common {
         public const string Sql_C_LogicType_Repository_GetLogicType = @"SELECT * FROM [dbo].[C_LogicType] WHERE [Id] = @Id;";
         public const string Sql_C_LogicType_Repository_GetSubLogicType = @"SELECT * FROM [dbo].[C_SubLogicType] WHERE [Id] = @Id;";
         public const string Sql_C_LogicType_Repository_GetLogicTypes = @"SELECT * FROM [dbo].[C_LogicType] ORDER BY [Id];";
-        public const string Sql_C_LogicType_Repository_GetSubLogicTypesByParent = @"SELECT * FROM [dbo].[C_SubLogicType] WHERE [LogicTypeId] = @LogicTypeId ORDER BY [Id];";
         public const string Sql_C_LogicType_Repository_GetSubLogicTypes = @"SELECT * FROM [dbo].[C_SubLogicType] ORDER BY [Id];";
 
         /// <summary>
@@ -107,66 +106,65 @@ namespace iPem.Data.Common {
         /// 设备信息表
         /// </summary>
         public const string Sql_D_Device_Repository_GetDevice = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled] FROM [dbo].[D_Device] D
-        INNER JOIN [dbo].[D_FSU] F ON D.[FsuId] = F.[DeviceId]
+        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[VendorID],V.[Name] AS [VendorName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Version],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[Id] AS [RoomId],R.[Name] AS [RoomName],D.[FsuId],D.[ProtocolId],D.[Desc] AS [Comment],D.[Index],D.[Enabled] FROM [dbo].[D_Device] D
         INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
         INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
         INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON D.[VendorID] = V.[ID]
         WHERE D.[Id] = @Id;";
         public const string Sql_D_Device_Repository_GetDevicesInRoom = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled] FROM [dbo].[D_Device] D
-        INNER JOIN [dbo].[D_FSU] F ON D.[FsuId] = F.[DeviceId]
+        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[VendorID],V.[Name] AS [VendorName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Version],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[Id] AS [RoomId],R.[Name] AS [RoomName],D.[FsuId],D.[ProtocolId],D.[Desc] AS [Comment],D.[Index],D.[Enabled] FROM [dbo].[D_Device] D
         INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
         INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
         INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
-        WHERE D.[RoomId]=@RoomId AND D.[Enabled] = 1;";
+        LEFT OUTER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON D.[VendorID] = V.[ID]
+        WHERE D.[RoomId]=@RoomId AND D.[Enabled] = 1 ORDER BY D.[Index];";
+        public const string Sql_D_Device_Repository_GetDevicesInFsu = @"
+        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[VendorID],V.[Name] AS [VendorName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Version],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[Id] AS [RoomId],R.[Name] AS [RoomName],D.[FsuId],D.[ProtocolId],D.[Desc] AS [Comment],D.[Index],D.[Enabled] FROM [dbo].[D_Device] D
+        INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
+        INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
+        INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
+        INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON D.[VendorID] = V.[ID]
+        WHERE D.[FsuId]=@FsuId AND D.[Enabled] = 1 ORDER BY D.[Index];";
         public const string Sql_D_Device_Repository_GetDevices = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled] FROM [dbo].[D_Device] D
-        INNER JOIN [dbo].[D_FSU] F ON D.[FsuId] = F.[DeviceId]
+        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[VendorID],V.[Name] AS [VendorName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Version],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[Id] AS [RoomId],R.[Name] AS [RoomName],D.[FsuId],D.[ProtocolId],D.[Desc] AS [Comment],D.[Index],D.[Enabled] FROM [dbo].[D_Device] D
         INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
         INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
         INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id] 
-        WHERE D.[Enabled] = 1;";
+        LEFT OUTER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON D.[VendorID] = V.[ID]
+        WHERE D.[Enabled] = 1 ORDER BY D.[Index];";
 
         /// <summary>
         /// FSU信息表
         /// </summary>
         public const string Sql_D_Fsu_Repository_GetFsu = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],F.[VendorId],CS.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority],F.[ChangeTime],F.[LastTime],F.[Status],F.[Desc] FROM [dbo].[D_FSU] F
-        INNER JOIN [dbo].[D_Device] D ON F.[DeviceId] = D.[Id]
-        INNER JOIN [dbo].[S_Room] R ON D.[RoomId] = R.[Id]
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        FROM [dbo].[D_FSU] F LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
+        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
-        INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
-        INNER JOIN [dbo].[C_SCVendor] CS ON F.[VendorId] = CS.[Id]
+        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
         WHERE F.[DeviceId] = @Id;";
-        public const string Sql_D_Fsu_Repository_GetFsuInRoom = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],F.[VendorId],CS.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority],F.[ChangeTime],F.[LastTime],F.[Status],F.[Desc] FROM [dbo].[D_FSU] F
-        INNER JOIN [dbo].[D_Device] D ON F.[DeviceId] = D.[Id]
-        INNER JOIN [dbo].[S_Room] R ON D.[RoomId] = R.[Id]
+        public const string Sql_D_Fsu_Repository_GetFsusInRoom = @"
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        FROM [dbo].[D_FSU] F LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
+        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
-        INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
-        INNER JOIN [dbo].[C_SCVendor] CS ON F.[VendorId] = CS.[Id]
-        WHERE D.[RoomID] = @RoomId AND D.[Enabled] = 1;";
+        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        WHERE R.[Id] = @RoomId;";
         public const string Sql_D_Fsu_Repository_GetFsus = @"
-        SELECT D.[Id],D.[Code],D.[Name],D.[SysName],D.[SysCode],DT.[Id] AS [DeviceTypeId],DT.[Name] AS [DeviceTypeName],D.[SubDeviceTypeId],SD.[Name] AS [SubDeviceTypeName],D.[SubLogicTypeId],LT.[Name] AS [SubLogicTypeName],D.[Model],D.[ProdId],D.[BrandId],D.[SuppId],D.[SubCompId],D.[StartTime],D.[ScrapTime],D.[StatusId],D.[Contact],S.[AreaId],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],D.[RoomId],R.[Name] AS [RoomName],D.[ProtocolId],D.[Desc] AS [Comment],D.[Enabled],F.[DeviceId] AS [FsuId],F.[Code] AS [FsuCode],F.[VendorId],CS.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority],F.[ChangeTime],F.[LastTime],F.[Status],F.[Desc] FROM [dbo].[D_FSU] F
-        INNER JOIN [dbo].[D_Device] D ON F.[DeviceId] = D.[Id]
-        INNER JOIN [dbo].[S_Room] R ON D.[RoomId] = R.[Id]
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        FROM [dbo].[D_FSU] F LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
+        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[C_SubDeviceType] SD ON D.[SubDeviceTypeId] = SD.[Id]
-        INNER JOIN [dbo].[C_DeviceType] DT ON SD.[DeviceTypeId] = DT.[Id]
-        INNER JOIN [dbo].[C_SubLogicType] LT ON D.[SubLogicTypeId] = LT.[Id]
-        INNER JOIN [dbo].[C_SCVendor] CS ON F.[VendorId] = CS.[Id]
-        WHERE D.[Enabled] = 1;";
+        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID];";
         public const string Sql_D_Fsu_Repository_GetExtFsu = @"
         SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
         public const string Sql_D_Fsu_Repository_GetExtFsus = @"
@@ -195,33 +193,32 @@ namespace iPem.Data.Common {
         /// 标准信号表
         /// </summary>
         public const string Sql_P_Point_Repository_GetPointsInDevice = @"
-        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[NMAlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[AlarmTimeDesc] AS [AlarmComment],P.[NormalTimeDesc] AS [NormalComment],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],P.[Extend1] AS [ExtSet1],P.[Extend2] AS [ExtSet2],P.[Desc] AS [Description],P.[Enabled] FROM [dbo].[P_Point] P 
-        INNER JOIN [dbo].[P_PointsInProtocol] PP ON PP.[PointId] = P.[Id] 
-        INNER JOIN [dbo].[D_Device] D ON D.[ProtocolId] = PP.[ProtocolId]
+        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],S.[Extend] AS [ExtSet],P.[Enabled] FROM [dbo].[D_Signal] S 
+        INNER JOIN [dbo].[P_Point] P ON S.[PointID]=P.[ID]
         INNER JOIN [dbo].[C_LogicType] LT ON P.[LogicTypeId] = LT.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON P.[DeviceTypeId] = DT.[Id]
-        WHERE D.[Id] = @DeviceId AND P.[Enabled] = 1;";
+        WHERE S.[DeviceID] = @DeviceId AND P.[Enabled] = 1;";
         public const string Sql_P_Point_Repository_GetPointsInProtocol = @"
-        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[NMAlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[AlarmTimeDesc] AS [AlarmComment],P.[NormalTimeDesc] AS [NormalComment],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],P.[Extend1] AS [ExtSet1],P.[Extend2] AS [ExtSet2],P.[Desc] AS [Description],P.[Enabled] FROM [dbo].[P_Point] P 
+        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],P.[Extend1] AS [ExtSet],P.[Enabled] FROM [dbo].[P_Point] P 
         INNER JOIN [dbo].[P_PointsInProtocol] PP ON PP.[PointId] = P.[Id] 
         INNER JOIN [dbo].[C_LogicType] LT ON P.[LogicTypeId] = LT.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON P.[DeviceTypeId] = DT.[Id]
         WHERE PP.[ProtocolId] = @ProtocolId AND P.[Enabled] = 1;";
         public const string Sql_P_Point_Repository_GetPoints = @"
-        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[NMAlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[AlarmTimeDesc] AS [AlarmComment],P.[NormalTimeDesc] AS [NormalComment],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],P.[Extend1] AS [ExtSet1],P.[Extend2] AS [ExtSet2],P.[Desc] AS [Description],P.[Enabled] FROM [dbo].[P_Point] P 
+        SELECT P.[Id],P.[Code],P.[Name],P.[Type],P.[UnitState],P.[Number],P.[AlarmId],P.[DeviceTypeId],DT.[Name] AS [DeviceTypeName],P.[LogicTypeId],LT.[Name] AS [LogicTypeName],P.[DeviceEffect],P.[BusiEffect],P.[Comment],P.[Interpret],P.[Extend1] AS [ExtSet],P.[Enabled] FROM [dbo].[P_Point] P 
         INNER JOIN [dbo].[C_LogicType] LT ON P.[LogicTypeId] = LT.[Id]
         INNER JOIN [dbo].[C_DeviceType] DT ON P.[DeviceTypeId] = DT.[Id]
         WHERE P.[Enabled] = 1;";
         public const string Sql_P_Point_Repository_GetSubPoint = @"
-        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod],PS.[StorageInterval] FROM [dbo].[P_SubPoint] PS 
         INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id]
         WHERE PS.[PointId]=@PointId AND PS.[StaTypeId]=@StaTypeId;";
         public const string Sql_P_Point_Repository_GetSubPointsInPoint = @"
-        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod],PS.[StorageInterval] FROM [dbo].[P_SubPoint] PS 
         INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id]
         WHERE PS.[PointId]=@PointId;";
         public const string Sql_P_Point_Repository_GetSubPoints = @"
-        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod] FROM [dbo].[P_SubPoint] PS 
+        SELECT PS.[PointId],PS.[StaTypeId],ST.[Name] AS [StaTypeName],PS.[AlarmLevel],PS.[AlarmLimit],PS.[AlarmReturnDiff],PS.[AlarmDelay],PS.[AlarmRecoveryDelay],PS.[TriggerTypeId],PS.[SavedPeriod],PS.[AbsoluteThreshold],PS.[PerThreshold],PS.[StaticPeriod],PS.[StorageInterval] FROM [dbo].[P_SubPoint] PS 
         INNER JOIN [dbo].[C_StationType] ST ON PS.[StaTypeId] = ST.[Id];";
 
         /// <summary>
@@ -237,35 +234,41 @@ namespace iPem.Data.Common {
         /// 机房信息表
         /// </summary>
         public const string Sql_S_Room_Repository_GetRoom = @"
-        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
+        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[VendorId],V.[Name] AS [VendorName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
         INNER JOIN [dbo].[C_RoomType] RT ON R.[RoomTypeId] = RT.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON R.[VendorID]=V.[ID]
         WHERE R.[Id]=@Id;";
         public const string Sql_S_Room_Repository_GetRoomsInStation = @"
-        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
+        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[VendorId],V.[Name] AS [VendorName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
         INNER JOIN [dbo].[C_RoomType] RT ON R.[RoomTypeId] = RT.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON R.[VendorID]=V.[ID]
         WHERE R.[StationId]=@StationId AND R.[Enabled] = 1;";
         public const string Sql_S_Room_Repository_GetRooms = @"
-        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
+        SELECT R.[Id],R.[Code],R.[Name],R.[RoomTypeId],RT.[Name] AS [RoomTypeName],R.[VendorId],V.[Name] AS [VendorName],R.[Floor],R.[PropertyId],R.[Address],R.[Length],R.[Width],R.[Heigth],R.[FloorLoad],R.[LineHeigth],R.[Square],R.[EffeSquare],R.[FireFighEuip],R.[Owner],R.[QueryPhone],R.[PowerSubMain],R.[TranSubMain],R.[EnviSubMain],R.[FireSubMain],R.[AirSubMain],R.[Contact],S.[AreaId],R.[StationId],S.[Name] AS [StationName],R.[Desc] AS [Comment],R.[Enabled] FROM [dbo].[S_Room] R
         INNER JOIN [dbo].[C_RoomType] RT ON R.[RoomTypeId] = RT.[Id]
-        INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id] 
+        INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON R.[VendorID]=V.[ID]
         WHERE R.[Enabled] = 1;";
 
         /// <summary>
         /// 站点信息表
         /// </summary>
         public const string Sql_S_Station_Repository_GetStation = @"
-        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
+        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[VendorId],V.[Name] AS [VendorName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
         INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID]
         WHERE S.[Id]=@Id;";
         public const string Sql_S_Station_Repository_GetStationsInArea = @"
-        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
+        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[VendorId],V.[Name] AS [VendorName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
         INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID]
         WHERE S.[AreaId]=@AreaId AND S.[Enabled] = 1;";
         public const string Sql_S_Station_Repository_GetStations = @"
-        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
-        INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id] 
+        SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],S.[VendorId],V.[Name] AS [VendorName],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
+        INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
+        LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID]
         WHERE S.[Enabled] = 1;";
 
         /// <summary>
@@ -283,5 +286,29 @@ namespace iPem.Data.Common {
         public const string Sql_H_DBScript_Repository_Insert = @"INSERT INTO [dbo].[H_DBScript]([ID],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES(@Id,@Name,@Creator,@CreatedTime,@Executor,@ExecutedTime,@Comment);";
         public const string Sql_H_DBScript_Repository_Update = @"UPDATE [dbo].[H_DBScript] SET [ExecuteUser] = @Executor WHERE [ID] = @Id;";
         public const string Sql_H_DBScript_Repository_Delete = @"DELETE FROM [dbo].[H_DBScript] WHERE [ID] = @Id;";
+
+        /// <summary>
+        /// 摄像机信息表
+        /// </summary>
+        public const string Sql_V_Camera_Repository_GetEntity = @"
+        SELECT C.*,D.[Name] AS [DeviceName],R.[ID] AS [RoomId],R.[Name] AS [RoomName],S.[ID] AS [StationId],S.[Name] AS [StationName],A.[ID] AS [AreaId],A.[Name] AS [AreaName] FROM [dbo].[V_Camera] C 
+        INNER JOIN [dbo].[D_Device] D ON C.[DeviceID] = D.[ID]
+        INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
+        INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
+        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        WHERE C.[ID] = @Id;";
+        public const string Sql_V_Camera_Repository_GetEntities = @"
+        SELECT C.*,D.[Name] AS [DeviceName],R.[ID] AS [RoomId],R.[Name] AS [RoomName],S.[ID] AS [StationId],S.[Name] AS [StationName],A.[ID] AS [AreaId],A.[Name] AS [AreaName] FROM [dbo].[V_Camera] C 
+        INNER JOIN [dbo].[D_Device] D ON C.[DeviceID] = D.[ID]
+        INNER JOIN [dbo].[S_Room] R ON D.[RoomID] = R.[ID]
+        INNER JOIN [dbo].[S_Station] S ON R.[StationID] = S.[ID]
+        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        ORDER BY R.[Name],D.[Index];";
+
+        /// <summary>
+        /// 摄像机通道信息表
+        /// </summary>
+        public const string Sql_V_Channel_Repository_GetEntitiesInCamera = @"SELECT * FROM [dbo].[V_Channel] WHERE [CameraID]=@CameraId ORDER BY [Index];";
+        public const string Sql_V_Channel_Repository_GetEntities = @"SELECT * FROM [dbo].[V_Channel] ORDER BY [CameraID],[Index];";
     }
 }

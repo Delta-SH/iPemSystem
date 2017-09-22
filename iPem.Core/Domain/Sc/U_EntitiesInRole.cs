@@ -16,7 +16,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 角色菜单
         /// </summary>
-        public List<U_Menu> Menus { get; set; }
+        public List<int> Menus { get; set; }
 
         /// <summary>
         /// 角色区域

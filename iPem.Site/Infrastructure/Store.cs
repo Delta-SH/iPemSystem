@@ -38,11 +38,6 @@ namespace iPem.Site.Infrastructure {
         public iProfile Profile { get; set; }
 
         /// <summary>
-        /// 所属角色权限
-        /// </summary>
-        public U_EntitiesInRole Authorizations { get; set; }
-
-        /// <summary>
         /// 上次消息查询时间
         /// </summary>
         public DateTime LastNoticeTime { get; set; }
@@ -66,7 +61,7 @@ namespace iPem.Site.Infrastructure {
         /// 重置过期时间
         /// </summary>
         public void ResetExpire() {
-            this.Expire = DateTime.Now.Add(CachedIntervals.Store_Intervals);
+            this.Expire = DateTime.Now.Add(GlobalCacheInterval.Store_Interval);
         }
 
         /// <summary>
@@ -78,7 +73,7 @@ namespace iPem.Site.Infrastructure {
                 Id = id.HasValue ? id.Value : Guid.NewGuid(),
                 LastNoticeTime = DateTime.Now,
                 LastSpeechTime = DateTime.Now,
-                Expire = DateTime.Now.Add(CachedIntervals.Store_Intervals),
+                Expire = DateTime.Now.Add(GlobalCacheInterval.Store_Interval),
                 CreatedTime = DateTime.Now
             };
 

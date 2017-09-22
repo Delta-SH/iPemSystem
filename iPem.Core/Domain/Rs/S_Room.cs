@@ -27,6 +27,11 @@ namespace iPem.Core.Domain.Rs {
         public C_RoomType Type { get; set; }
 
         /// <summary>
+        /// 所属厂家
+        /// </summary>
+        public C_SCVendor Vendor { get; set; }
+
+        /// <summary>
         /// 产权属性
         /// </summary>
         /// <remarks>

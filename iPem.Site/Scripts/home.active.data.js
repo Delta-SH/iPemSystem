@@ -395,6 +395,7 @@
         listeners: {
             select: function (me, record, index) {
                 select(record);
+                video(record);
             }
         },
         tbar: [
@@ -762,6 +763,23 @@
         }
     });
 
+    var videoIFrame = Ext.create('Ext.ux.IFrame', {
+        flex: 1,
+        loadMask: '正在处理...',
+        src: '/Home/Videor?node=root'
+    });
+
+    var videoPanel = Ext.create('Ext.panel.Panel', {
+        title: '实时视频',
+        glyph: 0xf066,
+        border: false,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        items: [videoIFrame]
+    });
+
     var alarmToolbar = Ext.create('Ext.panel.Panel', {
         border: false,
         dock: 'top',
@@ -1025,10 +1043,11 @@
     var centerPanel = Ext.create('Ext.tab.Panel', {
         xtype: 'tabpanel',
         region: 'center',
-        items: [pointPanel, matrixPanel, alarmPanel],
+        items: [pointPanel, matrixPanel, alarmPanel, videoPanel],
         listeners: {
             tabchange: function (me, newCard, oldCard) {
                 refresh(newCard);
+                video(null);
             }
         }
     });
@@ -1706,23 +1725,31 @@
         reload();
     };
 
+    var video = function (node) {
+        if (!Ext.isEmpty(node)) videoIFrame.src = Ext.String.format('/Home/Videor?node={0}', node.getId());
+        if (videoIFrame.rendered && currentTab() === videoPanel) videoIFrame.load();
+    };
+
     var refresh = function (current) {
         var pager = (current || currentTab()).pager;
+        if (Ext.isEmpty(pager)) return;
         pager.doRefresh();
     };
 
     var reload = function (current) {
-        var pager = (current || currentTab()).pager, 
-            store = pager.getStore();
+        var pager = (current || currentTab()).pager;
+        if (Ext.isEmpty(pager)) return;
 
-        store.loadPage(1);
+        pager.getStore().loadPage(1);
     };
 
     var download = function (current) {
-        var pager = (current || currentTab()).pager,
-            store = pager.getStore();
+        var pager = (current || currentTab()).pager;
+        if (Ext.isEmpty(pager)) return;
 
+        var store = pager.getStore();
         if (Ext.isEmpty(store.downloadURL)) return;
+
         $$iPems.download({
             url: store.downloadURL,
             params: store.getProxy().extraParams

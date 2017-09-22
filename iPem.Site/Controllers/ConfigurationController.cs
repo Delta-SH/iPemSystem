@@ -42,7 +42,7 @@ namespace iPem.Site.Controllers {
         #region Actions
 
         public ActionResult Index() {
-            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 3001))
+            if (!_workContext.Authorizations().Menus.Contains(3001))
                 throw new HttpException(404, "Page not found.");
 
             return View();
@@ -53,7 +53,7 @@ namespace iPem.Site.Controllers {
         }
 
         public ActionResult Map() {
-            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 3002))
+            if (!_workContext.Authorizations().Menus.Contains(3002))
                 throw new HttpException(404, "Page not found.");
 
             return View();
@@ -73,7 +73,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var stations = _workContext.Stations.FindAll(s => {
+                var stations = _workContext.Stations().FindAll(s => {
                     if(string.IsNullOrWhiteSpace(s.Current.Longitude))
                         return false;
 
@@ -95,7 +95,7 @@ namespace iPem.Site.Controllers {
                     data.message = "200 Ok";
                     data.total = stations.Count;
 
-                    var almsInSta = from alarm in _workContext.ActAlarms
+                    var almsInSta = from alarm in _workContext.ActAlarms()
                                     group alarm by alarm.Current.StationId into g
                                     select new { Id = g.Key, Alarms = g.Select(a => a.Current) };
 

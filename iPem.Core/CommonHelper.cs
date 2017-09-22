@@ -185,8 +185,8 @@ namespace iPem.Core {
              * 在获取缓存时，NServiceKit默认会使用JsonSerializer.DeserializeFromString方法对已缓存的数据进行Json反序列化
              * 它会将0001-01-01 00:00:00 反序列号为 0001-01-01 08:00:00
              */
-            if (date == new DateTime(1, 1, 1, 8, 0, 0))
-                return false;
+            //if (date == new DateTime(1, 1, 1, 8, 0, 0))
+            //    return false;
 
             return true;
         }

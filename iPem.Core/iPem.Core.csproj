@@ -48,6 +48,10 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.dll</HintPath>
       <Private>True</Private>
@@ -122,6 +126,8 @@
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\P_SubPoint.cs" />
     <Compile Include="Domain\Rs\R_DBScript.cs" />
+    <Compile Include="Domain\Rs\V_Camera.cs" />
+    <Compile Include="Domain\Rs\V_Channel.cs" />
     <Compile Include="Domain\Sc\S_DBScript.cs" />
     <Compile Include="Domain\Sc\U_EntitiesInRole.cs" />
     <Compile Include="Domain\Cs\A_HAlarm.cs" />
@@ -170,7 +176,6 @@
     <Compile Include="Caching\CacheManager.cs" />
     <Compile Include="Caching\ICacheManager.cs" />
     <Compile Include="Caching\MemoryCacheManager.cs" />
-    <Compile Include="Caching\PerRequestCacheManager.cs" />
     <Compile Include="Caching\RedisCacheManager.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Configuration\iPemConfig.cs" />

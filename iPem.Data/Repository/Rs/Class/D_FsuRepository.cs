@@ -38,31 +38,14 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
-                    entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
-                    entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
-                    entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
-                    entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
-                    entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.FsuCode = SqlTypeConverter.DBNullStringHandler(rdr["FsuCode"]);
-                    entity.ProtocolId = SqlTypeConverter.DBNullStringHandler(rdr["ProtocolId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);
@@ -77,42 +60,25 @@ namespace iPem.Data.Repository.Rs {
             return entity;
         }
 
-        public List<D_Fsu> GetFsuInRoom(string parent) {
+        public List<D_Fsu> GetFsusInRoom(string id) {
             SqlParameter[] parms = { new SqlParameter("@RoomId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(parent);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             var entities = new List<D_Fsu>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsuInRoom, parms)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsusInRoom, parms)) {
+                while (rdr.Read()) {
                     var entity = new D_Fsu();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
-                    entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
-                    entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
-                    entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
-                    entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
-                    entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.FsuCode = SqlTypeConverter.DBNullStringHandler(rdr["FsuCode"]);
-                    entity.ProtocolId = SqlTypeConverter.DBNullStringHandler(rdr["ProtocolId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);
@@ -136,31 +102,14 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.SysName = SqlTypeConverter.DBNullStringHandler(rdr["SysName"]);
-                    entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
-                    entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
-                    entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
-                    entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
-                    entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
-                    entity.ProdId = SqlTypeConverter.DBNullStringHandler(rdr["ProdId"]);
-                    entity.BrandId = SqlTypeConverter.DBNullStringHandler(rdr["BrandId"]);
-                    entity.SuppId = SqlTypeConverter.DBNullStringHandler(rdr["SuppId"]);
-                    entity.SubCompId = SqlTypeConverter.DBNullStringHandler(rdr["SubCompId"]);
-                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
-                    entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
-                    entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
-                    entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.FsuCode = SqlTypeConverter.DBNullStringHandler(rdr["FsuCode"]);
-                    entity.ProtocolId = SqlTypeConverter.DBNullStringHandler(rdr["ProtocolId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);

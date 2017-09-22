@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class FsuService : IFsuService {
@@ -36,12 +37,31 @@ namespace iPem.Services.Rs {
             return _repository.GetFsu(id);
         }
 
-        public List<D_Fsu> GetFsuInRoom(string id) {
-            return _repository.GetFsuInRoom(id);
+        public List<D_Fsu> GetFsusInRoom(string id) {
+            var key = GlobalCacheKeys.Rs_FsusRepository;
+            if (!_cacheManager.IsSet(key)) {
+                return this.GetFsus().FindAll(c => c.RoomId == id);
+            }
+
+            if (_cacheManager.IsHashSet(key, id)) {
+                return _cacheManager.GetFromHash<List<D_Fsu>>(key, id);
+            } else {
+                var data = _repository.GetFsusInRoom(id);
+                _cacheManager.SetInHash(key, id, data);
+                return data;
+            }
         }
 
         public List<D_Fsu> GetFsus() {
-            return _repository.GetFsus();
+            var key = GlobalCacheKeys.Rs_FsusRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.GetAllFromHash<List<D_Fsu>>(key).SelectMany(d => d).ToList();
+            } else {
+                var data = _repository.GetFsus();
+                var caches = data.GroupBy(d => d.RoomId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
+                _cacheManager.SetRangeInHash(key, caches);
+                return data;
+            }
         }
 
         public D_ExtFsu GetExtFsu(string id) {

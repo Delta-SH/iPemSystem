@@ -59,14 +59,14 @@ namespace iPem.Site.Controllers {
         #region Action
 
         public ActionResult Index() {
-            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2006))
+            if (!_workContext.Authorizations().Menus.Contains(2006))
                 throw new HttpException(404, "Page not found.");
 
             return View();
         }
 
         public ActionResult Reservation() {
-            if (!_workContext.Authorizations.Menus.Any(m => m.Id == 2007))
+            if (!_workContext.Authorizations().Menus.Contains(2007))
                 throw new HttpException(404, "Page not found.");
 
             return View();
@@ -111,7 +111,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -132,7 +132,7 @@ namespace iPem.Site.Controllers {
                     responsible = "", 
                     contact = "", 
                     company = "", 
-                    creator = _workContext.Employee.Name, 
+                    creator = _workContext.Employee().Name, 
                     createdtime = CommonHelper.DateConverter(DateTime.Now), 
                     comment = "", 
                     enabled = true 
@@ -163,7 +163,7 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = project.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -183,19 +183,19 @@ namespace iPem.Site.Controllers {
                         Responsible = project.responsible,
                         ContactPhone = project.contact,
                         Company = project.company,
-                        Creator = _workContext.Employee.Name,
+                        Creator = _workContext.Employee().Name,
                         CreatedTime = DateTime.Now,
                         Comment = project.comment,
                         Enabled = project.enabled
                     };
 
                     _projectService.Add(newOne);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增工程[{0}]", project.name), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增工程[{0}]", project.name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _projectService.GetProject(project.id);
                     if(existed == null) throw new iPemException("工程不存在，保存失败。");
-                    if (existed.Creator != _workContext.Employee.Name) throw new iPemException("您没有操作权限。");
+                    if (existed.Creator != _workContext.Employee().Name) throw new iPemException("您没有操作权限。");
 
                     //existed.Id = projectId;
                     existed.Name = project.name;
@@ -208,13 +208,13 @@ namespace iPem.Site.Controllers {
                     existed.Enabled = project.enabled;
 
                     _projectService.Update(existed);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新工程[{0}]", existed.Name), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新工程[{0}]", existed.Name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -249,11 +249,11 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<ProjectModel>(models, "工程信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<ProjectModel>(models, "工程信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -280,7 +280,7 @@ namespace iPem.Site.Controllers {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
                     if(type == (int)EnmSSH.Area) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Area);
-                        var areas = _workContext.Areas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var areas = _workContext.Areas().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
@@ -292,7 +292,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Device) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Device);
-                        var devices = _workContext.Devices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var devices = _workContext.Devices().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
@@ -304,7 +304,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Room) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Room);
-                        var rooms = _workContext.Rooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var rooms = _workContext.Rooms().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
@@ -316,7 +316,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Station) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Station);
-                        var stations = _workContext.Stations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var stations = _workContext.Stations().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
@@ -356,7 +356,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -382,7 +382,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -404,7 +404,7 @@ namespace iPem.Site.Controllers {
                     endDate = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(88500)),
                     projectId = "",
                     projectName = "",
-                    creator = _workContext.Employee.Name,
+                    creator = _workContext.Employee().Name,
                     createdTime = CommonHelper.DateTimeConverter(DateTime.Now),
                     comment = "",
                     enabled = true,
@@ -438,7 +438,7 @@ namespace iPem.Site.Controllers {
                 data.data.nodes = nodes.Select(m => Common.JoinKeys((int)m.NodeType, m.NodeId)).ToArray();
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -472,7 +472,7 @@ namespace iPem.Site.Controllers {
                 //预约区域
                 var areaNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Area);
                 var areaMatchs = from node in areaNodes
-                                 join area in _workContext.Areas on node.NodeId equals area.Current.Id
+                                 join area in _workContext.Areas() on node.NodeId equals area.Current.Id
                                  select area.Current;
 
                 data.data.areas = areaMatchs.Any() ? string.Join(",", areaMatchs.Select(a => a.Name)) : "无区域";
@@ -480,7 +480,7 @@ namespace iPem.Site.Controllers {
                 //预约站点
                 var stationNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Station);
                 var stationMatchs = from node in stationNodes
-                                     join station in _workContext.Stations on node.NodeId equals station.Current.Id
+                                     join station in _workContext.Stations() on node.NodeId equals station.Current.Id
                                      select station.Current;
 
                 data.data.stations = stationMatchs.Any() ? string.Join(",", stationMatchs.Select(a => a.Name)) : "无站点";
@@ -488,7 +488,7 @@ namespace iPem.Site.Controllers {
                 //预约机房
                 var roomNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Room);
                 var roomMatchs = from node in roomNodes
-                                  join room in _workContext.Rooms on node.NodeId equals room.Current.Id
+                                  join room in _workContext.Rooms() on node.NodeId equals room.Current.Id
                                   select room.Current;
 
                 data.data.rooms = roomMatchs.Any() ? string.Join(",", roomMatchs.Select(a => a.Name)) : "无机房";
@@ -496,13 +496,13 @@ namespace iPem.Site.Controllers {
                 //预约设备
                 var deviceNodes = nodes.FindAll(a => a.NodeType == EnmSSH.Device);
                 var deviceMatchs = from node in deviceNodes
-                                    join device in _workContext.Devices on node.NodeId equals device.Current.Id
+                                    join device in _workContext.Devices() on node.NodeId equals device.Current.Id
                                     select device.Current;
 
                 data.data.devices = deviceMatchs.Any() ? string.Join(",", deviceMatchs.Select(a => a.Name)) : "无设备";
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -532,7 +532,7 @@ namespace iPem.Site.Controllers {
                         StartTime = startTime,
                         EndTime = endTime,
                         ProjectId = project.Id,
-                        Creator = _workContext.Employee.Name,
+                        Creator = _workContext.Employee().Name,
                         CreatedTime = DateTime.Now,
                         Comment = model.comment,
                         Enabled = model.enabled
@@ -554,12 +554,12 @@ namespace iPem.Site.Controllers {
                     _reservationService.Add(newOne);
                     _nodesInReservationService.Add(nodes.ToArray());
                     _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _reservationService.GetReservation(model.id);
                     if (existed == null) throw new iPemException("预约不存在，保存失败。");
-                    if(existed.Creator != _workContext.Employee.Name) throw new iPemException("您没有操作权限。");
+                    if(existed.Creator != _workContext.Employee().Name) throw new iPemException("您没有操作权限。");
 
                     existed.Name = model.name;
                     existed.StartTime = startTime;
@@ -585,13 +585,13 @@ namespace iPem.Site.Controllers {
                     _nodesInReservationService.Remove(existed.Id);
                     _nodesInReservationService.Add(nodes.ToArray());
                     _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", model.id), null, _workContext.User.Id);
+                    _webLogger.Information(EnmEventType.Operating, string.Format("更新预约[{0}]", model.id), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -603,13 +603,13 @@ namespace iPem.Site.Controllers {
                 if(string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
                 var reservation = _reservationService.GetReservation(id);
                 if (reservation == null) throw new iPemException("预约不存在，删除失败。");
-                if(reservation.Creator != _workContext.Employee.Name) throw new ArgumentException("您没有操作权限。");
+                if(reservation.Creator != _workContext.Employee().Name) throw new ArgumentException("您没有操作权限。");
                 _reservationService.Delete(reservation);
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", reservation.Id), null, _workContext.User.Id);
+                _webLogger.Information(EnmEventType.Operating, string.Format("删除预约[{0}]", reservation.Id), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -631,7 +631,7 @@ namespace iPem.Site.Controllers {
                     var keyWords = Common.SplitCondition(keyWord.Trim());
                     if(type == (int)EnmSSH.Area) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Area);
-                        var areas = _workContext.Areas.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var areas = _workContext.Areas().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join area in areas on node.NodeId equals area.Current.Id
                                      select node;
@@ -643,7 +643,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Device) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Device);
-                        var devices = _workContext.Devices.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var devices = _workContext.Devices().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join device in devices on node.NodeId equals device.Current.Id
                                      select node;
@@ -655,7 +655,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Room) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Room);
-                        var rooms = _workContext.Rooms.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var rooms = _workContext.Rooms().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join room in rooms on node.NodeId equals room.Current.Id
                                      select node;
@@ -667,7 +667,7 @@ namespace iPem.Site.Controllers {
                         result = result.FindAll(a => ids.Contains(a.Reservation.Id));
                     } else if(type == (int)EnmSSH.Station) {
                         var nodes = _nodesInReservationService.GetNodesInReservationsInType(EnmSSH.Station);
-                        var stations = _workContext.Stations.FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
+                        var stations = _workContext.Stations().FindAll(a => CommonHelper.ConditionContain(a.Current.Name, keyWords));
                         var matchs = from node in nodes
                                      join station in stations on node.NodeId equals station.Current.Id
                                      select node;
@@ -701,11 +701,11 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                using(var ms = _excelManager.Export<ReservationModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee != null ? _workContext.Employee.Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using(var ms = _excelManager.Export<ReservationModel>(models, "工程预约信息列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User.Id);
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }

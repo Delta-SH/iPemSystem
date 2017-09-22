@@ -1,18 +1,19 @@
 ﻿@using iPem.Site.Infrastructure;
 @using iPem.Core.Domain.Sc;
+@using iPem.Services.Sc;
 @using iPem.Core.Enum;
 @using iPem.Core;
 @{
     var WorkContext = EngineContext.Current.Resolve<IWorkContext>();
-    var CurrentUser = WorkContext.User;
-    var CurrentEmployee = WorkContext.Employee;
+    var CurrentUser = WorkContext.User();
+    var CurrentEmployee = WorkContext.Employee();
 
     U_Menu CurrentMenu = null;
     var mid = ViewContext.RouteData.Values["id"];
     if(mid != null) {
         int menuId;
         if(int.TryParse(mid.ToString(), out menuId)) {
-            CurrentMenu = WorkContext.Authorizations.Menus.Find(m => m.Id == menuId);
+            CurrentMenu = EngineContext.Current.Resolve<IMenuService>().GetMenu(menuId);
         }
     }
 }
