@@ -140,10 +140,14 @@ namespace iPem.Site.Controllers {
             return View();
         }
 
-        public ActionResult Videor(string node) {
+        public ActionResult Videor(string view) {
             var models = new List<CameraModel>();
 
             try {
+                var node = "root";
+                if (Request.Cookies["videor_node"] != null)
+                    node = HttpUtility.UrlDecode(Request.Cookies["videor_node"].Value);
+
                 var nodeKey = Common.ParseNode(node);
                 var cameras = _workContext.Cameras();
                 if (nodeKey.Id == EnmSSH.Area) {
@@ -156,6 +160,9 @@ namespace iPem.Site.Controllers {
                 } else if (nodeKey.Id == EnmSSH.Device) {
                     cameras = cameras.FindAll(d => d.Current.DeviceId == nodeKey.Value);
                 }
+
+                if (cameras.Count > 200) 
+                    cameras = cameras.Take(200).ToList();
 
                 foreach (var camera in cameras) {
                     var model = new CameraModel {
@@ -186,6 +193,7 @@ namespace iPem.Site.Controllers {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
             }
 
+            if ("recorder".Equals(view, StringComparison.CurrentCultureIgnoreCase)) return View("Recorder", models);
             return View(models);
         }
 

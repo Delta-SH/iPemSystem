@@ -350,42 +350,36 @@ input, button, a {
 
 .tabs ul li {
     float: left;
-    padding: 14px 20px;
     border-right: 1px solid #e1e3e4;
-    cursor: pointer;
-    font-size: 12px;
     line-height: 1;
 }
 
 .tabs ul li a {
     color: #323437;
+    font-size: 12px;
+    padding: 14px 20px;
 }
 
 .tabs ul li.selected {
     bottom: -1px;
     border-top: 3px solid #157fcc;
-    padding: 13px 20px;
     margin-top: -1px;
     background: #fff;
 }
 
 .tabs ul li.selected a {
     color: #121315;
+    padding: 12px 20px 14px 20px;
 }
 
-#previewPanel {
+#previewPanel, #recordPanel {
     position: relative;
     padding: 5px;
 }
 
-#videor {
+#videor, #recorder {
     position: relative;
     margin-right: 125px;
-    height: 400px;
-}
-
-#replayer {
-    position: relative;
     height: 400px;
 }
 
@@ -394,11 +388,8 @@ input, button, a {
     position: absolute;
     top: 0;
     bottom: 30px;
-    background: #000;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
+    background: #343434;
+    border:1px solid #343434;
 }
 
 #controller {
@@ -523,7 +514,21 @@ input, button, a {
 }
 
 #events-context-menu > ul {
-    min-width:60px;
+    min-width: 60px;
+}
+
+#localCfgModal .row:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+#localCfgModal .title {
+    padding-left: 15px; 
+    padding-right: 0;
+    line-height: 34px;
+}
+
+#localCfgModal .sel {
+    width:120px;
 }
 
 .freeze {
@@ -535,22 +540,4 @@ input, button, a {
     font-weight: bold;
     filter: alpha(opacity=60);
     opacity: 0.6;
-}
-
-#localCfgModal .row:not(:last-child) {
-    margin-bottom:10px;
-}
-
-#localCfgModal .title {
-    padding-left: 15px; 
-    padding-right: 0;
-    line-height:34px;
-}
-
-#localCfgModal .sel {
-    width:120px;
-}
-
-#localCfgModal .alert {
-    text-align:left;
 }

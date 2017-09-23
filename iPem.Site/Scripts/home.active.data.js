@@ -395,7 +395,7 @@
         listeners: {
             select: function (me, record, index) {
                 select(record);
-                video(record);
+                videor(record);
             }
         },
         tbar: [
@@ -766,7 +766,7 @@
     var videoIFrame = Ext.create('Ext.ux.IFrame', {
         flex: 1,
         loadMask: '正在处理...',
-        src: '/Home/Videor?node=root'
+        src: '/Home/Videor?view=videor'
     });
 
     var videoPanel = Ext.create('Ext.panel.Panel', {
@@ -1047,7 +1047,6 @@
         listeners: {
             tabchange: function (me, newCard, oldCard) {
                 refresh(newCard);
-                video(null);
             }
         }
     });
@@ -1725,9 +1724,16 @@
         reload();
     };
 
-    var video = function (node) {
-        if (!Ext.isEmpty(node)) videoIFrame.src = Ext.String.format('/Home/Videor?node={0}', node.getId());
-        if (videoIFrame.rendered && currentTab() === videoPanel) videoIFrame.load();
+    var videor = function (node) {
+        if (!Ext.isEmpty(node)) {
+            Ext.util.Cookies.set('videor_node', node.getId());
+        }
+
+        if (videoIFrame.rendered) {
+            var local = videoIFrame.getWin().location;
+            videoIFrame.src = local.pathname + local.search;
+            videoIFrame.load();
+        }
     };
 
     var refresh = function (current) {
@@ -1957,6 +1963,9 @@
             $$iPems.UpdateIcons(leftPanel, null);
         };
         $$iPems.Tasks.actPointTask.start();
+
+        //初始化视频cookie
+        Ext.util.Cookies.set('videor_node', 'root');
     });
 
     Ext.onReady(function () {

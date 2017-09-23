@@ -1,15 +1,14 @@
-﻿var g_iWndIndex = 0; //当前选择窗口
-var g_iWndTypes = 1; //默认窗口数
-var g_iWndStatus = new Map(); //窗口的自定义状态
-var g_iCameras = new Map(); //所有的摄像机信息
-var g_iLogins = new Map();
-var g_iDevices = new Map();
+﻿var g_iWndIndex = 0; // 当前选择窗口
+var g_iWndTypes = 1; // 默认窗口数
+var g_iWndStatus = new Map(); // 窗口的自定义状态
+var g_iCameras = new Map(); // 所有的摄像机信息
+var g_iLogins = new Map(); // 已登录的摄像机信息
 
 $(document).ready(function () {
 
     //#region ui
 
-    //设置窗口尺寸
+    // 设置窗口尺寸
     setWindowSize();
 
     // 窗口事件绑定
@@ -25,6 +24,9 @@ $(document).ready(function () {
                     height: oSize.height + "px"
                 });
             }
+        },
+        beforeunload: function () {
+            stopAllRealPlay();
         }
     });
 
@@ -49,8 +51,10 @@ $(document).ready(function () {
     $('ul.expandable-level1 > li a').on('click', function (e) {
         e.preventDefault();
         var me = $(this);
-        $('li.menu-item a').removeClass('selected');
-        me.addClass('selected').parents('ul.expandable-level1').prev().addClass('selected');
+        if (me.hasClass('selected') === false) {
+            $('li.menu-item a').removeClass('selected');
+            me.addClass('selected').parents('ul.expandable-level1').prev().addClass('selected');
+        }
 
         // 预览视频
         var data = JSON.parse(me.attr('data'));
@@ -62,46 +66,18 @@ $(document).ready(function () {
         var status = g_iWndStatus.get(g_iWndIndex);
         if (status == null) {
             status = createStatus(g_iWndIndex, data.ip, data.mask, data.channel, data.zero);
+            g_iWndStatus.set(status.Id, status);
         } else {
-            if (status.Status === 1) {
-                if (status.Recording === true) {
-                    if (stopRecord() === false) {
-                        alert("录像停止失败，请重试。");
-                        return false;
-                    }
-                }
-
-                if (stopRealPlay() === false) {
-                    alert("预览停止失败，请重试。");
-                    return false;
-                }
-            }
-            status = resetStatus(status, data.ip, data.mask, data.channel, data.zero);
+            initStatus(status, data.ip, data.mask, data.channel, data.zero);
         }
 
-        if(startRealPlay(data.ip, data.mask, data.channel, data.zero) === true) {
-            status.Status = 1;
+        if (startRealPlay(status.Ip, status.Mask, status.Channel, status.Zero) === true) {
+            status.Playing = true;
         } else {
             alert("预览失败，请重试。");
         }
         
-        g_iWndStatus.set(status.Id, status);
         resetIcons(status);
-    });
-
-    // 切换选项卡
-    $('.tabs > ul > li').on('click', function (e) {
-        var me = $(this), target = me.attr('target');
-        if (me.hasClass('selected')) return false;
-
-        me.siblings().each(function () {
-            var _me = $(this), _target = _me.attr('target');
-            _me.removeClass('selected');
-            $('#' + _target).hide();
-        });
-
-        me.addClass('selected');
-        $('#' + target).fadeIn();
     });
 
     // 清屏右键菜单
@@ -152,77 +128,170 @@ $(document).ready(function () {
 
     //#region controller
 
+    // 播放/暂停视频
     $('#play').on('click', function (e) {
         e.preventDefault();
         var status = g_iWndStatus.get(g_iWndIndex);
         if (status == null) return false;
 
-        var me = $(this).children(':first');
-        if (status.Status === 1) {
+        if (status.Playing === true) {
             if (stopRealPlay() === false) {
-                alert("预览停止失败，请重试。");
+                alert("暂停失败，请重试。");
+                return false;
             } else {
                 status.Recording = false;
-                status.Status = 0;
-                me.removeClass('ipems-icon-font-pause');
-                me.addClass('ipems-icon-font-play');
+                status.Playing = false;
             }
-        } else if (status.Status === 0) {
+        } else if (status.Playing === false) {
             if (startRealPlay(status.Ip, status.Mask, status.Channel, status.Zero) === true) {
-                status.Status = 1;
-                me.removeClass('ipems-icon-font-play');
-                me.addClass('ipems-icon-font-pause');
+                status.Recording = false;
+                status.Playing = true;
             } else {
                 alert("预览失败，请重试。");
+                return false;
             }
         }
 
         resetIcons(status);
     });
 
+    // 停止所有视频
     $('#stop').on('click', function (e) {
         e.preventDefault();
         stopAllRealPlay();
+
+        // 重置当前窗口图标
         var status = g_iWndStatus.get(g_iWndIndex);
-        if (status == null)
+        if (status == null) {
             initIcons();
-        else
+        } else {
             resetIcons(status);
-    });
-
-    $('#capture').on('click', function (e) {
-        e.preventDefault();
-    });
-
-    $('#record').on('click', function (e) {
-        e.preventDefault();
-        $(this).toggleClass('active');
-    });
-
-    $('#ezoom').on('click', function (e) {
-        e.preventDefault();
-        $('#controller > .zoom').removeClass('active');
-        $(this).toggleClass('active');
-    });
-
-    $('#dzoom').on('click', function (e) {
-        e.preventDefault();
-        $('#controller > .zoom').removeClass('active');
-        $(this).toggleClass('active');
-    });
-
-    $('#voice').on('click', function (e) {
-        e.preventDefault();
-        var me = $(this).children(':first');
-        if (me.hasClass('ipems-icon-font-unvoice')) {
-            me.removeClass('ipems-icon-font-unvoice');
-            me.addClass('ipems-icon-font-voice');
-        } else if (me.hasClass('ipems-icon-font-voice')) {
-            me.removeClass('ipems-icon-font-voice');
-            me.addClass('ipems-icon-font-unvoice');
         }
     });
 
+    // 抓图
+    $('#capture').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === true) {
+            if (capturePic() === true) {
+                alert('抓图成功（保存路径参见本地配置）');
+            } else {
+                alert('抓图失败');
+            }
+        }
+    });
+
+    // 录像/停止录像
+    $('#record').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.Recording === true) {
+            if (stopRecord() === false) {
+                alert("停止录像失败，请重试。");
+                return false;
+            } else {
+                status.Recording = false;
+                alert("录像成功（保存路径参见本地配置）");
+            }
+        } else if (status.Recording === false) {
+            if (startRecord() === true) {
+                status.Recording = true;
+            } else {
+                alert("录像失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 启用/禁用电子放大
+    $('#ezoom').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.EZoom === true) {
+            if (disableEZoom() === false) {
+                alert("禁用电子放大失败，请重试。");
+                return false;
+            } else {
+                status.EZoom = false;
+            }
+        } else if (status.EZoom === false) {
+            if (enableEZoom() === true) {
+                status.EZoom = true;
+            } else {
+                alert("启用电子放大失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 启用/禁用3D放大
+    $('#dzoom').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.DZoom === true) {
+            if (disable3DZoom() === false) {
+                alert("禁用3D放大失败，请重试。");
+                return false;
+            } else {
+                status.DZoom = false;
+            }
+        } else if (status.DZoom === false) {
+            if (enable3DZoom() === true) {
+                status.DZoom = true;
+            } else {
+                alert("启用3D放大失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 声音/静音
+    $('#voice').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.OpenSound === true) {
+            if (closeSound() === false) {
+                alert("静音失败，请重试。");
+                return false;
+            } else {
+                status.OpenSound = false;
+            }
+        } else if (status.OpenSound === false) {
+            if (openSound() === true) {
+                //关闭所有窗口的声音
+                $(g_iWndStatus.values()).each(function () {
+                    if (this == null) return true;
+                    this.OpenSound = false;
+                });
+
+                status.OpenSound = true;
+            } else {
+                alert("开启声音失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 本地配置
     $('#lsetting').on('click', function (e) {
         e.preventDefault();
         var cfg = getLocalCfg();
@@ -238,10 +307,12 @@ $(document).ready(function () {
         $("#playbackFilePath").val(cfg.PlaybackFilePath);
         $("#protocolType").val(cfg.ProtocolType);
 
+        // 先隐藏视频控件，否则模态框会被视频控件挡住
         $('#plugin').children(':first').hide();
         $('#localCfgModal').modal();
     });
 
+    // 远程配置
     $('#rsetting').on('click', function (e) {
         e.preventDefault();
         var status = g_iWndStatus.get(g_iWndIndex);
@@ -249,45 +320,177 @@ $(document).ready(function () {
         remoteConfig(status.Ip);
     });
 
+    // 全屏
     $('#fullscreen').on('click', function (e) {
         e.preventDefault();
         fullScreen();
     });
 
+    // 4*4分屏
     $('#screen16').on('click', function (e) {
         e.preventDefault();
         if ($(this).hasClass('active')) return false;
-
-        changeWndNum(4);
         $('#controller > a.screen').removeClass('active');
         $(this).addClass('active');
+
+        changeWndNum(4);
     });
 
+    // 3*3分屏
     $('#screen9').on('click', function (e) {
         e.preventDefault();
         if ($(this).hasClass('active')) return false;
-
-        changeWndNum(3);
         $('#controller > a.screen').removeClass('active');
         $(this).addClass('active');
+
+        changeWndNum(3);
     });
 
+    // 2*2分屏
     $('#screen4').on('click', function (e) {
         e.preventDefault();
         if ($(this).hasClass('active')) return false;
-
-        changeWndNum(2);
         $('#controller > a.screen').removeClass('active');
         $(this).addClass('active');
+
+        changeWndNum(2);
     });
 
+    // 1*1分屏
     $('#screen1').on('click', function (e) {
         e.preventDefault();
         if ($(this).hasClass('active')) return false;
-
-        changeWndNum(1);
         $('#controller > a.screen').removeClass('active');
         $(this).addClass('active');
+
+        changeWndNum(1);
+    });
+
+    // PTZ控制
+    $('#ptz > .ptz-panel > .btn-group > button').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        var me = $(this), ptzindex = parseInt(me.attr('ptzindex'), 10);
+        if (e.type === 'mousedown') {
+            startPTZControl(ptzindex, status.Zero, status.PTZSpeed);
+        } else {
+            endPTZControl();
+        }
+    });
+
+    // PTZ速度-
+    $('#ptz-speed1').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+        if (status.PTZSpeed <= 1) return false;
+        status.PTZSpeed--;
+        logger(status.Ip + "(" + status.Channel + ")设置云台速度" + status.PTZSpeed);
+    });
+    // PTZ速度+
+    $('#ptz-speed2').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+        if (status.PTZSpeed >= 7) return false;
+        status.PTZSpeed++;
+        logger(status.Ip + "(" + status.Channel + ")设置云台速度" + status.PTZSpeed);
+    });
+
+    // 音量-
+    $('#ptz-volume1').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+        if (status.Volume <= 0) return false;
+        status.Volume -= 5;
+        setVolume(status.Volume);
+    });
+    // 音量+
+    $('#ptz-volume2').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+        if (status.Volume >= 100) return false;
+        status.Volume += 5;
+        setVolume(status.Volume);
+    });
+
+    // 调焦-
+    $('#ptz-bianbei1').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (e.type === 'mousedown') {
+            PTZZoomOut();
+        } else {
+            PTZZoomStop();
+        }
+    });
+    // 调焦+
+    $('#ptz-bianbei2').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+        
+        if (e.type === 'mousedown') {
+            PTZZoomIn();
+        } else {
+            PTZZoomStop();
+        }
+    });
+
+    // 聚焦-
+    $('#ptz-jujiao1').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (e.type === 'mousedown') {
+            PTZFoucusOut();
+        } else {
+            PTZFoucusStop();
+        }
+    });
+    // 聚焦+
+    $('#ptz-jujiao2').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (e.type === 'mousedown') {
+            PTZFocusIn();
+        } else {
+            PTZFoucusStop();
+        }
+    });
+
+    // 光圈-
+    $('#ptz-guangquan1').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (e.type === 'mousedown') {
+            PTZIrisOut();
+        } else {
+            PTZIrisStop();
+        }
+    });
+    // 光圈+
+    $('#ptz-guangquan2').on('mousedown mouseup', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (e.type === 'mousedown') {
+            PTZIrisIn();
+        } else {
+            PTZIrisStop();
+        }
     });
 
     //#endregion
@@ -312,22 +515,26 @@ $(document).ready(function () {
     //#endregion
 
     //#region 初始化插件参数及插入插件
-    WebVideoCtrl.I_InitPlugin('100%', '100%', {
-        bWndFull: true, //是否支持单窗口双击全屏，默认支持 true:支持 false:不支持
-        iWndowType: 1,
+    WebVideoCtrl.I_InitPlugin("100%", "100%", {
+        szColorProperty: "sub-border-select:157fcc",
+        bWndFull: true,
+        iWndowType: g_iWndTypes,
         cbSelWnd: function (xmlDoc) {
             var current = parseInt($(xmlDoc).find("SelectWnd").eq(0).text(), 10);
             if (current !== g_iWndIndex) {
                 g_iWndIndex = current;
                 var status = g_iWndStatus.get(g_iWndIndex);
-                if (status == null)
+                if (status == null) {
                     initIcons();
-                else
+                } else {
                     resetIcons(status);
+                }
             }
         }
     });
-    WebVideoCtrl.I_InsertOBJECTPlugin("plugin");
+
+    var iRet = WebVideoCtrl.I_InsertOBJECTPlugin("plugin");
+    if (-1 == iRet) return;
     //#endregion
 
     //#region 检查插件是否最新
@@ -351,6 +558,8 @@ $(document).ready(function () {
 
 });
 
+//#region api
+
 // 创建窗口参数
 function createStatus(id, ip, mask, channel, zero) {
     var status = new Object();
@@ -360,52 +569,49 @@ function createStatus(id, ip, mask, channel, zero) {
     status.Channel = channel;
     status.Zero = zero;
 
-    status.Status = 0; // 0：停止 1：播放
+    status.Playing = false;
     status.Recording = false;
     status.EZoom = false;
     status.DZoom = false;
-    status.OpenSound = true;
+    status.OpenSound = false;
     status.Volume = 50; // 0-100
     status.PTZSpeed = 4; // 1,2,3,4,5,6,7
-
     return status;
 }
 
-// 重置窗口参数
-function resetStatus(status, ip, mask, channel, zero) {
+// 初始化窗口参数
+function initStatus(status, ip, mask, channel, zero) {
     status.Ip = ip;
     status.Mask = mask;
     status.Channel = channel;
     status.Zero = zero;
 
-    status.Status = 0; // 0：停止 1：播放
+    status.Playing = false;
     status.Recording = false;
     status.EZoom = false;
     status.DZoom = false;
-    status.OpenSound = true;
+    status.OpenSound = false;
     status.Volume = 50; // 0-100
     status.PTZSpeed = 4; // 1,2,3,4,5,6,7
 }
 
-// 改变控制图标
+// 重置控制图标
 function resetIcons(status) {
     var play = $('#play').children(':first');
-    if (status.Status === 0 && play.hasClass('ipems-icon-font-pause')) {
-        play.removeClass('ipems-icon-font-pause');
-        play.addClass('ipems-icon-font-play');
-    } else if (status.Status === 1 && play.hasClass('ipems-icon-font-play')) {
-        play.removeClass('ipems-icon-font-play');
-        play.addClass('ipems-icon-font-pause');
+    if (status.Playing === false && play.hasClass('ipems-icon-font-pause')) {
+        play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
+    } else if (status.Playing === true && play.hasClass('ipems-icon-font-play')) {
+        play.removeClass('ipems-icon-font-play').addClass('ipems-icon-font-pause');
     }
 
-    var record = $('#record').children(':first');
+    var record = $('#record');
     if (status.Recording === true && record.hasClass('active') === false) {
         record.addClass('active');
     } else if (status.Recording === false && record.hasClass('active') === true) {
         record.removeClass('active');
     }
 
-    var ezoom = $('#ezoom').children(':first');
+    var ezoom = $('#ezoom');
     if (status.EZoom === true && ezoom.hasClass('active') === false) {
         $('#controller > .zoom').removeClass('active');
         ezoom.addClass('active');
@@ -413,7 +619,7 @@ function resetIcons(status) {
         ezoom.removeClass('active');
     }
 
-    var dzoom = $('#dzoom').children(':first');
+    var dzoom = $('#dzoom');
     if (status.DZoom === true && dzoom.hasClass('active') === false) {
         $('#controller > .zoom').removeClass('active');
         dzoom.addClass('active');
@@ -423,19 +629,16 @@ function resetIcons(status) {
 
     var sound = $('#voice').children(':first');
     if (status.OpenSound === true && sound.hasClass('ipems-icon-font-unvoice')) {
-        sound.removeClass('ipems-icon-font-unvoice');
-        sound.addClass('ipems-icon-font-voice');
+        sound.removeClass('ipems-icon-font-unvoice').addClass('ipems-icon-font-voice');
     } else if (status.OpenSound === false && sound.hasClass('ipems-icon-font-voice')) {
-        sound.removeClass('ipems-icon-font-voice');
-        sound.addClass('ipems-icon-font-unvoice');
+        sound.removeClass('ipems-icon-font-voice').addClass('ipems-icon-font-unvoice');
     }
 }
 
 // 初始化控制图标
 function initIcons() {
     var play = $('#play').children(':first');
-    play.removeClass('ipems-icon-font-pause');
-    play.addClass('ipems-icon-font-play');
+    play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
 
     var record = $('#record').children(':first');
     record.removeClass('active');
@@ -447,8 +650,7 @@ function initIcons() {
     dzoom.removeClass('active');
 
     var sound = $('#voice').children(':first');
-    sound.removeClass('ipems-icon-font-unvoice');
-    sound.addClass('ipems-icon-font-voice');
+    sound.removeClass('ipems-icon-font-voice').addClass('ipems-icon-font-unvoice');
 }
 
 // 窗口分割数
@@ -586,7 +788,6 @@ function getDeviceInfo(szIP) {
             data.macAddress = $(xmlDoc).find("macAddress").eq(0).text();
             data.firmwareVersion = $(xmlDoc).find("firmwareVersion").eq(0).text() + " " + $(xmlDoc).find("firmwareReleasedDate").eq(0).text();
             data.encoderVersion = $(xmlDoc).find("encoderVersion").eq(0).text() + " " + $(xmlDoc).find("encoderReleasedDate").eq(0).text();
-            g_iDevices.set(data.deviceID, data);
             logger(szIP + " 获取设备信息成功");
         },
         error: function () {
@@ -599,8 +800,7 @@ function getDeviceInfo(szIP) {
 function startRealPlay(szIP, iStreamType, iChannelID, bZeroChannel) {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
 
-    if ("" == szIP)
-        return null;
+    if ("" == szIP) return null;
 
     if (oWndInfo != null) {// 已经在播放了，先停止
         WebVideoCtrl.I_Stop();
@@ -638,21 +838,22 @@ function stopRealPlay() {
     return null;
 }
 
-// 停止预览
+// 停止全部预览
 function stopAllRealPlay() {
     $(g_iWndStatus.values()).each(function () {
-        var status = this;
-        if (status == null) return true;
+        if (this == null) return true;
 
-        var oWndInfo = WebVideoCtrl.I_GetWindowStatus(status.Id);
+        var oWndInfo = WebVideoCtrl.I_GetWindowStatus(this.Id);
         if (oWndInfo != null) {
-            var iRet = WebVideoCtrl.I_Stop(status.Id);
+            var iRet = WebVideoCtrl.I_Stop(this.Id);
             if (0 == iRet) {
-                status.Recording = false;
-                status.Status = 0;
+                this.Recording = false;
+                this.Playing = false;
             }
         }
     });
+
+    logger("全部预览停止成功");
 }
 
 // 恢复
@@ -672,23 +873,28 @@ function resume() {
 function openSound() {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
     if (oWndInfo != null) {
-        var allWndInfo = WebVideoCtrl.I_GetWindowStatus();
         // 循环遍历所有窗口，如果有窗口打开了声音，先关闭
+        var allWndInfo = WebVideoCtrl.I_GetWindowStatus();
         for (var i = 0, iLen = allWndInfo.length; i < iLen; i++) {
-            oWndInfo = allWndInfo[i];
-            if (oWndInfo.bSound) {
-                WebVideoCtrl.I_CloseSound(oWndInfo.iIndex);
+            var current = allWndInfo[i];
+            if (current.bSound) {
+                WebVideoCtrl.I_CloseSound(current.iIndex);
                 break;
             }
         }
 
+        // 打开声音
         var iRet = WebVideoCtrl.I_OpenSound();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")打开声音成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")打开声音失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 关闭声音
@@ -698,10 +904,14 @@ function closeSound() {
         var iRet = WebVideoCtrl.I_CloseSound();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")关闭声音成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")关闭声音失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 设置音量
@@ -712,11 +922,15 @@ function setVolume(iVolume) {
     if (oWndInfo != null) {
         var iRet = WebVideoCtrl.I_SetVolume(iVolume);
         if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")音量设置成功");
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")设置音量" + iVolume + "成功");
+            return true;
         } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")音量设置失败");
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")设置音量" + iVolume + "失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 抓图
@@ -728,10 +942,14 @@ function capturePic() {
 
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")抓图成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")抓图失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 开始录像
@@ -777,10 +995,14 @@ function enableEZoom() {
         var iRet = WebVideoCtrl.I_EnableEZoom();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用电子放大成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用电子放大失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 禁用电子放大
@@ -790,10 +1012,14 @@ function disableEZoom() {
         var iRet = WebVideoCtrl.I_DisableEZoom();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用电子放大成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用电子放大失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 启用3D放大
@@ -803,10 +1029,14 @@ function enable3DZoom() {
         var iRet = WebVideoCtrl.I_Enable3DZoom();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用3D放大成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用3D放大失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 禁用3D放大
@@ -816,10 +1046,14 @@ function disable3DZoom() {
         var iRet = WebVideoCtrl.I_Disable3DZoom();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用3D放大成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用3D放大失败");
+            return false;
         }
     }
+
+    return null;
 }
 
 // 全屏
@@ -827,9 +1061,9 @@ function fullScreen() {
     WebVideoCtrl.I_FullScreen(true);
 }
 
-// PTZ控制 9为自动，1,2,3,4,5,6,7,8为方向PTZ
+// PTZ控制 1,2,3,4,5,6,7,8为方向PTZ，9为自动
 var g_bPTZAuto = false;
-function mouseDownPTZControl(iPTZIndex, bZeroChannel, iPTZSpeed) {
+function startPTZControl(iPTZIndex, bZeroChannel, iPTZSpeed) {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
     if (bZeroChannel) { // 零通道不支持云台
         return;
@@ -857,8 +1091,8 @@ function mouseDownPTZControl(iPTZIndex, bZeroChannel, iPTZSpeed) {
     }
 }
 
-// 方向PTZ停止
-function mouseUpPTZControl() {
+// PTZ停止
+function endPTZControl() {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
     if (oWndInfo != null) {
         WebVideoCtrl.I_PTZControl(1, true, {
@@ -889,7 +1123,7 @@ function PTZZoomIn() {
 }
 
 // 调焦-
-function PTZZoomout() {
+function PTZZoomOut() {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
     if (oWndInfo != null) {
         WebVideoCtrl.I_PTZControl(11, false, {
@@ -1138,10 +1372,14 @@ function clickCheckPluginVersion() {
     }
 }
 
-// 打开选择框 0：文件夹  1：文件
+// 打开选择框 0：文件夹 1：文件
 function openFileDlg(iType) {
     return WebVideoCtrl.I_OpenFileDlg(iType);
 }
+
+//#endregion
+
+//#region util
 
 // 键值对类
 function Map() {
@@ -1201,11 +1439,13 @@ function Map() {
     }
 }
 
+// 显示操作日志
 logger = function (msg) {
     var me = $('#ptz-events > .panel-body');
     me.html('<div class="ptz-event"><small><strong>' + dateFormat(new Date(), "yyyy-MM-dd hh:mm:ss") + '</strong> ' + msg + '</small></div>' + me.html());
 };
 
+// 格式化日期
 dateFormat = function (oDate, fmt) {
     var o = {
         "M+": oDate.getMonth() + 1, //月份
@@ -1227,16 +1467,20 @@ dateFormat = function (oDate, fmt) {
     return fmt;
 };
 
+// 设置组件尺寸
 setWindowSize = function () {
     var oSize = getWindowSize();
     $('#nav-wrapper').css({ height: oSize.height - 40 });
-    $('#videor,#ptz,#replayer').css({ height: oSize.height - 62 });
+    $('#videor,#ptz').css({ height: oSize.height - 62 });
     $('#ptz-events').css({ height: oSize.height - 319 });
 };
 
+// 设置窗口尺寸
 getWindowSize = function () {
     var nWidth = $(this).width() + $(this).scrollLeft(),
 		nHeight = $(this).height() + $(this).scrollTop();
 
     return { width: nWidth, height: nHeight };
 };
+
+//#endregion

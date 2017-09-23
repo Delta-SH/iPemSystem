@@ -1110,6 +1110,7 @@
     <Content Include="Scripts\kpi.performance500304.js" />
     <Content Include="Scripts\kpi.performance500305.js" />
     <Content Include="Scripts\kpi.performance500306.js" />
+    <Content Include="Scripts\home.recorder.js" />
     <Content Include="Scripts\report.custom400403.js" />
     <Content Include="Content\ux\fonts\topbar.eot" />
     <Content Include="Content\ux\fonts\topbar.ttf" />
@@ -1183,7 +1184,7 @@
     <Content Include="Scripts\ux\SingleCombo.js" />
     <Content Include="Scripts\ux\TreePicker.js" />
     <Content Include="Scripts\report.base400101.js" />
-    <Content Include="Scripts\videor.js" />
+    <Content Include="Scripts\home.videor.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1270,6 +1271,7 @@
     <Content Include="Views\Project\Reservation.cshtml" />
     <Content Include="Views\Fsu\ParamDiff.cshtml" />
     <Content Include="Views\Home\Videor.cshtml" />
+    <Content Include="Views\Home\Recorder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
