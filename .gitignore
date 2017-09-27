@@ -10,12 +10,6 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-# User-specific directories
-tools/hikvision/
-
-# Grunt
-Grunt/
-
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
