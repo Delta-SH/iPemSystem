@@ -17,11 +17,11 @@
 
 @font-face {
 	font-family: 'ipems-icon-font';
-	src: url('//at.alicdn.com/t/font_64245_cqtc9h9y5iq0vn29.eot');
-    src: url('//at.alicdn.com/t/font_64245_cqtc9h9y5iq0vn29.eot?#iefix') format('embedded-opentype'),
-          url('//at.alicdn.com/t/font_64245_cqtc9h9y5iq0vn29.woff') format('woff'),
-          url('//at.alicdn.com/t/font_64245_cqtc9h9y5iq0vn29.ttf') format('truetype'),
-          url('//at.alicdn.com/t/font_64245_cqtc9h9y5iq0vn29.svg#ipems-icon-font') format('svg');
+	src: url('/Content/ux/fonts/iconfont.eot');
+	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
+		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
+		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
 
 	font-weight: normal;
 	font-style: normal;

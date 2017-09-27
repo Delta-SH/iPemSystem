@@ -1442,7 +1442,7 @@ function Map() {
 // 显示操作日志
 logger = function (msg) {
     var me = $('#ptz-events > .panel-body');
-    me.html('<div class="ptz-event"><small><strong>' + dateFormat(new Date(), "yyyy-MM-dd hh:mm:ss") + '</strong> ' + msg + '</small></div>' + me.html());
+    me.html('<div class="ptz-event"><strong>' + dateFormat(new Date(), "MM-dd hh:mm:ss") + '</strong> ' + msg + '</div>' + me.html());
 };
 
 // 格式化日期

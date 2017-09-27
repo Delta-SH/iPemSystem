@@ -10,6 +10,12 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# User-specific directories
+Resources/tools/
+
+# Grunt
+Grunt/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

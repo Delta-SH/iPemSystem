@@ -3979,6 +3979,11 @@ Ext.define("Ext.ux.PointMultiTreePanel", {
     selectOnLeaf: true,
     multiSelect: true,
     searchVisible: true,
+    AI: true,
+    AO: true,
+    DI: true,
+    DO: true,
+    AL: true,
     initComponent: function () {
         var me = this;
 
@@ -3987,6 +3992,11 @@ Ext.define("Ext.ux.PointMultiTreePanel", {
         me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
+        me.store.proxy.extraParams.AI = me.AI;
+        me.store.proxy.extraParams.AO = me.AO;
+        me.store.proxy.extraParams.DI = me.DI;
+        me.store.proxy.extraParams.DO = me.DO;
+        me.store.proxy.extraParams.AL = me.AL;
         me.store.load();
     }
 });
@@ -4001,6 +4011,11 @@ Ext.define("Ext.ux.PointTreePanel", {
     selectOnLeaf: true,
     multiSelect: false,
     searchVisible: true,
+    AI: true,
+    AO: true,
+    DI: true,
+    DO: true,
+    AL: true,
     initComponent: function () {
         var me = this;
 
@@ -4009,6 +4024,11 @@ Ext.define("Ext.ux.PointTreePanel", {
         me.queryUrl = '/Component/GetPointTreePath';
 
         me.callParent(arguments);
+        me.store.proxy.extraParams.AI = me.AI;
+        me.store.proxy.extraParams.AO = me.AO;
+        me.store.proxy.extraParams.DI = me.DI;
+        me.store.proxy.extraParams.DO = me.DO;
+        me.store.proxy.extraParams.AL = me.AL;
         me.store.load();
     }
 });

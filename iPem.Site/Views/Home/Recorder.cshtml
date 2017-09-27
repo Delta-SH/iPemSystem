@@ -15,6 +15,7 @@
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
     <link href="@Url.Content("~/Content/framework/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/framework/vis-4.20.1/vis-timeline-graph2d.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/themes/css/videor.css")" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -66,6 +67,62 @@
                             <div id="plugin">
 
                             </div>
+                            <div id="controller">
+                                <a id="play" title="播放/暂停" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-play" aria-hidden="true"></span>
+                                </a>
+                                <a id="stop" title="停止" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-stop" aria-hidden="true"></span>
+                                </a>
+                                <a id="kuaitui" title="慢放" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-kuaitui" aria-hidden="true"></span>
+                                </a>
+                                <a id="kuaijin" title="快放" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-kuaijin" aria-hidden="true"></span>
+                                </a>
+                                <a id="danzhen" title="单帧" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-frame" aria-hidden="true"></span>
+                                </a>
+                                <a id="capture" title="抓图" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-capture" aria-hidden="true"></span>
+                                </a>
+                                <a id="recut" title="剪辑/停止剪辑" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-video" aria-hidden="true"></span>
+                                </a>
+                                <a id="voice" title="声音/静音" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-unvoice" aria-hidden="true"></span>
+                                </a>
+                                <a id="download" title="录像下载" href="javascript:void(0);" class="l ctrl">
+                                    <span class="icon ipems-icon-font ipems-icon-font-download" aria-hidden="true"></span>
+                                </a>
+
+                                <a id="fullscreen" title="全屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-fullscreen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen16" title="16分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-16screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen9" title="9分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-9screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen4" title="4分屏" href="javascript:void(0);" class="r screen">
+                                    <span class="icon ipems-icon-font ipems-icon-font-4screen" aria-hidden="true"></span>
+                                </a>
+                                <a id="screen1" title="1分屏" href="javascript:void(0);" class="r screen active">
+                                    <span class="icon ipems-icon-font ipems-icon-font-1screen" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="condition">
+                            <div id="calendar"></div>
+                            <button id="record-search" type="button" class="btn btn-success">查询录像</button>
+                            <div id="record-events" class="panel panel-default" data-toggle="context">
+                                <div class="panel-body">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="visualization">
+
                         </div>
                     </div>
                 </div>
@@ -79,12 +136,24 @@
             <p>您的浏览器尚未安装视频插件，请下载并安装视频插件（<strong>安装视频插件前，请先关闭浏览器</strong>）。</p>
             <p>视频插件安装完成后，请在IE9+浏览器或支持NPAPI插件的非IE浏览器下使用视频功能。</p>
             <p>
-                <a class="btn btn-info" target="_blank" href="~/Scripts/framework/hikvision/WebComponentsKit.exe" role="button">下载视频插件</a>
+                <a class="btn btn-info" target="_blank" href="~/Resources/tools/hikvision/WebComponentsKit.exe" role="button">下载视频插件</a>
+            </p>
+            <p>我们为您提供以下支持视频插件的特定浏览器版本，您可以选择其中一种，下载并安装使用它。</p>
+            <p>
+                <a class="btn btn-primary" target="_blank" href="~/Resources/tools/hikvision/360se8.zip" role="button">360浏览器</a>
+                <a class="btn btn-success" target="_blank" href="~/Resources/tools/hikvision/chrome41.zip" role="button">Chrome(谷歌)</a>
+                <a class="btn btn-info" target="_blank" href="~/Resources/tools/hikvision/firefox51.zip" role="button">Firefox(火狐)</a>
             </p>
         </div>
         <div id="unsupport" class="hidden">
             <h4>视频插件不被支持</h4>
             <p>您的浏览器不支持视频插件，请在IE9+浏览器或支持NPAPI插件的非IE浏览器下使用视频功能。</p>
+            <p>我们为您提供以下支持视频插件的特定浏览器版本，您可以选择其中一种，下载并安装使用它。</p>
+            <p>
+                <a class="btn btn-primary" target="_blank" href="~/Resources/tools/hikvision/360se8.zip" role="button">360浏览器</a>
+                <a class="btn btn-success" target="_blank" href="~/Resources/tools/hikvision/chrome41.zip" role="button">Chrome(谷歌)</a>
+                <a class="btn btn-info" target="_blank" href="~/Resources/tools/hikvision/firefox51.zip" role="button">Firefox(火狐)</a>
+            </p>
         </div>
         <div id="upgrade" class="hidden">
             <h4>视频插件版本更新</h4>
@@ -102,136 +171,12 @@
         </ul>
     </div>
 
-    <div id="localCfgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="SettingModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel">本地配置</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-3 title">播放性能</div>
-                            <div class="col-xs-3">
-                                <select id="netsPreach" name="netsPreach" class="form-control sel">
-                                    <option value="0">最短延时</option>
-                                    <option value="1">实时性好</option>
-                                    <option value="2">均衡</option>
-                                    <option value="3">流畅性好</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3 title">图像尺寸</div>
-                            <div class="col-xs-3">
-                                <select id="wndSize" name="wndSize" class="form-control sel">
-                                    <option value="0">充满</option>
-                                    <option value="1">4:3</option>
-                                    <option value="2">16:9</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">规则信息</div>
-                            <div class="col-xs-3">
-                                <select id="rulesInfo" name="rulesInfo" class="form-control sel">
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3 title">抓图文件格式</div>
-                            <div class="col-xs-3">
-                                <select id="captureFileFormat" name="captureFileFormat" class="form-control sel">
-                                    <option value="0">JPEG</option>
-                                    <option value="1">BMP</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">录像文件打包大小</div>
-                            <div class="col-xs-3">
-                                <select id="packSize" name="packSize" class="form-control sel">
-                                    <option value="0">256M</option>
-                                    <option value="1">512M</option>
-                                    <option value="2">1G</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3 title">协议类型</div>
-                            <div class="col-xs-3">
-                                <select id="protocolType" name="protocolType" class="form-control sel">
-                                    <option value="0">TCP</option>
-                                    <option value="2">UDP</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">录像文件保存路径</div>
-                            <div class="col-xs-9">
-                                <div class="input-group">
-                                    <input id="recordPath" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button id="recordPathButton" class="btn btn-default" type="button">浏览</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">回放下载保存路径</div>
-                            <div class="col-xs-9">
-                                <div class="input-group">
-                                    <input id="downloadPath" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button id="downloadPathButton" class="btn btn-default" type="button">浏览</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">预览抓图保存路径</div>
-                            <div class="col-xs-9">
-                                <div class="input-group">
-                                    <input id="previewPicPath" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button id="previewPicPathButton" class="btn btn-default" type="button">浏览</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">回放抓图保存路径</div>
-                            <div class="col-xs-9">
-                                <div class="input-group">
-                                    <input id="playbackPicPath" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button id="playbackPicPathButton" class="btn btn-default" type="button">浏览</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3 title">回放剪辑保存路径</div>
-                            <div class="col-xs-9">
-                                <div class="input-group">
-                                    <input id="playbackFilePath" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button id="playbackFilePathButton" class="btn btn-default" type="button">浏览</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:100px;">关闭</button>
-                    <button id="savelsetting" type="button" class="btn btn-success" style="width:100px;">保存</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="@Url.Content("~/Scripts/framework/jquery-1.11.3.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/framework/bootstrap-3.3.5.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/framework/bootstrap-contextmenu.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/framework/vis-4.20.1/vis-timeline-graph2d.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/framework/hikvision/WebVideoCtrl.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/home.recorder.js")" type="text/javascript"></script>
 </body>

@@ -56,6 +56,235 @@ $(document).ready(function () {
         }
     });
 
+    // 绑定日历
+    WdatePicker({ eCont: 'calendar', isShowWeek: true, firstDayOfWeek: 1, maxDate: '%y-%M-%d', onpicked: function (dp) { $('#record-search').attr('date', dp.cal.getDateStr()); } })
+
+    // 查询录像
+    $('#record-search').on('click', function (e) {
+        e.preventDefault();
+        alert($(this).attr('date'));
+        $('html,body').animate({ scrollTop: $(document).height() - $(window).height() }, 500);
+    });
+    //#endregion
+
+    //#region controller
+
+    // 播放/暂停视频
+    $('#play').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === true) {
+            if (stopRealPlay() === false) {
+                alert("暂停失败，请重试。");
+                return false;
+            } else {
+                status.Recording = false;
+                status.Playing = false;
+            }
+        } else if (status.Playing === false) {
+            if (startRealPlay(status.Ip, status.Mask, status.Channel, status.Zero) === true) {
+                status.Recording = false;
+                status.Playing = true;
+            } else {
+                alert("预览失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 停止所有视频
+    $('#stop').on('click', function (e) {
+        e.preventDefault();
+        stopAllRealPlay();
+
+        // 重置当前窗口图标
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) {
+            initIcons();
+        } else {
+            resetIcons(status);
+        }
+    });
+
+    // 抓图
+    $('#capture').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === true) {
+            if (capturePic() === true) {
+                alert('抓图成功（保存路径参见本地配置）');
+            } else {
+                alert('抓图失败');
+            }
+        }
+    });
+
+    // 录像/停止录像
+    $('#record').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.Recording === true) {
+            if (stopRecord() === false) {
+                alert("停止录像失败，请重试。");
+                return false;
+            } else {
+                status.Recording = false;
+                alert("录像成功（保存路径参见本地配置）");
+            }
+        } else if (status.Recording === false) {
+            if (startRecord() === true) {
+                status.Recording = true;
+            } else {
+                alert("录像失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 声音/静音
+    $('#voice').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null || status.Playing === false) return false;
+
+        if (status.OpenSound === true) {
+            if (closeSound() === false) {
+                alert("静音失败，请重试。");
+                return false;
+            } else {
+                status.OpenSound = false;
+            }
+        } else if (status.OpenSound === false) {
+            if (openSound() === true) {
+                //关闭所有窗口的声音
+                $(g_iWndStatus.values()).each(function () {
+                    if (this == null) return true;
+                    this.OpenSound = false;
+                });
+
+                status.OpenSound = true;
+            } else {
+                alert("开启声音失败，请重试。");
+                return false;
+            }
+        }
+
+        resetIcons(status);
+    });
+
+    // 全屏
+    $('#fullscreen').on('click', function (e) {
+        e.preventDefault();
+        fullScreen();
+    });
+
+    // 4*4分屏
+    $('#screen16').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('active')) return false;
+        $('#controller > a.screen').removeClass('active');
+        $(this).addClass('active');
+
+        changeWndNum(4);
+    });
+
+    // 3*3分屏
+    $('#screen9').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('active')) return false;
+        $('#controller > a.screen').removeClass('active');
+        $(this).addClass('active');
+
+        changeWndNum(3);
+    });
+
+    // 2*2分屏
+    $('#screen4').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('active')) return false;
+        $('#controller > a.screen').removeClass('active');
+        $(this).addClass('active');
+
+        changeWndNum(2);
+    });
+
+    // 1*1分屏
+    $('#screen1').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('active')) return false;
+        $('#controller > a.screen').removeClass('active');
+        $(this).addClass('active');
+
+        changeWndNum(1);
+    });
+
+    //#endregion
+
+    //#region timeline
+    // DOM element where the Timeline will be attached
+    var visualization = document.getElementById('visualization');
+
+    var groups = new vis.DataSet([
+      { id: 1, content: '命令', title: '移动侦测录像、智能录像', className: 'record-group1' },
+      { id: 2, content: '定时', title: '定时录像', className: 'record-group2' },
+      { id: 3, content: '报警', title: '动测或报警、报警和动测', className: 'record-group3' },
+      { id: 4, content: '手动', title: '手动录像', className: 'record-group4' }
+    ]);
+
+    // Create a DataSet (allows two way data-binding)
+    var items = new vis.DataSet([
+      { id: 1, content: 'item 1', group: 1, start: vis.moment("2017-09-25 00:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 01:32:43", "YYYY-MM-DD HH:mm:ss") },
+      { id: 2, content: 'item 2', group: 2, start: vis.moment("2017-09-25 01:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 02:32:43", "YYYY-MM-DD HH:mm:ss") },
+      { id: 3, content: 'item 3', group: 3, start: vis.moment("2017-09-25 03:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 04:27:55", "YYYY-MM-DD HH:mm:ss") },
+      { id: 4, content: 'item 4', group: 4, start: vis.moment("2017-09-25 04:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 05:27:55", "YYYY-MM-DD HH:mm:ss") },
+      { id: 5, content: 'item 5', group: 1, start: vis.moment("2017-09-25 05:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 06:32:43", "YYYY-MM-DD HH:mm:ss") },
+      { id: 6, content: 'item 6', group: 2, start: vis.moment("2017-09-25 06:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 07:32:43", "YYYY-MM-DD HH:mm:ss") },
+      { id: 7, content: 'item 7', group: 3, start: vis.moment("2017-09-25 07:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 08:27:55", "YYYY-MM-DD HH:mm:ss") },
+      { id: 8, content: 'item 8', group: 4, start: vis.moment("2017-09-25 08:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 09:27:55", "YYYY-MM-DD HH:mm:ss") }
+    ]);
+
+    // Configuration for the Timeline
+    var options = {
+        start: vis.moment("2017-09-25 00:00:00", "YYYY-MM-DD HH:mm:ss"),
+        timeAxis: { scale: 'minute', step: 30 },
+        min: vis.moment("2017-09-25 00:00:00", "YYYY-MM-DD HH:mm:ss"),
+        max: vis.moment("2017-09-25 23:59:59", "YYYY-MM-DD HH:mm:ss"),
+        showMajorLabels: false,
+        editable:{
+            remove:true
+        },
+        margin: {
+            axis: 4,
+            item: 4
+        },
+        format: {
+            majorLabels: {
+                minute: 'YYYY-MM-DD ddd'
+            }
+        },
+        locales: {
+            // create a new locale (text strings should be replaced with localized strings)
+            reclocale: {
+                edit: '编辑',
+                del: '删除选中项',
+                back: '后退'
+            }
+        },
+        locale: 'reclocale'
+    };
+
+    // Create a Timeline
+    var timeline = new vis.Timeline(visualization, items,groups, options);
     //#endregion
 
     //#region plugin
@@ -1034,7 +1263,8 @@ dateFormat = function (oDate, fmt) {
 setWindowSize = function () {
     var oSize = getWindowSize();
     $('#nav-wrapper').css({ height: oSize.height - 40 });
-    $('#recorder').css({ height: oSize.height - 62 });
+    $('#recorder,#condition').css({ height: oSize.height - 100 });
+    $('#record-events').css({ height: oSize.height - 318 });
 };
 
 // 设置窗口尺寸

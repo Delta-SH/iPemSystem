@@ -29,15 +29,15 @@ input, button, a {
 }
 
 @font-face {
-    font-family: 'ipems-icon-font';
-    src: url('//at.alicdn.com/t/font_64245_sgdgp62vcbuwstt9.eot');
-    src: url('//at.alicdn.com/t/font_64245_sgdgp62vcbuwstt9.eot?#iefix') format('embedded-opentype'), 
-         url('//at.alicdn.com/t/font_64245_sgdgp62vcbuwstt9.woff') format('woff'), 
-         url('//at.alicdn.com/t/font_64245_sgdgp62vcbuwstt9.ttf') format('truetype'), 
-         url('//at.alicdn.com/t/font_64245_sgdgp62vcbuwstt9.svg#ipems-icon-font') format('svg');
+	font-family: 'ipems-icon-font';
+	src: url('/Content/ux/fonts/iconfont.eot');
+	src: url('/Content/ux/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+		 url('/Content/ux/fonts/iconfont.ttf') format('truetype'),
+		 url('/Content/ux/fonts/iconfont.woff') format('woff'),
+		 url('/Content/ux/fonts/iconfont.svg?#ipems-icon-font') format('svg');
 
-    font-weight: normal;
-    font-style: normal;
+	font-weight: normal;
+	font-style: normal;
 }
 
 .ipems-icon-font {
@@ -160,6 +160,14 @@ input, button, a {
     content: "\f044";
 }
 
+.ipems-icon-font-download:before {
+    content: "\f090";
+}
+
+.ipems-icon-font-frame:before {
+    content: "\f091";
+}
+
 .clearfix {
     display: block;
 }
@@ -208,6 +216,11 @@ input, button, a {
 
 #errorPanel {
     margin: 50px;
+}
+
+#errorPanel .btn {
+    width: 120px;
+    margin-right: 10px;
 }
 
 .left-panel,
@@ -377,9 +390,15 @@ input, button, a {
     padding: 5px;
 }
 
-#videor, #recorder {
+#videor {
     position: relative;
     margin-right: 125px;
+    height: 400px;
+}
+
+#recorder {
+    position: relative;
+    margin-right: 190px;
     height: 400px;
 }
 
@@ -422,6 +441,15 @@ input, button, a {
 
 #ptz {
     width: 120px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    height: 400px;
+    text-align: center;
+}
+
+#condition {
+    width: 185px;
     position: absolute;
     right: 5px;
     top: 5px;
@@ -497,7 +525,7 @@ input, button, a {
     margin-bottom: 5px;
 }
 
-.ptz-ctrl .panel {
+.ptz-ctrl .panel  {
     border-radius: 0;
     margin-bottom: 0;
     overflow: hidden;
@@ -511,6 +539,7 @@ input, button, a {
 .ptz-ctrl .ptz-event,
 .ptz-ctrl .ptz-event strong {
     display: block;
+    font-size: 11px;
 }
 
 #events-context-menu > ul {
@@ -540,4 +569,115 @@ input, button, a {
     font-weight: bold;
     filter: alpha(opacity=60);
     opacity: 0.6;
+}
+
+#visualization {
+    margin-top:5px;
+    background-color: #f9f9f9;
+}
+
+#record-search {
+    width:186px;
+}
+
+#record-events {
+    margin-top: 5px;
+    border-radius: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.record-group1 .vis-inner {
+    color: #fff !important;
+    background-color: #337ab7;
+}
+
+.record-group1 .vis-item {
+    color: #fff !important;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.record-group1 .vis-item.vis-selected {
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+.record-group2 .vis-inner {
+    color: #fff !important;
+    background-color: #5cb85c;
+}
+
+.record-group2 .vis-item {
+    color: #fff !important;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+.record-group2 .vis-item.vis-selected {
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+.record-group3 .vis-inner {
+    color: #fff !important;
+    background-color: #d9534f;
+}
+
+.record-group3 .vis-item {
+    color: #fff !important;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.record-group3 .vis-item.vis-selected {
+    background-color: #c9302c;
+    border-color: #ac2925;
+}
+
+.record-group4 .vis-inner {
+    color: #fff !important;
+    background-color: #5bc0de;
+}
+
+.record-group4 .vis-item {
+    color: #fff !important;
+    background-color: #5bc0de;
+    border-color: #46b8da;
+}
+
+.record-group4 .vis-item.vis-selected {
+    background-color: #31b0d5;
+    border-color: #269abc;
+}
+
+.vis-item {
+    cursor:pointer;
+}
+
+.vis-item .vis-delete {
+    height: 21px;
+    width: 22px;
+    padding: 3px 5px;
+    background-color: #f05050;
+    border-radius: 2px;
+}
+
+.vis-item .vis-delete:after {
+    color: #fff !important;
+    font-size: 20px;
+}
+
+.vis-item .vis-delete {
+    top: -1px;
+    right: -24px;
+}
+
+.vis-item .vis-delete:hover {
+    background-color: #ee3939;
+    border-color: #ed2a2a;
+}
+
+.vis-item .vis-item-content {
+    padding: 2px 5px; 
 }
