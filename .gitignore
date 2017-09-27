@@ -11,7 +11,7 @@
 *.userprefs
 
 # User-specific directories
-Resources/tools/
+tools/hikvision/
 
 # Grunt
 Grunt/
