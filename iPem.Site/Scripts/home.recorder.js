@@ -3,6 +3,17 @@ var g_iWndTypes = 1; // 默认窗口数
 var g_iWndStatus = new Map(); // 窗口的自定义状态
 var g_iCameras = new Map(); // 所有的摄像机信息
 var g_iLogins = new Map(); // 已登录的摄像机信息
+var g_iTimeLine = null; // 录像时间轴
+var g_iTimeItems = new vis.DataSet(); // 录像文件
+var g_iTimeGroups = new vis.DataSet([
+      { id: 1, content: '命令', title: '移动侦测录像、智能录像', className: 'record-group1' },
+      { id: 2, content: '定时', title: '定时录像', className: 'record-group2' },
+      { id: 3, content: '报警', title: '动测或报警、报警和动测', className: 'record-group3' },
+      { id: 4, content: '手动', title: '手动录像', className: 'record-group4' }
+]); // 录像文件分组
+var g_iRecTypes = []; // 录像类型过滤
+var g_iRecDownloads = new Map(); // 录像下载列表
+var g_iRecTimer = null;
 
 $(document).ready(function () {
 
@@ -26,8 +37,17 @@ $(document).ready(function () {
             }
         },
         beforeunload: function () {
+            clearInterval(g_iRecTimer);
+            stopAllPlayback();
         }
     });
+
+    // 录像下载更新进度定时器
+    g_iRecTimer = setInterval(function () {
+        if (g_iRecDownloads.size > 0) {
+
+        }
+    }, 5000);
 
     // 重新加载后，定位到已选中的菜单位置
     var menu = $('li.menu-item > a.selected');
@@ -54,17 +74,70 @@ $(document).ready(function () {
             $('li.menu-item a').removeClass('selected');
             me.addClass('selected').parents('ul.expandable-level1').prev().addClass('selected');
         }
+
+        var data = JSON.parse(me.attr('data'));
+        if (g_iLogins.contain(data.ip) === false) {
+            alert("尚未登录视频服务器");
+            return false;
+        }
+
+        // 查询回放录像
+        $('#record-search').attr('ip', data.ip);
+        $('#record-search').attr('channel', data.channel);
+        $('#record-search').attr('zero', data.zero);
+        $('#record-search').removeClass('disabled');
+    });
+
+    // 清屏右键菜单
+    $('#record-events').contextmenu({
+        target: '#events-context-menu',
+        onItem: function (context, e) {
+            context.children(':first').html('');
+        }
     });
 
     // 绑定日历
-    WdatePicker({ eCont: 'calendar', isShowWeek: true, firstDayOfWeek: 1, maxDate: '%y-%M-%d', onpicked: function (dp) { $('#record-search').attr('date', dp.cal.getDateStr()); } })
+    $('#calendar-trigger').on('click', function (e) {
+        e.preventDefault();
+        WdatePicker({
+            el: $('#calendar')[0],
+            dateFmt: 'yyyy-MM-dd',
+            isShowClear: false,
+            firstDayOfWeek: 1,
+            isShowWeek: true,
+            maxDate: '%y-%M-%d'
+        });
+    });
+    $('#calendar').val(vis.moment().format('YYYY-MM-DD'));
 
     // 查询录像
     $('#record-search').on('click', function (e) {
         e.preventDefault();
-        alert($(this).attr('date'));
-        $('html,body').animate({ scrollTop: $(document).height() - $(window).height() }, 500);
+        if (g_iTimeLine == null) return;
+        var date = $('#calendar').val()
+        if (date == '') return;
+        var ip = $(this).attr('ip');
+        if (typeof (ip) == 'undefined') return;
+        var channel = $(this).attr('channel');
+        if (typeof (channel) == 'undefined') return;
+        var zero = $(this).attr('zero') === 'true';
+        var start = vis.moment(date).hour(0).minute(0).second(0);
+        var end = vis.moment(date).hour(12).minute(59).second(59);
+
+        g_iRecTypes = [];
+        if ($('#timing').is(':checked')) g_iRecTypes.push('timing');
+        if ($('#motion').is(':checked')) g_iRecTypes.push('motion');
+        if ($('#motionOrAlarm').is(':checked')) g_iRecTypes.push('motionOrAlarm');
+        if ($('#motionAndAlarm').is(':checked')) g_iRecTypes.push('motionAndAlarm');
+        if ($('#manual').is(':checked')) g_iRecTypes.push('manual');
+        if ($('#smart').is(':checked')) g_iRecTypes.push('smart');
+
+        g_iTimeLine.setOptions({ start: start, end: end.clone().hour(12).minute(0).second(0), min: start, max: end });
+
+        iSearchTimes = 0;
+        recordSearch(ip, channel, zero, start.format('YYYY-MM-DD HH:mm:ss'), end.format('YYYY-MM-DD HH:mm:ss'));
     });
+
     //#endregion
 
     //#region controller
@@ -75,38 +148,107 @@ $(document).ready(function () {
         var status = g_iWndStatus.get(g_iWndIndex);
         if (status == null) return false;
 
-        if (status.Playing === true) {
-            if (stopRealPlay() === false) {
+        if (status.Playing === 0) {
+            if (startPlayback(status.IP, status.Channel, status.Zero, status.Start, status.End) === true) {
+                status.Recording = false;
+                status.Speed = 0;
+                status.Playing = 1;
+            } else {
+                alert("回放失败，请重试。");
+                return false;
+            }
+        } else if (status.Playing === 1) {
+            if (pause() === false) {
                 alert("暂停失败，请重试。");
                 return false;
             } else {
-                status.Recording = false;
-                status.Playing = false;
+                status.Playing = 2;
             }
-        } else if (status.Playing === false) {
-            if (startRealPlay(status.Ip, status.Mask, status.Channel, status.Zero) === true) {
-                status.Recording = false;
-                status.Playing = true;
-            } else {
-                alert("预览失败，请重试。");
+        } else if (status.Playing === 2) {
+            if (resume() === false) {
+                alert("恢复失败，请重试。");
                 return false;
+            } else {
+                status.Playing = 1;
+            }
+        } else if (status.Playing === 3) {
+            if (resume() === false) {
+                alert("恢复失败，请重试。");
+                return false;
+            } else {
+                status.Speed = 0;
+                status.Playing = 1;
             }
         }
 
         resetIcons(status);
     });
 
-    // 停止所有视频
+    // 停止视频
     $('#stop').on('click', function (e) {
         e.preventDefault();
-        stopAllRealPlay();
+        if (stopPlayback() === false) {
+            alert("停止失败，请重试。");
+            return false;
+        }
 
-        // 重置当前窗口图标
         var status = g_iWndStatus.get(g_iWndIndex);
-        if (status == null) {
-            initIcons();
-        } else {
+        if (status != null) {
+            status.Recording = false;
+            status.Playing = 0;
+        }
+
+        resetIcons(status);
+    });
+
+    //慢放
+    $('#kuaitui').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === 1) {
+            if (playSlow(status.Speed - 1) === false) {
+                return false;
+            } else {
+                status.Speed -= 1;
+            }
+        }
+    });
+
+    //快放
+    $('#kuaijin').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === 1) {
+            if (playFast(status.Speed + 1) === false) {
+                return false;
+            } else {
+                status.Speed += 1;
+            }
+        }
+    });
+
+    //单帧
+    $('#danzhen').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Playing === 1) {
+            if (frame() === false) {
+                return false;
+            } else {
+                status.Playing = 3;
+            }
+
             resetIcons(status);
+        } else if (status.Playing === 3) {
+            if (frame() === false) {
+                return false;
+            }
         }
     });
 
@@ -116,7 +258,7 @@ $(document).ready(function () {
         var status = g_iWndStatus.get(g_iWndIndex);
         if (status == null) return false;
 
-        if (status.Playing === true) {
+        if (status.Playing === 1 || status.Playing === 3) {
             if (capturePic() === true) {
                 alert('抓图成功（保存路径参见本地配置）');
             } else {
@@ -125,25 +267,25 @@ $(document).ready(function () {
         }
     });
 
-    // 录像/停止录像
-    $('#record').on('click', function (e) {
+    // 剪辑/停止剪辑
+    $('#recut').on('click', function (e) {
         e.preventDefault();
         var status = g_iWndStatus.get(g_iWndIndex);
-        if (status == null || status.Playing === false) return false;
+        if (status == null || status.Playing !== 1) return false;
 
         if (status.Recording === true) {
             if (stopRecord() === false) {
-                alert("停止录像失败，请重试。");
+                alert("停止剪辑失败，请重试。");
                 return false;
             } else {
                 status.Recording = false;
-                alert("录像成功（保存路径参见本地配置）");
+                alert("剪辑成功（保存路径参见本地配置）");
             }
         } else if (status.Recording === false) {
             if (startRecord() === true) {
                 status.Recording = true;
             } else {
-                alert("录像失败，请重试。");
+                alert("剪辑失败，请重试。");
                 return false;
             }
         }
@@ -155,7 +297,7 @@ $(document).ready(function () {
     $('#voice').on('click', function (e) {
         e.preventDefault();
         var status = g_iWndStatus.get(g_iWndIndex);
-        if (status == null || status.Playing === false) return false;
+        if (status == null || status.Playing !== 1) return false;
 
         if (status.OpenSound === true) {
             if (closeSound() === false) {
@@ -179,6 +321,44 @@ $(document).ready(function () {
             }
         }
 
+        resetIcons(status);
+    });
+
+    // 下载
+    $('#download').on('click', function (e) {
+        e.preventDefault();
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status == null) return false;
+
+        if (status.Downloading === false) {
+            var iDownloadID = startDownloadRecord(status.IP, status.Channel, status.Uri);
+            if (iDownloadID == null) {
+                alert('录像下载失败');
+                return false;
+            }
+
+            var rec = new Object();
+            rec.DownloadID = iDownloadID;
+            rec.Process = 0;
+            g_iRecDownloads.set(status.File, rec);
+            status.Downloading = true;
+        } else {
+            if (confirm('您确认要停止下载吗？') == true) {
+                var rec = g_iRecDownloads.get(status.File);
+                if (rec == null) {
+                    status.Downloading = false;
+                } else {
+                    if (stopDownloadRecord(status.IP, status.Channel, rec.DownloadID) == true) {
+                        g_iRecDownloads.remove(status.File);
+                        status.Downloading = false;
+                    } else {
+                        alert('停止下载失败');
+                        return false;
+                    }
+                }
+            }
+        }
+        
         resetIcons(status);
     });
 
@@ -231,60 +411,56 @@ $(document).ready(function () {
     //#endregion
 
     //#region timeline
-    // DOM element where the Timeline will be attached
-    var visualization = document.getElementById('visualization');
 
-    var groups = new vis.DataSet([
-      { id: 1, content: '命令', title: '移动侦测录像、智能录像', className: 'record-group1' },
-      { id: 2, content: '定时', title: '定时录像', className: 'record-group2' },
-      { id: 3, content: '报警', title: '动测或报警、报警和动测', className: 'record-group3' },
-      { id: 4, content: '手动', title: '手动录像', className: 'record-group4' }
-    ]);
-
-    // Create a DataSet (allows two way data-binding)
-    var items = new vis.DataSet([
-      { id: 1, content: 'item 1', group: 1, start: vis.moment("2017-09-25 00:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 01:32:43", "YYYY-MM-DD HH:mm:ss") },
-      { id: 2, content: 'item 2', group: 2, start: vis.moment("2017-09-25 01:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 02:32:43", "YYYY-MM-DD HH:mm:ss") },
-      { id: 3, content: 'item 3', group: 3, start: vis.moment("2017-09-25 03:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 04:27:55", "YYYY-MM-DD HH:mm:ss") },
-      { id: 4, content: 'item 4', group: 4, start: vis.moment("2017-09-25 04:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 05:27:55", "YYYY-MM-DD HH:mm:ss") },
-      { id: 5, content: 'item 5', group: 1, start: vis.moment("2017-09-25 05:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 06:32:43", "YYYY-MM-DD HH:mm:ss") },
-      { id: 6, content: 'item 6', group: 2, start: vis.moment("2017-09-25 06:27:12", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 07:32:43", "YYYY-MM-DD HH:mm:ss") },
-      { id: 7, content: 'item 7', group: 3, start: vis.moment("2017-09-25 07:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 08:27:55", "YYYY-MM-DD HH:mm:ss") },
-      { id: 8, content: 'item 8', group: 4, start: vis.moment("2017-09-25 08:45:22", "YYYY-MM-DD HH:mm:ss"), end: vis.moment("2017-09-25 09:27:55", "YYYY-MM-DD HH:mm:ss") }
-    ]);
-
-    // Configuration for the Timeline
     var options = {
-        start: vis.moment("2017-09-25 00:00:00", "YYYY-MM-DD HH:mm:ss"),
-        timeAxis: { scale: 'minute', step: 30 },
-        min: vis.moment("2017-09-25 00:00:00", "YYYY-MM-DD HH:mm:ss"),
-        max: vis.moment("2017-09-25 23:59:59", "YYYY-MM-DD HH:mm:ss"),
-        showMajorLabels: false,
-        editable:{
-            remove:true
-        },
-        margin: {
-            axis: 4,
-            item: 4
-        },
+        start: vis.moment().hour(0).minute(0).second(0),
+        end: vis.moment().hour(12).minute(0).second(0),
+        min: vis.moment().hour(0).minute(0).second(0),
+        max: vis.moment().hour(23).minute(59).second(59),
+        zoomMin: 1000, // second
+        zoomMax: 1000 * 60 * 60 * 24,  // day
+        showMajorLabels: true,
+        minHeight: 100,
+        stack: false,
         format: {
             majorLabels: {
-                minute: 'YYYY-MM-DD ddd'
+                millisecond: 'HH:mm:ss （提示：双击播放视频）',
+                second: 'MM-DD HH:mm （提示：双击播放视频）',
+                minute: 'ddd MM-DD （提示：双击播放视频）',
+                hour: 'ddd YYYY-MM-DD （提示：双击播放视频）',
             }
         },
-        locales: {
-            // create a new locale (text strings should be replaced with localized strings)
-            reclocale: {
-                edit: '编辑',
-                del: '删除选中项',
-                back: '后退'
-            }
-        },
-        locale: 'reclocale'
+        editable: { remove: true },
+        margin: { axis: 4, item: 4 }
     };
 
-    // Create a Timeline
-    var timeline = new vis.Timeline(visualization, items,groups, options);
+    g_iTimeLine = new vis.Timeline(document.getElementById('visualization'), g_iTimeItems, g_iTimeGroups, options);
+
+    //监听事件
+    g_iTimeLine.on('doubleClick', function (properties) {
+        if (properties.item != null) {
+            var index = properties.item;
+            if (iSearchResult.length > index) {
+                var current = iSearchResult[index];
+                var status = g_iWndStatus.get(g_iWndIndex);
+                if (status == null) {
+                    status = createStatus(g_iWndIndex, iSearchResult.IP, iSearchResult.Channel, iSearchResult.Zero, current.FileName, current.Start, current.End, current.PlaybackURI);
+                    g_iWndStatus.set(status.Id, status);
+                } else {
+                    initStatus(status, iSearchResult.IP, iSearchResult.Channel, iSearchResult.Zero, current.FileName, current.Start, current.End, current.PlaybackURI);
+                }
+
+                if (startPlayback(iSearchResult.IP, iSearchResult.Channel, iSearchResult.Zero, current.Start, current.End) === true) {
+                    status.Playing = 1;
+                } else {
+                    alert("回放失败，请重试。");
+                }
+
+                resetIcons(status);
+            }
+        }
+    });
+
     //#endregion
 
     //#region plugin
@@ -322,6 +498,18 @@ $(document).ready(function () {
                     resetIcons(status);
                 }
             }
+        },
+        cbEvent: function (iType, index) {
+            if (iType === 2) {
+                var status = g_iWndStatus.get(index);
+                if (status != null) {
+                    status.Playing = 0;
+                    status.Recording = false;
+
+                    if (index === g_iWndIndex)
+                        resetIcons(status);
+                }
+            }
         }
     });
 
@@ -353,70 +541,56 @@ $(document).ready(function () {
 //#region api
 
 // 创建窗口参数
-function createStatus(id, ip, mask, channel, zero) {
+function createStatus(id, ip, channel, zero, file, start, end, uri) {
     var status = new Object();
     status.Id = id; // 窗口序号1-16
-    status.Ip = ip;
-    status.Mask = mask;
+    status.IP = ip;
     status.Channel = channel;
     status.Zero = zero;
+    status.File = file;
+    status.Start = start;
+    status.End = end;
+    status.Uri = uri;
 
-    status.Playing = false;
+    status.Playing = 0; // 0:停止 1:播放 2：暂停 3：单帧
+    status.Speed = 0;
     status.Recording = false;
-    status.EZoom = false;
-    status.DZoom = false;
     status.OpenSound = false;
-    status.Volume = 50; // 0-100
-    status.PTZSpeed = 4; // 1,2,3,4,5,6,7
+    status.Downloading = g_iRecDownloads.contain(file);
     return status;
 }
 
 // 初始化窗口参数
-function initStatus(status, ip, mask, channel, zero) {
-    status.Ip = ip;
-    status.Mask = mask;
+function initStatus(status, ip, channel, zero, file, start, end, uri) {
+    status.IP = ip;
     status.Channel = channel;
     status.Zero = zero;
+    status.File = file;
+    status.Start = start;
+    status.End = end;
+    status.Uri = uri;
 
-    status.Playing = false;
+    status.Playing = 0; // 0:停止 1:播放 2：暂停 3：单帧
+    status.Speed = 0;
     status.Recording = false;
-    status.EZoom = false;
-    status.DZoom = false;
     status.OpenSound = false;
-    status.Volume = 50; // 0-100
-    status.PTZSpeed = 4; // 1,2,3,4,5,6,7
+    status.Downloading = g_iRecDownloads.contain(file);
 }
 
 // 重置控制图标
 function resetIcons(status) {
     var play = $('#play').children(':first');
-    if (status.Playing === false && play.hasClass('ipems-icon-font-pause')) {
-        play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
-    } else if (status.Playing === true && play.hasClass('ipems-icon-font-play')) {
+    if (status.Playing === 1 && play.hasClass('ipems-icon-font-play')) {
         play.removeClass('ipems-icon-font-play').addClass('ipems-icon-font-pause');
+    } else if (status.Playing !== 1 &&  play.hasClass('ipems-icon-font-pause')) {
+        play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
     }
 
-    var record = $('#record');
-    if (status.Recording === true && record.hasClass('active') === false) {
-        record.addClass('active');
-    } else if (status.Recording === false && record.hasClass('active') === true) {
-        record.removeClass('active');
-    }
-
-    var ezoom = $('#ezoom');
-    if (status.EZoom === true && ezoom.hasClass('active') === false) {
-        $('#controller > .zoom').removeClass('active');
-        ezoom.addClass('active');
-    } else if (status.EZoom === false && ezoom.hasClass('active') === true) {
-        ezoom.removeClass('active');
-    }
-
-    var dzoom = $('#dzoom');
-    if (status.DZoom === true && dzoom.hasClass('active') === false) {
-        $('#controller > .zoom').removeClass('active');
-        dzoom.addClass('active');
-    } else if (status.DZoom === false && dzoom.hasClass('active') === true) {
-        dzoom.removeClass('active');
+    var recut = $('#recut');
+    if (status.Recording === true && recut.hasClass('active') === false) {
+        recut.addClass('active');
+    } else if (status.Recording === false && recut.hasClass('active') === true) {
+        recut.removeClass('active');
     }
 
     var sound = $('#voice').children(':first');
@@ -425,6 +599,13 @@ function resetIcons(status) {
     } else if (status.OpenSound === false && sound.hasClass('ipems-icon-font-voice')) {
         sound.removeClass('ipems-icon-font-voice').addClass('ipems-icon-font-unvoice');
     }
+
+    var download = $('#download');
+    if (status.Downloading === false && download.hasClass('active') === true) {
+        download.removeClass('active');
+    } else if (status.Downloading === true && download.hasClass('active') === false) {
+        download.addClass('active');
+    }
 }
 
 // 初始化控制图标
@@ -432,18 +613,34 @@ function initIcons() {
     var play = $('#play').children(':first');
     play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
 
-    var record = $('#record').children(':first');
-    record.removeClass('active');
-
-    var ezoom = $('#ezoom').children(':first');
-    ezoom.removeClass('active');
-
-    var dzoom = $('#dzoom').children(':first');
-    dzoom.removeClass('active');
+    var recut = $('#recut');
+    recut.removeClass('active');
 
     var sound = $('#voice').children(':first');
     sound.removeClass('ipems-icon-font-voice').addClass('ipems-icon-font-unvoice');
+
+    var download = $('#download');
+    download.removeClass('active');
 }
+
+// 重绘录像时间轴
+function redraw() {
+    var items = [];
+    $(iSearchResult).each(function (index) {
+        items.push({
+            id: index,
+            content: this.FileName,
+            group: getRecordType(this.Type),
+            start: vis.moment(this.Start),
+            //end: vis.moment(this.End),
+            title: ['<div>录像名称：' + this.FileName + '</div>', '<div>录像类型：' + getRecordTypeName(this.Type) + '</div>', '<div>开始时间：' + this.Start + '</div>', '<div>结束时间：' + this.End + '</div>', '<div>录像时长：' + vis.moment('2017-01-01').add(this.Interval, 's').format('HH:mm:ss') + '</div>', '<div>文件大小：' + this.FileSize + '</div>'].join('')
+        });
+    });
+
+    g_iTimeItems.clear();
+    g_iTimeItems.add(items);
+    $('html,body').animate({ scrollTop: $(document).height() - $(window).height() }, 500);
+};
 
 // 窗口分割数
 function changeWndNum(iType) {
@@ -588,41 +785,106 @@ function getDeviceInfo(szIP) {
     });
 }
 
-// 开始预览
-function startRealPlay(szIP, iStreamType, iChannelID, bZeroChannel) {
+// 搜索录像
+var iSearchTimes = 0;
+var iSearchResult = [];
+function recordSearch(szIP, iChannelID, bZeroChannel, szStartTime, szEndTime) {
+    // 零通道不支持录像搜索
+    if (bZeroChannel) {
+        logger('零通道不支持录像搜索');
+        return;
+    }
+
+    // 首次搜索
+    if (0 == iSearchTimes) {
+        iSearchResult = [];
+        iSearchResult.IP = szIP;
+        iSearchResult.Channel = iChannelID;
+        iSearchResult.Zero = bZeroChannel;
+    }
+
+    WebVideoCtrl.I_RecordSearch(szIP, iChannelID, szStartTime, szEndTime, {
+        iSearchPos: iSearchTimes * 40,
+        success: function (xmlDoc) {
+            var me = $(xmlDoc), status = me.find("responseStatusStrg").eq(0).text();
+            if ("NO MATCHES" === status) {
+                logger(szIP + "(" + iChannelID + ")未查询到录像");
+                return;
+            };
+
+            // 最多查询3次，120条记录
+            // if (iSearchTimes == 2) status = "OK";
+            me.find("searchMatchItem").each(function () {
+                var szPlaybackURI = $(this).children('playbackURI').text();
+                if (szPlaybackURI.indexOf("name=") < 0) return true;
+
+                var szType = $(this).children('metadataDescriptor').text();
+                if ($.inArray(szType, g_iRecTypes) === -1) return true;
+
+                var record = new Object();
+                record.trackID = $(this).children('trackID').text();
+                record.Type = szType;
+                record.Start = vis.moment($(this).children('startTime').text()).utc().format("YYYY-MM-DD HH:mm:ss");
+                record.End = vis.moment($(this).children('endTime').text()).utc().format("YYYY-MM-DD HH:mm:ss");
+                record.PlaybackURI = szPlaybackURI;
+                record.FileName = szPlaybackURI.substring(szPlaybackURI.indexOf("name=") + 5, szPlaybackURI.indexOf("&size="));
+                record.FileSize = szPlaybackURI.substring(szPlaybackURI.indexOf("size=") + 5);
+                record.Interval = vis.moment($(this).children('endTime').text()).diff(vis.moment($(this).children('startTime').text()), 'seconds')
+                iSearchResult.push(record);
+            });
+
+            if ("MORE" === status) {
+                iSearchTimes++;
+                recordSearch(szIP, iChannelID, bZeroChannel, szStartTime, szEndTime); // 继续搜索
+            } else if ("OK" === status) {
+                logger(szIP + "(" + iChannelID + ")" + (iSearchResult.length > 0 ? '查询到' + iSearchResult.length + '条录像' : '未查询到录像'));
+                redraw();
+            }
+        },
+        error: function () {
+            logger(szIP + "(" + iChannelID + ")查询录像失败");
+        }
+    });
+}
+
+// 开始回放
+function startPlayback(szIP, iChannelID, bZeroChannel, szStartTime, szEndTime) {
+    // 零通道不支持回放
+    if (bZeroChannel) {
+        return null;
+    }
+
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-
-    if ("" == szIP) return null;
-
-    if (oWndInfo != null) {// 已经在播放了，先停止
+    // 已经在播放了，先停止
+    if (oWndInfo != null) {
         WebVideoCtrl.I_Stop();
     }
 
-    var iRet = WebVideoCtrl.I_StartRealPlay(szIP, {
-        iStreamType: iStreamType,
+    var iRet = WebVideoCtrl.I_StartPlayback(szIP, {
         iChannelID: iChannelID,
-        bZeroChannel: bZeroChannel
+        szStartTime: szStartTime,
+        szEndTime: szEndTime
     });
 
     if (0 == iRet) {
-        logger(szIP + "(" + iChannelID + ")开始预览成功");
+        logger(szIP + "(" + iChannelID + ")开始回放成功");
         return true;
     } else {
-        logger(szIP + "(" + iChannelID + ")开始预览失败");
+        logger(szIP + "(" + iChannelID + ")开始回放失败");
         return false;
     }
 }
 
-// 停止预览
-function stopRealPlay() {
+// 停止回放
+function stopPlayback() {
     var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
     if (oWndInfo != null) {
         var iRet = WebVideoCtrl.I_Stop();
         if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止预览成功");
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止回放成功");
             return true;
         } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止预览失败");
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止回放失败");
             return false;
         }
     }
@@ -630,8 +892,8 @@ function stopRealPlay() {
     return null;
 }
 
-// 停止全部预览
-function stopAllRealPlay() {
+// 停止全部回放
+function stopAllPlayback() {
     $(g_iWndStatus.values()).each(function () {
         if (this == null) return true;
 
@@ -645,7 +907,69 @@ function stopAllRealPlay() {
         }
     });
 
-    logger("全部预览停止成功");
+    logger("全部回放停止成功");
+}
+
+// 开始倒放
+function reversePlayback(szIP, iChannelID, bZeroChannel, szStartTime, szEndTime) {
+    // 零通道不支持回放
+    if (bZeroChannel) {
+        return null;
+    }
+
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    // 已经在播放了，先停止
+    if (oWndInfo != null) {
+        WebVideoCtrl.I_Stop();
+    }
+
+    var iRet = WebVideoCtrl.I_ReversePlayback(szIP, {
+        iChannelID: iChannelID,
+        szStartTime: szStartTime,
+        szEndTime: szEndTime
+    });
+
+    if (0 == iRet) {
+        logger(szIP + "(" + iChannelID + ")开始倒放成功");
+        return true;
+    } else {
+        logger(szIP + "(" + iChannelID + ")开始倒放失败");
+        return false;
+    }
+}
+
+// 单帧
+function frame() {
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    if (oWndInfo != null) {
+        var iRet = WebVideoCtrl.I_Frame();
+        if (0 == iRet) {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")单帧播放成功");
+            return true;
+        } else {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")单帧播放失败");
+            return false;
+        }
+    }
+
+    return null;
+}
+
+// 暂停
+function pause() {
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    if (oWndInfo != null) {
+        var iRet = WebVideoCtrl.I_Pause();
+        if (0 == iRet) {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")暂停成功");
+            return true;
+        } else {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")暂停失败");
+            return false;
+        }
+    }
+
+    return null;
 }
 
 // 恢复
@@ -655,9 +979,110 @@ function resume() {
         var iRet = WebVideoCtrl.I_Resume();
         if (0 == iRet) {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")恢复成功");
+            return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")恢复失败");
+            return false;
         }
+    }
+
+    return null;
+}
+
+// 慢放
+function playSlow(speed) {
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    if (oWndInfo != null) {
+        var iRet = WebVideoCtrl.I_PlaySlow();
+        if (0 == iRet) {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")" + (speed === 0 ? '正常速度' : (speed > 0 ? ('快放X' + speed) : ('慢放X' + (speed * -1)))));
+            return true;
+        } else {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")慢放失败");
+            return false;
+        }
+    }
+
+    return null;
+}
+
+// 快放
+function playFast(speed) {
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    if (oWndInfo != null) {
+        var iRet = WebVideoCtrl.I_PlayFast();
+        if (0 == iRet) {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")" + (speed === 0 ? '正常速度' : (speed < 0 ? ('慢放X' + (speed * -1)) : ('快放X' + speed))));
+            return true;
+        } else {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")快放失败");
+            return false;
+        }
+    }
+
+    return null;
+}
+
+// OSD时间
+function getOSDTime() {
+    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
+    if (oWndInfo != null) {
+        var szTime = WebVideoCtrl.I_GetOSDTime();
+        if (szTime != -1) {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")获取OSD时间成功");
+            return szTime;
+        } else {
+            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")获取OSD时间失败");
+        }
+    }
+
+    return null;
+}
+
+// 下载录像
+function startDownloadRecord(szIP, iChannelID, szPlaybackURI) {
+    var szFileName = szIP + "_" + iChannelID + "_" + new Date().getTime();
+    var iDownloadID = WebVideoCtrl.I_StartDownloadRecord(szIP, szPlaybackURI, szFileName);
+    if (iDownloadID >= 0) return iDownloadID;
+
+    var iErrorValue = WebVideoCtrl.I_GetLastError();
+    if (34 == iErrorValue) {
+        logger(szIP + "(" + iChannelID + ")录像已存在");
+    } else if (33 == iErrorValue) {
+        logger(szIP + "(" + iChannelID + ")磁盘空间不足");
+    } else {
+        logger(szIP + "(" + iChannelID + ")下载失败");
+    }
+
+    return null;
+}
+
+// 停止下载
+function stopDownloadRecord(szIP, iChannelID, iDownloadID) {
+    var iRet = WebVideoCtrl.I_StopDownloadRecord(iDownloadID);
+    if (0 == iRet) {
+        logger(szIP + "(" + iChannelID + ")停止下载成功");
+        return true;
+    } else {
+        logger(szIP + "(" + iChannelID + ")停止下载失败");
+        return false;
+    }
+}
+
+// 下载进度
+function downProcess(iDownloadID) {
+    var iStatus = WebVideoCtrl.I_GetDownloadStatus(iDownloadID);
+    if (0 == iStatus) {
+        var iProcess = WebVideoCtrl.I_GetDownloadProgress(iDownloadID);
+        if (iProcess >= 100) {
+            WebVideoCtrl.I_StopDownloadRecord(iDownloadID);
+            logger("录像下载完成(" + iDownloadID + ")");
+        }
+        return iProcess;
+    } else {
+        WebVideoCtrl.I_StopDownloadRecord(iDownloadID);
+        logger("录像已经下载失败(" + iDownloadID + ")");
+        return -1;
     }
 }
 
@@ -699,25 +1124,6 @@ function closeSound() {
             return true;
         } else {
             logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")关闭声音失败");
-            return false;
-        }
-    }
-
-    return null;
-}
-
-// 设置音量
-function setVolume(iVolume) {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex),
-		iVolume = parseInt(iVolume, 10);
-
-    if (oWndInfo != null) {
-        var iRet = WebVideoCtrl.I_SetVolume(iVolume);
-        if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")设置音量" + iVolume + "成功");
-            return true;
-        } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")设置音量" + iVolume + "失败");
             return false;
         }
     }
@@ -780,266 +1186,9 @@ function stopRecord() {
     return null;
 }
 
-// 启用电子放大
-function enableEZoom() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        var iRet = WebVideoCtrl.I_EnableEZoom();
-        if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用电子放大成功");
-            return true;
-        } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用电子放大失败");
-            return false;
-        }
-    }
-
-    return null;
-}
-
-// 禁用电子放大
-function disableEZoom() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        var iRet = WebVideoCtrl.I_DisableEZoom();
-        if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用电子放大成功");
-            return true;
-        } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用电子放大失败");
-            return false;
-        }
-    }
-
-    return null;
-}
-
-// 启用3D放大
-function enable3DZoom() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        var iRet = WebVideoCtrl.I_Enable3DZoom();
-        if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用3D放大成功");
-            return true;
-        } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")启用3D放大失败");
-            return false;
-        }
-    }
-
-    return null;
-}
-
-// 禁用3D放大
-function disable3DZoom() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        var iRet = WebVideoCtrl.I_Disable3DZoom();
-        if (0 == iRet) {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用3D放大成功");
-            return true;
-        } else {
-            logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")禁用3D放大失败");
-            return false;
-        }
-    }
-
-    return null;
-}
-
 // 全屏
 function fullScreen() {
     WebVideoCtrl.I_FullScreen(true);
-}
-
-// PTZ控制 1,2,3,4,5,6,7,8为方向PTZ，9为自动
-var g_bPTZAuto = false;
-function startPTZControl(iPTZIndex, bZeroChannel, iPTZSpeed) {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (bZeroChannel) { // 零通道不支持云台
-        return;
-    }
-
-    if (oWndInfo != null) {
-        if (9 == iPTZIndex && g_bPTZAuto) {
-            iPTZSpeed = 0;// 自动开启后，速度置为0可以关闭自动
-        } else {
-            g_bPTZAuto = false;// 点击其他方向，自动肯定会被关闭
-        }
-
-        WebVideoCtrl.I_PTZControl(iPTZIndex, false, {
-            iPTZSpeed: iPTZSpeed,
-            success: function (xmlDoc) {
-                if (9 == iPTZIndex) {
-                    g_bPTZAuto = !g_bPTZAuto;
-                }
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")开启云台成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")开启云台失败");
-            }
-        });
-    }
-}
-
-// PTZ停止
-function endPTZControl() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(1, true, {
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止云台成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")停止云台失败");
-            }
-        });
-    }
-}
-
-// 调焦+
-function PTZZoomIn() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(10, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦+成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦+失败");
-            }
-        });
-    }
-}
-
-// 调焦-
-function PTZZoomOut() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(11, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦-成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦-失败");
-            }
-        });
-    }
-}
-
-// 停止调焦
-function PTZZoomStop() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(11, true, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦停止成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")调焦停止失败");
-            }
-        });
-    }
-}
-
-// 聚焦+
-function PTZFocusIn() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(12, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦+成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦+失败");
-            }
-        });
-    }
-}
-
-// 聚焦-
-function PTZFoucusOut() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(13, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦-成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦-失败");
-            }
-        });
-    }
-}
-
-// 停止聚焦
-function PTZFoucusStop() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(12, true, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦停止成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")聚焦停止失败");
-            }
-        });
-    }
-}
-
-// 光圈+
-function PTZIrisIn() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(14, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈+成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈+失败");
-            }
-        });
-    }
-}
-
-// 光圈-
-function PTZIrisOut() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(15, false, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈-成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈-失败");
-            }
-        });
-    }
-}
-
-// 停止光圈
-function PTZIrisStop() {
-    var oWndInfo = WebVideoCtrl.I_GetWindowStatus(g_iWndIndex);
-    if (oWndInfo != null) {
-        WebVideoCtrl.I_PTZControl(14, true, {
-            iWndIndex: g_iWndIndex,
-            success: function (xmlDoc) {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈停止成功");
-            },
-            error: function () {
-                logger(oWndInfo.szIP + "(" + oWndInfo.iChannelID + ")光圈停止失败");
-            }
-        });
-    }
 }
 
 // 获取本地参数
@@ -1221,6 +1370,7 @@ function Map() {
         return this.keys.length;
     };
 
+    //获取所有的值
     this.values = function () {
         var values = [];
         var map = this;
@@ -1233,30 +1383,8 @@ function Map() {
 
 // 显示操作日志
 logger = function (msg) {
-    var me = $('#ptz-events > .panel-body');
-    me.html('<div class="ptz-event"><small><strong>' + dateFormat(new Date(), "yyyy-MM-dd hh:mm:ss") + '</strong> ' + msg + '</small></div>' + me.html());
-};
-
-// 格式化日期
-dateFormat = function (oDate, fmt) {
-    var o = {
-        "M+": oDate.getMonth() + 1, //月份
-        "d+": oDate.getDate(), //日
-        "h+": oDate.getHours(), //小时
-        "m+": oDate.getMinutes(), //分
-        "s+": oDate.getSeconds(), //秒
-        "q+": Math.floor((oDate.getMonth() + 3) / 3), //季度
-        "S": oDate.getMilliseconds()//毫秒
-    };
-    if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (oDate.getFullYear() + "").substr(4 - RegExp.$1.length));
-    }
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        }
-    }
-    return fmt;
+    var me = $('#record-events > .panel-body');
+    me.html('<div class="record-event"><strong>' + vis.moment().format('MM-DD HH:mm:ss') + '</strong> ' + msg + '</div>' + me.html());
 };
 
 // 设置组件尺寸
@@ -1264,15 +1392,51 @@ setWindowSize = function () {
     var oSize = getWindowSize();
     $('#nav-wrapper').css({ height: oSize.height - 40 });
     $('#recorder,#condition').css({ height: oSize.height - 100 });
-    $('#record-events').css({ height: oSize.height - 318 });
+    $('#record-events').css({ height: oSize.height - 282 });
 };
 
-// 设置窗口尺寸
+// 获得窗口尺寸
 getWindowSize = function () {
     var nWidth = $(this).width() + $(this).scrollLeft(),
 		nHeight = $(this).height() + $(this).scrollTop();
 
     return { width: nWidth, height: nHeight };
+};
+
+// 获得录像类型
+getRecordType = function (iTypeStr) {
+    if ('motion' === iTypeStr)
+        return 1;
+    else if ('smart' === iTypeStr)
+        return 1;
+    else if ('timing' === iTypeStr)
+        return 2;
+    else if ('motionOrAlarm' === iTypeStr)
+        return 3;
+    else if ('motionAndAlarm' === iTypeStr)
+        return 3;
+    else if ('manual' === iTypeStr)
+        return 4;
+
+    return -1;
+};
+
+// 获得录像类型
+getRecordTypeName = function (iTypeStr) {
+    if ('motion' === iTypeStr)
+        return '移动侦测';
+    else if ('smart' === iTypeStr)
+        return '智能录像';
+    else if ('timing' === iTypeStr)
+        return '定时录像';
+    else if ('motionOrAlarm' === iTypeStr)
+        return '动测或报警';
+    else if ('motionAndAlarm' === iTypeStr)
+        return '报警和动测';
+    else if ('manual' === iTypeStr)
+        return '手动录像';
+
+    return '未定义';
 };
 
 //#endregion

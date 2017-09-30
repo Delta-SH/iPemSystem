@@ -392,7 +392,7 @@ input, button, a {
 
 #videor {
     position: relative;
-    margin-right: 125px;
+    margin-right: 190px;
     height: 400px;
 }
 
@@ -440,7 +440,7 @@ input, button, a {
 }
 
 #ptz {
-    width: 120px;
+    width: 185px;
     position: absolute;
     right: 5px;
     top: 5px;
@@ -460,7 +460,7 @@ input, button, a {
 .ptz-top-left, .ptz-top-center, .ptz-top-right,
 .ptz-middle-left, .ptz-middle-center, .ptz-middle-right,
 .ptz-bottom-left, .ptz-bottom-center, .ptz-bottom-right {
-    width: 40px;
+    width: 61px;
     height: 35px;
 }
 
@@ -517,10 +517,10 @@ input, button, a {
 }
 
 .ptz-ctrl > .btn-group button {
-    width: 60px;
+    width: 91px;
 }
 
-.ptz-ctrl hr {
+hr {
     margin-top: 5px;
     margin-bottom: 5px;
 }
@@ -536,10 +536,30 @@ input, button, a {
     text-align: left;
 }
 
-.ptz-ctrl .ptz-event,
-.ptz-ctrl .ptz-event strong {
-    display: block;
+#record-events,
+#ptz-events {
     font-size: 11px;
+    text-align:left;
+}
+
+#record-condition .panel-body,
+#record-events .panel-body,
+#ptz-events .panel-body {
+    padding:5px;
+}
+
+#record-events .record-event strong,
+#ptz-events .ptz-event strong {
+    display: block;
+}
+
+#record-condition .row {
+    margin:0;
+}
+
+#record-condition .col-xs-6 {
+    padding:0;
+    text-align:left;
 }
 
 #events-context-menu > ul {
@@ -577,14 +597,22 @@ input, button, a {
 }
 
 #record-search {
-    width:186px;
+    width:173px;
+}
+
+#record-condition,
+#record-events {
+    border-radius: 0;
+    margin-bottom: 0;
+    overflow: hidden;
 }
 
 #record-events {
     margin-top: 5px;
-    border-radius: 0;
-    margin-bottom: 0;
-    overflow: hidden;
+}
+
+#progress {
+    font-size: 15px;
 }
 
 .record-group1 .vis-inner {
@@ -680,4 +708,8 @@ input, button, a {
 
 .vis-item .vis-item-content {
     padding: 2px 5px; 
+}
+
+label{
+    font-weight:normal;
 }

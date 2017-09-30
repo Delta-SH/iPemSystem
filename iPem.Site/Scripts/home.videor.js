@@ -640,13 +640,13 @@ function initIcons() {
     var play = $('#play').children(':first');
     play.removeClass('ipems-icon-font-pause').addClass('ipems-icon-font-play');
 
-    var record = $('#record').children(':first');
+    var record = $('#record');
     record.removeClass('active');
 
-    var ezoom = $('#ezoom').children(':first');
+    var ezoom = $('#ezoom');
     ezoom.removeClass('active');
 
-    var dzoom = $('#dzoom').children(':first');
+    var dzoom = $('#dzoom');
     dzoom.removeClass('active');
 
     var sound = $('#voice').children(':first');

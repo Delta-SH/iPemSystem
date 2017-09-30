@@ -487,6 +487,7 @@
     <Content Include="Resources\install\upgrade\update_sc_database.sql" />
     <Content Include="Resources\install\upgrade\update_rs_data.sql" />
     <Content Include="Resources\install\upgrade\update_rs_database.sql" />
+    <Content Include="Resources\tools\hikvision\WebComponentsKit.exe" />
     <Content Include="Scripts\account.dictionary.js" />
     <Content Include="Scripts\account.events.js" />
     <Content Include="Scripts\account.login.js" />
@@ -1147,6 +1148,9 @@
     <None Include="Properties\PublishProfiles\iPemDeployConfig.pubxml" />
     <Content Include="Scripts\kpi.performance500302.js" />
     <Content Include="Scripts\fsu.configuration.js" />
+    <Content Include="Resources\tools\hikvision\firefox51.zip" />
+    <Content Include="Resources\tools\hikvision\chrome41.zip" />
+    <Content Include="Resources\tools\hikvision\360se8.zip" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.min.js" />
