@@ -13,7 +13,8 @@ var g_iTimeGroups = new vis.DataSet([
 ]); // 录像文件分组
 var g_iRecTypes = []; // 录像类型过滤
 var g_iRecDownloads = new Map(); // 录像下载列表
-var g_iRecTimer = null;
+var g_iRecTimer = null; // 下载进度定时器
+var lock = false; //全局锁
 
 $(document).ready(function () {
 
@@ -42,12 +43,46 @@ $(document).ready(function () {
         }
     });
 
-    // 录像下载更新进度定时器
+    // 下载进度定时器
     g_iRecTimer = setInterval(function () {
-        if (g_iRecDownloads.size > 0) {
+        if (g_iRecDownloads.size() <= 0) return;
 
+        $(g_iRecDownloads.values()).each(function () {
+            if (this == null) return true;
+            this.Process = downProcess(this.DownloadID);
+            if (this.Process === -1 || this.Process >= 100) {
+                g_iRecDownloads.remove(this.File);
+            }
+        });
+
+        var status = g_iWndStatus.get(g_iWndIndex);
+        if (status != null && lock === false) {
+            try {
+                lock = true;
+                var rec = g_iRecDownloads.get(status.File);
+                var process = $('#process'), download = $('#download');
+                if (rec == null) {
+                    if (status.Downloading === true) status.Downloading = false;
+                    process.html('');
+                    if (process.hasClass('hidden') === false)
+                        process.addClass('hidden');
+
+                    if (download.hasClass('active') === true)
+                        download.removeClass('active');
+                } else {
+                    if (status.Downloading === false) status.Downloading = true;
+                    process.html(rec.Process + '%');
+                    if (process.hasClass('hidden') === true)
+                        process.removeClass('hidden');
+
+                    if (download.hasClass('active') === false)
+                        download.addClass('active');
+                }
+            } finally {
+                lock = false;
+            }
         }
-    }, 5000);
+    }, 2000);
 
     // 重新加载后，定位到已选中的菜单位置
     var menu = $('li.menu-item > a.selected');
@@ -122,7 +157,7 @@ $(document).ready(function () {
         if (typeof (channel) == 'undefined') return;
         var zero = $(this).attr('zero') === 'true';
         var start = vis.moment(date).hour(0).minute(0).second(0);
-        var end = vis.moment(date).hour(12).minute(59).second(59);
+        var end = vis.moment(date).hour(23).minute(59).second(59);
 
         g_iRecTypes = [];
         if ($('#timing').is(':checked')) g_iRecTypes.push('timing');
@@ -150,6 +185,7 @@ $(document).ready(function () {
 
         if (status.Playing === 0) {
             if (startPlayback(status.IP, status.Channel, status.Zero, status.Start, status.End) === true) {
+                status.OpenSound = false;
                 status.Recording = false;
                 status.Speed = 0;
                 status.Playing = 1;
@@ -194,6 +230,7 @@ $(document).ready(function () {
 
         var status = g_iWndStatus.get(g_iWndIndex);
         if (status != null) {
+            status.OpenSound = false;
             status.Recording = false;
             status.Playing = 0;
         }
@@ -338,6 +375,7 @@ $(document).ready(function () {
             }
 
             var rec = new Object();
+            rec.File = status.File;
             rec.DownloadID = iDownloadID;
             rec.Process = 0;
             g_iRecDownloads.set(status.File, rec);
@@ -349,7 +387,6 @@ $(document).ready(function () {
                     status.Downloading = false;
                 } else {
                     if (stopDownloadRecord(status.IP, status.Channel, rec.DownloadID) == true) {
-                        g_iRecDownloads.remove(status.File);
                         status.Downloading = false;
                     } else {
                         alert('停止下载失败');
@@ -420,8 +457,8 @@ $(document).ready(function () {
         zoomMin: 1000, // second
         zoomMax: 1000 * 60 * 60 * 24,  // day
         showMajorLabels: true,
+        stack:false,
         minHeight: 100,
-        stack: false,
         format: {
             majorLabels: {
                 millisecond: 'HH:mm:ss （提示：双击播放视频）',
@@ -600,11 +637,23 @@ function resetIcons(status) {
         sound.removeClass('ipems-icon-font-voice').addClass('ipems-icon-font-unvoice');
     }
 
-    var download = $('#download');
-    if (status.Downloading === false && download.hasClass('active') === true) {
-        download.removeClass('active');
-    } else if (status.Downloading === true && download.hasClass('active') === false) {
-        download.addClass('active');
+    if (lock === false) {
+        try {
+            lock = true;
+            var download = $('#download');
+            if (status.Downloading === false && download.hasClass('active') === true) {
+                download.removeClass('active');
+            } else if (status.Downloading === true && download.hasClass('active') === false) {
+                download.addClass('active');
+            }
+
+            var process = $('#process');
+            if (status.Downloading === false && process.hasClass('hidden') === false) {
+                process.addClass('hidden');
+            }
+        } finally {
+            lock = false;
+        }
     }
 }
 
@@ -621,6 +670,9 @@ function initIcons() {
 
     var download = $('#download');
     download.removeClass('active');
+
+    var process = $('#process');
+    if (process.hasClass('hidden') === false) process.addClass('hidden');
 }
 
 // 重绘录像时间轴
@@ -632,7 +684,7 @@ function redraw() {
             content: this.FileName,
             group: getRecordType(this.Type),
             start: vis.moment(this.Start),
-            //end: vis.moment(this.End),
+            end: vis.moment(this.End),
             title: ['<div>录像名称：' + this.FileName + '</div>', '<div>录像类型：' + getRecordTypeName(this.Type) + '</div>', '<div>开始时间：' + this.Start + '</div>', '<div>结束时间：' + this.End + '</div>', '<div>录像时长：' + vis.moment('2017-01-01').add(this.Interval, 's').format('HH:mm:ss') + '</div>', '<div>文件大小：' + this.FileSize + '</div>'].join('')
         });
     });

@@ -53,10 +53,15 @@
                     <div class="tabs">
                         <ul class="clearfix">
                             <li class="current">
-                                <a href="/Home/Videor?view=videor" target="_self">视频预览</a>
+                                <a href="@(Request.QueryString["model"] != "max" ? "/Home/Videor?view=videor" : "/Home/Videor?view=videor&model=max")" target="_self">视频预览</a>
                             </li>
                             <li class="selected">
                                 <a href="javascript:void(0);">录像回放</a>
+                            </li>
+                            <li style="float:right;border:none;" class="@(Request.QueryString["model"] != "max" ? "" : "hidden")">
+                                <a title="最大化" href="/Home/Videor?view=recorder&model=max" target="_blank">
+                                    <span class="icon ipems-icon-font ipems-icon-font-fullscreen" aria-hidden="true"></span>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -96,7 +101,7 @@
                                     <span class="icon ipems-icon-font ipems-icon-font-download" aria-hidden="true"></span>
                                     <span id="process" class="icon ipems-icon-font hidden">0%</span>
                                 </a>
-
+                                <a title="下载录像专用播放器" href="http://www.hikvision.com/cn/download_more_394.html" target="_blank" class="l ctrl">下载录像专用播放器</a>
                                 <a id="fullscreen" title="全屏" href="javascript:void(0);" class="r screen">
                                     <span class="icon ipems-icon-font ipems-icon-font-fullscreen" aria-hidden="true"></span>
                                 </a>
@@ -114,6 +119,7 @@
                                 </a>
                             </div>
                         </div>
+
                         <div id="condition">
                             <div id="record-condition" class="panel panel-default">
                                 <div class="panel-body">
@@ -166,7 +172,7 @@
                                     <button id="record-search" type="button" class="btn btn-success disabled">查询录像</button>
                                 </div>
                             </div>
-                            
+
                             <div id="record-events" class="panel panel-default" data-toggle="context">
                                 <div class="panel-body">
                                 </div>

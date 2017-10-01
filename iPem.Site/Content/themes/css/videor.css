@@ -373,6 +373,10 @@ input, button, a {
     padding: 14px 20px;
 }
 
+.tabs ul li a:hover {
+    color: #157fcc;
+}
+
 .tabs ul li.selected {
     bottom: -1px;
     border-top: 3px solid #157fcc;
@@ -710,6 +714,6 @@ hr {
     padding: 2px 5px; 
 }
 
-label{
-    font-weight:normal;
+label {
+    font-weight: normal;
 }

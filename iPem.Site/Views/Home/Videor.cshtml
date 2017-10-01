@@ -1,6 +1,6 @@
 ﻿@model List<iPem.Site.Models.CameraModel>
-@{ 
-    Layout = null; 
+@{
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -54,8 +54,13 @@
                             <li class="selected">
                                 <a href="javascript:void(0);">视频预览</a>
                             </li>
-                            <li class="current hidden">
-                                <a href="/Home/Videor?view=recorder" target="_self">录像回放</a>
+                            <li class="current">
+                                <a href="@(Request.QueryString["model"] != "max" ? "/Home/Videor?view=recorder" : "/Home/Videor?view=recorder&model=max")" target="_self">录像回放</a>
+                            </li>
+                            <li style="float:right;border:none;" class="@(Request.QueryString["model"] != "max" ? "" : "hidden")">
+                                <a title="最大化" href="/Home/Videor?view=videor&model=max" target="_blank">
+                                    <span class="icon ipems-icon-font ipems-icon-font-fullscreen" aria-hidden="true"></span>
+                                </a>
                             </li>
                         </ul>
                     </div>

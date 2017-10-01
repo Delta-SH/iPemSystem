@@ -139,11 +139,13 @@ $(document).ready(function () {
                 alert("暂停失败，请重试。");
                 return false;
             } else {
+                status.OpenSound = false;
                 status.Recording = false;
                 status.Playing = false;
             }
         } else if (status.Playing === false) {
             if (startRealPlay(status.Ip, status.Mask, status.Channel, status.Zero) === true) {
+                status.OpenSound = false;
                 status.Recording = false;
                 status.Playing = true;
             } else {
