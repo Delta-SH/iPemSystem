@@ -489,6 +489,14 @@
                                 id: 'point-multipicker',
                                 xtype: 'PointMultiPicker',
                                 emptyText: '默认全部'
+                            },
+                            {
+                                xtype: 'button',
+                                glyph: 0xf061,
+                                text: '更新关联',
+                                handler: function (me, event) {
+                                    update();
+                                }
                             }
                         ]
                     }
@@ -725,6 +733,26 @@
         $$iPems.download({
             url: store.downloadURL,
             params: store.getProxy().extraParams
+        });
+    };
+
+    var update = function () {
+        Ext.Msg.confirm('确认对话框', '您确认要更新关联吗？', function (buttonId, text) {
+            if (buttonId === 'yes') {
+                Ext.Ajax.request({
+                    url: '/Fsu/UpdateRelation',
+                    method: 'POST',
+                    mask: new Ext.LoadMask(currentLayout, { msg: '正在处理...' }),
+                    success: function (response, options) {
+                        var data = Ext.decode(response.responseText, true);
+                        if (data.success) {
+                            Ext.Msg.show({ title: '系统提示', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
+                        } else {
+                            Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                        }
+                    }
+                });
+            }
         });
     };
 

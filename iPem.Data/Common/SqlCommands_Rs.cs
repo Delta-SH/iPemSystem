@@ -169,6 +169,7 @@ namespace iPem.Data.Common {
         SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
         public const string Sql_D_Fsu_Repository_GetExtFsus = @"
         SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu];";
+        public const string Sql_D_Fsu_Repository_UpdateFsus = @"UPDATE [dbo].[D_FSU] SET [RoomID] = D.[RoomID] FROM [dbo].[D_FSU] F INNER JOIN [dbo].[D_Device] D ON F.[DeviceID] = D.[ID];";
 
         /// <summary>
         /// 信号重定义表

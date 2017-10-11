@@ -38,6 +38,7 @@ namespace iPem.Services.Common {
         public const string SSH_Authorizations = @"ipems:global:ssh-authorizations";
         public const string SSH_AuthorizationsPattern = @"ipems:global:{0}:ssh-authorizations";
         public const string Active_Alarms = @"ipems:global:active-alarms";
+        public const string System_Alarms = @"ipems:global:system-alarms";
         public const string Auth_ConfigurationPattern = @"ipems:global:{0}:auth-configuration";
         public const string Dictionary_Ws = @"ipems:global:dictionary-ws";
         public const string Dictionary_Ts = @"ipems:global:dictionary-ts";

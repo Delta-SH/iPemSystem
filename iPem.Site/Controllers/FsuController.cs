@@ -34,6 +34,7 @@ namespace iPem.Site.Controllers {
         private readonly IFsuEventService _ftpService;
         private readonly IGroupService _groupService;
         private readonly IParamDiffService _diffService;
+        private readonly INoteService _noteService;
         private readonly IPackMgr _packMgr;
 
         #endregion
@@ -50,6 +51,7 @@ namespace iPem.Site.Controllers {
             IDictionaryService dictionaryService,
             IGroupService groupService,
             IParamDiffService diffService,
+            INoteService noteService,
             IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -60,6 +62,7 @@ namespace iPem.Site.Controllers {
             this._dictionaryService = dictionaryService;
             this._groupService = groupService;
             this._diffService = diffService;
+            this._noteService = noteService;
             this._packMgr = packMgr;
         }
 
@@ -259,6 +262,20 @@ namespace iPem.Site.Controllers {
 
                 _webLogger.Information(EnmEventType.Operating, string.Format("FSU重启成功[{0}]", curFsu.Current.Code), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "重启成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult UpdateRelation() {
+            try {
+                _fsuService.UpdateFsus();
+                _cacheManager.Remove(GlobalCacheKeys.Rs_FsusRepository);
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_FSU", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步FSU数据" });
+                _webLogger.Information(EnmEventType.Operating, "更新FSU关联信息", null, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "更新关联成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });

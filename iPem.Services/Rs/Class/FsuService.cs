@@ -72,6 +72,10 @@ namespace iPem.Services.Rs {
             return _repository.GetExtFsus();
         }
 
+        public void UpdateFsus() {
+            _repository.UpdateFsus();
+        }
+
         public IPagedList<D_Fsu> GetPagedFsus(int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<D_Fsu>(this.GetFsus(), pageIndex, pageSize);
         }

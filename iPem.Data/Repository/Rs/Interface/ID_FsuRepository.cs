@@ -31,5 +31,10 @@ namespace iPem.Data.Repository.Rs {
         /// 获得所有的FSU扩展信息
         /// </summary>
         List<D_ExtFsu> GetExtFsus();
+
+        /// <summary>
+        /// 更新FSU所属的机房
+        /// </summary>
+        void UpdateFsus();
     }
 }

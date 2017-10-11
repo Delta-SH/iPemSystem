@@ -165,6 +165,20 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
+        public void UpdateFsus() {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_UpdateFsus, null);
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+        }
+
         #endregion
 
     }

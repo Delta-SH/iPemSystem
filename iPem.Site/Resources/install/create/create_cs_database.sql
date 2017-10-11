@@ -2,7 +2,7 @@
 * P2H_V1 Database Script Library v1.0.0
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/07/10
+* Date: 2017/10/11
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -134,7 +134,7 @@ CREATE TABLE [dbo].[A_HAlarm](
 	[ReversalCount] [int] NOT NULL,
 	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
- CONSTRAINT [PK_A_HAlarm_1] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_A_HAlarm] PRIMARY KEY NONCLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -198,6 +198,47 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[A_RAlarm]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_RAlarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_RAlarm]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[A_RAlarm](
+	[GroupID] [varchar](100) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[FsuId] [varchar](100) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[SignalId] [varchar](100) NULL,
+	[SignalNumber] [varchar](100) NULL,
+	[NMAlarmId] [varchar](100) NULL,
+	[AlarmTime] [datetime] NULL,
+	[AlarmLevel] [int] NULL,
+	[AlarmFlag] [int] NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmValue] [float] NULL,
+	[EndTime] [datetime] NULL,
+	[EndValue] [float] NULL,
+	[AlarmRemark] [varchar](100) NULL,
+ CONSTRAINT [PK_A_RAlarm] PRIMARY KEY CLUSTERED 
+(
+	[GroupID] ASC,
+	[SerialNo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_TAlarm]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_TAlarm]') AND type in (N'U'))
 DROP TABLE [dbo].[A_TAlarm]
@@ -230,6 +271,35 @@ CREATE TABLE [dbo].[A_TAlarm](
 	[SerialNo] ASC,
 	[AlarmFlag] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[H_CardRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_CardRecord]') AND type in (N'U'))
+DROP TABLE [dbo].[H_CardRecord]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[H_CardRecord](
+	[AreaId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[CardId] [varchar](100) NOT NULL,
+	[PunchTime] [datetime] NOT NULL,
+	[Status] [varchar](256) NULL,
+	[Remark] [varchar](256) NULL,
+	[Direction] [int] NULL
 ) ON [PRIMARY]
 GO
 
@@ -406,7 +476,7 @@ CREATE TABLE [dbo].[V_AMeasure](
 	[Status] [int] NOT NULL,
 	[Value] [float] NOT NULL,
 	[UpdateTime] [datetime] NOT NULL,
- CONSTRAINT [PK_V_AMeasure] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_V_AMeasure] PRIMARY KEY NONCLUSTERED 
 (
 	[FsuId] ASC,
 	[DeviceId] ASC,
@@ -438,6 +508,7 @@ CREATE TABLE [dbo].[V_Bat](
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[PackId] [int] NOT NULL,
+	[Type] [int] NOT NULL,
 	[StartTime] [datetime] NOT NULL,
 	[Value] [float] NOT NULL,
 	[ValueTime] [datetime] NOT NULL
@@ -467,6 +538,7 @@ CREATE TABLE [dbo].[V_BatTime](
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
 	[PackId] [int] NOT NULL,
+	[Type] [int] NOT NULL,
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
 	[StartValue] [float] NOT NULL,
@@ -567,7 +639,7 @@ CREATE TABLE [dbo].[V_Elec](
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
 	[Value] [float] NOT NULL,
- CONSTRAINT [PK_V_Elec] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_V_Elec] PRIMARY KEY NONCLUSTERED 
 (
 	[Id] ASC,
 	[Type] ASC,
@@ -661,7 +733,7 @@ CREATE TABLE [dbo].[V_ParamDiff](
 	[AbsoluteVal] [varchar](20) NULL,
 	[RelativeVal] [varchar](20) NULL,
 	[StorageInterval] [varchar](20) NULL,
-	[StorageRefTime] [varchar](20) NULL,
+	[StorageRefTime] [varchar](50) NULL,
 	[Masked] [bit] NULL,
  CONSTRAINT [PK_V_ParamDiff] PRIMARY KEY CLUSTERED 
 (
@@ -728,4 +800,144 @@ BEGIN
 	IF NOT EXISTS(SELECT NAME FROM SYSOBJECTS WHERE XTYPE = 'U' AND NAME = @NAME)
 		EXEC('CREATE TABLE [dbo].['+@Name+'](' + @TableDefine + ')');
 END
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[A_HAlarm]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_HAlarm]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[A_HAlarm]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[A_HAlarm]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[H_CardRecord]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_CardRecord]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[H_CardRecord]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[H_CardRecord]
+(
+	[PunchTime] ASC,
+	[CardId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[H_FsuEvent]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_FsuEvent]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[H_FsuEvent]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[H_FsuEvent]
+(
+	[EventTime] ASC,
+	[FsuId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_AMeasure]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_AMeasure]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_AMeasure]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_AMeasure]
+(
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Bat]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Bat]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Bat]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_Bat]
+(
+	[ValueTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_BatTime]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_BatTime]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_BatTime]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_BatTime]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Cuted]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Cuted]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Cuted]') AND name = N'ClusteredIndex')
+CREATE NONCLUSTERED INDEX [NonClusteredIndex] ON [dbo].[V_Cuted]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Cutting]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Cutting]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Cutting]') AND name = N'ClusteredIndex')
+CREATE NONCLUSTERED INDEX [NonClusteredIndex] ON [dbo].[V_Cutting]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Elec]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Elec]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Elec]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_Elec]
+(
+	[StartTime] ASC,
+	[Type] ASC,
+	[FormulaType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_HMeasure]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_HMeasure]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_HMeasure]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_HMeasure]
+(
+	[UpdateTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Load]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Load]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Load]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_Load]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建索引[dbo].[V_Static]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Static]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[V_Static]') AND name = N'ClusteredIndex')
+CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_Static]
+(
+	[StartTime] ASC,
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO

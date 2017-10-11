@@ -2088,16 +2088,16 @@ namespace iPem.Site.Controllers {
                     data.total = nodes.Length;
 
                     var alarms = _workContext.ActAlarms();
-                    var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
-                    data.data.Add(new NodeIcon { id = "root", level = areaIcons.Min(a => a.level), type = (int)EnmSSH.Root });
-                    foreach (var node in nodes) {
-                        var keys = Common.SplitKeys(node);
-                        if(keys.Length != 2) continue;
-                        var type = int.Parse(keys[0]); var id = keys[1];
-                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                        var target = new NodeIcon { id = node, level = (int)EnmAlarm.Level0, type = (int)nodeType };
+                    if (alarms.Count > 0) {
+                        var areaIcons = alarms.GroupBy(a => a.Current.AreaId).Select(g => new NodeIcon { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                        data.data.Add(new NodeIcon { id = "root", level = areaIcons.Min(a => a.level), type = (int)EnmSSH.Root });
+                        foreach (var node in nodes) {
+                            var keys = Common.SplitKeys(node);
+                            if (keys.Length != 2) continue;
+                            var type = int.Parse(keys[0]); var id = keys[1];
+                            var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                            var target = new NodeIcon { id = node, level = (int)EnmAlarm.Level0, type = (int)nodeType };
 
-                        if (alarms.Count > 0) {
                             if (nodeType == EnmSSH.Area) {
                                 var current = _workContext.Areas().Find(a => a.Current.Id == id);
                                 if (current != null) {
@@ -2119,9 +2119,19 @@ namespace iPem.Site.Controllers {
                                 var icons = alarms.FindAll(a => a.Current.DeviceId == id);
                                 if (icons.Count > 0) target.level = icons.Min(i => (int)i.Current.AlarmLevel);
                             }
-                        }
 
-                        data.data.Add(target);
+                            data.data.Add(target);
+                        }
+                    } else {
+                        data.data.Add(new NodeIcon { id = "root", level = (int)EnmAlarm.Level0, type = (int)EnmSSH.Root });
+                        foreach (var node in nodes) {
+                            var keys = Common.SplitKeys(node);
+                            if (keys.Length != 2) continue;
+                            var type = int.Parse(keys[0]); var id = keys[1];
+                            var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                            var target = new NodeIcon { id = node, level = (int)EnmAlarm.Level0, type = (int)nodeType };
+                            data.data.Add(target);
+                        }
                     }
                 }
             } catch (Exception exc) {
@@ -2129,7 +2139,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return Json(data, JsonRequestBehavior.DenyGet);
+            return Json(data);
         }
 
         #endregion

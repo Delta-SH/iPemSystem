@@ -36,7 +36,10 @@ namespace iPem.Services.Rs {
         #region Methods
 
         public C_Group GetGroup(string id) {
-            return this.GetGroups().Find(g => g.Id == id);
+            var data = _repository.GetGroup(id);
+            var type = _enumService.GetEnumById(data.TypeId);
+            if (type != null) data.TypeName = type.Name;
+            return data;
         }
 
         public List<C_Group> GetGroups() {
@@ -47,10 +50,9 @@ namespace iPem.Services.Rs {
                 var data = _repository.GetGroups();
                 var types = _enumService.GetEnumsByType(EnmMethodType.Group, "类型");
                 for (var i = 0; i < data.Count; i++) {
-                    var current = data[i];
-                    var type = types.Find(t => t.Id == current.TypeId);
+                    var type = types.Find(t => t.Id == data[i].TypeId);
                     if (type == null) continue;
-                    current.TypeName = type.Name;
+                    data[i].TypeName = type.Name;
                 }
 
                 _cacheManager.Set(key, data);
