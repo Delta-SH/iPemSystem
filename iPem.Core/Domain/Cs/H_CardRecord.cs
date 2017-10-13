@@ -3,10 +3,10 @@ using System;
 
 namespace iPem.Core.Domain.Cs {
     /// <summary>
-    /// 蓄电池放电测值表
+    /// 刷卡记录表
     /// </summary>
     [Serializable]
-    public partial class V_Bat : BaseEntity {
+    public partial class H_CardRecord : BaseEntity {
         /// <summary>
         /// 区域编码(第三级区域)
         /// </summary>
@@ -28,33 +28,28 @@ namespace iPem.Core.Domain.Cs {
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// 信号编码
+        /// 卡号
         /// </summary>
-        public string PointId { get; set; }
+        public string CardId { get; set; }
 
         /// <summary>
-        /// 电池组号
+        /// 刷卡时间
         /// </summary>
-        public int PackId { get; set; }
+        public DateTime PunchTime { get; set; }
 
         /// <summary>
-        /// 电池状态
+        /// 刷卡状态
         /// </summary>
-        public EnmBatStatus Type { get; set; }
+        public string Status { get; set; }
 
         /// <summary>
-        /// 放电开始时间
+        /// 刷卡描述
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public string Remark { get; set; }
 
         /// <summary>
-        /// 监测值
+        /// 刷卡方向
         /// </summary>
-        public double Value { get; set; }
-
-        /// <summary>
-        /// 测值时间
-        /// </summary>
-        public DateTime ValueTime { get; set; }
+        public EnmDirection Direction { get; set; }
     }
 }

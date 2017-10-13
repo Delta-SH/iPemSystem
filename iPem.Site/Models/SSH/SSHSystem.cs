@@ -8,7 +8,7 @@ namespace iPem.Site.Models.SSH {
             Id = "-1",
             Code = "-1",
             Name = "系统区域",
-            Type = new IdValuePair<int, string>() { Id = -1, Value = "系统区域" },
+            Type = new Kv<int, string>() { Key = -1, Value = "系统区域" },
             ParentId = "0",
             Enabled = true
         };

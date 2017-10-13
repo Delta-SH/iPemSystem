@@ -46,6 +46,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
@@ -77,6 +78,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
@@ -104,6 +106,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);

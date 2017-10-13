@@ -1823,11 +1823,11 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult GetFormulaPoints(int start, int limit, string parent) {
-            var data = new AjaxDataModel<List<IdValuePair<int,string>>> {
+            var data = new AjaxDataModel<List<Kv<int,string>>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<IdValuePair<int, string>>()
+                data = new List<Kv<int, string>>()
             };
 
             try {
@@ -1842,8 +1842,8 @@ namespace iPem.Site.Controllers {
                             if(current != null) {
                                 var points = current.Points.FindAll(p => p.Type == EnmPoint.AI);
                                 for(var i = 0; i < points.Count; i++) {
-                                    data.data.Add(new IdValuePair<int, string> {
-                                        Id = i + 1,
+                                    data.data.Add(new Kv<int, string> {
+                                        Key = i + 1,
                                         Value = string.Format("@{0}>>{1}", current.Current.Name, points[i].Name)
                                     });
                                 }

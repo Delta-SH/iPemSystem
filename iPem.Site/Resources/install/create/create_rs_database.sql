@@ -1,8 +1,8 @@
 /*
-* P2R_V1 Database Script Library v1.0.0
+* P2R_V1 Database Script Library v1.1.2
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/07/10
+* Date: 2017/10/12
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -148,6 +148,16 @@ ALTER TABLE [dbo].[D_RedefinePoint] DROP CONSTRAINT [FK_D_RedefinePoint_D_Device
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[D_Signal]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Signal_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Signal]'))
+ALTER TABLE [dbo].[D_Signal] DROP CONSTRAINT [FK_D_Signal_P_Point]
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Signal_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Signal]'))
+ALTER TABLE [dbo].[D_Signal] DROP CONSTRAINT [FK_D_Signal_D_Device]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --删除外键[dbo].[D_SolarController]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_SolarController_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_SolarController]'))
 ALTER TABLE [dbo].[D_SolarController] DROP CONSTRAINT [FK_D_SolarController_D_Device]
@@ -208,6 +218,34 @@ ALTER TABLE [dbo].[D_WindPowerCon] DROP CONSTRAINT [FK_D_WindPowerCon_D_Device]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[G_Driver]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_GDriver_GBus]') AND parent_object_id = OBJECT_ID(N'[dbo].[G_Driver]'))
+ALTER TABLE [dbo].[G_Driver] DROP CONSTRAINT [FK_GDriver_GBus]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[M_Authorization]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Authorization_M_Card]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Authorization]'))
+ALTER TABLE [dbo].[M_Authorization] DROP CONSTRAINT [FK_M_Authorization_M_Card]
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Authorization_G_Driver]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Authorization]'))
+ALTER TABLE [dbo].[M_Authorization] DROP CONSTRAINT [FK_M_Authorization_G_Driver]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[M_CardsInEmployee]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_CardsInEmployee_M_Card]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_CardsInEmployee]'))
+ALTER TABLE [dbo].[M_CardsInEmployee] DROP CONSTRAINT [FK_M_CardsInEmployee_M_Card]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[M_DriversInTime]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_DriversInTime_G_Driver]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_DriversInTime]'))
+ALTER TABLE [dbo].[M_DriversInTime] DROP CONSTRAINT [FK_M_DriversInTime_G_Driver]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --删除外键[dbo].[P_PointsInProtocol]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_P_PointsInProtocol_P_Protocol]') AND parent_object_id = OBJECT_ID(N'[dbo].[P_PointsInProtocol]'))
 ALTER TABLE [dbo].[P_PointsInProtocol] DROP CONSTRAINT [FK_P_PointsInProtocol_P_Protocol]
@@ -242,6 +280,13 @@ ALTER TABLE [dbo].[U_MenusInRole] DROP CONSTRAINT [FK_U_MenusInRole_U_Role]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[V_Channel]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_V_Channel_V_Camera]') AND parent_object_id = OBJECT_ID(N'[dbo].[V_Channel]'))
+ALTER TABLE [dbo].[V_Channel] DROP CONSTRAINT [FK_V_Channel_V_Camera]
+GO
+
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_Area]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_Area]') AND type in (N'U'))
 DROP TABLE [dbo].[A_Area]
@@ -251,7 +296,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[A_Area](
@@ -261,13 +306,14 @@ CREATE TABLE [dbo].[A_Area](
 	[Name] [varchar](200) NOT NULL,
 	[ParentID] [varchar](100) NOT NULL,
 	[NodeLevel] [int] NOT NULL,
-	[Desc] [varchar](512) NULL,
-	[VendorID] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL
+) ON [PRIMARY]
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[A_Area] ADD [VendorID] [varchar](100) NULL
  CONSTRAINT [PK_A_Area] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
 GO
 
 SET ANSI_PADDING OFF
@@ -283,7 +329,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_AreaType](
@@ -309,7 +355,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Brand](
@@ -338,7 +384,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Department](
@@ -371,7 +417,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_DeviceType](
@@ -398,7 +444,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Duty](
@@ -427,7 +473,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_EnumMethods](
@@ -489,7 +535,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_LogicType](
@@ -516,7 +562,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Productor](
@@ -549,7 +595,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_RoomType](
@@ -602,7 +648,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_StationType](
@@ -629,7 +675,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_SubCompany](
@@ -663,7 +709,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_SubDeviceType](
@@ -691,7 +737,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_SubLogicType](
@@ -718,7 +764,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Supplier](
@@ -752,7 +798,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[C_Unit](
@@ -780,7 +826,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_ACDistBox](
@@ -807,7 +853,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_AirCondHost](
@@ -835,7 +881,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_AirCondWindCabi](
@@ -861,7 +907,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_AirCondWindCool](
@@ -887,7 +933,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_BattGroup](
@@ -915,7 +961,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_BattTempBox](
@@ -941,7 +987,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_ChangeHeat](
@@ -968,7 +1014,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_CombSwitElecSour](
@@ -1002,7 +1048,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_ControlEqui](
@@ -1028,7 +1074,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_DCDistBox](
@@ -1081,9 +1127,10 @@ CREATE TABLE [dbo].[D_Device](
 	[ScrapTime] [datetime] NOT NULL,
 	[StatusID] [int] NOT NULL,
 	[Contact] [varchar](40) NOT NULL,
-	[Version] [varchar](100) NULL,
 	[VendorID] [varchar](100) NULL,
-	[Index] [int] NOT NULL,
+	[Index] [int] NOT NULL CONSTRAINT [DF_D_Device_Index] DEFAULT ((0)),
+	[Version] [varchar](100) NULL,
+	[DriverID] [varchar](100) NOT NULL CONSTRAINT [DF_D_Device_Driver] DEFAULT ('')
  CONSTRAINT [PK_D_Device] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -1092,9 +1139,6 @@ CREATE TABLE [dbo].[D_Device](
 GO
 
 SET ANSI_PADDING OFF
-GO
-
-ALTER TABLE [dbo].[D_Device] ADD  DEFAULT ((0)) FOR [Index]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -1107,7 +1151,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_DivSwitElecSour](
@@ -1142,7 +1186,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_ElecSourCabi](
@@ -1190,6 +1234,7 @@ CREATE TABLE [dbo].[D_FSU](
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NULL,
+	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_Room] DEFAULT ((0)),
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC
@@ -1210,7 +1255,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_GeneratorGroup](
@@ -1243,7 +1288,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_HighVoltDistBox](
@@ -1269,7 +1314,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_Inverter](
@@ -1297,7 +1342,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_LowDistCabinet](
@@ -1327,7 +1372,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_Manostat](
@@ -1354,7 +1399,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_MobiGenerator](
@@ -1384,7 +1429,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_OrdiAirCond](
@@ -1420,7 +1465,6 @@ CREATE TABLE [dbo].[D_RedefinePoint](
 	[DeviceID] [varchar](100) NOT NULL,
 	[PointID] [varchar](100) NOT NULL,
 	[AlarmLevel] [int] NOT NULL,
-	[NMAlarmID] [varchar](100) NULL,
 	[AlarmLimit] [float] NULL,
 	[AlarmReturnDiff] [float] NULL,
 	[AlarmDelay] [int] NULL,
@@ -1434,9 +1478,78 @@ CREATE TABLE [dbo].[D_RedefinePoint](
 	[ConnAlarmStr] [varchar](256) NULL,
 	[AlarmFilteringStr] [varchar](256) NULL,
 	[AlarmReversalStr] [varchar](256) NULL,
-	[UpdateTime] [datetime] NOT NULL,
 	[Extend] [varchar](max) NULL,
+	[UpdateTime] [datetime] NOT NULL,
+	[NMAlarmID] [varchar](100) NULL,
  CONSTRAINT [PK_D_RedefinePoint] PRIMARY KEY CLUSTERED 
+(
+	[DeviceID] ASC,
+	[PointID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[D_Signal]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[D_Signal]') AND type in (N'U'))
+DROP TABLE [dbo].[D_Signal]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[D_Signal](
+	[DeviceID] [varchar](100) NOT NULL,
+	[PointID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[GroupID] [varchar](100) NULL,
+	[DriverID] [varchar](100) NULL,
+	[DotID] [int] NULL,
+	[AlarmThreshold] [int] NULL,
+	[PolyNot] [bit] NULL,
+	[Mark] [varchar](200) NULL,
+	[EmulateValue] [int] NULL,
+	[ProtocolID] [varchar](100) NULL,
+	[IsBindProtocol] [bit] NULL,
+	[AlmSource] [varchar](200) NULL,
+	[AlmThreshold1] [float] NULL,
+	[AlmTrigger1] [int] NULL,
+	[AlmThreshold2] [float] NULL,
+	[AlmTrigger2] [int] NULL,
+	[Multiple] [float] NULL,
+	[Offset] [float] NULL,
+	[Percision] [float] NULL,
+	[AlmCurve] [float] NULL,
+	[AlarmLevel] [int] NOT NULL,
+	[NMAlarmID] [varchar](100) NULL,
+	[AlarmLimit] [float] NULL,
+	[AlarmReturnDiff] [float] NULL,
+	[AlarmDelay] [int] NULL,
+	[AlarmRecoveryDelay] [int] NULL,
+	[TriggerTypeID] [int] NULL,
+	[SavedPeriod] [int] NULL,
+	[AbsoluteThreshold] [float] NULL,
+	[PerThreshold] [float] NULL,
+	[StaticPeriod] [int] NULL,
+	[StorageRefTime] [varchar](40) NULL,
+	[InferiorAlarmStr] [varchar](256) NULL,
+	[ConnAlarmStr] [varchar](256) NULL,
+	[AlarmFilteringStr] [varchar](256) NULL,
+	[AlarmReversalStr] [varchar](256) NULL,
+	[MaxVal] [float] NULL,
+	[MinVal] [float] NULL,
+	[Extend] [varchar](max) NULL,
+	[UpdateTime] [datetime] NOT NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_D_Signal] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC,
 	[PointID] ASC
@@ -1457,7 +1570,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_SolarController](
@@ -1484,7 +1597,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_SolarEqui](
@@ -1511,7 +1624,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_SpecAirCond](
@@ -1540,7 +1653,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_SwitchFuse](
@@ -1575,7 +1688,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_Transformer](
@@ -1604,7 +1717,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_UPS](
@@ -1632,7 +1745,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_Ventilation](
@@ -1659,7 +1772,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_WindEnerEqui](
@@ -1687,7 +1800,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_WindLightCompCon](
@@ -1715,7 +1828,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[D_WindPowerCon](
@@ -1733,6 +1846,86 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[G_Bus]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[G_Bus]') AND type in (N'U'))
+DROP TABLE [dbo].[G_Bus]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[G_Bus](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[GroupID] [varchar](100) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Type] [int] NOT NULL,
+	[Mode] [int] NOT NULL,
+	[LinkType] [int] NOT NULL,
+	[RemoteIP] [varchar](15) NOT NULL,
+	[RemotePort] [int] NOT NULL,
+	[LocalIP] [varchar](15) NOT NULL,
+	[LocalPort] [int] NOT NULL,
+	[SerialParam] [varchar](max) NOT NULL,
+	[SwtDriverInterval] [int] NOT NULL,
+	[ReConnectInterval] [int] NOT NULL,
+	[Heartbeat] [int] NOT NULL,
+	[PrKey] [varchar](100) NOT NULL,
+	[AuxSet] [varchar](max) NOT NULL,
+ CONSTRAINT [PK_GBus] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[G_Driver]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[G_Driver]') AND type in (N'U'))
+DROP TABLE [dbo].[G_Driver]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[G_Driver](
+	[ID] [varchar](100) NOT NULL,
+	[BusID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[GroupID] [varchar](100) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Protocol] [int] NOT NULL,
+	[Address] [int] NOT NULL,
+	[RtuParam] [varchar](max) NOT NULL,
+	[SendInterval] [int] NOT NULL,
+	[ReceiveInterval] [int] NOT NULL,
+	[AlarmThreshold] [int] NOT NULL,
+	[AuxSet] [varchar](max) NOT NULL,
+	[ExpSet] [varchar](max) NOT NULL,
+	[TID] [int] NOT NULL,
+	[Bind] [bit] NOT NULL,
+ CONSTRAINT [PK_GDriver] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[H_DBScript]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[H_DBScript]') AND type in (N'U'))
 DROP TABLE [dbo].[H_DBScript]
@@ -1742,7 +1935,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[H_DBScript](
@@ -1773,7 +1966,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[H_Masking](
@@ -1833,7 +2026,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[H_OpEvent](
@@ -1885,6 +2078,337 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_Authorization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Authorization]') AND type in (N'U'))
+DROP TABLE [dbo].[M_Authorization]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_Authorization](
+	[DriverID] [varchar](100) NOT NULL,
+	[CardID] [varchar](100) NOT NULL,
+	[DeviceID] [varchar](100) NULL,
+	[GroupID] [varchar](100) NULL,
+	[LimitType] [int] NULL,
+	[LimitIndex] [int] NULL,
+	[BeginTime] [datetime] NULL,
+	[LimitTime] [datetime] NULL,
+	[Pwd] [varchar](50) NULL,
+ CONSTRAINT [PK_M_Authorization] PRIMARY KEY CLUSTERED 
+(
+	[CardID] ASC,
+	[DriverID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_Card]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Card]') AND type in (N'U'))
+DROP TABLE [dbo].[M_Card]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_Card](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NULL,
+	[Name] [varchar](200) NOT NULL,
+	[Code] [varchar](100) NULL,
+	[HexCode] [varchar](100) NULL,
+	[UID] [varchar](100) NULL,
+	[PWD] [varchar](100) NULL,
+	[Type] [int] NULL,
+	[Status] [int] NULL,
+	[StatusTime] [datetime] NOT NULL,
+	[StatusReason] [varchar](512) NULL,
+	[BeginTime] [datetime] NOT NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_Card] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_CardsInEmployee]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_CardsInEmployee]') AND type in (N'U'))
+DROP TABLE [dbo].[M_CardsInEmployee]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_CardsInEmployee](
+	[CardID] [varchar](100) NOT NULL,
+	[EmployeeID] [varchar](100) NOT NULL,
+	[TypeID] [int] NOT NULL,
+ CONSTRAINT [PK_M_CardsInEmployee] PRIMARY KEY NONCLUSTERED 
+(
+	[CardID] ASC,
+	[EmployeeID] ASC,
+	[TypeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_DriversInTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_DriversInTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_DriversInTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_DriversInTime](
+	[DriverID] [varchar](100) NOT NULL,
+	[DeviceID] [varchar](100) NOT NULL,
+	[TimeID] [varchar](100) NOT NULL,
+	[TimeType] [int] NOT NULL,
+ CONSTRAINT [PK_M_DriversInTime] PRIMARY KEY NONCLUSTERED 
+(
+	[DriverID] ASC,
+	[TimeID] ASC,
+	[TimeType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_HolidayTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_HolidayTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_HolidayTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_HolidayTime](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[TimeStr] [varchar](20) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_HolidayTime] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_InfraredTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_InfraredTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_InfraredTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_InfraredTime](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[StartTimeStr1] [varchar](20) NULL,
+	[EndTimeStr1] [varchar](20) NULL,
+	[StartTimeStr2] [varchar](20) NULL,
+	[EndTimeStr2] [varchar](20) NULL,
+	[StartTimeStr3] [varchar](20) NULL,
+	[EndTimeStr3] [varchar](20) NULL,
+	[StartTimeStr4] [varchar](20) NULL,
+	[EndTimeStr4] [varchar](20) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_InfraredTime] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_Sync]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Sync]') AND type in (N'U'))
+DROP TABLE [dbo].[M_Sync]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_Sync](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NULL,
+	[Type] [int] NULL,
+	[GroupID] [varchar](100) NULL,
+	[DriverID] [varchar](100) NULL,
+	[OpType] [int] NULL,
+	[Time] [datetime] NULL,
+	[State] [bit] NULL,
+ CONSTRAINT [PK_M_Sync] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_WeekEndTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_WeekEndTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_WeekEndTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_WeekEndTime](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[TimeStr] [varchar](20) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_WeekEndTime] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_WeekTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_WeekTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_WeekTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_WeekTime](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[GroupIndex] [int] NOT NULL,
+	[Index] [int] NOT NULL,
+	[StartTimeStr1] [varchar](20) NULL,
+	[EndTimeStr1] [varchar](20) NULL,
+	[StartTimeStr2] [varchar](20) NULL,
+	[EndTimeStr2] [varchar](20) NULL,
+	[StartTimeStr3] [varchar](20) NULL,
+	[EndTimeStr3] [varchar](20) NULL,
+	[StartTimeStr4] [varchar](20) NULL,
+	[EndTimeStr4] [varchar](20) NULL,
+	[StartTimeStr5] [varchar](20) NULL,
+	[EndTimeStr5] [varchar](20) NULL,
+	[StartTimeStr6] [varchar](20) NULL,
+	[EndTimeStr6] [varchar](20) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_WeekTime] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[M_WorkTime]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_WorkTime]') AND type in (N'U'))
+DROP TABLE [dbo].[M_WorkTime]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[M_WorkTime](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[Type] [int] NOT NULL,
+	[Index] [int] NOT NULL,
+	[StartTimeStr1] [varchar](20) NULL,
+	[EndTimeStr1] [varchar](20) NULL,
+	[StartTimeStr2] [varchar](20) NULL,
+	[EndTimeStr2] [varchar](20) NULL,
+	[StartTimeStr3] [varchar](20) NULL,
+	[EndTimeStr3] [varchar](20) NULL,
+	[StartTimeStr4] [varchar](20) NULL,
+	[EndTimeStr4] [varchar](20) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_M_WorkTime] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[P_Point]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[P_Point]') AND type in (N'U'))
 DROP TABLE [dbo].[P_Point]
@@ -1894,7 +2418,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[P_Point](
@@ -1945,7 +2469,23 @@ CREATE TABLE [dbo].[P_PointsInProtocol](
 	[ProtocolID] [varchar](100) NOT NULL,
 	[PointID] [varchar](100) NOT NULL,
 	[Desc] [varchar](200) NULL,
- CONSTRAINT [PK_P_PointsInProtocol] PRIMARY KEY CLUSTERED 
+	[DotID] [int] NULL,
+	[AlarmThreshold] [int] NULL,
+	[PolyNot] [bit] NULL,
+	[Mark] [varchar](200) NULL,
+	[EmulateValue] [int] NULL,
+	[Multiple] [float] NULL,
+	[Offset] [float] NULL,
+	[Percision] [float] NULL,
+	[AlmCurve] [float] NULL,
+	[MaxVal] [float] NULL,
+	[MinVal] [float] NULL,
+	[AlmSource] [varchar](200) NULL,
+	[AlmThreshold1] [float] NULL,
+	[AlmTrigger1] [int] NULL,
+	[AlmThreshold2] [float] NULL,
+	[AlmTrigger2] [int] NULL,
+ CONSTRAINT [FK_P_PointsInProtocol] PRIMARY KEY CLUSTERED 
 (
 	[ProtocolID] ASC,
 	[PointID] ASC
@@ -1966,7 +2506,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[P_Protocol](
@@ -2011,7 +2551,7 @@ CREATE TABLE [dbo].[P_SubPoint](
 	[AbsoluteThreshold] [float] NULL,
 	[PerThreshold] [float] NULL,
 	[StaticPeriod] [int] NULL,
-	[StorageInterval] [int] NULL,
+	[StorageRefTime] [varchar](40) NULL,
  CONSTRAINT [PK_P_SubPoint] PRIMARY KEY CLUSTERED 
 (
 	[PointID] ASC,
@@ -2033,7 +2573,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[S_Room](
@@ -2063,13 +2603,14 @@ CREATE TABLE [dbo].[S_Room](
 	[EnviSubMain] [varchar](20) NULL,
 	[FireSubMain] [varchar](20) NULL,
 	[AirSubMain] [varchar](20) NULL,
-	[Contact] [varchar](40) NOT NULL,
-	[VendorID] [varchar](100) NULL,
+	[Contact] [varchar](40) NOT NULL
+) ON [PRIMARY]
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[S_Room] ADD [VendorID] [varchar](100) NULL
  CONSTRAINT [PK_S_Room] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
 GO
 
 SET ANSI_PADDING OFF
@@ -2085,7 +2626,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[S_Station](
@@ -2110,13 +2651,14 @@ CREATE TABLE [dbo].[S_Station](
 	[SuppPowerTypeID] [int] NULL,
 	[TranInfo] [varchar](250) NULL,
 	[TranContNo] [varchar](40) NULL,
-	[TranPhone] [varchar](20) NULL,
-	[VendorID] [varchar](100) NULL,
+	[TranPhone] [varchar](20) NULL
+) ON [PRIMARY]
+SET ANSI_PADDING ON
+ALTER TABLE [dbo].[S_Station] ADD [VendorID] [varchar](100) NULL
  CONSTRAINT [PK_S_Station] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
 GO
 
 SET ANSI_PADDING OFF
@@ -2132,7 +2674,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[Sys_Menu](
@@ -2157,6 +2699,38 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_Client]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Client]') AND type in (N'U'))
+DROP TABLE [dbo].[U_Client]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_Client](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NULL,
+	[Name] [varchar](200) NULL,
+	[UID] [varchar](20) NULL,
+	[PWD] [varchar](20) NULL,
+	[Level] [int] NULL,
+	[Ver] [varchar](100) NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_U_Client] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[U_Employee]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Employee]') AND type in (N'U'))
 DROP TABLE [dbo].[U_Employee]
@@ -2166,7 +2740,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[U_Employee](
@@ -2218,7 +2792,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[U_MenusInRole](
@@ -2236,6 +2810,46 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_OutEmployee]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_OutEmployee]') AND type in (N'U'))
+DROP TABLE [dbo].[U_OutEmployee]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[U_OutEmployee](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[EmpID] [varchar](100) NOT NULL,
+	[Photo] [image] NULL,
+	[Sex] [int] NOT NULL,
+	[ICardID] [varchar](50) NULL,
+	[ICardAddress] [varchar](200) NULL,
+	[ICardIssue] [varchar](200) NULL,
+	[Address] [varchar](200) NULL,
+	[CompanyName] [varchar](200) NULL,
+	[ProjectName] [varchar](200) NULL,
+	[WorkPhone] [varchar](20) NULL,
+	[MobilePhone] [varchar](20) NULL,
+	[Email] [varchar](20) NULL,
+	[Remarks] [varchar](512) NULL,
+ CONSTRAINT [PK_U_OutEmployee] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[U_Role]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Role]') AND type in (N'U'))
 DROP TABLE [dbo].[U_Role]
@@ -2245,7 +2859,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[U_Role](
@@ -2274,7 +2888,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-SET ANSI_PADDING ON
+SET ANSI_PADDING OFF
 GO
 
 CREATE TABLE [dbo].[U_User](
@@ -2304,6 +2918,118 @@ CREATE TABLE [dbo].[U_User](
 GO
 
 SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_Camera]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Camera]') AND type in (N'U'))
+DROP TABLE [dbo].[V_Camera]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[V_Camera](
+	[ID] [varchar](100) NOT NULL,
+	[Enabled] [bit] NOT NULL,
+	[DeviceID] [varchar](100) NULL,
+	[Name] [varchar](200) NULL,
+	[IP] [varchar](20) NULL,
+	[Port] [int] NULL,
+	[UID] [varchar](40) NULL,
+	[PWD] [varchar](20) NULL,
+	[Bright] [int] NULL,
+	[Contrast] [int] NULL,
+	[Saturation] [int] NULL,
+	[Hue] [int] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_V_Camera] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_Channel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Channel]') AND type in (N'U'))
+DROP TABLE [dbo].[V_Channel]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[V_Channel](
+	[ID] [varchar](100) NOT NULL,
+	[CameraID] [varchar](100) NULL,
+	[Name] [varchar](200) NULL,
+	[Mask] [int] NULL,
+	[Index] [int] NULL,
+	[Zero] [bit] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_V_Channel] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[V_Preset]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_Preset]') AND type in (N'U'))
+DROP TABLE [dbo].[V_Preset]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[V_Preset](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[Type] [int] NULL,
+	[Index] [int] NULL,
+ CONSTRAINT [PK_V_Preset] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建视图[dbo].[V_Point]
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[V_Point]'))
+DROP VIEW [dbo].[V_Point]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[V_Point]
+AS
+SELECT P.*, SP.* FROM [dbo].[P_Point] P INNER JOIN [dbo].[P_SubPoint] SP ON P.[ID] = SP.[PointID];
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -2392,7 +3118,7 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[C_SubDeviceType]
-ALTER TABLE [dbo].[C_SubDeviceType]  WITH CHECK ADD  CONSTRAINT [FK_C_SubDeviceType_C_DeviceType] FOREIGN KEY([DeviceTypeID])
+ALTER TABLE [dbo].[C_SubDeviceType]  WITH NOCHECK ADD  CONSTRAINT [FK_C_SubDeviceType_C_DeviceType] FOREIGN KEY([DeviceTypeID])
 REFERENCES [dbo].[C_DeviceType] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
@@ -2400,7 +3126,6 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_C_SubDeviceType_C_DeviceType]') AND parent_object_id = OBJECT_ID(N'[dbo].[C_SubDeviceType]'))
 ALTER TABLE [dbo].[C_SubDeviceType] CHECK CONSTRAINT [FK_C_SubDeviceType_C_DeviceType]
-GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[C_SubLogicType]
@@ -2677,6 +3402,28 @@ ALTER TABLE [dbo].[D_RedefinePoint] CHECK CONSTRAINT [FK_D_RedefinePoint_P_Point
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[D_Signal]
+ALTER TABLE [dbo].[D_Signal]  WITH CHECK ADD  CONSTRAINT [FK_D_Signal_D_Device] FOREIGN KEY([DeviceID])
+REFERENCES [dbo].[D_Device] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Signal_D_Device]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Signal]'))
+ALTER TABLE [dbo].[D_Signal] CHECK CONSTRAINT [FK_D_Signal_D_Device]
+GO
+
+ALTER TABLE [dbo].[D_Signal]  WITH CHECK ADD  CONSTRAINT [FK_D_Signal_P_Point] FOREIGN KEY([PointID])
+REFERENCES [dbo].[P_Point] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_D_Signal_P_Point]') AND parent_object_id = OBJECT_ID(N'[dbo].[D_Signal]'))
+ALTER TABLE [dbo].[D_Signal] CHECK CONSTRAINT [FK_D_Signal_P_Point]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[D_SolarController]
 ALTER TABLE [dbo].[D_SolarController]  WITH CHECK ADD  CONSTRAINT [FK_D_SolarController_D_Device] FOREIGN KEY([DeviceID])
 REFERENCES [dbo].[D_Device] ([ID])
@@ -2797,7 +3544,65 @@ ALTER TABLE [dbo].[D_WindPowerCon] CHECK CONSTRAINT [FK_D_WindPowerCon_D_Device]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加外键[dbo].[P_PointsInProtocol]
+--添加外键[dbo].[G_Driver]
+ALTER TABLE [dbo].[G_Driver]  WITH CHECK ADD  CONSTRAINT [FK_GDriver_GBus] FOREIGN KEY([BusID])
+REFERENCES [dbo].[G_Bus] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_GDriver_GBus]') AND parent_object_id = OBJECT_ID(N'[dbo].[G_Driver]'))
+ALTER TABLE [dbo].[G_Driver] CHECK CONSTRAINT [FK_GDriver_GBus]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[M_Authorization]
+ALTER TABLE [dbo].[M_Authorization]  WITH CHECK ADD  CONSTRAINT [FK_M_Authorization_G_Driver] FOREIGN KEY([DriverID])
+REFERENCES [dbo].[G_Driver] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Authorization_G_Driver]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Authorization]'))
+ALTER TABLE [dbo].[M_Authorization] CHECK CONSTRAINT [FK_M_Authorization_G_Driver]
+GO
+
+ALTER TABLE [dbo].[M_Authorization]  WITH CHECK ADD  CONSTRAINT [FK_M_Authorization_M_Card] FOREIGN KEY([CardID])
+REFERENCES [dbo].[M_Card] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Authorization_M_Card]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Authorization]'))
+ALTER TABLE [dbo].[M_Authorization] CHECK CONSTRAINT [FK_M_Authorization_M_Card]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[M_CardsInEmployee]
+ALTER TABLE [dbo].[M_CardsInEmployee]  WITH CHECK ADD  CONSTRAINT [FK_M_CardsInEmployee_M_Card] FOREIGN KEY([CardID])
+REFERENCES [dbo].[M_Card] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_CardsInEmployee_M_Card]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_CardsInEmployee]'))
+ALTER TABLE [dbo].[M_CardsInEmployee] CHECK CONSTRAINT [FK_M_CardsInEmployee_M_Card]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[M_DriversInTime]
+ALTER TABLE [dbo].[M_DriversInTime]  WITH CHECK ADD  CONSTRAINT [FK_M_DriversInTime_G_Driver] FOREIGN KEY([DriverID])
+REFERENCES [dbo].[G_Driver] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_DriversInTime_G_Driver]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_DriversInTime]'))
+ALTER TABLE [dbo].[M_DriversInTime] CHECK CONSTRAINT [FK_M_DriversInTime_G_Driver]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].
 ALTER TABLE [dbo].[P_PointsInProtocol]  WITH CHECK ADD  CONSTRAINT [FK_P_PointsInProtocol_P_Point] FOREIGN KEY([PointID])
 REFERENCES [dbo].[P_Point] ([ID])
 ON UPDATE CASCADE
@@ -2820,7 +3625,7 @@ GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[P_SubPoint]
-ALTER TABLE [dbo].[P_SubPoint]  WITH CHECK ADD  CONSTRAINT [FK_P_SubPoint_P_Point] FOREIGN KEY([PointID])
+ALTER TABLE [dbo].[P_SubPoint]  WITH NOCHECK ADD  CONSTRAINT [FK_P_SubPoint_P_Point] FOREIGN KEY([PointID])
 REFERENCES [dbo].[P_Point] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
@@ -2864,4 +3669,16 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_MenusInRole_U_Role]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_MenusInRole]'))
 ALTER TABLE [dbo].[U_MenusInRole] CHECK CONSTRAINT [FK_U_MenusInRole_U_Role]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[V_Channel]
+ALTER TABLE [dbo].[V_Channel]  WITH CHECK ADD  CONSTRAINT [FK_V_Channel_V_Camera] FOREIGN KEY([CameraID])
+REFERENCES [dbo].[V_Camera] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_V_Channel_V_Camera]') AND parent_object_id = OBJECT_ID(N'[dbo].[V_Channel]'))
+ALTER TABLE [dbo].[V_Channel] CHECK CONSTRAINT [FK_V_Channel_V_Camera]
 GO

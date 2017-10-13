@@ -42,6 +42,8 @@ namespace iPem.Site.Controllers {
         private readonly IProjectService _projectService;
         private readonly IAAlarmService _actAlarmService;
         private readonly IHAlarmService _hisAlarmService;
+        private readonly ICardRecordService _cardRecordService;
+        private readonly IEmployeeService _employeeService;
         private readonly IPointService _pointService;
         private readonly IFsuService _fsuService;
         private readonly IElecService _elecService;
@@ -68,6 +70,8 @@ namespace iPem.Site.Controllers {
             IProjectService projectService,
             IAAlarmService actAlarmService,
             IHAlarmService hisAlarmService,
+            ICardRecordService cardRecordService,
+            IEmployeeService employeeService,
             IPointService pointService,
             IFsuService fsuService,
             IElecService elecService,
@@ -88,6 +92,8 @@ namespace iPem.Site.Controllers {
             this._projectService = projectService;
             this._actAlarmService = actAlarmService;
             this._hisAlarmService = hisAlarmService;
+            this._cardRecordService = cardRecordService;
+            this._employeeService = employeeService;
             this._pointService = pointService;
             this._fsuService = fsuService;
             this._elecService = elecService;
@@ -150,14 +156,14 @@ namespace iPem.Site.Controllers {
 
                 var nodeKey = Common.ParseNode(node);
                 var cameras = _workContext.Cameras();
-                if (nodeKey.Id == EnmSSH.Area) {
+                if (nodeKey.Key == EnmSSH.Area) {
                     var current = _workContext.Areas().Find(a => a.Current.Id == nodeKey.Value);
                     if (current != null) cameras = cameras.FindAll(d => current.Keys.Contains(d.Current.AreaId));
-                } else if (nodeKey.Id == EnmSSH.Station) {
+                } else if (nodeKey.Key == EnmSSH.Station) {
                     cameras = cameras.FindAll(d => d.Current.StationId == nodeKey.Value);
-                } else if (nodeKey.Id == EnmSSH.Room) {
+                } else if (nodeKey.Key == EnmSSH.Room) {
                     cameras = cameras.FindAll(d => d.Current.RoomId == nodeKey.Value);
-                } else if (nodeKey.Id == EnmSSH.Device) {
+                } else if (nodeKey.Key == EnmSSH.Device) {
                     cameras = cameras.FindAll(d => d.Current.DeviceId == nodeKey.Value);
                 }
 
@@ -985,7 +991,7 @@ namespace iPem.Site.Controllers {
                         var ptPoints = stores.FindAll(p => p.Type != EnmPoint.AL);
                         if (ptPoints.Count > 0) {
                             List<V_AMeasure> values;
-                            if (nodeKey.Id == EnmSSH.Device) {
+                            if (nodeKey.Key == EnmSSH.Device) {
                                 #region 通知获取数据
                                 var pointsInFsus = ptPoints.GroupBy(p => p.Device.FsuId);
                                 foreach (var pointsInFsu in pointsInFsus) {
@@ -1013,7 +1019,7 @@ namespace iPem.Site.Controllers {
                                 #endregion
                                 values = _aMeasureService.GetMeasuresInDevice(nodeKey.Value);
                             } else {
-                                values = _aMeasureService.GetMeasures(ptPoints.Select(p => new IdValuePair<string, string>(p.Device.Id, p.Current.Id)).ToList());
+                                values = _aMeasureService.GetMeasures(ptPoints.Select(p => new Kv<string, string>(p.Device.Id, p.Current.Id)).ToList());
                             }
 
                             var pValues = from point in ptPoints
@@ -2097,14 +2103,14 @@ namespace iPem.Site.Controllers {
 
                 var devices = _workContext.Devices().FindAll(d => d.Current.Type.Id == template.type);
                 var nodeKey = Common.ParseNode(node);
-                if (nodeKey.Id == EnmSSH.Area) {
+                if (nodeKey.Key == EnmSSH.Area) {
                     var current = _workContext.Areas().Find(a => a.Current.Id == nodeKey.Value);
                     if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
-                } else if (nodeKey.Id == EnmSSH.Station) {
+                } else if (nodeKey.Key == EnmSSH.Station) {
                     devices = devices.FindAll(d => d.Current.StationId == nodeKey.Value);
-                } else if (nodeKey.Id == EnmSSH.Room) {
+                } else if (nodeKey.Key == EnmSSH.Room) {
                     devices = devices.FindAll(d => d.Current.RoomId == nodeKey.Value);
-                } else if (nodeKey.Id == EnmSSH.Device) {
+                } else if (nodeKey.Key == EnmSSH.Device) {
                     devices = devices.FindAll(d => d.Current.Id == nodeKey.Value);
                 }
 
@@ -2114,10 +2120,10 @@ namespace iPem.Site.Controllers {
                     data.data = this.GetMatrixModel(template.points);
 
                     var stores = devices.OrderBy(d => d.Current.StationId).OrderBy(d => d.Current.RoomId).Skip(start).Take(limit);
-                    var parms = new List<IdValuePair<string, string>>();
+                    var parms = new List<Kv<string, string>>();
                     foreach (var store in stores) {
                         foreach (var point in template.points) {
-                            parms.Add(new IdValuePair<string, string>(store.Current.Id, point));
+                            parms.Add(new Kv<string, string>(store.Current.Id, point));
                         }
                     }
 
@@ -2154,6 +2160,51 @@ namespace iPem.Site.Controllers {
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
             };
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestCardRecords(string node, int start, int limit) {
+            var data = new AjaxDataModel<List<CardRecordModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<CardRecordModel>()
+            };
+
+            try {
+                var stores = this.GetCardRecords(node);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadCardRecords(string node) {
+            try {
+                var models = this.GetCardRecords(node);
+                using (var ms = _excelManager.Export<CardRecordModel>(models, "最近一天刷卡记录", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
         }
 
         private List<AlmStore<A_AAlarm>> GetActAlmStore(ActAlmCondition condition, bool onlyConfirms = false, bool onlyReservations = false, bool onlySystem = false) {
@@ -2199,19 +2250,19 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            if (onlySystem) return _workContext.ActAlarms().FindAll(a => a.Room.Id == "-1");
-
             var stores = _workContext.ActAlarms();
-            if (condition.stationTypes.Length > 0)
+            if (onlySystem) stores = stores.FindAll(a => a.Room.Id == "-1");
+
+            if (!onlySystem && condition.stationTypes.Length > 0)
                 stores = stores.FindAll(a => condition.stationTypes.Contains(a.Station.Type.Id));
 
-            if (condition.roomTypes.Length > 0)
+            if (!onlySystem && condition.roomTypes.Length > 0)
                 stores = stores.FindAll(a => condition.roomTypes.Contains(a.Room.Type.Id));
 
-            if (condition.subDeviceTypes.Length > 0)
+            if (!onlySystem && condition.subDeviceTypes.Length > 0)
                 stores = stores.FindAll(a => condition.subDeviceTypes.Contains(a.Device.SubType.Id));
 
-            if (condition.subLogicTypes.Length > 0)
+            if (!onlySystem && condition.subLogicTypes.Length > 0)
                 stores = stores.FindAll(a => condition.subLogicTypes.Contains(a.Device.SubLogicType.Id));
 
             if (condition.points.Length > 0)
@@ -2235,7 +2286,7 @@ namespace iPem.Site.Controllers {
                 if (matchs.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.Point.Name, matchs));
             }
 
-            if (condition.baseNode == "root")
+            if (onlySystem || condition.baseNode == "root")
                 return stores;
 
             var keys = Common.SplitKeys(condition.baseNode);
@@ -2361,9 +2412,9 @@ namespace iPem.Site.Controllers {
         private List<PointStore<P_Point>> GetActPoints(string node, int[] types) {
             var stores = new List<PointStore<P_Point>>();
             var nodeKey = Common.ParseNode(node);
-            if (nodeKey.Id == EnmSSH.Root) {
+            if (nodeKey.Key == EnmSSH.Root) {
                 stores = this.GetFollowPoints(node, EnmSSH.Area);
-            } else if (nodeKey.Id == EnmSSH.Device) {
+            } else if (nodeKey.Key == EnmSSH.Device) {
                 var current = _workContext.Devices().Find(d => d.Current.Id == nodeKey.Value);
                 if (current != null) {
                     var area = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
@@ -2390,7 +2441,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } else {
-                stores = this.GetFollowPoints(nodeKey.Value, nodeKey.Id);
+                stores = this.GetFollowPoints(nodeKey.Value, nodeKey.Key);
             }
 
             stores = stores.FindAll(p => types.Contains((int)p.Type)).OrderByDescending(p => (int)p.Type).ToList();
@@ -2467,6 +2518,99 @@ namespace iPem.Site.Controllers {
             }
 
             return model;
+        }
+
+        private List<CardRecordModel> GetCardRecords(string node) {
+            var stores = new List<CardRecordModel>();
+
+            List<H_CardRecord> records = null;
+            DateTime start = DateTime.Now.AddDays(-1), end = DateTime.Now;
+            if (node == "root") {
+                records = _cardRecordService.GetRecords(start, end);
+            } else {
+                var keys = Common.SplitKeys(node);
+                if (keys.Length == 2) {
+                    var type = int.Parse(keys[0]);
+                    var id = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if (nodeType == EnmSSH.Area) {
+                        var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                        if (current != null) records = _cardRecordService.GetRecords(start, end).FindAll(a => current.Keys.Contains(a.AreaId));
+                    } else if (nodeType == EnmSSH.Station) {
+                        records = _cardRecordService.GetRecordsInStation(start, end, id);
+                    } else if (nodeType == EnmSSH.Room) {
+                        records = _cardRecordService.GetRecordsInRoom(start, end, id);
+                    } else if (nodeType == EnmSSH.Device) {
+                        records = _cardRecordService.GetRecordsInDevice(start, end, id);
+                    }
+                }
+            }
+
+            if(records == null || records.Count == 0) return stores;
+
+            var tStores = from rec in records
+                          join dev in _workContext.Devices() on rec.DeviceId equals dev.Current.Id
+                          join area in _workContext.Areas() on rec.AreaId equals area.Current.Id
+                          select new CardRecordModel {
+                              area = area.ToString(),
+                              station = dev.Current.StationName,
+                              room = dev.Current.RoomName,
+                              device = dev.Current.Name,
+                              card = rec.CardId,
+                              time = CommonHelper.DateTimeConverter(rec.PunchTime),
+                              remark = rec.Remark
+                          };
+
+            if (!tStores.Any()) return stores;
+
+            var index = 0;
+            var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+            if (employees.Count > 0) {
+                var empStores = from store in tStores
+                                join emp in employees on store.card equals emp.CardId
+                                select new CardRecordModel {
+                                    area = store.area,
+                                    station = store.station,
+                                    room = store.room,
+                                    device = store.device,
+                                    card = store.card,
+                                    time = store.time,
+                                    remark = store.remark,
+                                    employeeType = Common.GetEmployeeTypeDisplay(emp.Type),
+                                    employee = emp.Name,
+                                    department = emp.DeptName
+                                };
+
+                foreach (var es in empStores) {
+                    es.index = ++index;
+                    stores.Add(es);
+                }
+            }
+
+            var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+            if (outEmployees.Count > 0) {
+                var empStores = from store in tStores
+                                join emp in outEmployees on store.card equals emp.CardId
+                                select new CardRecordModel {
+                                    area = store.area,
+                                    station = store.station,
+                                    room = store.room,
+                                    device = store.device,
+                                    card = store.card,
+                                    time = store.time,
+                                    remark = store.remark,
+                                    employeeType = Common.GetEmployeeTypeDisplay(emp.Type),
+                                    employee = emp.Name,
+                                    department = emp.DeptName
+                                };
+
+                foreach (var es in empStores) {
+                    es.index = ++index;
+                    stores.Add(es);
+                }
+            }
+
+            return stores;
         }
 
         #endregion

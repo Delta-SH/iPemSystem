@@ -21,8 +21,8 @@ namespace iPem.Core.NPOI {
 
             PropertyInfo backgroundAttribute = null;
             var colorAttributes = new List<string>();
-            var boolAttributes = new List<IdValuePair<PropertyInfo, ExcelBooleanNameAttribute>>();
-            var dataAttributes = new List<IdValuePair<PropertyInfo, string>>();
+            var boolAttributes = new List<Kv<PropertyInfo, ExcelBooleanNameAttribute>>();
+            var dataAttributes = new List<Kv<PropertyInfo, string>>();
 
             var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             foreach(var prop in props) {
@@ -43,15 +43,15 @@ namespace iPem.Core.NPOI {
                 if(prop.IsDefined(typeof(ExcelBooleanNameAttribute), true)) {
                     if(prop.PropertyType == typeof(Boolean)) {
                         var boolean = (ExcelBooleanNameAttribute)prop.GetCustomAttributes(typeof(ExcelBooleanNameAttribute), true)[0];
-                        boolAttributes.Add(new IdValuePair<PropertyInfo, ExcelBooleanNameAttribute> { Id = prop, Value = boolean });
+                        boolAttributes.Add(new Kv<PropertyInfo, ExcelBooleanNameAttribute> { Key = prop, Value = boolean });
                     }
                 }
 
                 if(prop.IsDefined(typeof(ExcelDisplayNameAttribute), true)) {
                     var display = (ExcelDisplayNameAttribute)prop.GetCustomAttributes(typeof(ExcelDisplayNameAttribute), true)[0];
-                    dataAttributes.Add(new IdValuePair<PropertyInfo, string>(prop, display.DisplayName));
+                    dataAttributes.Add(new Kv<PropertyInfo, string>(prop, display.DisplayName));
                 } else {
-                    dataAttributes.Add(new IdValuePair<PropertyInfo, string>(prop, prop.Name));
+                    dataAttributes.Add(new Kv<PropertyInfo, string>(prop, prop.Name));
                 }
             }
 
@@ -96,7 +96,7 @@ namespace iPem.Core.NPOI {
 
                 for(int g = 0; g < dataAttributes.Count; g++) {
                     var cell = row.CreateCell(g);
-                    var prop = dataAttributes[g].Id;
+                    var prop = dataAttributes[g].Key;
                     var draw = colorAttributes.Contains(prop.Name);
                     var name = prop.Name;
                     var type = prop.PropertyType;
@@ -117,7 +117,7 @@ namespace iPem.Core.NPOI {
                     } else if(type == typeof(Boolean)) {
                         cell.CellStyle = converter.GetCellStyle(background, draw);
 
-                        var boolAttribute = boolAttributes.Find(b => b.Id.Equals(prop));
+                        var boolAttribute = boolAttributes.Find(b => b.Key.Equals(prop));
                         if(boolAttribute != null)
                             cell.SetCellValue(new XSSFRichTextString((Boolean)value ? boolAttribute.Value.True : boolAttribute.Value.False));
                         else

@@ -24,7 +24,7 @@ namespace iPem.Core {
         /// 软件版本
         /// </summary>
         public string Version {
-            get { return "V1.1.0 Build170925"; }
+            get { return "V1.1.2 Build171020"; }
         }
 
         /// <summary>

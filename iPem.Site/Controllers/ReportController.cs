@@ -896,15 +896,15 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult GetFields400204(string[] types) {
-            var data = new AjaxDataModel<List<IdValuePair<string,string>>> {
+            var data = new AjaxDataModel<List<Kv<string,string>>> {
                 success = true,
                 message = "200 Ok",
                 total = 4,
-                data = new List<IdValuePair<string, string>> {
-                    new IdValuePair<string,string>("index","序号"),
-                    new IdValuePair<string,string>("area","所属区域"),
-                    new IdValuePair<string,string>("stationid",""),
-                    new IdValuePair<string,string>("station","所属站点")
+                data = new List<Kv<string, string>> {
+                    new Kv<string,string>("index","序号"),
+                    new Kv<string,string>("area","所属区域"),
+                    new Kv<string,string>("stationid",""),
+                    new Kv<string,string>("station","所属站点")
                 }
             };
 
@@ -915,11 +915,11 @@ namespace iPem.Site.Controllers {
 
                 if (columns != null && columns.Count > 0) {
                     for (int i = 0; i < columns.Count; i++) {
-                        data.data.Add(new IdValuePair<string, string>(columns[i].Id, columns[i].Name));
+                        data.data.Add(new Kv<string, string>(columns[i].Id, columns[i].Name));
                     }
                 }
 
-                data.data.Add(new IdValuePair<string, string>("total", "总计"));
+                data.data.Add(new Kv<string, string>("total", "总计"));
                 data.total = data.data.Count;
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
@@ -1643,8 +1643,8 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = this.GetCustom400401(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null && model.Value != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null && model.Value != null) {
+                    var stores = model.Key;
                     var charts = model.Value;
 
                     data.message = "200 Ok";
@@ -1703,8 +1703,8 @@ namespace iPem.Site.Controllers {
             try {
                 var models = new List<Model400401>();
                 var model = this.GetCustom400401(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null) {
+                    var stores = model.Key;
                     for(int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400401 {
                             index = i + 1,
@@ -1761,8 +1761,8 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = this.GetCustom400402(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null && model.Value != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null && model.Value != null) {
+                    var stores = model.Key;
                     var charts = model.Value;
 
                     data.message = "200 Ok";
@@ -1821,8 +1821,8 @@ namespace iPem.Site.Controllers {
             try {
                 var models = new List<Model400402>();
                 var model = this.GetCustom400402(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null) {
+                    var stores = model.Key;
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400402 {
                             index = i + 1,
@@ -1879,8 +1879,8 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = this.GetCustom400403(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null && model.Value != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null && model.Value != null) {
+                    var stores = model.Key;
                     var charts = model.Value;
 
                     data.message = "200 Ok";
@@ -1939,8 +1939,8 @@ namespace iPem.Site.Controllers {
             try {
                 var models = new List<Model400403>();
                 var model = this.GetCustom400403(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if (model != null && model.Id != null) {
-                    var stores = model.Id;
+                if (model != null && model.Key != null) {
+                    var stores = model.Key;
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400403 {
                             index = i + 1,
@@ -1993,9 +1993,9 @@ namespace iPem.Site.Controllers {
                 #region root
                 var areas = _workContext.Areas();
                 if(types != null && types.Length > 0) 
-                    areas = areas.FindAll(a => types.Contains(a.Current.Type.Id));
+                    areas = areas.FindAll(a => types.Contains(a.Current.Type.Key));
 
-                var ordered = areas.OrderBy(a => a.Current.Type.Id);
+                var ordered = areas.OrderBy(a => a.Current.Type.Key);
                 foreach(var current in ordered) {
                     result.Add(new Model400101 {
                         index = ++index,
@@ -2013,9 +2013,9 @@ namespace iPem.Site.Controllers {
                 if(current != null && current.HasChildren) {
                     var children = current.Children;
                     if(types != null && types.Length > 0)
-                        children = children.FindAll(a => types.Contains(a.Current.Type.Id));
+                        children = children.FindAll(a => types.Contains(a.Current.Type.Key));
 
-                    var ordered = children.OrderBy(a => a.Current.Type.Id);
+                    var ordered = children.OrderBy(a => a.Current.Type.Key);
                     foreach(var child in ordered) {
                         result.Add(new Model400101 {
                             index = ++index,
@@ -2682,7 +2682,7 @@ namespace iPem.Site.Controllers {
                 var appointments = new List<M_Reservation>();
                 foreach (var appSet in appSets) {
                     if (devSet.Overlaps(appSet.Value))
-                        appointments.Add(appSet.Id);
+                        appointments.Add(appSet.Key);
                 }
 
                 var appGroups = from app in appointments
@@ -2757,7 +2757,7 @@ namespace iPem.Site.Controllers {
                 var appointments = new List<M_Reservation>();
                 foreach (var appSet in appSets) {
                     if (devSet.Overlaps(appSet.Value))
-                        appointments.Add(appSet.Id);
+                        appointments.Add(appSet.Key);
                 }
 
                 var details = (from app in appointments
@@ -2881,21 +2881,21 @@ namespace iPem.Site.Controllers {
             return models;
         }
 
-        private List<IdValuePair<M_Reservation, HashSet<string>>> GetReservationsInDevices(DateTime start, DateTime end) {
+        private List<Kv<M_Reservation, HashSet<string>>> GetReservationsInDevices(DateTime start, DateTime end) {
             var entities = _reservationService.GetPagedReservationsInSpan(start, end);
             return this.GetReservationsInDevices(entities);
         }
 
-        private List<IdValuePair<M_Reservation, HashSet<string>>> GetReservationsInDevices(IEnumerable<M_Project> projects) {
+        private List<Kv<M_Reservation, HashSet<string>>> GetReservationsInDevices(IEnumerable<M_Project> projects) {
             var matchs = projects.Select(p => p.Id);
             var reservations = _reservationService.GetPagedReservations().Where(a => matchs.Contains(a.ProjectId));
             return this.GetReservationsInDevices(reservations);
         }
 
-        private List<IdValuePair<M_Reservation, HashSet<string>>> GetReservationsInDevices(IEnumerable<M_Reservation> entities) {
-            var appSets = new List<IdValuePair<M_Reservation, HashSet<string>>>();
+        private List<Kv<M_Reservation, HashSet<string>>> GetReservationsInDevices(IEnumerable<M_Reservation> entities) {
+            var appSets = new List<Kv<M_Reservation, HashSet<string>>>();
             foreach(var entity in entities) {
-                var appSet = new IdValuePair<M_Reservation, HashSet<string>>() { Id = entity, Value = new HashSet<string>() };
+                var appSet = new Kv<M_Reservation, HashSet<string>>() { Key = entity, Value = new HashSet<string>() };
                 var nodes = _nodesInReservationService.GetNodesInReservationsInReservation(entity.Id);
                 foreach(var node in nodes) {
                     if(node.NodeType == EnmSSH.Device) {
@@ -2935,7 +2935,7 @@ namespace iPem.Site.Controllers {
             return appSets;
         }
 
-        private IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400401(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
+        private Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400401(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             endDate = endDate.AddSeconds(86399);
 
             var rtValues = _workContext.RtValues();
@@ -2943,7 +2943,7 @@ namespace iPem.Site.Controllers {
 
             var key = string.Format(GlobalCacheKeys.Report_400401, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
 
             var alarms = new List<A_HAlarm>();
             if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -3027,12 +3027,12 @@ namespace iPem.Site.Controllers {
             models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
-            var result = new IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
+            var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
             _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
             return result;
         }
 
-        private IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400402(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
+        private Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400402(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             endDate = endDate.AddSeconds(86399);
 
             var rtValues = _workContext.RtValues();
@@ -3040,7 +3040,7 @@ namespace iPem.Site.Controllers {
 
             var key = string.Format(GlobalCacheKeys.Report_400402, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
 
             var alarms = new List<A_HAlarm>();
             if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -3122,12 +3122,12 @@ namespace iPem.Site.Controllers {
             models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
-            var result = new IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
+            var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
             _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
             return result;
         }
 
-        private IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400403(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
+        private Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>> GetCustom400403(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             endDate = endDate.AddSeconds(86399);
 
             var rtValues = _workContext.RtValues();
@@ -3135,7 +3135,7 @@ namespace iPem.Site.Controllers {
 
             var key = string.Format(GlobalCacheKeys.Report_400402, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>>(key);
 
             var alarms = new List<A_HAlarm>();
             if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -3217,7 +3217,7 @@ namespace iPem.Site.Controllers {
             models4.Add(new ChartModel { index = 1, value = total4 - abnormal4 });
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
-            var result = new IdValuePair<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
+            var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
             _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
             return result;
         }

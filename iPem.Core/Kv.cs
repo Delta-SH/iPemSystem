@@ -5,26 +5,26 @@ namespace iPem.Core {
     /// 键值数据类
     /// </summary>
     [Serializable]
-    public class IdValuePair<T1, T2> {
+    public class Kv<T1, T2> {
         /// <summary>
         /// 默认构造函数
         /// </summary>
-        public IdValuePair() { }
+        public Kv() { }
 
         /// <summary>
         /// 自定义构造函数
         /// </summary>
-        /// <param name="id">键</param>
+        /// <param name="key">键</param>
         /// <param name="value">值</param>
-        public IdValuePair(T1 id, T2 value) {
-            this.Id = id;
+        public Kv(T1 key, T2 value) {
+            this.Key = key;
             this.Value = value;
         }
 
         /// <summary>
         /// 键
         /// </summary>
-        public T1 Id { get; set; }
+        public T1 Key { get; set; }
 
         /// <summary>
         /// 值

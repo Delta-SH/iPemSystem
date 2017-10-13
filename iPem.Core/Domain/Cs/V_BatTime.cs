@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iPem.Core.Enum;
+using System;
 
 namespace iPem.Core.Domain.Cs {
     /// <summary>
@@ -35,6 +36,11 @@ namespace iPem.Core.Domain.Cs {
         /// 电池组号
         /// </summary>
         public int PackId { get; set; }
+
+        /// <summary>
+        /// 电池状态
+        /// </summary>
+        public EnmBatStatus Type { get; set; }
 
         /// <summary>
         /// 开始时间

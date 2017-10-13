@@ -43,8 +43,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [AreaId] = ''' + @AreaId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [AreaId] = ''' + @AreaId + N''' AND [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -78,8 +78,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [StationId] = ''' + @StationId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [StationId] = ''' + @StationId + N''' AND [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -113,8 +113,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [RoomId] = ''' + @RoomId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [RoomId] = ''' + @RoomId + N''' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -148,8 +148,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -183,8 +183,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND [PointId] = ''' + @PointId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [PointId] = ''' + @PointId + N''' AND [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';        			
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -218,8 +218,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0 AND  [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE  [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [RoomId] <> ''-1'' AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL AND [Masked] = 0';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -289,7 +289,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE ([RoomId] = ''-1'' OR [Masked] = 1) AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND ([RoomId] = ''-1'' OR [Masked] = 1)';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -519,7 +519,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -528,10 +528,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisBat AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -554,7 +554,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -563,10 +563,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisBat AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -598,10 +598,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisBat AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -628,7 +628,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -637,10 +637,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisBatTime AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisBatTime ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisBatTime ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -663,7 +663,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -672,10 +672,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisBatTime AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisBatTime ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisBatTime ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -707,10 +707,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisBatTime AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisBatTime ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisBatTime ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -748,10 +748,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH Values AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM Values ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Values ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -773,8 +773,8 @@ namespace iPem.Data.Common {
                 UNION ALL 
                 ';
                 END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Type] = '+ @Type + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type] = '+ CAST(@Type AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -783,10 +783,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH Values AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM Values ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Values ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -813,7 +813,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Id]=''' + @Id + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -822,10 +822,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisElec AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisElec ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisElec ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -848,7 +848,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Id]=''' + @Id + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -857,10 +857,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisElec AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisElec ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisElec ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -883,7 +883,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -892,10 +892,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisElec AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisElec ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisElec ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -918,7 +918,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -927,10 +927,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisElec AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisElec ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisElec ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -962,10 +962,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisElec AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisElec ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisElec ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -992,7 +992,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [AreaId] = ''' + @AreaId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [AreaId] = ''' + @AreaId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1001,10 +1001,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1027,7 +1027,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StationId] = ''' + @StationId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [StationId] = ''' + @StationId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1036,10 +1036,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1062,7 +1062,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [RoomId] = ''' + @RoomId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [RoomId] = ''' + @RoomId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1071,10 +1071,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1097,7 +1097,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1106,10 +1106,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1132,7 +1132,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1141,10 +1141,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1176,10 +1176,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH HisValue AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1206,7 +1206,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1215,10 +1215,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisStatic AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisStatic ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1241,7 +1241,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1250,10 +1250,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisStatic AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisStatic ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1285,10 +1285,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisStatic AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisStatic ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1315,7 +1315,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1324,45 +1324,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisLoad AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisLoad ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Load_Repository_GetLoadsInPoint = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Load'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N''' AND  [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH hisLoad AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisLoad ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisLoad ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1394,10 +1359,10 @@ namespace iPem.Data.Common {
         IF(@tableCnt>0)
         BEGIN
 	        SET @SQL = N';WITH hisLoad AS
-		        (
-			        ' + @SQL + N'
-		        )
-		        SELECT * FROM hisLoad ORDER BY [StartTime];'
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM hisLoad ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1410,5 +1375,219 @@ namespace iPem.Data.Common {
         BEGIN
             SELECT * FROM [dbo].[V_ParamDiff{0}];
         END";
+
+        /// <summary>
+        /// 刷卡记录表
+        /// </summary>
+        public const string Sql_H_CardRecord_Repository_GetEntities = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_H_CardRecord_Repository_GetEntitiesInCard = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [CardId]=''' + @CardId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_H_CardRecord_Repository_GetEntitiesInDevice = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId]=''' + @DeviceId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_H_CardRecord_Repository_GetEntitiesInRoom = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [RoomId]=''' + @RoomId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_H_CardRecord_Repository_GetEntitiesInStation = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [StationId]=''' + @StationId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_H_CardRecord_Repository_GetEntitiesInArea = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[H_CardRecord'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [PunchTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [AreaId]=''' + @AreaId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH CR AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
     }
 }

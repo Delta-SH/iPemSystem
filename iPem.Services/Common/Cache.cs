@@ -21,6 +21,7 @@ namespace iPem.Services.Common {
         public const string Rs_FsusRepository = @"ipems:global:rs-fsus";
         public const string Rs_GroupsRepository = @"ipems:global:rs-groups";
         public const string Rs_LogicTypesRepository = @"ipems:global:rs-logic-types";
+        public const string Rs_OutEmployeesRepository = @"ipems:global:rs-out-employees";
         public const string Rs_PointsRepository = @"ipems:global:rs-points";
         public const string Rs_SubLogicTypesRepository = @"ipems:global:rs-sub-logic-types";
         public const string Rs_SubDeviceTypesRepository = @"ipems:global:rs-sub-device-types";

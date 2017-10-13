@@ -51,7 +51,7 @@ namespace iPem.Services.Cs {
             return _repository.GetMeasuresInDevice(id);
         }
 
-        public List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys) {
+        public List<V_AMeasure> GetMeasures(IList<Kv<string, string>> keys) {
             return _repository.GetMeasures(keys);
         }
 

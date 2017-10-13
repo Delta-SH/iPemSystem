@@ -166,11 +166,11 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys) {
+        public List<V_AMeasure> GetMeasures(IList<Kv<string, string>> keys) {
             if (keys == null || keys.Count == 0) throw new ArgumentNullException("keys");
             var commands = new string[keys.Count];
             for (var i = 0; i < keys.Count; i++) {
-                commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [PointId]", keys[i].Id, keys[i].Value);
+                commands[i] = string.Format(@"SELECT '{0}' AS [DeviceId], '{1}' AS [PointId]", keys[i].Key, keys[i].Value);
             }
 
             var query = string.Format(@"

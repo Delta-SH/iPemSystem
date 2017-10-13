@@ -54,6 +54,7 @@
     <Compile Include="Installation\ScExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Cs\Class\A_AAlarmRepository.cs" />
+    <Compile Include="Repository\Cs\Class\H_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_IAreaRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_BatTimeRepository.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Repository\Cs\Class\H_IStationRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_AMeasureRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_ParamDiffRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IH_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IAreaRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatTimeRepository.cs" />

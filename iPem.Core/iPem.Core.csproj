@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\A_AAlarm.cs" />
+    <Compile Include="Domain\Cs\H_CardRecord.cs" />
     <Compile Include="Domain\Cs\H_DBScript.cs" />
     <Compile Include="Domain\Cs\H_IArea.cs" />
     <Compile Include="Domain\Cs\V_BatTime.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\P_SubPoint.cs" />
     <Compile Include="Domain\Rs\R_DBScript.cs" />
+    <Compile Include="Domain\Rs\U_OutEmployee.cs" />
     <Compile Include="Domain\Rs\V_Camera.cs" />
     <Compile Include="Domain\Rs\V_Channel.cs" />
     <Compile Include="Domain\Sc\S_DBScript.cs" />
@@ -170,7 +172,6 @@
     <Compile Include="Enum\EnmMethodType.cs" />
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="FtpHelper.cs" />
-    <Compile Include="ValuesPair.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Caching\CacheManager.cs" />
@@ -196,7 +197,7 @@
     <Compile Include="Enum\EnmCaching.cs" />
     <Compile Include="Enum\EnmDatabase.cs" />
     <Compile Include="Enum\EnmEvent.cs" />
-    <Compile Include="IdValuePair.cs" />
+    <Compile Include="Kv.cs" />
     <Compile Include="IPagedList.cs" />
     <Compile Include="iPemException.cs" />
     <Compile Include="NPOI\ExcelAttributes.cs" />

@@ -1,8 +1,8 @@
 /*
-* P2H_V1 Database Script Library v1.0.0
+* P2H_V1 Database Script Library v1.1.2
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/10/11
+* Date: 2017/10/12
 */
 
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
@@ -573,7 +573,7 @@ CREATE TABLE [dbo].[V_Cuted](
 	[PointId] [varchar](100) NOT NULL,
 	[StartTime] [datetime] NOT NULL,
 	[EndTime] [datetime] NOT NULL,
- CONSTRAINT [PK_V_Cut] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_V_Cuted] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC,
 	[Type] ASC
@@ -800,6 +800,17 @@ BEGIN
 	IF NOT EXISTS(SELECT NAME FROM SYSOBJECTS WHERE XTYPE = 'U' AND NAME = @NAME)
 		EXEC('CREATE TABLE [dbo].['+@Name+'](' + @TableDefine + ')');
 END
+GO
+
+--¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
+--´´½¨Ë÷Òý[dbo].[A_AAlarm]
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_AAlarm]') AND type in (N'U')) 
+AND NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[A_AAlarm]') AND name = N'NonClusteredIndex')
+CREATE NONCLUSTERED INDEX [NonClusteredIndex] ON [dbo].[A_AAlarm]
+(
+	[DeviceId] ASC,
+	[PointId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
 
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö

@@ -46,6 +46,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);
@@ -76,6 +77,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);
@@ -102,6 +104,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
                     entity.PackId = SqlTypeConverter.DBNullInt32Handler(rdr["PackId"]);
+                    entity.Type = SqlTypeConverter.DBNullBatStatusHandler(rdr["Type"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.ValueTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ValueTime"]);

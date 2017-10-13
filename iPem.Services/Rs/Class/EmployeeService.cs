@@ -37,8 +37,8 @@ namespace iPem.Services.Rs {
             return _repository.GetEmployeeById(id);
         }
 
-        public U_Employee GetEmployeeByCode(string code) {
-            return _repository.GetEmployeeByCode(code);
+        public U_Employee GetEmployeeByCode(string id) {
+            return _repository.GetEmployeeByCode(id);
         }
 
         public List<U_Employee> GetEmployeesByDept(string id) {
@@ -68,8 +68,35 @@ namespace iPem.Services.Rs {
             }
         }
 
+        public U_OutEmployee GetOutEmployeeById(string id) {
+            return _repository.GetOutEmployeeById(id);
+        }
+
+        public List<U_OutEmployee> GetOutEmployeesByEmp(string id) {
+            return _repository.GetOutEmployeesByEmp(id);
+        }
+
+        public List<U_OutEmployee> GetOutEmployeesByDept(string id) {
+            return _repository.GetOutEmployeesByDept(id);
+        }
+
+        public List<U_OutEmployee> GetOutEmployees() {
+            var key = GlobalCacheKeys.Rs_OutEmployeesRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.Get<List<U_OutEmployee>>(key);
+            } else {
+                var data = _repository.GetOutEmployees();
+                _cacheManager.Set(key, data);
+                return data;
+            }
+        }
+
         public IPagedList<U_Employee> GetPagedEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<U_Employee>(this.GetEmployees(), pageIndex, pageSize);
+        }
+
+        public IPagedList<U_OutEmployee> GetPagedOutEmployees(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<U_OutEmployee>(this.GetOutEmployees(), pageIndex, pageSize);
         }
 
         #endregion

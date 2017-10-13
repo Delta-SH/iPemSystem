@@ -13,11 +13,6 @@ namespace iPem.Data.Repository.Cs {
         List<V_Load> GetLoadsInDevice(string id, DateTime start, DateTime end);
 
         /// <summary>
-        /// 获得指定设备下单信号的开关电源带载率数据
-        /// </summary>
-        List<V_Load> GetLoadsInPoint(string device, string point, DateTime start, DateTime end);
-
-        /// <summary>
         /// 获得指定时间内的开关电源带载率数据
         /// </summary>
         List<V_Load> GetLoads(DateTime start, DateTime end);

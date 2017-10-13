@@ -24,7 +24,7 @@ namespace iPem.Core.Domain.Rs {
         /// <summary>
         /// 区域类型(省、市、县)
         /// </summary>
-        public IdValuePair<int, string> Type { get; set; }
+        public Kv<int, string> Type { get; set; }
 
         /// <summary>
         /// 上级区域，0表示顶级区域

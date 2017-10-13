@@ -50,6 +50,20 @@
     }
 
     /// <summary>
+    /// 人员
+    /// </summary>
+    public enum EnmEmpType {
+        /// <summary>
+        /// 正式员工
+        /// </summary>
+        Employee,
+        /// <summary>
+        /// 外协人员
+        /// </summary>
+        OutEmployee
+    }
+
+    /// <summary>
     /// 学历
     /// </summary>
     public enum EnmDegree {

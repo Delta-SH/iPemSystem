@@ -65,7 +65,25 @@
             { name: 'text', type: 'string' },
             { name: 'custom', type: 'auto' }
         ]
-    })
+    });
+
+    Ext.define("CardRecordModel", {
+        extend: 'Ext.data.Model',
+        fields: [
+            { name: 'index', type: 'int' },
+            { name: 'area', type: 'string' },
+            { name: 'station', type: 'string' },
+			{ name: 'room', type: 'string' },
+            { name: 'device', type: 'string' },
+            { name: 'card', type: 'string' },
+            { name: 'time', type: 'string' },
+            { name: 'remark', type: 'string' },
+            { name: 'employee', type: 'string' },
+            { name: 'employeeType', type: 'string' },
+            { name: 'department', type: 'string' }
+        ],
+        idProperty: 'index'
+    });
     //#endregion
 
     //#region Store
@@ -264,11 +282,33 @@
         }
     });
 
+    var recordStore = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        pageSize: 20,
+        model: 'CardRecordModel',
+        downloadURL: '/Home/DownloadCardRecords',
+        proxy: {
+            type: 'ajax',
+            url: '/Home/RequestCardRecords',
+            reader: {
+                type: 'json',
+                successProperty: 'success',
+                messageProperty: 'message',
+                totalProperty: 'total',
+                root: 'data'
+            },
+            extraParams: { node: 'root' },
+            simpleSortMode: true
+        },
+    });
+
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
     var matrixPagingToolbar = $$iPems.clonePagingToolbar(matrixStore);
 
     var alarmPagingToolbar = $$iPems.clonePagingToolbar(alarmStore);
+
+    var recordPagingToolbar = $$iPems.clonePagingToolbar(recordStore);
     //#endregion
 
     //#region Chart
@@ -1040,10 +1080,46 @@
         items: [alarmGrid]
     });
 
+    var recordPanel = Ext.create('Ext.grid.Panel', {
+        title: '最近刷卡',
+        glyph: 0xf020,
+        border: false,
+        store: recordStore,
+        bbar: recordPagingToolbar,
+        pager: recordPagingToolbar,
+        viewConfig: {
+            loadMask: false,
+            stripeRows: true,
+            trackOver: false,
+            preserveScrollOnRefresh: true,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>'
+        },
+        columns: [
+            { text: '序号', dataIndex: 'index', width: 60 },
+            { text: '所属区域', dataIndex: 'area' },
+            { text: '所属站点', dataIndex: 'station' },
+            { text: '所属机房', dataIndex: 'room' },
+            { text: '设备名称', dataIndex: 'device' },
+            { text: '刷卡描述', dataIndex: 'remark', width: 150 },
+            { text: '刷卡卡号', dataIndex: 'card', width: 150 },
+            { text: '刷卡时间', dataIndex: 'time', width: 150 },
+            { text: '刷卡人员', dataIndex: 'employee' },
+            { text: '人员类型', dataIndex: 'employeeType' },
+            { text: '所属部门', dataIndex: 'department' }
+        ],
+        listeners: {
+            itemcontextmenu: function (me, record, item, index, e) {
+                e.stopEvent();
+                recordContextMenu.record = record;
+                recordContextMenu.showAt(e.getXY());
+            }
+        }
+    });
+
     var centerPanel = Ext.create('Ext.tab.Panel', {
         xtype: 'tabpanel',
         region: 'center',
-        items: [pointPanel, matrixPanel, alarmPanel, videoPanel],
+        items: [pointPanel, matrixPanel, alarmPanel, recordPanel, videoPanel],
         listeners: {
             tabchange: function (me, newCard, oldCard) {
                 refresh(newCard);
@@ -1627,6 +1703,20 @@
             }
         }]
     });
+
+    var recordContextMenu = Ext.create('Ext.menu.Menu', {
+        plain: true,
+        border: false,
+        record: null,
+        items: [{
+            itemId: 'export',
+            glyph: 0xf010,
+            text: '数据导出',
+            handler: function () {
+                download();
+            }
+        }]
+    });
     //#endregion
 
     //#region Methods
@@ -1716,10 +1806,12 @@
 
         var proxy0 = currentStore.getProxy(),
             proxy1 = matrixStore.getProxy(),
-            proxy2 = alarmStore.getProxy();
+            proxy2 = alarmStore.getProxy(),
+            proxy3 = recordStore.getProxy();
 
         proxy0.extraParams.node =
         proxy1.extraParams.node =
+        proxy3.extraParams.node =
         proxy2.extraParams.baseNode = node.getId();
         reload();
     };

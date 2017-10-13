@@ -35,10 +35,6 @@ namespace iPem.Services.Cs {
             return _repository.GetLoadsInDevice(id, start, end);
         }
 
-        public List<V_Load> GetLoadsInPoint(string device, string point, DateTime start, DateTime end) {
-            return _repository.GetLoadsInPoint(device, point, start, end);
-        }
-
         public List<V_Load> GetLoads(DateTime start, DateTime end) {
             return _repository.GetLoads(start, end);
         }

@@ -213,6 +213,7 @@
     <Compile Include="Models\BInterface\TSignal.cs" />
     <Compile Include="Models\BInterface\TStorageRule.cs" />
     <Compile Include="Models\CameraModel.cs" />
+    <Compile Include="Models\CardRecordModel.cs" />
     <Compile Include="Models\ChannelModel.cs" />
     <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />

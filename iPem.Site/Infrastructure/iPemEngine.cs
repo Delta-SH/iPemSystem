@@ -155,6 +155,7 @@ namespace iPem.Site.Infrastructure {
                 //register repository
                 builder.Register<IA_AAlarmRepository>(c => new A_AAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IA_HAlarmRepository>(c => new A_HAlarmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IH_CardRecordRepository>(c => new H_CardRecordRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_DBScriptRepository>(c => new H_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_FsuEventRepository>(c => new H_FsuEventRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();                
@@ -175,6 +176,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<AMeasureService>().As<IAMeasureService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatService>().As<IBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatTimeService>().As<IBatTimeService>().InstancePerLifetimeScope();
+                builder.RegisterType<CardRecordService>().As<ICardRecordService>().InstancePerLifetimeScope();
                 builder.RegisterType<CutService>().As<ICutService>().InstancePerLifetimeScope();
                 builder.RegisterType<ElecService>().As<IElecService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuEventService>().As<IFsuEventService>().InstancePerLifetimeScope();

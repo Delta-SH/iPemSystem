@@ -39,7 +39,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
+                    entity.Type = new Kv<int, string>() { Key = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Desc"]);
@@ -57,7 +57,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
-                    entity.Type = new IdValuePair<int, string>() { Id = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
+                    entity.Type = new Kv<int, string>() { Key = SqlTypeConverter.DBNullInt32Handler(rdr["NodeLevel"]), Value = "" };
                     entity.ParentId = SqlTypeConverter.DBNullStringHandler(rdr["ParentId"]);
                     entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Desc"]);

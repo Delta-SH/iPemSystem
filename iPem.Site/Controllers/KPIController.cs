@@ -1550,7 +1550,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var keys = new List<string>();
                     keys.Add(area.Current.Name);
@@ -1575,7 +1575,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var keys = new List<string>();
                             keys.Add(area.Current.Name);
@@ -1636,7 +1636,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var keys = new List<string>();
                     keys.Add(area.Current.Name);
@@ -1662,7 +1662,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var keys = new List<string>();
                             keys.Add(area.Current.Name);
@@ -1719,7 +1719,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var keys = new List<string>();
                     keys.Add(area.Current.Name);
@@ -1745,7 +1745,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var keys = new List<string>();
                             keys.Add(area.Current.Name);
@@ -1810,7 +1810,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var children1 = devices.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
@@ -1830,7 +1830,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var children1 = devices.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                             var children2 = children1.FindAll(c => devKeys.Contains(c.Current.Id));
@@ -1874,7 +1874,7 @@ namespace iPem.Site.Controllers {
             if (rtValues == null || string.IsNullOrWhiteSpace(parent))
                 return result;
 
-            var values = _batTimeService.GetValues(startDate, endDate);
+            var values = _batTimeService.GetValues(startDate, endDate, EnmBatStatus.Discharge);
             var ovalues1 = values.FindAll(b => b.EndTime.Subtract(b.StartTime).TotalMinutes >= rtValues.qtxdchbschglShiJian);
             var ovalues2 = ovalues1.FindAll(v => v.EndValue >= rtValues.qtxdchbschglDianYa);
             var matchs1 = from o in ovalues1 group o by o.StationId into g select g.Key;
@@ -1887,7 +1887,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var children1 = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
@@ -1907,7 +1907,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var children1 = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                             var children2 = children1.FindAll(c => matchs2.Contains(c.Current.Id));
@@ -1968,7 +1968,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var leaies = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var leaies = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var leaf in leaies) {
                     var wd = wdStations.FindAll(s => leaf.Keys.Contains(s.AreaId));
                     var gw = gwStations.FindAll(s => leaf.Keys.Contains(s.AreaId));
@@ -1988,7 +1988,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var leaies = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var leaies = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var leaf in leaies) {
                             var wd = wdStations.FindAll(s => leaf.Keys.Contains(s.AreaId));
                             var gw = gwStations.FindAll(s => leaf.Keys.Contains(s.AreaId));
@@ -2050,7 +2050,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var devices = allDevices.FindAll(d => area.Keys.Contains(d.Current.AreaId));
                     var devKeys = new HashSet<string>(devices.Select(d => d.Current.Id));
@@ -2075,7 +2075,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var devices = allDevices.FindAll(d => area.Keys.Contains(d.Current.AreaId));
                             var devKeys = new HashSet<string>(devices.Select(d => d.Current.Id));
@@ -2143,7 +2143,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var children = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                     var matchs = children.Select(c => c.Current.Id);
@@ -2167,7 +2167,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var children = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                             var matchs = children.Select(c => c.Current.Id);
@@ -2222,7 +2222,7 @@ namespace iPem.Site.Controllers {
             if(types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
-            var values = _batTimeService.GetValues(startDate, endDate).FindAll(b => b.EndTime.Subtract(b.StartTime).TotalHours > 1);
+            var values = _batTimeService.GetValues(startDate, endDate, EnmBatStatus.Discharge).FindAll(b => b.EndTime.Subtract(b.StartTime).TotalHours >= 1);
             var staKeys = from val in values
                           group val by val.StationId into g
                           select g.Key;
@@ -2230,7 +2230,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var children1 = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                     var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
@@ -2250,7 +2250,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var children1 = stations.FindAll(s => area.Keys.Contains(s.Current.AreaId));
                             var children2 = children1.FindAll(c => staKeys.Contains(c.Current.Id));
@@ -3009,7 +3009,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
                 foreach(var area in areas) {
                     var childDevices = devices.FindAll(d => area.Keys.Contains(d.Current.AreaId));
@@ -3035,7 +3035,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => a.EndTime.Subtract(a.StartTime).TotalMinutes > rtValues.whlHuLue);
                         foreach(var area in areas) {
                             var childDevices = devices.FindAll(d => area.Keys.Contains(d.Current.AreaId));
@@ -3101,7 +3101,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var childAlarms = alarms.FindAll(a => area.Keys.Contains(a.AreaId));
                     var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
@@ -3121,7 +3121,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var childAlarms = alarms.FindAll(a => area.Keys.Contains(a.AreaId));
                             var count = childAlarms.Count(a => a.EndTime.Subtract(a.StartTime).TotalMinutes >= rtValues.jslGuiDing);
@@ -3175,7 +3175,7 @@ namespace iPem.Site.Controllers {
             var index = 0;
             if(parent == "root") {
                 #region root
-                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Id == size);
+                var areas = _workContext.Areas().FindAll(a => a.Current.Type.Key == size);
                 foreach(var area in areas) {
                     var childStores = stores.FindAll(a => area.Keys.Contains(a.Area.Id));
                     var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);
@@ -3195,7 +3195,7 @@ namespace iPem.Site.Controllers {
                 if(current != null) {
                     if(current.HasChildren) {
                         #region children
-                        var areas = current.Children.FindAll(a => a.Current.Type.Id == size);
+                        var areas = current.Children.FindAll(a => a.Current.Type.Key == size);
                         foreach(var area in areas) {
                             var childStores = stores.FindAll(a => area.Keys.Contains(a.Area.Id));
                             var count = childStores.Count(a => (a.Current.ConfirmedTime.HasValue ? a.Current.ConfirmedTime.Value : a.Current.EndTime).Subtract(a.Current.StartTime).TotalMinutes >= rtValues.jslQueRen);

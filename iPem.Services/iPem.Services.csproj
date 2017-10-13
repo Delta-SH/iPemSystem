@@ -44,6 +44,7 @@
     <Compile Include="Cs\Class\AAlarmService.cs" />
     <Compile Include="Cs\Class\AMeasureService.cs" />
     <Compile Include="Cs\Class\BatTimeService.cs" />
+    <Compile Include="Cs\Class\CardRecordService.cs" />
     <Compile Include="Cs\Class\CutService.cs" />
     <Compile Include="Cs\Class\ElecService.cs" />
     <Compile Include="Cs\Class\FsuEventService.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Cs\Class\ParamDiffService.cs" />
     <Compile Include="Cs\Interface\IAMeasureService.cs" />
     <Compile Include="Cs\Interface\IBatTimeService.cs" />
+    <Compile Include="Cs\Interface\ICardRecordService.cs" />
     <Compile Include="Cs\Interface\ICutService.cs" />
     <Compile Include="Cs\Interface\IElecService.cs" />
     <Compile Include="Cs\Interface\IFsuEventService.cs" />

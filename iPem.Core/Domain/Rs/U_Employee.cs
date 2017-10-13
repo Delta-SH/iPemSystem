@@ -33,6 +33,13 @@ namespace iPem.Core.Domain.Rs {
         public string UsedName { get; set; }
 
         /// <summary>
+        /// 类型
+        /// </summary>
+        public EnmEmpType Type {
+            get { return EnmEmpType.Employee; }
+        }
+
+        /// <summary>
         /// 性别
         /// </summary>
         public EnmSex Sex { get; set; }
@@ -43,9 +50,19 @@ namespace iPem.Core.Domain.Rs {
         public string DeptId { get; set; }
 
         /// <summary>
+        /// 所属部门名称
+        /// </summary>
+        public string DeptName { get; set; }
+
+        /// <summary>
         /// 所属职位编号
         /// </summary>
         public string DutyId { get; set; }
+
+        /// <summary>
+        /// 所属职位
+        /// </summary>
+        public string DutyName { get; set; }
 
         /// <summary>
         /// 身份证
@@ -141,6 +158,16 @@ namespace iPem.Core.Domain.Rs {
         /// 备注
         /// </summary>
         public string Remarks { get; set; }
+
+        /// <summary>
+        /// 门禁卡号（十进制，10位）
+        /// </summary>
+        public string CardId { get; set; }
+
+        /// <summary>
+        /// 门禁卡号（十六进制）
+        /// </summary>
+        public string CardHex { get; set; }
 
         /// <summary>
         /// 状态

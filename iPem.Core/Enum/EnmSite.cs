@@ -282,4 +282,40 @@
         Cut,
         Power
     }
+
+    /// <summary>
+    /// 门禁刷卡方向
+    /// </summary>
+    public enum EnmDirection {
+        /// <summary>
+        /// 进入
+        /// </summary>
+        OutToIn,
+        /// <summary>
+        /// 外出
+        /// </summary>
+        InToOut
+    }
+
+    /// <summary>
+    /// 电池状态
+    /// </summary>
+    public enum EnmBatStatus {
+        /// <summary>
+        /// 放电
+        /// </summary>
+        Discharge,
+        /// <summary>
+        /// 充电
+        /// </summary>
+        Charge,
+        /// <summary>
+        /// 均充
+        /// </summary>
+        Equalizing,
+        /// <summary>
+        /// 浮充
+        /// </summary>
+        Floating
+    }
 }

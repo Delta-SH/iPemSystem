@@ -36,7 +36,7 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// 获得指定关键字多信号的性能数据
         /// </summary>
-        List<V_AMeasure> GetMeasures(IList<IdValuePair<string, string>> keys);
+        List<V_AMeasure> GetMeasures(IList<Kv<string, string>> keys);
 
         /// <summary>
         /// 获得所有的性能数据
