@@ -41,7 +41,14 @@ namespace iPem.Services.Rs {
         }
 
         public List<C_Department> GetDepartments() {
-            return _repository.GetDepartments();
+            var key = GlobalCacheKeys.Rs_DepartmentsRepository;
+            if (_cacheManager.IsSet(key)) {
+                return _cacheManager.Get<List<C_Department>>(key);
+            } else {
+                var data = _repository.GetDepartments();
+                _cacheManager.Set(key, data);
+                return data;
+            }
         }
 
         public IPagedList<C_Department> GetPagedDepartments(int pageIndex = 0, int pageSize = int.MaxValue) {

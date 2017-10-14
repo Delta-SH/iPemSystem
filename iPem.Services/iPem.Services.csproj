@@ -69,6 +69,7 @@
     <Compile Include="Rs\Class\CameraService.cs" />
     <Compile Include="Rs\Class\ChannelService.cs" />
     <Compile Include="Rs\Class\GroupService.cs" />
+    <Compile Include="Rs\Class\MAuthorizationService.cs" />
     <Compile Include="Rs\Class\NoteService.cs" />
     <Compile Include="Rs\Class\RDBScriptService.cs" />
     <Compile Include="Rs\Class\RedefinePointService.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Rs\Interface\ICameraService.cs" />
     <Compile Include="Rs\Interface\IChannelService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
+    <Compile Include="Rs\Interface\IMAuthorizationService.cs" />
     <Compile Include="Rs\Interface\INoteService.cs" />
     <Compile Include="Rs\Interface\IRDBScriptService.cs" />
     <Compile Include="Rs\Interface\IRedefinePointService.cs" />

@@ -435,6 +435,40 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetDepartments(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<string, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<string, string>>()
+            };
+
+            try {
+                var models = _workContext.Departments();
+                if (models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = models[i].Id,
+                            text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonNetResult GetAreas(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,

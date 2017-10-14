@@ -59,6 +59,8 @@ namespace iPem.Site.Infrastructure {
 
         List<C_SCVendor> Vendors();
 
+        List<C_Department> Departments();
+
         List<SSHArea> AllAreas();
 
         List<SSHStation> AllStations();
@@ -82,6 +84,8 @@ namespace iPem.Site.Infrastructure {
         List<SSHDevice> Devices();
 
         List<SSHCamera> Cameras();
+
+        HashSet<string> DeviceKeys();
 
         List<C_Group> Groups();
 

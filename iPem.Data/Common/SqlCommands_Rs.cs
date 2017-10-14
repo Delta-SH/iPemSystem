@@ -398,5 +398,21 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_V_Channel_Repository_GetEntitiesInCamera = @"SELECT * FROM [dbo].[V_Channel] WHERE [CameraID]=@CameraId ORDER BY [Index];";
         public const string Sql_V_Channel_Repository_GetEntities = @"SELECT * FROM [dbo].[V_Channel] ORDER BY [CameraID],[Index];";
+
+        /// <summary>
+        /// 门禁设备授权表
+        /// </summary>
+        public const string Sql_M_Authorization_Repository_GetEntitiesInType = @"
+        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
+        INNER JOIN [dbo].[M_CardsInEmployee] CE ON A.[CardID]=CE.[CardID]
+        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID]
+        WHERE CE.[TypeID]=@Type ORDER BY C.[Code];";
+        public const string Sql_M_Authorization_Repository_GetEntitiesInCard = @"
+        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
+        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID]
+        WHERE C.[Code]=@CardId ORDER BY A.[DeviceID];";
+        public const string Sql_M_Authorization_Repository_GetEntities = @"
+        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
+        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID] ORDER BY C.[Code];";
     }
 }

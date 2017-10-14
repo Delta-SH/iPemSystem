@@ -82,6 +82,7 @@
     <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
     <Compile Include="Repository\Rs\Class\H_NoteRepository.cs" />
+    <Compile Include="Repository\Rs\Class\M_AuthorizationRepository.cs" />
     <Compile Include="Repository\Rs\Class\R_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_ChannelRepository.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Repository\Cs\Class\V_HMeasureRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IA_AAlarmRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IH_NoteRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IM_AuthorizationRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IR_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_ChannelRepository.cs" />

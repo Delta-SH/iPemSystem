@@ -41,6 +41,8 @@ namespace iPem.Site.Controllers {
         private readonly IStaticService _staticService;
         private readonly IHMeasureService _measureService;
         private readonly IEnumMethodService _enumMethodService;
+        private readonly IEmployeeService _employeeService;
+        private readonly IMAuthorizationService _mauthorizationService;
         private readonly IPointService _pointService;
         private readonly IProductorService _productorService;
         private readonly ISubCompanyService _subCompanyService;
@@ -66,6 +68,8 @@ namespace iPem.Site.Controllers {
             IStaticService staticService,
             IHMeasureService measureService,
             IEnumMethodService enumMethodService,
+            IEmployeeService employeeService,
+            IMAuthorizationService mauthorizationService,
             IPointService pointService,
             IProductorService productorService,
             ISubCompanyService subCompanyService,
@@ -85,6 +89,8 @@ namespace iPem.Site.Controllers {
             this._staticService = staticService;
             this._measureService = measureService;
             this._enumMethodService = enumMethodService;
+            this._employeeService = employeeService;
+            this._mauthorizationService = mauthorizationService;
             this._pointService = pointService;
             this._productorService = productorService;
             this._subCompanyService = subCompanyService;
@@ -363,6 +369,98 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestBase400105(int start, int limit, bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            var data = new AjaxDataModel<List<Model400105>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400105>()
+            };
+
+            try {
+                var stores = this.GetBase400105(cache, departments, emptypes, keytype, keywords);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadBase400105(bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            try {
+                var models = this.GetBase400105(cache, departments, emptypes, keytype, keywords);
+                using (var ms = _excelManager.Export<Model400105>(models, "员工报表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestDetail400105(int start, int limit, string card) {
+            var data = new AjaxDataModel<List<DetailModel400105>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400105>()
+            };
+
+            try {
+                var stores = this.GetDetail400105(card);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadDetail400105(string card) {
+            try {
+                var models = this.GetDetail400105(card);
+                using (var ms = _excelManager.Export<DetailModel400105>(models, string.Format("卡片（{0}）授权设备详情", card), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
@@ -2236,6 +2334,116 @@ namespace iPem.Site.Controllers {
             }
 
             return result;
+        }
+
+        private List<Model400105> GetBase400105(bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            var stores = new List<Model400105>();
+
+            var empys = _employeeService.GetEmployees();
+            if (departments != null && departments.Length > 0) {
+                empys = empys.FindAll(e => departments.Contains(e.DeptId));
+            }
+
+            if (emptypes != null && emptypes.Length > 0) {
+                empys = empys.FindAll(e => emptypes.Contains(string.IsNullOrWhiteSpace(e.CardId) ? 0 : 1));
+            }
+
+            if (!string.IsNullOrWhiteSpace(keywords)) {
+                var keys = Common.SplitCondition(keywords);
+                if (keys.Length > 0) {
+                    switch (keytype) {
+                        case 1:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.Code, keys));
+                            break;
+                        case 2:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.CardId, keys));
+                            break;
+                        case 3:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.Name, keys));
+                            break;
+                    }
+                }
+            }
+
+            if (empys.Count == 0) return stores;
+
+            var auths = _mauthorizationService.GetAuthorizationsInType(EnmEmpType.Employee);
+            if (_workContext.Role().Id != U_Role.SuperId) {
+                auths = auths.FindAll(a => _workContext.DeviceKeys().Contains(a.DeviceId));
+            }
+
+            var authsInCard = from auth in auths
+                              group auth by auth.CardId into g
+                              select new { Key = g.Key, Count = g.Count() };
+
+            var temps = from emp in empys
+                        join aic in authsInCard on emp.CardId equals aic.Key into lt
+                        from def in lt.DefaultIfEmpty()
+                        select new Model400105 {
+                            id = emp.Id,
+                            empNo = emp.Code,
+                            name = emp.Name,
+                            engName = emp.EngName,
+                            usedName = emp.UsedName,
+                            sex = Common.GetSexDisplay(emp.Sex),
+                            dept = emp.DeptName,
+                            duty = emp.DutyName,
+                            icard = emp.ICardId,
+                            birthday = CommonHelper.DateConverter(emp.Birthday),
+                            degree = Common.GetDegreeDisplay(emp.Degree),
+                            marriage = Common.GetMarriageDisplay(emp.Marriage),
+                            nation = emp.Nation,
+                            provinces = emp.Provinces,
+                            native = emp.Native,
+                            address = emp.Address,
+                            postalCode = emp.PostalCode,
+                            addrPhone = emp.AddrPhone,
+                            workPhone = emp.WorkPhone,
+                            mobilePhone = emp.MobilePhone,
+                            email = emp.Email,
+                            leaving = emp.IsLeft,
+                            entryTime = CommonHelper.DateConverter(emp.EntryTime),
+                            retireTime = CommonHelper.DateConverter(emp.RetireTime),
+                            isFormal = emp.IsFormal,
+                            remarks = emp.Remarks,
+                            enabled = emp.Enabled,
+                            cardId = emp.CardId ?? "",
+                            cardHex = emp.CardHex ?? "",
+                            devCount = def != null ? def.Count : 0
+                        };
+
+            var index = 0;
+            foreach (var temp in temps) {
+                temp.index = ++index;
+                stores.Add(temp);
+            }
+
+            return stores;
+        }
+
+        private List<DetailModel400105> GetDetail400105(string card) {
+            var stores = new List<DetailModel400105>();
+            if (string.IsNullOrWhiteSpace(card)) return stores;
+            var auths = _mauthorizationService.GetAuthorizationsInCard(card);
+            if (auths.Count == 0) return stores;
+            var temps = from auth in auths
+                        join dev in _workContext.Devices() on auth.DeviceId equals dev.Current.Id
+                        join area in _workContext.Areas() on dev.Current.AreaId equals area.Current.Id
+                        select new DetailModel400105 {
+                            area = area.ToString(),
+                            station = dev.Current.StationName,
+                            room = dev.Current.RoomName,
+                            card = auth.CardId,
+                            name = dev.Current.Name
+                        };
+
+            var index = 0;
+            foreach (var temp in temps) {
+                temp.index = ++index;
+                stores.Add(temp);
+            }
+
+            return stores;
         }
 
         private List<ValStore<V_HMeasure>> GetHistory400201(string parent, DateTime startDate, DateTime endDate, string[] statypes, string[] roomtypes, string[] devtypes, string[] points, string keywords, bool cache) {

@@ -36,6 +36,7 @@ namespace iPem.Site.Infrastructure {
         /// </summary>
         private readonly IAreaService _areaService;
         private readonly ICameraService _cameraService;
+        private readonly IDepartmentService _departmentService;
         private readonly IDeviceService _deviceService;
         private readonly IDeviceTypeService _deviceTypeService;
         private readonly IEmployeeService _employeeService;
@@ -88,6 +89,7 @@ namespace iPem.Site.Infrastructure {
         /// </summary>
         private List<C_LogicType> _cachedLogicTypes;
         private List<C_SubLogicType> _cachedSubLogicTypes;
+        private List<C_Department> _cachedDepartments;
         private List<C_DeviceType> _cachedDeviceTypes;
         private List<C_SubDeviceType> _cachedSubDeviceTypes;
         private List<C_RoomType> _cachedRoomTypes;
@@ -106,6 +108,7 @@ namespace iPem.Site.Infrastructure {
         private List<SSHFsu> _cachedFsus;
         private List<SSHDevice> _cachedDevices;
         private List<SSHCamera> _cachedCameras;
+        private HashSet<string> _cachedDeviceKeys;
         private List<C_Group> _cachedGroups;
         private List<P_Point> _cachedPoints;
         private List<P_SubPoint> _cachedSubPoints;
@@ -121,6 +124,7 @@ namespace iPem.Site.Infrastructure {
             ICacheManager cacheManager,
             IAreaService areaService,
             ICameraService cameraService,
+            IDepartmentService departmentService,
             IDeviceService deviceService,
             IDeviceTypeService deviceTypeService,
             IEmployeeService employeeService,
@@ -149,6 +153,7 @@ namespace iPem.Site.Infrastructure {
             this._cacheManager = cacheManager;
             this._areaService = areaService;
             this._cameraService = cameraService;
+            this._departmentService = departmentService;
             this._deviceService = deviceService;
             this._deviceTypeService = deviceTypeService;
             this._employeeService = employeeService;
@@ -411,6 +416,13 @@ namespace iPem.Site.Infrastructure {
 
             return _cachedVendors = _scVendorService.GetVendors();
         }
+
+        public List<C_Department> Departments() {
+            if (_cachedDepartments != null)
+                return _cachedDepartments;
+
+            return _cachedDepartments = _departmentService.GetDepartments();
+        }
         
         public List<SSHArea> AllAreas() {
             if (_cachedAllAreas != null)
@@ -598,6 +610,18 @@ namespace iPem.Site.Infrastructure {
             }
 
             return _cachedCameras;
+        }
+
+        public HashSet<string> DeviceKeys() {
+            if (_cachedDeviceKeys != null)
+                return _cachedDeviceKeys;
+
+            _cachedDeviceKeys = new HashSet<string>();
+            foreach (var _current in Devices()) {
+                _cachedDeviceKeys.Add(_current.Current.Id);
+            }
+
+            return _cachedDeviceKeys;
         }
 
         public List<C_Group> Groups() {

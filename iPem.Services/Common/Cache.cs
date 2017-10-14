@@ -15,6 +15,7 @@ namespace iPem.Services.Common {
         /// </summary>
         public const string Rs_CamerasRepository = @"ipems:global:rs-cameras";
         public const string Rs_ChannelsRepository = @"ipems:global:rs-channels";
+        public const string Rs_DepartmentsRepository = @"ipems:global:rs-departments";
         public const string Rs_DevicesRepository = @"ipems:global:rs-devices";
         public const string Rs_DeviceTypeRepository = @"ipems:global:rs-device-type";
         public const string Rs_EmployeesRepository = @"ipems:global:rs-employees";

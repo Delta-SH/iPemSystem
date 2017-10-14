@@ -398,6 +398,34 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetDegreeDisplay(EnmDegree degree) {
+            switch (degree) {
+                case EnmDegree.High:
+                    return "高中";
+                case EnmDegree.College:
+                    return "大专";
+                case EnmDegree.Bachelor:
+                    return "本科";
+                case EnmDegree.Master:
+                    return "硕士";
+                case EnmDegree.Doctor:
+                    return "博士";
+                default:
+                    return "其他";
+            }
+        }
+
+        public static string GetMarriageDisplay(EnmMarriage marriage) {
+            switch (marriage) {
+                case EnmMarriage.Single:
+                    return "单身";
+                case EnmMarriage.Married:
+                    return "已婚";
+                default:
+                    return "其他";
+            }
+        }
+
         public static Color GetAlarmColor(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level1:
