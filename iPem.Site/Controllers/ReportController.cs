@@ -467,6 +467,98 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult RequestBase400106(int start, int limit, bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            var data = new AjaxDataModel<List<Model400106>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400106>()
+            };
+
+            try {
+                var stores = this.GetBase400106(cache, departments, emptypes, keytype, keywords);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadBase400106(bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            try {
+                var models = this.GetBase400106(cache, departments, emptypes, keytype, keywords);
+                using (var ms = _excelManager.Export<Model400106>(models, "外协报表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestDetail400106(int start, int limit, string card) {
+            var data = new AjaxDataModel<List<DetailModel400106>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400106>()
+            };
+
+            try {
+                var stores = this.GetDetail400106(card);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadDetail400106(string card) {
+            try {
+                var models = this.GetDetail400106(card);
+                using (var ms = _excelManager.Export<DetailModel400106>(models, string.Format("卡片（{0}）授权设备详情", card), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult RequestHistory400201(string parent, DateTime startDate, DateTime endDate, string[] statypes, string[] roomtypes, string[] devtypes, string[] points, string keywords, bool cache, int start, int limit) {
             var data = new AjaxDataModel<List<Model400201>> {
                 success = true,
@@ -2356,7 +2448,7 @@ namespace iPem.Site.Controllers {
                             empys = empys.FindAll(e => CommonHelper.ConditionContain(e.Code, keys));
                             break;
                         case 2:
-                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.CardId, keys));
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.DecimalCard, keys));
                             break;
                         case 3:
                             empys = empys.FindAll(e => CommonHelper.ConditionContain(e.Name, keys));
@@ -2408,7 +2500,7 @@ namespace iPem.Site.Controllers {
                             remarks = emp.Remarks,
                             enabled = emp.Enabled,
                             cardId = emp.CardId ?? "",
-                            cardHex = emp.CardHex ?? "",
+                            decimalCard = emp.DecimalCard ?? "",
                             devCount = def != null ? def.Count : 0
                         };
 
@@ -2430,6 +2522,107 @@ namespace iPem.Site.Controllers {
                         join dev in _workContext.Devices() on auth.DeviceId equals dev.Current.Id
                         join area in _workContext.Areas() on dev.Current.AreaId equals area.Current.Id
                         select new DetailModel400105 {
+                            area = area.ToString(),
+                            station = dev.Current.StationName,
+                            room = dev.Current.RoomName,
+                            card = auth.CardId,
+                            name = dev.Current.Name
+                        };
+
+            var index = 0;
+            foreach (var temp in temps) {
+                temp.index = ++index;
+                stores.Add(temp);
+            }
+
+            return stores;
+        }
+
+        private List<Model400106> GetBase400106(bool cache, string[] departments, int[] emptypes, int keytype, string keywords) {
+            var stores = new List<Model400106>();
+
+            var empys = _employeeService.GetOutEmployees();
+            if (departments != null && departments.Length > 0) {
+                empys = empys.FindAll(e => departments.Contains(e.DeptId));
+            }
+
+            if (emptypes != null && emptypes.Length > 0) {
+                empys = empys.FindAll(e => emptypes.Contains(string.IsNullOrWhiteSpace(e.CardId) ? 0 : 1));
+            }
+
+            if (!string.IsNullOrWhiteSpace(keywords)) {
+                var keys = Common.SplitCondition(keywords);
+                if (keys.Length > 0) {
+                    switch (keytype) {
+                        case 1:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.DecimalCard, keys));
+                            break;
+                        case 2:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.Name, keys));
+                            break;
+                        case 3:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.EmpName, keys));
+                            break;
+                        case 4:
+                            empys = empys.FindAll(e => CommonHelper.ConditionContain(e.EmpCode, keys));
+                            break;
+                    }
+                }
+            }
+
+            if (empys.Count == 0) return stores;
+
+            var auths = _mauthorizationService.GetAuthorizationsInType(EnmEmpType.OutEmployee);
+            if (_workContext.Role().Id != U_Role.SuperId) {
+                auths = auths.FindAll(a => _workContext.DeviceKeys().Contains(a.DeviceId));
+            }
+
+            var authsInCard = from auth in auths
+                              group auth by auth.CardId into g
+                              select new { Key = g.Key, Count = g.Count() };
+
+            var temps = from emp in empys
+                        join aic in authsInCard on emp.CardId equals aic.Key into lt
+                        from def in lt.DefaultIfEmpty()
+                        select new Model400106 {
+                            id = emp.Id,
+                            name = emp.Name,
+                            sex = Common.GetSexDisplay(emp.Sex),
+                            dept = emp.DeptName,
+                            icard = emp.ICardId,
+                            icardAddress = emp.ICardAddress,
+                            address = emp.Address,
+                            company = emp.CompanyName,
+                            project = emp.ProjectName,
+                            workPhone = emp.WorkPhone,
+                            mobilePhone = emp.MobilePhone,
+                            email = emp.Email,
+                            empName = string.IsNullOrWhiteSpace(emp.EmpName) ? "" : string.Format("{0}({1})",emp.EmpName,emp.EmpCode??""),
+                            remarks = emp.Remarks,
+                            enabled = emp.Enabled,
+                            cardId = emp.CardId ?? "",
+                            decimalCard = emp.DecimalCard ?? "",
+                            devCount = def != null ? def.Count : 0
+                        };
+
+            var index = 0;
+            foreach (var temp in temps) {
+                temp.index = ++index;
+                stores.Add(temp);
+            }
+
+            return stores;
+        }
+
+        private List<DetailModel400106> GetDetail400106(string card) {
+            var stores = new List<DetailModel400106>();
+            if (string.IsNullOrWhiteSpace(card)) return stores;
+            var auths = _mauthorizationService.GetAuthorizationsInCard(card);
+            if (auths.Count == 0) return stores;
+            var temps = from auth in auths
+                        join dev in _workContext.Devices() on auth.DeviceId equals dev.Current.Id
+                        join area in _workContext.Areas() on dev.Current.AreaId equals area.Current.Id
+                        select new DetailModel400106 {
                             area = area.ToString(),
                             station = dev.Current.StationName,
                             room = dev.Current.RoomName,

@@ -14,6 +14,7 @@ namespace iPem.Services.Common {
         /// 资源库缓存
         /// </summary>
         public const string Rs_CamerasRepository = @"ipems:global:rs-cameras";
+        public const string Rs_CardsRepository = @"ipems:global:rs-cards";
         public const string Rs_ChannelsRepository = @"ipems:global:rs-channels";
         public const string Rs_DepartmentsRepository = @"ipems:global:rs-departments";
         public const string Rs_DevicesRepository = @"ipems:global:rs-devices";

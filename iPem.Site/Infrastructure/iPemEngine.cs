@@ -108,6 +108,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<ID_RedefinePointRepository>(c => new D_RedefinePointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_NoteRepository>(c => new H_NoteRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_AuthorizationRepository>(c => new M_AuthorizationRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IM_CardRepository>(c => new M_CardRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_PointRepository>(c => new P_PointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_ProtocolRepository>(c => new P_ProtocolRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IR_DBScriptRepository>(c => new R_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
@@ -137,6 +138,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RDBScriptService>().As<IRDBScriptService>().InstancePerLifetimeScope();                
                 builder.RegisterType<RedefinePointService>().As<IRedefinePointService>().InstancePerLifetimeScope();
                 builder.RegisterType<MAuthorizationService>().As<IMAuthorizationService>().InstancePerLifetimeScope();
+                builder.RegisterType<MCardService>().As<IMCardService>().InstancePerLifetimeScope();
                 builder.RegisterType<NoteService>().As<INoteService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoomService>().As<IRoomService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoomTypeService>().As<IRoomTypeService>().InstancePerLifetimeScope();

@@ -213,18 +213,32 @@ namespace iPem.Data.Common {
             return Enum.IsDefined(typeof(EnmCutType), v) ? (EnmCutType)v : EnmCutType.Cut;
         }
 
-        public static EnmDirection DBNullDirectionHandler(object val) {
-            if (val == DBNull.Value) { return EnmDirection.InToOut; }
-
-            var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmDirection), v) ? (EnmDirection)v : EnmDirection.InToOut;
-        }
-
         public static EnmBatStatus DBNullBatStatusHandler(object val) {
             if (val == DBNull.Value) { return EnmBatStatus.Charge; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmBatStatus), v) ? (EnmBatStatus)v : EnmBatStatus.Charge;
+        }
+
+        public static EnmCardType DBNullCardTypeHandler(object val) {
+            if (val == DBNull.Value) { return EnmCardType.Temporary; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmCardType), v) ? (EnmCardType)v : EnmCardType.Temporary;
+        }
+
+        public static EnmCardStatus DBNullCardStatusHandler(object val) {
+            if (val == DBNull.Value) { return EnmCardStatus.Cancel; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmCardStatus), v) ? (EnmCardStatus)v : EnmCardStatus.Cancel;
+        }
+
+        public static EnmDirection DBNullDirectionHandler(object val) {
+            if (val == DBNull.Value) { return EnmDirection.InToOut; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmDirection), v) ? (EnmDirection)v : EnmDirection.InToOut;
         }
     }
 }

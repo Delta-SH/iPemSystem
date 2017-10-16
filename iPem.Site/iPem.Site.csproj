@@ -215,6 +215,7 @@
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\CardRecordModel.cs" />
     <Compile Include="Models\ChannelModel.cs" />
+    <Compile Include="Models\DetailModel400106.cs" />
     <Compile Include="Models\DetailModel400105.cs" />
     <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\iAuth.cs" />
+    <Compile Include="Models\Model400106.cs" />
     <Compile Include="Models\Model400105.cs" />
     <Compile Include="Models\NodeIcon.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
@@ -1140,6 +1142,7 @@
     <Content Include="Scripts\kpi.performance500305.js" />
     <Content Include="Scripts\kpi.performance500306.js" />
     <Content Include="Scripts\home.recorder.js" />
+    <Content Include="Scripts\report.base400106.js" />
     <Content Include="Scripts\report.base400105.js" />
     <Content Include="Scripts\report.custom400403.js" />
     <Content Include="Content\ux\fonts\topbar.eot" />
@@ -1306,6 +1309,7 @@
     <Content Include="Views\Home\Videor.cshtml" />
     <Content Include="Views\Home\Recorder.cshtml" />
     <Content Include="Views\Report\base400105.cshtml" />
+    <Content Include="Views\Report\base400106.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

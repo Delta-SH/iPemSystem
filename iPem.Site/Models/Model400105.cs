@@ -16,14 +16,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("姓名")]
         public string name { get; set; }
 
+        [ExcelDisplayName("性别")]
+        public string sex { get; set; }
+
         [ExcelDisplayName("英文名")]
         public string engName { get; set; }
 
         [ExcelDisplayName("曾用名")]
         public string usedName { get; set; }
-
-        [ExcelDisplayName("性别")]
-        public string sex { get; set; }
 
         [ExcelDisplayName("部门")]
         public string dept { get; set; }
@@ -91,11 +91,11 @@ namespace iPem.Site.Models {
         [ExcelBooleanNameAttribute(True = "有效", False = "禁用")]
         public bool enabled { get; set; }
 
-        [ExcelDisplayName("关联卡号")]
+        [ExcelIgnore]
         public string cardId { get; set; }
 
-        [ExcelIgnore]
-        public string cardHex { get; set; }
+        [ExcelDisplayName("关联卡号")]
+        public string decimalCard { get; set; }
 
         [ExcelDisplayName("授权设备")]
         public int devCount { get; set; }

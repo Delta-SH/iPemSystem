@@ -112,6 +112,56 @@
     }
 
     /// <summary>
+    /// 门禁卡片类型
+    /// </summary>
+    public enum EnmCardType {
+        /// <summary>
+        /// 正式卡
+        /// </summary>
+        Formal,
+        /// <summary>
+        /// 临时卡
+        /// </summary>
+        Temporary
+    }
+
+    /// <summary>
+    /// 门禁卡片状态
+    /// </summary>
+    public enum EnmCardStatus {
+        /// <summary>
+        /// 正常
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// 冻结
+        /// </summary>
+        Freeze,
+        /// <summary>
+        /// 挂失
+        /// </summary>
+        Loss,
+        /// <summary>
+        /// 注销
+        /// </summary>
+        Cancel
+    }
+
+    /// <summary>
+    /// 门禁刷卡方向
+    /// </summary>
+    public enum EnmDirection {
+        /// <summary>
+        /// 进入
+        /// </summary>
+        OutToIn,
+        /// <summary>
+        /// 外出
+        /// </summary>
+        InToOut
+    }
+
+    /// <summary>
     /// 用户登录结果
     /// </summary>
     public enum EnmLoginResults {

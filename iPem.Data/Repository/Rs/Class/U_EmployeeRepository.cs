@@ -69,7 +69,6 @@ namespace iPem.Data.Repository.Rs {
                     entity.IsFormal = SqlTypeConverter.DBNullBooleanHandler(rdr["IsFormal"]);
                     entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
             }
@@ -117,7 +116,6 @@ namespace iPem.Data.Repository.Rs {
                     entity.IsFormal = SqlTypeConverter.DBNullBooleanHandler(rdr["IsFormal"]);
                     entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
             }
@@ -165,7 +163,6 @@ namespace iPem.Data.Repository.Rs {
                     entity.IsFormal = SqlTypeConverter.DBNullBooleanHandler(rdr["IsFormal"]);
                     entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -211,7 +208,6 @@ namespace iPem.Data.Repository.Rs {
                     entity.IsFormal = SqlTypeConverter.DBNullBooleanHandler(rdr["IsFormal"]);
                     entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -235,6 +231,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Sex = SqlTypeConverter.DBNullEnmSexHandler(rdr["Sex"]);
                     entity.EmpId = SqlTypeConverter.DBNullStringHandler(rdr["EmpId"]);
+                    entity.EmpCode = SqlTypeConverter.DBNullStringHandler(rdr["EmpCode"]);
                     entity.EmpName = SqlTypeConverter.DBNullStringHandler(rdr["EmpName"]);
                     entity.DeptId = SqlTypeConverter.DBNullStringHandler(rdr["DeptId"]);
                     entity.DeptName = SqlTypeConverter.DBNullStringHandler(rdr["DeptName"]);
@@ -247,9 +244,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.WorkPhone = SqlTypeConverter.DBNullStringHandler(rdr["WorkPhone"]);
                     entity.MobilePhone = SqlTypeConverter.DBNullStringHandler(rdr["MobilePhone"]);
                     entity.Email = SqlTypeConverter.DBNullStringHandler(rdr["Email"]);
-                    entity.Remaks = SqlTypeConverter.DBNullStringHandler(rdr["Remaks"]);
+                    entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
             }
@@ -271,6 +267,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Sex = SqlTypeConverter.DBNullEnmSexHandler(rdr["Sex"]);
                     entity.EmpId = SqlTypeConverter.DBNullStringHandler(rdr["EmpId"]);
+                    entity.EmpCode = SqlTypeConverter.DBNullStringHandler(rdr["EmpCode"]);
                     entity.EmpName = SqlTypeConverter.DBNullStringHandler(rdr["EmpName"]);
                     entity.DeptId = SqlTypeConverter.DBNullStringHandler(rdr["DeptId"]);
                     entity.DeptName = SqlTypeConverter.DBNullStringHandler(rdr["DeptName"]);
@@ -283,9 +280,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.WorkPhone = SqlTypeConverter.DBNullStringHandler(rdr["WorkPhone"]);
                     entity.MobilePhone = SqlTypeConverter.DBNullStringHandler(rdr["MobilePhone"]);
                     entity.Email = SqlTypeConverter.DBNullStringHandler(rdr["Email"]);
-                    entity.Remaks = SqlTypeConverter.DBNullStringHandler(rdr["Remaks"]);
+                    entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -308,6 +304,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Sex = SqlTypeConverter.DBNullEnmSexHandler(rdr["Sex"]);
                     entity.EmpId = SqlTypeConverter.DBNullStringHandler(rdr["EmpId"]);
+                    entity.EmpCode = SqlTypeConverter.DBNullStringHandler(rdr["EmpCode"]);
                     entity.EmpName = SqlTypeConverter.DBNullStringHandler(rdr["EmpName"]);
                     entity.DeptId = SqlTypeConverter.DBNullStringHandler(rdr["DeptId"]);
                     entity.DeptName = SqlTypeConverter.DBNullStringHandler(rdr["DeptName"]);
@@ -320,9 +317,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.WorkPhone = SqlTypeConverter.DBNullStringHandler(rdr["WorkPhone"]);
                     entity.MobilePhone = SqlTypeConverter.DBNullStringHandler(rdr["MobilePhone"]);
                     entity.Email = SqlTypeConverter.DBNullStringHandler(rdr["Email"]);
-                    entity.Remaks = SqlTypeConverter.DBNullStringHandler(rdr["Remaks"]);
+                    entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }
@@ -342,6 +338,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Sex = SqlTypeConverter.DBNullEnmSexHandler(rdr["Sex"]);
                     entity.EmpId = SqlTypeConverter.DBNullStringHandler(rdr["EmpId"]);
+                    entity.EmpCode = SqlTypeConverter.DBNullStringHandler(rdr["EmpCode"]);
                     entity.EmpName = SqlTypeConverter.DBNullStringHandler(rdr["EmpName"]);
                     entity.DeptId = SqlTypeConverter.DBNullStringHandler(rdr["DeptId"]);
                     entity.DeptName = SqlTypeConverter.DBNullStringHandler(rdr["DeptName"]);
@@ -354,9 +351,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.WorkPhone = SqlTypeConverter.DBNullStringHandler(rdr["WorkPhone"]);
                     entity.MobilePhone = SqlTypeConverter.DBNullStringHandler(rdr["MobilePhone"]);
                     entity.Email = SqlTypeConverter.DBNullStringHandler(rdr["Email"]);
-                    entity.Remaks = SqlTypeConverter.DBNullStringHandler(rdr["Remaks"]);
+                    entity.Remarks = SqlTypeConverter.DBNullStringHandler(rdr["Remarks"]);
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
                 }

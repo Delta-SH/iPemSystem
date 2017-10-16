@@ -32,12 +32,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Cache.cs" />
@@ -70,6 +66,7 @@
     <Compile Include="Rs\Class\ChannelService.cs" />
     <Compile Include="Rs\Class\GroupService.cs" />
     <Compile Include="Rs\Class\MAuthorizationService.cs" />
+    <Compile Include="Rs\Class\MCardService.cs" />
     <Compile Include="Rs\Class\NoteService.cs" />
     <Compile Include="Rs\Class\RDBScriptService.cs" />
     <Compile Include="Rs\Class\RedefinePointService.cs" />
@@ -78,6 +75,7 @@
     <Compile Include="Rs\Interface\IChannelService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
     <Compile Include="Rs\Interface\IMAuthorizationService.cs" />
+    <Compile Include="Rs\Interface\IMCardService.cs" />
     <Compile Include="Rs\Interface\INoteService.cs" />
     <Compile Include="Rs\Interface\IRDBScriptService.cs" />
     <Compile Include="Rs\Interface\IRedefinePointService.cs" />

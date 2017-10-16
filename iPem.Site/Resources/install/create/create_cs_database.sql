@@ -198,6 +198,32 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[A_MaxID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_MaxID]') AND type in (N'U'))
+DROP TABLE [dbo].[A_MaxID]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[A_MaxID](
+	[GroupID] [varchar](100) NOT NULL,
+	[MaxAlarmSerilNO] [bigint] NULL,
+ CONSTRAINT [PK_A_MaxID] PRIMARY KEY CLUSTERED 
+(
+	[GroupID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_RAlarm]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_RAlarm]') AND type in (N'U'))
 DROP TABLE [dbo].[A_RAlarm]

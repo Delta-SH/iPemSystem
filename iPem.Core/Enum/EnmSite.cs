@@ -284,20 +284,6 @@
     }
 
     /// <summary>
-    /// 门禁刷卡方向
-    /// </summary>
-    public enum EnmDirection {
-        /// <summary>
-        /// 进入
-        /// </summary>
-        OutToIn,
-        /// <summary>
-        /// 外出
-        /// </summary>
-        InToOut
-    }
-
-    /// <summary>
     /// 电池状态
     /// </summary>
     public enum EnmBatStatus {

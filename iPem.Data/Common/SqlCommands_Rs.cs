@@ -277,44 +277,44 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_U_Employee_Repository_GetEmployeeById = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[EmployeeID]=@Id AND E.[TypeID] = @Type
         )
-        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_Employee] E
+        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
         LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
         WHERE E.[Id] = @Id;";
         public const string Sql_U_Employee_Repository_GetEmployeeByCode = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_Employee] E
+        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
         LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
         WHERE E.[EmpNo] = @Code;";
         public const string Sql_U_Employee_Repository_GetEmployeesByDept = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_Employee] E
+        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
         LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
         WHERE E.[DeptId] = @DeptId;";
         public const string Sql_U_Employee_Repository_GetEmployees = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_Employee] E
+        SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
         LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID];";
@@ -324,44 +324,44 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_U_Employee_Repository_GetOutEmployeeById = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[EmployeeID]=@Id AND E.[TypeID] = @Type
         )
-        SELECT OE.*,E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_OutEmployee] OE
+        SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
         WHERE OE.[Id] = @Id;";
         public const string Sql_U_Employee_Repository_GetOutEmployeesByEmp = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT OE.*,E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_OutEmployee] OE
+        SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
         WHERE OE.[EmpId] = @EmpId;";
         public const string Sql_U_Employee_Repository_GetOutEmployeesByDept = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT OE.*,E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_OutEmployee] OE
+        SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         INNER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         INNER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
         WHERE E.[DeptID] = @DeptId;";
         public const string Sql_U_Employee_Repository_GetOutEmployees = @"
         ;WITH Cards AS (
-	        SELECT E.[EmployeeID],C.[Code],C.[HexCode] FROM [dbo].[M_Card] C 
+	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
         )
-        SELECT OE.*,E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[Code] AS [CardId],C.[HexCode] AS [CardHex] FROM [dbo].[U_OutEmployee] OE
+        SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID];";
@@ -402,17 +402,14 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 门禁设备授权表
         /// </summary>
-        public const string Sql_M_Authorization_Repository_GetEntitiesInType = @"
-        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
-        INNER JOIN [dbo].[M_CardsInEmployee] CE ON A.[CardID]=CE.[CardID]
-        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID]
-        WHERE CE.[TypeID]=@Type ORDER BY C.[Code];";
-        public const string Sql_M_Authorization_Repository_GetEntitiesInCard = @"
-        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
-        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID]
-        WHERE C.[Code]=@CardId ORDER BY A.[DeviceID];";
-        public const string Sql_M_Authorization_Repository_GetEntities = @"
-        SELECT A.[DriverId],C.[Code] AS [CardId],C.[HexCode] AS [CardHex],A.[DeviceId],A.[BeginTime],A.[LimitTime] AS [EndTime],A.[Pwd] AS [Password] FROM [dbo].[M_Authorization] A
-        INNER JOIN [dbo].[M_Card] C ON A.[CardID]=C.[ID] ORDER BY C.[Code];";
+        public const string Sql_M_Authorization_Repository_GetEntitiesInType = @"SELECT A.* FROM [dbo].[M_Authorization] A INNER JOIN [dbo].[M_CardsInEmployee] CE ON A.[CardID]=CE.[CardID] WHERE CE.[TypeID]=@Type;";
+        public const string Sql_M_Authorization_Repository_GetEntitiesInCard = @"SELECT * FROM [dbo].[M_Authorization] WHERE [HexCode]=@CardId ORDER BY [DeviceID];";
+        public const string Sql_M_Authorization_Repository_GetEntities = @"SELECT * FROM [dbo].[M_Authorization];";
+
+        /// <summary>
+        /// 卡片信息表
+        /// </summary>
+        public const string Sql_M_Card_Repository_GetEntity = @"SELECT * FROM [dbo].[M_Card] WHERE [HexCode]=@CardId;";
+        public const string Sql_M_Card_Repository_GetEntities = @"SELECT * FROM [dbo].[M_Card];";
     }
 }

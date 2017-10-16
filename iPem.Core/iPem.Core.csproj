@@ -126,6 +126,7 @@
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\M_Authorization.cs" />
+    <Compile Include="Domain\Rs\M_Card.cs" />
     <Compile Include="Domain\Rs\P_SubPoint.cs" />
     <Compile Include="Domain\Rs\R_DBScript.cs" />
     <Compile Include="Domain\Rs\U_OutEmployee.cs" />

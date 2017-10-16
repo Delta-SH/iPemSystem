@@ -2556,7 +2556,8 @@ namespace iPem.Site.Controllers {
                               station = dev.Current.StationName,
                               room = dev.Current.RoomName,
                               device = dev.Current.Name,
-                              card = rec.CardId,
+                              cardId = rec.CardId,
+                              decimalCard = rec.DecimalCard,
                               time = CommonHelper.DateTimeConverter(rec.PunchTime),
                               remark = rec.Remark
                           };
@@ -2567,13 +2568,14 @@ namespace iPem.Site.Controllers {
             var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
             if (employees.Count > 0) {
                 var empStores = from store in tStores
-                                join emp in employees on store.card equals emp.CardId
+                                join emp in employees on store.cardId equals emp.CardId
                                 select new CardRecordModel {
                                     area = store.area,
                                     station = store.station,
                                     room = store.room,
                                     device = store.device,
-                                    card = store.card,
+                                    cardId = store.cardId,
+                                    decimalCard = store.decimalCard,
                                     time = store.time,
                                     remark = store.remark,
                                     employeeType = Common.GetEmployeeTypeDisplay(emp.Type),
@@ -2590,13 +2592,14 @@ namespace iPem.Site.Controllers {
             var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
             if (outEmployees.Count > 0) {
                 var empStores = from store in tStores
-                                join emp in outEmployees on store.card equals emp.CardId
+                                join emp in outEmployees on store.cardId equals emp.CardId
                                 select new CardRecordModel {
                                     area = store.area,
                                     station = store.station,
                                     room = store.room,
                                     device = store.device,
-                                    card = store.card,
+                                    cardId = store.cardId,
+                                    decimalCard = store.decimalCard,
                                     time = store.time,
                                     remark = store.remark,
                                     employeeType = Common.GetEmployeeTypeDisplay(emp.Type),

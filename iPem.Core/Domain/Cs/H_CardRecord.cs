@@ -28,9 +28,21 @@ namespace iPem.Core.Domain.Cs {
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// 卡号
+        /// 十六进制卡号（10位）
         /// </summary>
         public string CardId { get; set; }
+
+        /// <summary>
+        /// 十进制卡号（10位）
+        /// </summary>
+        public string DecimalCard {
+            get {
+                if (string.IsNullOrWhiteSpace(this.CardId))
+                    return string.Empty;
+
+                return int.Parse(this.CardId, System.Globalization.NumberStyles.HexNumber).ToString("D10");
+            }
+        }
 
         /// <summary>
         /// 刷卡时间

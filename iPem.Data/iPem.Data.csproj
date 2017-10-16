@@ -32,11 +32,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\SqlCommands_Cs.cs" />
@@ -83,6 +81,7 @@
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
     <Compile Include="Repository\Rs\Class\H_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Class\M_AuthorizationRepository.cs" />
+    <Compile Include="Repository\Rs\Class\M_CardRepository.cs" />
     <Compile Include="Repository\Rs\Class\R_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_ChannelRepository.cs" />
@@ -96,6 +95,7 @@
     <Compile Include="Repository\Cs\Interface\IA_AAlarmRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IH_NoteRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IM_AuthorizationRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IM_CardRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IR_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_ChannelRepository.cs" />

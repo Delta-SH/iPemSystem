@@ -33,13 +33,11 @@ namespace iPem.Data.Repository.Rs {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_M_Authorization_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
                     var entity = new M_Authorization();
-                    entity.DriverId = SqlTypeConverter.DBNullStringHandler(rdr["DriverId"]);
-                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
+                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["HexCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.BeginTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["BeginTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitTime"]);
+                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
                     entities.Add(entity);
                 }
             }
@@ -54,13 +52,11 @@ namespace iPem.Data.Repository.Rs {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_M_Authorization_Repository_GetEntitiesInType, parms)) {
                 while (rdr.Read()) {
                     var entity = new M_Authorization();
-                    entity.DriverId = SqlTypeConverter.DBNullStringHandler(rdr["DriverId"]);
-                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
+                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["HexCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.BeginTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["BeginTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitTime"]);
+                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
                     entities.Add(entity);
                 }
             }
@@ -75,13 +71,11 @@ namespace iPem.Data.Repository.Rs {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_M_Authorization_Repository_GetEntitiesInCard, parms)) {
                 while (rdr.Read()) {
                     var entity = new M_Authorization();
-                    entity.DriverId = SqlTypeConverter.DBNullStringHandler(rdr["DriverId"]);
-                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
-                    entity.CardHex = SqlTypeConverter.DBNullStringHandler(rdr["CardHex"]);
+                    entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["HexCode"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.BeginTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["BeginTime"]);
-                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
-                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Password"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LimitTime"]);
+                    entity.Password = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
                     entities.Add(entity);
                 }
             }

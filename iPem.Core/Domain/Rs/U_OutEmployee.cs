@@ -18,7 +18,7 @@ namespace iPem.Core.Domain.Rs {
         public string Name { get; set; }
 
         /// <summary>
-        /// 类型
+        /// 人员类型
         /// </summary>
         public EnmEmpType Type {
             get { return EnmEmpType.OutEmployee; }
@@ -33,6 +33,11 @@ namespace iPem.Core.Domain.Rs {
         /// 负责人编号
         /// </summary>
         public string EmpId { get; set; }
+
+        /// <summary>
+        /// 负责人工号
+        /// </summary>
+        public string EmpCode { get; set; }
 
         /// <summary>
         /// 负责人姓名
@@ -92,7 +97,7 @@ namespace iPem.Core.Domain.Rs {
         /// <summary>
         /// 备注
         /// </summary>
-        public string Remaks { get; set; }
+        public string Remarks { get; set; }
 
         /// <summary>
         /// 照片
@@ -100,14 +105,21 @@ namespace iPem.Core.Domain.Rs {
         public byte[] Photo { get; set; }
 
         /// <summary>
-        /// 门禁卡号（十进制，10位）
+        /// 十六进制卡号（10位）
         /// </summary>
         public string CardId { get; set; }
 
         /// <summary>
-        /// 门禁卡号（十六进制）
+        /// 十进制卡号（10位）
         /// </summary>
-        public string CardHex { get; set; }
+        public string DecimalCard {
+            get {
+                if (string.IsNullOrWhiteSpace(this.CardId)) 
+                    return string.Empty;
+
+                return int.Parse(this.CardId, System.Globalization.NumberStyles.HexNumber).ToString("D10");
+            }
+        }
 
         /// <summary>
         /// 状态

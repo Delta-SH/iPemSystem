@@ -1,35 +1,23 @@
 ﻿(function () {
 
     //#region Model
-    Ext.define('EmployeeModel', {
+    Ext.define('OutEmployeeModel', {
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
             { name: 'id', type: 'string' },
-            { name: 'empNo', type: 'string' },
             { name: 'name', type: 'string' },
-            { name: 'engName', type: 'string' },
-            { name: 'usedName', type: 'string' },
             { name: 'sex', type: 'string' },
             { name: 'dept', type: 'string' },
-            { name: 'duty', type: 'string' },
             { name: 'icard', type: 'string' },
-            { name: 'birthday', type: 'string' },
-            { name: 'degree', type: 'string' },
-            { name: 'marriage', type: 'string' },
-            { name: 'nation', type: 'stirng' },
-            { name: 'provinces', type: 'string' },
-            { name: 'native', type: 'string' },
+            { name: 'icardAddress', type: 'string' },
             { name: 'address', type: 'string' },
-            { name: 'postalCode', type: 'string' },
-            { name: 'addrPhone', type: 'string' },
+            { name: 'company', type: 'string' },
+            { name: 'project', type: 'string' },
             { name: 'workPhone', type: 'string' },
             { name: 'mobilePhone', type: 'string' },
             { name: 'email', type: 'string' },
-            { name: 'leaving', type: 'boolean' },
-            { name: 'entryTime', type: 'string' },
-            { name: 'retireTime', type: 'string' },
-            { name: 'isFormal', type: 'boolean' },
+            { name: 'empName', type: 'string' },
             { name: 'remarks', type: 'string' },
             { name: 'enabled', type: 'boolean' },
             { name: 'cardId', type: 'string' },
@@ -57,11 +45,11 @@
     var currentStore = Ext.create('Ext.data.Store', {
         autoLoad: false,
         pageSize: 20,
-        model: 'EmployeeModel',
-        DownloadURL: '/Report/DownloadBase400105',
+        model: 'OutEmployeeModel',
+        DownloadURL: '/Report/DownloadBase400106',
         proxy: {
             type: 'ajax',
-            url: '/Report/RequestBase400105',
+            url: '/Report/RequestBase400106',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -82,10 +70,10 @@
         autoLoad: false,
         pageSize: 20,
         model: 'DetailModel',
-        DownloadURL: '/Report/DownloadDetail400105',
+        DownloadURL: '/Report/DownloadDetail400106',
         proxy: {
             type: 'ajax',
-            url: '/Report/RequestDetail400105',
+            url: '/Report/RequestDetail400106',
             reader: {
                 type: 'json',
                 successProperty: 'success',
@@ -104,12 +92,12 @@
 
     var empTypeStore = new Ext.data.ArrayStore({
         fields: ['id', 'text'],
-        data: [[0, '未发卡员工'], [1, '已发卡员工']]
+        data: [[0, '未发卡人员'], [1, '已发卡人员']]
     });
 
     var keyTypeStore = new Ext.data.ArrayStore({
         fields: ['id', 'text'],
-        data: [[1, '按工号查询'], [2, '按卡号查询'], [3, '按姓名查询']]
+        data: [[1, '按卡号查询'], [2, '按姓名查询'], [3, '按负责人姓名查询'], [4, '按负责人工号查询']]
     });
 
     var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
@@ -130,7 +118,7 @@
         items: [{
             xtype: 'grid',
             glyph: 0xf029,
-            title: '员工信息',
+            title: '外协信息',
             collapsible: true,
             collapseFirst: false,
             margin: '5 0 0 0',
@@ -155,56 +143,29 @@
                     dataIndex: 'index',
                     width: 60
                 }, {
-                    text: '工号',
-                    dataIndex: 'empNo'
-                }, {
                     text: '姓名',
                     dataIndex: 'name'
                 }, {
                     text: '性别',
                     dataIndex: 'sex'
                 }, {
-                    text: '英文名',
-                    dataIndex: 'engName'
-                }, {
-                    text: '曾用名',
-                    dataIndex: 'usedName'
-                }, {
                     text: '部门',
                     dataIndex: 'dept'
-                }, {
-                    text: '职务',
-                    dataIndex: 'duty'
                 }, {
                     text: '身份证号',
                     dataIndex: 'icard'
                 }, {
-                    text: '出生日期',
-                    dataIndex: 'birthday'
+                    text: '身份证住址',
+                    dataIndex: 'icardAddress'
                 }, {
-                    text: '学位',
-                    dataIndex: 'degree'
-                }, {
-                    text: '婚姻状况',
-                    dataIndex: 'marriage'
-                }, {
-                    text: '国籍',
-                    dataIndex: 'nation'
-                }, {
-                    text: '省份',
-                    dataIndex: 'provinces'
-                }, {
-                    text: '籍贯',
-                    dataIndex: 'native'
-                }, {
-                    text: '住址',
+                    text: '现住地址',
                     dataIndex: 'address'
                 }, {
-                    text: '邮编',
-                    dataIndex: 'postalCode'
+                    text: '公司名称',
+                    dataIndex: 'company'
                 }, {
-                    text: '住宅电话',
-                    dataIndex: 'addrPhone'
+                    text: '所属项目',
+                    dataIndex: 'project',
                 }, {
                     text: '办公电话',
                     dataIndex: 'workPhone'
@@ -215,19 +176,8 @@
                     text: '邮箱',
                     dataIndex: 'email'
                 }, {
-                    text: '任职状态',
-                    dataIndex: 'leaving',
-                    renderer: function (value) { return value ? '离职' : '在职'; }
-                }, {
-                    text: '入职时间',
-                    dataIndex: 'entryTime'
-                }, {
-                    text: '退休时间',
-                    dataIndex: 'retireTime'
-                }, {
-                    text: '编制',
-                    dataIndex: 'isFormal',
-                    renderer: function (value) { return value ? '正式员工' : '非正式员工'; }
+                    text: '负责人',
+                    dataIndex: 'empName'
                 }, {
                     text: '备注',
                     dataIndex: 'remarks'
@@ -274,7 +224,7 @@
                         }, {
                             id: 'emptypeField',
                             xtype: 'multicombo',
-                            fieldLabel: '员工类型',
+                            fieldLabel: '人员类型',
                             store: empTypeStore,
                             valueField: 'id',
                             displayField: 'text',

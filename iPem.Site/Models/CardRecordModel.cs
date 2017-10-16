@@ -22,8 +22,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("设备名称")]
         public string device { get; set; }
 
+        [ExcelIgnore]
+        public string cardId { get; set; }
+
         [ExcelDisplayName("刷卡卡号")]
-        public string card { get; set; }
+        public string decimalCard { get; set; }
 
         [ExcelDisplayName("刷卡时间")]
         public string time { get; set; }

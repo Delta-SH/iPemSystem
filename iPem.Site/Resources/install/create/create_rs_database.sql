@@ -1235,6 +1235,7 @@ CREATE TABLE [dbo].[D_FSU](
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NULL,
 	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_Room] DEFAULT ((0)),
+	[IsFtpSync] [bit] NULL,
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC
@@ -2093,6 +2094,7 @@ GO
 CREATE TABLE [dbo].[M_Authorization](
 	[DriverID] [varchar](100) NOT NULL,
 	[CardID] [varchar](100) NOT NULL,
+	[HexCode] [varchar](100) NULL,
 	[DeviceID] [varchar](100) NULL,
 	[GroupID] [varchar](100) NULL,
 	[LimitType] [int] NULL,

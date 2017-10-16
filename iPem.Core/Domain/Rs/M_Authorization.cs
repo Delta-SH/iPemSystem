@@ -2,24 +2,26 @@
 
 namespace iPem.Core.Domain.Rs {
     /// <summary>
-    /// 外协人员信息表
+    /// 门禁授权表
     /// </summary>
     [Serializable]
     public partial class M_Authorization : BaseEntity {
         /// <summary>
-        /// 驱动编号
-        /// </summary>
-        public string DriverId { get; set; }
-
-        /// <summary>
-        /// 门禁卡号（十进制，10位）
+        /// 十六进制卡号（10位）
         /// </summary>
         public string CardId { get; set; }
 
         /// <summary>
-        /// 门禁卡号（十六进制）
+        /// 十进制卡号（10位）
         /// </summary>
-        public string CardHex { get; set; }
+        public string DecimalCard {
+            get {
+                if (string.IsNullOrWhiteSpace(this.CardId))
+                    return string.Empty;
+
+                return int.Parse(this.CardId, System.Globalization.NumberStyles.HexNumber).ToString("D10");
+            }
+        }
 
         /// <summary>
         /// 设备编号
