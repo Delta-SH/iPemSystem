@@ -853,3 +853,26 @@ INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(500403, N'告警确认及时率', '/content/themes/icons/menu-kpi-dz.png', '/KPI/Custom', N'告警确认及时率 = {1－超出规定确认时长的告警条数 / 告警总条数} × 100%<br/>注：在使用之前，请确保已设置了"系统管理>系统参数>报表参数>告警确认及时率"里的参数信息。', 3, 5004, 1);
 GO
 
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_Roles]
+DELETE FROM [dbo].[U_Roles];
+GO
+
+INSERT INTO [dbo].[U_Roles]([Id],[Name],[Comment],[Enabled]) VALUES('a0000000-6000-2000-1000-f00000000000','Administrator','超级管理员',1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_Users]
+DELETE FROM [dbo].[U_Users];
+GO
+
+INSERT INTO [dbo].[U_Users]([Id],[Uid],[Password],[PasswordFormat],[PasswordSalt],[CreatedDate],[LimitedDate],[LastLoginDate],[LastPasswordChangedDate],[FailedPasswordAttemptCount],[FailedPasswordDate],[IsLockedOut],[LastLockoutDate],[Comment],[EmployeeId],[Enabled]) VALUES('62ab161f-dcbb-633b-b6a0-a9ebf6099862', 'system', 'ynMbt/ns3PKIJvDa/a6UiwDwxrE=', 1, '4RltREDrDBzwvkPj0j5hLg==', GETDATE(), '2099-12-31', GETDATE(), GETDATE(), 0, GETDATE(), 0, GETDATE(), '默认用户', '00001', 1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[U_UsersInRoles]
+DELETE FROM [dbo].[U_UsersInRoles];
+GO
+
+INSERT INTO [dbo].[U_UsersInRoles]([RoleId],[UserId]) VALUES('a0000000-6000-2000-1000-f00000000000', '62ab161f-dcbb-633b-b6a0-a9ebf6099862');
+GO

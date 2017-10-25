@@ -357,6 +357,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
+                _cacheManager.Clear();
                 EngineContext.Initialize(true);
                 result.success = true;
                 result.code = 200;
@@ -405,6 +406,7 @@ namespace iPem.Site.Controllers {
 
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _cacheManager.Clear();
                 _dbManager.Initializer();
                 EngineContext.Initialize(true);
 
@@ -436,6 +438,7 @@ namespace iPem.Site.Controllers {
 
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _cacheManager.Clear();
                 _dbManager.Initializer();
                 EngineContext.Initialize(true);
 
@@ -467,6 +470,7 @@ namespace iPem.Site.Controllers {
 
                 _dataProvider.DelEntites(new List<DbEntity>() { entity });
                 _dataProvider.SaveEntites(new List<DbEntity>() { entity });
+                _cacheManager.Clear();
                 _dbManager.Initializer();
                 EngineContext.Initialize(true);
 
@@ -496,6 +500,7 @@ namespace iPem.Site.Controllers {
                 if(CommonHelper.CreateDynamicKeys() != password)
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
+                _cacheManager.Clear();
                 _dataProvider.CleanEntites();
                 _dbManager.Clean();
                 EngineContext.Initialize(true);
