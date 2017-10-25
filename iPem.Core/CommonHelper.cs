@@ -1,3 +1,4 @@
+using iPem.Core.Enum;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -297,6 +298,25 @@ namespace iPem.Core {
         /// </summary>
         public static long GetIdAsLong() {
             return Math.Abs(DateTime.Now.Subtract(new DateTime(2017, 6, 21)).Ticks);
+        }
+
+        /// <summary>
+        /// 获得刷卡刷卡类型
+        /// </summary>
+        public static EnmRecType GetRecType(EnmRecRemark remark) {
+            //刷卡开门记录、键入用户ID及个人密码开门的记录
+            var normals = new EnmRecRemark[] { EnmRecRemark.Remark0, EnmRecRemark.Remark1 };
+
+            //手动开门记录、联动开门记录、无效的用户卡刷卡记录、用户卡的有效期已过、当前时间该用户卡无进入权限、用户在个人密码确认时，三次全部不正确
+            var illegals = new EnmRecRemark[] { EnmRecRemark.Remark3, EnmRecRemark.Remark4, EnmRecRemark.Remark8, EnmRecRemark.Remark9, EnmRecRemark.Remark10, EnmRecRemark.Remark11 };
+
+            //远程(由SU)开门记录
+            var remotes = new EnmRecRemark[] { EnmRecRemark.Remark2 };
+
+            if (normals.Contains(remark)) return EnmRecType.Normal;
+            if (illegals.Contains(remark)) return EnmRecType.Illegal;
+            if (remotes.Contains(remark)) return EnmRecType.Remote;
+            return EnmRecType.Other;
         }
     }
 }

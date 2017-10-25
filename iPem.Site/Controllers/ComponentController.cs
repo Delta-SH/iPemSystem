@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class ComponentController : Controller {
+    public class ComponentController : JsonNetController {
 
         #region Fields
 
@@ -469,7 +469,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetAreas(string node, bool? multiselect) {
+        public JsonResult GetAreas(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -530,10 +530,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -595,7 +592,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetStations(string node, bool? multiselect, bool? leafselect) {
+        public JsonResult GetStations(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -690,10 +687,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -809,7 +803,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetRooms(string node, bool? multiselect, bool? leafselect) {
+        public JsonResult GetRooms(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -931,10 +925,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1092,7 +1083,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetDevices(string node, bool? multiselect, bool? leafselect) {
+        public JsonResult GetDevices(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1239,10 +1230,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1382,7 +1370,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetEmployees(string node, bool? multiselect) {
+        public JsonResult GetEmployees(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1444,10 +1432,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1512,7 +1497,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetLogicTree(string node, bool? multiselect) {
+        public JsonResult GetLogicTree(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1574,10 +1559,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1641,7 +1623,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetSubLogicTree(string node, bool? multiselect) {
+        public JsonResult GetSubLogicTree(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1721,10 +1703,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1794,7 +1773,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetPointTree(string node, bool? multiselect) {
+        public JsonResult GetPointTree(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1856,10 +1835,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -1929,7 +1905,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetSubDeviceTypes(string node, bool? multiselect) {
+        public JsonResult GetSubDeviceTypes(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1991,10 +1967,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -2058,7 +2031,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetSeniorConditions(string node) {
+        public JsonResult GetSeniorConditions(string node) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -2092,10 +2065,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -2141,7 +2111,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetMatrixTemplates() {
+        public JsonResult GetMatrixTemplates() {
             var data = new AjaxDataModel<List<TreeCustomModel<MatrixTemplate>>> {
                 success = true,
                 message = "No data",
@@ -2174,14 +2144,11 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetPointInDevType(string node) {
+        public JsonResult GetPointInDevType(string node) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -2211,10 +2178,7 @@ namespace iPem.Site.Controllers {
                 data.success = false; data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

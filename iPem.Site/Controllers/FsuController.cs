@@ -21,7 +21,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class FsuController : Controller {
+    public class FsuController : JsonNetController {
 
         #region Fields
 

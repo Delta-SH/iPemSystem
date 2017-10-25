@@ -61,6 +61,7 @@ namespace iPem.Services.Common {
         public const string Report_400204 = @"ipems:report:{0}:400204";
         public const string Report_400207 = @"ipems:report:{0}:400207";
         public const string Report_400208 = @"ipems:report:{0}:400208";
+        public const string Report_400210 = @"ipems:report:{0}:400210";
         public const string Report_400401 = @"ipems:report:{0}:400401";
         public const string Report_400402 = @"ipems:report:{0}:400402";
         public const string Report_400403 = @"ipems:report:{0}:400403";

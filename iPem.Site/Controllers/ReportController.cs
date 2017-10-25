@@ -23,7 +23,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
-    public class ReportController : Controller {
+    public class ReportController : JsonNetController {
 
         #region Fields
 
@@ -38,6 +38,7 @@ namespace iPem.Site.Controllers {
         private readonly IBrandService _brandService;
         private readonly IHAlarmService _hisAlarmService;
         private readonly IBatService _batService;
+        private readonly IBatCurveService _batCurveService;
         private readonly IStaticService _staticService;
         private readonly IHMeasureService _measureService;
         private readonly IEnumMethodService _enumMethodService;
@@ -48,6 +49,7 @@ namespace iPem.Site.Controllers {
         private readonly ISubCompanyService _subCompanyService;
         private readonly ISupplierService _supplierService;
         private readonly ICutService _cutService;
+        private readonly ICardRecordService _cardRecordService;
 
         #endregion
 
@@ -65,6 +67,7 @@ namespace iPem.Site.Controllers {
             IBrandService brandService,
             IHAlarmService hisAlarmService,
             IBatService batService,
+            IBatCurveService batCurveService,
             IStaticService staticService,
             IHMeasureService measureService,
             IEnumMethodService enumMethodService,
@@ -74,7 +77,8 @@ namespace iPem.Site.Controllers {
             IProductorService productorService,
             ISubCompanyService subCompanyService,
             ISupplierService supplierService,
-            ICutService cutService) {
+            ICutService cutService,
+            ICardRecordService cardRecordService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -86,6 +90,7 @@ namespace iPem.Site.Controllers {
             this._brandService = brandService;
             this._hisAlarmService = hisAlarmService;
             this._batService = batService;
+            this._batCurveService = batCurveService;
             this._staticService = staticService;
             this._measureService = measureService;
             this._enumMethodService = enumMethodService;
@@ -96,6 +101,7 @@ namespace iPem.Site.Controllers {
             this._subCompanyService = subCompanyService;
             this._supplierService = supplierService;
             this._cutService = cutService;
+            this._cardRecordService = cardRecordService;
         }
 
         #endregion
@@ -1121,7 +1127,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult RequestHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache, int start, int limit) {
+        public JsonResult RequestHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache, int start, int limit) {
             var data = new AjaxChartModel<List<JObject>, List<ChartsModel>> {
                 success = true,
                 message = "无数据",
@@ -1172,10 +1178,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -1670,6 +1673,173 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult RequestHistory400209(bool cache, string parent, DateTime startDate, DateTime endDate, int[] recTypes, int keyType, string keyWords, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400209>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400209>()
+            };
+
+            try {
+                var stores = this.GetHistory400209(cache, parent, startDate, endDate, recTypes, keyType, keyWords);
+                if (stores != null && stores.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = stores.Count;
+
+                    var end = start + limit;
+                    if (end > stores.Count)
+                        end = stores.Count;
+
+                    for (int i = start; i < end; i++) {
+                        stores[i].index = start + i + 1;
+                        data.data.Add(stores[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400209(bool cache, string parent, DateTime startDate, DateTime endDate, int[] recTypes, int keyType, string keyWords) {
+            try {
+                var models = this.GetHistory400209(cache, parent, startDate, endDate, recTypes, keyType, keyWords);
+                for (int i = 0; i < models.Count; i++) {
+                    models[i].index = i + 1;
+                }
+
+                using (var ms = _excelManager.Export<Model400209>(models, "历史刷卡记录", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistory400210(bool cache, string parent, int[] empTypes, int keyType, string keywords, DateTime startDate, DateTime endDate, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400210>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400210>()
+            };
+
+            try {
+                var models = this.GetHistory400210(cache, parent, empTypes, keyType, keywords, startDate, endDate);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        models[i].index = start + i + 1;
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400210(bool cache, string parent, int[] empTypes, int keyType, string keywords, DateTime startDate, DateTime endDate) {
+            try {
+                var models = this.GetHistory400210(cache, parent, empTypes, keyType, keywords, startDate, endDate);
+                for (int i = 0; i < models.Count; i++) {
+                    models[i].index = i + 1;
+                }
+
+                using (var ms = _excelManager.Export<Model400210>(models, "刷卡次数统计", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistoryDetail400210(string card, int start, int limit) {
+            var data = new AjaxDataModel<List<DetailModel400210>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400210>()
+            };
+
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400210, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var stores = _cacheManager.Get<List<Model400210>>(key);
+                if (stores != null) {
+                    var current = stores.Find(s => s.cardId == card);
+                    if (current != null) {
+                        data.message = "200 Ok";
+                        data.total = current.details.Count;
+
+                        var end = start + limit;
+                        if (end > current.details.Count)
+                            end = current.details.Count;
+
+                        for (int i = start; i < end; i++) {
+                            data.data.Add(current.details[i]);
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistoryDetail400210(string card) {
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400210, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var result = new List<DetailModel400210>();
+                var stores = _cacheManager.Get<List<Model400210>>(key);
+                if (stores != null) {
+                    var current = stores.Find(s => s.cardId == card);
+                    if (current != null) {
+                        for (int i = 0; i < current.details.Count; i++) {
+                            result.Add(current.details[i]);
+                        }
+                    }
+                }
+
+                using (var ms = _excelManager.Export<DetailModel400210>(result, "刷卡详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult RequestChart400301(string device, string[] points, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<List<ChartsModel>> {
                 success = true,
@@ -1790,7 +1960,7 @@ namespace iPem.Site.Controllers {
                         var curDevice = _workContext.Devices().Find(d => d.Current.Id == id);
                         if(curDevice != null) {
                             var curPoints = curDevice.Points.FindAll(p => points.Contains(p.Id));
-                            var curValues = _batService.GetValuesInDevice(curDevice.Current.Id, starttime, endtime);
+                            var curValues = _batCurveService.GetValues(curDevice.Current.Id, starttime, endtime);
                             for(var i = 0; i < curPoints.Count; i++) {
                                 var values = curValues.FindAll(v => v.PointId == curPoints[i].Id);
                                 var models = new List<ChartModel>();
@@ -3276,6 +3446,274 @@ namespace iPem.Site.Controllers {
                         timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
                     }).ToList()
                 });
+            }
+
+            _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+            return models;
+        }
+
+        private List<Model400209> GetHistory400209(bool cache, string parent, DateTime startDate, DateTime endDate, int[] recTypes, int keyType, string keywords) {
+            endDate = endDate.AddSeconds(86399);
+            var stores = new List<Model400209>();
+
+            List<H_CardRecord> records = null;
+            if (parent == "root") {
+                records = _cardRecordService.GetRecords(startDate, endDate);
+            } else {
+                var keys = Common.SplitKeys(parent);
+                if (keys.Length == 2) {
+                    var type = int.Parse(keys[0]);
+                    var id = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if (nodeType == EnmSSH.Area) {
+                        var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                        if (current != null) records = _cardRecordService.GetRecords(startDate, endDate).FindAll(a => current.Keys.Contains(a.AreaId));
+                    } else if (nodeType == EnmSSH.Station) {
+                        records = _cardRecordService.GetRecordsInStation(startDate, endDate, id);
+                    } else if (nodeType == EnmSSH.Room) {
+                        records = _cardRecordService.GetRecordsInRoom(startDate, endDate, id);
+                    } else if (nodeType == EnmSSH.Device) {
+                        records = _cardRecordService.GetRecordsInDevice(startDate, endDate, id);
+                    }
+                }
+            }
+
+            if (records == null || records.Count == 0) return stores;
+
+            if (recTypes != null && recTypes.Length > 0) {
+                records = records.FindAll(r => recTypes.Contains((int)r.Type));
+            }
+
+            var tStores = from rec in records
+                          join dev in _workContext.Devices() on rec.DeviceId equals dev.Current.Id
+                          join area in _workContext.Areas() on rec.AreaId equals area.Current.Id
+                          select new {
+                              area = area.ToString(),
+                              device = dev.Current,
+                              record = rec
+                          };
+
+            if (!tStores.Any()) return stores;
+
+            var index = 0;
+            var remarks = new EnmRecRemark[] { EnmRecRemark.Remark0, EnmRecRemark.Remark8, EnmRecRemark.Remark9, EnmRecRemark.Remark10, EnmRecRemark.Remark11 };
+            foreach (var store in tStores) {
+                var normal = remarks.Contains(store.record.Remark);
+                stores.Add(new Model400209 {
+                    index = ++index,
+                    area = store.area.ToString(),
+                    station = store.device.StationName,
+                    room = store.device.RoomName,
+                    device = store.device.Name,
+                    recType = Common.GetRecTypeDisplay(store.record.Type),
+                    cardId = normal ? store.record.CardId : null,
+                    decimalCard = normal ? store.record.DecimalCard : store.record.CardId,
+                    time = CommonHelper.DateTimeConverter(store.record.PunchTime),
+                    remark = Common.GetRecRemarkDisplay(store.record.Remark)
+                });
+            }
+
+            var valids = stores.FindAll(s => !string.IsNullOrWhiteSpace(s.cardId));
+            if (valids.Count > 0) {
+                var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (employees.Count > 0) {
+                    var dictionaries = employees.ToDictionary(k => k.CardId, v => v);
+                    foreach (var val in valids) {
+                        if (dictionaries.ContainsKey(val.cardId)) {
+                            var current = dictionaries[val.cardId];
+                            val.employeeCode = current.Code;
+                            val.employeeName = current.Name;
+                            val.employeeType = Common.GetEmployeeTypeDisplay(current.Type);
+                            val.department = current.DeptName;
+                        }
+                    }
+                }
+
+                var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (outEmployees.Count > 0) {
+                    var dictionaries = outEmployees.ToDictionary(k => k.CardId, v => v);
+                    foreach (var val in valids) {
+                        if (dictionaries.ContainsKey(val.cardId)) {
+                            var current = dictionaries[val.cardId];
+                            val.employeeCode = null;
+                            val.employeeName = current.Name;
+                            val.employeeType = Common.GetEmployeeTypeDisplay(current.Type);
+                            val.department = current.DeptName;
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(keywords)) {
+                var keys = Common.SplitCondition(keywords);
+                if (keys.Length > 0) {
+                    switch (keyType) {
+                        case 1:
+                            stores = stores.FindAll(s => !string.IsNullOrWhiteSpace(s.cardId) && CommonHelper.ConditionContain(s.decimalCard, keys));
+                            break;
+                        case 2:
+                            stores = stores.FindAll(e => CommonHelper.ConditionContain(e.employeeCode, keys));
+                            break;
+                        case 3:
+                            stores = stores.FindAll(s => CommonHelper.ConditionContain(s.employeeName, keys));
+                            break;
+                    }
+                }
+            }
+
+            return stores;
+        }
+
+        private List<Model400210> GetHistory400210(bool cache, string parent, int[] empTypes, int keyType, string keywords, DateTime startDate, DateTime endDate) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400210, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400210>>(key);
+
+            var models = new List<Model400210>();
+
+            List<H_CardRecord> records = null;
+            if (parent == "root") {
+                records = _cardRecordService.GetRecords(startDate, endDate);
+            } else {
+                var keys = Common.SplitKeys(parent);
+                if (keys.Length == 2) {
+                    var type = int.Parse(keys[0]);
+                    var id = keys[1];
+                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                    if (nodeType == EnmSSH.Area) {
+                        var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                        if (current != null) records = _cardRecordService.GetRecords(startDate, endDate).FindAll(a => current.Keys.Contains(a.AreaId));
+                    } else if (nodeType == EnmSSH.Station) {
+                        records = _cardRecordService.GetRecordsInStation(startDate, endDate, id);
+                    } else if (nodeType == EnmSSH.Room) {
+                        records = _cardRecordService.GetRecordsInRoom(startDate, endDate, id);
+                    } else if (nodeType == EnmSSH.Device) {
+                        records = _cardRecordService.GetRecordsInDevice(startDate, endDate, id);
+                    }
+                }
+            }
+
+            if (records == null || records.Count == 0) return models;
+
+            var remarks = new EnmRecRemark[] { EnmRecRemark.Remark0, EnmRecRemark.Remark8, EnmRecRemark.Remark9, EnmRecRemark.Remark10, EnmRecRemark.Remark11 };
+            records = records.FindAll(r => remarks.Contains(r.Remark));
+            if (records.Count == 0) return models;
+
+            var tStores = from rec in records
+                          join dev in _workContext.Devices() on rec.DeviceId equals dev.Current.Id
+                          join area in _workContext.Areas() on rec.AreaId equals area.Current.Id
+                          select new {
+                              area = area.ToString(),
+                              device = dev.Current,
+                              record = rec
+                          };
+
+            if (!tStores.Any()) return models;
+
+            var gStores = from store in tStores
+                          group store by store.record.CardId into g
+                          select new {
+                              CardId = g.Key,
+                              Stores = g.OrderBy(s => s.record.PunchTime)
+                          };
+
+            if (empTypes == null || empTypes.Length == 0 || empTypes.Contains((int)EnmEmpType.Employee)) {
+                var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (employees.Count > 0) {
+                    var temps = from store in gStores
+                                join emp in employees on store.CardId equals emp.CardId
+                                select new { Employee = emp, Stores = store.Stores };
+
+                    foreach (var temp in temps) {
+                        var model = new Model400210 {
+                            employeeCode = temp.Employee.Code,
+                            employeeName = temp.Employee.Name,
+                            employeeType = Common.GetEmployeeTypeDisplay(temp.Employee.Type),
+                            department = temp.Employee.DeptName,
+                            cardId = temp.Employee.CardId,
+                            decimalCard = temp.Employee.DecimalCard,
+                            count = temp.Stores.Count(),
+                            details = new List<DetailModel400210>()
+                        };
+
+                        var index = 0;
+                        foreach (var detail in temp.Stores) {
+                            model.details.Add(new DetailModel400210 {
+                                index = ++index,
+                                area = detail.area,
+                                station = detail.device.StationName,
+                                room = detail.device.RoomName,
+                                device = detail.device.Name,
+                                recType = Common.GetRecTypeDisplay(detail.record.Type),
+                                cardId = detail.record.CardId,
+                                decimalCard = detail.record.DecimalCard,
+                                time = CommonHelper.DateTimeConverter(detail.record.PunchTime),
+                                remark = Common.GetRecRemarkDisplay(detail.record.Remark)
+                            });
+                        }
+
+                        models.Add(model);
+                    }
+                }
+            }
+
+            if (empTypes == null || empTypes.Length == 0 || empTypes.Contains((int)EnmEmpType.OutEmployee)) {
+                var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (outEmployees.Count > 0) {
+                    var temps = from store in gStores
+                                join emp in outEmployees on store.CardId equals emp.CardId
+                                select new { Employee = emp, Stores = store.Stores };
+
+                    foreach (var temp in temps) {
+                        var model = new Model400210 {
+                            employeeCode = null,
+                            employeeName = temp.Employee.Name,
+                            employeeType = Common.GetEmployeeTypeDisplay(temp.Employee.Type),
+                            department = temp.Employee.DeptName,
+                            cardId = temp.Employee.CardId,
+                            decimalCard = temp.Employee.DecimalCard,
+                            count = temp.Stores.Count(),
+                            details = new List<DetailModel400210>()
+                        };
+
+                        var index = 0;
+                        foreach (var detail in temp.Stores) {
+                            model.details.Add(new DetailModel400210 {
+                                index = ++index,
+                                area = detail.area,
+                                station = detail.device.StationName,
+                                room = detail.device.RoomName,
+                                device = detail.device.Name,
+                                recType = Common.GetRecTypeDisplay(detail.record.Type),
+                                cardId = detail.record.CardId,
+                                decimalCard = detail.record.DecimalCard,
+                                time = CommonHelper.DateTimeConverter(detail.record.PunchTime),
+                                remark = Common.GetRecRemarkDisplay(detail.record.Remark)
+                            });
+                        }
+
+                        models.Add(model);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(keywords)) {
+                var keys = Common.SplitCondition(keywords);
+                if (keys.Length > 0) {
+                    switch (keyType) {
+                        case 1:
+                            models = models.FindAll(s => CommonHelper.ConditionContain(s.decimalCard, keys));
+                            break;
+                        case 2:
+                            models = models.FindAll(e => CommonHelper.ConditionContain(e.employeeCode, keys));
+                            break;
+                        case 3:
+                            models = models.FindAll(s => CommonHelper.ConditionContain(s.employeeName, keys));
+                            break;
+                    }
+                }
             }
 
             _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);

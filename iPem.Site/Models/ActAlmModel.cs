@@ -87,6 +87,7 @@ namespace iPem.Site.Models {
         public string reversalid { get; set; }
 
         [ScriptIgnore]
+        [JsonIgnoreAttribute]
         [ExcelBackground]
         public Color background { get; set; }
     }

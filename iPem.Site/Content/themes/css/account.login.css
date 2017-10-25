@@ -237,7 +237,7 @@ a:hover {
     }
 }
 
-@media screen and (min-height: 800px) {
+@media screen and (min-height: 730px) {
     .footer {
         position: absolute;
         bottom: 0;

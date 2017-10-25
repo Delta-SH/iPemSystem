@@ -166,6 +166,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IH_IDeviceRepository>(c => new H_IDeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IStationRepository>(c => new H_IStationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_AMeasureRepository>(c => new V_AMeasureRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_BatCurveRepository>(c => new V_BatCurveRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatRepository>(c => new V_BatRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatTimeRepository>(c => new V_BatTimeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_CutRepository>(c => new V_CutRepository(connectionString)).InstancePerLifetimeScope();
@@ -178,6 +179,7 @@ namespace iPem.Site.Infrastructure {
                 //register service
                 builder.RegisterType<AAlarmService>().As<IAAlarmService>().InstancePerLifetimeScope();
                 builder.RegisterType<AMeasureService>().As<IAMeasureService>().InstancePerLifetimeScope();
+                builder.RegisterType<BatCurveService>().As<IBatCurveService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatService>().As<IBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatTimeService>().As<IBatTimeService>().InstancePerLifetimeScope();
                 builder.RegisterType<CardRecordService>().As<ICardRecordService>().InstancePerLifetimeScope();

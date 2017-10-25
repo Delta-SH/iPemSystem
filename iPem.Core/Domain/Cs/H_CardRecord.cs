@@ -57,11 +57,20 @@ namespace iPem.Core.Domain.Cs {
         /// <summary>
         /// 刷卡描述
         /// </summary>
-        public string Remark { get; set; }
+        public EnmRecRemark Remark { get; set; }
 
         /// <summary>
         /// 刷卡方向
         /// </summary>
         public EnmDirection Direction { get; set; }
+
+        /// <summary>
+        /// 刷卡类型
+        /// </summary>
+        public EnmRecType Type {
+            get {
+                return CommonHelper.GetRecType(this.Remark);
+            }
+        }
     }
 }

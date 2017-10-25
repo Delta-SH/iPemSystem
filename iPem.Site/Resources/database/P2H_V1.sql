@@ -5,6 +5,16 @@
 * Date: 2017/10/12
 */
 
+USE [master]
+GO
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'P2H_V1')
+CREATE DATABASE [P2H_V1]
+GO
+
+USE [P2H_V1]
+GO
+
 --¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö
 --´´½¨±í[dbo].[A_AAlarm]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_AAlarm]') AND type in (N'U'))

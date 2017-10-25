@@ -42,7 +42,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }
@@ -70,7 +70,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }
@@ -98,7 +98,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }
@@ -126,7 +126,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }
@@ -154,7 +154,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }
@@ -182,7 +182,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.CardId = SqlTypeConverter.DBNullStringHandler(rdr["CardId"]);
                     entity.PunchTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["PunchTime"]);
                     entity.Status = SqlTypeConverter.DBNullStringHandler(rdr["Status"]);
-                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entity.Remark = SqlTypeConverter.DBNullRecRemarkHandler(rdr["Remark"]);
                     entity.Direction = SqlTypeConverter.DBNullDirectionHandler(rdr["Direction"]);
                     entities.Add(entity);
                 }

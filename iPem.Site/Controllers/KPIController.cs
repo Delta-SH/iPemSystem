@@ -19,7 +19,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
-    public class KPIController : Controller {
+    public class KPIController : JsonNetController {
         
         #region Fields
 
@@ -839,7 +839,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult Request500302(int start, int limit, string parent, int period, int size, DateTime startDate, DateTime endDate) {
+        public JsonResult Request500302(int start, int limit, string parent, int period, int size, DateTime startDate, DateTime endDate) {
             var data = new AjaxDataModel<DataTable> {
                 success = true,
                 message = "无数据",
@@ -868,11 +868,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

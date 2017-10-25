@@ -25,7 +25,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class HomeController : Controller {
+    public class HomeController : JsonNetController {
 
         #region Fields
 
@@ -1982,7 +1982,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult CreateMatrixTemplate(int index) {
+        public JsonResult CreateMatrixTemplate(int index) {
             var defaultDevType = _workContext.DeviceTypes().FirstOrDefault();
             var template = new MatrixTemplate {
                 id = CommonHelper.GetIdAsString(),
@@ -1991,21 +1991,18 @@ namespace iPem.Site.Controllers {
                 points = new string[0]
             };
 
-            return new JsonNetResult {
-                Data = new AjaxDataModel<TreeCustomModel<MatrixTemplate>> {
-                    success = true,
-                    message = "200 Ok",
-                    total = 1,
-                    data = new TreeCustomModel<MatrixTemplate> {
-                        id = template.id,
-                        text = template.name,
-                        icon = Icons.All,
-                        leaf = true,
-                        custom = template
-                    }
-                },
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(new AjaxDataModel<TreeCustomModel<MatrixTemplate>> {
+                success = true,
+                message = "200 Ok",
+                total = 1,
+                data = new TreeCustomModel<MatrixTemplate> {
+                    id = template.id,
+                    text = template.name,
+                    icon = Icons.All,
+                    leaf = true,
+                    custom = template
+                }
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -2082,7 +2079,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult RequestMatrixValues(string node, string id, int start, int limit) {
+        public JsonResult RequestMatrixValues(string node, string id, int start, int limit) {
             var data = new AjaxDataModel<DataTable> {
                 success = true,
                 message = "无数据",
@@ -2155,11 +2152,7 @@ namespace iPem.Site.Controllers {
                 data.total = 0; data.data = null;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -2546,70 +2539,65 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            if(records == null || records.Count == 0) return stores;
+            if (records == null || records.Count == 0) return stores;
 
             var tStores = from rec in records
                           join dev in _workContext.Devices() on rec.DeviceId equals dev.Current.Id
                           join area in _workContext.Areas() on rec.AreaId equals area.Current.Id
-                          select new CardRecordModel {
+                          select new {
                               area = area.ToString(),
-                              station = dev.Current.StationName,
-                              room = dev.Current.RoomName,
-                              device = dev.Current.Name,
-                              cardId = rec.CardId,
-                              decimalCard = rec.DecimalCard,
-                              time = CommonHelper.DateTimeConverter(rec.PunchTime),
-                              remark = rec.Remark
+                              device = dev.Current,
+                              record = rec
                           };
 
             if (!tStores.Any()) return stores;
 
             var index = 0;
-            var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
-            if (employees.Count > 0) {
-                var empStores = from store in tStores
-                                join emp in employees on store.cardId equals emp.CardId
-                                select new CardRecordModel {
-                                    area = store.area,
-                                    station = store.station,
-                                    room = store.room,
-                                    device = store.device,
-                                    cardId = store.cardId,
-                                    decimalCard = store.decimalCard,
-                                    time = store.time,
-                                    remark = store.remark,
-                                    employeeType = Common.GetEmployeeTypeDisplay(emp.Type),
-                                    employee = emp.Name,
-                                    department = emp.DeptName
-                                };
-
-                foreach (var es in empStores) {
-                    es.index = ++index;
-                    stores.Add(es);
-                }
+            var remarks = new EnmRecRemark[] { EnmRecRemark.Remark0, EnmRecRemark.Remark8, EnmRecRemark.Remark9, EnmRecRemark.Remark10, EnmRecRemark.Remark11 };
+            foreach (var store in tStores) {
+                var normal = remarks.Contains(store.record.Remark);
+                stores.Add(new CardRecordModel {
+                    index = ++index,
+                    area = store.area.ToString(),
+                    station = store.device.StationName,
+                    room = store.device.RoomName,
+                    device = store.device.Name,
+                    recType = Common.GetRecTypeDisplay(store.record.Type),
+                    cardId = normal ? store.record.CardId : null,
+                    decimalCard = normal ? store.record.DecimalCard : store.record.CardId,
+                    time = CommonHelper.DateTimeConverter(store.record.PunchTime),
+                    remark = Common.GetRecRemarkDisplay(store.record.Remark)
+                });
             }
 
-            var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
-            if (outEmployees.Count > 0) {
-                var empStores = from store in tStores
-                                join emp in outEmployees on store.cardId equals emp.CardId
-                                select new CardRecordModel {
-                                    area = store.area,
-                                    station = store.station,
-                                    room = store.room,
-                                    device = store.device,
-                                    cardId = store.cardId,
-                                    decimalCard = store.decimalCard,
-                                    time = store.time,
-                                    remark = store.remark,
-                                    employeeType = Common.GetEmployeeTypeDisplay(emp.Type),
-                                    employee = emp.Name,
-                                    department = emp.DeptName
-                                };
+            var valids = stores.FindAll(s => !string.IsNullOrWhiteSpace(s.cardId));
+            if (valids.Count > 0) {
+                var employees = _employeeService.GetEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (employees.Count > 0) {
+                    var dictionaries = employees.ToDictionary(k => k.CardId, v => v);
+                    foreach (var val in valids) {
+                        if (dictionaries.ContainsKey(val.cardId)) {
+                            var current = dictionaries[val.cardId];
+                            val.employeeCode = current.Code;
+                            val.employeeName = current.Name;
+                            val.employeeType = Common.GetEmployeeTypeDisplay(current.Type);
+                            val.department = current.DeptName;
+                        }
+                    }
+                }
 
-                foreach (var es in empStores) {
-                    es.index = ++index;
-                    stores.Add(es);
+                var outEmployees = _employeeService.GetOutEmployees().FindAll(e => !string.IsNullOrWhiteSpace(e.CardId));
+                if (outEmployees.Count > 0) {
+                    var dictionaries = outEmployees.ToDictionary(k => k.CardId, v => v);
+                    foreach (var val in valids) {
+                        if (dictionaries.ContainsKey(val.cardId)) {
+                            var current = dictionaries[val.cardId];
+                            val.employeeCode = null;
+                            val.employeeName = current.Name;
+                            val.employeeType = Common.GetEmployeeTypeDisplay(current.Type);
+                            val.department = current.DeptName;
+                        }
+                    }
                 }
             }
 

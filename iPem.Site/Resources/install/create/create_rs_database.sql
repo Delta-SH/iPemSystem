@@ -1905,9 +1905,11 @@ CREATE TABLE [dbo].[G_Driver](
 	[BusID] [varchar](100) NOT NULL,
 	[Enabled] [bit] NOT NULL,
 	[GroupID] [varchar](100) NOT NULL,
+	[FsuID] [varchar](100) NOT NULL,
 	[Name] [varchar](100) NOT NULL,
 	[Protocol] [int] NOT NULL,
 	[Address] [int] NOT NULL,
+	[ComPort] [int] NOT NULL,
 	[RtuParam] [varchar](max) NOT NULL,
 	[SendInterval] [int] NOT NULL,
 	[ReceiveInterval] [int] NOT NULL,
@@ -2101,7 +2103,8 @@ CREATE TABLE [dbo].[M_Authorization](
 	[LimitIndex] [int] NULL,
 	[BeginTime] [datetime] NULL,
 	[LimitTime] [datetime] NULL,
-	[Pwd] [varchar](50) NULL,
+	[Uid] [varchar](100) NULL,
+	[Pwd] [varchar](100) NULL,
  CONSTRAINT [PK_M_Authorization] PRIMARY KEY CLUSTERED 
 (
 	[CardID] ASC,

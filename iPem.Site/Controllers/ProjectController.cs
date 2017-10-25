@@ -18,7 +18,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class ProjectController : Controller {
+    public class ProjectController : JsonNetController {
 
         #region Fields
 

@@ -21,7 +21,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
-    public class InstallationController : Controller {
+    public class InstallationController : JsonNetController {
 
         #region Fields
 

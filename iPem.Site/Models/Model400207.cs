@@ -1,4 +1,5 @@
 ﻿using iPem.Core.NPOI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
@@ -28,6 +29,7 @@ namespace iPem.Site.Models {
         public string interval { get; set; }
 
         [ScriptIgnore]
+        [JsonIgnoreAttribute]
         [ExcelIgnore]
         public List<ShiDianModel> details { get; set; }
     }

@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
-    public class CardRecordModel {
+    public class Model400209 {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 

@@ -148,6 +148,90 @@
     }
 
     /// <summary>
+    /// 门禁刷卡备注
+    /// </summary>
+    public enum EnmRecRemark {
+        /// <summary>
+        /// 未定义
+        /// </summary>
+        Undefined = -1,
+        /// <summary>
+        /// 刷卡开门记录
+        /// </summary>
+        Remark0 = 0,
+        /// <summary>
+        /// 键入用户ID及个人密码开门的记录
+        /// </summary>
+        Remark1 = 1,
+        /// <summary>
+        /// 远程(由SU)开门记录
+        /// </summary>
+        Remark2 = 2,
+        /// <summary>
+        /// 手动开门记录
+        /// </summary>
+        Remark3 = 3,
+        /// <summary>
+        /// 联动开门记录
+        /// </summary>
+        Remark4 = 4,
+        /// <summary>
+        /// 报警 (或报警取消) 记录
+        /// </summary>
+        Remark5 = 5,
+        /// <summary>
+        /// SM掉电记录
+        /// </summary>
+        Remark6 = 6,
+        /// <summary>
+        /// 内部控制参数被修改的记录
+        /// </summary>
+        Remark7 = 7,
+        /// <summary>
+        /// 无效的用户卡刷卡记录
+        /// </summary>
+        Remark8 = 8,
+        /// <summary>
+        /// 用户卡的有效期已过
+        /// </summary>
+        Remark9 = 9,
+        /// <summary>
+        /// 当前时间该用户卡无进入权限
+        /// </summary>
+        Remark10 = 10,
+        /// <summary>
+        /// 用户在个人密码确认时，三次全部不正确
+        /// </summary>
+        Remark11 = 11,
+        /// <summary>
+        /// 有效的消防联动输入
+        /// </summary>
+        Remark34 = 34
+    }
+
+    /// <summary>
+    /// 门禁刷卡类型
+    /// </summary>
+    public enum EnmRecType {
+        /// <summary>
+        /// 其他类型
+        /// </summary>
+        Other = -1,
+        /// <summary>
+        /// 正常开门
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// 非法开门
+        /// </summary>
+        Illegal,
+        /// <summary>
+        /// 远程开门
+        /// </summary>
+        Remote
+    }
+
+    /// <summary>
     /// 门禁刷卡方向
     /// </summary>
     public enum EnmDirection {

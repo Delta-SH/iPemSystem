@@ -25,7 +25,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 
 namespace iPem.Site.Controllers {
-    public class AccountController : Controller {
+    public class AccountController : JsonNetController {
 
         #region Fields
 
@@ -341,7 +341,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetAllMenus() {
+        public JsonResult GetAllMenus() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -385,7 +385,8 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
         }
 
@@ -412,7 +413,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetAllAreas() {
+        public JsonResult GetAllAreas() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -451,7 +452,8 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
         }
 
@@ -479,7 +481,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetAllPermissions() {
+        public JsonResult GetAllPermissions() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -511,7 +513,8 @@ namespace iPem.Site.Controllers {
 
             return new JsonNetResult {
                 Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore }
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                DefaultValueHandling = DefaultValueHandling.Ignore
             };
         }
 
@@ -1706,7 +1709,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonNetResult GetFormulaDevices(string node, string[] devTypes) {
+        public JsonResult GetFormulaDevices(string node, string[] devTypes) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
                 message = "No data",
@@ -1815,10 +1818,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult {
-                Data = data,
-                SerializerSettings = new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Include }
-            };
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]

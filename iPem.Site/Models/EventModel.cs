@@ -1,4 +1,5 @@
 ﻿using iPem.Core.NPOI;
+using Newtonsoft.Json;
 using System;
 using System.Web.Script.Serialization;
 
@@ -21,6 +22,7 @@ namespace iPem.Site.Models {
         public string shortMessage { get; set; }
 
         [ScriptIgnore]
+        [JsonIgnoreAttribute]
         [ExcelDisplayName("详细信息")]
         public string fullMessage { get; set; }
 

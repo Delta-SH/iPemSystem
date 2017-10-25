@@ -1,11 +1,12 @@
-﻿using System;
+﻿using iPem.Site.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
-    public class HelpController : Controller {
+    public class HelpController : JsonNetController {
         public ActionResult Index() {
             ViewBag.active = 0;
             return View();

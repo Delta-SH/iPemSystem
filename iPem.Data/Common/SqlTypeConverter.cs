@@ -234,6 +234,13 @@ namespace iPem.Data.Common {
             return Enum.IsDefined(typeof(EnmCardStatus), v) ? (EnmCardStatus)v : EnmCardStatus.Cancel;
         }
 
+        public static EnmRecRemark DBNullRecRemarkHandler(object val) {
+            if (val == DBNull.Value) { return EnmRecRemark.Undefined; }
+
+            var v = Convert.ToInt32(val);
+            return Enum.IsDefined(typeof(EnmRecRemark), v) ? (EnmRecRemark)v : EnmRecRemark.Undefined;
+        }
+
         public static EnmDirection DBNullDirectionHandler(object val) {
             if (val == DBNull.Value) { return EnmDirection.InToOut; }
 

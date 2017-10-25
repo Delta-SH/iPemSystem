@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Web;
@@ -390,7 +391,7 @@ namespace iPem.Site.Infrastructure {
         public static string GetEmployeeTypeDisplay(EnmEmpType type) {
             switch (type) {
                 case EnmEmpType.Employee:
-                    return "正式人员";
+                    return "正式员工";
                 case EnmEmpType.OutEmployee:
                     return "外协人员";
                 default:
@@ -423,6 +424,52 @@ namespace iPem.Site.Infrastructure {
                     return "已婚";
                 default:
                     return "其他";
+            }
+        }
+
+        public static string GetRecRemarkDisplay(EnmRecRemark remark) {
+            switch (remark) {
+                case EnmRecRemark.Remark0:
+                    return "刷卡开门记录";
+                case EnmRecRemark.Remark1:
+                    return "键入用户ID及个人密码开门的记录";
+                case EnmRecRemark.Remark2:
+                    return "远程(由SU)开门记录";
+                case EnmRecRemark.Remark3:
+                    return "手动开门记录";
+                case EnmRecRemark.Remark4:
+                    return "联动开门记录";
+                case EnmRecRemark.Remark5:
+                    return "报警 (或报警取消) 记录";
+                case EnmRecRemark.Remark6:
+                    return "SM掉电记录";
+                case EnmRecRemark.Remark7:
+                    return "内部控制参数被修改的记录";
+                case EnmRecRemark.Remark8:
+                    return "无效的用户卡刷卡记录";
+                case EnmRecRemark.Remark9:
+                    return "用户卡的有效期已过";
+                case EnmRecRemark.Remark10:
+                    return "当前时间该用户卡无进入权限";
+                case EnmRecRemark.Remark11:
+                    return "用户在个人密码确认时，三次全部不正确";
+                case EnmRecRemark.Remark34:
+                    return "有效的消防联动输入";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetRecTypeDisplay(EnmRecType type) {
+            switch (type) {
+                case EnmRecType.Normal:
+                    return "正常开门";
+                case EnmRecType.Illegal:
+                    return "非法开门";
+                case EnmRecType.Remote:
+                    return "远程开门";
+                default:
+                    return "未定义";
             }
         }
 

@@ -6,7 +6,7 @@ using System.Web.Script.Serialization;
 
 namespace iPem.Site.Models {
     [Serializable]
-    public class CardRecordModel {
+    public class DetailModel400210 {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
@@ -36,17 +36,5 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("刷卡时间")]
         public string time { get; set; }
-
-        [ExcelIgnore]
-        public string employeeCode { get; set; }
-
-        [ExcelDisplayName("刷卡人员")]
-        public string employeeName { get; set; }
-
-        [ExcelDisplayName("人员类型")]
-        public string employeeType { get; set; }
-
-        [ExcelDisplayName("所属部门")]
-        public string department { get; set; }
     }
 }

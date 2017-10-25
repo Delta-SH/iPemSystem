@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class ConfigurationController : Controller {
+    public class ConfigurationController : JsonNetController {
 
         #region Fields
 

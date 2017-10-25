@@ -110,6 +110,7 @@
     <Compile Include="Domain\Cs\H_CardRecord.cs" />
     <Compile Include="Domain\Cs\H_DBScript.cs" />
     <Compile Include="Domain\Cs\H_IArea.cs" />
+    <Compile Include="Domain\Cs\V_BatCurve.cs" />
     <Compile Include="Domain\Cs\V_BatTime.cs" />
     <Compile Include="Domain\Cs\V_Cuted.cs" />
     <Compile Include="Domain\Cs\V_Cutting.cs" />

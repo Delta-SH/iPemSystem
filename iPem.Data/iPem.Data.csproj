@@ -55,6 +55,7 @@
     <Compile Include="Repository\Cs\Class\H_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_IAreaRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_BatCurveRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_BatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_ElecRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_FsuEventRepository.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Repository\Cs\Interface\IH_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IAreaRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_BatCurveRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_CutRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_ElecRepository.cs" />
