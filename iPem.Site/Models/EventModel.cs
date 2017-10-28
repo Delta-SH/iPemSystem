@@ -21,8 +21,8 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("日志摘要")]
         public string shortMessage { get; set; }
 
+        [JsonIgnore]
         [ScriptIgnore]
-        [JsonIgnoreAttribute]
         [ExcelDisplayName("详细信息")]
         public string fullMessage { get; set; }
 

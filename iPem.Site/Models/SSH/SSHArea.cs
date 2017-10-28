@@ -1,6 +1,7 @@
 ﻿using iPem.Core;
 using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
+using iPem.Core.Extensions;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
 using iPem.Site.Infrastructure;
@@ -44,26 +45,31 @@ namespace iPem.Site.Models.SSH {
         public List<SSHArea> Children { get; set; }
 
         [JsonIgnore]
+        [JsonRedisIgnore]
         public HashSet<string> Keys {
             get { return this._keys.Value; }
         }
 
         [JsonIgnore]
+        [JsonRedisIgnore]
         public List<SSHArea> ChildRoot {
             get { return this._roots.Value; }
         }
 
         [JsonIgnore]
+        [JsonRedisIgnore]
         public List<S_Station> Stations {
             get { return this._stations.Value; }
         }
 
         [JsonIgnore]
+        [JsonRedisIgnore]
         public bool HasParents {
             get { return (this.Parents.Count > 0); }
         }
 
         [JsonIgnore]
+        [JsonRedisIgnore]
         public bool HasChildren {
             get { return (this.Children.Count > 0); }
         }

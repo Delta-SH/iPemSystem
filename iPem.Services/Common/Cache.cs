@@ -2,7 +2,7 @@
 
 namespace iPem.Services.Common {
     /// <summary>
-    /// 缓存Keys
+    /// 全局缓存Keys
     /// </summary>
     public static partial class GlobalCacheKeys {
         /// <summary>
@@ -42,7 +42,6 @@ namespace iPem.Services.Common {
         public const string SSH_AuthorizationsPattern = @"ipems:global:{0}:ssh-authorizations";
         public const string Active_Alarms = @"ipems:global:active-alarms";
         public const string System_Alarms = @"ipems:global:system-alarms";
-        public const string Auth_ConfigurationPattern = @"ipems:global:{0}:auth-configuration";
         public const string Dictionary_Ws = @"ipems:global:dictionary-ws";
         public const string Dictionary_Ts = @"ipems:global:dictionary-ts";
         public const string Dictionary_Rt = @"ipems:global:dictionary-rt";
@@ -92,6 +91,21 @@ namespace iPem.Services.Common {
         /// <summary>
         /// 查询结果缓存周期
         /// </summary>
-        public static readonly TimeSpan SiteResult_Interval = TimeSpan.FromSeconds(600);
+        public static readonly TimeSpan Site_Interval = TimeSpan.FromSeconds(600);
+    }
+
+    /// <summary>
+    /// 缓存数量限制
+    /// </summary>
+    public static partial class GlobalCacheLimit {
+        /// <summary>
+        /// 默认缓存限制
+        /// </summary>
+        public static readonly int Default_Limit = 50000;
+
+        /// <summary>
+        /// 查询缓存限制
+        /// </summary>
+        public static readonly int Site_Limit = 50000;
     }
 }

@@ -330,7 +330,6 @@
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\TsValues.cs" />
     <Compile Include="Models\UserModel.cs" />
-    <Compile Include="Models\ValStore.cs" />
     <Compile Include="Models\MatrixTemplate.cs" />
     <Compile Include="Models\WsValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1169,6 +1168,7 @@
     <Content Include="Resources\tools\hikvision\360se8.zip" />
     <Content Include="Resources\database\data\points.csv" />
     <Content Include="Resources\database\data\subpoints.csv" />
+    <Content Include="Registry.db" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.min.js" />
@@ -1223,6 +1223,7 @@
     <Content Include="Scripts\global\template.js" />
     <Content Include="Scripts\report.history400209.js" />
     <Content Include="Scripts\report.history400210.js" />
+    <Content Include="Scripts\report.history400211.js" />
     <Content Include="Scripts\ux\all.js" />
     <Content Include="Scripts\ux\DateTimePicker.js" />
     <Content Include="Scripts\ux\IFrame.js" />
@@ -1324,6 +1325,7 @@
     <Content Include="Views\Report\base400106.cshtml" />
     <Content Include="Views\Report\history400209.cshtml" />
     <Content Include="Views\Report\history400210.cshtml" />
+    <Content Include="Views\Report\history400211.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

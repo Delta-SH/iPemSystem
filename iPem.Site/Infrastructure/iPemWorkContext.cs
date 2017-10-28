@@ -681,19 +681,16 @@ namespace iPem.Site.Infrastructure {
                                     join area in this.AllAreas() on station.Current.AreaId equals area.Current.Id
                                     select new AlmStore<A_AAlarm> {
                                         Current = alarm,
-                                        Point = point,
-                                        Device = device.Current,
-                                        Room = room.Current,
-                                        Station = station.Current,
-                                        Area = new A_Area {
-                                            Id = area.Current.Id,
-                                            Code = area.Current.Code,
-                                            Name = area.ToString(),
-                                            Type = area.Current.Type,
-                                            ParentId = area.Current.ParentId,
-                                            Comment = area.Current.Comment,
-                                            Enabled = area.Current.Enabled
-                                        }
+                                        PointName = point.Name,
+                                        DeviceName = device.Current.Name,
+                                        DeviceTypeId = device.Current.Type.Id,
+                                        SubDeviceTypeId = device.Current.SubType.Id,
+                                        SubLogicTypeId = device.Current.SubLogicType.Id,
+                                        RoomName = room.Current.Name,
+                                        RoomTypeId = room.Current.Type.Id,
+                                        StationName = station.Current.Name,
+                                        StationTypeId = station.Current.Type.Id,
+                                        AreaName = area.ToString()
                                     };
                 }
 
@@ -711,11 +708,16 @@ namespace iPem.Site.Infrastructure {
                                     join gp in this.Groups() on alarm.DeviceId equals gp.Id
                                     select new AlmStore<A_AAlarm> {
                                         Current = alarm,
-                                        Point = point,
-                                        Device = SSHSystem.SC(gp.Id, gp.Name),
-                                        Room = SSHSystem.Room,
-                                        Station = SSHSystem.Station,
-                                        Area = SSHSystem.Area
+                                        PointName = point.Name,
+                                        DeviceName = gp.Name,
+                                        DeviceTypeId = SSHSystem.SC.Type.Id,
+                                        SubDeviceTypeId = SSHSystem.SC.SubType.Id,
+                                        SubLogicTypeId = SSHSystem.SC.SubLogicType.Id,
+                                        RoomName = SSHSystem.Room.Name,
+                                        RoomTypeId = SSHSystem.Room.Type.Id,
+                                        StationName = SSHSystem.Station.Name,
+                                        StationTypeId = SSHSystem.Station.Type.Id,
+                                        AreaName = SSHSystem.Area.Name
                                     };
                 }
 
@@ -725,7 +727,7 @@ namespace iPem.Site.Infrastructure {
             if (_activeAlarms == null) _activeAlarms = new List<AlmStore<A_AAlarm>>();
             if (_systemAlarms == null) _systemAlarms = new List<AlmStore<A_AAlarm>>();
             if (_activeAlarms.Any() && this.Role().Id != U_Role.SuperId) {
-                _activeAlarms = _activeAlarms.Where(a => this.Authorizations().Areas.Contains(a.Area.Id));
+                _activeAlarms = _activeAlarms.Where(a => this.Authorizations().Areas.Contains(a.Current.AreaId));
             }
 
             return _cachedActAlarms = _activeAlarms.Concat(_systemAlarms).OrderByDescending(a => a.Current.AlarmTime).ToList();
@@ -812,19 +814,16 @@ namespace iPem.Site.Infrastructure {
                     orderby alarm.AlarmTime descending
                     select new AlmStore<A_AAlarm> {
                         Current = alarm,
-                        Point = point,
-                        Device = device.Current,
-                        Room = room.Current,
-                        Station = station.Current,
-                        Area = new A_Area {
-                            Id = area.Current.Id,
-                            Code = area.Current.Code,
-                            Name = area.ToString(),
-                            Type = area.Current.Type,
-                            ParentId = area.Current.ParentId,
-                            Comment = area.Current.Comment,
-                            Enabled = area.Current.Enabled
-                        }
+                        PointName = point.Name,
+                        DeviceName = device.Current.Name,
+                        DeviceTypeId = device.Current.Type.Id,
+                        SubDeviceTypeId = device.Current.SubType.Id,
+                        SubLogicTypeId = device.Current.SubLogicType.Id,
+                        RoomName = room.Current.Name,
+                        RoomTypeId = room.Current.Type.Id,
+                        StationName = station.Current.Name,
+                        StationTypeId = station.Current.Type.Id,
+                        AreaName = area.ToString()
                     }).ToList();
         }
 
@@ -841,19 +840,16 @@ namespace iPem.Site.Infrastructure {
                     orderby alarm.StartTime descending
                     select new AlmStore<A_HAlarm> {
                         Current = alarm,
-                        Point = point,
-                        Device = device.Current,
-                        Room = room.Current,
-                        Station = station.Current,
-                        Area = new A_Area {
-                            Id = area.Current.Id,
-                            Code = area.Current.Code,
-                            Name = area.ToString(),
-                            Type = area.Current.Type,
-                            ParentId = area.Current.ParentId,
-                            Comment = area.Current.Comment,
-                            Enabled = area.Current.Enabled
-                        }
+                        PointName = point.Name,
+                        DeviceName = device.Current.Name,
+                        DeviceTypeId = device.Current.Type.Id,
+                        SubDeviceTypeId = device.Current.SubType.Id,
+                        SubLogicTypeId = device.Current.SubLogicType.Id,
+                        RoomName = room.Current.Name,
+                        RoomTypeId = room.Current.Type.Id,
+                        StationName = station.Current.Name,
+                        StationTypeId = station.Current.Type.Id,
+                        AreaName = area.ToString()
                     }).ToList();
         }
 
@@ -863,7 +859,7 @@ namespace iPem.Site.Infrastructure {
                 return dictionary;
 
             foreach (var alarm in alarms) {
-                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Device.Id, alarm.Point.Id)] = alarm;
+                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Current.DeviceId, alarm.Current.PointId)] = alarm;
             }
 
             return dictionary;
@@ -875,7 +871,7 @@ namespace iPem.Site.Infrastructure {
                 return dictionary;
 
             foreach (var alarm in alarms) {
-                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Device.Id, alarm.Point.Id)] = alarm;
+                dictionary[primaryKey ? alarm.Current.Id : Common.JoinKeys(alarm.Current.DeviceId, alarm.Current.PointId)] = alarm;
             }
 
             return dictionary;

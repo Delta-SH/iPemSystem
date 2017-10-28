@@ -583,21 +583,10 @@ namespace iPem.Site.Controllers {
                     if(end > stores.Count)
                         end = stores.Count;
 
-                    for(int i = start; i < end; i++) {
-                        data.data.Add(new Model400201 {
-                            index = i + 1,
-                            area = stores[i].Area.Name,
-                            station = stores[i].Station.Name,
-                            room = stores[i].Room.Name,
-                            device = stores[i].Device.Name,
-                            point = stores[i].Point.Name,
-                            type = Common.GetPointTypeDisplay(stores[i].Point.Type),
-                            value = stores[i].Current.Value,
-                            unit = Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState),
-                            status = Common.GetPointStatusDisplay(EnmState.Normal),
-                            time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
-                            statusid = (int)EnmState.Normal
-                        });
+                    for (int i = start; i < end; i++) {
+                        var store = stores[i];
+                        store.index = i + 1;
+                        data.data.Add(store);
                     }
                 }
             } catch(Exception exc) {
@@ -613,29 +602,12 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadHistory400201(string parent, DateTime startDate, DateTime endDate, string[] statypes, string[] roomtypes, string[] devtypes, string[] points, string keywords, bool cache) {
             try {
-                var models = new List<Model400201>();
-                var stores = this.GetHistory400201(parent, startDate, endDate, statypes, roomtypes, devtypes, points, keywords, cache);
-                if(stores != null && stores.Count > 0) {
-                    for(int i = 0; i < stores.Count; i++) {
-                        models.Add(new Model400201 {
-                            index = i + 1,
-                            area = stores[i].Area.Name,
-                            station = stores[i].Station.Name,
-                            room = stores[i].Room.Name,
-                            device = stores[i].Device.Name,
-                            point = stores[i].Point.Name,
-                            type = Common.GetPointTypeDisplay(stores[i].Point.Type),
-                            value = stores[i].Current.Value,
-                            unit = string.IsNullOrWhiteSpace(stores[i].Current.SignalDesc) ? Common.GetUnitDisplay(stores[i].Point.Type, stores[i].Current.Value.ToString(), stores[i].Point.UnitState) : stores[i].Current.SignalDesc,
-                            status = Common.GetPointStatusDisplay(EnmState.Normal),
-                            time = CommonHelper.DateTimeConverter(stores[i].Current.UpdateTime),
-                            statusid = (int)EnmState.Normal,
-                            background = Common.GetPointColor(EnmState.Normal)
-                        });
-                    }
+                var models = this.GetHistory400201(parent, startDate, endDate, statypes, roomtypes, devtypes, points, keywords, cache);
+                for (int i = 0; i < models.Count; i++) {
+                    models[i].index = i + 1;
                 }
 
-                using(var ms = _excelManager.Export<Model400201>(models, "历史测值信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400201>(models, "历史测值信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -675,23 +647,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId
                         });
@@ -727,23 +699,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId,
                             background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
@@ -801,23 +773,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId
                         });
@@ -861,23 +833,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId,
                             background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
@@ -988,23 +960,23 @@ namespace iPem.Site.Controllers {
                                 comment = alarms[i].Current.AlarmDesc,
                                 startvalue = alarms[i].Current.StartValue.ToString(),
                                 endvalue = alarms[i].Current.EndValue.ToString(),
-                                point = alarms[i].Point.Name,
-                                device = alarms[i].Device.Name,
-                                room = alarms[i].Room.Name,
-                                station = alarms[i].Station.Name,
-                                area = alarms[i].Area.Name,
+                                point = alarms[i].PointName,
+                                device = alarms[i].DeviceName,
+                                room = alarms[i].RoomName,
+                                station = alarms[i].StationName,
+                                area = alarms[i].AreaName,
                                 confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                 confirmer = alarms[i].Current.Confirmer,
                                 confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
                                 reservation = alarms[i].Current.ReservationId,
                                 reversalcount = alarms[i].Current.ReversalCount,
                                 id = alarms[i].Current.Id,
-                                areaid = alarms[i].Area.Id,
-                                stationid = alarms[i].Station.Id,
-                                roomid = alarms[i].Room.Id,
+                                areaid = alarms[i].Current.AreaId,
+                                stationid = alarms[i].Current.StationId,
+                                roomid = alarms[i].Current.RoomId,
                                 fsuid = alarms[i].Current.FsuId,
-                                deviceid = alarms[i].Device.Id,
-                                pointid = alarms[i].Point.Id,
+                                deviceid = alarms[i].Current.DeviceId,
+                                pointid = alarms[i].Current.PointId,
                                 levelid = (int)alarms[i].Current.AlarmLevel,
                                 reversalid = alarms[i].Current.ReversalId
                             });
@@ -1056,23 +1028,23 @@ namespace iPem.Site.Controllers {
                                 comment = alarms[i].Current.AlarmDesc,
                                 startvalue = alarms[i].Current.StartValue.ToString(),
                                 endvalue = alarms[i].Current.EndValue.ToString(),
-                                point = alarms[i].Point.Name,
-                                device = alarms[i].Device.Name,
-                                room = alarms[i].Room.Name,
-                                station = alarms[i].Station.Name,
-                                area = alarms[i].Area.Name,
+                                point = alarms[i].PointName,
+                                device = alarms[i].DeviceName,
+                                room = alarms[i].RoomName,
+                                station = alarms[i].StationName,
+                                area = alarms[i].AreaName,
                                 confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                 confirmer = alarms[i].Current.Confirmer,
                                 confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
                                 reservation = alarms[i].Current.ReservationId,
                                 reversalcount = alarms[i].Current.ReversalCount,
                                 id = alarms[i].Current.Id,
-                                areaid = alarms[i].Area.Id,
-                                stationid = alarms[i].Station.Id,
-                                roomid = alarms[i].Room.Id,
+                                areaid = alarms[i].Current.AreaId,
+                                stationid = alarms[i].Current.StationId,
+                                roomid = alarms[i].Current.RoomId,
                                 fsuid = alarms[i].Current.FsuId,
-                                deviceid = alarms[i].Device.Id,
-                                pointid = alarms[i].Point.Id,
+                                deviceid = alarms[i].Current.DeviceId,
+                                pointid = alarms[i].Current.PointId,
                                 levelid = (int)alarms[i].Current.AlarmLevel,
                                 reversalid = alarms[i].Current.ReversalId,
                                 background = Common.GetAlarmColor(alarms[i].Current.AlarmLevel)
@@ -1178,7 +1150,7 @@ namespace iPem.Site.Controllers {
                 data.message = exc.Message;
             }
 
-            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -1213,7 +1185,7 @@ namespace iPem.Site.Controllers {
                     var curRow = stores.Rows[index - 1];
                     var stationid = curRow["stationid"].ToString();
                     if (stationid == station) {
-                        var curCell = curRow[string.Format("alarms-{0}", type)];
+                        var curCell = curRow[string.Format("alarms{0}", type)];
                         if (curCell != null) {
                             var alarms = curCell as List<AlmStore<A_HAlarm>>;
                             
@@ -1235,23 +1207,23 @@ namespace iPem.Site.Controllers {
                                     comment = alarms[i].Current.AlarmDesc,
                                     startvalue = alarms[i].Current.StartValue.ToString(),
                                     endvalue = alarms[i].Current.EndValue.ToString(),
-                                    point = alarms[i].Point.Name,
-                                    device = alarms[i].Device.Name,
-                                    room = alarms[i].Room.Name,
-                                    station = alarms[i].Station.Name,
-                                    area = alarms[i].Area.Name,
+                                    point = alarms[i].PointName,
+                                    device = alarms[i].DeviceName,
+                                    room = alarms[i].RoomName,
+                                    station = alarms[i].StationName,
+                                    area = alarms[i].AreaName,
                                     confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                     confirmer = alarms[i].Current.Confirmer,
                                     confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
                                     reservation = alarms[i].Current.ReservationId,
                                     reversalcount = alarms[i].Current.ReversalCount,
                                     id = alarms[i].Current.Id,
-                                    areaid = alarms[i].Area.Id,
-                                    stationid = alarms[i].Station.Id,
-                                    roomid = alarms[i].Room.Id,
+                                    areaid = alarms[i].Current.AreaId,
+                                    stationid = alarms[i].Current.StationId,
+                                    roomid = alarms[i].Current.RoomId,
                                     fsuid = alarms[i].Current.FsuId,
-                                    deviceid = alarms[i].Device.Id,
-                                    pointid = alarms[i].Point.Id,
+                                    deviceid = alarms[i].Current.DeviceId,
+                                    pointid = alarms[i].Current.PointId,
                                     levelid = (int)alarms[i].Current.AlarmLevel,
                                     reversalid = alarms[i].Current.ReversalId
                                 });
@@ -1281,7 +1253,7 @@ namespace iPem.Site.Controllers {
                     var curRow = stores.Rows[index - 1];
                     var stationid = curRow["stationid"].ToString();
                     if (stationid == station) {
-                        var curCell = curRow[string.Format("alarms-{0}", type)];
+                        var curCell = curRow[string.Format("alarms{0}", type)];
                         if (curCell != null) {
                             var alarms = curCell as List<AlmStore<A_HAlarm>>;
                             for (int i = 0; i < alarms.Count; i++) {
@@ -1295,23 +1267,23 @@ namespace iPem.Site.Controllers {
                                     comment = alarms[i].Current.AlarmDesc,
                                     startvalue = alarms[i].Current.StartValue.ToString(),
                                     endvalue = alarms[i].Current.EndValue.ToString(),
-                                    point = alarms[i].Point.Name,
-                                    device = alarms[i].Device.Name,
-                                    room = alarms[i].Room.Name,
-                                    station = alarms[i].Station.Name,
-                                    area = alarms[i].Area.Name,
+                                    point = alarms[i].PointName,
+                                    device = alarms[i].DeviceName,
+                                    room = alarms[i].RoomName,
+                                    station = alarms[i].StationName,
+                                    area = alarms[i].AreaName,
                                     confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                     confirmer = alarms[i].Current.Confirmer,
                                     confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
                                     reservation = alarms[i].Current.ReservationId,
                                     reversalcount = alarms[i].Current.ReversalCount,
                                     id = alarms[i].Current.Id,
-                                    areaid = alarms[i].Area.Id,
-                                    stationid = alarms[i].Station.Id,
-                                    roomid = alarms[i].Room.Id,
+                                    areaid = alarms[i].Current.AreaId,
+                                    stationid = alarms[i].Current.StationId,
+                                    roomid = alarms[i].Current.RoomId,
                                     fsuid = alarms[i].Current.FsuId,
-                                    deviceid = alarms[i].Device.Id,
-                                    pointid = alarms[i].Point.Id,
+                                    deviceid = alarms[i].Current.DeviceId,
+                                    pointid = alarms[i].Current.PointId,
                                     levelid = (int)alarms[i].Current.AlarmLevel,
                                     reversalid = alarms[i].Current.ReversalId,
                                     background = Common.GetAlarmColor(alarms[i].Current.AlarmLevel)
@@ -2026,23 +1998,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId
                         });
@@ -2076,23 +2048,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId,
                             background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
@@ -2144,23 +2116,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId
                         });
@@ -2194,23 +2166,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId,
                             background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
@@ -2262,23 +2234,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId
                         });
@@ -2312,23 +2284,23 @@ namespace iPem.Site.Controllers {
                             comment = stores[i].Current.AlarmDesc,
                             startvalue = stores[i].Current.StartValue.ToString(),
                             endvalue = stores[i].Current.EndValue.ToString(),
-                            point = stores[i].Point.Name,
-                            device = stores[i].Device.Name,
-                            room = stores[i].Room.Name,
-                            station = stores[i].Station.Name,
-                            area = stores[i].Area.Name,
+                            point = stores[i].PointName,
+                            device = stores[i].DeviceName,
+                            room = stores[i].RoomName,
+                            station = stores[i].StationName,
+                            area = stores[i].AreaName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
                             id = stores[i].Current.Id,
-                            areaid = stores[i].Area.Id,
-                            stationid = stores[i].Station.Id,
-                            roomid = stores[i].Room.Id,
+                            areaid = stores[i].Current.AreaId,
+                            stationid = stores[i].Current.StationId,
+                            roomid = stores[i].Current.RoomId,
                             fsuid = stores[i].Current.FsuId,
-                            deviceid = stores[i].Device.Id,
-                            pointid = stores[i].Point.Id,
+                            deviceid = stores[i].Current.DeviceId,
+                            pointid = stores[i].Current.PointId,
                             levelid = (int)stores[i].Current.AlarmLevel,
                             reversalid = stores[i].Current.ReversalId,
                             background = Common.GetAlarmColor(stores[i].Current.AlarmLevel)
@@ -2809,11 +2781,11 @@ namespace iPem.Site.Controllers {
             return stores;
         }
 
-        private List<ValStore<V_HMeasure>> GetHistory400201(string parent, DateTime startDate, DateTime endDate, string[] statypes, string[] roomtypes, string[] devtypes, string[] points, string keywords, bool cache) {
+        private List<Model400201> GetHistory400201(string parent, DateTime startDate, DateTime endDate, string[] statypes, string[] roomtypes, string[] devtypes, string[] points, string keywords, bool cache) {
             endDate = endDate.AddSeconds(86399);
             var key = string.Format(GlobalCacheKeys.Report_400201, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<ValStore<V_HMeasure>>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400201>>(key);
 
             var values = new List<V_HMeasure>();
             if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
@@ -2861,27 +2833,24 @@ namespace iPem.Site.Controllers {
             var stores = (from val in values
                           join pt in _points on val.PointId equals pt.Id
                           join device in devices on val.DeviceId equals device.Current.Id
-                          join room in rooms on device.Current.RoomId equals room.Current.Id
-                          join station in stations on room.Current.StationId equals station.Current.Id
-                          join area in _workContext.Areas() on station.Current.AreaId equals area.Current.Id
-                          select new ValStore<V_HMeasure> {
-                              Current = val,
-                              Point = pt,
-                              Device = device.Current,
-                              Room = room.Current,
-                              Station = station.Current,
-                              Area = new A_Area {
-                                  Id = area.Current.Id,
-                                  Code = area.Current.Code,
-                                  Name = area.ToString(),
-                                  Type = area.Current.Type,
-                                  ParentId = area.Current.ParentId,
-                                  Comment = area.Current.Comment,
-                                  Enabled = area.Current.Enabled
-                              }
+                          join area in _workContext.Areas() on device.Current.AreaId equals area.Current.Id
+                          select new Model400201 {
+                              area = area.ToString(),
+                              station = device.Current.StationName,
+                              room = device.Current.RoomName,
+                              device = device.Current.Name,
+                              point = pt.Name,
+                              type = Common.GetPointTypeDisplay(pt.Type),
+                              value = val.Value,
+                              unit = Common.GetUnitDisplay(pt.Type, val.Value.ToString(), pt.UnitState),
+                              status = Common.GetPointStatusDisplay(EnmState.Normal),
+                              time = CommonHelper.DateTimeConverter(val.UpdateTime)
                           }).ToList();
 
-            _cacheManager.Set(key, stores, GlobalCacheInterval.SiteResult_Interval);
+            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+                _cacheManager.Set(key, stores, GlobalCacheInterval.Site_Interval);
+            }
+
             return stores;
         }
 
@@ -2944,28 +2913,33 @@ namespace iPem.Site.Controllers {
                     join gp in _workContext.Groups() on alarm.DeviceId equals gp.Id
                     select new AlmStore<A_HAlarm> {
                         Current = alarm,
-                        Point = point,
-                        Device = SSHSystem.SC(gp.Id, gp.Name),
-                        Room = SSHSystem.Room,
-                        Station = SSHSystem.Station,
-                        Area = SSHSystem.Area
+                        PointName = point.Name,
+                        DeviceName = gp.Name,
+                        DeviceTypeId = SSHSystem.SC.Type.Id,
+                        SubDeviceTypeId = SSHSystem.SC.SubType.Id,
+                        SubLogicTypeId = SSHSystem.SC.SubLogicType.Id,
+                        RoomName = SSHSystem.Room.Name,
+                        RoomTypeId = SSHSystem.Room.Type.Id,
+                        StationName = SSHSystem.Station.Name,
+                        StationTypeId = SSHSystem.Station.Type.Id,
+                        AreaName = SSHSystem.Area.Name
                     });
             }
 
             if(staTypes != null && staTypes.Length > 0)
-                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
+                stores = stores.FindAll(d => staTypes.Contains(d.StationTypeId));
 
             if(roomTypes != null && roomTypes.Length > 0)
-                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
+                stores = stores.FindAll(d => roomTypes.Contains(d.RoomTypeId));
 
             if (subDeviceTypes != null && subDeviceTypes.Length > 0)
-                stores = stores.FindAll(d => subDeviceTypes.Contains(d.Device.SubType.Id));
+                stores = stores.FindAll(d => subDeviceTypes.Contains(d.SubDeviceTypeId));
 
             if (subLogicTypes != null && subLogicTypes.Length > 0)
-                stores = stores.FindAll(d => subLogicTypes.Contains(d.Device.SubLogicType.Id));
+                stores = stores.FindAll(d => subLogicTypes.Contains(d.SubLogicTypeId));
 
             if (points != null && points.Length > 0)
-                stores = stores.FindAll(p => points.Contains(p.Point.Id));
+                stores = stores.FindAll(p => points.Contains(p.Current.PointId));
 
             if(levels != null && levels.Length > 0)
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlarmLevel));
@@ -2977,7 +2951,7 @@ namespace iPem.Site.Controllers {
 
             if (!string.IsNullOrWhiteSpace(keywords)) {
                 var names = Common.SplitCondition(keywords);
-                if (names.Length > 0) stores = stores.FindAll(p => CommonHelper.ConditionContain(p.Point.Name, names));
+                if (names.Length > 0) stores = stores.FindAll(p => CommonHelper.ConditionContain(p.PointName, names));
             }
 
             if(confirm == 1) stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Confirmed);
@@ -2986,7 +2960,10 @@ namespace iPem.Site.Controllers {
             if(project == 0) stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
 
             stores = stores.OrderByDescending(s => s.Current.StartTime).ToList();
-            _cacheManager.Set(key, stores, GlobalCacheInterval.SiteResult_Interval);
+            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+                _cacheManager.Set(key, stores, GlobalCacheInterval.Site_Interval);
+            }
+
             return stores;
         }
 
@@ -3042,26 +3019,23 @@ namespace iPem.Site.Controllers {
                           orderby alarm.StartTime descending
                           select new AlmStore<A_HAlarm> {
                               Current = alarm,
-                              Point = point,
-                              Device = device.Current,
-                              Room = room.Current,
-                              Station = station.Current,
-                              Area = new A_Area {
-                                  Id = area.Current.Id,
-                                  Code = area.Current.Code,
-                                  Name = area.ToString(),
-                                  Type = area.Current.Type,
-                                  ParentId = area.Current.ParentId,
-                                  Comment = area.Current.Comment,
-                                  Enabled = area.Current.Enabled
-                              }
+                              PointName = point.Name,
+                              DeviceName = device.Current.Name,
+                              DeviceTypeId = device.Current.Type.Id,
+                              SubDeviceTypeId = device.Current.SubType.Id,
+                              SubLogicTypeId = device.Current.SubLogicType.Id,
+                              RoomName = room.Current.Name,
+                              RoomTypeId = room.Current.Type.Id,
+                              StationName = station.Current.Name,
+                              StationTypeId = station.Current.Type.Id,
+                              AreaName = area.ToString()
                           }).ToList();
 
             var result = new List<Model400203>();
             var index = 0;
             foreach (var station in stations) {
                 var area = _workContext.Areas().Find(a=>a.Current.Id == station.Current.AreaId);
-                var _alarms = stores.FindAll(s => s.Station.Id == station.Current.Id);
+                var _alarms = stores.FindAll(s => s.Current.StationId == station.Current.Id);
                 var _alarms1 = _alarms.FindAll(a => a.Current.AlarmLevel == EnmAlarm.Level1);
                 var _alarms2 = _alarms.FindAll(a => a.Current.AlarmLevel == EnmAlarm.Level2);
                 var _alarms3 = _alarms.FindAll(a => a.Current.AlarmLevel == EnmAlarm.Level3);
@@ -3085,13 +3059,15 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
         private DataTable GetHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             endDate = endDate.AddSeconds(86399);
-
             var key = string.Format(GlobalCacheKeys.Report_400204, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
             if (_cacheManager.IsSet(key)) return _cacheManager.Get<DataTable>(key);
@@ -3142,19 +3118,16 @@ namespace iPem.Site.Controllers {
                           orderby alarm.StartTime descending
                           select new AlmStore<A_HAlarm> {
                               Current = alarm,
-                              Point = point,
-                              Device = device.Current,
-                              Room = room.Current,
-                              Station = station.Current,
-                              Area = new A_Area {
-                                  Id = area.Current.Id,
-                                  Code = area.Current.Code,
-                                  Name = area.ToString(),
-                                  Type = area.Current.Type,
-                                  ParentId = area.Current.ParentId,
-                                  Comment = area.Current.Comment,
-                                  Enabled = area.Current.Enabled
-                              }
+                              PointName = point.Name,
+                              DeviceName = device.Current.Name,
+                              DeviceTypeId = device.Current.Type.Id,
+                              SubDeviceTypeId = device.Current.SubType.Id,
+                              SubLogicTypeId = device.Current.SubLogicType.Id,
+                              RoomName = room.Current.Name,
+                              RoomTypeId = room.Current.Type.Id,
+                              StationName = station.Current.Name,
+                              StationTypeId = station.Current.Type.Id,
+                              AreaName = area.ToString()
                           }).ToList();
 
             var columns = _workContext.DeviceTypes();
@@ -3164,25 +3137,28 @@ namespace iPem.Site.Controllers {
             var result = this.GetModel400204(columns);
             foreach (var station in stations) {
                 var area = _workContext.Areas().Find(a => a.Current.Id == station.Current.AreaId);
-                var _alarms = stores.FindAll(s => s.Station.Id == station.Current.Id);
+                var _alarms = stores.FindAll(s => s.Current.StationId == station.Current.Id);
 
                 var row = result.NewRow();
                 row["area"] = area != null ? area.ToString() : "";
                 row["stationid"] = station.Current.Id;
                 row["station"] = station.Current.Name;
                 row["total"] = _alarms.Count;
-                row["alarms-total"] = _alarms;
+                row["alarmstotal"] = _alarms;
 
                 foreach (var column in columns) {
-                    var _dalarms = _alarms.FindAll(a => a.Device.Type.Id == column.Id);
+                    var _dalarms = _alarms.FindAll(a => a.DeviceTypeId == column.Id);
                     row[column.Id] = _dalarms.Count;
-                    row[string.Format("alarms-{0}", column.Id)] = _dalarms;
+                    row[string.Format("alarms{0}", column.Id)] = _dalarms;
                 }
 
                 result.Rows.Add(row);
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
@@ -3212,7 +3188,7 @@ namespace iPem.Site.Controllers {
                 _column0.ExtendedProperties.Add("ExcelDisplayName", type.Name);
                 model.Columns.Add(_column0);
 
-                var _column1 = new DataColumn(string.Format("alarms-{0}", type.Id), typeof(List<AlmStore<A_HAlarm>>));
+                var _column1 = new DataColumn(string.Format("alarms{0}", type.Id), typeof(List<AlmStore<A_HAlarm>>));
                 _column1.ExtendedProperties.Add("ExcelIgnore", null);
                 _column1.ExtendedProperties.Add("JsonIgnore", null);
                 model.Columns.Add(_column1);
@@ -3222,7 +3198,7 @@ namespace iPem.Site.Controllers {
             column4.ExtendedProperties.Add("ExcelDisplayName", "总计");
             model.Columns.Add(column4);
 
-            var column5 = new DataColumn("alarms-total", typeof(List<AlmStore<A_HAlarm>>));
+            var column5 = new DataColumn("alarmstotal", typeof(List<AlmStore<A_HAlarm>>));
             column5.ExtendedProperties.Add("ExcelIgnore", null);
             column5.ExtendedProperties.Add("JsonIgnore", null);
             model.Columns.Add(column5);
@@ -3403,7 +3379,7 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
             return models;
         }
 
@@ -3448,7 +3424,7 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
             return models;
         }
 
@@ -3716,7 +3692,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
             return models;
         }
 
@@ -3808,19 +3784,19 @@ namespace iPem.Site.Controllers {
 
             var stores = _workContext.AlarmsToStore(alarms);
             if (staTypes != null && staTypes.Length > 0)
-                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
+                stores = stores.FindAll(d => staTypes.Contains(d.StationTypeId));
 
             if (roomTypes != null && roomTypes.Length > 0)
-                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
+                stores = stores.FindAll(d => roomTypes.Contains(d.RoomTypeId));
 
             if (subDeviceTypes != null && subDeviceTypes.Length > 0)
-                stores = stores.FindAll(d => subDeviceTypes.Contains(d.Device.SubType.Id));
+                stores = stores.FindAll(d => subDeviceTypes.Contains(d.SubDeviceTypeId));
 
             if (subLogicTypes != null && subLogicTypes.Length > 0)
-                stores = stores.FindAll(d => subLogicTypes.Contains(d.Device.SubLogicType.Id));
+                stores = stores.FindAll(d => subLogicTypes.Contains(d.SubLogicTypeId));
 
             if (points != null && points.Length > 0)
-                stores = stores.FindAll(p => points.Contains(p.Point.Id));
+                stores = stores.FindAll(p => points.Contains(p.Current.PointId));
 
             if (levels != null && levels.Length > 0)
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlarmLevel));
@@ -3867,7 +3843,7 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -3905,19 +3881,19 @@ namespace iPem.Site.Controllers {
 
             var stores = _workContext.AlarmsToStore(alarms);
             if (staTypes != null && staTypes.Length > 0)
-                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
+                stores = stores.FindAll(d => staTypes.Contains(d.StationTypeId));
 
             if (roomTypes != null && roomTypes.Length > 0)
-                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
+                stores = stores.FindAll(d => roomTypes.Contains(d.RoomTypeId));
 
             if (subDeviceTypes != null && subDeviceTypes.Length > 0)
-                stores = stores.FindAll(d => subDeviceTypes.Contains(d.Device.SubType.Id));
+                stores = stores.FindAll(d => subDeviceTypes.Contains(d.SubDeviceTypeId));
 
             if (subLogicTypes != null && subLogicTypes.Length > 0)
-                stores = stores.FindAll(d => subLogicTypes.Contains(d.Device.SubLogicType.Id));
+                stores = stores.FindAll(d => subLogicTypes.Contains(d.SubLogicTypeId));
 
             if (points != null && points.Length > 0)
-                stores = stores.FindAll(p => points.Contains(p.Point.Id));
+                stores = stores.FindAll(p => points.Contains(p.Current.PointId));
 
             if (levels != null && levels.Length > 0)
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlarmLevel));
@@ -3962,7 +3938,7 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -4000,19 +3976,19 @@ namespace iPem.Site.Controllers {
 
             var stores = _workContext.AlarmsToStore(alarms);
             if (staTypes != null && staTypes.Length > 0)
-                stores = stores.FindAll(d => staTypes.Contains(d.Station.Type.Id));
+                stores = stores.FindAll(d => staTypes.Contains(d.StationTypeId));
 
             if (roomTypes != null && roomTypes.Length > 0)
-                stores = stores.FindAll(d => roomTypes.Contains(d.Room.Type.Id));
+                stores = stores.FindAll(d => roomTypes.Contains(d.RoomTypeId));
 
             if (subDeviceTypes != null && subDeviceTypes.Length > 0)
-                stores = stores.FindAll(d => subDeviceTypes.Contains(d.Device.SubType.Id));
+                stores = stores.FindAll(d => subDeviceTypes.Contains(d.SubDeviceTypeId));
 
             if (subLogicTypes != null && subLogicTypes.Length > 0)
-                stores = stores.FindAll(d => subLogicTypes.Contains(d.Device.SubLogicType.Id));
+                stores = stores.FindAll(d => subLogicTypes.Contains(d.SubLogicTypeId));
 
             if (points != null && points.Length > 0)
-                stores = stores.FindAll(p => points.Contains(p.Point.Id));
+                stores = stores.FindAll(p => points.Contains(p.Current.PointId));
 
             if (levels != null && levels.Length > 0)
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlarmLevel));
@@ -4057,7 +4033,7 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -4094,7 +4070,7 @@ namespace iPem.Site.Controllers {
                         if(current != null) {
                             if(current.HasChildren) {
                                 foreach(var child in current.ChildRoot) {
-                                    var curstores = stores.FindAll(s => child.Keys.Contains(s.Area.Id));
+                                    var curstores = stores.FindAll(s => child.Keys.Contains(s.Current.AreaId));
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });
@@ -4102,7 +4078,7 @@ namespace iPem.Site.Controllers {
                                 }
                             } else if(current.Stations.Count > 0) {
                                 foreach(var station in current.Stations) {
-                                    var curstores = stores.FindAll(s => s.Station.Id == station.Id);
+                                    var curstores = stores.FindAll(s => s.Current.StationId == station.Id);
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = station.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = station.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = station.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });
@@ -4116,7 +4092,7 @@ namespace iPem.Site.Controllers {
                         var current = _workContext.Stations().Find(s => s.Current.Id == id);
                         if(current != null && current.Rooms.Count > 0) {
                             foreach(var room in current.Rooms) {
-                                var curstores = stores.FindAll(m => m.Room.Id == room.Id);
+                                var curstores = stores.FindAll(m => m.Current.RoomId == room.Id);
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = room.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = room.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = room.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });
@@ -4129,7 +4105,7 @@ namespace iPem.Site.Controllers {
                         var current = _workContext.Rooms().Find(r => r.Current.Id == id);
                         if(current != null && current.Devices.Count > 0) {
                             foreach(var device in current.Devices) {
-                                var curstores = stores.FindAll(s => s.Device.Id == device.Id);
+                                var curstores = stores.FindAll(s => s.Current.DeviceId == device.Id);
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = device.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = device.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = device.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });
@@ -4141,7 +4117,7 @@ namespace iPem.Site.Controllers {
                         #region device
                         var current = _workContext.Devices().Find(d => d.Current.Id == id);
                         if(current != null) {
-                            var curstores = stores.FindAll(s => s.Device.Id == current.Current.Id);
+                            var curstores = stores.FindAll(s => s.Current.DeviceId == current.Current.Id);
                             models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                             models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                             models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });

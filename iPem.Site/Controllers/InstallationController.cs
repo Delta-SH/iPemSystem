@@ -370,8 +370,8 @@ namespace iPem.Site.Controllers {
         }
 
         public ActionResult DbConfiguration() {
-            var key = string.Format(GlobalCacheKeys.Auth_ConfigurationPattern, Session.SessionID);
-            if(!_cacheManager.IsSet(key)) {
+            var key = "ipems:install:auth-configuration";
+            if(Session[key] == null || DateTime.Now > new DateTime((long)Session[key])) {
                 return View("Authentication", new AuthModel {
                     key = key,
                     name = "数据库操作鉴权",
@@ -497,7 +497,7 @@ namespace iPem.Site.Controllers {
                 if(string.IsNullOrWhiteSpace(password))
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
-                if(CommonHelper.CreateDynamicKeys() != password)
+                if (!string.Format("{0}@10078", CommonHelper.CreateDynamicKeys()).Equals(password))
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
                 _cacheManager.Clear();
@@ -564,7 +564,7 @@ namespace iPem.Site.Controllers {
                     ModelState.AddModelError("", "密码验证失败，请与管理员联系。");
 
                 if(ModelState.IsValid) {
-                    _cacheManager.Set(model.key, "", TimeSpan.FromMinutes(5));
+                    Session[model.key] = DateTime.Now.AddMinutes(5).Ticks;
                     return Redirect(model.service);
                 }
             } catch(Exception exc) {

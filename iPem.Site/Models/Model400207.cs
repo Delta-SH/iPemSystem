@@ -28,9 +28,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("停电时长")]
         public string interval { get; set; }
 
-        [ScriptIgnore]
-        [JsonIgnoreAttribute]
+        [JsonIgnore]
         [ExcelIgnore]
+        [ScriptIgnore]
         public List<ShiDianModel> details { get; set; }
     }
 }

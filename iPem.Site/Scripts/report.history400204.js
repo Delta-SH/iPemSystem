@@ -547,21 +547,20 @@
                     var columns = [];
                     if (data.data && Ext.isArray(data.data)) {
                         Ext.Array.each(data.data, function (item, index) {
-                            currentStore.model.prototype.fields.replace({ name: item.Id });
+                            currentStore.model.prototype.fields.replace({ name: item.Key });
                             if (!Ext.isEmpty(item.Value)) {
                                 columns.push(
                                     {
                                         text: item.Value,
-                                        dataIndex: item.Id,
+                                        dataIndex: item.Key,
                                         width: index == 0 ? 60 : ( index > 3 ? 100 : 150),
                                         align: index > 3 ? 'center' : 'left',
                                         renderer: function (value, p, record) {
                                             if (index <= 3) return value;
-                                            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', item.Id, value);
+                                            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', item.Key, value);
                                         }
                                     }
                                 );
-
                             }
                         });
                     }

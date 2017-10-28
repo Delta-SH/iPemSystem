@@ -470,7 +470,7 @@ namespace iPem.Site.Controllers {
 
                 var key = string.Format(GlobalCacheKeys.Fsu_Points, _workContext.Identifier());
                 if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-                _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
@@ -734,7 +734,7 @@ namespace iPem.Site.Controllers {
 
                 var key = string.Format(GlobalCacheKeys.Fsu_Alarm_Points, _workContext.Identifier());
                 if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-                _cacheManager.Set(key, models, GlobalCacheInterval.SiteResult_Interval);
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
@@ -1052,7 +1052,7 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            if(result.Count > 0) _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            if(result.Count > 0) _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -1202,7 +1202,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -1270,7 +1270,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 
@@ -1340,7 +1340,7 @@ namespace iPem.Site.Controllers {
                 result.Add(f);
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.SiteResult_Interval);
+            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             return result;
         }
 

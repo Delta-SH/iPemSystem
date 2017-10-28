@@ -37,7 +37,5 @@ namespace iPem.Site.Models {
         /// 角色权限HASH
         /// </summary>
         public HashSet<EnmPermission> Permissions { get; set; }
-
-
     }
 }

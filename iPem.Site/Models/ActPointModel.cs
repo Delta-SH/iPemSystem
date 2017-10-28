@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace iPem.Site.Models {
     [Serializable]
     public class ActPointModel {
-        [ExcelIgnore]
+        [ExcelDisplayName("序号")]
         public int index { get; set; }
 
         [ExcelDisplayName("所属区域")]

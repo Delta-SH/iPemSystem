@@ -10,9 +10,25 @@ namespace iPem.Site.Models {
 
         public EnmPoint Type { get; set; }
 
-        public D_Device Device { get; set; }
+        public string DeviceId { get; set; }
 
-        public A_Area Area { get; set; }
+        public string DeviceCode { get; set; }
+
+        public string DeviceName { get; set; }
+
+        public string FsuId { get; set; }
+
+        public string RoomId { get; set; }
+
+        public string RoomName { get; set; }
+
+        public string StationId { get; set; }
+
+        public string StationName { get; set; }
+
+        public string AreaId { get; set; }
+
+        public string AreaName { get; set; }
 
         public bool Followed { get; set; }
 

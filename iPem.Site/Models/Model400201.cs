@@ -44,8 +44,8 @@ namespace iPem.Site.Models {
         [ExcelIgnore]
         public int statusid { get; set; }
 
+        [JsonIgnore]
         [ScriptIgnore]
-        [JsonIgnoreAttribute]
         [ExcelBackground]
         public Color background { get; set; }
     }

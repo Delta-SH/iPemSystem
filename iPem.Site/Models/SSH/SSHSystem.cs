@@ -8,7 +8,7 @@ namespace iPem.Site.Models.SSH {
             Id = "-1",
             Code = "-1",
             Name = "系统区域",
-            Type = new Kv<int, string>() { Key = -1, Value = "系统区域" },
+            Type = new Kv<int, string> { Key = -1, Value = "系统区域" },
             ParentId = "0",
             Enabled = true
         };
@@ -26,7 +26,7 @@ namespace iPem.Site.Models.SSH {
             Id = "-1",
             Code = "-1",
             Name = "系统机房",
-            Type = new C_RoomType { Id = "-1", Name = "系统设备" },
+            Type = new C_RoomType { Id = "-1", Name = "系统机房" },
             AreaId = Area.Id,
             StationId = Station.Id,
             StationName = Station.Name,
@@ -47,23 +47,21 @@ namespace iPem.Site.Models.SSH {
             VendorName = "系统厂家"
         };
 
-        public static D_Device SC(string id, string name) {
-            return new D_Device {
-                Id = id,
-                Code = id,
-                Name = name,
-                Type = new C_DeviceType { Id = "-1", Name = "SC采集设备" },
-                SubType = new C_SubDeviceType { Id = "-1", Name = "SC采集设备" },
-                SubLogicType = new C_SubLogicType { Id = "-1", Name = "SC采集设备" },
-                AreaId = Area.Id,
-                StationId = Station.Id,
-                StationName = Station.Name,
-                StaTypeId = Station.Type.Id,
-                RoomId = Room.Id,
-                RoomName = Room.Name,
-                FsuId = Fsu.Id,
-                Enabled = true
-            };
-        }
+        public static readonly D_Device SC = new D_Device {
+            Id = "-1",
+            Code = "-1",
+            Name = "系统SC",
+            Type = new C_DeviceType { Id = "-1", Name = "SC采集设备" },
+            SubType = new C_SubDeviceType { Id = "-1", Name = "SC采集设备" },
+            SubLogicType = new C_SubLogicType { Id = "-1", Name = "SC采集设备" },
+            AreaId = Area.Id,
+            StationId = Station.Id,
+            StationName = Station.Name,
+            StaTypeId = Station.Type.Id,
+            RoomId = Room.Id,
+            RoomName = Room.Name,
+            FsuId = Fsu.Id,
+            Enabled = true
+        };
     }
 }

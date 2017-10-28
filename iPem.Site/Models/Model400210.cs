@@ -32,9 +32,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("刷卡次数")]
         public int count { get; set; }
 
-        [ScriptIgnore]
-        [JsonIgnoreAttribute]
+        [JsonIgnore]
         [ExcelIgnore]
+        [ScriptIgnore]
         public List<DetailModel400210> details { get; set; }
     }
 }

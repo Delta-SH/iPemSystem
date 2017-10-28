@@ -273,9 +273,6 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-
-            //load data
-            Ext.defer(query, 2000);
         }
     });
 })();

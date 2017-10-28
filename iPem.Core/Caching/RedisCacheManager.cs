@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using iPem.Core.Extensions;
+using Newtonsoft.Json;
 using NServiceKit.Redis;
 using NServiceKit.Redis.Support;
 using System;
@@ -25,9 +26,10 @@ namespace iPem.Core.Caching {
         /// </summary>
         private static JsonSerializerSettings _jsonSettings = new JsonSerializerSettings { 
             NullValueHandling = NullValueHandling.Ignore, 
+            DefaultValueHandling = DefaultValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            DateFormatHandling = DateFormatHandling.MicrosoftDateFormat, 
-            DateFormatString = "yyyy-MM-dd HH:mm:ss" 
+            //序列化所有字段，包括含有[IgnoreJson]属性的字段,但不包括含有[JsonRedisIgnore]属性的字段
+            ContractResolver = new IgnoreJsonAttributesResolver() 
         };
 
         /// <summary>
