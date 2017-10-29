@@ -162,7 +162,7 @@
 							success: function (form, action) {
 								saveResult.setTextWithIcon(action.result.message, 'x-icon-accept');
 								if (saveWnd.opaction == $$iPems.Action.Add)
-									currentStore.loadPage(1);
+								    query();
 								else
 									currentPagingToolbar.doRefresh();
 							},
@@ -361,7 +361,12 @@
 	    var me = currentStore, proxy = me.getProxy();
 	    proxy.extraParams.startDate = startDate;
 	    proxy.extraParams.endDate = endDate;
-	    me.loadPage(1);
+	    proxy.extraParams.cache = false;
+	    me.loadPage(1, {
+	        callback: function (records, operation, success) {
+	            proxy.extraParams.cache = success;
+	        }
+	    });
 	};
 
 	Ext.onReady(function () {
@@ -372,7 +377,6 @@
 
 			//load store data
 			noticeRoleStore.load();
-			Ext.defer(query, 2000);
 		}
 	});
 })();

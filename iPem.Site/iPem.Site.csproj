@@ -228,6 +228,7 @@
     <Compile Include="Models\iAuth.cs" />
     <Compile Include="Models\Model400106.cs" />
     <Compile Include="Models\Model400105.cs" />
+    <Compile Include="Models\Model400204.cs" />
     <Compile Include="Models\Model400209.cs" />
     <Compile Include="Models\Model400210.cs" />
     <Compile Include="Models\NodeIcon.cs" />

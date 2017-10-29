@@ -151,9 +151,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         allowBlank: false
                     },
                     {
+                        id: 'exportButton',
                         xtype: 'button',
                         glyph: 0xf010,
                         text: '数据导出',
+                        disabled: true,
                         handler: function (me, event) {
                             print();
                         }
@@ -178,7 +180,13 @@ var query = function () {
     proxy.extraParams.parent = range.getValue();
     proxy.extraParams.startDate = start.getRawValue();
     proxy.extraParams.endDate = end.getRawValue();
-    me.loadPage(1);
+    proxy.extraParams.cache = false;
+    currentStore.loadPage(1, {
+        callback: function (records, operation, success) {
+            proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
+        }
+    });
 };
 
 var print = function () {
@@ -193,6 +201,4 @@ Ext.onReady(function () {
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
-
-    Ext.defer(query, 2000);
 });

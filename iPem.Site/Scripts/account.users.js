@@ -270,7 +270,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       success: function (form, action) {
                           result.setTextWithIcon(action.result.message, 'x-icon-accept');
                           if (saveWnd.opaction == $$iPems.Action.Add)
-                              currentStore.loadPage(1);
+                              query();
                           else
                               currentPagingToolbar.doRefresh();
                       },
@@ -675,32 +675,50 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             text: '数据查询',
             glyph: 0xf005,
             handler: function (el, e) {
-                var rolesfield = Ext.getCmp('roles-multicombo'),
-                    namesfield = Ext.getCmp('names-textbox');
-                if (rolesfield.isValid() && namesfield.isValid()) {
-                    var roles = rolesfield.getSelectedValues(),
-                        raw = namesfield.getRawValue(),
-                        names = !Ext.isEmpty(raw) ? raw.split($$iPems.Delimiter) : [];
-
-                    currentStore.getProxy().extraParams.roles = roles;
-                    currentStore.getProxy().extraParams.names = names;
-                    currentStore.loadPage(1);
-                }
+                query();
             }
         }, '-', {
+            id: 'exportButton',
             xtype: 'button',
-            text: '数据导出',
             glyph: 0xf010,
+            text: '数据导出',
+            disabled: true,
             handler: function (el, e) {
-                $$iPems.download({
-                    url: '/Account/DownloadUsers',
-                    params: currentStore.getProxy().extraParams
-                });
+                print();
             }
         }]
     }),
     bbar: currentPagingToolbar
 });
+
+var query = function () {
+    var rolesfield = Ext.getCmp('roles-multicombo'),
+        namesfield = Ext.getCmp('names-textbox');
+
+    if (rolesfield.isValid() && namesfield.isValid()) {
+        var roles = rolesfield.getSelectedValues(),
+            raw = namesfield.getRawValue(),
+            names = !Ext.isEmpty(raw) ? raw.split($$iPems.Delimiter) : [];
+
+        var me = currentStore, proxy = me.getProxy();
+        proxy.extraParams.roles = roles;
+        proxy.extraParams.names = names;
+        proxy.extraParams.cache = false;
+        me.loadPage(1, {
+            callback: function (records, operation, success) {
+                proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
+            }
+        });
+    }
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Account/DownloadUsers',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     /*add components to viewport panel*/
@@ -709,7 +727,6 @@ Ext.onReady(function () {
         pageContentPanel.add(currentGridPanel);
 
         //load store data
-        currentStore.load();
         comboRoleStore.load();
         multiComboRoleStore.load();
     } 

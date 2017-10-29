@@ -123,9 +123,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                 fieldLabel: '统计粒度',
                 width: 280
             }, {
+                id: 'exportButton',
                 xtype: 'button',
                 glyph: 0xf010,
                 text: '数据导出',
+                disabled: true,
                 handler: function (me, event) {
                     print();
                 }
@@ -148,7 +150,13 @@ var query = function () {
     proxy.extraParams.parent = range.getValue();
     proxy.extraParams.types = types.getValue();
     proxy.extraParams.size = size.getValue();
-    me.loadPage(1);
+    proxy.extraParams.cache = false;
+    me.loadPage(1, {
+        callback: function (records, operation, success) {
+            proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
+        }
+    });
 };
 
 var print = function () {
@@ -163,6 +171,4 @@ Ext.onReady(function () {
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
-
-    Ext.defer(query, 2000);
 });

@@ -564,7 +564,7 @@
         items: [
             {
                 xtype: 'fieldset',
-                title: '缓存管理',
+                title: '配置管理',
                 margin: '20 20 10 20',
                 layout: {
                     type: 'hbox',
@@ -625,6 +625,28 @@
                                     cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                     Ext.Ajax.request({
                                         url: '/Account/ClearUserCache',
+                                        success: function (response, options) {
+                                            var data = Ext.decode(response.responseText, true);
+                                            if (data) cacheResult.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        text: '更新FSU关联',
+                        cls: 'custom-button custom-success',
+                        margin: 15,
+                        handler: function () {
+                            Ext.Msg.confirm('确认对话框', '您确认要更新FSU关联的机房吗？', function (buttonId, text) {
+                                if (buttonId === 'yes') {
+                                    var cacheResult = Ext.getCmp('cacheResult');
+                                    cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
+                                    Ext.Ajax.request({
+                                        url: '/Fsu/UpdateRelation',
+                                        method: 'POST',
                                         success: function (response, options) {
                                             var data = Ext.decode(response.responseText, true);
                                             if (data) cacheResult.setTextWithIcon(data.message, data.success ? 'x-icon-accept' : 'x-icon-error');

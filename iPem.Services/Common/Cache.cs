@@ -2,7 +2,7 @@
 
 namespace iPem.Services.Common {
     /// <summary>
-    /// 全局缓存Keys
+    /// 缓存Key
     /// </summary>
     public static partial class GlobalCacheKeys {
         /// <summary>
@@ -95,7 +95,7 @@ namespace iPem.Services.Common {
     }
 
     /// <summary>
-    /// 缓存数量限制
+    /// 缓存限制
     /// </summary>
     public static partial class GlobalCacheLimit {
         /// <summary>
@@ -104,8 +104,8 @@ namespace iPem.Services.Common {
         public static readonly int Default_Limit = 50000;
 
         /// <summary>
-        /// 查询缓存限制
+        /// 包含钻取结果集的查询缓存限制
         /// </summary>
-        public static readonly int Site_Limit = 50000;
+        public static readonly int ReSet_Limit = 100000;
     }
 }

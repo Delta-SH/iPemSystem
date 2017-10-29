@@ -11,6 +11,7 @@ using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -812,21 +813,26 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult GetFields500302(int period, DateTime startDate, DateTime endDate) {
-            var data = new AjaxDataModel<List<string>> {
+            var data = new AjaxDataModel<List<GridColumn>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<string>()
+                data = new List<GridColumn> {
+                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
+                    new GridColumn { name = "name", type = "string", column = "名称", width = 150 },
+                }
             };
 
             try {
-                var models = this.GetModel500302(period, startDate, endDate);
+                var models = this.GetDataTable500302(period, startDate, endDate);
                 if(models != null && models.Columns.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Columns.Count;
 
-                    for(int i = 0; i < models.Columns.Count; i++) {
-                        data.data.Add(models.Columns[i].ColumnName);
+                    for(int i = 2; i < models.Columns.Count; i++) {
+                        var column = models.Columns[i];
+                        if (column.ExtendedProperties.ContainsKey("JsonIgnore")) continue;
+                        data.data.Add(new GridColumn { name = column.ColumnName, type = "string", column = column.ExtendedProperties.ContainsKey("ExcelDisplayName") ? column.ExtendedProperties["ExcelDisplayName"] as string : null, align = "center" });
                     }
                 }
             } catch(Exception exc) {
@@ -840,11 +846,11 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult Request500302(int start, int limit, string parent, int period, int size, DateTime startDate, DateTime endDate) {
-            var data = new AjaxDataModel<DataTable> {
+            var data = new AjaxDataModel<List<JObject>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = null
+                data = new List<JObject>()
             };
 
             try {
@@ -857,9 +863,15 @@ namespace iPem.Site.Controllers {
                     if(end > models.Rows.Count)
                         end = models.Rows.Count;
 
-                    data.data = models.Clone();
                     for(int i = start; i < end; i++) {
-                        data.data.Rows.Add(models.Rows[i].ItemArray);
+                        var row = models.Rows[i];
+                        var jObject = new JObject();
+                        for (int j = 0; j < models.Columns.Count; j++) {
+                            var column = models.Columns[j];
+                            if (column.ExtendedProperties.ContainsKey("JsonIgnore")) continue;
+                            jObject.Add(column.ColumnName, row[j].ToString());
+                        }
+                        data.data.Add(jObject);
                     }
                 }
             } catch(Exception exc) {
@@ -2383,7 +2395,7 @@ namespace iPem.Site.Controllers {
         private DataTable Get500302(string parent, int period, int size, DateTime startDate, DateTime endDate) {
             endDate = endDate.AddSeconds(86399);
 
-            var result = this.GetModel500302(period, startDate, endDate);
+            var result = this.GetDataTable500302(period, startDate, endDate);
             if(string.IsNullOrWhiteSpace(parent)) return result;
 
             if(parent == "root") {
@@ -2460,14 +2472,16 @@ namespace iPem.Site.Controllers {
             return result;
         }
 
-        private DataTable GetModel500302(int period, DateTime startDate, DateTime endDate) {
-            var model = new DataTable("Model500302");
-            var column0 = new DataColumn("序号", typeof(int));
+        private DataTable GetDataTable500302(int period, DateTime startDate, DateTime endDate) {
+            var model = new DataTable("DataTable500302");
+            var column0 = new DataColumn("index", typeof(int));
             column0.AutoIncrement = true;
             column0.AutoIncrementSeed = 1;
+            column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
             model.Columns.Add(column0);
 
-            var column1 = new DataColumn("名称", typeof(string));
+            var column1 = new DataColumn("name", typeof(string));
+            column1.ExtendedProperties.Add("ExcelDisplayName", "名称");
             model.Columns.Add(column1);
 
             startDate = startDate.Date;endDate = endDate.Date;
@@ -2480,27 +2494,33 @@ namespace iPem.Site.Controllers {
             if(period == (int)EnmPDH.Month) {
                 dates = dates.GroupBy(d => new { d.Year, d.Month }).Select(g => new DateTime(g.Key.Year, g.Key.Month, 1)).ToList();
                 foreach(var date in dates) {
-                    var column = new DataColumn(CommonHelper.MonthConverter(date), typeof(double));
+                    var columnName = CommonHelper.MonthConverter(date);
+                    var column = new DataColumn(columnName, typeof(double));
                     column.DefaultValue = 0;
                     column.ExtendedProperties.Add("Start", date);
                     column.ExtendedProperties.Add("End", date.AddMonths(1).AddSeconds(-1));
+                    column.ExtendedProperties.Add("ExcelDisplayName", columnName);
                     model.Columns.Add(column);
                 }
             } else if(period == (int)EnmPDH.Week) {
                 dates = dates.GroupBy(d => d.Date.AddDays(-1 * (((int)d.DayOfWeek + 6) % 7))).Select(g => g.Key).ToList();
                 foreach(var date in dates) {
-                    var column = new DataColumn(CommonHelper.WeekConverter(date), typeof(double));
+                    var columnName = CommonHelper.WeekConverter(date);
+                    var column = new DataColumn(columnName, typeof(double));
                     column.DefaultValue = 0;
                     column.ExtendedProperties.Add("Start", date);
                     column.ExtendedProperties.Add("End", date.AddDays(6).AddSeconds(86399));
+                    column.ExtendedProperties.Add("ExcelDisplayName", columnName);
                     model.Columns.Add(column);
                 }
             } else if(period == (int)EnmPDH.Day) {
                 foreach(var date in dates) {
-                    var column = new DataColumn(CommonHelper.DateConverter(date), typeof(double));
+                    var columnName = CommonHelper.DateConverter(date);
+                    var column = new DataColumn(columnName, typeof(double));
                     column.DefaultValue = 0;
                     column.ExtendedProperties.Add("Start", date);
                     column.ExtendedProperties.Add("End", date.AddSeconds(86399));
+                    column.ExtendedProperties.Add("ExcelDisplayName", columnName);
                     model.Columns.Add(column);
                 }
             }
@@ -2510,12 +2530,11 @@ namespace iPem.Site.Controllers {
 
         private void Calculate500302(DataTable dt, List<V_Elec> categories, string name) {
             var row = dt.NewRow();
-            row[1] = name;
+            row["name"] = name;
             for(var k = 2; k < dt.Columns.Count; k++) {
                 var column = dt.Columns[k];
                 var start = (DateTime)column.ExtendedProperties["Start"];
                 var end = (DateTime)column.ExtendedProperties["End"];
-
                 row[k] = categories.FindAll(c => c.StartTime >= start && c.EndTime <= end).Sum(c => c.Value);
             }
             dt.Rows.Add(row);

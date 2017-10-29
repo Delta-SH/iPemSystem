@@ -53,13 +53,13 @@
                     lineOption.series = [];
                     Ext.Array.each(records, function (item, index) {
                         var row = item.data,
-                            name = row['名称'],
+                            name = row['name'],
                             names = name.split(',');
-
 
                         var series = { name: names.pop(), type: 'line', smooth: true, data: [] };
                         for (var p in row) {
-                            if(p === '序号' || p === '名称') continue;
+                            if (p === 'index' || p === 'name')
+                                continue;
 
                             lineOption.xAxis[0].data.push(p);
                             series.data.push(row[p]);
@@ -125,13 +125,6 @@
             margin: '5 0 0 0',
             flex: 1,
             store: currentStore,
-            tools: [{
-                type: 'print',
-                tooltip: '数据导出',
-                handler: function (event, toolEl, panelHeader) {
-                    print();
-                }
-            }],
             viewConfig: {
                 loadMask: true,
                 stripeRows: true,
@@ -216,9 +209,11 @@
                         ]
                     })
                 }, {
+                    id: 'exportButton',
                     xtype: 'button',
                     glyph: 0xf010,
                     text: '数据导出',
+                    disabled: true,
                     handler: function (me, event) {
                         print();
                     }
@@ -268,6 +263,7 @@
         proxy.extraParams.size = size.getValue();
         proxy.extraParams.startDate = start.getRawValue();
         proxy.extraParams.endDate = end.getRawValue();
+        proxy.extraParams.cache = false;
 
         Ext.Ajax.request({
             url: '/KPI/GetFields500302',
@@ -281,13 +277,25 @@
                     var columns = [];
                     if (data.data && Ext.isArray(data.data)) {
                         Ext.Array.each(data.data, function (item, index) {
-                            me.model.prototype.fields.replace({ name: item });
-                            columns.push({ text: item, dataIndex: item, width: index > 0 ? (index > 1 ? 100 : 200) : 60 });
+                            me.model.prototype.fields.replace({ name: item.name, type: item.type });
+                            if (!Ext.isEmpty(item.column)) {
+                                columns.push({
+                                    text: item.column,
+                                    dataIndex: item.name,
+                                    width: item.width,
+                                    align: item.align
+                                });
+                            }
                         });
                     }
 
                     grid.reconfigure(me, columns);
-                    me.loadPage(1);
+                    me.loadPage(1, {
+                        callback: function (records, operation, success) {
+                            proxy.extraParams.cache = success;
+                            Ext.getCmp('exportButton').setDisabled(success === false);
+                        }
+                    });
                 } else {
                     Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }
@@ -308,8 +316,6 @@
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
-
-        Ext.defer(query, 2000);
     });
 
     Ext.onReady(function () {

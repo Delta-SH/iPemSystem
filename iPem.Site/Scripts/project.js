@@ -167,7 +167,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       success: function (form, action) {
                           result.setTextWithIcon(action.result.message, 'x-icon-accept');
                           if (saveWnd.opaction == $$iPems.Action.Add)
-                              currentStore.loadPage(1);
+                              query();
                           else
                               currentPagingToolbar.doRefresh();
                       },
@@ -327,9 +327,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         query();
                     }
                 }, '-', {
+                    id: 'exportButton',
                     xtype: 'button',
-                    text: '数据导出',
                     glyph: 0xf010,
+                    text: '数据导出',
+                    disabled: true,
                     handler: function (el, e) {
                         print();
                     }
@@ -394,7 +396,13 @@ var query = function () {
     proxy.extraParams.name = namesfield.getRawValue();
     proxy.extraParams.startDate = startDate.getRawValue();
     proxy.extraParams.endDate = endDate.getRawValue();
-    me.loadPage(1);
+    proxy.extraParams.cache = false;
+    me.loadPage(1, {
+        callback: function (records, operation, success) {
+            proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
+        }
+    });
 };
 
 var print = function () {
@@ -408,8 +416,5 @@ Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
-
-        //load data
-        Ext.defer(query, 2000);
     }
 });

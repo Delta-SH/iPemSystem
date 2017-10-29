@@ -160,13 +160,6 @@
         store: currentStore,
         bbar: currentPagingToolbar,
         selType: 'cellmodel',
-        tools: [{
-            type: 'print',
-            tooltip: '数据导出',
-            handler: function (event, toolEl, panelHeader) {
-                print(currentStore);
-            }
-        }],
         viewConfig: {
             loadMask: true,
             stripeRows: true,
@@ -178,7 +171,7 @@
             cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
                 var elements = Ext.fly(td).select('a.grid-link');
                 if (elements.getCount() == 0) return false;
-                detail(record.get('index'), record.get('stationid'), elements.first().getAttribute('data'));
+                detail(record.get('stationid'), elements.first().getAttribute('data'));
             }
         }
     });
@@ -264,9 +257,11 @@
                             emptyText: '默认全部'
                         },
                         {
+                            id: 'exportButton',
                             xtype: 'button',
                             glyph: 0xf010,
                             text: '数据导出',
+                            disabled: true,
                             handler: function (me, event) {
                                 print(currentStore);
                             }
@@ -547,17 +542,20 @@
                     var columns = [];
                     if (data.data && Ext.isArray(data.data)) {
                         Ext.Array.each(data.data, function (item, index) {
-                            currentStore.model.prototype.fields.replace({ name: item.Key });
-                            if (!Ext.isEmpty(item.Value)) {
+                            currentStore.model.prototype.fields.replace({ name: item.name, type: item.type });
+                            if (!Ext.isEmpty(item.column)) {
                                 columns.push(
                                     {
-                                        text: item.Value,
-                                        dataIndex: item.Key,
-                                        width: index == 0 ? 60 : ( index > 3 ? 100 : 150),
-                                        align: index > 3 ? 'center' : 'left',
+                                        text: item.column,
+                                        dataIndex: item.name,
+                                        width: item.width,
+                                        align: item.align,
                                         renderer: function (value, p, record) {
-                                            if (index <= 3) return value;
-                                            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', item.Key, value);
+                                            if (item.detail === true) {
+                                                return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', item.name, value);
+                                            }
+
+                                            return value;
                                         }
                                     }
                                 );
@@ -569,6 +567,7 @@
                     currentStore.loadPage(1, {
                         callback: function (records, operation, success) {
                             proxy.extraParams.cache = success;
+                            Ext.getCmp('exportButton').setDisabled(success === false);
                         }
                     });
                 } else {
@@ -617,13 +616,11 @@
         barChart.setOption(barOption, true);
     };
 
-    var detail = function (index, station, type) {
-        if (Ext.isEmpty(index)) return false;
+    var detail = function (station, type) {
         if (Ext.isEmpty(station)) return false;
         if (Ext.isEmpty(type)) return false;
 
         var proxy = detailStore.getProxy();
-        proxy.extraParams.index = index;
         proxy.extraParams.station = station;
         proxy.extraParams.type = type;
 
@@ -637,9 +634,6 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-            
-            //load data
-            Ext.defer(query, 2000);
         }
     });
 

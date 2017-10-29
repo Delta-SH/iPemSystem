@@ -295,7 +295,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       success: function (form, action) {
                           result.setTextWithIcon(action.result.message, 'x-icon-accept');
                           if (saveWnd.opaction == $$iPems.Action.Add)
-                              currentStore.loadPage(1);
+                              query();
                           else
                               currentPagingToolbar.doRefresh();
                       },
@@ -557,23 +557,43 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
             text: '数据查询',
             glyph: 0xf005,
             handler: function (el, e) {
-                var namesfield = Ext.getCmp('namesfield');
-                if (!Ext.isEmpty(namesfield) && namesfield.isValid()) {
-                    currentStore.getProxy().extraParams.condition = namesfield.getRawValue();
-                    currentStore.loadPage(1);
-                }
+                query();
             }
         }, '-', {
+            id: 'exportButton',
             xtype: 'button',
-            text: '数据导出',
             glyph: 0xf010,
+            text: '数据导出',
+            disabled: true,
             handler: function (el, e) {
-                $$iPems.download({ url: '/Account/DownloadRoles', params: { condition: currentStore.getProxy().extraParams.condition } });
+                print();
             }
         }]
     }),
     bbar: currentPagingToolbar
 });
+
+var query = function () {
+    var namesfield = Ext.getCmp('namesfield');
+    if (namesfield.isValid()) {
+        var me = currentStore, proxy = me.getProxy();
+        proxy.extraParams.condition = namesfield.getRawValue();
+        proxy.extraParams.cache = false;
+        me.loadPage(1, {
+            callback: function (records, operation, success) {
+                proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
+            }
+        });
+    }
+};
+
+var print = function () {
+    $$iPems.download({
+        url: '/Account/DownloadRoles',
+        params: currentStore.getProxy().extraParams
+    });
+};
 
 Ext.onReady(function () {
     /*add components to viewport panel*/
@@ -582,7 +602,6 @@ Ext.onReady(function () {
         pageContentPanel.add(currentGridPanel);
 
         //load store data
-        currentStore.load();
         menuStore.load();
         areaStore.load();
         permissionStore.load();

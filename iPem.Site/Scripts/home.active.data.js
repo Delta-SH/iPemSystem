@@ -2031,7 +2031,7 @@
                         Ext.Array.each(data.data, function (item, index) {
                             me.model.prototype.fields.replace({ name: item.name, type: item.type });
                             if (Ext.isEmpty(item.column)) return true;
-                            columns.push({ text: item.column, dataIndex: item.name, width: item.width });
+                            columns.push({ text: item.column, dataIndex: item.name, width: item.width, align: item.align });
                         });
                     }
 

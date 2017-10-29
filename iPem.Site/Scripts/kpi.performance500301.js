@@ -235,13 +235,6 @@ var now = new Date(),
             margin: '5 0 0 0',
             flex: 1,
             store: currentStore,
-            tools: [{
-                type: 'print',
-                tooltip: '数据导出',
-                handler: function (event, toolEl, panelHeader) {
-                    print();
-                }
-            }],
             viewConfig: {
                 loadMask: true,
                 stripeRows: true,
@@ -423,9 +416,11 @@ var now = new Date(),
                     editable: false,
                     allowBlank: false
                 }, {
+                    id: 'exportButton',
                     xtype: 'button',
                     glyph: 0xf010,
                     text: '数据导出',
+                    disabled: true,
                     handler: function (me, event) {
                         print();
                     }
@@ -449,7 +444,13 @@ var now = new Date(),
         proxy.extraParams.size = size.getValue();
         proxy.extraParams.startDate = start.getRawValue();
         proxy.extraParams.endDate = end.getRawValue();
-        me.loadPage(1);
+        proxy.extraParams.cache = false;
+        me.loadPage(1, {
+            callback: function (records, operation, success) {
+                proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
+            }
+        });
     };
 
     var print = function () {
@@ -508,8 +509,6 @@ var now = new Date(),
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
         }
-
-        Ext.defer(query, 2000);
     });
 
     Ext.onReady(function () {

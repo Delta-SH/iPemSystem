@@ -232,9 +232,11 @@
                             query();
                         }
                     }, '-', {
+                        id: 'exportButton',
                         xtype: 'button',
                         glyph: 0xf010,
                         text: '数据导出',
+                        disabled: true,
                         handler: function (el, e) {
                             print();
                         }
@@ -299,7 +301,13 @@
         proxy.extraParams.types = types;
         proxy.extraParams.startDate = startDate;
         proxy.extraParams.endDate = endDate;
-        me.loadPage(1);
+        proxy.extraParams.cache = false;
+        me.loadPage(1, {
+            callback: function (records, operation, success) {
+                proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
+            }
+        });
     };
 
     var print = function () {
@@ -318,7 +326,6 @@
             //load store data
             comboLevelStore.load();
             comboTypeStore.load();
-            Ext.defer(query, 2000);
         }
     });
 })();

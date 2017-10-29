@@ -1052,7 +1052,10 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            if(result.Count > 0) _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (result.Count > 0 && result.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            } 
+
             return result;
         }
 
@@ -1202,7 +1205,10 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (result.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
@@ -1270,7 +1276,10 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (result.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
@@ -1340,7 +1349,10 @@ namespace iPem.Site.Controllers {
                 result.Add(f);
             }
 
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (result.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 

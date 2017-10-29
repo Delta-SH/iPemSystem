@@ -2043,9 +2043,9 @@ namespace iPem.Site.Controllers {
                 total = 4,
                 data = new List<GridColumn> { 
                     new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
-                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 200 },
+                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 150 },
                     new GridColumn { name = "deviceid", type = "string" },
-                    new GridColumn { name = "device", type = "string", column = "所属设备", width = 100 }
+                    new GridColumn { name = "device", type = "string", column = "所属设备", width = 150 }
                 }
             };
 
@@ -2063,7 +2063,7 @@ namespace iPem.Site.Controllers {
                         var pDictionary = _workContext.Points().FindAll(p => p.Type == EnmPoint.AI || p.Type == EnmPoint.DI).ToDictionary(k => k.Id, v => v.Name);
                         foreach (var point in template.points) {
                             if (pDictionary.ContainsKey(point)) {
-                                data.data.Add(new GridColumn { name = point, type = "string", column = pDictionary[point], width = 100 });
+                                data.data.Add(new GridColumn { name = point, type = "string", column = pDictionary[point] });
                                 data.total++;
                             }
                         }
@@ -2472,7 +2472,9 @@ namespace iPem.Site.Controllers {
                               FollowedOnly = true
                           }).ToList();
 
-                _cacheManager.Set(key, stores);
+                if (stores.Count <= GlobalCacheLimit.Default_Limit) {
+                    _cacheManager.Set(key, stores);
+                }
             }
 
             if(node == "root") return stores;

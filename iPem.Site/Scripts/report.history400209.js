@@ -77,13 +77,6 @@
             margin: '5 0 0 0',
             flex: 2,
             store: currentStore,
-            tools: [{
-                type: 'print',
-                tooltip: '数据导出',
-                handler: function (event, toolEl, panelHeader) {
-                    print();
-                }
-            }],
             viewConfig: {
                 loadMask: true,
                 stripeRows: true,
@@ -200,9 +193,11 @@
                             width: 220
                         },
                         {
+                            id: 'exportButton',
                             xtype: 'button',
                             glyph: 0xf010,
                             text: '数据导出',
+                            disabled: true,
                             handler: function (me, event) {
                                 print();
                             }
@@ -232,6 +227,7 @@
         currentStore.loadPage(1, {
             callback: function (records, operation, success) {
                 proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
             }
         });
     };
@@ -248,9 +244,6 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-
-            //load data
-            Ext.defer(query, 2000);
         }
     });
 

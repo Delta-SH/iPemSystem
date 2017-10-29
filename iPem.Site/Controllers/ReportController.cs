@@ -1064,15 +1064,15 @@ namespace iPem.Site.Controllers {
 
         [AjaxAuthorize]
         public JsonResult GetFields400204(string[] types) {
-            var data = new AjaxDataModel<List<Kv<string,string>>> {
+            var data = new AjaxDataModel<List<GridColumn>> {
                 success = true,
                 message = "200 Ok",
                 total = 4,
-                data = new List<Kv<string, string>> {
-                    new Kv<string,string>("index","序号"),
-                    new Kv<string,string>("area","所属区域"),
-                    new Kv<string,string>("stationid",""),
-                    new Kv<string,string>("station","所属站点")
+                data = new List<GridColumn> {
+                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
+                    new GridColumn { name = "area", type = "string", column = "所属区域", width = 150 },
+                    new GridColumn { name = "stationid", type = "string" },
+                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 150 }
                 }
             };
 
@@ -1083,11 +1083,11 @@ namespace iPem.Site.Controllers {
 
                 if (columns != null && columns.Count > 0) {
                     for (int i = 0; i < columns.Count; i++) {
-                        data.data.Add(new Kv<string, string>(columns[i].Id, columns[i].Name));
+                        data.data.Add(new GridColumn { name = columns[i].Id, type = "string", column = columns[i].Name, align = "center", detail = true });
                     }
                 }
 
-                data.data.Add(new Kv<string, string>("total", "总计"));
+                data.data.Add(new GridColumn { name = "total", type = "string", column = "总计", align = "center", detail = true });
                 data.total = data.data.Count;
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
@@ -1110,35 +1110,55 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetHistory400204(parent, startDate, endDate, staTypes, roomTypes, devTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if(stores != null) {
+                if(stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = stores.Rows.Count;
+                    data.total = stores.Count;
 
                     var end = start + limit;
-                    if (end > stores.Rows.Count)
-                        end = stores.Rows.Count;
+                    if (end > stores.Count)
+                        end = stores.Count;
 
                     var columns = _workContext.DeviceTypes();
-                    if (devTypes != null && devTypes.Length > 0)
+                    if (devTypes != null && devTypes.Length > 0) {
                         columns = columns.FindAll(d => devTypes.Contains(d.Id));
+                    }
 
-                    for(int i = start; i < end; i++) {
+                    var models = this.GetDataTable400204(columns);
+                    for (int i = start; i < end; i++) {
+                        var row = models.NewRow();
+                        row["index"] = stores[i].index;
+                        row["area"] = stores[i].area;
+                        row["stationid"] = stores[i].stationid;
+                        row["station"] = stores[i].station;
+                        row["total"] = stores[i].alarms.Count;
+                        foreach (var column in columns) {
+                            var _alarms = stores[i].alarms.FindAll(a => a.DeviceTypeId == column.Id);
+                            row[column.Id] = _alarms.Count;
+                        }
+
+                        models.Rows.Add(row);
+                    }
+
+                    for (var i = 0; i < models.Rows.Count; i++) {
+                        var row = models.Rows[i];
+
+                        //数据
                         var jObject = new JObject();
-                        for (int j = 0; j < stores.Columns.Count; j++) {
-                            var column = stores.Columns[j];
+                        for (int j = 0; j < models.Columns.Count; j++) {
+                            var column = models.Columns[j];
                             if (column.ExtendedProperties.ContainsKey("JsonIgnore")) continue;
-                            jObject.Add(stores.Columns[j].ColumnName, stores.Rows[i][j].ToString());
+                            jObject.Add(column.ColumnName, row[j].ToString());
                         }
                         data.data.Add(jObject);
 
-                        var station = stores.Rows[i]["station"].ToString();
-                        var charts = new ChartsModel { index = i, name = station, models = new List<ChartModel>() };
+                        //图表
+                        var charts = new ChartsModel { index = i, name = row["station"] as string, models = new List<ChartModel>() };
                         var index = 0;
                         foreach (var column in columns) {
                             charts.models.Add(new ChartModel {
                                 index = ++index,
                                 name = column.Name,
-                                value = (int)stores.Rows[i][column.Id]
+                                value = (int)row[column.Id]
                             });
                         }
                         data.chart.Add(charts);
@@ -1157,8 +1177,31 @@ namespace iPem.Site.Controllers {
         [Authorize]
         public ActionResult DownloadHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             try {
+                var columns = _workContext.DeviceTypes();
+                if (devTypes != null && devTypes.Length > 0) {
+                    columns = columns.FindAll(d => devTypes.Contains(d.Id));
+                }
+
+                var models = this.GetDataTable400204(columns);
                 var stores = this.GetHistory400204(parent, startDate, endDate, staTypes, roomTypes, devTypes, subLogicTypes, points, levels, confirm, project, cache);
-                using (var ms = _excelManager.Export(stores, "设备告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                if (stores != null && stores.Count > 0) {
+                    foreach (var store in stores) {
+                        var row = models.NewRow();
+                        row["index"] = store.index;
+                        row["area"] = store.area;
+                        row["stationid"] = store.stationid;
+                        row["station"] = store.station;
+                        row["total"] = store.alarms.Count;
+                        foreach (var column in columns) {
+                            var _alarms = store.alarms.FindAll(a => a.DeviceTypeId == column.Id);
+                            row[column.Id] = _alarms.Count;
+                        }
+
+                        models.Rows.Add(row);
+                    }
+                }
+
+                using (var ms = _excelManager.Export(models, "设备告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
@@ -1168,7 +1211,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistoryDetail400204(int index, string station, string type, int start, int limit) {
+        public JsonResult RequestHistoryDetail400204(string station, string type, int start, int limit) {
             var data = new AjaxDataModel<List<HisAlmModel>> {
                 success = true,
                 message = "无数据",
@@ -1180,52 +1223,49 @@ namespace iPem.Site.Controllers {
                 var key = string.Format(GlobalCacheKeys.Report_400204, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var stores = _cacheManager.Get<DataTable>(key);
-                if (stores != null && index >= 1 && stores.Rows.Count >= index) {
-                    var curRow = stores.Rows[index - 1];
-                    var stationid = curRow["stationid"].ToString();
-                    if (stationid == station) {
-                        var curCell = curRow[string.Format("alarms{0}", type)];
-                        if (curCell != null) {
-                            var alarms = curCell as List<AlmStore<A_HAlarm>>;
-                            
+                var stores = _cacheManager.Get<List<Model400204>>(key);
+                if (stores != null && stores.Count > 0) {
+                    var current = stores.Find(s => s.stationid == station);
+                    if (current != null && current.alarms != null) {
+                        var models = type.Equals("total") ? current.alarms : current.alarms.FindAll(a => a.DeviceTypeId.Equals(type));
+                        if (models.Count > 0) {
                             data.message = "200 Ok";
-                            data.total = alarms.Count;
+                            data.total = models.Count;
 
                             var end = start + limit;
-                            if (end > alarms.Count)
-                                end = alarms.Count;
+                            if (end > models.Count)
+                                end = models.Count;
 
                             for (int i = start; i < end; i++) {
                                 data.data.Add(new HisAlmModel {
                                     index = i + 1,
-                                    nmalarmid = alarms[i].Current.NMAlarmId,
-                                    level = Common.GetAlarmDisplay(alarms[i].Current.AlarmLevel),
-                                    starttime = CommonHelper.DateTimeConverter(alarms[i].Current.StartTime),
-                                    endtime = CommonHelper.DateTimeConverter(alarms[i].Current.EndTime),
-                                    interval = CommonHelper.IntervalConverter(alarms[i].Current.StartTime, alarms[i].Current.EndTime),
-                                    comment = alarms[i].Current.AlarmDesc,
-                                    startvalue = alarms[i].Current.StartValue.ToString(),
-                                    endvalue = alarms[i].Current.EndValue.ToString(),
-                                    point = alarms[i].PointName,
-                                    device = alarms[i].DeviceName,
-                                    room = alarms[i].RoomName,
-                                    station = alarms[i].StationName,
-                                    area = alarms[i].AreaName,
-                                    confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
-                                    confirmer = alarms[i].Current.Confirmer,
-                                    confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
-                                    reservation = alarms[i].Current.ReservationId,
-                                    reversalcount = alarms[i].Current.ReversalCount,
-                                    id = alarms[i].Current.Id,
-                                    areaid = alarms[i].Current.AreaId,
-                                    stationid = alarms[i].Current.StationId,
-                                    roomid = alarms[i].Current.RoomId,
-                                    fsuid = alarms[i].Current.FsuId,
-                                    deviceid = alarms[i].Current.DeviceId,
-                                    pointid = alarms[i].Current.PointId,
-                                    levelid = (int)alarms[i].Current.AlarmLevel,
-                                    reversalid = alarms[i].Current.ReversalId
+                                    nmalarmid = models[i].Current.NMAlarmId,
+                                    level = Common.GetAlarmDisplay(models[i].Current.AlarmLevel),
+                                    starttime = CommonHelper.DateTimeConverter(models[i].Current.StartTime),
+                                    endtime = CommonHelper.DateTimeConverter(models[i].Current.EndTime),
+                                    interval = CommonHelper.IntervalConverter(models[i].Current.StartTime, models[i].Current.EndTime),
+                                    comment = models[i].Current.AlarmDesc,
+                                    startvalue = models[i].Current.StartValue.ToString(),
+                                    endvalue = models[i].Current.EndValue.ToString(),
+                                    point = models[i].PointName,
+                                    device = models[i].DeviceName,
+                                    room = models[i].RoomName,
+                                    station = models[i].StationName,
+                                    area = models[i].AreaName,
+                                    confirmed = Common.GetConfirmDisplay(models[i].Current.Confirmed),
+                                    confirmer = models[i].Current.Confirmer,
+                                    confirmedtime = models[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(models[i].Current.ConfirmedTime.Value) : "",
+                                    reservation = models[i].Current.ReservationId,
+                                    reversalcount = models[i].Current.ReversalCount,
+                                    id = models[i].Current.Id,
+                                    areaid = models[i].Current.AreaId,
+                                    stationid = models[i].Current.StationId,
+                                    roomid = models[i].Current.RoomId,
+                                    fsuid = models[i].Current.FsuId,
+                                    deviceid = models[i].Current.DeviceId,
+                                    pointid = models[i].Current.PointId,
+                                    levelid = (int)models[i].Current.AlarmLevel,
+                                    reversalid = models[i].Current.ReversalId
                                 });
                             }
                         }
@@ -1242,51 +1282,49 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistoryDetail400204(int index, string station, string type) {
+        public ActionResult DownloadHistoryDetail400204(string station, string type) {
             try {
                 var key = string.Format(GlobalCacheKeys.Report_400204, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
                 var result = new List<HisAlmModel>();
-                var stores = _cacheManager.Get<DataTable>(key);
-                if (stores != null && index >= 1 && stores.Rows.Count >= index) {
-                    var curRow = stores.Rows[index - 1];
-                    var stationid = curRow["stationid"].ToString();
-                    if (stationid == station) {
-                        var curCell = curRow[string.Format("alarms{0}", type)];
-                        if (curCell != null) {
-                            var alarms = curCell as List<AlmStore<A_HAlarm>>;
-                            for (int i = 0; i < alarms.Count; i++) {
+                var stores = _cacheManager.Get<List<Model400204>>(key);
+                if (stores != null && stores.Count > 0) {
+                    var current = stores.Find(s => s.stationid == station);
+                    if (current != null && current.alarms != null) {
+                        var models = type.Equals("total") ? current.alarms : current.alarms.FindAll(a => a.DeviceTypeId.Equals(type));
+                        if (models.Count > 0) {
+                            for (int i = 0; i < models.Count; i++) {
                                 result.Add(new HisAlmModel {
                                     index = i + 1,
-                                    nmalarmid = alarms[i].Current.NMAlarmId,
-                                    level = Common.GetAlarmDisplay(alarms[i].Current.AlarmLevel),
-                                    starttime = CommonHelper.DateTimeConverter(alarms[i].Current.StartTime),
-                                    endtime = CommonHelper.DateTimeConverter(alarms[i].Current.EndTime),
-                                    interval = CommonHelper.IntervalConverter(alarms[i].Current.StartTime, alarms[i].Current.EndTime),
-                                    comment = alarms[i].Current.AlarmDesc,
-                                    startvalue = alarms[i].Current.StartValue.ToString(),
-                                    endvalue = alarms[i].Current.EndValue.ToString(),
-                                    point = alarms[i].PointName,
-                                    device = alarms[i].DeviceName,
-                                    room = alarms[i].RoomName,
-                                    station = alarms[i].StationName,
-                                    area = alarms[i].AreaName,
-                                    confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
-                                    confirmer = alarms[i].Current.Confirmer,
-                                    confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
-                                    reservation = alarms[i].Current.ReservationId,
-                                    reversalcount = alarms[i].Current.ReversalCount,
-                                    id = alarms[i].Current.Id,
-                                    areaid = alarms[i].Current.AreaId,
-                                    stationid = alarms[i].Current.StationId,
-                                    roomid = alarms[i].Current.RoomId,
-                                    fsuid = alarms[i].Current.FsuId,
-                                    deviceid = alarms[i].Current.DeviceId,
-                                    pointid = alarms[i].Current.PointId,
-                                    levelid = (int)alarms[i].Current.AlarmLevel,
-                                    reversalid = alarms[i].Current.ReversalId,
-                                    background = Common.GetAlarmColor(alarms[i].Current.AlarmLevel)
+                                    nmalarmid = models[i].Current.NMAlarmId,
+                                    level = Common.GetAlarmDisplay(models[i].Current.AlarmLevel),
+                                    starttime = CommonHelper.DateTimeConverter(models[i].Current.StartTime),
+                                    endtime = CommonHelper.DateTimeConverter(models[i].Current.EndTime),
+                                    interval = CommonHelper.IntervalConverter(models[i].Current.StartTime, models[i].Current.EndTime),
+                                    comment = models[i].Current.AlarmDesc,
+                                    startvalue = models[i].Current.StartValue.ToString(),
+                                    endvalue = models[i].Current.EndValue.ToString(),
+                                    point = models[i].PointName,
+                                    device = models[i].DeviceName,
+                                    room = models[i].RoomName,
+                                    station = models[i].StationName,
+                                    area = models[i].AreaName,
+                                    confirmed = Common.GetConfirmDisplay(models[i].Current.Confirmed),
+                                    confirmer = models[i].Current.Confirmer,
+                                    confirmedtime = models[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(models[i].Current.ConfirmedTime.Value) : "",
+                                    reservation = models[i].Current.ReservationId,
+                                    reversalcount = models[i].Current.ReversalCount,
+                                    id = models[i].Current.Id,
+                                    areaid = models[i].Current.AreaId,
+                                    stationid = models[i].Current.StationId,
+                                    roomid = models[i].Current.RoomId,
+                                    fsuid = models[i].Current.FsuId,
+                                    deviceid = models[i].Current.DeviceId,
+                                    pointid = models[i].Current.PointId,
+                                    levelid = (int)models[i].Current.AlarmLevel,
+                                    reversalid = models[i].Current.ReversalId,
+                                    background = Common.GetAlarmColor(models[i].Current.AlarmLevel)
                                 });
                             }
                         }
@@ -2847,7 +2885,7 @@ namespace iPem.Site.Controllers {
                               time = CommonHelper.DateTimeConverter(val.UpdateTime)
                           }).ToList();
 
-            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+            if (stores.Count <= GlobalCacheLimit.Default_Limit) {
                 _cacheManager.Set(key, stores, GlobalCacheInterval.Site_Interval);
             }
 
@@ -2960,7 +2998,7 @@ namespace iPem.Site.Controllers {
             if(project == 0) stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
 
             stores = stores.OrderByDescending(s => s.Current.StartTime).ToList();
-            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+            if (stores.Count <= GlobalCacheLimit.Default_Limit) {
                 _cacheManager.Set(key, stores, GlobalCacheInterval.Site_Interval);
             }
 
@@ -3059,18 +3097,18 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
+            if (stores.Count <= GlobalCacheLimit.ReSet_Limit) {
                 _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
             }
 
             return result;
         }
 
-        private DataTable GetHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
+        private List<Model400204> GetHistory400204(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] devTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             endDate = endDate.AddSeconds(86399);
             var key = string.Format(GlobalCacheKeys.Report_400204, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<DataTable>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400204>>(key);
 
             var alarms = new List<A_HAlarm>();
             var stations = _workContext.Stations();
@@ -3130,44 +3168,32 @@ namespace iPem.Site.Controllers {
                               AreaName = area.ToString()
                           }).ToList();
 
-            var columns = _workContext.DeviceTypes();
-            if (devTypes != null && devTypes.Length > 0)
-                columns = columns.FindAll(d => devTypes.Contains(d.Id));
-
-            var result = this.GetModel400204(columns);
+            var index = 0;
+            var models = new List<Model400204>();
             foreach (var station in stations) {
                 var area = _workContext.Areas().Find(a => a.Current.Id == station.Current.AreaId);
                 var _alarms = stores.FindAll(s => s.Current.StationId == station.Current.Id);
 
-                var row = result.NewRow();
-                row["area"] = area != null ? area.ToString() : "";
-                row["stationid"] = station.Current.Id;
-                row["station"] = station.Current.Name;
-                row["total"] = _alarms.Count;
-                row["alarmstotal"] = _alarms;
-
-                foreach (var column in columns) {
-                    var _dalarms = _alarms.FindAll(a => a.DeviceTypeId == column.Id);
-                    row[column.Id] = _dalarms.Count;
-                    row[string.Format("alarms{0}", column.Id)] = _dalarms;
-                }
-
-                result.Rows.Add(row);
+                models.Add(new Model400204 {
+                    index = ++index,
+                    area = area != null ? area.ToString() : "",
+                    stationid = station.Current.Id,
+                    station = station.Current.Name,
+                    alarms = _alarms
+                });
             }
 
-            if (stores.Count <= GlobalCacheLimit.Site_Limit) {
-                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (stores.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
             }
 
-            return result;
+            return models;
         }
 
-        private DataTable GetModel400204(List<C_DeviceType> deviceTypes) {
-            var model = new DataTable("Model400204");
+        private DataTable GetDataTable400204(List<C_DeviceType> columns) {
+            var model = new DataTable("DataTable400204");
 
             var column0 = new DataColumn("index", typeof(int));
-            column0.AutoIncrement = true;
-            column0.AutoIncrementSeed = 1;
             column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
             model.Columns.Add(column0);
 
@@ -3183,25 +3209,15 @@ namespace iPem.Site.Controllers {
             column3.ExtendedProperties.Add("ExcelDisplayName", "所属站点");
             model.Columns.Add(column3);
 
-            foreach (var type in deviceTypes) {
-                var _column0 = new DataColumn(type.Id, typeof(int));
-                _column0.ExtendedProperties.Add("ExcelDisplayName", type.Name);
-                model.Columns.Add(_column0);
-
-                var _column1 = new DataColumn(string.Format("alarms{0}", type.Id), typeof(List<AlmStore<A_HAlarm>>));
-                _column1.ExtendedProperties.Add("ExcelIgnore", null);
-                _column1.ExtendedProperties.Add("JsonIgnore", null);
-                model.Columns.Add(_column1);
+            foreach (var column in columns) {
+                var _column = new DataColumn(column.Id, typeof(int));
+                _column.ExtendedProperties.Add("ExcelDisplayName", column.Name);
+                model.Columns.Add(_column);
             }
 
             var column4 = new DataColumn("total", typeof(int));
             column4.ExtendedProperties.Add("ExcelDisplayName", "总计");
             model.Columns.Add(column4);
-
-            var column5 = new DataColumn("alarmstotal", typeof(List<AlmStore<A_HAlarm>>));
-            column5.ExtendedProperties.Add("ExcelIgnore", null);
-            column5.ExtendedProperties.Add("JsonIgnore", null);
-            model.Columns.Add(column5);
 
             return model;
         }
@@ -3379,7 +3395,10 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            if (cutteds.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            }
+
             return models;
         }
 
@@ -3424,7 +3443,10 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            if (cutteds.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            }
+
             return models;
         }
 
@@ -3692,7 +3714,10 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            if (models.Sum(m => m.details.Count) <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+            }
+
             return models;
         }
 
@@ -3843,7 +3868,10 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (stores.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
@@ -3938,7 +3966,10 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (stores.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 
@@ -4033,7 +4064,10 @@ namespace iPem.Site.Controllers {
             charts.Add(new ChartsModel { index = (int)EnmAlarm.Level4, models = models4 });
 
             var result = new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
-            _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            if (stores.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
             return result;
         }
 

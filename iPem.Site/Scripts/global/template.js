@@ -137,7 +137,7 @@ Ext.onReady(function () {
             }
 
             tip.setDisplayed(!tip.isVisible());
-            arrow.anchorTo(help, 'tc-bc', [-2, 1]);
+            arrow.anchorTo(help, 'tc-bc', [-2, -1]);
             viewport.doLayout();
         });
     }

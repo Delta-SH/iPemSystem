@@ -552,27 +552,29 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         menuDisabled: true,
         menuText: '操作',
         text: '操作',
-        items: [{
-                    iconCls: 'x-cell-icon x-icon-detail',
-                    handler: function (grid, rowIndex, colIndex) {
-                        detailCellClick(grid, rowIndex, colIndex);
-                    }
-                }, {
-                    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
-                    },
-                    handler: function (grid, rowIndex, colIndex) {
-                        editCellClick(grid, rowIndex, colIndex);
-                    }
+        items: [
+            {
+                iconCls: 'x-cell-icon x-icon-detail',
+                handler: function (grid, rowIndex, colIndex) {
+                    detailCellClick(grid, rowIndex, colIndex);
                 }
-                //{
-                //    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                //        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
-                //    },
-                //    handler: function (grid, rowIndex, colIndex) {
-                //        deleteCellClick(grid, rowIndex, colIndex);
-                //    }
-                //}
+            },
+            {
+                getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                    return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                },
+                handler: function (grid, rowIndex, colIndex) {
+                    editCellClick(grid, rowIndex, colIndex);
+                }
+            }
+            //{
+            //    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+            //        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
+            //    },
+            //    handler: function (grid, rowIndex, colIndex) {
+            //        deleteCellClick(grid, rowIndex, colIndex);
+            //    }
+            //}
         ]
     }],
     dockedItems: [{
@@ -610,9 +612,11 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
                             query();
                         }
                     }, '-', {
+                        id: 'exportButton',
                         xtype: 'button',
-                        text: '数据导出',
                         glyph: 0xf010,
+                        text: '数据导出',
+                        disabled: true,
                         handler: function (el, e) {
                             print();
                         }
@@ -699,7 +703,13 @@ var query = function () {
     proxy.extraParams.endDate = end;
     proxy.extraParams.type = type;
     proxy.extraParams.keyWord = keyWord;
-    me.loadPage(1);
+    proxy.extraParams.cache = false;
+    me.loadPage(1, {
+        callback: function (records, operation, success) {
+            proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
+        }
+    });
 };
 
 var print = function () {
@@ -723,7 +733,7 @@ var submit = function (form, nodes, result) {
         success: function (form, action) {
             result.setTextWithIcon(action.result.message, 'x-icon-accept');
             if (saveWnd.opaction == $$iPems.Action.Add)
-                currentStore.loadPage(1);
+                query();
             else
                 currentPagingToolbar.doRefresh();
         },
@@ -745,6 +755,5 @@ Ext.onReady(function () {
 
         //load data
         projectStore.load();
-        Ext.defer(query, 2000);
     }
 });

@@ -188,9 +188,11 @@
                             query();
                         }
                     }, '-', {
+                        id: 'exportButton',
                         xtype: 'button',
-                        text: '数据导出',
                         glyph: 0xf010,
+                        text: '数据导出',
+                        disabled: true,
                         handler: function (el, e) {
                             print();
                         }
@@ -245,13 +247,6 @@
                 store: currentStore,
                 columnLines: true,
                 disableSelection: false,
-                tools: [{
-                    type: 'print',
-                    tooltip: '数据导出',
-                    handler: function (event, toolEl, panelHeader) {
-                        print(currentStore);
-                    }
-                }],
                 viewConfig: {
                     loadMask: true,
                     trackOver: true,
@@ -318,7 +313,13 @@
         var me = currentStore, proxy = me.getProxy();
         proxy.extraParams.parent = parent;
         proxy.extraParams.types = types;
-        me.loadPage(1);
+        proxy.extraParams.cache = false;
+        me.loadPage(1, {
+            callback: function (records, operation, success) {
+                proxy.extraParams.cache = success;
+                Ext.getCmp('exportButton').setDisabled(success === false);
+            }
+        });
     };
 
     var print = function () {
@@ -333,9 +334,6 @@
         var pageContentPanel = Ext.getCmp('center-content-panel-fw');
         if (!Ext.isEmpty(pageContentPanel)) {
             pageContentPanel.add(currentLayout);
-
-            //load data
-            Ext.defer(query, 2000);
         }
     });
 

@@ -277,9 +277,11 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                 maxLength: 100,
                 emptyText: '多条件请以;分隔，例: A;B;C',
             }, {
+                id: 'exportButton',
                 xtype: 'button',
-                text: '数据导出',
                 glyph: 0xf010,
+                text: '数据导出',
+                disabled: true,
                 handler: function (el, e) {
                     print();
                 }
@@ -437,7 +439,13 @@ var query = function () {
     proxy.extraParams.vendors = vendors;
     proxy.extraParams.filter = filter;
     proxy.extraParams.keywords = keywords;
-    me.loadPage(1);
+    proxy.extraParams.cache = false;
+    me.loadPage(1, {
+        callback: function (records, operation, success) {
+            proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
+        }
+    });
 };
 
 var print = function () {
@@ -452,8 +460,5 @@ Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentLayout);
-
-        //load data
-        Ext.defer(query, 2000);
     }
 });
