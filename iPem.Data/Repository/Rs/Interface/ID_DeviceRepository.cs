@@ -13,6 +13,11 @@ namespace iPem.Data.Repository.Rs {
         D_Device GetDevice(string id);
 
         /// <summary>
+        /// 获得指定站点下的设备
+        /// </summary>
+        List<D_Device> GetDevicesInStation(string id);
+
+        /// <summary>
         /// 获得指定机房下的设备
         /// </summary>
         List<D_Device> GetDevicesInRoom(string id);

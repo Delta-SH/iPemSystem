@@ -1,4 +1,56 @@
-﻿Ext.define('ReportModel', {
+﻿var lineChart = null,
+    lineOption = {
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                if (lineOption.series.length > 0) {
+                    if (!Ext.isArray(params))
+                        params = [params];
+
+                    var tips = [];
+                    Ext.Array.each(params, function (item, index) {
+                        tips.push(Ext.String.format('<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:{0}"></span>{1}<br/>电池电压：{2} {3}<br/>放电时间：{4} min', item.color, item.seriesName, item.value[1], item.data.unit, item.value[0]));
+                    });
+
+                    return tips.join('<br/>');
+                }
+
+                return '无数据';
+            }
+        },
+        title: {
+            text: '蓄电池组放电曲线',
+            subtext: '2017-01-01 00:00:00 ~ 2017-12-31 23:59:59',
+            left: 'center',
+            textStyle: {
+                fontSize: 14
+            }
+        },
+        grid: {
+            top: 45,
+            left: 10,
+            right: 15,
+            bottom: 10,
+            containLabel: true
+        },
+        xAxis: [{
+            name: '放电时间(min)',
+            nameLocation: 'middle',
+            nameGap: -15,
+            type: 'value',
+            splitLine: { show: false }
+        }],
+        yAxis: [{
+            name: '电池电压(V)',
+            nameLocation: 'middle',
+            nameGap: -18,
+            type: 'value',
+
+        }],
+        series: []
+    };
+
+Ext.define('ReportModel', {
     extend: 'Ext.data.Model',
     fields: [
         { name: 'index', type: 'int' },
@@ -82,7 +134,7 @@ var detailPagingToolbar = $$iPems.clonePagingToolbar(detailStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf029,
-    title: '电池放电统计信息',
+    title: '放电次数统计',
     region: 'center',
     store: currentStore,
     bbar: currentPagingToolbar,
@@ -105,28 +157,33 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         text: '所属区域',
         dataIndex: 'area',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '所属站点',
         dataIndex: 'station',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '站点类型',
         dataIndex: 'type',
         align: 'left',
+        width: 150,
         sortable: true
     }, {
         text: '放电次数',
         dataIndex: 'count',
-        align: 'left',
+        width: 150,
+        align: 'center',
         renderer: function (value, p, record) {
             return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', record.get('stationid'), value);
         }
     }, {
         text: '放电时长',
         dataIndex: 'interval',
-        align: 'left',
+        align: 'center',
+        width: 150,
         sortable: true
     }],
     listeners: {
@@ -190,9 +247,11 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         allowBlank: false
                     },
                     {
+                        id: 'exportButton',
                         xtype: 'button',
                         glyph: 0xf010,
                         text: '数据导出',
+                        disabled: true,
                         handler: function (me, event) {
                             print(currentStore);
                         }
@@ -226,11 +285,22 @@ var detailGrid = Ext.create('Ext.grid.Panel', {
         {
             text: '所属区域',
             dataIndex: 'area',
-            flex: 1
+            align: 'left'
         },
         {
             text: '所属站点',
-            dataIndex: 'station'
+            dataIndex: 'station',
+            align: 'left'
+        },
+        {
+            text: '所属机房',
+            dataIndex: 'room',
+            align: 'left'
+        },
+        {
+            text: '所属设备',
+            dataIndex: 'device',
+            align: 'left'
         },
         {
             text: '开始时间',
@@ -249,14 +319,29 @@ var detailGrid = Ext.create('Ext.grid.Panel', {
             dataIndex: 'interval',
             align: 'center',
             width: 150
+        }, {
+            text: '曲线',
+            dataIndex: 'deviceid',
+            align: 'center',
+            renderer: function (value, p, record) {
+                return Ext.String.format('<a data1="{0}" data2="{1}" class="grid-link" href="javascript:void(0);">查看</a>', value, record.get('proctime'));
+            }
         }
-    ]
+    ],
+    listeners: {
+        cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
+            var elements = Ext.fly(td).select('a.grid-link');
+            if (elements.getCount() == 0) return false;
+            var first = elements.first();
+            ddetail(first.getAttribute('data1'), first.getAttribute('data2'), record.get('device'), record.get('start'), record.get('end'));
+        }
+    }
 });
 
 var detailWnd = Ext.create('Ext.window.Window', {
-    title: '市电停电详情',
+    title: '电池放电详情',
     glyph: 0xf029,
-    height: 500,
+    height: 600,
     width: 800,
     modal: true,
     border: false,
@@ -280,6 +365,38 @@ var detailWnd = Ext.create('Ext.window.Window', {
     }]
 });
 
+var ddetailWnd = Ext.create('Ext.window.Window', {
+    title: '电池放电曲线',
+    glyph: 0xf031,
+    height: 600,
+    width: 800,
+    modal: true,
+    border: false,
+    hidden: true,
+    closeAction: 'hide',
+    layout: 'border',
+    items: [{
+        xtype: 'panel',
+        region: 'center',
+        border: false,
+        contentEl: 'line-chart',
+        listeners: {
+            resize: function (me, width, height, oldWidth, oldHeight) {
+                Ext.get('line-chart').setHeight(height);
+                if (lineChart) lineChart.resize();
+            }
+        }
+    }],
+    buttonAlign: 'right',
+    buttons: [{
+        xtype: 'button',
+        text: '关闭',
+        handler: function (el, e) {
+            ddetailWnd.hide();
+        }
+    }]
+});
+
 var query = function () {
     var range = Ext.getCmp('rangePicker'),
         types = Ext.getCmp('station-type-multicombo'),
@@ -296,10 +413,10 @@ var query = function () {
     proxy.extraParams.startDate = start.getRawValue();
     proxy.extraParams.endDate = end.getRawValue();
     proxy.extraParams.cache = false;
-
     me.loadPage(1, {
         callback: function (records, operation, success) {
             proxy.extraParams.cache = success;
+            Ext.getCmp('exportButton').setDisabled(success === false);
         }
     });
 };
@@ -322,11 +439,62 @@ var detail = function (station) {
     detailWnd.show();
 };
 
+var ddetail = function (device, proc, title, start, end) {
+    if (Ext.isEmpty(device)) return false;
+    if (Ext.isEmpty(proc)) return false;
+
+    lineOption.title.text = Ext.String.format('{0}放电曲线', title);
+    lineOption.title.subtext = Ext.String.format('{0} ~ {1}', start, end);
+    lineOption.series = [];
+    lineChart.setOption(lineOption, true);
+    ddetailWnd.show();
+
+    Ext.Ajax.request({
+        url: '/Report/RequestChart400211',
+        params: { device: device, proctime: proc },
+        mask: new Ext.LoadMask(ddetailWnd, { msg: '正在处理...' }),
+        success: function (response, options) {
+            var data = Ext.decode(response.responseText, true);
+            if (data.success) {
+                if (!Ext.isEmpty(lineChart)
+                    && !Ext.isEmpty(data.data)
+                    && Ext.isArray(data.data)) {
+                    var series = [];
+                    Ext.Array.each(data.data, function (item, index) {
+                        var models = [];
+                        Ext.Array.each(item.models, function (model) {
+                            models.push({
+                                value: [parseFloat(model.name), model.value],
+                                unit: model.comment
+                            });
+                        });
+
+                        series.push({
+                            name: item.name,
+                            type: 'line',
+                            smooth: true,
+                            data: models
+                        });
+                    });
+
+                    lineOption.series = series;
+                    lineChart.setOption(lineOption, true);
+                }
+            } else {
+                Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+            }
+        }
+    });
+};
+
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
     if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
     }
+});
 
-    Ext.defer(query, 2000);
+Ext.onReady(function () {
+    lineChart = echarts.init(document.getElementById("line-chart"), 'shine');
+    lineChart.setOption(lineOption);
 });

@@ -24,7 +24,7 @@ namespace iPem.Core {
         /// 软件版本
         /// </summary>
         public string Version {
-            get { return "V1.1.2 Build171020"; }
+            get { return "V1.2.0 Build171101"; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace iPem.Core {
         /// 中文版权
         /// </summary>
         public string Copyright {
-            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2017"; }
+            get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2018"; }
         }
 
         /// <summary>

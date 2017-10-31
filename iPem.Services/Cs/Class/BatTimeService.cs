@@ -48,6 +48,10 @@ namespace iPem.Services.Cs {
             return this.GetValues(start, end).FindAll(v => v.Type == status);
         }
 
+        public List<V_BatTime> GetProcedures(DateTime start, DateTime end) {
+            return _repository.GetProcedures(start, end);
+        }
+
         public IPagedList<V_BatTime> GetPagedValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<V_BatTime>(this.GetValues(start, end), pageIndex, pageSize);
         }

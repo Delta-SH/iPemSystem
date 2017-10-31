@@ -21,5 +21,10 @@ namespace iPem.Data.Repository.Cs {
         /// 获得指定时间内的充放电过程
         /// </summary>
         List<V_BatTime> GetValues(DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获得指定时间内的充放电过程
+        /// </summary>
+        List<V_BatTime> GetProcedures(DateTime start, DateTime end);
     }
 }

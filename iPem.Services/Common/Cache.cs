@@ -61,6 +61,7 @@ namespace iPem.Services.Common {
         public const string Report_400207 = @"ipems:report:{0}:400207";
         public const string Report_400208 = @"ipems:report:{0}:400208";
         public const string Report_400210 = @"ipems:report:{0}:400210";
+        public const string Report_400211 = @"ipems:report:{0}:400211";
         public const string Report_400401 = @"ipems:report:{0}:400401";
         public const string Report_400402 = @"ipems:report:{0}:400402";
         public const string Report_400403 = @"ipems:report:{0}:400403";
@@ -92,6 +93,11 @@ namespace iPem.Services.Common {
         /// 查询结果缓存周期
         /// </summary>
         public static readonly TimeSpan Site_Interval = TimeSpan.FromSeconds(600);
+
+        /// <summary>
+        /// 包含钻取结果集的查询缓存周期
+        /// </summary>
+        public static readonly TimeSpan ReSet_Interval = TimeSpan.FromSeconds(900);
     }
 
     /// <summary>

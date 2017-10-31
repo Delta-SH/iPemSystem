@@ -219,6 +219,7 @@
     <Compile Include="Models\DetailModel400106.cs" />
     <Compile Include="Models\DetailModel400105.cs" />
     <Compile Include="Models\DetailModel400210.cs" />
+    <Compile Include="Models\DetailModel400211.cs" />
     <Compile Include="Models\DiffModel.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Models\Model400204.cs" />
     <Compile Include="Models\Model400209.cs" />
     <Compile Include="Models\Model400210.cs" />
+    <Compile Include="Models\Model400211.cs" />
     <Compile Include="Models\NodeIcon.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
@@ -955,8 +957,8 @@
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\images\window\window-default-sides.gif" />
     <Content Include="Scripts\framework\bootstrap-contextmenu.js" />
     <Content Include="Scripts\framework\bootstrap-contextmenu.min.js" />
-    <Content Include="Scripts\framework\hikvision\WebComponentsKit.exe" />
-    <Content Include="Scripts\framework\hikvision\WebVideoCtrl.js" />
+    <Content Include="Scripts\framework\hikvision\webVideoCtrl.js" />
+    <Content Include="Scripts\framework\hikvision\webVideoCtrl.min.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.js" />
     <Content Include="Scripts\framework\jquery.validation-1.14.0\additional-methods.min.js" />
     <Content Include="Content\framework\vis-4.20.1\img\network\acceptDeleteIcon.png" />

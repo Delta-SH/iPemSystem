@@ -51,6 +51,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
+                    entity.ProcTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ProcTime"]);
                     entities.Add(entity);
                 }
             }
@@ -83,6 +84,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
+                    entity.ProcTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ProcTime"]);
                     entities.Add(entity);
                 }
             }
@@ -111,6 +113,28 @@ namespace iPem.Data.Repository.Cs {
                     entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entity.StartValue = SqlTypeConverter.DBNullDoubleHandler(rdr["StartValue"]);
                     entity.EndValue = SqlTypeConverter.DBNullDoubleHandler(rdr["EndValue"]);
+                    entity.ProcTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ProcTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<V_BatTime> GetProcedures(DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<V_BatTime>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_V_BatTime_Repository_GetProcedures, parms)) {
+                while (rdr.Read()) {
+                    var entity = new V_BatTime();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.ProcTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ProcTime"]);
+                    entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
+                    entity.EndTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["EndTime"]);
                     entities.Add(entity);
                 }
             }

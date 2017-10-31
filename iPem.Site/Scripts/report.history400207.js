@@ -77,7 +77,7 @@ var detailPagingToolbar = $$iPems.clonePagingToolbar(detailStore);
 
 var currentPanel = Ext.create("Ext.grid.Panel", {
     glyph: 0xf029,
-    title: '市电停电信息',
+    title: '市电停电统计',
     region: 'center',
     store: currentStore,
     bbar: currentPagingToolbar,

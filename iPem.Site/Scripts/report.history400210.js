@@ -91,60 +91,42 @@
 
     var detailPagingToolbar = $$iPems.clonePagingToolbar(detailStore)
 
-    var currentLayout = Ext.create('Ext.panel.Panel', {
-        id: 'currentLayout',
+    var currentLayout = Ext.create('Ext.grid.Panel', {
+        glyph: 0xf029,
+        title: '刷卡次数统计',
         region: 'center',
-        border: false,
-        bodyCls: 'x-border-body-panel',
-        layout: {
-            type: 'vbox',
-            align: 'stretch',
-            pack: 'start'
+        store: currentStore,
+        bbar: currentPagingToolbar,
+        selType: 'cellmodel',
+        viewConfig: {
+            loadMask: true,
+            stripeRows: true,
+            trackOver: false,
+            emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
         },
-        items: [{
-            xtype: 'grid',
-            glyph: 0xf029,
-            title: '刷卡次数',
-            collapsible: true,
-            collapseFirst: false,
-            margin: '5 0 0 0',
-            flex: 2,
-            store: currentStore,
-            viewConfig: {
-                loadMask: true,
-                stripeRows: true,
-                trackOver: true,
-                emptyText: '<h1 style="margin:20px">没有数据记录</h1>',
-            },
-            columns: [
-                { text: '序号', dataIndex: 'index', width: 60 },
-                { text: '刷卡人员', dataIndex: 'employeeName' },
-                { text: '人员类型', dataIndex: 'employeeType' },
-                { text: '所属部门', dataIndex: 'department' },
-                { text: '刷卡卡号', dataIndex: 'decimalCard' },
-                {
-                    text: '刷卡次数',
-                    dataIndex: 'count',
-                    renderer: function (value, p, record) {
-                        return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', record.get('cardId'), value);
-                    }
+        columns: [
+            { text: '序号', dataIndex: 'index', width: 60 },
+            { text: '刷卡人员', dataIndex: 'employeeName', width: 150 },
+            { text: '人员类型', dataIndex: 'employeeType' },
+            { text: '所属部门', dataIndex: 'department' },
+            { text: '刷卡卡号', dataIndex: 'decimalCard' },
+            {
+                text: '刷卡次数',
+                dataIndex: 'count',
+                renderer: function (value, p, record) {
+                    return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', record.get('cardId'), value);
                 }
-            ],
-            listeners: {
-                cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
-                    var elements = Ext.fly(td).select('a.grid-link');
-                    if (elements.getCount() == 0) return false;
-                    detail(elements.first().getAttribute('data'));
-                }
-            },
-            bbar: currentPagingToolbar,
-        }],
+            }
+        ],
+        listeners: {
+            cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
+                var elements = Ext.fly(td).select('a.grid-link');
+                if (elements.getCount() == 0) return false;
+                detail(elements.first().getAttribute('data'));
+            }
+        },
         dockedItems: [{
             xtype: 'panel',
-            glyph: 0xf034,
-            title: '筛选条件',
-            collapsible: true,
-            collapsed: false,
             dock: 'top',
             items: [
                 {

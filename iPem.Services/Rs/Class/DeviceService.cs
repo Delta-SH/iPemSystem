@@ -37,6 +37,10 @@ namespace iPem.Services.Rs {
             return _repository.GetDevice(id);
         }
 
+        public List<D_Device> GetDevicesInStation(string id) {
+            return _repository.GetDevicesInStation(id);
+        }
+
         public List<D_Device> GetDevicesInRoom(string id) {
             var key = GlobalCacheKeys.Rs_DevicesRepository;
             if (!_cacheManager.IsSet(key)) {

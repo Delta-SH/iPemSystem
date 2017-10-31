@@ -61,5 +61,10 @@ namespace iPem.Core.Domain.Cs {
         /// 结束测值
         /// </summary>
         public double EndValue { get; set; }
+
+        /// <summary>
+        /// 过程时间
+        /// </summary>
+        public DateTime ProcTime { get; set; }
     }
 }

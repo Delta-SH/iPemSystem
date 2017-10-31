@@ -1128,7 +1128,7 @@ CREATE TABLE [dbo].[D_Device](
 	[ProtocolID] [varchar](100) NULL,
 	[SysName] [varchar](200) NOT NULL,
 	[SysCode] [varchar](100) NULL,
-	[Model] [varchar](20) NOT NULL,
+	[Model] [varchar](100) NOT NULL,
 	[ProdID] [varchar](100) NOT NULL,
 	[BrandID] [varchar](100) NOT NULL,
 	[SuppID] [varchar](100) NOT NULL,

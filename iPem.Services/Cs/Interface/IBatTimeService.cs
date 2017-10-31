@@ -30,6 +30,11 @@ namespace iPem.Services.Cs {
         List<V_BatTime> GetValues(DateTime start, DateTime end, EnmBatStatus status);
 
         /// <summary>
+        /// 获得指定时间内的充放电过程
+        /// </summary>
+        List<V_BatTime> GetProcedures(DateTime start, DateTime end);
+
+        /// <summary>
         /// 获得指定时间内的充放电过程(分页)
         /// </summary>
         IPagedList<V_BatTime> GetPagedValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue);
