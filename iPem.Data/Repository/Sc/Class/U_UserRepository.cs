@@ -169,7 +169,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -216,7 +216,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -246,7 +246,7 @@ namespace iPem.Data.Repository.Sc {
         public void Delete(IList<U_User> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -266,7 +266,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@LastLoginDate", SqlDbType.DateTime) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
@@ -285,7 +285,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@FailedPasswordDate", SqlDbType.DateTime) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
@@ -305,7 +305,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@LastLockoutDate", SqlDbType.DateTime) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
@@ -338,7 +338,7 @@ namespace iPem.Data.Repository.Sc {
                                       new SqlParameter("@PasswordSalt", SqlDbType.VarChar,128) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uId);

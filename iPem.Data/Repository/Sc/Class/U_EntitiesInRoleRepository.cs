@@ -46,6 +46,18 @@ namespace iPem.Data.Repository.Sc {
 
                 if (rdr.NextResult()) {
                     while (rdr.Read()) {
+                        entity.Areas.Add(SqlTypeConverter.DBNullStringHandler(rdr["StationId"]));
+                    }
+                }
+
+                if (rdr.NextResult()) {
+                    while (rdr.Read()) {
+                        entity.Areas.Add(SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]));
+                    }
+                }
+
+                if (rdr.NextResult()) {
+                    while (rdr.Read()) {
                         entity.Permissions.Add(SqlTypeConverter.DBNullEnmPermissionHandler(rdr["Permission"]));
                     }
                 }
@@ -54,12 +66,14 @@ namespace iPem.Data.Repository.Sc {
         }
 
         public void Insert(U_EntitiesInRole entities) {
-            SqlParameter[] parms1 = { new SqlParameter("@RoleId", SqlDbType.VarChar,100), new SqlParameter("@MenuId", SqlDbType.Int) };
-            SqlParameter[] parms2 = { new SqlParameter("@RoleId", SqlDbType.VarChar,100), new SqlParameter("@AreaId", SqlDbType.VarChar,100) };
-            SqlParameter[] parms3 = { new SqlParameter("@RoleId", SqlDbType.VarChar,100), new SqlParameter("@Permission", SqlDbType.Int) };
+            SqlParameter[] parms1 = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100), new SqlParameter("@MenuId", SqlDbType.Int) };
+            SqlParameter[] parms2 = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100), new SqlParameter("@AreaId", SqlDbType.VarChar, 100) };
+            SqlParameter[] parms3 = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100), new SqlParameter("@StationId", SqlDbType.VarChar, 100) };
+            SqlParameter[] parms4 = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100), new SqlParameter("@RoomId", SqlDbType.VarChar, 100) };
+            SqlParameter[] parms5 = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100), new SqlParameter("@Permission", SqlDbType.Int) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities.Menus) {
@@ -74,10 +88,22 @@ namespace iPem.Data.Repository.Sc {
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert2, parms2);
                     }
 
+                    foreach (var entity in entities.Stations) {
+                        parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms3[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert3, parms3);
+                    }
+
+                    foreach (var entity in entities.Rooms) {
+                        parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms3[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert4, parms4);
+                    }
+
                     foreach (var entity in entities.Permissions) {
                         parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
                         parms3[1].Value = (int)entity;
-                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert3, parms3);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert5, parms5);
                     }
 
                     trans.Commit();
@@ -93,7 +119,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Delete, parms);

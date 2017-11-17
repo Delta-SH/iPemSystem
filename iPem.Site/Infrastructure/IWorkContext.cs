@@ -97,6 +97,8 @@ namespace iPem.Site.Infrastructure {
 
         List<AlmStore<A_AAlarm>> ActAlarms();
 
+        List<AlmStore<A_AAlarm>> AllAlarms();
+
         void ResetRole();
 
         void ResetUser();

@@ -40,7 +40,7 @@ namespace iPem.Core.Data {
         /// </summary>
         public virtual void CreateRegistry() {
             using(var conn = new SQLiteConnection(dataConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 using (var command = new SQLiteCommand()) {
                     command.Connection = conn;
                     command.CommandText = SQLiteText.Registry_Create_Tables;
@@ -56,7 +56,7 @@ namespace iPem.Core.Data {
         public virtual IList<DbEntity> GetEntites() {
             var entities = new List<DbEntity>();
             using(var conn = new SQLiteConnection(dataConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 using (var command = new SQLiteCommand(SQLiteText.Registry_Get_Entities, conn)) {
                     using (var rdr = command.ExecuteReader(CommandBehavior.CloseConnection)) {
                         while (rdr.Read()) {
@@ -91,7 +91,7 @@ namespace iPem.Core.Data {
                                         new SQLiteParameter("@Name", DbType.String,128) };
 
             using(var conn = new SQLiteConnection(dataConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 using (var command = new SQLiteCommand(SQLiteText.Registry_Save_Entities, conn)) {
                     foreach (var entity in entities) {
                         parms[0].Value = entity.Id;
@@ -125,7 +125,7 @@ namespace iPem.Core.Data {
                                         new SQLiteParameter("@Name", DbType.String,128) };
 
             using(var conn = new SQLiteConnection(dataConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 using (var command = new SQLiteCommand(SQLiteText.Registry_Del_Entities, conn)) {
                     foreach (var entity in entities) {
                         parms[0].Value = entity.Id;
@@ -150,7 +150,7 @@ namespace iPem.Core.Data {
         /// </summary>
         public virtual void CleanEntites() {
             using(var conn = new SQLiteConnection(dataConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 using(var command = new SQLiteCommand(SQLiteText.Registry_Clean_Entities, conn)) {
                     command.Parameters.Clear();
                     command.ExecuteNonQuery();

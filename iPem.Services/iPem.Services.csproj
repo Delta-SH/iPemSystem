@@ -93,6 +93,9 @@
     <Compile Include="Cs\Interface\IBatService.cs" />
     <Compile Include="Cs\Interface\IStaticService.cs" />
     <Compile Include="Cs\Interface\IHMeasureService.cs" />
+    <Compile Include="Sc\Class\GImageService.cs" />
+    <Compile Include="Sc\Class\GPageService.cs" />
+    <Compile Include="Sc\Class\GTemplateService.cs" />
     <Compile Include="Sc\Class\ReservationService.cs" />
     <Compile Include="Sc\Class\EntitiesInRoleService.cs" />
     <Compile Include="Sc\Class\DictionaryService.cs" />
@@ -101,6 +104,9 @@
     <Compile Include="Sc\Class\ProjectService.cs" />
     <Compile Include="Sc\Class\SDBScriptService.cs" />
     <Compile Include="Sc\Interface\IFollowPointService.cs" />
+    <Compile Include="Sc\Interface\IGImageService.cs" />
+    <Compile Include="Sc\Interface\IGPageService.cs" />
+    <Compile Include="Sc\Interface\IGTemplateService.cs" />
     <Compile Include="Sc\Interface\IReservationService.cs" />
     <Compile Include="Sc\Interface\IEntitiesInRoleService.cs" />
     <Compile Include="Sc\Interface\IDictionaryService.cs" />

@@ -137,7 +137,7 @@ namespace iPem.Data.Repository.Sc {
                                     new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
@@ -172,7 +172,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);

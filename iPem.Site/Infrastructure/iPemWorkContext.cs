@@ -114,6 +114,7 @@ namespace iPem.Site.Infrastructure {
         private List<P_SubPoint> _cachedSubPoints;
         private List<P_Point> _cachedAL;
         private List<AlmStore<A_AAlarm>> _cachedActAlarms;
+        private List<AlmStore<A_AAlarm>> _cachedAllAlarms;
 
         #endregion
 
@@ -653,14 +654,27 @@ namespace iPem.Site.Infrastructure {
             return _cachedAL;
         }
 
+        public List<AlmStore<A_AAlarm>> ActAlarms() {
+            if (_cachedActAlarms != null)
+                return _cachedActAlarms;
+
+            var _allAlarms = this.AllAlarms();
+            if (_allAlarms.Count > 0 && this.Role().Id != U_Role.SuperId) {
+                var keys = this.Authorizations().Areas;
+                _allAlarms = _allAlarms.FindAll(a => a.Current.RoomId == "-1" || keys.Contains(a.Current.AreaId));
+            }
+
+            return _cachedActAlarms = _allAlarms;
+        }
+
         /**
          *TODO:优化集合JOIN
          *优化多个集合的JOIN操作，提高执行效率
          *当缓存过期瞬间，可能会有很多请求同时进入计算告警并缓存告警的方法内，需要做同步控制
          */
-        public List<AlmStore<A_AAlarm>> ActAlarms() {
-            if (_cachedActAlarms != null)
-                return _cachedActAlarms;
+        public List<AlmStore<A_AAlarm>> AllAlarms() {
+            if (_cachedAllAlarms != null)
+                return _cachedAllAlarms;
 
             //实时告警缓存10s，减小服务器压力
             List<A_AAlarm> _allAlarms = null;
@@ -670,7 +684,7 @@ namespace iPem.Site.Infrastructure {
             if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms)) {
                 _activeAlarms = _cacheManager.Get<IEnumerable<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Active_Alarms);
             } else {
-                _allAlarms = _actAlarmService.GetAlarms();
+                if (_allAlarms == null) _allAlarms = _actAlarmService.GetAlarms();
                 var nomAlarms = _allAlarms.FindAll(a => a.RoomId != "-1");
                 if (nomAlarms.Count > 0) {
                     _activeAlarms = from alarm in nomAlarms
@@ -690,7 +704,8 @@ namespace iPem.Site.Infrastructure {
                                         RoomTypeId = room.Current.Type.Id,
                                         StationName = station.Current.Name,
                                         StationTypeId = station.Current.Type.Id,
-                                        AreaName = area.ToString()
+                                        AreaName = area.Current.Name,
+                                        AreaFullName = area.ToString()
                                     };
                 }
 
@@ -717,7 +732,8 @@ namespace iPem.Site.Infrastructure {
                                         RoomTypeId = SSHSystem.Room.Type.Id,
                                         StationName = SSHSystem.Station.Name,
                                         StationTypeId = SSHSystem.Station.Type.Id,
-                                        AreaName = SSHSystem.Area.Name
+                                        AreaName = SSHSystem.Area.Name,
+                                        AreaFullName = SSHSystem.Area.Name
                                     };
                 }
 
@@ -726,11 +742,7 @@ namespace iPem.Site.Infrastructure {
 
             if (_activeAlarms == null) _activeAlarms = new List<AlmStore<A_AAlarm>>();
             if (_systemAlarms == null) _systemAlarms = new List<AlmStore<A_AAlarm>>();
-            if (_activeAlarms.Any() && this.Role().Id != U_Role.SuperId) {
-                _activeAlarms = _activeAlarms.Where(a => this.Authorizations().Areas.Contains(a.Current.AreaId));
-            }
-
-            return _cachedActAlarms = _activeAlarms.Concat(_systemAlarms).OrderByDescending(a => a.Current.AlarmTime).ToList();
+            return _cachedAllAlarms = _activeAlarms.Concat(_systemAlarms).OrderByDescending(a => a.Current.AlarmTime).ToList();
         }
 
         #endregion
@@ -823,7 +835,8 @@ namespace iPem.Site.Infrastructure {
                         RoomTypeId = room.Current.Type.Id,
                         StationName = station.Current.Name,
                         StationTypeId = station.Current.Type.Id,
-                        AreaName = area.ToString()
+                        AreaName = area.Current.Name,
+                        AreaFullName = area.ToString()
                     }).ToList();
         }
 
@@ -849,7 +862,8 @@ namespace iPem.Site.Infrastructure {
                         RoomTypeId = room.Current.Type.Id,
                         StationName = station.Current.Name,
                         StationTypeId = station.Current.Type.Id,
-                        AreaName = area.ToString()
+                        AreaName = area.Current.Name,
+                        AreaFullName = area.ToString()
                     }).ToList();
         }
 

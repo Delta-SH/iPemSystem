@@ -306,6 +306,9 @@ namespace iPem.Data.Common {
             builder.PersistSecurityInfo = false;
             builder.MultipleActiveResultSets = true;
             builder.ConnectTimeout = timeout;
+            builder.Pooling = true;
+            builder.MaxPoolSize = 500;
+            builder.MinPoolSize = 0;
             return builder.ConnectionString;
         }
 

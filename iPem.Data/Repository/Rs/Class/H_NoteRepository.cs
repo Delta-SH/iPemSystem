@@ -56,7 +56,7 @@ namespace iPem.Data.Repository.Rs {
                                      new SqlParameter("@Desc", SqlDbType.Text) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -80,7 +80,7 @@ namespace iPem.Data.Repository.Rs {
         public void Delete(IList<H_Note> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -97,7 +97,7 @@ namespace iPem.Data.Repository.Rs {
 
         public void Clear() {
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_H_Note_Repository_Clear, null);

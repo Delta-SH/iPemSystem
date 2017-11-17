@@ -133,6 +133,9 @@
     <Compile Include="Domain\Rs\U_OutEmployee.cs" />
     <Compile Include="Domain\Rs\V_Camera.cs" />
     <Compile Include="Domain\Rs\V_Channel.cs" />
+    <Compile Include="Domain\Sc\G_Image.cs" />
+    <Compile Include="Domain\Sc\G_Page.cs" />
+    <Compile Include="Domain\Sc\G_Template.cs" />
     <Compile Include="Domain\Sc\S_DBScript.cs" />
     <Compile Include="Domain\Sc\U_EntitiesInRole.cs" />
     <Compile Include="Domain\Cs\A_HAlarm.cs" />
@@ -170,6 +173,7 @@
     <Compile Include="Domain\Rs\C_SubLogicType.cs" />
     <Compile Include="Domain\Rs\C_Supplier.cs" />
     <Compile Include="Domain\Rs\C_Unit.cs" />
+    <Compile Include="Enum\EnmAPI.cs" />
     <Compile Include="Enum\EnmBInterface.cs" />
     <Compile Include="Enum\EnmDictionary.cs" />
     <Compile Include="Enum\EnmMethodType.cs" />

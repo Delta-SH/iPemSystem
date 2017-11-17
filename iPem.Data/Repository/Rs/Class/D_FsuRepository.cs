@@ -167,7 +167,7 @@ namespace iPem.Data.Repository.Rs {
 
         public void UpdateFsus() {
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_UpdateFsus, null);

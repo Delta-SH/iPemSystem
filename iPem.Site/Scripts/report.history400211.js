@@ -472,7 +472,7 @@ var ddetail = function (device, proc, title, start, end) {
                         series.push({
                             name: item.name,
                             type: 'line',
-                            smooth: true,
+                            showSymbol: false,
                             data: models
                         });
                     });

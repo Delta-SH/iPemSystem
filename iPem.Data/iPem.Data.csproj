@@ -101,6 +101,9 @@
     <Compile Include="Repository\Rs\Interface\IR_DBScriptRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IV_ChannelRepository.cs" />
+    <Compile Include="Repository\Sc\Class\G_ImageRepository.cs" />
+    <Compile Include="Repository\Sc\Class\G_PageRepository.cs" />
+    <Compile Include="Repository\Sc\Class\G_TemplateRepository.cs" />
     <Compile Include="Repository\Sc\Class\M_FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Class\S_DBScriptRepository.cs" />
     <Compile Include="Repository\Sc\Class\U_FollowPointRepository.cs" />
@@ -113,6 +116,9 @@
     <Compile Include="Repository\Sc\Class\M_NodesInReservationRepository.cs" />
     <Compile Include="Repository\Sc\Class\U_ProfileRepository.cs" />
     <Compile Include="Repository\Sc\Class\M_ProjectRepository.cs" />
+    <Compile Include="Repository\Sc\Interface\IG_ImageRepository.cs" />
+    <Compile Include="Repository\Sc\Interface\IG_PageRepository.cs" />
+    <Compile Include="Repository\Sc\Interface\IG_TemplateRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IM_ReservationRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IM_DictionaryRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IM_FormulaRepository.cs" />

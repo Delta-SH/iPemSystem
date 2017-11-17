@@ -654,7 +654,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -706,7 +706,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -780,7 +780,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -840,7 +840,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -967,7 +967,7 @@ namespace iPem.Site.Controllers {
                                 device = alarms[i].DeviceName,
                                 room = alarms[i].RoomName,
                                 station = alarms[i].StationName,
-                                area = alarms[i].AreaName,
+                                area = alarms[i].AreaFullName,
                                 confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                 confirmer = alarms[i].Current.Confirmer,
                                 confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
@@ -1035,7 +1035,7 @@ namespace iPem.Site.Controllers {
                                 device = alarms[i].DeviceName,
                                 room = alarms[i].RoomName,
                                 station = alarms[i].StationName,
-                                area = alarms[i].AreaName,
+                                area = alarms[i].AreaFullName,
                                 confirmed = Common.GetConfirmDisplay(alarms[i].Current.Confirmed),
                                 confirmer = alarms[i].Current.Confirmer,
                                 confirmedtime = alarms[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(alarms[i].Current.ConfirmedTime.Value) : "",
@@ -1254,7 +1254,7 @@ namespace iPem.Site.Controllers {
                                     device = models[i].DeviceName,
                                     room = models[i].RoomName,
                                     station = models[i].StationName,
-                                    area = models[i].AreaName,
+                                    area = models[i].AreaFullName,
                                     confirmed = Common.GetConfirmDisplay(models[i].Current.Confirmed),
                                     confirmer = models[i].Current.Confirmer,
                                     confirmedtime = models[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(models[i].Current.ConfirmedTime.Value) : "",
@@ -1312,7 +1312,7 @@ namespace iPem.Site.Controllers {
                                     device = models[i].DeviceName,
                                     room = models[i].RoomName,
                                     station = models[i].StationName,
-                                    area = models[i].AreaName,
+                                    area = models[i].AreaFullName,
                                     confirmed = Common.GetConfirmDisplay(models[i].Current.Confirmed),
                                     confirmer = models[i].Current.Confirmer,
                                     confirmedtime = models[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(models[i].Current.ConfirmedTime.Value) : "",
@@ -2202,7 +2202,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -2252,7 +2252,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -2320,7 +2320,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -2370,7 +2370,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -2438,7 +2438,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -2488,7 +2488,7 @@ namespace iPem.Site.Controllers {
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaName,
+                            area = stores[i].AreaFullName,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
@@ -3122,7 +3122,7 @@ namespace iPem.Site.Controllers {
                         RoomTypeId = SSHSystem.Room.Type.Id,
                         StationName = SSHSystem.Station.Name,
                         StationTypeId = SSHSystem.Station.Type.Id,
-                        AreaName = SSHSystem.Area.Name
+                        AreaFullName = SSHSystem.Area.Name
                     });
             }
 
@@ -3228,7 +3228,7 @@ namespace iPem.Site.Controllers {
                               RoomTypeId = room.Current.Type.Id,
                               StationName = station.Current.Name,
                               StationTypeId = station.Current.Type.Id,
-                              AreaName = area.ToString()
+                              AreaFullName = area.ToString()
                           }).ToList();
 
             var result = new List<Model400203>();
@@ -3327,7 +3327,7 @@ namespace iPem.Site.Controllers {
                               RoomTypeId = room.Current.Type.Id,
                               StationName = station.Current.Name,
                               StationTypeId = station.Current.Type.Id,
-                              AreaName = area.ToString()
+                              AreaFullName = area.ToString()
                           }).ToList();
 
             var index = 0;

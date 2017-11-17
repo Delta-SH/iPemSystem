@@ -49,7 +49,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                 }
             }
             return entity;
@@ -72,7 +72,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }
@@ -96,7 +96,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }
@@ -120,7 +120,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }
@@ -144,7 +144,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }
@@ -177,7 +177,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }
@@ -198,7 +198,7 @@ namespace iPem.Data.Repository.Cs {
                     entity.Status = SqlTypeConverter.DBNullEnmStateHandler(rdr["Status"]);
                     entity.Value = SqlTypeConverter.DBNullDoubleHandler(rdr["Value"]);
                     entity.UpdateTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpdateTime"]);
-                    if (entity.Status == EnmState.Level1) entity.Status = EnmState.Invalid;
+                    if (entity.Status != EnmState.Normal) entity.Status = EnmState.Invalid;
                     entities.Add(entity);
                 }
             }

@@ -82,6 +82,9 @@ namespace iPem.Core.Data {
             builder.PersistSecurityInfo = false;
             builder.MultipleActiveResultSets = true;
             builder.ConnectTimeout = 120;
+            builder.Pooling = true;
+            builder.MaxPoolSize = 500;
+            builder.MinPoolSize = 0;
             return builder.ConnectionString;
         }
 

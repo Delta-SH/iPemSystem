@@ -52,7 +52,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@LastUpdatedDate", SqlDbType.DateTime) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId);
@@ -74,7 +74,7 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_Profile_Repository_Delete, parms);

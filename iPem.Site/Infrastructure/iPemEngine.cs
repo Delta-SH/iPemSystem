@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
+using Autofac.Integration.WebApi;
 using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Data;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace iPem.Site.Infrastructure {
@@ -50,6 +52,7 @@ namespace iPem.Site.Infrastructure {
 
             //register controllers
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             //register http context
             builder.Register(c => new HttpContextWrapper(HttpContext.Current) as HttpContextBase)
@@ -76,6 +79,7 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<RedisCacheManager>().As<ICacheManager>().SingleInstance();
             builder.RegisterType<ExcelManager>().As<IExcelManager>().SingleInstance();
             builder.RegisterType<iPemWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
+            builder.RegisterType<ApiWorkContext>().As<IApiWorkContext>().InstancePerApiRequest();
 
             //register bi class
             builder.RegisterType<SCPackMgr>().As<IPackMgr>().InstancePerLifetimeScope();
@@ -204,6 +208,9 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IScExecutor>(c => new ScExecutor(connectionString, c.Resolve<IDbInstaller>())).InstancePerLifetimeScope();
 
                 //register repository
+                builder.Register<IG_ImageRepository>(c => new G_ImageRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IG_PageRepository>(c => new G_PageRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IG_TemplateRepository>(c => new G_TemplateRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_NoticeInUserRepository>(c => new H_NoticeInUserRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_NoticeRepository>(c => new H_NoticeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_WebEventRepository>(c => new H_WebEventRepository(connectionString)).InstancePerLifetimeScope();
@@ -225,6 +232,9 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<EntitiesInRoleService>().As<IEntitiesInRoleService>().InstancePerLifetimeScope();
                 builder.RegisterType<FollowPointService>().As<IFollowPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<FormulaService>().As<IFormulaService>().InstancePerLifetimeScope();
+                builder.RegisterType<GImageService>().As<IGImageService>().InstancePerLifetimeScope();
+                builder.RegisterType<GPageService>().As<IGPageService>().InstancePerLifetimeScope();
+                builder.RegisterType<GTemplateService>().As<IGTemplateService>().InstancePerLifetimeScope();
                 builder.RegisterType<MenuService>().As<IMenuService>().InstancePerLifetimeScope();
                 builder.RegisterType<NodeInReservationService>().As<INodeInReservationService>().InstancePerLifetimeScope();
                 builder.RegisterType<NoticeInUserService>().As<INoticeInUserService>().InstancePerLifetimeScope();
@@ -242,8 +252,11 @@ namespace iPem.Site.Infrastructure {
 
             this._containerManager = new ContainerManager(container);
 
-            //set dependency resolver
+            //set mvc dependency resolver
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            //set webapi dependency resolver
+            GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }
 
         #endregion

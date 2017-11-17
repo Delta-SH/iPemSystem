@@ -7,6 +7,47 @@ namespace iPem.Data.Common {
     /// </summary>
     public static partial class SqlCommands_Sc {
         /// <summary>
+        /// 组态配置表
+        /// </summary>
+        public const string Sql_G_Page_Repository_GetEntity = @"SELECT * FROM [dbo].[G_Pages] WHERE [Name] = @Name;";
+        public const string Sql_G_Page_Repository_ExistEntity = @"SELECT COUNT(1) AS [Count] FROM [dbo].[G_Pages] WHERE [Name] = @Name;";
+        public const string Sql_G_Page_Repository_GetEntities = @"SELECT * FROM [dbo].[G_Pages];";
+        public const string Sql_G_Page_Repository_GetEntitiesInRole = @"SELECT * FROM [dbo].[G_Pages] WHERE [RoleId] = @RoleId;";
+        public const string Sql_G_Page_Repository_GetEntitiesInObj = @"SELECT * FROM [dbo].[G_Pages] WHERE [RoleId] = @RoleId AND [ObjId] = @ObjId AND [ObjType] = @ObjType;";
+        public const string Sql_G_Page_Repository_GetNamesInObj = @"SELECT [Name] FROM [dbo].[G_Pages] WHERE [RoleId] = @RoleId AND [ObjId] = @ObjId AND [ObjType] = @ObjType;";
+        public const string Sql_G_Page_Repository_Insert = @"INSERT INTO [dbo].[G_Pages]([RoleId],[Name],[IsHome],[Content],[ObjId],[ObjType],[Remark]) VALUES(@RoleId,@Name,@IsHome,@Content,@ObjId,@ObjType,@Remark);";
+        public const string Sql_G_Page_Repository_Update = @"UPDATE [dbo].[G_Pages] SET [RoleId] = @RoleId,[IsHome] = @IsHome,[Content] = @Content,[ObjId] = @ObjId,[ObjType] = @ObjType,[Remark] = @Remark WHERE [Name] = @Name;";
+        public const string Sql_G_Page_Repository_Delete = @"DELETE FROM [dbo].[G_Pages] WHERE [Name] = @Name;";
+        public const string Sql_G_Page_Repository_ClearInRole = @"DELETE FROM [dbo].[G_Pages] WHERE [RoleId] = @RoleId;";
+        public const string Sql_G_Page_Repository_Clear = @"DELETE FROM [dbo].[G_Pages];";
+
+        /// <summary>
+        /// 组态模板表
+        /// </summary>
+        public const string Sql_G_Template_Repository_GetEntity = @"SELECT * FROM [dbo].[G_Templates] WHERE [Name] = @Name;";
+        public const string Sql_G_Template_Repository_ExistEntity = @"SELECT COUNT(1) AS [Count] FROM [dbo].[G_Templates] WHERE [Name] = @Name;";
+        public const string Sql_G_Template_Repository_GetEntities = @"SELECT * FROM [dbo].[G_Templates];";
+        public const string Sql_G_Template_Repository_GetNames = @"SELECT [Name] FROM [dbo].[G_Templates];";
+        public const string Sql_G_Template_Repository_Insert = @"INSERT INTO [dbo].[G_Templates]([Name],[Content],[Remark]) VALUES(@Name,@Content,@Remark);";
+        public const string Sql_G_Template_Repository_Update = @"UPDATE [dbo].[G_Templates] SET [Content] = @Content,[Remark] = @Remark WHERE [Name] = @Name;";
+        public const string Sql_G_Template_Repository_Delete = @"DELETE FROM [dbo].[G_Templates] WHERE [Name] = @Name;";
+        public const string Sql_G_Template_Repository_Clear = @"DELETE FROM [dbo].[G_Templates];";
+
+        /// <summary>
+        /// 组态图片表
+        /// </summary>
+        public const string Sql_G_Image_Repository_GetEntity = @"SELECT * FROM [dbo].[G_Images] WHERE [Name] = @Name;";
+        public const string Sql_G_Image_Repository_ExistEntity = @"SELECT COUNT(1) AS [Count] FROM [dbo].[G_Images] WHERE [Name] = @Name;";
+        public const string Sql_G_Image_Repository_GetEntities = @"SELECT * FROM [dbo].[G_Images];";
+        public const string Sql_G_Image_Repository_GetNames = @"SELECT [Name],[Type],[UpdateMark],[Remark] FROM [dbo].[G_Images];";
+        public const string Sql_G_Image_Repository_GetContents = @"SELECT [Name],[Type],[Content],[UpdateMark],[Remark] FROM [dbo].[G_Images];";
+        public const string Sql_G_Image_Repository_GetThumbnails = @"SELECT [Name],[Type],[Thumbnail],[UpdateMark],[Remark] FROM [dbo].[G_Images];";
+        public const string Sql_G_Image_Repository_Insert = @"INSERT INTO [dbo].[G_Images]([Name],[Type],[Content],[Thumbnail],[UpdateMark],[Remark]) VALUES(@Name,@Type,@Content,@Thumbnail,@UpdateMark,@Remark);";
+        public const string Sql_G_Image_Repository_Update = @"UPDATE [dbo].[G_Images] SET [Type] = @Type,[Content] = @Content,[Thumbnail] = @Thumbnail,[UpdateMark] = @UpdateMark,[Remark] = @Remark WHERE [Name] = @Name;";
+        public const string Sql_G_Image_Repository_Delete = @"DELETE FROM [dbo].[G_Images] WHERE [Name] = @Name;";
+        public const string Sql_G_Image_Repository_Clear = @"DELETE FROM [dbo].[G_Images];";
+
+        /// <summary>
         /// 系统消息表
         /// </summary>
         public const string Sql_H_Notice_Repository_GetNotice = @"SELECT * FROM [dbo].[H_Notices] WHERE [Id]=@Id;";
@@ -107,13 +148,19 @@ namespace iPem.Data.Common {
         public const string Sql_U_EntitiesInRole_Repository_GetEntitiesInRole = @"
         SELECT * FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_AreasInRoles] WHERE [RoleId]=@RoleId;
+        SELECT * FROM [dbo].[U_StationsInRoles] WHERE [RoleId]=@RoleId;
+        SELECT * FROM [dbo].[U_RoomsInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;";
         public const string Sql_U_EntitiesInRole_Repository_Insert1 = @"INSERT INTO [dbo].[U_MenusInRoles]([RoleId],[MenuId]) VALUES(@RoleId,@MenuId);";
         public const string Sql_U_EntitiesInRole_Repository_Insert2 = @"INSERT INTO [dbo].[U_AreasInRoles]([RoleId],[AreaId]) VALUES(@RoleId,@AreaId);";
-        public const string Sql_U_EntitiesInRole_Repository_Insert3 = @"INSERT INTO [dbo].[U_PermissionsInRoles]([RoleId],[Permission]) VALUES(@RoleId, @Permission);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert3 = @"INSERT INTO [dbo].[U_StationsInRoles]([RoleId],[StationId]) VALUES(@RoleId,@StationId);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert4 = @"INSERT INTO [dbo].[U_RoomsInRoles]([RoleId],[RoomId]) VALUES(@RoleId,@RoomId);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert5 = @"INSERT INTO [dbo].[U_PermissionsInRoles]([RoleId],[Permission]) VALUES(@RoleId, @Permission);";
         public const string Sql_U_EntitiesInRole_Repository_Delete = @"
         DELETE FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@RoleId;
         DELETE FROM [dbo].[U_AreasInRoles] WHERE [RoleId]=@RoleId;
+        DELETE FROM [dbo].[U_StationsInRoles] WHERE [RoleId]=@RoleId;
+        DELETE FROM [dbo].[U_RoomsInRoles] WHERE [RoleId]=@RoleId;
         DELETE FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;";
 
         /// <summary>

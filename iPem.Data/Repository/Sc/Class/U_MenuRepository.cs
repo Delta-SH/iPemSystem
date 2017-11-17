@@ -100,7 +100,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
@@ -133,7 +133,7 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach(var entity in entities) {
@@ -158,7 +158,7 @@ namespace iPem.Data.Repository.Sc {
         public void Delete(IList<U_Menu> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.Int) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {

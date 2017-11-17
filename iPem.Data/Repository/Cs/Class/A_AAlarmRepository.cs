@@ -457,7 +457,7 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@ConfirmedTime", SqlDbType.DateTime)};
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
-                conn.Open();
+                if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var alarm in alarms) {
