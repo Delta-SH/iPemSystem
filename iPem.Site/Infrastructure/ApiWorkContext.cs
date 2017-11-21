@@ -440,6 +440,13 @@ namespace iPem.Site.Infrastructure {
             return _cachedALPoints = this.GetPoints().FindAll(p => p.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(p.AlarmId));
         }
 
+        public EnmPoint GetPointType(P_Point point) {
+            if (point.Type == EnmPoint.DI && !string.IsNullOrWhiteSpace(point.AlarmId))
+                return EnmPoint.AL;
+
+            return point.Type;
+        }
+
         public List<C_Group> GetGroups() {
             if (_cachedGroups != null)
                 return _cachedGroups;

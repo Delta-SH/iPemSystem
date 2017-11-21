@@ -171,6 +171,13 @@ namespace iPem.Site.Infrastructure {
         List<P_Point> GetALPoints();
 
         /// <summary>
+        /// 判断信号是否为告警信号
+        /// </summary>
+        /// <param name="point">信号对象</param>
+        /// <returns>true/false</returns>
+        EnmPoint GetPointType(P_Point point);
+
+        /// <summary>
         /// 获得SC采集组集合
         /// </summary>
         /// <returns>SC采集组集合</returns>

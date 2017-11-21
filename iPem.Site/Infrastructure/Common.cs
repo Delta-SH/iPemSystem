@@ -196,17 +196,18 @@ namespace iPem.Site.Infrastructure {
 
         public static string GetEventTypeDisplay(EnmEventType type) {
             switch(type) {
-                case EnmEventType.Exception:
-                    return "异常操作";
-                case EnmEventType.Operating:
-                    return "正常操作";
                 case EnmEventType.Login:
                     return "登录系统";
                 case EnmEventType.Logout:
                     return "登出系统";
+                case EnmEventType.Control:
+                    return "信号遥控";
+                case EnmEventType.Adjust:
+                    return "信号遥调";
                 case EnmEventType.Other:
+                    return "其他操作";
                 default:
-                    return "其他";
+                    return "未定义";
             }
         }
 
@@ -266,7 +267,7 @@ namespace iPem.Site.Infrastructure {
         public static string GetAlarmDisplay(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level0:
-                    return "无告警";
+                    return "正常";
                 case EnmAlarm.Level1:
                     return "一级告警";
                 case EnmAlarm.Level2:

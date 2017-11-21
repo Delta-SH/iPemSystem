@@ -185,8 +185,8 @@
         }, {
             text: '记录时间',
             dataIndex: 'created',
-            align: 'left',
-            width: 100,
+            align: 'center',
+            width: 150,
             sortable: true
         }],
         dockedItems: [{

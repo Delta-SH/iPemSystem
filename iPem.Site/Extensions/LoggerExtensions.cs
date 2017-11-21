@@ -58,13 +58,12 @@ namespace iPem.Site.Extensions {
 
             if(logger.IsEnabled(level)) {
                 try {
-                    var fullMessage = exception == null ? string.Empty : exception.ToString();
                     var log = new H_WebEvent {
                         Id = Guid.NewGuid(),
                         Level = level,
                         Type = type,
                         ShortMessage = message,
-                        FullMessage = fullMessage,
+                        FullMessage = exception == null ? string.Empty : exception.ToString(),
                         IpAddress = ip,
                         PageUrl = url,
                         ReferrerUrl = referrer,

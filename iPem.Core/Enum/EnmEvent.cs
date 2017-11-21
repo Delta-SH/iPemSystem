@@ -14,11 +14,11 @@
     /// 日志类型
     /// </summary>
     public enum EnmEventType {
-        Login,
-        Logout,
-        Operating,
-        Exception,
-        Other
+        Login = 100,
+        Logout = 101,
+        Control = 200,
+        Adjust = 201,
+        Other = 999
     }
 
     /// <summary>

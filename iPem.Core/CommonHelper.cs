@@ -320,21 +320,5 @@ namespace iPem.Core {
             if (remotes.Contains(remark)) return EnmRecType.Remote;
             return EnmRecType.Other;
         }
-
-        /// <summary>
-        /// 将字节数组转换成字符串
-        /// </summary>
-        public static string BytesToString(byte[] bytes) {
-            if(bytes == null || bytes.Length == 0) return string.Empty;
-            return Encoding.UTF8.GetString(bytes);
-        }
-
-        /// <summary>
-        /// 将字符串转换成字节数组
-        /// </summary>
-        public static byte[] StringToBytes(string text) {
-            if (string.IsNullOrWhiteSpace(text)) return null;
-            return Encoding.UTF8.GetBytes(text);
-        }
     }
 }

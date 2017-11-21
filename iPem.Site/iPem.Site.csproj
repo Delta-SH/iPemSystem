@@ -170,7 +170,6 @@
     <Compile Include="Controllers\API\GViewController.cs" />
     <Compile Include="Controllers\ComponentController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
-    <Compile Include="Controllers\API\ConfigureController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\FsuController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
@@ -210,14 +209,6 @@
     <Compile Include="Models\AjaxDataModel.cs" />
     <Compile Include="Models\AjaxChartModel.cs" />
     <Compile Include="Models\AjaxResultModel.cs" />
-    <Compile Include="Models\API\API_Cfg_Area.cs" />
-    <Compile Include="Models\API\API_Cfg_Device.cs" />
-    <Compile Include="Models\API\API_Cfg_Fsu.cs" />
-    <Compile Include="Models\API\API_Cfg_ListResult.cs" />
-    <Compile Include="Models\API\API_Cfg_Point.cs" />
-    <Compile Include="Models\API\API_Cfg_Result.cs" />
-    <Compile Include="Models\API\API_Cfg_Room.cs" />
-    <Compile Include="Models\API\API_Cfg_Station.cs" />
     <Compile Include="Models\API\API_GV_Image.cs" />
     <Compile Include="Models\API\API_GV_ImageInfo.cs" />
     <Compile Include="Models\API\API_GV_ImagePair.cs" />
@@ -226,6 +217,7 @@
     <Compile Include="Models\API\API_GV_Page.cs" />
     <Compile Include="Models\API\API_GV_SCObj.cs" />
     <Compile Include="Models\API\API_GV_SCValue.cs" />
+    <Compile Include="Models\API\API_GV_Signal.cs" />
     <Compile Include="Models\API\API_GV_Template.cs" />
     <Compile Include="Models\BInterface\GetDevConfAckPackage.cs" />
     <Compile Include="Models\BInterface\GetDevConfPackage.cs" />

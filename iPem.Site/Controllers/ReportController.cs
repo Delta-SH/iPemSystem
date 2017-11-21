@@ -182,7 +182,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -198,7 +198,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -242,7 +242,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -258,7 +258,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -302,7 +302,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -318,7 +318,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -362,7 +362,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -378,7 +378,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -407,7 +407,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -424,7 +424,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -453,7 +453,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -470,7 +470,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -499,7 +499,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -516,7 +516,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -545,7 +545,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -562,7 +562,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -593,7 +593,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -614,7 +614,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -676,7 +676,7 @@ namespace iPem.Site.Controllers {
                     data.chart[1] = this.GetHisAlmChart2(parent, stores);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -730,7 +730,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -799,7 +799,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -864,7 +864,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -893,7 +893,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -910,7 +910,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -987,7 +987,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1060,7 +1060,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1093,7 +1093,7 @@ namespace iPem.Site.Controllers {
                 data.data.Add(new GridColumn { name = "total", type = "string", column = "总计", align = "center", detail = true });
                 data.total = data.data.Count;
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1168,7 +1168,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1208,7 +1208,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1275,7 +1275,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1338,7 +1338,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1367,7 +1367,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1384,7 +1384,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1413,7 +1413,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1430,7 +1430,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1459,7 +1459,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1476,7 +1476,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1518,7 +1518,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1555,7 +1555,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1584,7 +1584,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1601,7 +1601,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1643,7 +1643,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1680,7 +1680,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1710,7 +1710,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1731,7 +1731,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1761,7 +1761,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1782,7 +1782,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1817,7 +1817,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1847,7 +1847,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1876,7 +1876,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1893,7 +1893,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1928,7 +1928,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1956,7 +1956,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2003,7 +2003,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2053,7 +2053,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2105,7 +2105,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2155,7 +2155,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2221,7 +2221,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2276,7 +2276,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2339,7 +2339,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2394,7 +2394,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2457,7 +2457,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2512,7 +2512,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }

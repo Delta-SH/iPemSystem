@@ -44,7 +44,7 @@ namespace iPem.Site.Tasks {
                 }
             } catch(Exception exc) {
                 var logger = EngineContext.Current.Resolve<IWebEventService>();
-                logger.Error(EnmEventType.Exception, "", "#task.cache.clear", "ClearCacheTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), exc);
+                logger.Error(EnmEventType.Other, "", "#task.cache.clear", "ClearCacheTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), exc);
             }
         }
 

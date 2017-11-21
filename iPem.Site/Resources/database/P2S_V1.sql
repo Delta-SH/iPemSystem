@@ -16,6 +16,12 @@ USE [P2S_V1]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[FK_G_Pages_U_Roles]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_G_Pages_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[G_Pages]'))
+ALTER TABLE [dbo].[G_Pages] DROP CONSTRAINT [FK_G_Pages_U_Roles]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --删除外键[dbo].[H_NoticesInUsers]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_H_NoticesInUsers_U_Users]') AND parent_object_id = OBJECT_ID(N'[dbo].[H_NoticesInUsers]'))
 ALTER TABLE [dbo].[H_NoticesInUsers] DROP CONSTRAINT [FK_H_NoticesInUsers_U_Users]
@@ -75,6 +81,94 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_UsersInRoles_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_UsersInRoles]'))
 ALTER TABLE [dbo].[U_UsersInRoles] DROP CONSTRAINT [FK_U_UsersInRoles_U_Roles]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[G_Images]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[G_Images]') AND type in (N'U'))
+DROP TABLE [dbo].[G_Images]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[G_Images](
+	[Name] [varchar](200) NOT NULL,
+	[Type] [int] NOT NULL,
+	[Content] [image] NOT NULL,
+	[Thumbnail] [image] NOT NULL,
+	[UpdateMark] [varchar](100) NULL,
+	[Remark] [varchar](512) NULL,
+ CONSTRAINT [PK_G_Images] PRIMARY KEY CLUSTERED 
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[G_Pages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[G_Pages]') AND type in (N'U'))
+DROP TABLE [dbo].[G_Pages]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[G_Pages](
+	[RoleId] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[IsHome] [bit] NOT NULL,
+	[Content] [text] NULL,
+	[ObjId] [varchar](100) NOT NULL,
+	[ObjType] [int] NOT NULL,
+	[Remark] [varchar](512) NULL,
+ CONSTRAINT [PK_G_Pages] PRIMARY KEY CLUSTERED 
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[G_Templates]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[G_Templates]') AND type in (N'U'))
+DROP TABLE [dbo].[G_Templates]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[G_Templates](
+	[Name] [varchar](200) NOT NULL,
+	[Content] [text] NULL,
+	[Remark] [varchar](512) NULL,
+ CONSTRAINT [PK_G_Templates] PRIMARY KEY CLUSTERED 
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -624,6 +718,18 @@ GO
 SET ANSI_PADDING OFF
 GO
 
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[FK_G_Pages_U_Roles]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_G_Pages_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[G_Pages]'))
+ALTER TABLE [dbo].[G_Pages]  WITH CHECK ADD  CONSTRAINT [FK_G_Pages_U_Roles] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[U_Roles] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_G_Pages_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[G_Pages]'))
+ALTER TABLE [dbo].[G_Pages] CHECK CONSTRAINT [FK_G_Pages_U_Roles]
+GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --添加外键[dbo].[H_NoticesInUsers]

@@ -1143,8 +1143,8 @@
     //#region Windows
     var controlWnd = Ext.create('Ext.window.Window', {
         title: '信号遥控',
-        height: 250,
-        width: 400,
+        height: 360,
+        width: 320,
         glyph: 0xf040,
         modal: true,
         border: false,
@@ -1155,6 +1155,10 @@
             itemId: 'controlForm',
             border: false,
             padding: 10,
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
             items: [
                 {
                     itemId: 'device',
@@ -1169,13 +1173,51 @@
                 {
                     itemId: 'controlradio',
                     xtype: 'radiogroup',
-                    columns: 1,
-                    vertical: true,
+                    columns: 2,
+                    vertical: false,
                     items: [
                         { boxLabel: '常开控制(0)', name: 'ctrl', inputValue: 0, checked: true },
                         { boxLabel: '常闭控制(1)', name: 'ctrl', inputValue: 1 },
-                        { boxLabel: '脉冲控制(2)', name: 'ctrl', inputValue: 2 }
-                    ]
+                        { boxLabel: '脉冲控制(2)', name: 'ctrl', inputValue: 2 },
+                        { boxLabel: '自定义控制', name: 'ctrl', inputValue: 3 }
+                    ],
+                    listeners: {
+                        change: function (me, newValue, oldValue) {
+                            var form = controlWnd.getComponent('controlForm'),
+                                current = form.getComponent('custom');
+                            current.setDisabled(newValue.ctrl !== 3);
+                        }
+                    }
+                },
+                {
+                    itemId: 'custom',
+                    name: 'custom',
+                    xtype: 'numberfield',
+                    labelAlign: 'top',
+                    fieldLabel: '自定义控制值',
+                    disabled: true,
+                    allowBlank: false,
+                    allowDecimals: false,
+                    minValue: -100,
+                    maxValue: 100,
+                    value: 0
+                },
+                {
+                    itemId: 'password',
+                    name: 'password',
+                    xtype: 'textfield',
+                    inputType: 'password',
+                    fieldLabel: '登录密码',
+                    allowBlank: false,
+                    labelAlign: 'top'
+                },
+                {
+                    itemId: 'remark',
+                    name: 'remark',
+                    xtype: 'textareafield',
+                    fieldLabel: '备注',
+                    height: 100,
+                    labelAlign: 'top'
                 }]
         }],
         buttons: [
@@ -1228,8 +1270,8 @@
 
     var adjustWnd = Ext.create('Ext.window.Window', {
         title: '信号遥调',
-        height: 250,
-        width: 400,
+        height: 310,
+        width: 320,
         glyph: 0xf028,
         modal: true,
         border: false,
@@ -1240,6 +1282,10 @@
             itemId: 'adjustForm',
             border: false,
             padding: 10,
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
             items: [
                 {
                     itemId: 'device',
@@ -1253,12 +1299,30 @@
                 },
                 {
                     itemId: 'adjust',
-                    xtype: 'numberfield',
                     name: 'adjust',
+                    xtype: 'numberfield',
                     fieldLabel: '模拟量输出值',
-                    value: 0,
-                    width: 280,
-                    allowOnlyWhitespace: false
+                    labelAlign: 'top',
+                    decimalPrecision: 3,
+                    allowOnlyWhitespace: false,
+                    value: 0
+                },
+                {
+                    itemId: 'password',
+                    name: 'password',
+                    xtype: 'textfield',
+                    inputType: 'password',
+                    fieldLabel: '登录密码',
+                    allowBlank: false,
+                    labelAlign: 'top'
+                },
+                {
+                    itemId: 'remark',
+                    name: 'remark',
+                    xtype: 'textareafield',
+                    fieldLabel: '备注',
+                    height: 100,
+                    labelAlign: 'top'
                 }]
         }],
         buttons: [

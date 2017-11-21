@@ -203,7 +203,7 @@ namespace iPem.Site.Controllers {
                         return RedirectToRoute("HomePage");
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc);
                 ModelState.AddModelError("", exc.Message);
             }
 
@@ -295,7 +295,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -334,7 +334,7 @@ namespace iPem.Site.Controllers {
                 data.data.permissions = auth.Permissions.Select(o => ((int)o).ToString()).ToArray();
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -550,7 +550,7 @@ namespace iPem.Site.Controllers {
 
                     _roleService.Add(newRole);
                     _entitiesInRoleService.Add(auth);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增角色[{0}]", newRole.Name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增角色[{0}]", newRole.Name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _roleService.GetRoleByName(role.name);
@@ -564,13 +564,13 @@ namespace iPem.Site.Controllers {
                     _roleService.Update(existed);
                     _entitiesInRoleService.Remove(existed.Id);
                     _entitiesInRoleService.Add(auth);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新角色[{0}]", existed.Name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新角色[{0}]", existed.Name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -588,10 +588,10 @@ namespace iPem.Site.Controllers {
 
                 _entitiesInRoleService.Remove(existed.Id);
                 _roleService.Remove(existed);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除角色[{0}]", existed.Name), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除角色[{0}]", existed.Name), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "角色删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -620,7 +620,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -692,7 +692,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; 
                 data.message = exc.Message;
             }
@@ -745,7 +745,7 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = user.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; 
                 data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
@@ -789,7 +789,7 @@ namespace iPem.Site.Controllers {
                 data.message = "200 Ok";
                 data.total = 1;
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; 
                 data.message = exc.Message;
             }
@@ -826,7 +826,7 @@ namespace iPem.Site.Controllers {
                     };
 
                     _userService.Add(newUser);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增用户[{0}]", newUser.Uid), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existedUser = _userService.GetUserByName(user.uid);
@@ -842,13 +842,13 @@ namespace iPem.Site.Controllers {
                     existedUser.Enabled = user.enabled;
 
                     _userService.Update(existedUser);
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新用户[{0}]", existedUser.Uid), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -868,10 +868,10 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("无法删除当前用户");
 
                 _userService.Remove(existed);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除用户[{0}]", existed.Uid), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除用户[{0}]", existed.Uid), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -890,10 +890,10 @@ namespace iPem.Site.Controllers {
                 if(existed == null) throw new iPemException("用户不存在");
 
                 _userService.ForcePassword(existed, password);
-                _webLogger.Information(EnmEventType.Operating, string.Format("重置用户密码[{0}]", existed.Uid), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("重置用户密码[{0}]", existed.Uid), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "密码重置成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -916,7 +916,7 @@ namespace iPem.Site.Controllers {
 
                 var result = _userService.ChangePassword(existed, origin, password);
                 if(result == EnmChangeResults.Successful) {
-                    _webLogger.Information(EnmEventType.Operating, string.Format("修改用户密码[{0}]", existed.Uid), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("修改用户密码[{0}]", existed.Uid), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "密码修改成功" });
                 } else if(result == EnmChangeResults.WrongPassword) {
                     throw new iPemException("原始密码错误");
@@ -924,7 +924,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("未知错误");
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -978,7 +978,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1003,7 +1003,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1040,7 +1040,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1069,7 +1069,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1129,7 +1129,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1185,7 +1185,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1196,10 +1196,10 @@ namespace iPem.Site.Controllers {
                 var startDate = new DateTime(2017, 1, 1);
                 var endDate = DateTime.Today.AddMonths(-3);
                 _webLogger.Clear(startDate, endDate);
-                _webLogger.Information(EnmEventType.Operating, string.Format("清理{0}之前的系统日志信息", CommonHelper.DateConverter(endDate)), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("清理{0}之前的系统日志信息", CommonHelper.DateConverter(endDate)), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "日志清理完成" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1241,7 +1241,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1284,7 +1284,7 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = notice.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1330,7 +1330,7 @@ namespace iPem.Site.Controllers {
 
                     _noticeService.Add(newNotice);
                     _noticeInUserService.Add(noticesInUsers.ToArray());
-                    _webLogger.Information(EnmEventType.Operating, string.Format("新增消息[{0}]", newNotice.Title), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增消息[{0}]", newNotice.Title), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "消息保存成功" });
                 } else if(action == (int)EnmAction.Edit) {
                     var existed = _noticeService.GetNotice(new Guid(notice.id));
@@ -1365,13 +1365,13 @@ namespace iPem.Site.Controllers {
                     _noticeService.Remove(existed);
                     _noticeService.Add(existed);
                     _noticeInUserService.Add(noticesInUsers.ToArray());
-                    _webLogger.Information(EnmEventType.Operating, string.Format("更新消息[{0}]", existed.Title), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新消息[{0}]", existed.Title), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "消息保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1385,10 +1385,10 @@ namespace iPem.Site.Controllers {
                 if(existed == null) throw new iPemException("消息不存在，删除失败");
 
                 _noticeService.Remove(existed);
-                _webLogger.Information(EnmEventType.Operating, string.Format("删除系统消息[{0}]", existed.Title), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除系统消息[{0}]", existed.Title), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "消息删除成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1424,7 +1424,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1444,7 +1444,7 @@ namespace iPem.Site.Controllers {
                 });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1475,7 +1475,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1496,7 +1496,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1525,7 +1525,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1546,7 +1546,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1619,7 +1619,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1659,7 +1659,7 @@ namespace iPem.Site.Controllers {
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1703,7 +1703,7 @@ namespace iPem.Site.Controllers {
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "粘贴成功" });
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1852,7 +1852,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1867,7 +1867,7 @@ namespace iPem.Site.Controllers {
                 this.ClearUserCache();
                 return Json(new AjaxResultModel { success = true, code = 200, message = "所有缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1879,7 +1879,7 @@ namespace iPem.Site.Controllers {
                 _cacheManager.Clear();
                 return Json(new AjaxResultModel { success = true, code = 200, message = "全局缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1893,7 +1893,7 @@ namespace iPem.Site.Controllers {
                 _workContext.ResetProfile();
                 return Json(new AjaxResultModel { success = true, code = 200, message = "用户缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1917,7 +1917,7 @@ namespace iPem.Site.Controllers {
                 _sdbScriptService.Update(new S_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1949,7 +1949,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -1975,7 +1975,7 @@ namespace iPem.Site.Controllers {
                 _hdbScriptService.Update(new H_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2007,7 +2007,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2033,7 +2033,7 @@ namespace iPem.Site.Controllers {
                 _rdbScriptService.Update(new R_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2065,7 +2065,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2135,7 +2135,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 

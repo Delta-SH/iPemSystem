@@ -98,7 +98,7 @@ namespace iPem.Site {
 
             try {
                 var logger = EngineContext.Current.Resolve<IWebEventService>();
-                logger.Error(EnmEventType.Exception, exception.Message, exception);
+                logger.Error(EnmEventType.Other, exception.Message, exception);
             } catch(Exception) {
                 //don't throw new exception if occurs
             }

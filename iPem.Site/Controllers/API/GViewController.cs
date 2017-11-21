@@ -1,10 +1,15 @@
 ﻿using iPem.Core;
+using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
+using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
 using iPem.Site.Infrastructure;
+using iPem.Site.Models;
 using iPem.Site.Models.API;
+using iPem.Site.Models.BInterface;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +28,12 @@ namespace iPem.Site.Controllers {
         private readonly IFsuService _fsuService;
         private readonly IDeviceService _deviceService;
         private readonly IPointService _pointService;
+        private readonly IAMeasureService _ameasureService;
         private readonly IGImageService _gimageService;
         private readonly IGPageService _gpageService;
         private readonly IGTemplateService _gtemplateService;
+        private readonly IGroupService _groupService;
+        private readonly IPackMgr _packMgr;
 
         #endregion
 
@@ -38,18 +46,24 @@ namespace iPem.Site.Controllers {
             IFsuService fsuService,
             IDeviceService deviceService,
             IPointService pointService,
+            IAMeasureService ameasureService,
             IGImageService gimageService,
             IGPageService gpageService,
-            IGTemplateService gtemplateService) {
+            IGTemplateService gtemplateService,
+            IGroupService groupService,
+            IPackMgr packMgr) {
             this._workContext = workContext;
             this._stationService = stationService;
             this._roomService = roomService;
             this._fsuService = fsuService;
             this._deviceService = deviceService;
             this._pointService = pointService;
+            this._ameasureService = ameasureService;
             this._gimageService = gimageService;
             this._gpageService = gpageService;
             this._gtemplateService = gtemplateService;
+            this._groupService = groupService;
+            this._packMgr = packMgr;
         }
 
         #endregion
@@ -66,7 +80,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("id");
 
                 return _gpageService.GetNames((int)EnmAPISCObj.Device == type ? U_Role.SuperId.ToString() : role, id, type);
-            } catch (Exception exc) {
+            } catch {
             }
 
             return new List<String>();
@@ -92,7 +106,7 @@ namespace iPem.Site.Controllers {
                         SCObjType = page.ObjType
                     });
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return data;
@@ -114,7 +128,7 @@ namespace iPem.Site.Controllers {
                         SCObjType = page.ObjType
                     };
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return null;
@@ -127,7 +141,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("name");
 
                 return _gpageService.Exist(name);
-            } catch (Exception exc) {
+            } catch {
             }
 
             return true;
@@ -167,7 +181,7 @@ namespace iPem.Site.Controllers {
         public List<String> GetGVTemplateNames() {
             try {
                 return _gtemplateService.GetNames();
-            } catch (Exception exc) {
+            } catch {
             }
 
             return new List<String>();
@@ -186,7 +200,7 @@ namespace iPem.Site.Controllers {
                         Content = template.Content
                     };
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return null;
@@ -199,7 +213,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("name");
 
                 return _gtemplateService.Exist(name);
-            } catch (Exception exc) {
+            } catch {
             }
 
             return true;
@@ -251,7 +265,7 @@ namespace iPem.Site.Controllers {
                         UpdateMark = image.UpdateMark
                     });
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return data;
@@ -266,10 +280,10 @@ namespace iPem.Site.Controllers {
                     data.Add(new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
-                        Content = CommonHelper.BytesToString(image.Thumbnail)
+                        Content = JsonConvert.SerializeObject(image.Thumbnail)
                     });
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return data;
@@ -287,10 +301,10 @@ namespace iPem.Site.Controllers {
                     data.Add(new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
-                        Content = CommonHelper.BytesToString(image.Content)
+                        Content = JsonConvert.SerializeObject(image.Content)
                     });
                 }
-            } catch (Exception exc) {
+            } catch{
             }
 
             return data;
@@ -307,10 +321,10 @@ namespace iPem.Site.Controllers {
                     return new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
-                        Content = CommonHelper.BytesToString(image.Content)
+                        Content = JsonConvert.SerializeObject(image.Content)
                     };
                 }
-            } catch (Exception exc) {
+            } catch {
             }
 
             return null;
@@ -323,7 +337,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("name");
 
                 return _gimageService.Exist(name);
-            } catch (Exception exc) {
+            } catch {
             }
 
             return true;
@@ -338,8 +352,8 @@ namespace iPem.Site.Controllers {
                 var target = new G_Image {
                     Name = image.Name,
                     Type = image.Type,
-                    Content = CommonHelper.StringToBytes(image.Source),
-                    Thumbnail = CommonHelper.StringToBytes(image.Min),
+                    Content = JsonConvert.DeserializeObject<byte[]>(image.Source),
+                    Thumbnail = JsonConvert.DeserializeObject<byte[]>(image.Min),
                     UpdateMark = image.UpdateMark
                 };
 
@@ -392,24 +406,37 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("id");
 
                 if ((int)EnmAPISCObj.Area == type) {
-                    var current = _workContext.GetAreas(role).Find(a => a.Current.Id.Equals(id));
-                    if (current != null) {
-                        if (current.HasChildren) {
-                            foreach (var child in current.ChildRoot) {
+                    if ("root".Equals(id)) {
+                        var roots = _workContext.GetAreas(role).FindAll(a => !a.HasParents);
+                        if (roots.Count > 0) {
+                            foreach (var root in roots) {
                                 data.Add(new API_GV_SCObj {
-                                    ID = child.Current.Id,
-                                    Name = child.Current.Name,
+                                    ID = root.Current.Id,
+                                    Name = root.Current.Name,
                                     Type = (int)EnmAPISCObj.Area
                                 });
                             }
-                        } else {
-                            var stations = _workContext.GetStations(role).FindAll(s => s.AreaId.Equals(id));
-                            foreach (var child in stations) {
-                                data.Add(new API_GV_SCObj {
-                                    ID = child.Id,
-                                    Name = child.Name,
-                                    Type = (int)EnmAPISCObj.Station
-                                });
+                        }
+                    } else {
+                        var current = _workContext.GetAreas(role).Find(a => a.Current.Id.Equals(id));
+                        if (current != null) {
+                            if (current.HasChildren) {
+                                foreach (var child in current.ChildRoot) {
+                                    data.Add(new API_GV_SCObj {
+                                        ID = child.Current.Id,
+                                        Name = child.Current.Name,
+                                        Type = (int)EnmAPISCObj.Area
+                                    });
+                                }
+                            } else {
+                                var stations = _workContext.GetStations(role).FindAll(s => s.AreaId.Equals(id));
+                                foreach (var child in stations) {
+                                    data.Add(new API_GV_SCObj {
+                                        ID = child.Id,
+                                        Name = child.Name,
+                                        Type = (int)EnmAPISCObj.Station
+                                    });
+                                }
                             }
                         }
                     }
@@ -441,18 +468,282 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch (Exception exc) {
-            }
+            } catch { }
 
             return data;
         }
 
         [HttpPost]
         public List<API_GV_SCValue> GetSCValues(string role, [FromBody]List<API_GV_Key> keys) {
+            var data = new List<API_GV_SCValue>();
+
+            try {
+                if (string.IsNullOrWhiteSpace(role))
+                    throw new ArgumentNullException("role");
+
+                if (keys == null)
+                    throw new ArgumentNullException("keys");
+
+                List<AlmStore<A_AAlarm>> alarms = null;
+                foreach (var key in keys.GroupBy(k => k.Type)) {
+                    if ((int)EnmAPISCObj.Area == key.Key) {
+                        #region 计算区域状态
+                        var ids = key.Select(k => k.ID);
+                        if (alarms == null) alarms = _workContext.ActAlarms(role);
+                        if (alarms.Count > 0) {
+                            var arealevels = alarms.GroupBy(a => a.Current.AreaId).Select(g => new { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) }).ToList();
+                            foreach (var id in ids) {
+                                var target = new API_GV_SCValue {
+                                    ID = id,
+                                    Type = (int)EnmAPISCObj.Area,
+                                    Number = (int)EnmAlarm.Level0,
+                                    Desc = Common.GetAlarmDisplay(EnmAlarm.Level0),
+                                    State = (int)EnmAlarm.Level0
+                                };
+
+                                if ("root".Equals(id)) {
+                                    target.Number = target.State = arealevels.Min(a => a.level);
+                                    target.Desc = Common.GetAlarmDisplay((EnmAlarm)target.State);
+                                } else {
+                                    var current = _workContext.GetAreas(role).Find(a => a.Current.Id.Equals(id));
+                                    if (current != null) {
+                                        if (current.HasChildren) {
+                                            var levels = arealevels.FindAll(i => current.Keys.Contains(i.id));
+                                            if (levels.Count > 0) {
+                                                target.Number = target.State = levels.Min(a => a.level);
+                                                target.Desc = Common.GetAlarmDisplay((EnmAlarm)target.State);
+                                            }
+                                        } else {
+                                            var level = arealevels.Find(i => current.Current.Id.Equals(i.id));
+                                            if (level != null) {
+                                                target.Number = target.State = level.level;
+                                                target.Desc = Common.GetAlarmDisplay((EnmAlarm)target.State);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                data.Add(target);
+                            }
+                        } else {
+                            foreach (var id in ids) {
+                                data.Add(new API_GV_SCValue {
+                                    ID = id,
+                                    Type = (int)EnmAPISCObj.Area,
+                                    Number = (int)EnmAlarm.Level0,
+                                    Desc = Common.GetAlarmDisplay(EnmAlarm.Level0),
+                                    State = (int)EnmAlarm.Level0
+                                });
+                            }
+                        }
+                        
+                        #endregion
+                    } else if ((int)EnmAPISCObj.Station == key.Key) {
+                        #region 计算站点状态
+                        var ids = key.Select(k => k.ID);
+                        if (alarms == null) alarms = _workContext.ActAlarms(role);
+                        if (alarms.Count > 0) {
+                            var levels = alarms.GroupBy(a => a.Current.StationId).Select(g => new { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) });
+                            data.AddRange(from id in ids
+                                          join lvl in levels on id equals lvl.id into lt
+                                          from il in lt.DefaultIfEmpty()
+                                          select new API_GV_SCValue {
+                                              ID = id,
+                                              Type = (int)EnmAPISCObj.Station,
+                                              Number = il == null ? (int)EnmAlarm.Level0 : il.level,
+                                              Desc = Common.GetAlarmDisplay(il == null ? EnmAlarm.Level0 : (EnmAlarm)il.level),
+                                              State = il == null ? (int)EnmAlarm.Level0 : il.level
+                                          });
+                        } else {
+                            foreach (var id in ids) {
+                                data.Add(new API_GV_SCValue {
+                                    ID = id,
+                                    Type = (int)EnmAPISCObj.Station,
+                                    Number = (int)EnmAlarm.Level0,
+                                    Desc = Common.GetAlarmDisplay(EnmAlarm.Level0),
+                                    State = (int)EnmAlarm.Level0
+                                });
+                            }
+                        }
+                        #endregion
+                    } else if ((int)EnmAPISCObj.Room == key.Key) {
+                        #region 计算机房状态
+                        var ids = key.Select(k => k.ID);
+                        if (alarms == null) alarms = _workContext.ActAlarms(role);
+                        if (alarms.Count > 0) {
+                            var levels = alarms.GroupBy(a => a.Current.RoomId).Select(g => new { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) });
+                            data.AddRange(from id in ids
+                                          join lvl in levels on id equals lvl.id into lt
+                                          from il in lt.DefaultIfEmpty()
+                                          select new API_GV_SCValue {
+                                              ID = id,
+                                              Type = (int)EnmAPISCObj.Room,
+                                              Number = il == null ? (int)EnmAlarm.Level0 : il.level,
+                                              Desc = Common.GetAlarmDisplay(il == null ? EnmAlarm.Level0 : (EnmAlarm)il.level),
+                                              State = il == null ? (int)EnmAlarm.Level0 : il.level
+                                          });
+                        } else {
+                            foreach (var id in ids) {
+                                data.Add(new API_GV_SCValue {
+                                    ID = id,
+                                    Type = (int)EnmAPISCObj.Room,
+                                    Number = (int)EnmAlarm.Level0,
+                                    Desc = Common.GetAlarmDisplay(EnmAlarm.Level0),
+                                    State = (int)EnmAlarm.Level0
+                                });
+                            }
+                        }
+                        #endregion
+                    } else if ((int)EnmAPISCObj.Device == key.Key) {
+                        #region 计算设备状态
+                        var ids = key.Select(k => k.ID);
+                        if (alarms == null) alarms = _workContext.ActAlarms(role);
+                        if (alarms.Count > 0) {
+                            var levels = alarms.GroupBy(a => a.Current.DeviceId).Select(g => new { id = g.Key, level = g.Min(a => (int)a.Current.AlarmLevel) });
+                            data.AddRange(from id in ids
+                                          join lvl in levels on id equals lvl.id into lt
+                                          from il in lt.DefaultIfEmpty()
+                                          select new API_GV_SCValue {
+                                              ID = id,
+                                              Type = (int)EnmAPISCObj.Device,
+                                              Number = il == null ? (int)EnmAlarm.Level0 : il.level,
+                                              Desc = Common.GetAlarmDisplay(il == null ? EnmAlarm.Level0 : (EnmAlarm)il.level),
+                                              State = il == null ? (int)EnmAlarm.Level0 : il.level
+                                          });
+                        } else {
+                            foreach (var id in ids) {
+                                data.Add(new API_GV_SCValue {
+                                    ID = id,
+                                    Type = (int)EnmAPISCObj.Device,
+                                    Number = (int)EnmAlarm.Level0,
+                                    Desc = Common.GetAlarmDisplay(EnmAlarm.Level0),
+                                    State = (int)EnmAlarm.Level0
+                                });
+                            }
+                        }
+                        #endregion
+                    } else if ((int)EnmAPISCObj.Signal == key.Key) {
+                        #region 计算信号状态
+                        var nodes = new List<Kv<string, string>>();
+                        var nkeys = new HashSet<string>();
+                        foreach (var id in key.Select(k => k.ID)) {
+                            var ids = Common.SplitKeys(id);
+                            if (ids.Length != 2) continue;
+                            nodes.Add(new Kv<string, string> { Key = ids[0], Value = ids[1] });
+                            nkeys.Add(ids[1]);
+                        }
+
+                        var points = _workContext.GetPoints().FindAll(p => nkeys.Contains(p.Id));
+                        var values = _ameasureService.GetMeasures(nodes);
+                        var signals = from node in nodes
+                                      join point in points on node.Value equals point.Id
+                                      join value in values on new { DeviceId = node.Key, PointId = node.Value } equals new { value.DeviceId, value.PointId } into lt1
+                                      from nv in lt1.DefaultIfEmpty()
+                                      select new API_GV_Signal {
+                                          DeviceId = node.Key,
+                                          PointId = node.Value,
+                                          Type = (int)_workContext.GetPointType(point),
+                                          Number = nv != null ? nv.Value : 0,
+                                          Desc = nv != null ? Common.GetUnitDisplay(point.Type, nv.Value.ToString(), point.UnitState) : "",
+                                          State = nv != null && (nv.Status == EnmState.Invalid || nv.Status == EnmState.Opevent) ? (int)EnmAPIState.Invalid : (int)nv.Status
+                                      };
+
+                        var alsignals = signals.Where(t => t.Type == (int)EnmPoint.AL);
+                        if (alsignals.Any()) {
+                            var almKeys = new Dictionary<string, EnmAlarm>();
+                            if (alarms == null) alarms = _workContext.ActAlarms(role);
+                            foreach (var alarm in alarms) {
+                                almKeys[Common.JoinKeys(alarm.Current.DeviceId, alarm.Current.PointId)] = alarm.Current.AlarmLevel;
+                            }
+
+                            foreach (var signal in alsignals) {
+                                var _key = Common.JoinKeys(signal.DeviceId, signal.PointId);
+                                if (almKeys.ContainsKey(_key)) {
+                                    signal.State = (int)Common.LevelToState(almKeys[_key]);
+                                }
+                            }
+                        }
+
+                        data.AddRange(signals.Select(s => new API_GV_SCValue {
+                            ID = Common.JoinKeys(s.DeviceId, s.PointId),
+                            Type = (int)EnmAPISCObj.Signal,
+                            Number = s.Number,
+                            Desc = s.Desc,
+                            State = s.State
+                        }));
+                        #endregion
+                    }
+                }
+            } catch {
+            }
+
+            return data;
         }
 
         [HttpPost]
         public String OpSignal([FromBody]API_GV_OpSignal signal) {
+            try {
+                if (signal == null) throw new ArgumentNullException("signal");
+                var ids = Common.SplitKeys(signal.ID);
+                if (ids.Length != 2) throw new iPemException("参数ID无效");
+                var device = ids[0]; var point = ids[1];
+                var value = signal.Value;
+
+                if (string.IsNullOrWhiteSpace(device)) throw new ArgumentNullException("device");
+                if (string.IsNullOrWhiteSpace(point)) throw new ArgumentNullException("point");
+
+                var curDevice = _deviceService.GetDevice(device);
+                if (curDevice == null) throw new iPemException("未找到设备");
+
+                var curFsu = _fsuService.GetFsu(curDevice.FsuId);
+                if (curFsu == null) throw new iPemException("未找到Fsu");
+
+                var curExtFsu = _fsuService.GetExtFsu(curFsu.Id);
+                if (curExtFsu == null) throw new iPemException("未找到Fsu");
+                if (!curExtFsu.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var curPoint = _pointService.GetPointsInDevice(device).Find(p => p.Id.Equals(point));
+                if (curPoint == null) throw new iPemException("未找到信号");
+
+                var package = new SetPointPackage() {
+                    FsuId = curFsu.Code,
+                    DeviceList = new List<SetPointDevice>() {
+                        new SetPointDevice() {
+                            Id = curDevice.Code,
+                            Values = new List<TSemaphore>() {
+                                new TSemaphore() {
+                                    Id = curPoint.Code,
+                                    SignalNumber = curPoint.Number,
+                                    Type = (EnmBIPoint)((int)curPoint.Type),
+                                    MeasuredVal = "NULL",
+                                    SetupVal = value.ToString(),
+                                    Status = EnmBIState.NOALARM,
+                                    Time = DateTime.Now
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, "/").ToString(), package);
+                if (result != null) {
+                    if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "参数设置失败");
+                    if (result.DeviceList != null) {
+                        var devResult = result.DeviceList.Find(d => d.Id == curDevice.Code);
+                        if (devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number)) {
+                            return null;
+                        }
+                    }
+                }
+
+                throw new iPemException("参数设置失败");
+            } catch (Exception exc) {
+                return exc.Message;
+            }
         }
 
         #endregion

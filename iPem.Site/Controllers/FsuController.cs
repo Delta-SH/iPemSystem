@@ -122,7 +122,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -137,7 +137,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -166,7 +166,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -190,7 +190,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), "application/octet-stream", path);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -219,7 +219,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -234,7 +234,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -260,10 +260,10 @@ namespace iPem.Site.Controllers {
                 if (result == null) throw new iPemException("响应超时");
                 if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "重启失败");
 
-                _webLogger.Information(EnmEventType.Operating, string.Format("FSU重启成功[{0}]", curFsu.Current.Code), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("FSU重启成功[{0}]", curFsu.Current.Code), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "重启成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -274,10 +274,10 @@ namespace iPem.Site.Controllers {
                 _fsuService.UpdateFsus();
                 _cacheManager.Remove(GlobalCacheKeys.Rs_FsusRepository);
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_FSU", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步FSU数据" });
-                _webLogger.Information(EnmEventType.Operating, "更新FSU关联信息", null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, "更新FSU关联信息", null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "更新关联成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -306,7 +306,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -321,7 +321,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -350,7 +350,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -365,7 +365,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -434,7 +434,7 @@ namespace iPem.Site.Controllers {
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
                 #endregion
@@ -473,7 +473,7 @@ namespace iPem.Site.Controllers {
                 _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -531,19 +531,19 @@ namespace iPem.Site.Controllers {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
                                     foreach (var s in device.SuccessList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
 
                                 if (device.FailList != null && device.FailList.Count > 0) {
                                     foreach (var f in device.FailList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
 
@@ -551,7 +551,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -611,19 +611,19 @@ namespace iPem.Site.Controllers {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
                                     foreach (var s in device.SuccessList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发存储规则配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
 
                                 if (device.FailList != null && device.FailList.Count > 0) {
                                     foreach (var f in device.FailList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发存储规则配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
 
@@ -631,7 +631,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -699,7 +699,7 @@ namespace iPem.Site.Controllers {
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
                 #endregion
@@ -737,7 +737,7 @@ namespace iPem.Site.Controllers {
                 _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -794,19 +794,19 @@ namespace iPem.Site.Controllers {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
                                     foreach (var s in device.SuccessList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
 
                                 if (device.FailList != null && device.FailList.Count > 0) {
                                     foreach (var f in device.FailList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
 
@@ -814,7 +814,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -873,19 +873,19 @@ namespace iPem.Site.Controllers {
                             foreach (var device in result.DeviceList) {
                                 if (device.SuccessList != null && device.SuccessList.Count > 0) {
                                     foreach (var s in device.SuccessList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发告警门限配置成功[{0},{1},{2}{3}]", package.FsuId, device.Id, s.Id, s.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
 
                                 if (device.FailList != null && device.FailList.Count > 0) {
                                     foreach (var f in device.FailList) {
-                                        _webLogger.Information(EnmEventType.Operating, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
+                                        _webLogger.Information(EnmEventType.Other, string.Format("下发告警门限配置失败[{0},{1},{2}{3}]", package.FsuId, device.Id, f.Id, f.SignalNumber), null, _workContext.User().Id);
                                     }
                                 }
                             }
                         }
                     } catch (Exception exc) {
-                        _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                     }
                 }
 
@@ -893,7 +893,7 @@ namespace iPem.Site.Controllers {
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发完成，请重新读取配置信息。" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -922,7 +922,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -937,7 +937,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Exception, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
