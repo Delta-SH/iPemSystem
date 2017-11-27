@@ -1370,6 +1370,41 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetControls(string point, int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                if (!string.IsNullOrWhiteSpace(point)) {
+                    var current = _workContext.Points().Find(p => p.Type == EnmPoint.DO && p.Id.Equals(point));
+                    if (current != null && !string.IsNullOrWhiteSpace(current.UnitState)) {
+                        var status = Common.GetDIStatus(current.UnitState);
+                        data.message = "200 Ok";
+                        data.total = status.Count;
+                        data.data.AddRange(status.Select(d => new ComboItem<int, string> { id = d.Key, text = string.Format("{0}-{1}", d.Value, d.Key) }));
+                    }
+                }
+
+                if (data.data.Count == 0) {
+                    data.message = "200 Ok";
+                    data.total = 3;
+                    data.data.Add(new ComboItem<int, string> { id = 0, text = string.Format("{0}-{1}", "常开控制", 0) });
+                    data.data.Add(new ComboItem<int, string> { id = 1, text = string.Format("{0}-{1}", "常闭控制", 1) });
+                    data.data.Add(new ComboItem<int, string> { id = 2, text = string.Format("{0}-{1}", "脉冲控制", 2) });
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonResult GetEmployees(string node, bool? multiselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,

@@ -389,6 +389,18 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static List<Kv<int,string>> GetDIStatus(string status) {
+            var result = new List<Kv<int, string>>();
+            var units = (status ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var unit in units) {
+                var vs = unit.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+                if (vs.Length != 2) continue;
+
+                result.Add(new Kv<int, string>(int.Parse(vs[0].Trim()), vs[1].Trim()));
+            }
+            return result;
+        }
+
         public static string GetEmployeeTypeDisplay(EnmEmpType type) {
             switch (type) {
                 case EnmEmpType.Employee:

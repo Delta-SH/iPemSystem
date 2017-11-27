@@ -4023,6 +4023,46 @@ Ext.define("Ext.ux.PointComboBox", {
     }
 });
 
+Ext.define("Ext.ux.ControlComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "ControlCombo",
+    fieldLabel: '控制参数',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetControls';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    },
+    bind: function (point) {
+        var me = this;
+        if (Ext.isEmpty(point)) return false;
+
+        me.store.proxy.extraParams.point = point;
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
 Ext.define("Ext.ux.PointMultiTreePanel", {
     extend: "Ext.ux.TreePicker",
     xtype: "PointMultiPicker",

@@ -644,10 +644,14 @@
                         var form = controlWnd.getComponent('controlForm'),
                             device = form.getComponent('device'),
                             point = form.getComponent('point'),
+                            controlname = form.getComponent('controlname'),
+                            controlvalue = form.getComponent('ctrl'),
                             result = Ext.getCmp('controlResult');
 
                         device.setValue(record.get('deviceid'));
                         point.setValue(record.get('pointid'));
+                        controlname.setRawValue(record.get('point'));
+                        controlvalue.bind(record.get('pointid'));
                         result.setTextWithIcon('', '')
                         controlWnd.show();
                     }
@@ -1171,36 +1175,21 @@
                     name: 'point'
                 },
                 {
-                    itemId: 'controlradio',
-                    xtype: 'radiogroup',
-                    columns: 2,
-                    vertical: false,
-                    items: [
-                        { boxLabel: '常开控制(0)', name: 'ctrl', inputValue: 0, checked: true },
-                        { boxLabel: '常闭控制(1)', name: 'ctrl', inputValue: 1 },
-                        { boxLabel: '脉冲控制(2)', name: 'ctrl', inputValue: 2 },
-                        { boxLabel: '自定义控制', name: 'ctrl', inputValue: 3 }
-                    ],
-                    listeners: {
-                        change: function (me, newValue, oldValue) {
-                            var form = controlWnd.getComponent('controlForm'),
-                                current = form.getComponent('custom');
-                            current.setDisabled(newValue.ctrl !== 3);
-                        }
-                    }
+                    itemId: 'controlname',
+                    name: 'controlname',
+                    xtype: 'textfield',
+                    labelAlign: 'top',
+                    fieldLabel: '控制信号',
+                    allowBlank: false,
+                    submitValue: false,
+                    readOnly: true
                 },
                 {
-                    itemId: 'custom',
-                    name: 'custom',
-                    xtype: 'numberfield',
-                    labelAlign: 'top',
-                    fieldLabel: '自定义控制值',
-                    disabled: true,
+                    itemId: 'ctrl',
+                    name: 'ctrl',
+                    xtype: 'ControlCombo',
                     allowBlank: false,
-                    allowDecimals: false,
-                    minValue: -100,
-                    maxValue: 100,
-                    value: 0
+                    labelAlign: 'top'
                 },
                 {
                     itemId: 'password',
