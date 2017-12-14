@@ -110,6 +110,8 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<ID_DeviceRepository>(c => new D_DeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<ID_FsuRepository>(c => new D_FsuRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<ID_RedefinePointRepository>(c => new D_RedefinePointRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<ID_SignalRepository>(c => new D_SignalRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IH_MaskingRepository>(c => new H_MaskingRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_NoteRepository>(c => new H_NoteRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_AuthorizationRepository>(c => new M_AuthorizationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_CardRepository>(c => new M_CardRepository(connectionString)).InstancePerLifetimeScope();
@@ -136,6 +138,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<GroupService>().As<IGroupService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuService>().As<IFsuService>().InstancePerLifetimeScope();
                 builder.RegisterType<LogicTypeService>().As<ILogicTypeService>().InstancePerLifetimeScope();
+                builder.RegisterType<MaskingService>().As<IMaskingService>().InstancePerLifetimeScope();
                 builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProductorService>().As<IProductorService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProtocolService>().As<IProtocolService>().InstancePerLifetimeScope();
@@ -147,6 +150,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<RoomService>().As<IRoomService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoomTypeService>().As<IRoomTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<SCVendorService>().As<ISCVendorService>().InstancePerLifetimeScope();
+                builder.RegisterType<SignalService>().As<ISignalService>().InstancePerLifetimeScope();
                 builder.RegisterType<StationService>().As<IStationService>().InstancePerLifetimeScope();
                 builder.RegisterType<StationTypeService>().As<IStationTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<SubCompanyService>().As<ISubCompanyService>().InstancePerLifetimeScope();
@@ -162,6 +166,7 @@ namespace iPem.Site.Infrastructure {
 
                 //register repository
                 builder.Register<IA_AAlarmRepository>(c => new A_AAlarmRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IA_TAlarmRepository>(c => new A_TAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IA_HAlarmRepository>(c => new A_HAlarmRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_CardRecordRepository>(c => new H_CardRecordRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_DBScriptRepository>(c => new H_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
@@ -199,6 +204,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<LoadRateService>().As<ILoadService>().InstancePerLifetimeScope();
                 builder.RegisterType<ParamDiffService>().As<IParamDiffService>().InstancePerLifetimeScope();
                 builder.RegisterType<StaticService>().As<IStaticService>().InstancePerLifetimeScope();
+                builder.RegisterType<TAlarmService>().As<ITAlarmService>().InstancePerLifetimeScope();
             }
 
             if(dbManager.IsValid(EnmDbType.Sc)) {

@@ -16,11 +16,30 @@ namespace iPem.Data.Common {
         public const string Sql_A_AAlarm_Repository_GetAlarmsInSpan = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AlarmTime] BETWEEN @Start AND @End AND [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [PrimaryId] IS NULL AND [RelatedId] IS NULL AND [FilterId] IS NULL ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetSystemAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [RoomId] = '-1' ORDER BY [AlarmTime] DESC;";
+        public const string Sql_A_AAlarm_Repository_GetAllAlarmsInSpan = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [AlarmTime] BETWEEN @Start AND @End ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetAllAlarms = @"SELECT * FROM [dbo].[A_AAlarm] ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetPrimaryAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [PrimaryId] = @PrimaryId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetRelatedAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [RelatedId] = @RelatedId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_GetFilterAlarms = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Masked] = 0 AND [FilterId] = @FilterId ORDER BY [AlarmTime] DESC;";
         public const string Sql_A_AAlarm_Repository_Confirm = @"UPDATE [dbo].[A_AAlarm] SET [Confirmed] = @Confirmed,[Confirmer] = @Confirmer,[ConfirmedTime] = @ConfirmedTime WHERE [Id] = @Id;";
+        public const string Sql_A_AAlarm_Repository_GetAlarm = @"SELECT * FROM [dbo].[A_AAlarm] WHERE [Id] = @Id;";
+        public const string Sql_A_AAlarm_Repository_DeleteAlarm = @"
+        DELETE FROM [dbo].[A_AAlarm] WHERE [Id] = @Id;
+        DELETE FROM [dbo].[A_IAlarm] WHERE [FsuId] = @FsuId AND [SerialNo] = @SerialNo;";
+
+
+        /// <summary>
+        /// 告警流水表
+        /// </summary>
+        public const string Sql_A_TAlarm_Repository_GetEntity = @"SELECT * FROM [dbo].[A_TAlarm] WHERE [FsuId] = @FsuId AND [SerialNo] = @SerialNo AND [AlarmFlag] = @AlarmFlag;";
+        public const string Sql_A_TAlarm_Repository_GetEntities = @"SELECT * FROM [dbo].[A_TAlarm] ORDER BY [AlarmTime];";
+        public const string Sql_A_TAlarm_Repository_Delete = @"DELETE FROM [dbo].[A_TAlarm] WHERE [FsuId] = @FsuId AND [SerialNo] = @SerialNo AND [AlarmFlag] = @AlarmFlag;";
+        public const string Sql_A_TAlarm_Repository_Insert = @"
+        IF NOT EXISTS( SELECT 1 FROM [dbo].[A_TAlarm] WHERE [FsuId]=@FsuId AND [SerialNo]=@SerialNo AND [AlarmFlag]=@AlarmFlag)
+        BEGIN
+	        INSERT INTO [dbo].[A_TAlarm]([FsuId],[DeviceId],[PointId],[SignalId],[SignalNumber],[SerialNo],[NMAlarmId],[AlarmTime],[AlarmLevel],[AlarmFlag],[AlarmDesc],[AlarmValue],[AlarmRemark]) 
+	        VALUES(@FsuId,@DeviceId,@PointId,@SignalId,@SignalNumber,@SerialNo,@NMAlarmId,@AlarmTime,@AlarmLevel,@AlarmFlag,@AlarmDesc,@AlarmValue,@AlarmRemark);
+        END";
 
         /// <summary>
         /// 历史告警表

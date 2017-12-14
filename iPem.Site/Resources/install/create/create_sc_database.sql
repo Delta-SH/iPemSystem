@@ -1,8 +1,8 @@
 /*
-* P2S_V1 Database Script Library v1.1.2
+* P2S_V1 Database Script Library v1.2.2
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/10/12
+* Date: 2017/12/08
 */
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -61,6 +61,18 @@ GO
 --删除外键[dbo].[U_Profile]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_Profile_U_Users]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_Profile]'))
 ALTER TABLE [dbo].[U_Profile] DROP CONSTRAINT [FK_U_Profile_U_Users]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[U_RoomsInRoles]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_RoomsInRoles_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_RoomsInRoles]'))
+ALTER TABLE [dbo].[U_RoomsInRoles] DROP CONSTRAINT [FK_U_RoomsInRoles_U_Roles]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--删除外键[dbo].[U_StationsInRoles]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_StationsInRoles_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_StationsInRoles]'))
+ALTER TABLE [dbo].[U_StationsInRoles] DROP CONSTRAINT [FK_U_StationsInRoles_U_Roles]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -642,6 +654,60 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_RoomsInRoles]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_RoomsInRoles]') AND type in (N'U'))
+DROP TABLE [dbo].[U_RoomsInRoles]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_RoomsInRoles](
+	[RoleId] [varchar](100) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_U_RoomsInRoles] PRIMARY KEY CLUSTERED 
+(
+	[RoleId] ASC,
+	[RoomId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[U_StationsInRoles]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_StationsInRoles]') AND type in (N'U'))
+DROP TABLE [dbo].[U_StationsInRoles]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[U_StationsInRoles](
+	[RoleId] [varchar](100) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_U_StationsInRoles] PRIMARY KEY CLUSTERED 
+(
+	[RoleId] ASC,
+	[StationId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[U_Users]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[U_Users]') AND type in (N'U'))
 DROP TABLE [dbo].[U_Users]
@@ -825,6 +891,30 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_Profile_U_Users]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_Profile]'))
 ALTER TABLE [dbo].[U_Profile] CHECK CONSTRAINT [FK_U_Profile_U_Users]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[U_RoomsInRoles]
+ALTER TABLE [dbo].[U_RoomsInRoles]  WITH CHECK ADD  CONSTRAINT [FK_U_RoomsInRoles_U_Roles] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[U_Roles] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_RoomsInRoles_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_RoomsInRoles]'))
+ALTER TABLE [dbo].[U_RoomsInRoles] CHECK CONSTRAINT [FK_U_RoomsInRoles_U_Roles]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加外键[dbo].[U_StationsInRoles]
+ALTER TABLE [dbo].[U_StationsInRoles]  WITH CHECK ADD  CONSTRAINT [FK_U_StationsInRoles_U_Roles] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[U_Roles] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_U_StationsInRoles_U_Roles]') AND parent_object_id = OBJECT_ID(N'[dbo].[U_StationsInRoles]'))
+ALTER TABLE [dbo].[U_StationsInRoles] CHECK CONSTRAINT [FK_U_StationsInRoles_U_Roles]
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

@@ -95,14 +95,14 @@ namespace iPem.Data.Repository.Sc {
                     }
 
                     foreach (var entity in entities.Rooms) {
-                        parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
-                        parms3[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
+                        parms4[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms4[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert4, parms4);
                     }
 
                     foreach (var entity in entities.Permissions) {
-                        parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
-                        parms3[1].Value = (int)entity;
+                        parms5[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms5[1].Value = (int)entity;
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert5, parms5);
                     }
 

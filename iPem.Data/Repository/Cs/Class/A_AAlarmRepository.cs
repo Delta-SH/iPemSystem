@@ -1,4 +1,5 @@
 ﻿using iPem.Core.Domain.Cs;
+using iPem.Core.Enum;
 using iPem.Data.Common;
 using System;
 using System.Collections.Generic;
@@ -297,6 +298,48 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
+        public List<A_AAlarm> GetAllAlarms(DateTime start, DateTime end) {
+            SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
+                                     new SqlParameter("@End", SqlDbType.DateTime) };
+
+            parms[0].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+
+            var entities = new List<A_AAlarm>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetAllAlarmsInSpan, parms)) {
+                while (rdr.Read()) {
+                    var entity = new A_AAlarm();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
+                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
+                    entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
+                    entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
+                    entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
+                    entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
+                    entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
+                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
         public List<A_AAlarm> GetAllAlarms() {
             var entities = new List<A_AAlarm>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetAllAlarms, null)) {
@@ -466,6 +509,68 @@ namespace iPem.Data.Repository.Cs {
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(alarm.Confirmer);
                         parms[3].Value = SqlTypeConverter.DBNullDateTimeNullableChecker(alarm.ConfirmedTime);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_Confirm, parms);
+                    }
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public A_AAlarm GetAlarm(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+
+            A_AAlarm entity = null;
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetAlarm, parms)) {
+                if (rdr.Read()) {
+                    entity = new A_AAlarm();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
+                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
+                    entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
+                    entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
+                    entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
+                    entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
+                    entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
+                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                }
+            }
+
+            return entity;
+        }
+
+        public void DeleteAlarms(params A_AAlarm[] alarms) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200),
+                                     new SqlParameter("@FsuId", SqlDbType.VarChar, 100), 
+                                     new SqlParameter("@SerialNo", SqlDbType.VarChar, 100) };
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var alarm in alarms) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(alarm.Id);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(alarm.FsuId);
+                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(alarm.SerialNo);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_DeleteAlarm, parms);
                     }
                     trans.Commit();
                 } catch {

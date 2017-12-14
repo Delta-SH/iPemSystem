@@ -36,6 +36,7 @@
             { name: 'interval', type: 'string' },
             { name: 'comment', type: 'string' },
             { name: 'value', type: 'string' },
+            { name: 'supporter', type: 'string' },
             { name: 'point', type: 'string' },
             { name: 'device', type: 'string' },
 			{ name: 'room', type: 'string' },
@@ -149,6 +150,7 @@
         autoLoad: false,
         pageSize: 20,
         fields: [],
+        downloadURL: '/Home/DownloadMatrixValues',
         proxy: {
             type: 'ajax',
             url: '/Home/RequestMatrixValues',
@@ -160,7 +162,8 @@
                 root: 'data'
             },
             extraParams: {
-                node: 'root'
+                node: 'root',
+                cache: false
             },
             simpleSortMode: true
         },
@@ -761,6 +764,16 @@
                 }
             }, '-',
             {
+                id: 'exportButton',
+                xtype: 'button',
+                glyph: 0xf010,
+                text: '数据导出',
+                disabled: true,
+                handler: function (el, e) {
+                    download();
+                }
+            }, '-',
+            {
                 id: 'matrixTemplates',
                 xtype: "combo",
                 fieldLabel: '测值模版',
@@ -772,7 +785,7 @@
                 selectOnFocus: true,
                 forceSelection: true,
                 labelWidth: 60,
-                width: 365,
+                width: 280,
                 store: templateStore
             },
             {
@@ -1000,6 +1013,10 @@
                 text: '触发值',
                 dataIndex: 'value',
                 align: 'center'
+            },
+            {
+                text: '维护厂家',
+                dataIndex: 'supporter'
             },
             {
                 text: '信号名称',
@@ -2066,6 +2083,7 @@
 
     var loadMatrixColumn = function (template) {
         var me = matrixStore,
+            proxy = me.getProxy(),
             grid = matrixPanel,
             view = grid.getView(),
             mask = new Ext.LoadMask({ target: view, msg: '获取列名...' });
@@ -2087,10 +2105,16 @@
                             columns.push({ text: item.column, dataIndex: item.name, width: item.width, align: item.align });
                         });
                     }
-
                     grid.reconfigure(me, columns);
-                    me.getProxy().extraParams.id = template;
-                    me.loadPage(1);
+
+                    proxy.extraParams.id = template;
+                    proxy.extraParams.cache = false;
+                    me.loadPage(1, {
+                        callback: function (records, operation, success) {
+                            proxy.extraParams.cache = success;
+                            Ext.getCmp('exportButton').setDisabled(success === false);
+                        }
+                    });
                 } else {
                     Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                 }

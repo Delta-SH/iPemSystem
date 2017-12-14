@@ -15,10 +15,6 @@ using System.Xml;
 
 namespace iPem.Site.Infrastructure {
     public class Common {
-        public static string GlobalSeparator {
-            get { return "┆"; }
-        }
-
         public static string CaptchaId {
             get { return "ipems.login.captcha"; }
         }
@@ -264,6 +260,25 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetMaskTypeDisplay(EnmMaskType type) {
+            switch (type) {
+                case EnmMaskType.Area:
+                    return "区域";
+                case EnmMaskType.Station:
+                    return "站点";
+                case EnmMaskType.Room:
+                    return "机房";
+                case EnmMaskType.Fsu:
+                    return "FSU";
+                case EnmMaskType.Device:
+                    return "设备";
+                case EnmMaskType.Point:
+                    return "信号";
+                default:
+                    return "未定义";
+            }
+        }
+
         public static string GetAlarmDisplay(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level0:
@@ -486,6 +501,37 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetPointParamDisplay(EnmPointParam param) {
+            switch (param) {
+                case EnmPointParam.AbsThreshold:
+                    return "绝对阈值";
+                case EnmPointParam.PerThreshold:
+                    return "百分比阈值";
+                case EnmPointParam.SavedPeriod:
+                    return "存储周期";
+                case EnmPointParam.StorageRefTime:
+                    return "存储参考时间";
+                case EnmPointParam.AlarmLimit:
+                    return "告警门限值";
+                case EnmPointParam.AlarmLevel:
+                    return "告警等级";
+                case EnmPointParam.AlarmDelay:
+                    return "告警延迟";
+                case EnmPointParam.AlarmRecoveryDelay:
+                    return "告警恢复延迟";
+                case EnmPointParam.AlarmFiltering:
+                    return "告警过滤";
+                case EnmPointParam.AlarmInferior:
+                    return "主次告警";
+                case EnmPointParam.AlarmConnection:
+                    return "关联告警";
+                case EnmPointParam.AlarmReversal:
+                    return "告警翻转";
+                default:
+                    return "未定义";
+            }
+        }
+
         public static Color GetAlarmColor(EnmAlarm level) {
             switch(level) {
                 case EnmAlarm.Level1:
@@ -530,31 +576,19 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string[] SplitCondition(string conditions) {
-            if(string.IsNullOrWhiteSpace(conditions))
-                return new string[0];
-
-            return conditions.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
+            return CommonHelper.SplitCondition(conditions);
         }
 
         public static string JoinCondition(params string[] conditions) {
-            if (conditions == null || conditions.Length == 0)
-                return string.Empty;
-
-            return string.Join(";", conditions);
+            return CommonHelper.JoinCondition(conditions);
         }
 
         public static string[] SplitKeys(string key) {
-            if(string.IsNullOrWhiteSpace(key))
-                return new string[0];
-
-            return key.Split(new string[] { GlobalSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            return CommonHelper.SplitKeys(key);
         }
 
         public static string JoinKeys(params object[] keys) {
-            if(keys == null || keys.Length == 0)
-                return string.Empty;
-
-            return string.Join(GlobalSeparator, keys);
+            return CommonHelper.JoinKeys(keys);
         }
 
         public static Kv<EnmSSH, string> ParseNode(string node) {
@@ -567,11 +601,10 @@ namespace iPem.Site.Infrastructure {
             return new Kv<EnmSSH, string>((EnmSSH)(int.Parse(keys[0])), keys[1]);
         }
 
-        public static string GetNodeName(string node, C_SCVendor vendor) {
+        public static string GetNodeName(string node, string vendor) {
             if (string.IsNullOrWhiteSpace(node)) node = "未知";
-            if (vendor == null) return node;
-            if (string.IsNullOrWhiteSpace(vendor.Name)) return node;
-            return string.Format("{0}[{1}]", node, vendor.Name);
+            if (string.IsNullOrWhiteSpace(vendor)) return node;
+            return string.Format("{0}[{1}]", node, vendor);
         }
 
         public static bool SetAllowUnsafeHeaderParsing() {

@@ -40,7 +40,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
@@ -82,7 +82,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);
@@ -122,7 +122,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_RoomType { Id = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Floor = SqlTypeConverter.DBNullInt32Handler(rdr["Floor"]);
                     entity.PropertyId = SqlTypeConverter.DBNullInt32Handler(rdr["PropertyId"]);
                     entity.Address = SqlTypeConverter.DBNullStringHandler(rdr["Address"]);

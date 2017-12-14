@@ -177,6 +177,7 @@
     <Compile Include="Controllers\InstallationController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
     <Compile Include="Controllers\KPIController.cs" />
+    <Compile Include="Controllers\MaintenanceController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Extensions\JsonNetController.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\iAuth.cs" />
+    <Compile Include="Models\MaskingModel.cs" />
     <Compile Include="Models\Model400106.cs" />
     <Compile Include="Models\Model400105.cs" />
     <Compile Include="Models\Model400204.cs" />
@@ -251,6 +253,8 @@
     <Compile Include="Models\Model400210.cs" />
     <Compile Include="Models\Model400211.cs" />
     <Compile Include="Models\NodeIcon.cs" />
+    <Compile Include="Models\PointParam.cs" />
+    <Compile Include="Models\RedundantAlmModel.cs" />
     <Compile Include="Models\ReservationDetailModel.cs" />
     <Compile Include="Models\FtpFileModel.cs" />
     <Compile Include="Models\HisAlmModel.cs" />
@@ -387,6 +391,7 @@
     <Content Include="Content\themes\icons\diqiu-level-3.png" />
     <Content Include="Content\themes\icons\diqiu-level-4.png" />
     <Content Include="Content\themes\icons\filter.png" />
+    <Content Include="Content\themes\icons\menu-gjpb.png" />
     <Content Include="Content\themes\icons\juzhan-level-0.png" />
     <Content Include="Content\themes\icons\juzhan-level-1.png" />
     <Content Include="Content\themes\icons\juzhan-level-2.png" />
@@ -400,6 +405,7 @@
     <Content Include="Content\themes\icons\menu-fsupz.png" />
     <Content Include="Content\themes\icons\menu-gcgl.png" />
     <Content Include="Content\themes\icons\menu-gcyy.png" />
+    <Content Include="Content\themes\icons\menu-gjgl.png" />
     <Content Include="Content\themes\icons\menu-jsgl.png" />
     <Content Include="Content\themes\icons\menu-kpi-dz.png" />
     <Content Include="Content\themes\icons\menu-kpi-jkd.png" />
@@ -442,6 +448,7 @@
     <Content Include="Content\themes\icons\control.png" />
     <Content Include="Content\themes\icons\remove.png" />
     <Content Include="Content\themes\icons\room.png" />
+    <Content Include="Content\themes\images\map\location0.png" />
     <Content Include="Content\themes\images\map\point.png" />
     <Content Include="Content\themes\images\map\location1.png" />
     <Content Include="Content\themes\images\map\location2.png" />
@@ -1169,6 +1176,9 @@
     <Content Include="Scripts\kpi.performance500305.js" />
     <Content Include="Scripts\kpi.performance500306.js" />
     <Content Include="Scripts\home.recorder.js" />
+    <Content Include="Scripts\maintenance.js" />
+    <Content Include="Scripts\maintenance.masking.js" />
+    <Content Include="Scripts\maintenance.pointparam.js" />
     <Content Include="Scripts\report.base400106.js" />
     <Content Include="Scripts\report.base400105.js" />
     <Content Include="Scripts\report.custom400403.js" />
@@ -1346,6 +1356,9 @@
     <Content Include="Views\Report\history400209.cshtml" />
     <Content Include="Views\Report\history400210.cshtml" />
     <Content Include="Views\Report\history400211.cshtml" />
+    <Content Include="Views\Maintenance\Index.cshtml" />
+    <Content Include="Views\Maintenance\Masking.cshtml" />
+    <Content Include="Views\Maintenance\PointParam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

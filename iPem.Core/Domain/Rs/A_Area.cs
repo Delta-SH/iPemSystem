@@ -34,7 +34,7 @@ namespace iPem.Core.Domain.Rs {
         /// <summary>
         /// 所属厂家
         /// </summary>
-        public C_SCVendor Vendor { get; set; }
+        public string Vendor { get; set; }
 
         /// <summary>
         /// 备注

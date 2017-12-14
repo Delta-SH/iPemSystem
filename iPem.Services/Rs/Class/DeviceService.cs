@@ -77,6 +77,13 @@ namespace iPem.Services.Rs {
             }
         }
 
+        public HashSet<string> GetDeviceKeysWithPoints(string[] points) {
+            if (points == null || points.Length == 0) 
+                throw new ArgumentNullException("points");
+
+            return _repository.GetDeviceKeysWithPoints(points);
+        }
+
         public IPagedList<D_Device> GetPagedDevices(int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<D_Device>(this.GetDevices(), pageIndex, pageSize);
         }

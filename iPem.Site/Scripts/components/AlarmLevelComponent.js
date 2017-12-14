@@ -301,3 +301,57 @@ Ext.define("Ext.ux.SeniorConditionComboBox", {
         });
     }
 });
+
+Ext.define("Ext.ux.MaskingMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "MaskingMultiCombo",
+    fieldLabel: '屏蔽类型',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetMaskingTypes';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all }
+        });
+    }
+});
+
+Ext.define("Ext.ux.MaskingComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "MaskingCombo",
+    fieldLabel: '屏蔽类型',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    all: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetMaskingTypes';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { all: me.all },
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});

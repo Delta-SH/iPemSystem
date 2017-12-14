@@ -97,7 +97,13 @@ namespace iPem.Site.Models {
 
         /// <summary>
         /// 关键监控测点接入率(其他站点)
-        /// 监控设备
+        /// 关键信号
+        /// </summary>
+        public string[] qtgjjkcdjrlXinHao { get; set; }
+
+        /// <summary>
+        /// 关键监控测点接入率(其他站点)
+        /// 电源设备
         /// </summary>
         public string[] qtgjjkcdjrlLeiXing { get; set; }
 

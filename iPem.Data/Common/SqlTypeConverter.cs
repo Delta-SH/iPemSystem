@@ -171,6 +171,13 @@ namespace iPem.Data.Common {
             return Enum.IsDefined(typeof(EnmConfirm), v) ? (EnmConfirm)v : EnmConfirm.Unconfirmed;
         }
 
+        public static EnmFlag DBNullEnmFlagHandler(object val) {
+            if (val == DBNull.Value) { return EnmFlag.Begin; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmFlag), v) ? (EnmFlag)v : EnmFlag.Begin;
+        }
+
         public static EnmSSH DBNullEnmSSHHandler(object val) {
             if (val == DBNull.Value) { return EnmSSH.Root; }
 
@@ -246,6 +253,13 @@ namespace iPem.Data.Common {
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmDirection), v) ? (EnmDirection)v : EnmDirection.InToOut;
+        }
+
+        public static EnmMaskType DBNullMaskTypeHandler(object val) {
+            if (val == DBNull.Value) { return EnmMaskType.Point; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmMaskType), v) ? (EnmMaskType)v : EnmMaskType.Point;
         }
     }
 }

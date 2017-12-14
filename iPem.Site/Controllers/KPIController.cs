@@ -33,6 +33,7 @@ namespace iPem.Site.Controllers {
         private readonly IStationService _stationService;
         private readonly IStationTypeService _stationTypeService;
         private readonly IDeviceTypeService _deviceTypeService;
+        private readonly IDeviceService _deviceService;
         private readonly IHAlarmService _hisAlarmService;
         private readonly IBatService _batService;
         private readonly IBatTimeService _batTimeService;
@@ -54,6 +55,7 @@ namespace iPem.Site.Controllers {
             IStationService stationService,
             IStationTypeService stationTypeService,
             IDeviceTypeService deviceTypeService,
+            IDeviceService deviceService,
             IHAlarmService hisAlarmService,
             IBatService batService,
             IBatTimeService batTimeService,
@@ -69,6 +71,7 @@ namespace iPem.Site.Controllers {
             this._stationTypeService = stationTypeService;
             this._stationService = stationService;
             this._deviceTypeService = deviceTypeService;
+            this._deviceService = deviceService;
             this._hisAlarmService = hisAlarmService;
             this._batService = batService;
             this._batTimeService = batTimeService;
@@ -1625,16 +1628,20 @@ namespace iPem.Site.Controllers {
         private List<Model500202> Get500202(string parent, string[] types, int size) {
             var result = new List<Model500202>();
             var rtValues = _workContext.RtValues();
-            if(rtValues == null 
+            if(rtValues == null
+                || rtValues.qtgjjkcdjrlXinHao == null
+                || rtValues.qtgjjkcdjrlXinHao.Length == 0
                 || rtValues.qtgjjkcdjrlLeiXing == null 
                 || rtValues.qtgjjkcdjrlLeiXing.Length == 0
                 || string.IsNullOrWhiteSpace(parent)) return result;
 
+            var points = rtValues.qtgjjkcdjrlXinHao;
             var devTypeIds = rtValues.qtgjjkcdjrlLeiXing;
             var devTypeNames = _deviceTypeService.GetSubDeviceTypes().FindAll(t => devTypeIds.Contains(t.Id)).Select(t => t.Name).ToList();
 
-            var devices = _workContext.Devices().FindAll(d => devTypeIds.Contains(d.Current.SubType.Id));
-            var iDevices = _workContext.iDevices(DateTime.Now).FindAll(i=>devTypeNames.Contains(i.Current.TypeName));
+            var deviceKeys = _deviceService.GetDeviceKeysWithPoints(points);
+            var devices = _workContext.Devices().FindAll(d => devTypeIds.Contains(d.Current.SubType.Id) && deviceKeys.Contains(d.Current.Id));
+            var iDevices = _workContext.iDevices(DateTime.Now).FindAll(i => devTypeNames.Contains(i.Current.TypeName));
             if (types != null && types.Length > 0) {
                 var staTypeNames = _workContext.StationTypes().FindAll(t => types.Contains(t.Id)).Select(t => t.Name);
                 devices = devices.FindAll(s => types.Contains(s.Current.StaTypeId));
@@ -1707,7 +1714,7 @@ namespace iPem.Site.Controllers {
                         #endregion
                     }
                 }
-            }
+            } 
 
             return result;
         }

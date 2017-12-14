@@ -81,7 +81,7 @@
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
-            { name: 'id', type: 'string' },
+            { name: 'area', type: 'string' },
             { name: 'name', type: 'string' },
             { name: 'type', type: 'string' },
             { name: 'longitude', type: 'string' },
@@ -100,7 +100,7 @@
             { name: 'comment', type: 'string' },
             { name: 'enabled', type: 'boolean' }
         ],
-        idProperty: 'id'
+        idProperty: 'index'
     });
 
     var currentStore = Ext.create('Ext.data.Store', {
@@ -276,19 +276,19 @@
                 align: 'left',
                 sortable: true
             }, {
-                text: '编号',
-                dataIndex: 'id',
+                text: '所属区域',
+                dataIndex: 'area',
                 width: 100,
                 align: 'left',
                 sortable: true
             }, {
-                text: '名称',
+                text: '站点名称',
                 dataIndex: 'name',
                 width: 100,
                 align: 'left',
                 sortable: true
             }, {
-                text: '类型',
+                text: '站点类型',
                 dataIndex: 'type',
                 width: 100,
                 align: 'left',

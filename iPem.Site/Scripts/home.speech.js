@@ -44,11 +44,13 @@
 
     $.isIE = $.ieVersion > -1;
 
+    $.contents = [];
+
     $.playing = false;
 
-    $.initDelay = 20;
+    $.initDelay = 15000;
 
-    $.startDelay = 5;
+    $.startDelay = 3000;
 
     var installed = function () {
         var activex,
@@ -96,7 +98,7 @@
     };
 
     var init = function () {
-        if ($.contents && $.contents.length > 0)
+        if ($.contents.length > 0)
             return false;
 
         $.ajax({
@@ -104,28 +106,59 @@
             dataType: 'json',
             cache: false,
             beforeSend: function(XHR){
-                if ($.initTask)
-                    window.clearInterval($.initTask);
+                if ($.initTask) window.clearInterval($.initTask);
             },
             success: function (data, textStatus, jqXHR) {
-                if (data.success)
-                    $.contents = data.data;
+                if (data.success) $.contents = data.data || [];
             }
         }).always(function () {
-            $.initTask = window.setInterval(init, $.initDelay * 1000);
+            $.initTask = window.setInterval(init, $.initDelay);
+            start();
         });
     };
 
     var start = function () {
+        if ($.contents.length === 0)
+            return false;
+
         if ($.playing)
             return false;
 
-        if ($.contents && $.contents.length > 0) {
-            $.playing = true;
-            window.setTimeout(function () {
-                play($.contents.shift());
-            }, 1000);
-        }
+        $.playing = true;
+
+        $.ajax({
+            url: "/Home/GetSpeechContent",
+            dataType: 'json',
+            data: { id: $.contents.shift() },
+            cache: false,
+            beforeSend: function (XHR) {
+                if ($.startTask) window.clearInterval($.startTask);
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (data.success) {
+                    if (data.data === null) {
+                        $.startDelay = 500;
+                        $.playing = false;
+                    } else if (data.data === 'ERR-1') {
+                        $.contents = [];
+                        $.startDelay = 500;
+                        $.playing = false;
+                    } else {
+                        $.startDelay = 3000;
+                        play(data.data);
+                    }
+                } else {
+                    $.startDelay = 500;
+                    $.playing = false;
+                }
+            },
+            error: function () {
+                $.startDelay = 500;
+                $.playing = false;
+            }
+        }).always(function () {
+            $.startTask = window.setInterval(start, $.startDelay);
+        });
     };
 
     $(document).ready(function () {
@@ -145,6 +178,5 @@
         }
 
         init();
-        window.setInterval(start, $.startDelay * 1000);
     });
 })();

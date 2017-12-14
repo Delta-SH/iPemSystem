@@ -23,6 +23,8 @@ namespace iPem.Services.Common {
         public const string Rs_FsusRepository = @"ipems:global:rs-fsus";
         public const string Rs_GroupsRepository = @"ipems:global:rs-groups";
         public const string Rs_LogicTypesRepository = @"ipems:global:rs-logic-types";
+        public const string Rs_MaskingRepository = @"ipems:global:rs-maskings";
+        public const string Rs_HashMaskingRepository = @"ipems:global:rs-hash-maskings";
         public const string Rs_OutEmployeesRepository = @"ipems:global:rs-out-employees";
         public const string Rs_PointsRepository = @"ipems:global:rs-points";
         public const string Rs_SubLogicTypesRepository = @"ipems:global:rs-sub-logic-types";
@@ -50,6 +52,10 @@ namespace iPem.Services.Common {
         /// 用户应用缓存
         /// </summary>
         public const string FollowPointsPattern = @"ipems:user:{0}:follow-points";
+        public const string RedundantAlarmsPattern = @"ipems:user:{0}:maintenance-redundant-alarms";
+        public const string MaskingPattern = @"ipems:user:{0}:maintenance-maskings";
+        public const string PointParamPattern = @"ipems:user:{0}:maintenance-point-param";
+        public const string MatrixTablePattern = @"ipems:user:{0}:matrix-table";
 
         /// <summary>
         /// Report应用缓存

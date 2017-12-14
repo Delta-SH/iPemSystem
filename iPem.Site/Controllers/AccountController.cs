@@ -534,6 +534,8 @@ namespace iPem.Site.Controllers {
                     RoleId = new Guid(role.id),
                     Menus = role.menus.Select(i => int.Parse(i)).ToList(),
                     Areas = role.areas.ToList(),
+                    Stations = new List<string>(),
+                    Rooms = new List<string>(),
                     Permissions = role.permissions != null && role.permissions.Length > 0 ? role.permissions.Select(o => (EnmPermission)(int.Parse(o))).ToList() : new List<EnmPermission>()
                 };
 

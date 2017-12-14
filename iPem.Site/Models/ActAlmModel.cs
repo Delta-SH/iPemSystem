@@ -29,6 +29,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("触发值")]
         public string value { get; set; }
 
+        [ExcelDisplayName("维护厂家")]
+        public string supporter { get; set; }
+
         [ExcelDisplayName("信号名称")]
         public string point { get; set; }
 

@@ -99,6 +99,10 @@ namespace iPem.Site.Infrastructure {
 
         List<AlmStore<A_AAlarm>> AllAlarms();
 
+        List<H_Masking> Maskings();
+
+        HashSet<string> HashMaskings();
+
         void ResetRole();
 
         void ResetUser();

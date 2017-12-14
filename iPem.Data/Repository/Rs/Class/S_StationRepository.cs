@@ -39,7 +39,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -74,7 +74,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -116,8 +116,10 @@ namespace iPem.Data.Repository.Rs {
 	            INNER JOIN [dbo].[S_Room] R ON D.[RoomID]=R.[ID]
 	            GROUP BY R.[StationID]
             )
-            SELECT S.*,SK.[PtCount] FROM [dbo].[S_Station] S 
-            INNER JOIN StationKeys SK ON S.[ID] = SK.[StationID];", string.Join(@" UNION ALL ", commands));
+            SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],V.[Name] AS [Vendor],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled],SK.[PtCount] FROM [dbo].[S_Station] S 
+            INNER JOIN StationKeys SK ON S.[ID] = SK.[StationID]
+            INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
+            LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID];", string.Join(@" UNION ALL ", commands));
 
             var entities = new List<S_Station>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, null)) {
@@ -127,7 +129,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);
@@ -162,7 +164,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Type = new C_StationType { Id = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeName"]) };
-                    entity.Vendor = new C_SCVendor { Id = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]) };
+                    entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
                     entity.Longitude = SqlTypeConverter.DBNullStringHandler(rdr["Longitude"]);
                     entity.Latitude = SqlTypeConverter.DBNullStringHandler(rdr["Latitude"]);
                     entity.Altitude = SqlTypeConverter.DBNullStringHandler(rdr["Altitude"]);

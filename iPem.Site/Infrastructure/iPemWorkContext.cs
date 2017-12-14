@@ -44,6 +44,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IFsuService _fsuService;
         private readonly IGroupService _groupService;
         private readonly ILogicTypeService _logicTypeService;
+        private readonly IMaskingService _maskingService;
         private readonly IPointService _pointService;
         private readonly IProtocolService _protocolService;
         private readonly IRoomService _roomService;
@@ -109,6 +110,8 @@ namespace iPem.Site.Infrastructure {
         private List<SSHDevice> _cachedDevices;
         private List<SSHCamera> _cachedCameras;
         private HashSet<string> _cachedDeviceKeys;
+        private HashSet<string> _cachedHashMaskings;
+        private List<H_Masking> _cachedMaskings;
         private List<C_Group> _cachedGroups;
         private List<P_Point> _cachedPoints;
         private List<P_SubPoint> _cachedSubPoints;
@@ -133,6 +136,7 @@ namespace iPem.Site.Infrastructure {
             IFsuService fsuService,
             IGroupService groupService,
             ILogicTypeService rsLogicTypeService,
+            IMaskingService maskingService,
             IPointService pointService,
             IProtocolService protocolService,
             IRoomService roomService,
@@ -162,6 +166,7 @@ namespace iPem.Site.Infrastructure {
             this._fsuService = fsuService;
             this._groupService = groupService;
             this._logicTypeService = rsLogicTypeService;
+            this._maskingService = maskingService;
             this._pointService = pointService;
             this._protocolService = protocolService;
             this._roomService = roomService;
@@ -705,7 +710,8 @@ namespace iPem.Site.Infrastructure {
                                         StationName = station.Current.Name,
                                         StationTypeId = station.Current.Type.Id,
                                         AreaName = area.Current.Name,
-                                        AreaFullName = area.ToString()
+                                        AreaFullName = area.ToString(),
+                                        SubCompany = device.Current.SubCompany ?? ""
                                     };
                 }
 
@@ -733,7 +739,8 @@ namespace iPem.Site.Infrastructure {
                                         StationName = SSHSystem.Station.Name,
                                         StationTypeId = SSHSystem.Station.Type.Id,
                                         AreaName = SSHSystem.Area.Name,
-                                        AreaFullName = SSHSystem.Area.Name
+                                        AreaFullName = SSHSystem.Area.Name,
+                                        SubCompany = ""
                                     };
                 }
 
@@ -743,6 +750,20 @@ namespace iPem.Site.Infrastructure {
             if (_activeAlarms == null) _activeAlarms = new List<AlmStore<A_AAlarm>>();
             if (_systemAlarms == null) _systemAlarms = new List<AlmStore<A_AAlarm>>();
             return _cachedAllAlarms = _activeAlarms.Concat(_systemAlarms).OrderByDescending(a => a.Current.AlarmTime).ToList();
+        }
+
+        public List<H_Masking> Maskings() {
+            if (_cachedMaskings != null)
+                return _cachedMaskings;
+
+            return _cachedMaskings = _maskingService.GetMaskings();
+        }
+
+        public HashSet<string> HashMaskings() {
+            if (_cachedHashMaskings != null)
+                return _cachedHashMaskings;
+
+            return _cachedHashMaskings = _maskingService.GetHashMaskings();
         }
 
         #endregion
@@ -836,7 +857,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = station.Current.Name,
                         StationTypeId = station.Current.Type.Id,
                         AreaName = area.Current.Name,
-                        AreaFullName = area.ToString()
+                        AreaFullName = area.ToString(),
+                        SubCompany = device.Current.SubCompany ?? string.Empty
                     }).ToList();
         }
 
@@ -863,7 +885,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = station.Current.Name,
                         StationTypeId = station.Current.Type.Id,
                         AreaName = area.Current.Name,
-                        AreaFullName = area.ToString()
+                        AreaFullName = area.ToString(),
+                        SubCompany = device.Current.SubCompany ?? string.Empty
                     }).ToList();
         }
 

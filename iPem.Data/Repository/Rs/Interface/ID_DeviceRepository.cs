@@ -32,5 +32,12 @@ namespace iPem.Data.Repository.Rs {
         /// </summary>
         /// <returns></returns>
         List<D_Device> GetDevices();
+
+        /// <summary>
+        /// 获得包含指定信号的设备集合
+        /// </summary>
+        /// <param name="points">指定的信号</param>
+        /// <returns>包含指定信号的设备集合</returns>
+        HashSet<string> GetDeviceKeysWithPoints(string[] points);
     }
 }

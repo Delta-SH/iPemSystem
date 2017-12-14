@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Domain.Cs;
+using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -44,6 +45,11 @@ namespace iPem.Services.Cs {
         List<A_AAlarm> GetSystemAlarms();
 
         /// <summary>
+        /// 获取指定时间段内告警(包括次告警、关联告警、屏蔽告警等)
+        /// </summary>
+        List<A_AAlarm> GetAllAlarmsInSpan(DateTime start, DateTime end);
+
+        /// <summary>
         /// 获取全部告警(包括次告警、关联告警、屏蔽告警等)
         /// </summary>
         List<A_AAlarm> GetAllAlarms();
@@ -72,5 +78,15 @@ namespace iPem.Services.Cs {
         /// 确认指定的告警
         /// </summary>
         void Confirm(params A_AAlarm[] alarms);
+
+        /// <summary>
+        /// 获得指定的告警
+        /// </summary>
+        A_AAlarm GetAlarm(string id);
+
+        /// <summary>
+        /// 删除指定的告警（包括告警接口中的告警）
+        /// </summary>
+        void RemoveAlarms(params A_AAlarm[] alarms);
     }
 }

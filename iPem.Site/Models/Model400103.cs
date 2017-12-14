@@ -7,13 +7,16 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
-        [ExcelDisplayName("编号")]
-        public string id { get; set; }
+        [ExcelDisplayName("所属区域")]
+        public string area { get; set; }
 
-        [ExcelDisplayName("名称")]
+        [ExcelDisplayName("所属站点")]
+        public string station { get; set; }
+
+        [ExcelDisplayName("机房名称")]
         public string name { get; set; }
 
-        [ExcelDisplayName("类型")]
+        [ExcelDisplayName("机房类型")]
         public string type { get; set; }
 
         [ExcelDisplayName("产权")]

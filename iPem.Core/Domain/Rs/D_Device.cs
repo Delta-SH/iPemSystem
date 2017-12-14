@@ -37,11 +37,6 @@ namespace iPem.Core.Domain.Rs {
         public C_SubLogicType SubLogicType { get; set; }
 
         /// <summary>
-        /// 所属厂家
-        /// </summary>
-        public C_SCVendor Vendor { get; set; }
-
-        /// <summary>
         /// 系统名称
         /// </summary>
         public string SysName { get; set; }
@@ -57,24 +52,29 @@ namespace iPem.Core.Domain.Rs {
         public string Model { get; set; }
 
         /// <summary>
+        /// 所属厂家
+        /// </summary>
+        public string Vendor { get; set; }
+
+        /// <summary>
         /// 生产厂家
         /// </summary>
-        public string ProdId { get; set; }
+        public string Productor { get; set; }
 
         /// <summary>
         /// 品牌
         /// </summary>
-        public string BrandId { get; set; }
+        public string Brand { get; set; }
 
         /// <summary>
         /// 供应商
         /// </summary>
-        public string SuppId { get; set; }
+        public string Supplier { get; set; }
 
         /// <summary>
         /// 维护厂家
         /// </summary>
-        public string SubCompId { get; set; }
+        public string SubCompany { get; set; }
 
         /// <summary>
         /// 开始使用时间

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Speech.Synthesis;
 using System.Text;
@@ -18,6 +19,10 @@ namespace iPem.Core {
     /// 公共帮助类
     /// </summary>
     public partial class CommonHelper {
+        public static string GlobalSeparator {
+            get { return "┆"; }
+        }
+
         /// <summary>
         /// 全局变量
         /// </summary>
@@ -319,6 +324,66 @@ namespace iPem.Core {
             if (illegals.Contains(remark)) return EnmRecType.Illegal;
             if (remotes.Contains(remark)) return EnmRecType.Remote;
             return EnmRecType.Other;
+        }
+
+        /// <summary>
+        /// 序列化对象
+        /// </summary>
+        public static byte[] ObjectToBytes(object obj){
+            using (var memory = new MemoryStream()) {
+                new BinaryFormatter().Serialize(memory, obj);
+                return memory.GetBuffer();
+            }
+        }
+
+        /// <summary>
+        /// 反序列化对象
+        /// </summary>
+        public static T BytesToObject<T>(byte[] bytes) where T : class {
+            using (var memory = new MemoryStream(bytes)) {
+                memory.Position = 0;
+                return new BinaryFormatter().Deserialize(memory) as T;
+            }
+        }
+
+        /// <summary>
+        /// 解析Key
+        /// </summary>
+        public static string[] SplitKeys(string key) {
+            if (string.IsNullOrWhiteSpace(key))
+                return new string[0];
+
+            return key.Split(new string[] { GlobalSeparator }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// 生成Key
+        /// </summary>
+        public static string JoinKeys(params object[] keys) {
+            if (keys == null || keys.Length == 0)
+                return string.Empty;
+
+            return string.Join(GlobalSeparator, keys);
+        }
+
+        /// <summary>
+        /// 解析条件
+        /// </summary>
+        public static string[] SplitCondition(string conditions) {
+            if (string.IsNullOrWhiteSpace(conditions))
+                return new string[0];
+
+            return conditions.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// 生成条件
+        /// </summary>
+        public static string JoinCondition(params string[] conditions) {
+            if (conditions == null || conditions.Length == 0)
+                return string.Empty;
+
+            return string.Join(";", conditions);
         }
     }
 }

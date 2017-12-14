@@ -7,8 +7,8 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
-        [ExcelDisplayName("编号")]
-        public string id { get; set; }
+        [ExcelDisplayName("所属区域")]
+        public string area { get; set; }
 
         [ExcelDisplayName("站点名称")]
         public string name { get; set; }

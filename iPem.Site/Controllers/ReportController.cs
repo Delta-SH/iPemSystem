@@ -2583,21 +2583,23 @@ namespace iPem.Site.Controllers {
             var loadTypes = _enumMethodService.GetEnumsByType(EnmMethodType.Station, "市电引入方式");
             var powerTypes = _enumMethodService.GetEnumsByType(EnmMethodType.Station, "供电性质");
             var stores = from station in stations
+                         join area in _workContext.Areas() on station.Current.AreaId equals area.Current.Id
                          join lot in loadTypes on station.Current.CityElecLoadTypeId equals lot.Id into lt1
                          from def1 in lt1.DefaultIfEmpty()
                          join pot in powerTypes on station.Current.SuppPowerTypeId equals pot.Id into lt2
                          from def2 in lt2.DefaultIfEmpty()
                          orderby station.Current.Type.Id
                          select new {
+                             Area = area.ToString(),
                              Station = station.Current,
                              LoadType = def1 ?? new C_EnumMethod { Name = "未定义", Index = 0 },
                              PowerType = def2 ?? new C_EnumMethod { Name = "未定义", Index = 0 }
                          };
 
-            foreach(var store in stores) {
+            foreach (var store in stores.OrderBy(s=>s.Area).ThenBy(s => s.Station.Name)) {
                 result.Add(new Model400102 {
                     index = ++index,
-                    id = store.Station.Id,
+                    area = store.Area,
                     name = store.Station.Name,
                     type = store.Station.Type.Name,
                     longitude = store.Station.Longitude,
@@ -2649,18 +2651,21 @@ namespace iPem.Site.Controllers {
 
             var parms = _enumMethodService.GetEnumsByType(EnmMethodType.Room, "产权");
             var stores = from room in rooms
+                         join area in _workContext.Areas() on room.AreaId equals area.Current.Id
                          join parm in parms on room.PropertyId equals parm.Id into lt
                          from def in lt.DefaultIfEmpty()
                          orderby room.Type.Id, room.Name
                          select new {
+                             Area = area.ToString(),
                              Room = room,
                              Method = def ?? new C_EnumMethod { Name = "未定义", Index = 0 }
                          };
 
-            foreach(var store in stores) {
+            foreach (var store in stores.OrderBy(s => s.Room.StationName).ThenBy(s => s.Room.Name)) {
                 result.Add(new Model400103 {
                     index = ++index,
-                    id = store.Room.Id,
+                    area = store.Area,
+                    station = store.Room.StationName,
                     name = store.Room.Name,
                     type = store.Room.Type.Name,
                     property = store.Method.Name,
@@ -2718,36 +2723,28 @@ namespace iPem.Site.Controllers {
             if(types != null && types.Length > 0)
                 devices = devices.FindAll(d => types.Contains(d.Type.Id));
 
-            var productors = _productorService.GetProductors();
-            var brands = _brandService.GetBrands();
-            var suppliers = _supplierService.GetSuppliers();
-            var subCompanys = _subCompanyService.GetCompanies();
             var status = _enumMethodService.GetEnumsByType(EnmMethodType.Device, "使用状态");
             var stores = from device in devices
-                        join productor in productors on device.ProdId equals productor.Id into lt1
-                        from def1 in lt1.DefaultIfEmpty()
-                        join brand in brands on device.BrandId equals brand.Id into lt2
-                        from def2 in lt2.DefaultIfEmpty()
-                        join supplier in suppliers on device.SuppId equals supplier.Id into lt3
-                        from def3 in lt3.DefaultIfEmpty()
-                        join company in subCompanys on device.SubCompId equals company.Id into lt4
-                        from def4 in lt4.DefaultIfEmpty()
-                        join sts in status on device.StatusId equals sts.Id into lt5
-                        from def5 in lt5.DefaultIfEmpty()
-                        orderby device.Type.Id
-                        select new {
-                            Device = device,
-                            Productor = def1 != null ? def1.Name : string.Empty,
-                            Brand = def2 != null ? def2.Name : string.Empty,
-                            Supplier = def3 != null ? def3.Name : string.Empty,
-                            SubCompany = def4 != null ? def4.Name : string.Empty,
-                            Status = def5 ?? new C_EnumMethod { Name = "未定义", Index = 0 }
-                        };
+                         join area in _workContext.Areas() on device.AreaId equals area.Current.Id
+                         join sts in status on device.StatusId equals sts.Id into lt
+                         from def in lt.DefaultIfEmpty()
+                         orderby device.Type.Id
+                         select new {
+                             Area = area.ToString(),
+                             Device = device,
+                             Productor = device.Productor ?? string.Empty,
+                             Brand = device.Brand ?? string.Empty,
+                             Supplier = device.Supplier ?? string.Empty,
+                             SubCompany = device.SubCompany ?? string.Empty,
+                             Status = def ?? new C_EnumMethod { Name = "未定义", Index = 0 }
+                         };
 
-            foreach(var store in stores) {
+            foreach (var store in stores.OrderBy(s => s.Device.StationName).ThenBy(s => s.Device.RoomName).ThenBy(s => s.Device.Name)) {
                 result.Add(new Model400104 {
                     index = ++index,
-                    id = store.Device.Id,
+                    area = store.Area,
+                    station = store.Device.StationName,
+                    room = store.Device.RoomName,
                     name = store.Device.Name,
                     type = store.Device.Type.Name,
                     subType = store.Device.SubType.Name,

@@ -233,7 +233,6 @@
                 {
                     type: 'value',
                     name: '能耗',
-                    interval: 50,
                     axisLabel: {
                         formatter: '{value} kW·h'
                     }

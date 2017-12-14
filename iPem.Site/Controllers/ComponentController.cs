@@ -409,6 +409,32 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetPointParams(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach (EnmPointParam type in Enum.GetValues(typeof(EnmPointParam))) {
+                    data.data.Add(new ComboItem<int, string>() { id = (int)type, text = Common.GetPointParamDisplay(type) });
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonResult GetComputes(int start, int limit) {
             var data = new AjaxDataModel<List<ComboItem<int, string>>> {
                 success = true,
@@ -459,6 +485,32 @@ namespace iPem.Site.Controllers {
                             text = string.Format("{0}-{1}", models[i].Id, models[i].Name)
                         });
                     }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetMaskingTypes(int start, int limit) {
+            var data = new AjaxDataModel<List<ComboItem<int, string>>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<ComboItem<int, string>>()
+            };
+
+            try {
+                foreach (EnmMaskType type in Enum.GetValues(typeof(EnmMaskType))) {
+                    data.data.Add(new ComboItem<int, string>() { id = (int)type, text = Common.GetMaskTypeDisplay(type) });
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
                 }
             } catch (Exception exc) {
                 data.success = false;
@@ -1394,7 +1446,7 @@ namespace iPem.Site.Controllers {
                     data.total = 3;
                     data.data.Add(new ComboItem<int, string> { id = 0, text = string.Format("{0}-{1}", "常开控制", 0) });
                     data.data.Add(new ComboItem<int, string> { id = 1, text = string.Format("{0}-{1}", "常闭控制", 1) });
-                    data.data.Add(new ComboItem<int, string> { id = 2, text = string.Format("{0}-{1}", "脉冲控制", 2) });
+                    data.data.Add(new ComboItem<int, string> { id = 4, text = string.Format("{0}-{1}", "脉冲控制", 4) });
                 }
             } catch (Exception exc) {
                 data.success = false;

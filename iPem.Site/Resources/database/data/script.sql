@@ -1,8 +1,8 @@
 /*
-* P2R_V1 Data Script Library v1.2.0
+* P2R_V1 Data Script Library v1.2.2
 * Copyright 2017, Delta
 * Author: Chen.Jianwen
-* Date: 2017/11/01
+* Date: 2017/12/08
 */
 
 USE [P2R_V1]

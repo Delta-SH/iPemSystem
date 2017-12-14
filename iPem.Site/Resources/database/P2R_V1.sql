@@ -1,8 +1,8 @@
 /*
-* P2R_V1 Database Script Library v1.1.2
+* P2R_V1 Database Script Library v1.2.2
 * Copyright 2017, Delta
 * Author: Guo.Jing
-* Date: 2017/10/12
+* Date: 2017/12/08
 */
 
 USE [master]
@@ -8304,6 +8304,7 @@ GO
 DELETE FROM [dbo].[C_RoomType];
 GO
 
+INSERT INTO [dbo].[C_RoomType]([ID],[Name]) VALUES('00', N'未定义');
 INSERT INTO [dbo].[C_RoomType]([ID],[Name]) VALUES('01', N'汇聚机房');
 INSERT INTO [dbo].[C_RoomType]([ID],[Name]) VALUES('02', N'基站机房');
 INSERT INTO [dbo].[C_RoomType]([ID],[Name]) VALUES('11', N'发电机房');

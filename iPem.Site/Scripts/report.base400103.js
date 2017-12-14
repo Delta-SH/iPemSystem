@@ -80,7 +80,8 @@
         extend: 'Ext.data.Model',
         fields: [
             { name: 'index', type: 'int' },
-            { name: 'id', type: 'string' },
+            { name: 'area', type: 'string' },
+            { name: 'station', type: 'string' },
             { name: 'name', type: 'string' },
             { name: 'type', type: 'string' },
             { name: 'property', type: 'string' },
@@ -105,7 +106,7 @@
             { name: 'comment', type: 'string' },
             { name: 'enabled', type: 'boolean' }
         ],
-        idProperty: 'id'
+        idProperty: 'index'
     });
 
     var currentStore = Ext.create('Ext.data.Store', {
@@ -284,19 +285,25 @@
                     align: 'left',
                     sortable: true
                 }, {
-                    text: '编号',
-                    dataIndex: 'id',
+                    text: '所属区域',
+                    dataIndex: 'area',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: '名称',
+                    text: '所属站点',
+                    dataIndex: 'station',
+                    width: 100,
+                    align: 'left',
+                    sortable: true
+                }, {
+                    text: '机房名称',
                     dataIndex: 'name',
                     width: 100,
                     align: 'left',
                     sortable: true
                 }, {
-                    text: '类型',
+                    text: '机房类型',
                     dataIndex: 'type',
                     width: 100,
                     align: 'left',

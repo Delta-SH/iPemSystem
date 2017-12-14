@@ -175,6 +175,20 @@
     }
 
     /// <summary>
+    /// 告警流水状态
+    /// </summary>
+    public enum EnmFlag {
+        /// <summary>
+        /// 开始告警
+        /// </summary>
+        Begin,
+        /// <summary>
+        /// 结束告警
+        /// </summary>
+        End
+    }
+
+    /// <summary>
     /// 告警确认状态
     /// </summary>
     public enum EnmConfirm {
@@ -303,5 +317,53 @@
         /// 浮充
         /// </summary>
         Floating
+    }
+
+    /// <summary>
+    /// 告警屏蔽类型
+    /// </summary>
+    public enum EnmMaskType {
+        /// <summary>
+        /// 区域
+        /// </summary>
+        Area,
+        /// <summary>
+        /// 站点
+        /// </summary>
+        Station,
+        /// <summary>
+        /// 机房
+        /// </summary>
+        Room,
+        /// <summary>
+        /// FSU
+        /// </summary>
+        Fsu,
+        /// <summary>
+        /// 设备
+        /// </summary>
+        Device,
+        /// <summary>
+        /// 信号
+        /// </summary>
+        Point
+    }
+
+    /// <summary>
+    /// 参数类型
+    /// </summary>
+    public enum EnmPointParam {
+        AbsThreshold,
+        PerThreshold,
+        SavedPeriod,
+        StorageRefTime,
+        AlarmLimit,
+        AlarmLevel,
+        AlarmDelay,
+        AlarmRecoveryDelay,
+        AlarmFiltering,
+        AlarmInferior,
+        AlarmConnection,
+        AlarmReversal
     }
 }

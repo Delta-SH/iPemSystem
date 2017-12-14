@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\A_AAlarm.cs" />
+    <Compile Include="Domain\Cs\A_TAlarm.cs" />
     <Compile Include="Domain\Cs\H_CardRecord.cs" />
     <Compile Include="Domain\Cs\H_DBScript.cs" />
     <Compile Include="Domain\Cs\H_IArea.cs" />
@@ -125,6 +126,8 @@
     <Compile Include="Domain\Rs\C_SCVendor.cs" />
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />
+    <Compile Include="Domain\Rs\D_Signal.cs" />
+    <Compile Include="Domain\Rs\H_Masking.cs" />
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\M_Authorization.cs" />
     <Compile Include="Domain\Rs\M_Card.cs" />

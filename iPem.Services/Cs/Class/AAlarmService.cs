@@ -1,6 +1,7 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Domain.Cs;
+using iPem.Core.Enum;
 using iPem.Data.Repository.Cs;
 using iPem.Services.Common;
 using System;
@@ -60,6 +61,10 @@ namespace iPem.Services.Cs {
             return _repository.GetSystemAlarms();
         }
 
+        public List<A_AAlarm> GetAllAlarmsInSpan(DateTime start, DateTime end) {
+            return _repository.GetAllAlarms(start, end);
+        }
+
         public List<A_AAlarm> GetAllAlarms() {
             return _repository.GetAllAlarms();
         }
@@ -84,10 +89,29 @@ namespace iPem.Services.Cs {
             if (alarms == null || alarms.Length == 0)
                 throw new ArgumentNullException("alarms");
 
+            _repository.Confirm(alarms);
+
             if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
                 _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
 
-            _repository.Confirm(alarms);
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
+        }
+
+        public A_AAlarm GetAlarm(string id) {
+            return _repository.GetAlarm(id);
+        }
+
+        public void RemoveAlarms(params A_AAlarm[] alarms) {
+            if (alarms == null) throw new ArgumentNullException("alarms");
+
+            _repository.DeleteAlarms(alarms);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
         }
 
         #endregion
