@@ -840,6 +840,23 @@
         items: [videoIFrame]
     });
 
+    var viewIFrame = Ext.create('Ext.ux.IFrame', {
+        flex: 1,
+        loadMask: '正在处理...',
+        src: 'http://www.baidu.com'
+    });
+
+    var viewPanel = Ext.create('Ext.panel.Panel', {
+        title: '图形组态',
+        glyph: 0xf092,
+        border: false,
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        items: [viewIFrame]
+    });
+
     var alarmToolbar = Ext.create('Ext.panel.Panel', {
         border: false,
         dock: 'top',
@@ -1144,7 +1161,7 @@
     var centerPanel = Ext.create('Ext.tab.Panel', {
         xtype: 'tabpanel',
         region: 'center',
-        items: [pointPanel, matrixPanel, alarmPanel, recordPanel, videoPanel],
+        items: [pointPanel, matrixPanel, alarmPanel, recordPanel, videoPanel, viewPanel],
         listeners: {
             tabchange: function (me, newCard, oldCard) {
                 refresh(newCard);

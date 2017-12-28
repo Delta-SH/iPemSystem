@@ -1,23 +1,5 @@
-/*
-* P2S_V1 Data Script Library v1.2.2
-* Copyright 2017, Delta
-* Author: Guo.Jing
-* Date: 2017/12/08
-*/
-
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[M_Dictionary]
-DELETE FROM [dbo].[M_Dictionary];
-GO
-
-INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(1,N'数据管理',NULL,NULL,GETDATE());
-INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(2,N'语音播报',NULL,NULL,GETDATE());
-INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(3,N'能耗分类',NULL,NULL,GETDATE());
-INSERT INTO [dbo].[M_Dictionary]([Id],[Name],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(4,N'报表参数',NULL,NULL,GETDATE());
-GO
-
---■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
---添加默认值[dbo].[U_Menus]
+--更新[dbo].[U_Menus]
 DELETE FROM [dbo].[U_Menus];
 GO
 
@@ -30,7 +12,7 @@ INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1002, N'用户管理', '/content/themes/icons/menu-yhgl.png', '/Account/Users', N'用户是指登录系统所需的账号密码信息，用户必须隶属于某个角色并继承该角色所拥有的系统权限。用户管理主要实现了用户信息的新增、编辑、删除及密码重置等功能。', 2, 1, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1003, N'日志管理', '/content/themes/icons/menu-rzgl.png', '/Account/Events', N'日志管理是对系统中记录的系统异常、操作事件等日志信息进行管理维护。用户可以查询、导出系统日志记录，定期删除过期的日志记录等操作。', 3, 1, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1004, N'消息管理', '/content/themes/icons/menu-xxgl.png', '/Account/Notice', N'消息管理是对站内的公开消息、公告、通知、提示等信息进行发布管理。用户可以查询、发布、更新、删除站内的广播消息。', 4, 1, 1);
-INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1005, N'参数管理', '/content/themes/icons/menu-csgl.png', '/Account/Dictionary', N'参数管理是对系统运行所需的各类参数进行管理维护，用户可根据系统实际的业务逻辑需求配置适合的参数。<br/>能耗公式说明:<br/>1. 公式中以“@机房名称>>设备名称>>信号名称”的形式映射一个具体设备的信号点。<br/>2. 机房名称、设备名称、信号名称中禁止出现“@”、“>>”、“+”、“-”、“*”、“/”、“(”、“)”等符号。<br/>公式示例: ((@机房1>>设备1>>信号1 + @机房2>>设备2>>信号2 - @机房3>>设备3>>信号3) * @机房4>>设备4>>信号4) / @机房5>>设备5>>信号5', 5, 1, 1);
+INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(1005, N'参数管理', '/content/themes/icons/menu-csgl.png', '/Account/Dictionary', N'参数管理是对系统运行所需的各类参数进行管理维护，用户可根据系统实际的业务逻辑需求配置适合的参数。<br/>能耗公式说明:<br/>1. 公式中以“@设备名称>>信号名称”的形式映射一个具体设备的信号点。<br/>2. 设备和信号名称中禁止出现“@”、“>>”、“+”、“-”、“*”、“/”、“(”、“)”等符号。<br/>公式示例: ((@设备1>>信号1 + @设备2>>信号2 - @设备3>>信号3) * @设备4>>信号4) / @设备5>>信号5', 5, 1, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2001, N'FSU信息管理', '/content/themes/icons/menu-fsucx.png', '/Fsu/Index', N'FSU信息查询是指对系统内符合查询条件的FSU进行查询展现，提供FSU的编码、IP、端口、是否离线、离线时间等相关信息。', 1, 2, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2002, N'FSU配置管理', '/content/themes/icons/menu-fsupz.png', '/Fsu/Configuration', N'FSU在线管理是指对系统内符合查询条件的FSU进行在线配置管理，提供修改单个或批量修改多个FSU相关配置的能力。', 2, 2, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(2003, N'FSU日志管理', '/content/themes/icons/menu-fsuftp.png', '/Fsu/Event', N'FSU日志是指SC对FSU中的FTP文件下载、解析、操作的日志记录；FSU日志管理提供对FTP日志记录的筛选、查询、导出等功能。', 3, 2, 1);
@@ -96,4 +78,11 @@ INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(500401, N'系统设备完好率', '/content/themes/icons/menu-kpi-dz.png', '/KPI/Custom', N'系统设备完好率 = {1－设备告警总时长 / (设备数量 × 统计时长)} × 100%<br/>注：在使用之前，请确保已设置了"系统管理>系统参数>报表参数>系统设备完好率"里的参数信息。', 1, 5004, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(500402, N'故障处理及时率', '/content/themes/icons/menu-kpi-dz.png', '/KPI/Custom', N'故障处理及时率 = {1－超出规定处理时长的设备故障次数 / 设备故障总次数} × 100%<br/>注：在使用之前，请确保已设置了"系统管理>系统参数>报表参数>故障处理及时率"里的参数信息。', 2, 5004, 1);
 INSERT INTO [dbo].[U_Menus]([Id],[Name],[Icon],[Url],[Comment],[Index],[LastId],[Enabled]) VALUES(500403, N'告警确认及时率', '/content/themes/icons/menu-kpi-dz.png', '/KPI/Custom', N'告警确认及时率 = {1－超出规定确认时长的告警条数 / 告警总条数} × 100%<br/>注：在使用之前，请确保已设置了"系统管理>系统参数>报表参数>告警确认及时率"里的参数信息。', 3, 5004, 1);
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--新增脚本升级日志
+DECLARE @Id VARCHAR(100) = 'P2S_V1_003';
+DELETE FROM [dbo].[H_DBScript] WHERE [Id] = @Id;
+INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES(@Id,'新增菜单列表','Steven',GETDATE(),NULL,GETDATE(),'新增信号参数管理菜单、告警维护管理菜单、告警屏蔽管理菜单');
 GO

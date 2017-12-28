@@ -1846,7 +1846,7 @@ namespace iPem.Site.Controllers {
                                 for(var i = 0; i < points.Count; i++) {
                                     data.data.Add(new Kv<int, string> {
                                         Key = i + 1,
-                                        Value = string.Format("@{0}>>{1}", current.Current.Name, points[i].Name)
+                                        Value = string.Format("@{0}>>{1}>>{2}", current.Current.RoomName, current.Current.Name, points[i].Name)
                                     });
                                 }
                             }

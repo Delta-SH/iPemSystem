@@ -513,6 +513,9 @@
     <Content Include="Resources\database\P2H_V1.sql" />
     <Content Include="Resources\database\P2R_V1.sql" />
     <Content Include="Resources\database\P2S_V1.sql" />
+    <Content Include="Resources\database\update\P2S_V1_001.sql" />
+    <Content Include="Resources\database\update\P2S_V1_002.sql" />
+    <Content Include="Resources\database\update\P2S_V1_003.sql" />
     <Content Include="Resources\install\create\create_cs_data.sql" />
     <Content Include="Resources\install\create\create_cs_database.sql" />
     <Content Include="Resources\install\create\create_sc_data.sql" />
@@ -556,7 +559,6 @@
     <Content Include="Scripts\components\RoomTypeComponent.js" />
     <Content Include="Scripts\components\StationComponent.js" />
     <Content Include="Scripts\components\StationTypeComponent.js" />
-    <Content Include="Scripts\configuration.cfg.iframe.js" />
     <Content Include="Scripts\configuration.cfg.js" />
     <Content Include="Scripts\configuration.map.iframe.js" />
     <Content Include="Scripts\configuration.map.js" />
@@ -1250,7 +1252,7 @@
     <Content Include="Scripts\report.history400201.js" />
     <Content Include="Scripts\report.history400207.js" />
     <Content Include="Scripts\report.history400208.js" />
-    <Content Include="Scripts\global\template.js" />
+    <Content Include="Scripts\template.js" />
     <Content Include="Scripts\report.history400209.js" />
     <Content Include="Scripts\report.history400210.js" />
     <Content Include="Scripts\report.history400211.js" />
@@ -1296,7 +1298,6 @@
     <Content Include="Views\Account\Notice.cshtml" />
     <Content Include="Views\Configuration\Index.cshtml" />
     <Content Include="Views\Configuration\Map.cshtml" />
-    <Content Include="Views\Configuration\CfgIFrame.cshtml" />
     <Content Include="Views\Configuration\MapIFrame.cshtml" />
     <Content Include="Views\Account\Dictionary.cshtml" />
     <Content Include="Views\Installation\DbConfiguration.cshtml" />

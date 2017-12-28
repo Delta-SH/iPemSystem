@@ -302,7 +302,7 @@
                             autoLoad: false,
                             pageSize: 20,
                             fields: [
-                                { name: 'Id', type: 'int' },
+                                { name: 'Key', type: 'int' },
                                 { name: 'Value', type: 'string' }
                             ],
                             proxy: {
@@ -324,7 +324,7 @@
                             }
                         }),
                         columns: [
-                            { text: '序号', dataIndex: 'Id', width: 60 },
+                            { text: '序号', dataIndex: 'Key', width: 60 },
                             { text: '变量（双击变量，将其加入公式）', dataIndex: 'Value', width: 350 }
                         ],
                         listeners: {
@@ -2471,9 +2471,11 @@
             cttPanel = formulaWin.getComponent('formulaContentPanel'),
             pointPanel = cttPanel.getComponent('formulaVariables'),
             formula = cttPanel.getComponent('formulaField'),
-            potStore = pointPanel.getStore();
+            potStore = pointPanel.getStore(),
+            keys = $$iPems.SplitKeys(node.data.id),
+            isRoom = keys.length === 2 && keys[0] == $$iPems.SSH.Room;
 
-        devPanel.setRootNode({ id: node.data.id, text: node.data.text, icon: $$iPems.icons.Home, expanded: true });
+        devPanel.setRootNode({ id: (isRoom === true ? node.parentNode.data.id : node.data.id), text: (isRoom === true ? node.parentNode.data.text : node.data.text), icon: $$iPems.icons.Home, expanded: true });
 
         potStore.proxy.extraParams.parent = node.data.id;
         potStore.removeAll();

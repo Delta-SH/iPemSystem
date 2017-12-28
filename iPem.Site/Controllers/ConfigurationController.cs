@@ -48,10 +48,6 @@ namespace iPem.Site.Controllers {
             return View();
         }
 
-        public ActionResult CfgIFrame() {
-            return View();
-        }
-
         public ActionResult Map() {
             if (!_workContext.Authorizations().Menus.Contains(3002))
                 throw new HttpException(404, "Page not found.");

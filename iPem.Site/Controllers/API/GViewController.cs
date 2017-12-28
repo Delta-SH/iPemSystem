@@ -177,6 +177,20 @@ namespace iPem.Site.Controllers {
             return null;
         }
 
+        [HttpDelete]
+        public String DeleteGVPage(string name) {
+            try {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentNullException("name");
+
+                _gpageService.Remove(name);
+            } catch (Exception exc) {
+                return exc.Message;
+            }
+
+            return null;
+        }
+
         [HttpGet]
         public List<String> GetGVTemplateNames() {
             try {
@@ -243,6 +257,20 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpDelete]
+        public String DeleteGVTemplate(string name) {
+            try {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentNullException("name");
+
+                _gtemplateService.Remove(name);
+            } catch (Exception exc) {
+                return exc.Message;
+            }
+
+            return null;
+        }
+
+        [HttpDelete]
         public String ClearGVTemplates() {
             try {
                 _gtemplateService.Clear();
@@ -280,6 +308,7 @@ namespace iPem.Site.Controllers {
                     data.Add(new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
+                        UpdateMark = image.UpdateMark,
                         Content = JsonConvert.SerializeObject(image.Thumbnail)
                     });
                 }
@@ -301,6 +330,7 @@ namespace iPem.Site.Controllers {
                     data.Add(new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
+                        UpdateMark = image.UpdateMark,
                         Content = JsonConvert.SerializeObject(image.Content)
                     });
                 }
@@ -321,6 +351,7 @@ namespace iPem.Site.Controllers {
                     return new API_GV_Image {
                         Name = image.Name,
                         Type = image.Type,
+                        UpdateMark = image.UpdateMark,
                         Content = JsonConvert.SerializeObject(image.Content)
                     };
                 }

@@ -14,6 +14,11 @@ namespace iPem.Site.Models.API {
         public int Type { get; set; }
 
         /// <summary>
+        /// 图片更新标识
+        /// </summary>
+        public string UpdateMark { get; set; }
+
+        /// <summary>
         /// 原图或缩略图内容
         /// 缩略图固定为32x32的png格式
         /// </summary>
