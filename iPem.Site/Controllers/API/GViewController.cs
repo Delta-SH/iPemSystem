@@ -699,7 +699,7 @@ namespace iPem.Site.Controllers {
                             ID = Common.JoinKeys(s.DeviceId, s.PointId),
                             Type = (int)EnmAPISCObj.Signal,
                             Number = s.Number,
-                            Desc = s.Desc,
+                            Desc = s.Type == (int)EnmPoint.AI ? string.Format("{0} {1}", s.Number, s.Desc) : s.Desc,
                             State = s.State
                         }));
                         #endregion

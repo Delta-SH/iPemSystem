@@ -1,3 +1,62 @@
 ﻿@section scripts {
-    <script src="@Url.Content("~/Scripts/configuration.cfg.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/configuration.cfg.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    var _WpfObj = null,
+        _WebAPIUrl = '',
+        _Role = '@(ViewBag.RoleId ?? "")',
+        _WpfObjTypes = { Area: 0, Station: 1, Room: 2, Device: 3, Signal: 4 };
+
+    //Wpf调用JS：初始化交互用的中间对象
+    document.InitWpfObject = function(obj) {
+        _WpfObj = obj;
+    }
+
+    //Wpf调用遥控遥调
+    document.WpfContolSignal = function(scobjId, scobjType) {
+
+    }
+
+    //Wpf调用JS：跳转节点
+    document.WpfSwtSCObj = function(scobjId, scobjType, scobjGVPageName) {
+        JsSetSCObj("", 0, "", scobjId, scobjType, "", scobjGVPageName);
+    }
+
+    //Wpf调用JS：打开链接
+    document.WpfOpenUrl = function (url) {
+        window.open(url, '_blank');
+    }
+
+    //设置监控对象信息
+    function WpfSetSCObj(record) {
+        if (Ext.isEmpty(record)) return false;
+        if (Ext.isEmpty(_WpfObj)) return false;
+
+        Ext.Ajax.request({
+            url: '/Configuration/GetWpfObj',
+            params: { node: record.getId() },
+            mask: new Ext.LoadMask(westPanel, { msg: '正在设置节点...' }),
+            success: function (response, options) {
+                var data = Ext.decode(response.responseText, true);
+                if (data.success && data.data != null) {
+                    JsSetSCObj(data.data.parentId, data.data.parentType, data.data.parentName, data.data.currentId, data.data.currentType, data.data.currentName, "");
+                } else {
+                    Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                }
+            }
+        });
+    }
+
+    //JS调用Wpf：设置监控对象信息
+    function JsSetSCObj(parentId, parentType, parentName, currentId, currentType, currentName, currentGVPageName) {
+        if (_WpfObj != null) {
+            try {
+                _WpfObj.JsSetSCObj(_WebAPIUrl, _Role, parentId, parentType, parentName, currentId, currentType, currentName, currentGVPageName);
+            } catch (e) {
+                alert("JsSetSCObj错误：" + e.message);
+            }
+        } else {
+            alert("WpfObj为空");
+        }
+    }
+</script>
 }

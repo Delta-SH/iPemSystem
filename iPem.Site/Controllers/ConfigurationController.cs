@@ -1,4 +1,5 @@
-﻿using iPem.Core.Caching;
+﻿using iPem.Core;
+using iPem.Core.Caching;
 using iPem.Core.Enum;
 using iPem.Services.Cs;
 using iPem.Services.Sc;
@@ -45,6 +46,7 @@ namespace iPem.Site.Controllers {
             if (!_workContext.Authorizations().Menus.Contains(3001))
                 throw new HttpException(404, "Page not found.");
 
+            ViewBag.RoleId = _workContext.Role().Id.ToString();
             return View();
         }
 
@@ -133,6 +135,132 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch(Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetWpfObj(string node) {
+            var data = new AjaxDataModel<GviewModel> {
+                success = false,
+                message = "No data",
+                total = 0,
+                data = null
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+
+                var nodeKey = Common.ParseNode(node);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = 1;
+                        data.data = new GviewModel();
+                        data.data.currentId = current.Current.Id;
+                        data.data.currentType = (int)EnmAPISCObj.Area;
+                        data.data.currentName = current.Current.Name;
+                        if (current.HasParents) {
+                            var parent = current.Parents.Last();
+                            data.data.parentId = parent.Id;
+                            data.data.parentType = (int)EnmAPISCObj.Area;
+                            data.data.parentName = parent.Name;
+                        }
+                    }
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    var current = _workContext.Stations().Find(s => s.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = 1;
+                        data.data = new GviewModel();
+                        data.data.currentId = current.Current.Id;
+                        data.data.currentType = (int)EnmAPISCObj.Station;
+                        data.data.currentName = current.Current.Name;
+                        data.data.parentId = current.Current.AreaId;
+                        data.data.parentType = (int)EnmAPISCObj.Area;
+
+                        var parent = _workContext.Areas().Find(a => a.Current.Id.Equals(current.Current.AreaId));
+                        if(parent != null) data.data.parentName = parent.Current.Name;
+                    }
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    var current = _workContext.Rooms().Find(r => r.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = 1;
+                        data.data = new GviewModel();
+                        data.data.currentId = current.Current.Id;
+                        data.data.currentType = (int)EnmAPISCObj.Room;
+                        data.data.currentName = current.Current.Name;
+                        data.data.parentId = current.Current.StationId;
+                        data.data.parentType = (int)EnmAPISCObj.Station;
+                        data.data.parentName = current.Current.StationName;
+                    }
+                } else if (nodeKey.Key == EnmSSH.Device) {
+                    var current = _workContext.Devices().Find(r => r.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) {
+                        data.success = true;
+                        data.message = "200 Ok";
+                        data.total = 1;
+                        data.data = new GviewModel();
+                        data.data.currentId = current.Current.Id;
+                        data.data.currentType = (int)EnmAPISCObj.Device;
+                        data.data.currentName = current.Current.Name;
+                        data.data.parentId = current.Current.RoomId;
+                        data.data.parentType = (int)EnmAPISCObj.Room;
+                        data.data.parentName = current.Current.RoomName;
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetWpfCtrlObj(string node) {
+            var data = new AjaxDataModel<GviewCtrlModel> {
+                success = false,
+                message = "No data",
+                total = 0,
+                data = null
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+
+                var ids = Common.SplitKeys(node);
+                if (ids.Length != 2) throw new ArgumentException("node");
+
+                var device = _workContext.Devices().Find(r => r.Current.Id.Equals(ids[0]));
+                if (device == null) throw new iPemException("未找到设备信息");
+
+                var point = _workContext.Points().Find(p => p.Id.Equals(ids[1]));
+                if (point == null) throw new iPemException("未找到信号信息");
+
+                if (point.Type != EnmPoint.AO && point.Type != EnmPoint.DO) 
+                    throw new iPemException("信号类型错误");
+
+                data.success = true;
+                data.message = "200 Ok";
+                data.total = 1;
+                data.data = new GviewCtrlModel();
+                data.data.deviceId = device.Current.Id;
+                data.data.deviceName = device.Current.Name;
+                data.data.pointId = point.Id;
+                data.data.pointName = point.Name;
+                data.data.pointType = (int)point.Type;
+            } catch (Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
             }

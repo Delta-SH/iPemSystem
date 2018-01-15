@@ -121,6 +121,7 @@ namespace iPem.Site.Controllers {
         public ActionResult ActiveData() {
             ViewBag.BarIndex = 1;
             ViewBag.MenuVisible = false;
+            ViewBag.RoleId = _workContext.Role().Id.ToString();
             ViewBag.Control = _workContext.Authorizations().Permissions.Contains(EnmPermission.Control);
             ViewBag.Adjust = _workContext.Authorizations().Permissions.Contains(EnmPermission.Adjust);
             ViewBag.Threshold = _workContext.Authorizations().Permissions.Contains(EnmPermission.Threshold);

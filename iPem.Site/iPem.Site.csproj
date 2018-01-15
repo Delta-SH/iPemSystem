@@ -242,6 +242,8 @@
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\GridColumn.cs" />
+    <Compile Include="Models\GviewCtrlModel.cs" />
+    <Compile Include="Models\GviewModel.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\iAuth.cs" />
@@ -516,6 +518,7 @@
     <Content Include="Resources\database\update\P2S_V1_001.sql" />
     <Content Include="Resources\database\update\P2S_V1_002.sql" />
     <Content Include="Resources\database\update\P2S_V1_003.sql" />
+    <Content Include="Resources\database\update\P2S_V1_004.sql" />
     <Content Include="Resources\install\create\create_cs_data.sql" />
     <Content Include="Resources\install\create\create_cs_database.sql" />
     <Content Include="Resources\install\create\create_sc_data.sql" />
@@ -1360,6 +1363,35 @@
     <Content Include="Views\Maintenance\Index.cshtml" />
     <Content Include="Views\Maintenance\Masking.cshtml" />
     <Content Include="Views\Maintenance\PointParam.cshtml" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\3DTools.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\GVE.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\GVEditer.exe.config.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\GVEditer.exe.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\GVEditer.exe.manifest" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\GVEditer.xbap" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\Newtonsoft.Json.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\SCAPI.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\System.Net.Http.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\SystemExtend.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\TeeChart.WPF.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\WGView.SDefineLib.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\WGView.Toolkit.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_19\WpfJSInteraction.dll.deploy" />
+    <Content Include="WGViewEditer\GVEditer.xbap" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\3DTools.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\GVP.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\GVPlayer.exe.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\GVPlayer.exe.manifest" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\GVPlayer.xbap" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\Newtonsoft.Json.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\SCAPI.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\System.Net.Http.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\SystemExtend.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\TeeChart.WPF.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\WGView.Toolkit.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\WpfJSInteraction.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_5\XDLib.dll.deploy" />
+    <Content Include="WGViewPlayer\GVPlayer.xbap" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

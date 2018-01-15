@@ -22,9 +22,130 @@
 </div>
 @section scripts {
     <script type="text/javascript">
-        window.$$iPems.ControlOperation = @((ViewBag.Control ?? false) ? 1 : 0) === 1;
-        window.$$iPems.AdjustOperation = @((ViewBag.Adjust ?? false) ? 1 : 0) === 1;
-        window.$$iPems.ThresholdOperation = @((ViewBag.Threshold ?? false) ? 1 : 0) === 1;
+        $$iPems.ControlOperation = @((ViewBag.Control ?? false) ? 1 : 0) === 1;
+        $$iPems.AdjustOperation = @((ViewBag.Adjust ?? false) ? 1 : 0) === 1;
+        $$iPems.ThresholdOperation = @((ViewBag.Threshold ?? false) ? 1 : 0) === 1;
     </script>
     <script src="@Url.Content("~/Scripts/home.active.data.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        var _WpfObj = null,
+            _WebAPIUrl = '',
+            _Role = '@(ViewBag.RoleId ?? "")',
+            _WpfObjTypes = { Area: 0, Station: 1, Room: 2, Device: 3, Signal: 4 };
+
+        //Wpf调用JS：初始化交互用的中间对象
+        document.InitWpfObject = function(obj) {
+            _WpfObj = obj;
+        }
+
+        //Wpf调用遥控遥调
+        document.WpfContolSignal = function(scobjId, scobjType) {
+            if(scobjType !== _WpfObjTypes.Signal) return false;
+
+            if($$iPems.ControlOperation === false && $$iPems.AdjustOperation === false) {
+                alert('您没有控制权限');
+                return false;
+            }
+            
+            Ext.Ajax.request({
+                url: '/Configuration/GetWpfCtrlObj',
+                params: { node: scobjId },
+                mask: new Ext.LoadMask(currentLayout, { msg: '正在处理...' }),
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success && data.data != null) {
+                        if(data.data.pointType === $$iPems.Point.AO){
+                            if($$iPems.AdjustOperation === false) {
+                                alert('您没有遥调权限');
+                                return false;
+                            }
+
+                            adjust(data.data.deviceId,data.data.deviceName,data.data.pointId,data.data.pointName);
+                        } else if(data.data.pointType === $$iPems.Point.DO){
+                            if($$iPems.ControlOperation === false) {
+                                alert('您没有遥控权限');
+                                return false;
+                            }
+
+                            control(data.data.deviceId,data.data.deviceName,data.data.pointId,data.data.pointName);
+                        } else {
+                            alert('信号类型错误');
+                        }
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+
+        //Wpf调用JS：跳转节点
+        document.WpfSwtSCObj = function(scobjId, scobjType, scobjGVPageName) {
+            //if (scobjType == _WpfObjTypes.Area)
+            //    scobjType = $$iPems.SSH.Area;
+            //else if (scobjType == _WpfObjTypes.Station)
+            //    scobjType = $$iPems.SSH.Station;
+            //else if (scobjType == _WpfObjTypes.Room)
+            //    scobjType = $$iPems.SSH.Room;
+            //else if (scobjType == _WpfObjTypes.Device)
+            //    scobjType = $$iPems.SSH.Device;
+            //else if (scobjType == _WpfObjTypes.Signal)
+            //    scobjType = $$iPems.SSH.Point;
+
+            //Ext.Ajax.request({
+            //    url: '/Component/GetDevicePath',
+            //    params: { nodes: [Ext.String.format('{0}{1}{2}', scobjType, $$iPems.Separator, scobjId)] },
+            //    mask: new Ext.LoadMask(westPanel, { msg: '正在设置节点...' }),
+            //    success: function (response, options) {
+            //        var data = Ext.decode(response.responseText, true);
+            //        if (data.success) {
+            //            Ext.each(data.data, function (item, index, all) {
+            //                item = Ext.Array.from(item);
+            //                if (item.length > 0) {
+            //                    $$iPems.selectNodePath(westPanel, item, function () {
+            //                    });
+            //                }
+            //            });
+            //        }
+            //    }
+            //});
+            JsSetSCObj('', 0, '', scobjId, scobjType, '', scobjGVPageName);
+        }
+
+        //Wpf调用JS：打开链接
+        document.WpfOpenUrl = function (url) {
+            window.open(url, '_blank');
+        }
+
+        //设置监控对象信息
+        function WpfSetSCObj(record) {
+            if (Ext.isEmpty(record)) return false;
+            if (Ext.isEmpty(_WpfObj)) return false;
+
+            Ext.Ajax.request({
+                url: '/Configuration/GetWpfObj',
+                params: { node: record.getId() },
+                success: function (response, options) {
+                    var data = Ext.decode(response.responseText, true);
+                    if (data.success && data.data != null) {
+                        JsSetSCObj(data.data.parentId, data.data.parentType, data.data.parentName, data.data.currentId, data.data.currentType, data.data.currentName, '');
+                    } else {
+                        Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
+                    }
+                }
+            });
+        }
+
+        //JS调用Wpf：设置监控对象信息
+        function JsSetSCObj(parentId, parentType, parentName, currentId, currentType, currentName, currentGVPageName) {
+            if (_WpfObj != null) {
+                try {
+                    _WpfObj.JsSetSCObj(_WebAPIUrl, _Role, parentId, parentType, parentName, currentId, currentType, currentName, currentGVPageName);
+                } catch (e) {
+                    alert('JsSetSCObj错误：' + e.message);
+                }
+            } else {
+                alert('WpfObj为空');
+            }
+        }
+    </script>
 }

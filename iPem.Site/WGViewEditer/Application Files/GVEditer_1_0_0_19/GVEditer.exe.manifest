@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="GVEditer.exe" version="1.0.0.19" publicKeyToken="9c1064cf31432473" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="GVEditer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="GVEditer.exe" parameters="" />
+    <hostInBrowser xmlns="urn:schemas-microsoft-com:asm.v3" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="Internet" Description="Default rights given to Internet applications" Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="3DTools.dll" size="83968">
+      <assemblyIdentity name="3DTools" version="1.0.6576.30662" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>F0dY0pbAuga5yagQY2Kna/wrRTs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GVE.dll" size="683008">
+      <assemblyIdentity name="GVE" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>UWPWXI/INWwDWIXZeF2jUB2Rsvw=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GVEditer.exe" size="12736">
+      <assemblyIdentity name="GVEditer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>EZmWDN+yxlo9OORjjGUVQMh0F84=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="525824">
+      <assemblyIdentity name="Newtonsoft.Json" version="10.0.0.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>DqRhHu7jc2ljy3GBMgmWJL/r9GA=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SCAPI.dll" size="15872">
+      <assemblyIdentity name="SCAPI" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>VUqLoJy+a1eUPWuKQR3FDi1KYas=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Net.Http.dll" size="180832">
+      <assemblyIdentity name="System.Net.Http" version="2.0.0.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>vnPECG7jPdg4oYzUFMTu1U4KLqc=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SystemExtend.dll" size="5632">
+      <assemblyIdentity name="SystemExtend" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>lN9R3PaVmBzSIIkrgkTeuMXftbo=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TeeChart.WPF.dll" size="3030800">
+      <assemblyIdentity name="TeeChart.WPF" version="4.1.2010.11303" publicKeyToken="98E8C3F289A4E286" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>cLo0OGza94OhZvG3VkdAnFSj728=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WGView.SDefineLib.dll" size="62464">
+      <assemblyIdentity name="WGView.SDefineLib" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>wbCDw2kGoPjqeuBwKYGqlEJM+H0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WGView.Toolkit.dll" size="15360">
+      <assemblyIdentity name="WGView.Toolkit" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>LH/bu4APZ+JmH6qHwUHBn+bTm7s=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WpfJSInteraction.dll" size="9728">
+      <assemblyIdentity name="WpfJSInteraction" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>c/1bsbBj2LtjQOGsKLl6ziKgGUs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="GVEditer.exe.config" size="1304">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>Rtf1j1546D7ZP7drUizVbmz0On0=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=BLACKEY-T440P\blackey" issuerKeyHash="670e49fdb61e5b137d340b3b1a9ec6332f2ab9ee" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>adjScPKq9HHxFipmBw2Bl//CW6U=</DigestValue></Reference></SignedInfo><SignatureValue>DlWeO1stkvYxTVXDroB+9XYnZJkU5QPnGKB5GXybniQAR7B8/XOZMEokm7gcJgRxtu5+SSpdUvBc57ikUQZGgVxdEqXj/kAB/RBbcMqBZ7zrtHOsYUuXDOrnSvjCHLHCbvgyeCx0mK8+gh9CZhHI8ofD3FOBsD5P9SVZKO1oeDI=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>vZqaTvgVJKG2BSvWn6sphdZ+XJmiY928HEzzisDrswXyRj7YdEeAJ90jIZExR5cXNthZrQSrqbI1FR1vXM3FDlyATYQdgcrkkdnupVtF7FNo0noKXQ5beTvYtfk17rejM2U8Nmz73tZvbOdyD+QCYNPxI0xt300fmiMhaMxwWRU=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="a55bc2ff97810d07662a16f171f4aaf270d2d869" Description="" Url=""><as:assemblyIdentity name="GVEditer.exe" version="1.0.0.19" publicKeyToken="9c1064cf31432473" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=BLACKEY-T440P\blackey</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>XcNbE/ejNdPG6eTZzi/Aw2JogLs=</DigestValue></Reference></SignedInfo><SignatureValue>lWkeGvhJNj2C1Yl/8Iv0DCpG7G94VzHX0GwfY/Qbojg1anambkC/WU0rL1SHURQWfBPDpNpu7HjuG9gkaChpL2fnsJiDxH4lWuLN6FeRhKfGAF/P23BrtpHCyNLSJEmYsvrXDELt5M3uuwlFlbLDP+sU02yDM45JGQgxrpxjQt0=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>vZqaTvgVJKG2BSvWn6sphdZ+XJmiY928HEzzisDrswXyRj7YdEeAJ90jIZExR5cXNthZrQSrqbI1FR1vXM3FDlyATYQdgcrkkdnupVtF7FNo0noKXQ5beTvYtfk17rejM2U8Nmz73tZvbOdyD+QCYNPxI0xt300fmiMhaMxwWRU=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB7TCCAVagAwIBAgIQWO64dzkRZKdPH6BeEW6C5zANBgkqhkiG9w0BAQUFADA1MTMwMQYDVQQDHioAQgBMAEEAQwBLAEUAWQAtAFQANAA0ADAAUABcAGIAbABhAGMAawBlAHkwHhcNMTcxMjE0MTMyNDQ4WhcNMTgxMjE0MTkyNDQ4WjA1MTMwMQYDVQQDHioAQgBMAEEAQwBLAEUAWQAtAFQANAA0ADAAUABcAGIAbABhAGMAawBlAHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAL2amk74FSShtgUr1p+rKYXWflyZomPdvBxM84rA67MF8kY+2HRHgCfdIyGRMUeXFzbYWa0Eq6myNRUdb1zNxQ5cgE2EHYHK5JHZ7qVbRexTaNJ6Cl0OW3k72LX5Ne63ozNlPDZs+97Wb2zncg/kAmDT8SNMbd9NH5ojIWjMcFkVAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAYY9H0M+52tRInsbOL1P13woYygwSRUArkTmCJoYDXAptJTNj2Smgi9wbsVyJmXYhoUuU/DKiWFPjrCsF566F8vUi5DFDYV9DAbKUV0qSVLRrCHb1IXQTT9YNiLIuBae7ZI4gs5v9iazZQ12TV81s6nFIXhqs7ExxcbonWOaZDiM=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
