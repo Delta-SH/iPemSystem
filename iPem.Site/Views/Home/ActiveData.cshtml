@@ -116,6 +116,12 @@
             window.open(url, '_blank');
         }
 
+        //Wpf调用JS: 弹出页面
+        document.WpfOpenGVPage = function (scobjId, scobjType, scobjGVPageName) {
+            var url = Ext.String.format('/Home/Viewer?id={0}&type={1}&name={2}', scobjId, scobjType, encodeURIComponent(scobjGVPageName));
+            window.open(url, '_blank');
+        }
+
         //设置监控对象信息
         function WpfSetSCObj(record) {
             if (Ext.isEmpty(record)) return false;

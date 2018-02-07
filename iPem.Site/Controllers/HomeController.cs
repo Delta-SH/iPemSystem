@@ -210,6 +210,14 @@ namespace iPem.Site.Controllers {
             return View(models);
         }
 
+        public ActionResult Viewer(string id, int type, string name) {
+            ViewBag.RoleId = _workContext.Role().Id.ToString();
+            ViewBag.Id = id ?? "";
+            ViewBag.Type = type;
+            ViewBag.Name = name ?? "";
+            return View();
+        }
+
         [AjaxAuthorize]
         public JsonResult GetBadges() {
             var data = new AjaxDataModel<BadgeModel> {

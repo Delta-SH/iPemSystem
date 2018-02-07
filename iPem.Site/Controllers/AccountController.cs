@@ -1909,14 +1909,15 @@ namespace iPem.Site.Controllers {
 
                 var current = Request.Files[0];
                 if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
-                if (!current.FileName.StartsWith("P2S_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2S脚本文件");
-                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var fileName = Path.GetFileNameWithoutExtension(current.FileName);
+                if (!fileName.StartsWith("P2S_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2S脚本文件");
+                
                 var scripts = _sdbScriptService.GetEntities();
-                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                var script = scripts.Find(s => s.Id.Equals(fileName, StringComparison.CurrentCultureIgnoreCase));
                 if (script != null) throw new iPemException("脚本已存在，无需执行。");
 
                 _scExecutor.Execute(current.InputStream);
-                _sdbScriptService.Update(new S_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
+                _sdbScriptService.Update(new S_DBScript { Id = fileName, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
@@ -1967,14 +1968,15 @@ namespace iPem.Site.Controllers {
 
                 var current = Request.Files[0];
                 if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
-                if (!current.FileName.StartsWith("P2H_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2H脚本文件");
-                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var fileName = Path.GetFileNameWithoutExtension(current.FileName);
+                if (!fileName.StartsWith("P2H_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2H脚本文件");
+                
                 var scripts = _hdbScriptService.GetEntities();
-                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                var script = scripts.Find(s => s.Id.Equals(fileName, StringComparison.CurrentCultureIgnoreCase));
                 if (script != null) throw new iPemException("脚本已存在，无需执行。");
 
                 _csExecutor.Execute(current.InputStream);
-                _hdbScriptService.Update(new H_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
+                _hdbScriptService.Update(new H_DBScript { Id = fileName, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
@@ -2025,14 +2027,15 @@ namespace iPem.Site.Controllers {
 
                 var current = Request.Files[0];
                 if (!Path.GetExtension(current.FileName).Equals(".sql", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择脚本文件（*.sql）");
-                if (!current.FileName.StartsWith("P2R_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2R脚本文件");
-                var key = Path.GetFileNameWithoutExtension(current.FileName);
+                var fileName = Path.GetFileNameWithoutExtension(current.FileName);
+                if (!fileName.StartsWith("P2R_", StringComparison.CurrentCultureIgnoreCase)) throw new iPemException("请选择P2R脚本文件");
+                
                 var scripts = _rdbScriptService.GetEntities();
-                var script = scripts.Find(s => s.Id.Equals(key, StringComparison.CurrentCultureIgnoreCase));
+                var script = scripts.Find(s => s.Id.Equals(fileName, StringComparison.CurrentCultureIgnoreCase));
                 if (script != null) throw new iPemException("脚本已存在，无需执行。");
 
                 _rsExecutor.Execute(current.InputStream);
-                _rdbScriptService.Update(new R_DBScript { Id = key, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
+                _rdbScriptService.Update(new R_DBScript { Id = fileName, Executor = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name });
                 return Json(new AjaxResultModel { success = true, code = 200, message = "脚本执行成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
