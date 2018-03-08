@@ -52,14 +52,12 @@ namespace iPem.Services.Sc {
 
         public List<U_Role> GetRolesByRole(Guid id) {
             var roles = _repository.GetRoles();
-            var result = id.Equals(U_Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
-            return result;
+            return id.Equals(U_Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
         }
 
         public List<U_Role> GetRoleByNames(string[] names) {
             var roles = _repository.GetRoles();
-            var result = roles.FindAll(r => r.Id != U_Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
-            return result;
+            return roles.FindAll(r => r.Id != U_Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
         }
 
         public IPagedList<U_Role> GetPagedRoles(int pageIndex = 0, int pageSize = int.MaxValue) {

@@ -7,115 +7,118 @@ namespace iPem.Core.Caching {
     /// </summary>
     public interface ICacheManager {
         /// <summary>
-        /// Gets or sets the value associated with the specified key.
+        /// 获取缓存对象
         /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        /// <param name="key">The key of the value to get.</param>
-        /// <returns>The value associated with the specified key.</returns>
         T Get<T>(string key);
 
         /// <summary>
-        /// Gets or sets the value associated with the specified key.
+        /// 获取HASH缓存对象
         /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        /// <param name="hashId">The hashId of the value to get.</param>
-        /// <param name="key">The key of the value to get.</param>
-        /// <returns>The value associated with the specified key.</returns>
         T GetFromHash<T>(string hashId, string key);
 
         /// <summary>
-        /// Gets or sets the value associated with the specified key.
+        /// 批量获取HASH缓存对象
         /// </summary>
-        /// <typeparam name="T">Type</typeparam>
-        /// <param name="hashId">The hashId of the value to get.</param>
-        /// <param name="key">The key of the value to get.</param>
-        /// <returns>The value associated with the specified key.</returns>
         IList<T> GetAllFromHash<T>(string hashId);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 设置缓存对象
         /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
         void Set(string key, object data);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 设置缓存对象
         /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
-        /// <param name="cacheTime">cache time</param>
         void Set(string key, object data, TimeSpan cacheTime);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 设置HASH缓存对象
         /// </summary>
-        /// <param name="hashId">hashId</param>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
         void SetInHash(string hashId, string key, object data);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 设置HASH缓存对象
         /// </summary>
-        /// <param name="hashId">hashId</param>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
-        /// <param name="cacheTime">cache time</param>
         void SetInHash(string hashId, string key, object data, TimeSpan cacheTime);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 批量设置HASH缓存对象
         /// </summary>
-        /// <param name="hashId">hashId</param>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
         void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data);
 
         /// <summary>
-        /// Adds the specified key and object to the cache.
+        /// 批量设置HASH缓存对象
         /// </summary>
-        /// <param name="hashId">hashId</param>
-        /// <param name="key">key</param>
-        /// <param name="data">object</param>
-        /// <param name="cacheTime">cache time</param>
         void SetRangeInHash(string hashId, IEnumerable<KeyValuePair<string, object>> data, TimeSpan cacheTime);
 
         /// <summary>
-        /// Gets a value indicating whether the value associated with the specified key is cached
+        /// 判断缓存对象是否存在
         /// </summary>
-        /// <param name="key">key</param>
-        /// <returns>Result</returns>
         bool IsSet(string key);
 
         /// <summary>
-        /// Gets a value indicating whether the value associated with the specified key is cached
+        /// 判断HASH缓存对象是否存在
         /// </summary>
-        /// <param name="key">key</param>
-        /// <returns>true/false</returns>
         bool IsHashSet(string hashId, string key);
 
         /// <summary>
-        /// Removes the value with the specified key from the cache
+        /// 删除指定键的缓存对象
         /// </summary>
-        /// <param name="key">/key</param>
         void Remove(string key);
 
         /// <summary>
-        /// Removes items by pattern
+        /// 根据正则表达式匹配删除缓存对象
         /// </summary>
-        /// <param name="pattern">pattern</param>
         void RemoveByPattern(string pattern);
 
         /// <summary>
-        /// Removes the value with the specified key from the cache
+        /// 删除指定键的HASH缓存对象
         /// </summary>
-        /// <param name="key">/key</param>
         void RemoveHash(string hashId, string key);
 
         /// <summary>
-        /// Clear all cache data
+        /// 清空缓存对象
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// 获得缓存临界锁
+        /// </summary>
+        IDisposable AcquireLock(string key, long timeOut = 30);
+
+        /// <summary>
+        /// 添加缓存集合对象到List
+        /// </summary>
+        void AddItemsToList<T>(string key, IEnumerable<T> values);
+
+        /// <summary>
+        /// 添加缓存集合对象到List
+        /// </summary>
+        void AddItemsToList<T>(string key, IEnumerable<T> values, TimeSpan cacheTime);
+
+        /// <summary>
+        /// 从List中获取缓存集合对象
+        /// </summary>
+        IEnumerable<T> GetItemsFromList<T>(string key);
+
+        /// <summary>
+        /// 添加缓存集合对象到Set
+        /// </summary>
+        void AddItemsToSet<T>(string key, IEnumerable<T> values);
+
+        /// <summary>
+        /// 添加缓存集合对象到Set
+        /// </summary>
+        void AddItemsToSet<T>(string key, IEnumerable<T> values, TimeSpan cacheTime);
+
+        /// <summary>
+        /// 从Set中获取缓存集合对象
+        /// </summary>
+        IEnumerable<T> GetItemsFromSet<T>(string key);
+
+        /// <summary>
+        /// 判断Set缓存对象是否存在
+        /// </summary>
+        bool SetContainsItem<T>(string key, T item);
     }
 }

@@ -148,10 +148,10 @@ namespace iPem.Core.Enum {
     /// 0-告警信号（AL）
     /// </remarks>
     public enum EnmBIPoint {
-        DI = 4,
-        AI = 3,
+        AL = 0,
         DO = 1,
         AO = 2,
-        AL = 0
+        AI = 3,
+        DI = 4
     }
 }

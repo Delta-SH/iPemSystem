@@ -5,6 +5,7 @@ using iPem.Data.Repository.Sc;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Sc {
     public partial class MenuService : IMenuService {
@@ -39,10 +40,10 @@ namespace iPem.Services.Sc {
         public List<U_Menu> GetMenus() {
             var key = GlobalCacheKeys.Sc_MenusRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<U_Menu>>(key);
+                return _cacheManager.GetItemsFromList<U_Menu>(key).ToList();
             } else {
                 var data = _repository.GetMenus();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

@@ -8,6 +8,11 @@ namespace iPem.Core.Domain.Cs {
     [Serializable]
     public partial class A_TAlarm {
         /// <summary>
+        /// 告警流水唯一标识
+        /// </summary>
+        public long Id { get; set; }
+
+        /// <summary>
         /// FSU编码
         /// </summary>
         public string FsuId { get; set; }

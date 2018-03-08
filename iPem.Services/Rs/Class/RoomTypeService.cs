@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class RoomTypeService : IRoomTypeService {
@@ -39,10 +40,10 @@ namespace iPem.Services.Rs {
         public List<C_RoomType> GetRoomTypes() {
             var key = GlobalCacheKeys.Rs_RoomTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_RoomType>>(key);
+                return _cacheManager.GetItemsFromList<C_RoomType>(key).ToList();
             } else {
                 var data = _repository.GetRoomTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

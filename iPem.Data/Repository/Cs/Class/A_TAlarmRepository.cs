@@ -28,19 +28,15 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
-        public A_TAlarm GetEntity(string fsuid, string serialno, EnmFlag alarmflag) {
-            SqlParameter[] parms = { new SqlParameter("@FsuId", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@SerialNo", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@AlarmFlag", SqlDbType.Int) };
-
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(fsuid);
-            parms[1].Value = SqlTypeConverter.DBNullStringChecker(serialno);
-            parms[2].Value = (int)alarmflag;
+        public A_TAlarm GetEntity(long id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.BigInt) };
+            parms[0].Value = SqlTypeConverter.DBNullInt64Checker(id);
 
             A_TAlarm entity = null;
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_TAlarm_Repository_GetEntity, parms)) {
                 if (rdr.Read()) {
                     entity = new A_TAlarm();
+                    entity.Id = SqlTypeConverter.DBNullInt64Handler(rdr["Id"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
@@ -65,6 +61,7 @@ namespace iPem.Data.Repository.Cs {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_TAlarm_Repository_GetEntities, null)) {
                 while (rdr.Read()) {
                     var entity = new A_TAlarm();
+                    entity.Id = SqlTypeConverter.DBNullInt64Handler(rdr["Id"]);
                     entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
                     entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
                     entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
@@ -85,7 +82,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public void Insert(params A_TAlarm[] entities) {
+        public void Insert(IEnumerable<A_TAlarm> entities) {
             SqlParameter[] parms = { new SqlParameter("@FsuId",SqlDbType.VarChar,100),
                                      new SqlParameter("@DeviceId",SqlDbType.VarChar,100),
                                      new SqlParameter("@PointId",SqlDbType.VarChar,100),
@@ -98,7 +95,7 @@ namespace iPem.Data.Repository.Cs {
                                      new SqlParameter("@AlarmFlag", SqlDbType.Int),
                                      new SqlParameter("@AlarmDesc", SqlDbType.VarChar,120),
                                      new SqlParameter("@AlarmValue", SqlDbType.Float),
-                                     new SqlParameter("@AlarmRemark", SqlDbType.VarChar,100)};
+                                     new SqlParameter("@AlarmRemark", SqlDbType.VarChar,100) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();
@@ -128,19 +125,15 @@ namespace iPem.Data.Repository.Cs {
             }
         }
 
-        public void Delete(params A_TAlarm[] entities) {
-            SqlParameter[] parms = { new SqlParameter("@FsuId", SqlDbType.VarChar, 100), 
-                                     new SqlParameter("@SerialNo", SqlDbType.VarChar, 100), 
-                                     new SqlParameter("@AlarmFlag", SqlDbType.Int) };
+        public void Delete(IEnumerable<A_TAlarm> entities) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.BigInt) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
-                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.FsuId);
-                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.SerialNo);
-                        parms[2].Value = (int)entity.AlarmFlag;
+                        parms[0].Value = SqlTypeConverter.DBNullInt64Checker(entity.Id);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_TAlarm_Repository_Delete, parms);
                     }
                     trans.Commit();

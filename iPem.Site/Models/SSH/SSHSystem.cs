@@ -7,7 +7,7 @@ namespace iPem.Site.Models.SSH {
         public static readonly A_Area Area = new A_Area {
             Id = "-1",
             Code = "-1",
-            Name = "系统区域",
+            Name = "--",
             Type = new Kv<int, string> { Key = -1, Value = "系统区域" },
             ParentId = "0",
             Enabled = true
@@ -16,7 +16,7 @@ namespace iPem.Site.Models.SSH {
         public static readonly S_Station Station = new S_Station {
             Id = "-1",
             Code = "-1",
-            Name = "系统站点",
+            Name = "--",
             Type = new C_StationType { Id = "-1", Name = "系统站点" },
             AreaId = Area.Id,
             Enabled = true
@@ -25,7 +25,7 @@ namespace iPem.Site.Models.SSH {
         public static readonly S_Room Room = new S_Room {
             Id = "-1",
             Code = "-1",
-            Name = "系统机房",
+            Name = "--",
             Type = new C_RoomType { Id = "-1", Name = "系统机房" },
             AreaId = Area.Id,
             StationId = Station.Id,
@@ -36,7 +36,7 @@ namespace iPem.Site.Models.SSH {
         public static readonly D_Fsu Fsu = new D_Fsu {
             Id = "-1",
             Code = "-1",
-            Name = "系统FSU",
+            Name = "--",
             AreaId = Area.Id,
             StationId = Station.Id,
             StationName = Station.Name,
@@ -50,10 +50,27 @@ namespace iPem.Site.Models.SSH {
         public static readonly D_Device SC = new D_Device {
             Id = "-1",
             Code = "-1",
-            Name = "系统SC",
-            Type = new C_DeviceType { Id = "-1", Name = "SC采集设备" },
-            SubType = new C_SubDeviceType { Id = "-1", Name = "SC采集设备" },
-            SubLogicType = new C_SubLogicType { Id = "-1", Name = "SC采集设备" },
+            Name = "SC通信采集前置机",
+            Type = new C_DeviceType { Id = "-1", Name = "SC通信采集设备" },
+            SubType = new C_SubDeviceType { Id = "-1", Name = "SC通信采集设备" },
+            SubLogicType = new C_SubLogicType { Id = "-1", Name = "SC通信采集设备" },
+            AreaId = Area.Id,
+            StationId = Station.Id,
+            StationName = Station.Name,
+            StaTypeId = Station.Type.Id,
+            RoomId = Room.Id,
+            RoomName = Room.Name,
+            FsuId = Fsu.Id,
+            Enabled = true
+        };
+
+        public static readonly D_Device FSU = new D_Device {
+            Id = "-1",
+            Code = "-1",
+            Name = "FSU监控采集设备",
+            Type = new C_DeviceType { Id = "-2", Name = "FSU监控采集设备" },
+            SubType = new C_SubDeviceType { Id = "-2", Name = "FSU监控采集设备" },
+            SubLogicType = new C_SubLogicType { Id = "-2", Name = "FSU监控采集设备" },
             AreaId = Area.Id,
             StationId = Station.Id,
             StationName = Station.Name,

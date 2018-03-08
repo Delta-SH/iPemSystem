@@ -121,7 +121,7 @@
                                     var keys = $$iPems.SplitKeys(record.data.id);
                                     if (keys.length == 2) {
                                         var pointCombo = Ext.getCmp('pointCombo');
-                                        pointCombo.bind(keys[1], true, false, true, false);
+                                        pointCombo.bind(keys[1], true, false, true, false, false);
                                     }
                                 }
                             }

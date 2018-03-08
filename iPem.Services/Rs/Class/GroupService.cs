@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class GroupService : IGroupService {
@@ -45,17 +46,18 @@ namespace iPem.Services.Rs {
         public List<C_Group> GetGroups() {
             var key = GlobalCacheKeys.Rs_GroupsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_Group>>(key);
+                return _cacheManager.GetItemsFromList<C_Group>(key).ToList();
             } else {
                 var data = _repository.GetGroups();
                 var types = _enumService.GetEnumsByType(EnmMethodType.Group, "类型");
                 for (var i = 0; i < data.Count; i++) {
-                    var type = types.Find(t => t.Id == data[i].TypeId);
+                    var current = data[i];
+                    var type = types.Find(t => t.Id.Equals(current.TypeId));
                     if (type == null) continue;
-                    data[i].TypeName = type.Name;
+                    current.TypeName = type.Name;
                 }
 
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

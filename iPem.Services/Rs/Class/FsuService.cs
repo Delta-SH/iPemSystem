@@ -38,28 +38,16 @@ namespace iPem.Services.Rs {
         }
 
         public List<D_Fsu> GetFsusInRoom(string id) {
-            var key = GlobalCacheKeys.Rs_FsusRepository;
-            if (!_cacheManager.IsSet(key)) {
-                return this.GetFsus().FindAll(c => c.RoomId == id);
-            }
-
-            if (_cacheManager.IsHashSet(key, id)) {
-                return _cacheManager.GetFromHash<List<D_Fsu>>(key, id);
-            } else {
-                var data = _repository.GetFsusInRoom(id);
-                _cacheManager.SetInHash(key, id, data);
-                return data;
-            }
+            return _repository.GetFsusInRoom(id);
         }
 
         public List<D_Fsu> GetFsus() {
             var key = GlobalCacheKeys.Rs_FsusRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetAllFromHash<List<D_Fsu>>(key).SelectMany(d => d).ToList();
+                return _cacheManager.GetItemsFromList<D_Fsu>(key).ToList();
             } else {
                 var data = _repository.GetFsus();
-                var caches = data.GroupBy(d => d.RoomId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
-                _cacheManager.SetRangeInHash(key, caches);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

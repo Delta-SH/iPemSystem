@@ -93,7 +93,6 @@
     <Compile Include="Cs\Class\HMeasureService.cs" />
     <Compile Include="Cs\Interface\IAAlarmService.cs" />
     <Compile Include="Rs\Interface\ISignalService.cs" />
-    <Compile Include="Sc\Class\FollowPointService.cs" />
     <Compile Include="Sc\Class\FormulaService.cs" />
     <Compile Include="Cs\Interface\IHAlarmService.cs" />
     <Compile Include="Cs\Interface\IBatService.cs" />
@@ -109,7 +108,6 @@
     <Compile Include="Sc\Class\ProfileService.cs" />
     <Compile Include="Sc\Class\ProjectService.cs" />
     <Compile Include="Sc\Class\SDBScriptService.cs" />
-    <Compile Include="Sc\Interface\IFollowPointService.cs" />
     <Compile Include="Sc\Interface\IGImageService.cs" />
     <Compile Include="Sc\Interface\IGPageService.cs" />
     <Compile Include="Sc\Interface\IGTemplateService.cs" />

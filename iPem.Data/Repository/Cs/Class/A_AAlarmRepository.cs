@@ -28,6 +28,45 @@ namespace iPem.Data.Repository.Cs {
 
         #region Methods
 
+        public A_AAlarm GetAlarm(string id) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
+
+            A_AAlarm entity = null;
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetAlarm, parms)) {
+                if (rdr.Read()) {
+                    entity = new A_AAlarm();
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
+                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
+                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
+                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
+                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
+                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
+                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
+                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
+                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
+                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
+                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
+                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
+                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
+                    entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
+                    entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
+                    entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
+                    entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
+                    entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
+                    entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
+                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
+                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
+                }
+            }
+
+            return entity;
+        }
+
         public List<A_AAlarm> GetAlarmsInArea(string id) {
             SqlParameter[] parms = { new SqlParameter("@AreaId", SqlDbType.VarChar, 100) };
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
@@ -262,42 +301,6 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<A_AAlarm> GetSystemAlarms() {
-            var entities = new List<A_AAlarm>();
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetSystemAlarms, null)) {
-                while (rdr.Read()) {
-                    var entity = new A_AAlarm();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
-                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
-                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
-                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
-                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
-                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
-                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
-                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
-                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
-                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
-                    entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
-                    entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
-                    entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
-                    entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
-                    entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
-                    entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                    entities.Add(entity);
-                }
-            }
-            return entities;
-        }
-
         public List<A_AAlarm> GetAllAlarms(DateTime start, DateTime end) {
             SqlParameter[] parms = { new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
@@ -493,7 +496,7 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public void Confirm(IList<A_AAlarm> alarms) {
+        public void Confirm(IEnumerable<A_AAlarm> alarms) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200),
                                      new SqlParameter("@Confirmed", SqlDbType.Int),
                                      new SqlParameter("@Confirmer", SqlDbType.VarChar, 100),
@@ -518,48 +521,8 @@ namespace iPem.Data.Repository.Cs {
             }
         }
 
-        public A_AAlarm GetAlarm(string id) {
-            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200) };
-            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
-
-            A_AAlarm entity = null;
-            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_GetAlarm, parms)) {
-                if (rdr.Read()) {
-                    entity = new A_AAlarm();
-                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
-                    entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
-                    entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
-                    entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
-                    entity.FsuId = SqlTypeConverter.DBNullStringHandler(rdr["FsuId"]);
-                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
-                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
-                    entity.SerialNo = SqlTypeConverter.DBNullStringHandler(rdr["SerialNo"]);
-                    entity.NMAlarmId = SqlTypeConverter.DBNullStringHandler(rdr["NMAlarmId"]);
-                    entity.AlarmTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["AlarmTime"]);
-                    entity.AlarmLevel = SqlTypeConverter.DBNullEnmLevelHandler(rdr["AlarmLevel"]);
-                    entity.AlarmValue = SqlTypeConverter.DBNullDoubleHandler(rdr["AlarmValue"]);
-                    entity.AlarmDesc = SqlTypeConverter.DBNullStringHandler(rdr["AlarmDesc"]);
-                    entity.AlarmRemark = SqlTypeConverter.DBNullStringHandler(rdr["AlarmRemark"]);
-                    entity.Confirmed = SqlTypeConverter.DBNullEnmConfirmStatusHandler(rdr["Confirmed"]);
-                    entity.Confirmer = SqlTypeConverter.DBNullStringHandler(rdr["Confirmer"]);
-                    entity.ConfirmedTime = SqlTypeConverter.DBNullDateTimeNullableHandler(rdr["ConfirmedTime"]);
-                    entity.ReservationId = SqlTypeConverter.DBNullStringHandler(rdr["ReservationId"]);
-                    entity.PrimaryId = SqlTypeConverter.DBNullStringHandler(rdr["PrimaryId"]);
-                    entity.RelatedId = SqlTypeConverter.DBNullStringHandler(rdr["RelatedId"]);
-                    entity.FilterId = SqlTypeConverter.DBNullStringHandler(rdr["FilterId"]);
-                    entity.ReversalId = SqlTypeConverter.DBNullStringHandler(rdr["ReversalId"]);
-                    entity.ReversalCount = SqlTypeConverter.DBNullInt32Handler(rdr["ReversalCount"]);
-                    entity.Masked = SqlTypeConverter.DBNullBooleanHandler(rdr["Masked"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
-                }
-            }
-
-            return entity;
-        }
-
-        public void DeleteAlarms(params A_AAlarm[] alarms) {
-            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 200),
-                                     new SqlParameter("@FsuId", SqlDbType.VarChar, 100), 
+        public void Delete(IEnumerable<A_AAlarm> alarms) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100), 
                                      new SqlParameter("@SerialNo", SqlDbType.VarChar, 100) };
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
@@ -568,9 +531,8 @@ namespace iPem.Data.Repository.Cs {
                 try {
                     foreach (var alarm in alarms) {
                         parms[0].Value = SqlTypeConverter.DBNullStringChecker(alarm.Id);
-                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(alarm.FsuId);
-                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(alarm.SerialNo);
-                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_DeleteAlarm, parms);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(alarm.SerialNo);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Cs.Sql_A_AAlarm_Repository_Delete, parms);
                     }
                     trans.Commit();
                 } catch {

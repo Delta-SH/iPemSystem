@@ -23,7 +23,11 @@ namespace iPem.Site.Infrastructure {
 
         U_Employee Employee();
 
-        iProfile Profile();
+        IEnumerable<FollowPoint> ProfileFollows();
+
+        IEnumerable<SeniorCondition> ProfileConditions();
+
+        IEnumerable<MatrixTemplate> ProfileMatrixs();
 
         iAuth Authorizations();
 
@@ -109,7 +113,7 @@ namespace iPem.Site.Infrastructure {
 
         void ResetEmployee();
 
-        void ResetProfile();
+        void ResetProfile(EnmProfile type);
 
         List<iSSHDevice> iDevices(DateTime date);
 
@@ -119,13 +123,19 @@ namespace iPem.Site.Infrastructure {
 
         List<P_Point> GetPoints(bool _ai, bool _ao, bool _di, bool _do, bool _al);
 
-        EnmPoint GetPointType(P_Point point);
-
         List<S_Station> GetStationsWithPoints(IList<string> points);
 
         List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms);
 
         List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms);
+
+        List<AlmStore<A_AAlarm>> AlarmsToSc(List<A_AAlarm> alarms);
+
+        List<AlmStore<A_HAlarm>> AlarmsToSc(List<A_HAlarm> alarms);
+
+        List<AlmStore<A_AAlarm>> AlarmsToFsu(List<A_AAlarm> alarms);
+
+        List<AlmStore<A_HAlarm>> AlarmsToFsu(List<A_HAlarm> alarms);
 
         Dictionary<string, AlmStore<A_AAlarm>> AlarmsToDictionary(List<AlmStore<A_AAlarm>> alarms, bool primaryKey = true);
 

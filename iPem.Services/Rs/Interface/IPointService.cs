@@ -10,16 +10,6 @@ namespace iPem.Services.Rs {
     /// </summary>
     public partial interface IPointService {
         /// <summary>
-        /// 获得指定设备下的信号
-        /// </summary>
-        List<P_Point> GetPointsInDevice(string id);
-
-        /// <summary>
-        /// 获得指定设备下不同类型的信号
-        /// </summary>
-        List<P_Point> GetPointsInDevice(string id, bool _ai, bool _ao, bool _di, bool _do);
-
-        /// <summary>
         /// 获得指定模版下的信号
         /// </summary>
         List<P_Point> GetPointsInProtocol(string id);

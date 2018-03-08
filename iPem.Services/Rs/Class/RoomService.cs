@@ -38,28 +38,16 @@ namespace iPem.Services.Rs {
         }
 
         public List<S_Room> GetRoomsInStation(string id) {
-            var key = GlobalCacheKeys.Rs_RoomsRepository;
-            if (!_cacheManager.IsSet(key)) {
-                return this.GetRooms().FindAll(c => c.StationId == id);
-            }
-
-            if (_cacheManager.IsHashSet(key, id)) {
-                return _cacheManager.GetFromHash<List<S_Room>>(key, id);
-            } else {
-                var data = _repository.GetRoomsInStation(id);
-                _cacheManager.SetInHash(key, id, data);
-                return data;
-            }
+            return _repository.GetRoomsInStation(id);
         }
 
         public List<S_Room> GetRooms() {
             var key = GlobalCacheKeys.Rs_RoomsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetAllFromHash<List<S_Room>>(key).SelectMany(d => d).ToList();
+                return _cacheManager.GetItemsFromList<S_Room>(key).ToList();
             } else {
                 var data = _repository.GetRooms();
-                var caches = data.GroupBy(d => d.StationId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
-                _cacheManager.SetRangeInHash(key, caches);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

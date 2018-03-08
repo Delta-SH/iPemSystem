@@ -57,10 +57,6 @@ namespace iPem.Services.Cs {
             return _repository.GetAlarms();
         }
 
-        public List<A_AAlarm> GetSystemAlarms() {
-            return _repository.GetSystemAlarms();
-        }
-
         public List<A_AAlarm> GetAllAlarmsInSpan(DateTime start, DateTime end) {
             return _repository.GetAllAlarms(start, end);
         }
@@ -94,8 +90,11 @@ namespace iPem.Services.Cs {
             if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
                 _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
 
-            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_SC_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_SC_Alarms);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_FSU_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_FSU_Alarms);
         }
 
         public A_AAlarm GetAlarm(string id) {
@@ -105,13 +104,16 @@ namespace iPem.Services.Cs {
         public void RemoveAlarms(params A_AAlarm[] alarms) {
             if (alarms == null) throw new ArgumentNullException("alarms");
 
-            _repository.DeleteAlarms(alarms);
+            _repository.Delete(alarms);
 
             if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
                 _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
 
-            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_SC_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_SC_Alarms);
+
+            if (_cacheManager.IsSet(GlobalCacheKeys.System_FSU_Alarms))
+                _cacheManager.Remove(GlobalCacheKeys.System_FSU_Alarms);
         }
 
         #endregion

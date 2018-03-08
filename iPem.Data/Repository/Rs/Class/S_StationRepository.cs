@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace iPem.Data.Repository.Rs {
     public partial class S_StationRepository : IS_StationRepository {
@@ -55,6 +56,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                 }
@@ -90,6 +92,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
@@ -98,12 +101,11 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
-        public List<S_Station> GetStationsWithPoints(IList<string> points) {
-            if (points == null || points.Count == 0) throw new ArgumentNullException("points");
-            var commands = new string[points.Count];
-            for (var i = 0; i < points.Count; i++) {
-                commands[i] = string.Format(@"SELECT '{0}' AS [PointId]", points[i]);
-            }
+        public List<S_Station> GetStationsWithPoints(IEnumerable<string> points) {
+            if (points == null || !points.Any()) 
+                throw new ArgumentNullException("points");
+
+            var commands = points.Select(p => string.Format(@"SELECT '{0}' AS [PointId]", p));
 
             var query = string.Format(@"
             ;WITH PointKeys AS (
@@ -116,9 +118,9 @@ namespace iPem.Data.Repository.Rs {
 	            INNER JOIN [dbo].[S_Room] R ON D.[RoomID]=R.[ID]
 	            GROUP BY R.[StationID]
             )
-            SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],V.[Name] AS [Vendor],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],S.[Desc] AS [Comment],S.[Enabled],SK.[PtCount] FROM [dbo].[S_Station] S 
-            INNER JOIN StationKeys SK ON S.[ID] = SK.[StationID]
+            SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],V.[Name] AS [Vendor],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],A.[Name] AS [AreaName],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
             INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
+            INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
             LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID];", string.Join(@" UNION ALL ", commands));
 
             var entities = new List<S_Station>();
@@ -147,6 +149,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);
@@ -180,6 +183,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.TranContNo = SqlTypeConverter.DBNullStringHandler(rdr["TranContNo"]);
                     entity.TranPhone = SqlTypeConverter.DBNullStringHandler(rdr["TranPhone"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
                     entities.Add(entity);

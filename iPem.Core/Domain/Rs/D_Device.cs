@@ -110,6 +110,11 @@ namespace iPem.Core.Domain.Rs {
         public string AreaId { get; set; }
 
         /// <summary>
+        /// 所属区域
+        /// </summary>
+        public string AreaName { get; set; }
+
+        /// <summary>
         /// 所属站点
         /// </summary>
         public string StationId { get; set; }
@@ -133,6 +138,11 @@ namespace iPem.Core.Domain.Rs {
         /// 所属机房
         /// </summary>
         public string RoomName { get; set; }
+
+        /// <summary>
+        /// 机房类型
+        /// </summary>
+        public string RoomTypeId { get; set; }
 
         /// <summary>
         /// 所属FSU

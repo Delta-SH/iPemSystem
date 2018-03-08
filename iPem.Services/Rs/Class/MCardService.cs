@@ -4,6 +4,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class MCardService : IMCardService {
@@ -38,10 +39,10 @@ namespace iPem.Services.Rs {
         public List<M_Card> GetCards() {
             var key = GlobalCacheKeys.Rs_CardsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<M_Card>>(key);
+                return _cacheManager.GetItemsFromList<M_Card>(key).ToList();
             } else {
                 var data = _repository.GetEntities();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

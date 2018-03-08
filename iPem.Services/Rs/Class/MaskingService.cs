@@ -6,6 +6,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class MaskingService : IMaskingService {
@@ -39,10 +40,10 @@ namespace iPem.Services.Rs {
         public List<H_Masking> GetMaskings() {
             var key = GlobalCacheKeys.Rs_MaskingRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<H_Masking>>(key);
+                return _cacheManager.GetItemsFromList<H_Masking>(key).ToList();
             } else {
                 var data = _repository.GetEntities();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
@@ -50,7 +51,7 @@ namespace iPem.Services.Rs {
         public HashSet<string> GetHashMaskings() {
             var key = GlobalCacheKeys.Rs_HashMaskingRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<HashSet<string>>(key);
+                return new HashSet<string>(_cacheManager.GetItemsFromSet<string>(key));
             } else {
                 var data = new HashSet<string>();
                 foreach (var mask in this.GetMaskings()) {
@@ -71,7 +72,7 @@ namespace iPem.Services.Rs {
                     }
                 }
 
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToSet(key, data);
                 return data;
             }
         }

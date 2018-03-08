@@ -11,7 +11,7 @@ namespace iPem.Services.Cs {
         /// <summary>
         /// 获得指定的告警流水
         /// </summary>
-        A_TAlarm GetAlarm(string fsuid, string serialno, EnmFlag alarmflag);
+        A_TAlarm GetAlarm(long id);
 
         /// <summary>
         /// 获得所有的告警流水

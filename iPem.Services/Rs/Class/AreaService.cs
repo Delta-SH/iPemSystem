@@ -51,7 +51,7 @@ namespace iPem.Services.Rs {
             var types = _enumService.GetEnumsByType(EnmMethodType.Area, "类型");
             for(var i = 0; i < result.Count; i++) {
                 var current = result[i];
-                var type = types.Find(t => t.Id == current.Type.Key);
+                var type = types.Find(t => t.Id.Equals(current.Type.Key));
                 if(type == null) continue;
                 current.Type.Value = type.Name;
             }

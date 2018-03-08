@@ -1,4 +1,5 @@
 ﻿using iPem.Core.Domain.Sc;
+using iPem.Core.Enum;
 using System;
 
 namespace iPem.Services.Sc {
@@ -7,18 +8,24 @@ namespace iPem.Services.Sc {
     /// </summary>
     public partial interface IProfileService {
         /// <summary>
-        /// 获得指定用户的自定义信息
+        /// 获得用户的订制信息
         /// </summary>
-        U_Profile GetProfile(Guid uid);
+        U_Profile GetProfile(Guid uid, EnmProfile type);
 
         /// <summary>
-        /// 保存指定用户的自定义信息
+        /// 保存用户的订制信息
         /// </summary>
-        void Save(U_Profile profile);
+        void SaveProfile(U_Profile profile);
 
         /// <summary>
-        /// 删除指定用户的自定义信息
+        /// 删除用户的订制信息
         /// </summary>
-        void Remove(Guid uid);
+        void RemoveProfile(Guid uid, EnmProfile type);
+
+        /// <summary>
+        /// 清空用户的所有订制信息
+        /// </summary>
+        /// <param name="uid"></param>
+        void ClearProfiles(Guid uid);
     }
 }

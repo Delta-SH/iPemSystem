@@ -151,26 +151,25 @@
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
+            { name: 'id', type: 'string' },
             { name: 'index', type: 'int' },
-            { name: 'nmalarmid', type: 'string' },
 			{ name: 'level', type: 'string' },
+            { name: 'name', type: 'string' },
             { name: 'starttime', type: 'string' },
             { name: 'endtime', type: 'string' },
+            { name: 'nmalarmid', type: 'string' },
             { name: 'interval', type: 'string' },
-            { name: 'comment', type: 'string' },
-            { name: 'startvalue', type: 'string' },
-            { name: 'endvalue', type: 'string' },
             { name: 'point', type: 'string' },
             { name: 'device', type: 'string' },
 			{ name: 'room', type: 'string' },
             { name: 'station', type: 'string' },
             { name: 'area', type: 'string' },
+            { name: 'supporter', type: 'string' },
             { name: 'confirmed', type: 'string' },
             { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
             { name: 'reservation', type: 'string' },
             { name: 'reversalcount', type: 'int' },
-            { name: 'id', type: 'string' },
             { name: 'areaid', type: 'string' },
             { name: 'stationid', type: 'string' },
             { name: 'roomid', type: 'string' },
@@ -180,7 +179,7 @@
             { name: 'levelid', type: 'int' },
             { name: 'reversalid', type: 'string' }
         ],
-        idProperty: 'index'
+        idProperty: 'id'
     });
 
     var reservationWnd = Ext.create('Ext.window.Window', {
@@ -393,12 +392,6 @@
                     width: 60
                 },
                 {
-                    text: '告警管理编号',
-                    dataIndex: 'nmalarmid',
-                    align: 'center',
-                    width: 150
-                },
-                {
                     text: '告警级别',
                     dataIndex: 'level',
                     align: 'center',
@@ -417,24 +410,21 @@
                     width: 150
                 },
                 {
+                    text: '告警名称',
+                    dataIndex: 'name',
+                    width: 150
+                },
+                {
+                    text: '管理编号',
+                    dataIndex: 'nmalarmid',
+                    align: 'center',
+                    width: 150
+                },
+                {
                     text: '告警历时',
                     dataIndex: 'interval',
                     align: 'center',
                     width: 120
-                },
-                {
-                    text: '告警描述',
-                    dataIndex: 'comment'
-                },
-                {
-                    text: '开始值',
-                    dataIndex: 'startvalue',
-                    align: 'center'
-                },
-                {
-                    text: '结束值',
-                    dataIndex: 'endvalue',
-                    align: 'center'
                 },
                 {
                     text: '信号名称',
@@ -455,6 +445,10 @@
                 {
                     text: '所属区域',
                     dataIndex: 'area'
+                },
+                {
+                    text: '维护厂家',
+                    dataIndex: 'supporter'
                 },
                 {
                     text: '确认状态',
@@ -715,12 +709,6 @@
                 width: 60
             },
             {
-                text: '告警管理编号',
-                dataIndex: 'nmalarmid',
-                align: 'center',
-                width: 150
-            },
-            {
                 text: '告警级别',
                 dataIndex: 'level',
                 align: 'center',
@@ -739,24 +727,21 @@
                 width: 150
             },
             {
+                text: '告警名称',
+                dataIndex: 'name',
+                width: 150
+            },
+            {
+                text: '管理编号',
+                dataIndex: 'nmalarmid',
+                align: 'center',
+                width: 150
+            },
+            {
                 text: '告警历时',
                 dataIndex: 'interval',
                 align: 'center',
                 width: 120
-            },
-            {
-                text: '告警描述',
-                dataIndex: 'comment'
-            },
-            {
-                text: '开始值',
-                dataIndex: 'startvalue',
-                align: 'center'
-            },
-            {
-                text: '结束值',
-                dataIndex: 'endvalue',
-                align: 'center'
             },
             {
                 text: '信号名称',
@@ -779,6 +764,10 @@
                 dataIndex: 'area'
             },
             {
+                text: '维护厂家',
+                dataIndex: 'supporter'
+            },
+            {
                 text: '确认状态',
                 dataIndex: 'confirmed',
                 align: 'center'
@@ -799,7 +788,7 @@
                 align: 'center',
                 renderer: function (value, p, record) {
                     if (Ext.isEmpty(value)) return Ext.emptyString;
-                    return '工程告警';
+                    return '<a class="grid-link" href="javascript:void(0);">查看</a>';
                 }
             },
             {

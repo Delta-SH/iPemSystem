@@ -48,6 +48,8 @@ namespace iPem.Services.Sc {
             if (dictionaries == null || dictionaries.Length == 0)
                 throw new ArgumentNullException("dictionaries");
 
+            _repository.Update(dictionaries);
+
             if (_cacheManager.IsSet(GlobalCacheKeys.Dictionary_Ws))
                 _cacheManager.Remove(GlobalCacheKeys.Dictionary_Ws);
 
@@ -56,8 +58,6 @@ namespace iPem.Services.Sc {
 
             if (_cacheManager.IsSet(GlobalCacheKeys.Dictionary_Rt))
                 _cacheManager.Remove(GlobalCacheKeys.Dictionary_Rt);
-
-            _repository.Update(dictionaries);
         }
 
         #endregion

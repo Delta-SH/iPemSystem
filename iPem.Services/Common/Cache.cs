@@ -43,7 +43,8 @@ namespace iPem.Services.Common {
         public const string SSH_Authorizations = @"ipems:global:ssh-authorizations";
         public const string SSH_AuthorizationsPattern = @"ipems:global:{0}:ssh-authorizations";
         public const string Active_Alarms = @"ipems:global:active-alarms";
-        public const string System_Alarms = @"ipems:global:system-alarms";
+        public const string System_SC_Alarms = @"ipems:global:system-sc-alarms";
+        public const string System_FSU_Alarms = @"ipems:global:system-fsu-alarms";
         public const string Dictionary_Ws = @"ipems:global:dictionary-ws";
         public const string Dictionary_Ts = @"ipems:global:dictionary-ts";
         public const string Dictionary_Rt = @"ipems:global:dictionary-rt";
@@ -58,6 +59,13 @@ namespace iPem.Services.Common {
         public const string MatrixTablePattern = @"ipems:user:{0}:matrix-table";
 
         /// <summary>
+        /// 用户配置缓存
+        /// </summary>
+        public const string ProfileFollowPattern = @"ipems:profile:{0}:follow";
+        public const string ProfileConditionPattern = @"ipems:profile:{0}:condition";
+        public const string ProfileMatrixPattern = @"ipems:profile:{0}:matrix";
+
+        /// <summary>
         /// Report应用缓存
         /// </summary>
         public const string Report_400201 = @"ipems:report:{0}:400201";
@@ -68,9 +76,9 @@ namespace iPem.Services.Common {
         public const string Report_400208 = @"ipems:report:{0}:400208";
         public const string Report_400210 = @"ipems:report:{0}:400210";
         public const string Report_400211 = @"ipems:report:{0}:400211";
-        public const string Report_400401 = @"ipems:report:{0}:400401";
-        public const string Report_400402 = @"ipems:report:{0}:400402";
-        public const string Report_400403 = @"ipems:report:{0}:400403";
+        public const string Report_400401 = @"ipems:report:{0}:{1}:400401";
+        public const string Report_400402 = @"ipems:report:{0}:{1}:400402";
+        public const string Report_400403 = @"ipems:report:{0}:{1}:400403";
 
         /// <summary>
         /// Fsu应用缓存

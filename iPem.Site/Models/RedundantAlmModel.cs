@@ -7,11 +7,14 @@ using System.Web.Script.Serialization;
 namespace iPem.Site.Models {
     [Serializable]
     public class RedundantAlmModel {
+        [ExcelIgnore]
+        public string id { get; set; }
+
         [ExcelDisplayName("序号")]
         public int index { get; set; }
 
         [ExcelDisplayName("告警编号")]
-        public string id { get; set; }
+        public string serialno { get; set; }
 
         [ExcelColor]
         [ExcelDisplayName("告警级别")]
@@ -20,17 +23,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("告警时间")]
         public string time { get; set; }
 
+        [ExcelDisplayName("告警名称")]
+        public string name { get; set; }
+
+        [ExcelDisplayName("管理编号")]
+        public string nmalarmid { get; set; }
+
         [ExcelDisplayName("告警历时")]
         public string interval { get; set; }
-
-        [ExcelDisplayName("告警描述")]
-        public string comment { get; set; }
-
-        [ExcelDisplayName("触发值")]
-        public string value { get; set; }
-
-        [ExcelDisplayName("维护厂家")]
-        public string supporter { get; set; }
 
         [ExcelDisplayName("信号名称")]
         public string point { get; set; }
@@ -46,6 +46,9 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
+
+        [ExcelDisplayName("维护厂家")]
+        public string supporter { get; set; }
 
         [ExcelDisplayName("确认状态")]
         public string confirmed { get; set; }

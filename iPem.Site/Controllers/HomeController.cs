@@ -38,7 +38,6 @@ namespace iPem.Site.Controllers {
         private readonly INoticeService _noticeService;
         private readonly INoticeInUserService _noticeInUserService;
         private readonly IProfileService _profileService;
-        private readonly IFollowPointService _followPointService;
         private readonly IProjectService _projectService;
         private readonly IAAlarmService _actAlarmService;
         private readonly IHAlarmService _hisAlarmService;
@@ -53,6 +52,7 @@ namespace iPem.Site.Controllers {
         private readonly ICutService _cutService;
         private readonly IPackMgr _packMgr;
         private readonly IUserService _userService;
+        private readonly ISignalService _signalService;
 
         #endregion
 
@@ -68,7 +68,6 @@ namespace iPem.Site.Controllers {
             INoticeService noticeService,
             INoticeInUserService noticeInUserService,
             IProfileService profileService,
-            IFollowPointService followPointService,
             IProjectService projectService,
             IAAlarmService actAlarmService,
             IHAlarmService hisAlarmService,
@@ -82,7 +81,8 @@ namespace iPem.Site.Controllers {
             IGroupService groupService,
             ICutService cutService,
             IPackMgr packMgr,
-            IUserService userService) {
+            IUserService userService,
+            ISignalService signalService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -92,7 +92,6 @@ namespace iPem.Site.Controllers {
             this._noticeService = noticeService;
             this._noticeInUserService = noticeInUserService;
             this._profileService = profileService;
-            this._followPointService = followPointService;
             this._projectService = projectService;
             this._actAlarmService = actAlarmService;
             this._hisAlarmService = hisAlarmService;
@@ -107,6 +106,7 @@ namespace iPem.Site.Controllers {
             this._cutService = cutService;
             this._packMgr = packMgr;
             this._userService = userService;
+            this._signalService = signalService;
         }
 
         #endregion
@@ -364,7 +364,7 @@ namespace iPem.Site.Controllers {
 
                 var contents = new List<string>();
                 if (config.contents.Contains(1))
-                    contents.Add(current.AreaFullName);
+                    contents.Add(current.AreaName);
 
                 if (config.contents.Contains(2))
                     contents.Add(current.StationName);
@@ -604,25 +604,24 @@ namespace iPem.Site.Controllers {
 
                     for(int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            value = stores[i].Current.AlarmValue.ToString(),
-                            supporter = stores[i].SubCompany,
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -652,25 +651,24 @@ namespace iPem.Site.Controllers {
                 if (stores != null) {
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new ActAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            value = stores[i].Current.AlarmValue.ToString(),
-                            supporter = stores[i].SubCompany,
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -716,27 +714,25 @@ namespace iPem.Site.Controllers {
 
                     for (int i = start; i < end; i++) {
                         data.data.Add(new HisAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            startvalue = stores[i].Current.StartValue.ToString(),
-                            endvalue = stores[i].Current.EndValue.ToString(),
-                            supporter = stores[i].SubCompany,
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -766,27 +762,25 @@ namespace iPem.Site.Controllers {
                 if (stores != null && stores.Count > 0) {
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new HisAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            startvalue = stores[i].Current.StartValue.ToString(),
-                            endvalue = stores[i].Current.EndValue.ToString(),
-                            supporter = stores[i].SubCompany,
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -841,24 +835,24 @@ namespace iPem.Site.Controllers {
 
                     for (int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            value = stores[i].Current.AlarmValue.ToString(),
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -898,24 +892,24 @@ namespace iPem.Site.Controllers {
                 if (stores != null) {
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new ActAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             time = CommonHelper.DateTimeConverter(stores[i].Current.AlarmTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.AlarmTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            value = stores[i].Current.AlarmValue.ToString(),
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -965,26 +959,25 @@ namespace iPem.Site.Controllers {
 
                     for (int i = start; i < end; i++) {
                         data.data.Add(new HisAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            startvalue = stores[i].Current.StartValue.ToString(),
-                            endvalue = stores[i].Current.EndValue.ToString(),
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -1019,26 +1012,25 @@ namespace iPem.Site.Controllers {
                 if (stores != null && stores.Count > 0) {
                     for (int i = 0; i < stores.Count; i++) {
                         models.Add(new HisAlmModel {
+                            id = stores[i].Current.Id,
                             index = i + 1,
-                            nmalarmid = stores[i].Current.NMAlarmId,
                             level = Common.GetAlarmDisplay(stores[i].Current.AlarmLevel),
                             starttime = CommonHelper.DateTimeConverter(stores[i].Current.StartTime),
                             endtime = CommonHelper.DateTimeConverter(stores[i].Current.EndTime),
+                            name = stores[i].AlarmName,
+                            nmalarmid = stores[i].Current.NMAlarmId,
                             interval = CommonHelper.IntervalConverter(stores[i].Current.StartTime, stores[i].Current.EndTime),
-                            comment = stores[i].Current.AlarmDesc,
-                            startvalue = stores[i].Current.StartValue.ToString(),
-                            endvalue = stores[i].Current.EndValue.ToString(),
                             point = stores[i].PointName,
                             device = stores[i].DeviceName,
                             room = stores[i].RoomName,
                             station = stores[i].StationName,
-                            area = stores[i].AreaFullName,
+                            area = stores[i].AreaName,
+                            supporter = stores[i].SubCompany,
                             confirmed = Common.GetConfirmDisplay(stores[i].Current.Confirmed),
                             confirmer = stores[i].Current.Confirmer,
                             confirmedtime = stores[i].Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(stores[i].Current.ConfirmedTime.Value) : "",
                             reservation = stores[i].Current.ReservationId,
                             reversalcount = stores[i].Current.ReversalCount,
-                            id = stores[i].Current.Id,
                             areaid = stores[i].Current.AreaId,
                             stationid = stores[i].Current.StationId,
                             roomid = stores[i].Current.RoomId,
@@ -1079,9 +1071,9 @@ namespace iPem.Site.Controllers {
 
                         #region 标准信号
 
-                        List<V_AMeasure> values;
+                        List<V_AMeasure> values = null;
                         if (nodeKey.Key == EnmSSH.Device) {
-                            #region 通知获取数据
+                            #region 通知SC获取数据
                             var pointsInFsus = stores.GroupBy(p => p.FsuId);
                             foreach (var pointsInFsu in pointsInFsus) {
                                 try {
@@ -1108,11 +1100,11 @@ namespace iPem.Site.Controllers {
                             #endregion
                             values = _aMeasureService.GetMeasuresInDevice(nodeKey.Value);
                         } else {
-                            values = _aMeasureService.GetMeasures(stores.Select(p => new Kv<string, string>(p.DeviceId, p.Current.Id)).ToList());
+                            values = _aMeasureService.GetMeasures(stores.Select(p => new Kv<string, string>(p.DeviceId, p.Current.PointId)).ToList());
                         }
 
                         var pValues = from point in stores
-                                      join val in values on new { DeviceId = point.DeviceId, PointId = point.Current.Id } equals new { val.DeviceId, val.PointId } into lt
+                                      join val in values on new { DeviceId = point.DeviceId, PointId = point.Current.PointId } equals new { val.DeviceId, val.PointId } into lt
                                       from def in lt.DefaultIfEmpty()
                                       select new { Point = point, Value = def };
 
@@ -1126,15 +1118,15 @@ namespace iPem.Site.Controllers {
                                 station = pv.Point.StationName,
                                 room = pv.Point.RoomName,
                                 device = pv.Point.DeviceName,
-                                point = pv.Point.Current.Name,
-                                type = Common.GetPointTypeDisplay(pv.Point.Type),
+                                point = pv.Point.Current.PointName,
+                                type = Common.GetPointTypeDisplay(pv.Point.Current.PointType),
                                 value = value,
-                                unit = Common.GetUnitDisplay(pv.Point.Current.Type, value, pv.Point.Current.UnitState),
+                                unit = Common.GetUnitDisplay(pv.Point.Current.PointType, value, pv.Point.Current.UnitState),
                                 status = Common.GetPointStatusDisplay(status),
                                 time = CommonHelper.DateTimeConverter(time),
                                 deviceid = pv.Point.DeviceId,
-                                pointid = pv.Point.Current.Id,
-                                typeid = (int)pv.Point.Type,
+                                pointid = pv.Point.Current.PointId,
+                                typeid = (int)pv.Point.Current.PointType,
                                 statusid = (int)status,
                                 followed = pv.Point.Followed,
                                 followedOnly = pv.Point.FollowedOnly,
@@ -1151,7 +1143,8 @@ namespace iPem.Site.Controllers {
                             var almKeys = _workContext.AlarmsToDictionary(_workContext.ActAlarms(), false);
                             foreach (var model in alModels) {
                                 var key = Common.JoinKeys(model.deviceid, model.pointid);
-                                if(_workContext.HashMaskings().Contains(Common.JoinKeys(model.deviceid, "masking-all")) || _workContext.HashMaskings().Contains(key)) {
+                                var masks = _workContext.HashMaskings();
+                                if (masks.Contains(Common.JoinKeys(model.deviceid, "masking-all")) || masks.Contains(key)) {
                                     model.status = "告警屏蔽";
                                     model.statusid = (int)EnmState.Invalid;
                                 } else if (almKeys.ContainsKey(key)) {
@@ -1178,9 +1171,8 @@ namespace iPem.Site.Controllers {
                         data.total = models.Count;
 
                         for (var i = start; i < end; i++) {
-                            var model = models[i];
-                            model.index = i + 1;
-                            data.data.Add(model);
+                            models[i].index = i + 1;
+                            data.data.Add(models[i]);
                         }
                     }
                 }
@@ -1227,15 +1219,8 @@ namespace iPem.Site.Controllers {
                 if (id == "root")
                     throw new iPemException("无法编辑根节点");
 
-                var profile = _profileService.GetProfile(_workContext.User().Id);
-                if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson))
-                    throw new iPemException("未找到数据对象");
-
-                var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
-                if (settings.SeniorConditions == null || settings.SeniorConditions.Count == 0)
-                    throw new iPemException("未找到数据对象");
-
-                var current = settings.SeniorConditions.Find(c => c.id == id);
+                var conditons = _workContext.ProfileConditions().ToList();
+                var current = conditons.Find(c => c.id.Equals(id));
                 if (current == null) throw new iPemException("未找到数据对象");
 
                 data.data.id = current.id;
@@ -1264,47 +1249,40 @@ namespace iPem.Site.Controllers {
             try {
                 if (condition == null) throw new ArgumentException("condition");
                 if (condition.id == "root") throw new iPemException("无法保存根节点");
+
                 if (action == (int)EnmAction.Add) {
-                    var profile = _profileService.GetProfile(_workContext.User().Id);
-                    if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson)) {
-                        profile = new U_Profile {
-                            UserId = _workContext.User().Id,
-                            ValuesJson = JsonConvert.SerializeObject(new Setting { SeniorConditions = new List<SeniorCondition> { condition } }),
-                            LastUpdatedDate = DateTime.Now
-                        };
-                    } else {
-                        var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
-                        if (settings.SeniorConditions == null) settings.SeniorConditions = new List<SeniorCondition>();
-                        if (settings.SeniorConditions.Any(c => c.name == condition.name))
-                            throw new iPemException("条件名称已存在");
+                    var conditions = _workContext.ProfileConditions().ToList();
+                    if(conditions.Any(c => c.name.Equals(condition.name)))
+                        throw new iPemException("条件名称已存在");
 
-                        settings.SeniorConditions.Add(condition);
-                        profile.ValuesJson = JsonConvert.SerializeObject(settings);
-                        profile.LastUpdatedDate = DateTime.Now;
-                    }
+                    conditions.Add(condition);
 
-                    _profileService.Save(profile);
-                    _workContext.ResetProfile();
+                    var userId = _workContext.User().Id;
+                    _profileService.SaveProfile(new U_Profile {
+                        UserId = userId,
+                        Type = EnmProfile.Condition,
+                        ValuesJson = JsonConvert.SerializeObject(conditions),
+                        LastUpdatedDate = DateTime.Now
+                    });
+                    _workContext.ResetProfile(EnmProfile.Condition);
                     _webLogger.Information(EnmEventType.Other, string.Format("新增告警条件[{0}]", condition.name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if (action == (int)EnmAction.Edit) {
-                    var profile = _profileService.GetProfile(_workContext.User().Id);
-                    if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson))
-                        throw new iPemException("未找到数据对象");
+                    var conditions = _workContext.ProfileConditions().ToList();
+                    var current = conditions.Find(c => c.id.Equals(condition.id));
+                    if (current == null) throw new iPemException("未找到数据对象");
 
-                    var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
-                    if (settings.SeniorConditions == null || settings.SeniorConditions.Count == 0)
-                        throw new iPemException("未找到数据对象");
+                    conditions.Remove(current);
+                    conditions.Add(condition);
 
-                    var count = settings.SeniorConditions.RemoveAll(c => c.id == condition.id);
-                    if (count == 0) throw new iPemException("未找到数据对象");
-
-                    settings.SeniorConditions.Add(condition);
-                    profile.ValuesJson = JsonConvert.SerializeObject(settings);
-                    profile.LastUpdatedDate = DateTime.Now;
-
-                    _profileService.Save(profile);
-                    _workContext.ResetProfile();
+                    var userId = _workContext.User().Id;
+                    _profileService.SaveProfile(new U_Profile {
+                        UserId = userId,
+                        Type = EnmProfile.Condition,
+                        ValuesJson = JsonConvert.SerializeObject(conditions),
+                        LastUpdatedDate = DateTime.Now
+                    });
+                    _workContext.ResetProfile(EnmProfile.Condition);
                     _webLogger.Information(EnmEventType.Other, string.Format("更新告警条件[{0}]", condition.name), null, _workContext.User().Id);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
@@ -1323,23 +1301,22 @@ namespace iPem.Site.Controllers {
                 if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
                 if (id == "root") throw new iPemException("无法删除根节点");
 
-                var profile = _profileService.GetProfile(_workContext.User().Id);
-                if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson))
-                    throw new iPemException("未找到数据对象");
+                var conditions = _workContext.ProfileConditions().ToList();
+                if (conditions.Count == 0) throw new iPemException("未找到数据对象");
 
-                var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
-                if (settings.SeniorConditions == null || settings.SeniorConditions.Count == 0)
-                    throw new iPemException("未找到数据对象");
-
-                var current = settings.SeniorConditions.Find(c => c.id == id);
+                var current = conditions.Find(c => c.id == id);
                 if (current == null) throw new iPemException("未找到数据对象");
+                
+                conditions.Remove(current);
 
-                settings.SeniorConditions.Remove(current);
-                profile.ValuesJson = JsonConvert.SerializeObject(settings);
-                profile.LastUpdatedDate = DateTime.Now;
-
-                _profileService.Save(profile);
-                _workContext.ResetProfile();
+                var userId = _workContext.User().Id;
+                _profileService.SaveProfile(new U_Profile {
+                    UserId = userId,
+                    Type = EnmProfile.Condition,
+                    ValuesJson = JsonConvert.SerializeObject(conditions),
+                    LastUpdatedDate = DateTime.Now
+                });
+                _workContext.ResetProfile(EnmProfile.Condition);
                 _webLogger.Information(EnmEventType.Other, string.Format("删除告警条件[{0}]", current.name), null, _workContext.User().Id);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch (Exception exc) {
@@ -1386,7 +1363,7 @@ namespace iPem.Site.Controllers {
                 var entities = new List<A_AAlarm>();
                 foreach (var alarm in _workContext.ActAlarms()) {
                     if (onlyReservation && string.IsNullOrWhiteSpace(alarm.Current.ReservationId)) continue;
-                    if (onlySystem && alarm.Current.RoomId != "-1") continue;
+                    if (onlySystem && !Common.IsSystemAlarm(alarm.Current.FsuId)) continue;
 
                     entities.Add(new A_AAlarm {
                         Id = alarm.Current.Id,
@@ -1489,7 +1466,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("SC采集组通信中断");
                 }
 
-                var curPoint = curDevice.Points.Find(p => p.Id == point);
+                var curPoint = curDevice.DO.Find(p => p.PointId.Equals(point));
                 if (curPoint == null) {
                     _webLogger.Error(EnmEventType.Control, string.Format("未找到信号[{0}]", point), null, _workContext.User().Id);
                     throw new iPemException("未找到信号");
@@ -1588,7 +1565,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("SC采集组通信中断");
                 }
 
-                var curPoint = curDevice.Points.Find(p => p.Id == point);
+                var curPoint = curDevice.AO.Find(p => p.PointId.Equals(point));
                 if (curPoint == null) {
                     _webLogger.Error(EnmEventType.Adjust, string.Format("未找到信号[{0}]", point), null, _workContext.User().Id);
                     throw new iPemException("未找到信号");
@@ -1640,13 +1617,20 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult AddFollowPoint(string device, string point) {
             try {
-                var profile = _workContext.Profile();
-                if (!profile.FollowPoints.Any(p => p.DeviceId == device && p.PointId == point)) {
-                    var follow = new U_FollowPoint { DeviceId = device, PointId = point, UserId = _workContext.User().Id };
-                    profile.FollowPoints.Add(follow);
-                    _followPointService.Add(follow);
+                var follows = _workContext.ProfileFollows().ToList();
+                if (!follows.Any(f => f.device.Equals(device) && f.point.Equals(point))) {
+                    follows.Add(new FollowPoint { device = device, point = point });
 
-                    var key = string.Format(GlobalCacheKeys.FollowPointsPattern, _workContext.User().Id);
+                    var userId = _workContext.User().Id;
+                    _profileService.SaveProfile(new U_Profile {
+                        UserId = userId,
+                        Type = EnmProfile.Follow,
+                        ValuesJson = JsonConvert.SerializeObject(follows),
+                        LastUpdatedDate = DateTime.Now
+                    });
+                    _workContext.ResetProfile(EnmProfile.Follow);
+
+                    var key = string.Format(GlobalCacheKeys.FollowPointsPattern, userId);
                     if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
                 }
 
@@ -1660,14 +1644,24 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult RemoveFollowPoint(string device, string point) {
             try {
-                var profile = _workContext.Profile();
-                var current = profile.FollowPoints.Find(p => p.DeviceId == device && p.PointId == point);
-                if(current != null) {
-                    profile.FollowPoints.Remove(current);
-                    _followPointService.Remove(current);
+                var follows = _workContext.ProfileFollows().ToList();
+                if (follows != null && follows.Count > 0) {
+                    var current = follows.Find(f => f.device.Equals(device) && f.point.Equals(point));
+                    if (current != null) {
+                        follows.Remove(current);
 
-                    var key = string.Format(GlobalCacheKeys.FollowPointsPattern, _workContext.User().Id);
-                    if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+                        var userId = _workContext.User().Id;
+                        _profileService.SaveProfile(new U_Profile {
+                            UserId = userId,
+                            Type = EnmProfile.Follow,
+                            ValuesJson = JsonConvert.SerializeObject(follows),
+                            LastUpdatedDate = DateTime.Now
+                        });
+                        _workContext.ResetProfile(EnmProfile.Follow);
+
+                        var key = string.Format(GlobalCacheKeys.FollowPointsPattern, userId);
+                        if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+                    }
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "已取消关注" }, JsonRequestBehavior.AllowGet);
@@ -1688,16 +1682,17 @@ namespace iPem.Site.Controllers {
 
             try {
                 var model = new HomeAlmModel();
-                model.total1 = _workContext.ActAlarms().Count(a => a.Current.AlarmLevel == EnmAlarm.Level1);
-                model.total2 = _workContext.ActAlarms().Count(a => a.Current.AlarmLevel == EnmAlarm.Level2);
-                model.total3 = _workContext.ActAlarms().Count(a => a.Current.AlarmLevel == EnmAlarm.Level3);
-                model.total4 = _workContext.ActAlarms().Count(a => a.Current.AlarmLevel == EnmAlarm.Level4);
+                var alarms = _workContext.ActAlarms();
+                model.total1 = alarms.Count(a => a.Current.AlarmLevel == EnmAlarm.Level1);
+                model.total2 = alarms.Count(a => a.Current.AlarmLevel == EnmAlarm.Level2);
+                model.total3 = alarms.Count(a => a.Current.AlarmLevel == EnmAlarm.Level3);
+                model.total4 = alarms.Count(a => a.Current.AlarmLevel == EnmAlarm.Level4);
                 model.total = model.total1 + model.total2 + model.total3 + model.total4;
                 model.alarms = new List<HomeAreaAlmModel>();
 
                 var roots = _workContext.Areas().FindAll(a => !a.HasChildren);
                 foreach(var root in roots) {
-                    var alarmsInRoot = _workContext.ActAlarms().FindAll(alarm => alarm.Current.AreaId == root.Current.Id);
+                    var alarmsInRoot = alarms.FindAll(alarm => alarm.Current.AreaId.Equals(root.Current.Id));
 
                     var alarmsInArea = new HomeAreaAlmModel();
                     alarmsInArea.name = root.Current.Name;
@@ -2149,22 +2144,13 @@ namespace iPem.Site.Controllers {
                 if (templates == null) throw new ArgumentException("templates");
                 if (templates.Length == 0) throw new ArgumentException("未配置模版，无需保存。");
 
-                var profile = _profileService.GetProfile(_workContext.User().Id);
-                if (profile == null || string.IsNullOrWhiteSpace(profile.ValuesJson)) {
-                    profile = new U_Profile {
-                        UserId = _workContext.User().Id,
-                        ValuesJson = JsonConvert.SerializeObject(new Setting { MatrixTemplates = new List<MatrixTemplate>(templates) }),
-                        LastUpdatedDate = DateTime.Now
-                    };
-                } else {
-                    var settings = JsonConvert.DeserializeObject<Setting>(profile.ValuesJson);
-                    settings.MatrixTemplates = new List<MatrixTemplate>(templates);
-                    profile.ValuesJson = JsonConvert.SerializeObject(settings);
-                    profile.LastUpdatedDate = DateTime.Now;
-                }
-
-                _profileService.Save(profile);
-                _workContext.ResetProfile();
+                _profileService.SaveProfile(new U_Profile {
+                    UserId = _workContext.User().Id,
+                    Type = EnmProfile.Matrix,
+                    ValuesJson = JsonConvert.SerializeObject(templates),
+                    LastUpdatedDate = DateTime.Now
+                });
+                _workContext.ResetProfile(EnmProfile.Matrix);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
@@ -2183,11 +2169,10 @@ namespace iPem.Site.Controllers {
 
             try {
                 if (string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException("id");
-                var profile = _workContext.Profile();
-                if (profile.Settings == null) throw new iPemException("尚未配置测值模版");
-                if (profile.Settings.MatrixTemplates == null) throw new iPemException("尚未配置测值模版");
-                if (profile.Settings.MatrixTemplates.Count == 0) throw new iPemException("尚未配置测值模版");
-                var template = profile.Settings.MatrixTemplates.Find(t => t.id == id);
+                var matrixs = _workContext.ProfileMatrixs();
+                if (matrixs == null) throw new iPemException("尚未配置测值模版");
+                if (!matrixs.Any()) throw new iPemException("尚未配置测值模版");
+                var template = matrixs.FirstOrDefault(t => t.id.Equals(id));
                 if (template == null) throw new iPemException("未找到需要应用的测值模版");
                 if (template.points == null || template.points.Length == 0) throw new iPemException("尚未映射测值模版信号列");
 
@@ -2200,11 +2185,9 @@ namespace iPem.Site.Controllers {
                     new GridColumn { name = "device", type = "string", column = "所属设备", width = 150 }
                 };
 
-                var ptentities = from ptid in template.points
-                                 join point in _workContext.Points() on ptid equals point.Id
-                                 select point;
-
-                foreach (var point in ptentities) {
+                var templateKeys = new HashSet<string>(template.points);
+                var points = _workContext.Points().FindAll(p => templateKeys.Contains(p.Id));
+                foreach (var point in points) {
                     data.data.Add(new GridColumn { name = point.Id, type = "string", column = point.Name });
                     data.total++;
                 }
@@ -2369,39 +2352,42 @@ namespace iPem.Site.Controllers {
             if (condition.keywords == null) condition.keywords = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(condition.seniorNode) && condition.seniorNode != "root") {
-                var seniorCondition = _workContext.Profile().Settings.SeniorConditions.Find(c => c.id == condition.seniorNode);
-                if (seniorCondition != null) {
-                    if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0) 
-                        condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
+                var conditions = _workContext.ProfileConditions();
+                if (conditions != null && conditions.Any()) {
+                    var seniorCondition = conditions.FirstOrDefault(c => c.id.Equals(condition.seniorNode));
+                    if (seniorCondition != null) {
+                        if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0)
+                            condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
 
-                    if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
-                        condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
+                        if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
+                            condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
 
-                    if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
-                        condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
+                        if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
+                            condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
 
-                    if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
-                        condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
+                        if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
+                            condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
 
-                    if (seniorCondition.points != null && seniorCondition.points.Length > 0)
-                        condition.points = condition.points.Union(seniorCondition.points).ToArray();
+                        if (seniorCondition.points != null && seniorCondition.points.Length > 0)
+                            condition.points = condition.points.Union(seniorCondition.points).ToArray();
 
-                    if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
-                        condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
+                        if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
+                            condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
 
-                    if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
-                        condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
+                        if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
+                            condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
 
-                    if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
-                        condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
+                        if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
+                            condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
 
-                    if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
-                        condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
+                        if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
+                            condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
+                    }
                 }
             }
 
             var stores = _workContext.ActAlarms();
-            if (onlySystem) stores = stores.FindAll(a => a.Current.RoomId == "-1");
+            if (onlySystem) stores = stores.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId));
 
             if (!onlySystem && condition.stationTypes.Length > 0)
                 stores = stores.FindAll(a => condition.stationTypes.Contains(a.StationTypeId));
@@ -2471,34 +2457,37 @@ namespace iPem.Site.Controllers {
             if (condition.keywords == null) condition.keywords = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(condition.seniorNode) && condition.seniorNode != "root") {
-                var seniorCondition = _workContext.Profile().Settings.SeniorConditions.Find(c => c.id == condition.seniorNode);
-                if (seniorCondition != null) {
-                    if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0)
-                        condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
+                var conditions = _workContext.ProfileConditions();
+                if (conditions != null && conditions.Any()) {
+                    var seniorCondition = conditions.FirstOrDefault(c => c.id.Equals(condition.seniorNode));
+                    if (seniorCondition != null) {
+                        if (seniorCondition.stationTypes != null && seniorCondition.stationTypes.Length > 0)
+                            condition.stationTypes = condition.stationTypes.Union(seniorCondition.stationTypes).ToArray();
 
-                    if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
-                        condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
+                        if (seniorCondition.roomTypes != null && seniorCondition.roomTypes.Length > 0)
+                            condition.roomTypes = condition.roomTypes.Union(seniorCondition.roomTypes).ToArray();
 
-                    if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
-                        condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
+                        if (seniorCondition.subDeviceTypes != null && seniorCondition.subDeviceTypes.Length > 0)
+                            condition.subDeviceTypes = condition.subDeviceTypes.Union(seniorCondition.subDeviceTypes).ToArray();
 
-                    if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
-                        condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
+                        if (seniorCondition.subLogicTypes != null && seniorCondition.subLogicTypes.Length > 0)
+                            condition.subLogicTypes = condition.subLogicTypes.Union(seniorCondition.subLogicTypes).ToArray();
 
-                    if (seniorCondition.points != null && seniorCondition.points.Length > 0)
-                        condition.points = condition.points.Union(seniorCondition.points).ToArray();
+                        if (seniorCondition.points != null && seniorCondition.points.Length > 0)
+                            condition.points = condition.points.Union(seniorCondition.points).ToArray();
 
-                    if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
-                        condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
+                        if (seniorCondition.levels != null && seniorCondition.levels.Length > 0)
+                            condition.levels = condition.levels.Union(seniorCondition.levels).ToArray();
 
-                    if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
-                        condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
+                        if (seniorCondition.confirms != null && seniorCondition.confirms.Length > 0)
+                            condition.confirms = condition.confirms.Union(seniorCondition.confirms).ToArray();
 
-                    if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
-                        condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
+                        if (seniorCondition.reservations != null && seniorCondition.reservations.Length > 0)
+                            condition.reservations = condition.reservations.Union(seniorCondition.reservations).ToArray();
 
-                    if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
-                        condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
+                        if (!string.IsNullOrWhiteSpace(seniorCondition.keywords))
+                            condition.keywords = Common.JoinCondition(condition.keywords, seniorCondition.keywords);
+                    }
                 }
             }
 
@@ -2506,7 +2495,28 @@ namespace iPem.Site.Controllers {
             var start = DateTime.Now.Subtract(lastLoginTime).TotalHours > 2 ? DateTime.Now.AddHours(-2) : lastLoginTime;
             var end = DateTime.Now;
 
-            var stores = _workContext.AlarmsToStore(_hisAlarmService.GetAlarms(start, end));
+            var noralarms = new List<A_HAlarm>();
+            var scalarms = new List<A_HAlarm>();
+            var fsualarms = new List<A_HAlarm>();
+            var alarms = _hisAlarmService.GetAlarms(start, end);
+            foreach (var alarm in alarms) {
+                if (Common.IsSystemSCAlarm(alarm.FsuId))
+                    scalarms.Add(alarm);
+                else if (Common.IsSystemFSUAlarm(alarm.FsuId))
+                    fsualarms.Add(alarm);
+                else
+                    noralarms.Add(alarm);
+            }
+
+            var stores = _workContext.AlarmsToStore(noralarms);
+            if (scalarms.Count > 0) {
+                stores.AddRange(_workContext.AlarmsToSc(scalarms));
+            }
+
+            if (fsualarms.Count > 0) {
+                stores.AddRange(_workContext.AlarmsToFsu(fsualarms));
+            }
+
             if (condition.stationTypes.Length > 0)
                 stores = stores.FindAll(a => condition.stationTypes.Contains(a.StationTypeId));
 
@@ -2559,92 +2569,98 @@ namespace iPem.Site.Controllers {
             return stores;
         }
 
-        private List<PointStore<P_Point>> GetActPoints(string node, int[] types) {
-            var stores = new List<PointStore<P_Point>>();
+        private List<PointStore<D_SimpleSignal>> GetActPoints(string node, int[] types) {
+            var stores = new List<PointStore<D_SimpleSignal>>();
+            if (types == null || types.Length == 0) return stores;
+
             var nodeKey = Common.ParseNode(node);
-            if (nodeKey.Key == EnmSSH.Root) {
-                stores = this.GetFollowPoints(node, EnmSSH.Area);
-            } else if (nodeKey.Key == EnmSSH.Device) {
-                var current = _workContext.Devices().Find(d => d.Current.Id == nodeKey.Value);
+            if (nodeKey.Key == EnmSSH.Device) {
+                var current = _deviceService.GetDevice(nodeKey.Value);
                 if (current != null) {
-                    var area = _workContext.Areas().Find(a => a.Current.Id == current.Current.AreaId);
-                    if (area != null) {
-                        var followKeys = new HashSet<string>(_workContext.Profile().FollowPoints.Select(p => string.Format("{0}-{1}", p.DeviceId, p.PointId)));
-                        foreach (var point in current.Points) {
-                            stores.Add(new PointStore<P_Point>() {
-                                Current = point,
-                                Type = _workContext.GetPointType(point),
-                                DeviceId = current.Current.Id,
-                                DeviceCode = current.Current.Code,
-                                DeviceName = current.Current.Name,
-                                FsuId = current.Current.FsuId,
-                                RoomId = current.Current.RoomId,
-                                RoomName = current.Current.RoomName,
-                                StationId = current.Current.StationId,
-                                StationName = current.Current.StationName,
-                                AreaId = area.Current.Id,
-                                AreaName = area.ToString(),
-                                Followed = followKeys.Contains(string.Format("{0}-{1}", current.Current.Id, point.Id)),
+                    var signals = _signalService.GetSimpleSignalsInDevice(current.Id);
+                    if (signals.Count > 0) {
+                        var follows = new HashSet<string>(_workContext.ProfileFollows().Select(f => string.Format("{0}-{1}", f.device, f.point)));
+                        foreach (var signal in signals) {
+                            stores.Add(new PointStore<D_SimpleSignal>() {
+                                Current = signal,
+                                DeviceId = current.Id,
+                                DeviceCode = current.Code,
+                                DeviceName = current.Name,
+                                FsuId = current.FsuId,
+                                RoomId = current.RoomId,
+                                RoomName = current.RoomName,
+                                StationId = current.StationId,
+                                StationName = current.StationName,
+                                AreaId = current.AreaId,
+                                AreaName = current.AreaName,
+                                Followed = follows.Contains(string.Format("{0}-{1}", current.Id, signal.PointId)),
                                 FollowedOnly = false
                             });
                         }
                     }
                 }
+            } else if (nodeKey.Key == EnmSSH.Root) {
+                stores = this.GetFollowPoints(node, EnmSSH.Area);
             } else {
                 stores = this.GetFollowPoints(nodeKey.Value, nodeKey.Key);
             }
-
-            stores = stores.FindAll(p => types.Contains((int)p.Type)).OrderByDescending(p => (int)p.Type).ToList();
-            return stores;
+            
+            stores = stores.FindAll(p => types.Contains((int)p.Current.PointType));
+            return stores.OrderByDescending(p => (int)p.Current.PointType).ToList();
         }
 
-        private List<PointStore<P_Point>> GetFollowPoints(string node, EnmSSH type) {
-            var profile = _workContext.Profile();
-            if (profile == null) return new List<PointStore<P_Point>>();
-            if (profile.FollowPoints.Count == 0) return new List<PointStore<P_Point>>();
+        private List<PointStore<D_SimpleSignal>> GetFollowPoints(string node, EnmSSH type) {
+            var userId = _workContext.User().Id;
+            var cacheId = string.Format(GlobalCacheKeys.FollowPointsPattern, userId);
 
-            List<PointStore<P_Point>> stores;
-            var key = string.Format(GlobalCacheKeys.FollowPointsPattern, _workContext.User().Id);
-            if (_cacheManager.IsSet(key)) {
-                stores = _cacheManager.Get<List<PointStore<P_Point>>>(key);
+            IEnumerable<PointStore<D_SimpleSignal>> stores = null;
+            if (_cacheManager.IsSet(cacheId)) {
+                stores = _cacheManager.GetItemsFromList<PointStore<D_SimpleSignal>>(cacheId);
             } else {
-                stores = (from follow in profile.FollowPoints
-                          join point in _workContext.Points() on follow.PointId equals point.Id
-                          join device in _workContext.Devices() on follow.DeviceId equals device.Current.Id
-                          join area in _workContext.Areas() on device.Current.AreaId equals area.Current.Id
-                          select new PointStore<P_Point> {
-                              Current = point,
-                              Type = _workContext.GetPointType(point),
-                              DeviceId = device.Current.Id,
-                              DeviceCode = device.Current.Code,
-                              DeviceName = device.Current.Name,
-                              FsuId = device.Current.FsuId,
-                              RoomId = device.Current.RoomId,
-                              RoomName = device.Current.RoomName,
-                              StationId = device.Current.StationId,
-                              StationName = device.Current.StationName,
-                              AreaId = area.Current.Id,
-                              AreaName = area.ToString(),
-                              Followed = true,
-                              FollowedOnly = true
-                          }).ToList();
+                var follows = _workContext.ProfileFollows();
+                if (follows != null && follows.Any()) {
+                    var devices = _workContext.Devices();
+                    var signals = _signalService.GetSimpleSignals(follows.Select(p => new Kv<string, string>(p.device, p.point)));
+                    stores = from follow in follows
+                             join signal in signals on new { DeviceId = follow.device, PointId = follow.point } equals new { signal.DeviceId, signal.PointId }
+                             join device in devices on follow.device equals device.Current.Id
+                             select new PointStore<D_SimpleSignal> {
+                                 Current = signal,
+                                 DeviceId = device.Current.Id,
+                                 DeviceCode = device.Current.Code,
+                                 DeviceName = device.Current.Name,
+                                 FsuId = device.Current.FsuId,
+                                 RoomId = device.Current.RoomId,
+                                 RoomName = device.Current.RoomName,
+                                 StationId = device.Current.StationId,
+                                 StationName = device.Current.StationName,
+                                 AreaId = device.Current.AreaId,
+                                 AreaName = device.Current.AreaName,
+                                 Followed = true,
+                                 FollowedOnly = true
+                             };
+                } else {
+                    stores = new List<PointStore<D_SimpleSignal>>();
+                }
 
-                if (stores.Count <= GlobalCacheLimit.Default_Limit) {
-                    _cacheManager.Set(key, stores);
+                if (stores.Count() <= GlobalCacheLimit.Default_Limit) {
+                    _cacheManager.AddItemsToList(cacheId, stores);
                 }
             }
 
-            if(node == "root") return stores;
+            if (string.IsNullOrWhiteSpace(node) || "root".Equals(node)) 
+                return stores.ToList();
+
             if(type == EnmSSH.Area) {
                 var current = _workContext.Areas().Find(a => a.Current.Id == node);
-                if(current != null) stores = stores.FindAll(p => current.Keys.Contains(p.AreaId));
+                if(current != null) stores = stores.Where(p => current.Keys.Contains(p.AreaId));
             } else if(type == EnmSSH.Station) {
-                stores = stores.FindAll(p => p.StationId == node);
+                stores = stores.Where(p => p.StationId == node);
             } else if(type == EnmSSH.Room) {
-                stores = stores.FindAll(p => p.RoomId == node);
+                stores = stores.Where(p => p.RoomId == node);
             }
 
-            return stores;
+            return stores.ToList();
         }
 
         private DataTable GetMatrixModel(string title, IEnumerable<P_Point> points) {
@@ -2688,21 +2704,18 @@ namespace iPem.Site.Controllers {
 
             if (string.IsNullOrWhiteSpace(node)) throw new ArgumentNullException("node");
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException("id");
-            var profile = _workContext.Profile();
-            if (profile.Settings == null) throw new iPemException("尚未配置测值模版");
-            if (profile.Settings.MatrixTemplates == null) throw new iPemException("尚未配置测值模版");
-            if (profile.Settings.MatrixTemplates.Count == 0) throw new iPemException("尚未配置测值模版");
-            var template = profile.Settings.MatrixTemplates.Find(t => t.id == id);
+            var matrixs = _workContext.ProfileMatrixs();
+            if (matrixs == null) throw new iPemException("尚未配置测值模版");
+            if (!matrixs.Any()) throw new iPemException("尚未配置测值模版");
+            var template = matrixs.FirstOrDefault(t => t.id.Equals(id));
             if (template == null) throw new iPemException("未找到需要应用的测值模版");
             if (template.points == null || template.points.Length == 0) throw new iPemException("尚未映射测值模版信号列");
 
-            var ptentities = from ptid in template.points
-                             join point in _workContext.Points() on ptid equals point.Id
-                             select point;
-
-            var result = this.GetMatrixModel(template.name, ptentities);
-
+            var templateKeys = new HashSet<string>(template.points);
+            var points = _workContext.Points().FindAll(p => templateKeys.Contains(p.Id));
             var devices = _workContext.Devices().FindAll(d => d.Current.Type.Id == template.type);
+            var model = this.GetMatrixModel(template.name, points);
+
             var nodeKey = Common.ParseNode(node);
             if (nodeKey.Key == EnmSSH.Area) {
                 var current = _workContext.Areas().Find(a => a.Current.Id == nodeKey.Value);
@@ -2721,20 +2734,20 @@ namespace iPem.Site.Controllers {
             if (devices.Count > 0) {
                 var stores = devices.OrderBy(d => d.Current.StationId).ThenBy(d => d.Current.RoomId);
                 foreach (var store in stores) {
-                    var row = result.NewRow();
+                    var row = model.NewRow();
                     row[1] = string.Format("{0},{1}", store.Current.StationName, store.Current.RoomName);
                     row[2] = store.Current.Id;
                     row[3] = store.Current.Name;
-                    result.Rows.Add(row);
+                    model.Rows.Add(row);
                 }
             }
 
-            if (result.Rows.Count <= GlobalCacheLimit.Default_Limit) {
-                var bytes = CommonHelper.ObjectToBytes(result);
+            if (model.Rows.Count <= GlobalCacheLimit.Default_Limit) {
+                var bytes = CommonHelper.ObjectToBytes(model);
                 _cacheManager.Set(key, bytes, GlobalCacheInterval.Site_Interval);
             }
 
-            return result;
+            return model;
         }
 
         private List<CardRecordModel> GetCardRecords(string node) {

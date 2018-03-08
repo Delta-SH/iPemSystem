@@ -125,14 +125,6 @@ namespace iPem.Data.Common {
         public const string Sql_M_Reservation_Repository_Delete = @"DELETE FROM [dbo].[M_Reservations] WHERE [Id]=@Id;";
 
         /// <summary>
-        /// 关注信号表
-        /// </summary>
-        public const string Sql_U_FollowPoint_Repository_GetFollowPointsInUser = @"SELECT * FROM [dbo].[U_FollowPoints] WHERE [UserId]=@UserId;";
-        public const string Sql_U_FollowPoint_Repository_GetFollowPoints = @"SELECT * FROM [dbo].[U_FollowPoints];";
-        public const string Sql_U_FollowPoint_Repository_Insert = @"INSERT INTO [dbo].[U_FollowPoints]([UserId],[DeviceId],[PointId]) VALUES(@UserId,@DeviceId,@PointId);";
-        public const string Sql_U_FollowPoint_Repository_Delete = @"DELETE FROM [dbo].[U_FollowPoints] WHERE [UserId] = @UserId AND [DeviceId] = @DeviceId AND [PointId] = @PointId;";
-
-        /// <summary>
         /// 系统菜单表
         /// </summary>
         public const string Sql_U_Menu_Repository_GetMenu = @"SELECT * FROM [dbo].[U_Menus] WHERE [Id] = @Id;";
@@ -166,14 +158,15 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 用户自定义信息表
         /// </summary>
-        public const string Sql_U_Profile_Repository_GetProfile = @"SELECT * FROM [dbo].[U_Profile] WHERE [UserId] = @UserId;";
+        public const string Sql_U_Profile_Repository_GetProfile = @"SELECT * FROM [dbo].[U_Profile] WHERE [UserId] = @UserId AND [Type] = @Type;";
         public const string Sql_U_Profile_Repository_Save = @"
-        UPDATE [dbo].[U_Profile] SET [ValuesJson] = @ValuesJson,[ValuesBinary] = @ValuesBinary,[LastUpdatedDate] = @LastUpdatedDate WHERE [UserId] = @UserId;
+        UPDATE [dbo].[U_Profile] SET [ValuesJson] = @ValuesJson,[ValuesBinary] = @ValuesBinary,[LastUpdatedDate] = @LastUpdatedDate WHERE [UserId] = @UserId AND [Type] = @Type;
         IF(@@ROWCOUNT = 0)
         BEGIN
-	        INSERT INTO [dbo].[U_Profile]([UserId],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(@UserId,@ValuesJson,@ValuesBinary,@LastUpdatedDate);
+	        INSERT INTO [dbo].[U_Profile]([UserId],[Type],[ValuesJson],[ValuesBinary],[LastUpdatedDate]) VALUES(@UserId,@Type,@ValuesJson,@ValuesBinary,@LastUpdatedDate);
         END";
-        public const string Sql_U_Profile_Repository_Delete = @"DELETE FROM [dbo].[U_Profile] WHERE [UserId]=@UserId;";
+        public const string Sql_U_Profile_Repository_Delete = @"DELETE FROM [dbo].[U_Profile] WHERE [UserId]=@UserId AND [Type] = @Type;";
+        public const string Sql_U_Profile_Repository_Clear = @"DELETE FROM [dbo].[U_Profile] WHERE [UserId]=@UserId;";
 
         /// <summary>
         /// 角色信息表

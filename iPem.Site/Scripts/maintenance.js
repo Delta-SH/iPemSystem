@@ -2,19 +2,20 @@
     Ext.define('AlarmModel', {
         extend: 'Ext.data.Model',
         fields: [
-            { name: 'index', type: 'int' },
             { name: 'id', type: 'string' },
+            { name: 'index', type: 'int' },
+            { name: 'serialno', type: 'string' },
 			{ name: 'level', type: 'string' },
             { name: 'time', type: 'string' },
+            { name: 'name', type: 'string' },
+            { name: 'nmalarmid', type: 'string' },
             { name: 'interval', type: 'string' },
-            { name: 'comment', type: 'string' },
-            { name: 'value', type: 'string' },
-            { name: 'supporter', type: 'string' },
             { name: 'point', type: 'string' },
             { name: 'device', type: 'string' },
 			{ name: 'room', type: 'string' },
             { name: 'station', type: 'string' },
             { name: 'area', type: 'string' },
+            { name: 'supporter', type: 'string' },
             { name: 'confirmed', type: 'string' },
             { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
@@ -133,7 +134,7 @@
                             ],
                             data: [
                                 { "id": 1, "name": '按告警编号' },
-                                { "id": 2, "name": '按信号名称' }
+                                { "id": 2, "name": '按告警名称' }
                             ]
                         }),
                         align: 'center',
@@ -192,7 +193,7 @@
             },
             {
                 text: '告警编号',
-                dataIndex: 'id'
+                dataIndex: 'serialno'
             },
             {
                 text: '告警级别',
@@ -207,23 +208,20 @@
                 width: 150
             },
             {
+                text: '告警名称',
+                dataIndex: 'name',
+                width: 120
+            },
+            {
+                text: '管理编号',
+                dataIndex: 'nmalarmid',
+                width: 120
+            },
+            {
                 text: '告警历时',
                 dataIndex: 'interval',
                 align: 'center',
                 width: 120
-            },
-            {
-                text: '告警描述',
-                dataIndex: 'comment'
-            },
-            {
-                text: '触发值',
-                dataIndex: 'value',
-                align: 'center'
-            },
-            {
-                text: '维护厂家',
-                dataIndex: 'supporter'
             },
             {
                 text: '信号名称',
@@ -244,6 +242,10 @@
             {
                 text: '所属区域',
                 dataIndex: 'area'
+            },
+            {
+                text: '维护厂家',
+                dataIndex: 'supporter'
             },
             {
                 text: '确认状态',

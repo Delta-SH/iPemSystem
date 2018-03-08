@@ -1,5 +1,6 @@
 ﻿using iPem.Core.Caching;
 using iPem.Core.Domain.Sc;
+using iPem.Core.Enum;
 using iPem.Data.Repository.Sc;
 using iPem.Services.Common;
 using System;
@@ -31,16 +32,20 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public U_Profile GetProfile(Guid uid) {
-            return _repository.GetProfile(uid);
+        public U_Profile GetProfile(Guid uid, EnmProfile type) {
+            return _repository.Get(uid, type);
         }
 
-        public void Save(U_Profile profile) {
+        public void SaveProfile(U_Profile profile) {
             _repository.Save(profile);
         }
 
-        public void Remove(Guid uid) {
-            _repository.Delete(uid);
+        public void RemoveProfile(Guid uid, EnmProfile type) {
+            _repository.Delete(uid, type);
+        }
+
+        public void ClearProfiles(Guid uid) {
+            _repository.Clear(uid);
         }
 
         #endregion

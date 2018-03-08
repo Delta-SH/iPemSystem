@@ -32,8 +32,8 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public A_TAlarm GetAlarm(string fsuid, string serialno, EnmFlag alarmflag) {
-            return _repository.GetEntity(fsuid, serialno, alarmflag);
+        public A_TAlarm GetAlarm(long id) {
+            return _repository.GetEntity(id);
         }
 
         public List<A_TAlarm> GetAlarms() {
@@ -42,22 +42,10 @@ namespace iPem.Services.Cs {
 
         public void Add(params A_TAlarm[] alarms) {
             _repository.Insert(alarms);
-
-            if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
-
-            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
         }
 
         public void Remove(params A_TAlarm[] alarms) {
             _repository.Delete(alarms);
-
-            if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.Active_Alarms);
-
-            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms))
-                _cacheManager.Remove(GlobalCacheKeys.System_Alarms);
         }
 
         #endregion

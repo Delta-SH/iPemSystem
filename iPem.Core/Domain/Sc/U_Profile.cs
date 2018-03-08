@@ -1,8 +1,9 @@
-﻿using System;
+﻿using iPem.Core.Enum;
+using System;
 
 namespace iPem.Core.Domain.Sc {
     /// <summary>
-    /// 用户自定义信息表
+    /// 用户订制信息表
     /// </summary>
     [Serializable]
     public partial class U_Profile {
@@ -10,6 +11,11 @@ namespace iPem.Core.Domain.Sc {
         /// 用户编号
         /// </summary>
         public Guid UserId { get; set; }
+
+        /// <summary>
+        /// 信息类型
+        /// </summary>
+        public EnmProfile Type { get; set; }
 
         /// <summary>
         /// 自定义信息，JSON格式

@@ -57,6 +57,11 @@ namespace iPem.Core.Domain.Rs {
         public string RoomName { get; set; }
 
         /// <summary>
+        /// 所属机房类型
+        /// </summary>
+        public string RoomTypeId { get; set; }
+
+        /// <summary>
         /// 备注
         /// </summary>
         public string Comment { get; set; }

@@ -110,6 +110,11 @@ namespace iPem.Core.Domain.Rs {
         public string AreaId { get; set; }
 
         /// <summary>
+        /// 区域名称
+        /// </summary>
+        public string AreaName { get; set; }
+
+        /// <summary>
         /// 备注
         /// </summary>
         public string Comment { get; set; }

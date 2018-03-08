@@ -227,7 +227,6 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IM_ReservationRepository>(c => new M_ReservationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IS_DBScriptRepository>(c => new S_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
                 builder.Register<IU_EntitiesInRoleRepository>(c => new U_EntitiesInRoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IU_FollowPointRepository>(c => new U_FollowPointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_MenuRepository>(c => new U_MenuRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_ProfileRepository>(c => new U_ProfileRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_RoleRepository>(c => new U_RoleRepository(connectionString)).InstancePerLifetimeScope();
@@ -236,7 +235,6 @@ namespace iPem.Site.Infrastructure {
                 //register service
                 builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerLifetimeScope();
                 builder.RegisterType<EntitiesInRoleService>().As<IEntitiesInRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<FollowPointService>().As<IFollowPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<FormulaService>().As<IFormulaService>().InstancePerLifetimeScope();
                 builder.RegisterType<GImageService>().As<IGImageService>().InstancePerLifetimeScope();
                 builder.RegisterType<GPageService>().As<IGPageService>().InstancePerLifetimeScope();

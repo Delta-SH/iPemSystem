@@ -38,8 +38,9 @@ namespace iPem.Services.Sc {
 
         public U_EntitiesInRole GetEntitiesInRole(Guid id) {
             if (id == U_Role.SuperId) {
-                if (_cacheManager.IsSet(GlobalCacheKeys.SSH_Authorizations)) {
-                    return _cacheManager.Get<U_EntitiesInRole>(GlobalCacheKeys.SSH_Authorizations);
+                var key = GlobalCacheKeys.SSH_Authorizations;
+                if (_cacheManager.IsSet(key)) {
+                    return _cacheManager.Get<U_EntitiesInRole>(key);
                 } else {
                     var auth = new U_EntitiesInRole { RoleId = id, Menus = new List<int>(), Permissions = new List<EnmPermission>(), Areas = new List<string>() };
                     foreach (var menu in _menuRepository.GetMenus()) {
@@ -48,7 +49,7 @@ namespace iPem.Services.Sc {
                     foreach (EnmPermission permission in Enum.GetValues(typeof(EnmPermission))) {
                         auth.Permissions.Add(permission);
                     }
-                    _cacheManager.Set(GlobalCacheKeys.SSH_Authorizations, auth);
+                    _cacheManager.Set(key, auth);
                     return auth;
                 }
             } else {

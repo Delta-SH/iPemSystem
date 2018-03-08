@@ -1,8 +1,11 @@
-﻿using iPem.Core.Caching;
+﻿using iPem.Core;
+using iPem.Core.Caching;
 using iPem.Core.Domain.Rs;
+using iPem.Core.Enum;
 using iPem.Data.Repository.Rs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class SignalService : ISignalService {
@@ -76,6 +79,45 @@ namespace iPem.Services.Rs {
 
         public List<D_Signal> GetAlarmReversals() {
             return _repository.GetAlarmReversals();
+        }
+
+        public List<D_SimpleSignal> GetSimpleSignals(IEnumerable<Kv<string, string>> pairs) {
+            if (!pairs.Any()) return new List<D_SimpleSignal>();
+            var signals = pairs.DistinctBy(k => new { k.Key, k.Value });
+            return _repository.GetSimpleSignals(signals);
+        }
+
+        public List<D_SimpleSignal> GetSimpleSignalsInDevice(string device) {
+            return _repository.GetSimpleSignalsInDevice(device);
+        }
+
+        public List<D_SimpleSignal> GetSimpleSignalsInDevice(string device, bool _ai, bool _ao, bool _di, bool _do, bool _al) {
+            var types = new List<EnmPoint>();
+            if (_ai) types.Add(EnmPoint.AI);
+            if (_ao) types.Add(EnmPoint.AO);
+            if (_di) types.Add(EnmPoint.DI);
+            if (_do) types.Add(EnmPoint.DO);
+            if (_al) types.Add(EnmPoint.AL);
+
+            if (types.Count == 0) return new List<D_SimpleSignal>();
+            return this.GetSimpleSignalsInDevice(device).FindAll(s => types.Contains(s.PointType));
+        }
+
+        public List<D_SimpleSignal> GetSimpleSignalsInDevices(IEnumerable<string> devices) {
+            if (!devices.Any()) return new List<D_SimpleSignal>();
+            return _repository.GetSimpleSignalsInDevices(devices.Distinct());
+        }
+
+        public List<D_SimpleSignal> GetSimpleSignalsInDevices(IEnumerable<string> devices, bool _ai, bool _ao, bool _di, bool _do, bool _al) {
+            var types = new List<EnmPoint>();
+            if (_ai) types.Add(EnmPoint.AI);
+            if (_ao) types.Add(EnmPoint.AO);
+            if (_di) types.Add(EnmPoint.DI);
+            if (_do) types.Add(EnmPoint.DO);
+            if (_al) types.Add(EnmPoint.AL);
+
+            if (types.Count == 0) return new List<D_SimpleSignal>();
+            return this.GetSimpleSignalsInDevices(devices).FindAll(s => types.Contains(s.PointType));
         }
 
         #endregion

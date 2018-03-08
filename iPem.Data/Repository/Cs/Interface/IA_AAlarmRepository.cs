@@ -9,6 +9,11 @@ namespace iPem.Data.Repository.Cs {
     /// </summary>
     public partial interface IA_AAlarmRepository {
         /// <summary>
+        /// 获得指定的告警
+        /// </summary>
+        A_AAlarm GetAlarm(string id);
+
+        /// <summary>
         /// 获得指定区域(第三级区域)的告警
         /// </summary>
         List<A_AAlarm> GetAlarmsInArea(string id);
@@ -39,11 +44,6 @@ namespace iPem.Data.Repository.Cs {
         List<A_AAlarm> GetAlarms();
 
         /// <summary>
-        /// 获取系统告警
-        /// </summary>
-        List<A_AAlarm> GetSystemAlarms();
-
-        /// <summary>
         /// 获取指定时间段内告警(包括次告警、关联告警、屏蔽告警等)
         /// </summary>
         List<A_AAlarm> GetAllAlarms(DateTime start, DateTime end);
@@ -71,16 +71,12 @@ namespace iPem.Data.Repository.Cs {
         /// <summary>
         /// 确认指定的告警
         /// </summary>
-        void Confirm(IList<A_AAlarm> alarms);
+        void Confirm(IEnumerable<A_AAlarm> alarms);
 
         /// <summary>
-        /// 获得指定的告警
+        /// 删除指定的告警
+        /// <para>包括告警接口中的告警</para>
         /// </summary>
-        A_AAlarm GetAlarm(string id);
-
-        /// <summary>
-        /// 删除指定的告警（包括告警接口中的告警）
-        /// </summary>
-        void DeleteAlarms(params A_AAlarm[] alarms);
+        void Delete(IEnumerable<A_AAlarm> alarms);
     }
 }

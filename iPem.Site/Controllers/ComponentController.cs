@@ -24,6 +24,7 @@ namespace iPem.Site.Controllers {
         private readonly IDepartmentService _departmentService;
         private readonly IEmployeeService _employeeService;
         private readonly IPointService _pointService;
+        private readonly ISignalService _signalService;
 
         #endregion
 
@@ -34,12 +35,14 @@ namespace iPem.Site.Controllers {
             IWebEventService webLogger,
             IDepartmentService departmentService,
             IEmployeeService employeeService,
-            IPointService pointService) {
+            IPointService pointService,
+            ISignalService signalService) {
             this._workContext = workContext;
             this._webLogger = webLogger;
             this._departmentService = departmentService;
             this._employeeService = employeeService;
             this._pointService = pointService;
+            this._signalService = signalService;
         }
 
         #endregion
@@ -1396,7 +1399,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetPoints(string device, bool AI = true, bool AO = true, bool DI = true, bool DO = true) {
+        public JsonResult GetPoints(string device, bool _ai = true, bool _ao = true, bool _di = true, bool _do = true, bool _al = true) {
             var data = new AjaxDataModel<List<ComboItem<string, string>>> {
                 success = true,
                 message = "No data",
@@ -1406,11 +1409,11 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(!string.IsNullOrWhiteSpace(device)) {
-                    var models = _pointService.GetPointsInDevice(device, AI, AO, DI, DO);
-                    if(models.Count > 0) {
+                    var signals = _signalService.GetSimpleSignalsInDevice(device, _ai, _ao, _di, _do, _al);
+                    if(signals.Count > 0) {
                         data.message = "200 Ok";
-                        data.total = models.Count;
-                        data.data.AddRange(models.Select(d => new ComboItem<string, string> { id = d.Id, text = d.Name }));
+                        data.total = signals.Count;
+                        data.data.AddRange(signals.Select(s => new ComboItem<string, string> { id = s.PointId, text = s.PointName }));
                     }
                 }
             } catch(Exception exc) {
@@ -2128,16 +2131,13 @@ namespace iPem.Site.Controllers {
 
             try {
                 if (!string.IsNullOrWhiteSpace(node) && node == "root") {
-                    var profile = _workContext.Profile();
-                    if (profile != null
-                        && profile.Settings != null
-                        && profile.Settings.SeniorConditions != null
-                        && profile.Settings.SeniorConditions.Count > 0) {
-                        var conditions = profile.Settings.SeniorConditions;
+                    var conditions = _workContext.ProfileConditions();
+                    if (conditions != null && conditions.Any()) {
                         data.success = true;
                         data.message = "200 Ok";
-                        data.total = conditions.Count;
+                        data.total = 0;
                         foreach (var condition in conditions) {
+                            data.total++;
                             data.data.Add(new TreeModel {
                                 id = condition.id,
                                 text = condition.name,
@@ -2165,28 +2165,27 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var profile = _workContext.Profile();
-                if (profile != null
-                    && profile.Settings != null
-                    && profile.Settings.SeniorConditions != null
-                    && profile.Settings.SeniorConditions.Count > 0) {
-                    var conditions = new List<SeniorCondition>();
-                    if (all) conditions.Add(new SeniorCondition { id = "root", name = "全部" });
-                    conditions.AddRange(profile.Settings.SeniorConditions.OrderBy(s => s.name));
-                    if (conditions.Count > 0) {
-                        data.message = "200 Ok";
-                        data.total = conditions.Count;
+                var result = new List<SeniorCondition>();
+                if (all) result.Add(new SeniorCondition { id = "root", name = "--" });
 
-                        var end = start + limit;
-                        if (end > conditions.Count)
-                            end = conditions.Count;
+                var conditions = _workContext.ProfileConditions();
+                if (conditions != null && conditions.Any()) {
+                    result.AddRange(conditions.OrderBy(s => s.name));
+                }
 
-                        for (int i = start; i < end; i++) {
-                            data.data.Add(new ComboItem<string, string> {
-                                id = conditions[i].id,
-                                text = conditions[i].name
-                            });
-                        }
+                if (result.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = result.Count;
+
+                    var end = start + limit;
+                    if (end > result.Count)
+                        end = result.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(new ComboItem<string, string> {
+                            id = result[i].id,
+                            text = result[i].name
+                        });
                     }
                 }
             } catch (Exception exc) {
@@ -2207,16 +2206,13 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var profile = _workContext.Profile();
-                if (profile != null
-                    && profile.Settings != null
-                    && profile.Settings.MatrixTemplates != null
-                    && profile.Settings.MatrixTemplates.Count > 0) {
-                    var templates = profile.Settings.MatrixTemplates;
+                var templates = _workContext.ProfileMatrixs();
+                if (templates != null && templates.Any()) {
                     data.success = true;
                     data.message = "200 Ok";
-                    data.total = templates.Count;
+                    data.total = 0;
                     foreach (var template in templates) {
+                        data.total++;
                         data.data.Add(new TreeCustomModel<MatrixTemplate> {
                             id = template.id,
                             text = template.name,

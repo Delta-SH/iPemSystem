@@ -34,21 +34,6 @@ namespace iPem.Services.Rs {
 
         #region Methods
 
-        public List<P_Point> GetPointsInDevice(string id) {
-            return _repository.GetPointsInDevice(id);
-        }
-
-        public List<P_Point> GetPointsInDevice(string id, bool _ai, bool _ao, bool _di, bool _do) {
-            var types = new List<EnmPoint>();
-            if(_ai) types.Add(EnmPoint.AI);
-            if(_ao) types.Add(EnmPoint.AO);
-            if(_di) types.Add(EnmPoint.DI);
-            if(_do) types.Add(EnmPoint.DO);
-
-            if(types.Count == 0) return new List<P_Point>();
-            return this.GetPointsInDevice(id).FindAll(p => types.Contains(p.Type));
-        }
-
         public List<P_Point> GetPointsInProtocol(string id) {
             return _repository.GetPointsInProtocol(id);
         }
@@ -56,10 +41,10 @@ namespace iPem.Services.Rs {
         public List<P_Point> GetPoints() {
             var key = GlobalCacheKeys.Rs_PointsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<P_Point>>(key);
+                return _cacheManager.GetItemsFromList<P_Point>(key).ToList();
             } else {
                 var data = _repository.GetPoints();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

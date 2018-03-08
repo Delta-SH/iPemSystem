@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class SCVendorService : ISCVendorService {
@@ -39,10 +40,10 @@ namespace iPem.Services.Rs {
         public List<C_SCVendor> GetVendors() {
             var key = GlobalCacheKeys.Rs_SCVendorRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_SCVendor>>(key);
+                return _cacheManager.GetItemsFromList<C_SCVendor>(key).ToList();
             } else {
                 var data = _repository.GetVendors();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

@@ -35,6 +35,7 @@ namespace iPem.Site.Controllers {
         private readonly IGroupService _groupService;
         private readonly IParamDiffService _diffService;
         private readonly INoteService _noteService;
+        private readonly ISignalService _signalService;
         private readonly IPackMgr _packMgr;
 
         #endregion
@@ -52,6 +53,7 @@ namespace iPem.Site.Controllers {
             IGroupService groupService,
             IParamDiffService diffService,
             INoteService noteService,
+            ISignalService signalService,
             IPackMgr packMgr) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
@@ -63,6 +65,7 @@ namespace iPem.Site.Controllers {
             this._groupService = groupService;
             this._diffService = diffService;
             this._noteService = noteService;
+            this._signalService = signalService;
             this._packMgr = packMgr;
         }
 
@@ -1142,71 +1145,67 @@ namespace iPem.Site.Controllers {
         private List<FsuPointModel> GetFsuPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
             var key = string.Format(GlobalCacheKeys.Fsu_Points, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FsuPointModel>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<FsuPointModel>(key).ToList();
 
             var result = new List<FsuPointModel>();
-            if((string.IsNullOrWhiteSpace(parent) || parent == "root") && ((points == null || points.Length == 0)))
+            if((string.IsNullOrWhiteSpace(parent) || "root".Equals(parent)) && ((points == null || points.Length == 0)))
                 return result;
 
             var devices = _workContext.Devices();
-            if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
-                var keys = Common.SplitKeys(parent);
-                if (keys.Length != 2) return result;
-                var type = int.Parse(keys[0]);
-                var id = keys[1];
-                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                if ((points == null || points.Length == 0) && nodeType != EnmSSH.Device) return result;
+            if (!string.IsNullOrWhiteSpace(parent) && !"root".Equals(parent)) {
+                var nodeKey = Common.ParseNode(parent);
+                if ((points == null || points.Length == 0) && nodeKey.Key != EnmSSH.Device) return result;
 
-                if (nodeType == EnmSSH.Area) {
-                    var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
                     if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
-                } else if (nodeType == EnmSSH.Station) {
-                    devices = devices.FindAll(d => d.Current.StationId == id);
-                } else if (nodeType == EnmSSH.Room) {
-                    devices = devices.FindAll(d => d.Current.RoomId == id);
-                } else if (nodeType == EnmSSH.Device) {
-                    devices = devices.FindAll(d => d.Current.Id == id);
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id.Equals(nodeKey.Value));
                 }
             }
 
             var fsus = _workContext.Fsus();
-            if (vendors != null && vendors.Length > 0) fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
-
-            var deviceWfsu = from device in devices
-                             join fsu in fsus on device.Current.FsuId equals fsu.Current.Id
-                             select new { Fsu = fsu.Current, Device = device };
+            if (vendors != null && vendors.Length > 0) {
+                fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
+            }
 
             var index = 0;
-            foreach (var dwf in deviceWfsu) {
-                foreach (var point in dwf.Device.Points) {
-                    if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
-                    if (point.Type != EnmPoint.AI && point.Type != EnmPoint.DI) continue;
-
-                    var type = _workContext.GetPointType(point);
-                    if (types != null && types.Length > 0 && !types.Contains((int)type)) continue;
+            var fsuMaps = fsus.ToDictionary(k => k.Current.Id, v => v.Current);
+            var signals = _signalService.GetSimpleSignalsInDevices(devices.Select(d => d.Current.Id), true, false, true, false, false);
+            foreach (var device in devices) {
+                if (!fsuMaps.ContainsKey(device.Current.FsuId)) continue;
+                var fsu = fsuMaps[device.Current.FsuId];
+                var signalsInDevice = signals.FindAll(s => s.DeviceId.Equals(device.Current.Id));
+                foreach (var signal in signalsInDevice) {
+                    if (points != null && points.Length > 0 && !points.Contains(signal.PointId)) continue;
+                    if (types != null && types.Length > 0 && !types.Contains((int)signal.PointType)) continue;
 
                     result.Add(new FsuPointModel {
                         index = ++index,
-                        fsuid = dwf.Fsu.Id,
-                        fsucode = dwf.Fsu.Code,
-                        fsu = dwf.Fsu.Name,
-                        vendor = dwf.Fsu.VendorName,
-                        deviceid = dwf.Device.Current.Id,
-                        devicecode = dwf.Device.Current.Code,
-                        device = dwf.Device.Current.Name,
-                        pointid = point.Id,
-                        pointcode = point.Code,
-                        pointnumber = point.Number,
-                        point = point.Name,
-                        typeid = (int)type,
-                        type = Common.GetPointTypeDisplay(type),
+                        fsuid = fsu.Id,
+                        fsucode = fsu.Code,
+                        fsu = fsu.Name,
+                        vendor = fsu.VendorName,
+                        deviceid = device.Current.Id,
+                        devicecode = device.Current.Code,
+                        device = device.Current.Name,
+                        pointid = signal.PointId,
+                        pointcode = signal.Code,
+                        pointnumber = signal.Number,
+                        point = signal.PointName,
+                        typeid = (int)signal.PointType,
+                        type = Common.GetPointTypeDisplay(signal.PointType),
                         remote = false
                     });
                 }
             }
 
             if (result.Count <= GlobalCacheLimit.Default_Limit) {
-                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
             }
 
             return result;
@@ -1215,7 +1214,7 @@ namespace iPem.Site.Controllers {
         private List<FsuAlmPointModel> GetFsuAlmPoints(string parent, int[] types, string[] points, string[] vendors, bool cache) {
             var key = string.Format(GlobalCacheKeys.Fsu_Alarm_Points, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FsuAlmPointModel>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<FsuAlmPointModel>(key).ToList();
 
             var result = new List<FsuAlmPointModel>();
             if ((string.IsNullOrWhiteSpace(parent) || parent == "root") && ((points == null || points.Length == 0)))
@@ -1223,61 +1222,59 @@ namespace iPem.Site.Controllers {
 
             var devices = _workContext.Devices();
             if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
-                var keys = Common.SplitKeys(parent);
-                if (keys.Length != 2) return result;
-                var type = int.Parse(keys[0]);
-                var id = keys[1];
-                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                if ((points == null || points.Length == 0) && nodeType != EnmSSH.Device) return result;
+                var nodeKey = Common.ParseNode(parent);
+                if ((points == null || points.Length == 0) && nodeKey.Key != EnmSSH.Device) return result;
 
-                if (nodeType == EnmSSH.Area) {
-                    var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
                     if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
-                } else if (nodeType == EnmSSH.Station) {
-                    devices = devices.FindAll(d => d.Current.StationId == id);
-                } else if (nodeType == EnmSSH.Room) {
-                    devices = devices.FindAll(d => d.Current.RoomId == id);
-                } else if (nodeType == EnmSSH.Device) {
-                    devices = devices.FindAll(d => d.Current.Id == id);
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id.Equals(nodeKey.Value));
                 }
             }
 
             var fsus = _workContext.Fsus();
-            if (vendors != null && vendors.Length > 0) fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
-
-            var deviceWfsu = from device in devices
-                             join fsu in fsus on device.Current.FsuId equals fsu.Current.Id
-                             select new { Fsu = fsu.Current, Device = device };
+            if (vendors != null && vendors.Length > 0) {
+                fsus = fsus.FindAll(f => vendors.Contains(f.Current.VendorId));
+            }
 
             var index = 0;
-            foreach (var dwf in deviceWfsu) {
-                foreach (var point in dwf.Device.Points) {
-                    if (points != null && points.Length > 0 && !points.Contains(point.Id)) continue;
-                    var type = _workContext.GetPointType(point);
-                    if (type != EnmPoint.AL) continue;
+            var fsuMaps = fsus.ToDictionary(k => k.Current.Id, v => v.Current);
+            var signals = _signalService.GetSimpleSignalsInDevices(devices.Select(d => d.Current.Id), false, false, false, false, true);
+            foreach (var device in devices) {
+                if (!fsuMaps.ContainsKey(device.Current.FsuId)) continue;
+                var fsu = fsuMaps[device.Current.FsuId];
+                var signalsInDevice = signals.FindAll(s => s.DeviceId.Equals(device.Current.Id));
+                foreach (var signal in signalsInDevice) {
+                    if (points != null && points.Length > 0 && !points.Contains(signal.PointId)) continue;
+                    if (types != null && types.Length > 0 && !types.Contains((int)signal.PointType)) continue;
 
                     result.Add(new FsuAlmPointModel {
                         index = ++index,
-                        fsuid = dwf.Fsu.Id,
-                        fsucode = dwf.Fsu.Code,
-                        fsu = dwf.Fsu.Name,
-                        vendor = dwf.Fsu.VendorName,
-                        deviceid = dwf.Device.Current.Id,
-                        devicecode = dwf.Device.Current.Code,
-                        device = dwf.Device.Current.Name,
-                        pointid = point.Id,
-                        pointcode = point.Code,
-                        pointnumber = point.Number,
-                        point = point.Name,
-                        typeid = (int)EnmPoint.AL,
-                        type = Common.GetPointTypeDisplay(EnmPoint.AL),
+                        fsuid = fsu.Id,
+                        fsucode = fsu.Code,
+                        fsu = fsu.Name,
+                        vendor = fsu.VendorName,
+                        deviceid = device.Current.Id,
+                        devicecode = device.Current.Code,
+                        device = device.Current.Name,
+                        pointid = signal.PointId,
+                        pointcode = signal.Code,
+                        pointnumber = signal.Number,
+                        point = signal.PointName,
+                        typeid = (int)signal.PointType,
+                        type = Common.GetPointTypeDisplay(signal.PointType),
                         remote = false
                     });
                 }
             }
 
             if (result.Count <= GlobalCacheLimit.Default_Limit) {
-                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
             }
 
             return result;

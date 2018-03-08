@@ -105,7 +105,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Caching\DisableCacheManager.cs" />
     <Compile Include="Domain\Cs\A_AAlarm.cs" />
     <Compile Include="Domain\Cs\A_TAlarm.cs" />
     <Compile Include="Domain\Cs\H_CardRecord.cs" />
@@ -127,6 +126,7 @@
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />
     <Compile Include="Domain\Rs\D_Signal.cs" />
+    <Compile Include="Domain\Rs\D_SimpleSignal.cs" />
     <Compile Include="Domain\Rs\H_Masking.cs" />
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\M_Authorization.cs" />
@@ -154,7 +154,6 @@
     <Compile Include="Domain\Rs\P_Protocol.cs" />
     <Compile Include="Domain\Sc\H_Notice.cs" />
     <Compile Include="Domain\Sc\H_NoticeInUser.cs" />
-    <Compile Include="Domain\Sc\U_FollowPoint.cs" />
     <Compile Include="Domain\Sc\U_Profile.cs" />
     <Compile Include="Domain\Rs\A_Area.cs" />
     <Compile Include="Domain\Rs\C_Brand.cs" />
@@ -186,9 +185,7 @@
     <Compile Include="FtpHelper.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />
-    <Compile Include="Caching\CacheManager.cs" />
     <Compile Include="Caching\ICacheManager.cs" />
-    <Compile Include="Caching\MemoryCacheManager.cs" />
     <Compile Include="Caching\RedisCacheManager.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Configuration\iPemConfig.cs" />
@@ -212,6 +209,7 @@
     <Compile Include="Kv.cs" />
     <Compile Include="IPagedList.cs" />
     <Compile Include="iPemException.cs" />
+    <Compile Include="LinqExtension.cs" />
     <Compile Include="NPOI\ExcelAttributes.cs" />
     <Compile Include="NPOI\ExcelConverter.cs" />
     <Compile Include="NPOI\ExcelManager.cs" />

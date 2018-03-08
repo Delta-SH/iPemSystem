@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class StationTypeService : IStationTypeService {
@@ -39,10 +40,10 @@ namespace iPem.Services.Rs {
         public List<C_StationType> GetStationTypes() {
             var key = GlobalCacheKeys.Rs_StationTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_StationType>>(key);
+                return _cacheManager.GetItemsFromList<C_StationType>(key).ToList();
             } else {
                 var data = _repository.GetStationTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

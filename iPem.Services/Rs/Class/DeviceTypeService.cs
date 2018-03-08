@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class DeviceTypeService : IDeviceTypeService {
@@ -43,10 +44,10 @@ namespace iPem.Services.Rs {
         public List<C_DeviceType> GetDeviceTypes() {
             var key = GlobalCacheKeys.Rs_DeviceTypeRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_DeviceType>>(key);
+                return _cacheManager.GetItemsFromList<C_DeviceType>(key).ToList();
             } else {
                 var data = _repository.GetDeviceTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
@@ -54,10 +55,10 @@ namespace iPem.Services.Rs {
         public List<C_SubDeviceType> GetSubDeviceTypes() {
             var key = GlobalCacheKeys.Rs_SubDeviceTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_SubDeviceType>>(key);
+                return _cacheManager.GetItemsFromList<C_SubDeviceType>(key).ToList();
             } else {
                 var data = _repository.GetSubDeviceTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

@@ -37,6 +37,7 @@ namespace iPem.Site.Controllers {
         private readonly IEmployeeService _employeeService;
         private readonly IEntitiesInRoleService _entitiesInRoleService;
         private readonly IFormulaService _formulaService;
+        private readonly ISignalService _signalService;
         private readonly IMenuService _menuService;
         private readonly INoticeService _noticeService;
         private readonly INoticeInUserService _noticeInUserService;
@@ -64,6 +65,7 @@ namespace iPem.Site.Controllers {
             IEmployeeService employeeService,
             IEntitiesInRoleService entitiesInRoleService,
             IFormulaService formulaService,
+            ISignalService signalService,
             IMenuService menuService,
             INoticeService noticeService,
             INoticeInUserService noticeInUserService,
@@ -84,6 +86,7 @@ namespace iPem.Site.Controllers {
             this._employeeService = employeeService;
             this._entitiesInRoleService = entitiesInRoleService;
             this._formulaService = formulaService;
+            this._signalService = signalService;
             this._menuService = menuService;
             this._noticeService = noticeService;
             this._noticeInUserService = noticeInUserService;
@@ -1834,21 +1837,16 @@ namespace iPem.Site.Controllers {
 
             try {
                 if(!string.IsNullOrWhiteSpace(parent)) {
-                    var keys = Common.SplitKeys(parent);
-                    if(keys.Length == 2) {
-                        var type = int.Parse(keys[0]);
-                        var id = keys[1];
-                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                        if(nodeType == EnmSSH.Device) {
-                            var current = _workContext.Devices().Find(d => d.Current.Id == id);
-                            if(current != null) {
-                                var points = current.Points.FindAll(p => p.Type == EnmPoint.AI);
-                                for(var i = 0; i < points.Count; i++) {
-                                    data.data.Add(new Kv<int, string> {
-                                        Key = i + 1,
-                                        Value = string.Format("@{0}>>{1}>>{2}", current.Current.RoomName, current.Current.Name, points[i].Name)
-                                    });
-                                }
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Device) {
+                        var current = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
+                        if (current != null) {
+                            var signals = current.AI;
+                            for (var i = 0; i < signals.Count; i++) {
+                                data.data.Add(new Kv<int, string> {
+                                    Key = i + 1,
+                                    Value = string.Format("@{0}>>{1}>>{2}", current.Current.RoomName, current.Current.Name, signals[i].PointName)
+                                });
                             }
                         }
                     }
@@ -1892,7 +1890,10 @@ namespace iPem.Site.Controllers {
                 _workContext.ResetRole();
                 _workContext.ResetUser();
                 _workContext.ResetEmployee();
-                _workContext.ResetProfile();
+                _workContext.ResetProfile(EnmProfile.Condition);
+                _workContext.ResetProfile(EnmProfile.Follow);
+                _workContext.ResetProfile(EnmProfile.Matrix);
+                _workContext.ResetProfile(EnmProfile.Speech);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "用户缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch(Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);

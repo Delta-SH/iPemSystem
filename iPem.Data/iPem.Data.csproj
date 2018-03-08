@@ -112,7 +112,6 @@
     <Compile Include="Repository\Sc\Class\G_TemplateRepository.cs" />
     <Compile Include="Repository\Sc\Class\M_FormulaRepository.cs" />
     <Compile Include="Repository\Sc\Class\S_DBScriptRepository.cs" />
-    <Compile Include="Repository\Sc\Class\U_FollowPointRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IA_HAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_StaticRepository.cs" />
@@ -186,7 +185,6 @@
     <Compile Include="Repository\Rs\Interface\IC_SubCompanyRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_SupplierRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_UnitRepository.cs" />
-    <Compile Include="Repository\Sc\Interface\IU_FollowPointRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">

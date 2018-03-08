@@ -59,10 +59,6 @@ namespace iPem.Services.Cs {
             return _repository.GetAllAlarms(start, end);
         }
 
-        public List<A_HAlarm> GetNonAlarms(DateTime start, DateTime end) {
-            return _repository.GetNonAlarms(start, end);
-        }
-
         public List<A_HAlarm> GetPrimaryAlarms(string id, DateTime start, DateTime end) {
             return _repository.GetPrimaryAlarms(id, start, end);
         }
@@ -77,6 +73,10 @@ namespace iPem.Services.Cs {
 
         public List<A_HAlarm> GetReversalAlarms(string id, DateTime start, DateTime end) {
             return _repository.GetReversalAlarms(id, start, end);
+        }
+
+        public List<A_HAlarm> GetMaskedAlarms(DateTime start, DateTime end) {
+            return _repository.GetMaskedAlarms(start, end);
         }
 
         public IPagedList<A_HAlarm> GetPagedAlarms(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {

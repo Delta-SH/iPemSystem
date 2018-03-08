@@ -37,19 +37,19 @@ namespace iPem.Services.Rs {
             return _repository.GetEntity(id);
         }
 
-        public List<V_Camera> GetAllCameras() {
+        public List<V_Camera> GetCameras() {
             var key = GlobalCacheKeys.Rs_CamerasRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<V_Camera>>(key);
+                return _cacheManager.GetItemsFromList<V_Camera>(key).ToList();
             } else {
                 var data = _repository.GetEntities();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
 
         public IPagedList<V_Camera> GetPagedCameras(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<V_Camera>(this.GetAllCameras(), pageIndex, pageSize);
+            return new PagedList<V_Camera>(this.GetCameras(), pageIndex, pageSize);
         }
 
         #endregion

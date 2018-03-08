@@ -36,7 +36,7 @@ namespace iPem.Services.Rs {
         public List<V_Channel> GetChannels(string camera) {
             var key = GlobalCacheKeys.Rs_ChannelsRepository;
             if (!_cacheManager.IsSet(key)) {
-                return this.GetAllChannels().FindAll(c => c.CameraId == camera);
+                return this.GetChannels().FindAll(c => c.CameraId == camera);
             }
 
             if (_cacheManager.IsHashSet(key, camera)) {
@@ -48,20 +48,19 @@ namespace iPem.Services.Rs {
             }
         }
 
-        public List<V_Channel> GetAllChannels() {
+        public List<V_Channel> GetChannels() {
             var key = GlobalCacheKeys.Rs_ChannelsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetAllFromHash<List<V_Channel>>(key).SelectMany(d => d).ToList();
+                return _cacheManager.GetItemsFromList<V_Channel>(key).ToList();
             } else {
                 var data = _repository.GetEntities();
-                var caches = data.GroupBy(d => d.CameraId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
-                _cacheManager.SetRangeInHash(key, caches);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
 
-        public IPagedList<V_Channel> GetPagedCameras(int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<V_Channel>(this.GetAllChannels(), pageIndex, pageSize);
+        public IPagedList<V_Channel> GetPagedChannels(int pageIndex = 0, int pageSize = int.MaxValue) {
+            return new PagedList<V_Channel>(this.GetChannels(), pageIndex, pageSize);
         }
 
         #endregion

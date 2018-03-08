@@ -16,11 +16,11 @@ namespace iPem.Services.Rs {
         /// <summary>
         /// 获得所有摄像机的通道信息
         /// </summary>
-        List<V_Channel> GetAllChannels();
+        List<V_Channel> GetChannels();
 
         /// <summary>
         /// 获得所有摄像机的通道信息（分页）
         /// </summary>
-        IPagedList<V_Channel> GetPagedCameras(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<V_Channel> GetPagedChannels(int pageIndex = 0, int pageSize = int.MaxValue);
     }
 }

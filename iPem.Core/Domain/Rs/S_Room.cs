@@ -135,6 +135,11 @@ namespace iPem.Core.Domain.Rs {
         public string AreaId { get; set; }
 
         /// <summary>
+        /// 区域名称
+        /// </summary>
+        public string AreaName { get; set; }
+
+        /// <summary>
         /// 站点编码
         /// </summary>
         public string StationId { get; set; }

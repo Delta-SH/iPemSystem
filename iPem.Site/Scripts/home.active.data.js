@@ -27,25 +27,24 @@ Ext.define('PointModel', {
 Ext.define('ActAlarmModel', {
     extend: 'Ext.data.Model',
     fields: [
+        { name: 'id', type: 'string' },
         { name: 'index', type: 'int' },
-        { name: 'nmalarmid', type: 'string' },
 		{ name: 'level', type: 'string' },
         { name: 'time', type: 'string' },
+        { name: 'name', type: 'string' },
+        { name: 'nmalarmid', type: 'string' },
         { name: 'interval', type: 'string' },
-        { name: 'comment', type: 'string' },
-        { name: 'value', type: 'string' },
-        { name: 'supporter', type: 'string' },
         { name: 'point', type: 'string' },
         { name: 'device', type: 'string' },
 		{ name: 'room', type: 'string' },
         { name: 'station', type: 'string' },
         { name: 'area', type: 'string' },
+        { name: 'supporter', type: 'string' },
         { name: 'confirmed', type: 'string' },
         { name: 'confirmer', type: 'string' },
         { name: 'confirmedtime', type: 'string' },
         { name: 'reservation', type: 'string' },
         { name: 'reversalcount', type: 'int' },
-        { name: 'id', type: 'string' },
         { name: 'areaid', type: 'string' },
         { name: 'stationid', type: 'string' },
         { name: 'roomid', type: 'string' },
@@ -978,12 +977,6 @@ var alarmGrid = Ext.create('Ext.grid.Panel', {
             width: 60
         },
         {
-            text: '告警管理编号',
-            dataIndex: 'nmalarmid',
-            align: 'center',
-            width: 150
-        },
-        {
             text: '告警级别',
             dataIndex: 'level',
             align: 'center',
@@ -996,23 +989,21 @@ var alarmGrid = Ext.create('Ext.grid.Panel', {
             width: 150
         },
         {
+            text: '告警名称',
+            dataIndex: 'name',
+            width: 150
+        },
+        {
+            text: '管理编号',
+            dataIndex: 'nmalarmid',
+            align: 'center',
+            width: 150
+        },
+        {
             text: '告警历时',
             dataIndex: 'interval',
             align: 'center',
             width: 120
-        },
-        {
-            text: '告警描述',
-            dataIndex: 'comment'
-        },
-        {
-            text: '触发值',
-            dataIndex: 'value',
-            align: 'center'
-        },
-        {
-            text: '维护厂家',
-            dataIndex: 'supporter'
         },
         {
             text: '信号名称',
@@ -1033,6 +1024,10 @@ var alarmGrid = Ext.create('Ext.grid.Panel', {
         {
             text: '所属区域',
             dataIndex: 'area'
+        },
+        {
+            text: '维护厂家',
+            dataIndex: 'supporter'
         },
         {
             text: '确认状态',

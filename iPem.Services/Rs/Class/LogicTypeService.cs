@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class LogicTypeService : ILogicTypeService {
@@ -43,10 +44,10 @@ namespace iPem.Services.Rs {
         public List<C_LogicType> GetLogicTypes() {
             var key = GlobalCacheKeys.Rs_LogicTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_LogicType>>(key);
+                return _cacheManager.GetItemsFromList<C_LogicType>(key).ToList();
             } else {
                 var data = _repository.GetLogicTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
@@ -54,10 +55,10 @@ namespace iPem.Services.Rs {
         public List<C_SubLogicType> GetSubLogicTypes() {
             var key = GlobalCacheKeys.Rs_SubLogicTypesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_SubLogicType>>(key);
+                return _cacheManager.GetItemsFromList<C_SubLogicType>(key).ToList();
             } else {
                 var data = _repository.GetSubLogicTypes();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

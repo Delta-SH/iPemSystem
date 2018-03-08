@@ -33,11 +33,6 @@ namespace iPem.Site.Infrastructure {
         public U_Employee Employee { get; set; }
 
         /// <summary>
-        /// 用户自定义信息
-        /// </summary>
-        public iProfile Profile { get; set; }
-
-        /// <summary>
         /// 上次消息查询时间
         /// </summary>
         public DateTime LastNoticeTime { get; set; }

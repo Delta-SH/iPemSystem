@@ -5,6 +5,7 @@ using iPem.Data.Repository.Rs;
 using iPem.Services.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace iPem.Services.Rs {
     public partial class DepartmentService : IDepartmentService {
@@ -43,10 +44,10 @@ namespace iPem.Services.Rs {
         public List<C_Department> GetDepartments() {
             var key = GlobalCacheKeys.Rs_DepartmentsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<C_Department>>(key);
+                return _cacheManager.GetItemsFromList<C_Department>(key).ToList();
             } else {
                 var data = _repository.GetDepartments();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

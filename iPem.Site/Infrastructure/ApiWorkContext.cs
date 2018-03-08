@@ -39,6 +39,7 @@ namespace iPem.Site.Infrastructure {
         private readonly IPointService _pointService;
         private readonly ILogicTypeService _logicTypeService;
         private readonly ISCVendorService _vendorService;
+        private readonly ISignalService _signalService;
         private readonly IGroupService _groupService;
 
         /// <summary>
@@ -104,6 +105,7 @@ namespace iPem.Site.Infrastructure {
             IPointService pointService,
             ILogicTypeService logicTypeService,
             ISCVendorService vendorService,
+            ISignalService signalService,
             IAAlarmService aalarmService,
             IHAlarmService halarmService,
             IAMeasureService ameasureService,
@@ -124,6 +126,7 @@ namespace iPem.Site.Infrastructure {
             this._pointService = pointService;
             this._logicTypeService = logicTypeService;
             this._vendorService = vendorService;
+            this._signalService = signalService;
             this._aalarmService = aalarmService;
             this._halarmService = halarmService;
             this._ameasureService = ameasureService;
@@ -461,112 +464,192 @@ namespace iPem.Site.Infrastructure {
             if (_cachedActAlarms != null)
                 return _cachedActAlarms;
 
-            var _allAlarms = this.AllAlarms();
-            if (_allAlarms.Count > 0 && !U_Role.SuperId.Equals(new Guid(id))) {
+            _cachedActAlarms = this.AllAlarms();
+            if (_cachedActAlarms.Count > 0 && !U_Role.SuperId.Equals(new Guid(id))) {
                 var keys = this.GetAuth(id).Areas;
-                _allAlarms = _allAlarms.FindAll(a => a.Current.RoomId == "-1" || keys.Contains(a.Current.AreaId));
+                _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.AreaId));
             }
 
-            return _cachedActAlarms = _allAlarms;
+            return _cachedActAlarms;
         }
 
+        /// <summary>
+        /// 获得所有活动告警
+        /// <para>
+        /// 活动告警未排序,获得后需手动排序
+        /// </para>
+        /// </summary>
         public List<AlmStore<A_AAlarm>> AllAlarms() {
             if (_cachedAllAlarms != null)
                 return _cachedAllAlarms;
 
-            //实时告警缓存10s，减小服务器压力
+            // 缓存活动告警，减小服务器压力
             List<A_AAlarm> _allAlarms = null;
-            IEnumerable<AlmStore<A_AAlarm>> _activeAlarms = null;
-            IEnumerable<AlmStore<A_AAlarm>> _systemAlarms = null;
 
-            if (_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms)) {
-                _activeAlarms = _cacheManager.Get<IEnumerable<AlmStore<A_AAlarm>>>(GlobalCacheKeys.Active_Alarms);
-            } else {
-                if (_allAlarms == null) _allAlarms = _aalarmService.GetAlarms();
-                var nomAlarms = _allAlarms.FindAll(a => a.RoomId != "-1");
-                if (nomAlarms.Count > 0) {
-                    _activeAlarms = from alarm in nomAlarms
-                                    join point in this.GetALPoints() on alarm.PointId equals point.Id
-                                    join device in this.GetAllDevices() on alarm.DeviceId equals device.Id
-                                    join room in this.GetAllRooms() on device.RoomId equals room.Id
-                                    join station in this.GetAllStations() on room.StationId equals station.Id
-                                    join area in this.GetAllAreas() on station.AreaId equals area.Current.Id
-                                    select new AlmStore<A_AAlarm> {
-                                        Current = alarm,
-                                        PointName = point.Name,
-                                        DeviceName = device.Name,
-                                        DeviceTypeId = device.Type.Id,
-                                        SubDeviceTypeId = device.SubType.Id,
-                                        SubLogicTypeId = device.SubLogicType.Id,
-                                        RoomName = room.Name,
-                                        RoomTypeId = room.Type.Id,
-                                        StationName = station.Name,
-                                        StationTypeId = station.Type.Id,
-                                        AreaName = area.Current.Name,
-                                        AreaFullName = area.ToString()
-                                    };
+            #region 正常告警
+            IEnumerable<AlmStore<A_AAlarm>> _actAlarms = null;
+            if (!_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms)) {
+                //临界锁,防止多个请求同时计算并缓存告警
+                using (_cacheManager.AcquireLock("LOCK:ACTIVE:ALARM", 10)) {
+                    if (!_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms)) {
+                        if (_allAlarms == null) _allAlarms = _aalarmService.GetAlarms();
+                        var _alarms = _allAlarms.FindAll(a => !Common.IsSystemAlarm(a.FsuId));
+                        if (_alarms.Count > 0) {
+                            var _signals = _signalService.GetSimpleSignals(_alarms.Select(a => new Kv<string, string>(a.DeviceId, a.PointId)));
+                            var _points = this.GetALPoints();
+                            var _devices = this.GetAllDevices();
+                            _actAlarms = from alarm in _alarms
+                                         join signal in _signals on new { alarm.DeviceId, alarm.PointId } equals new { signal.DeviceId, signal.PointId }
+                                         join point in _points on alarm.PointId equals point.Id
+                                         join device in _devices on alarm.DeviceId equals device.Id
+                                         select new AlmStore<A_AAlarm> {
+                                             Current = alarm,
+                                             PointName = signal.PointName,
+                                             AlarmName = point.Name,
+                                             DeviceName = device.Name,
+                                             DeviceTypeId = device.Type.Id,
+                                             SubDeviceTypeId = device.SubType.Id,
+                                             SubLogicTypeId = device.SubLogicType.Id,
+                                             RoomName = device.RoomName,
+                                             RoomTypeId = device.RoomTypeId,
+                                             StationName = device.StationName,
+                                             StationTypeId = device.StaTypeId,
+                                             AreaName = device.AreaName,
+                                             SubCompany = device.SubCompany ?? ""
+                                         };
+
+                            _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.Active_Alarms, _actAlarms, GlobalCacheInterval.ActAlarm_Interval);
+                        }
+                    } else {
+                        _actAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.Active_Alarms);
+                    }
                 }
+            } else {
+                _actAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.Active_Alarms);
+            }
+            #endregion
 
-                _cacheManager.Set(GlobalCacheKeys.Active_Alarms, _activeAlarms, GlobalCacheInterval.ActAlarm_Interval);
+            #region SC告警
+            IEnumerable<AlmStore<A_AAlarm>> _scAlarms = null;
+            if (!_cacheManager.IsSet(GlobalCacheKeys.System_SC_Alarms)) {
+                //临界锁,防止多个请求同时计算并缓存告警
+                using (_cacheManager.AcquireLock("LOCK:SYSTEM:SC:ALARM", 10)) {
+                    if (!_cacheManager.IsSet(GlobalCacheKeys.System_SC_Alarms)) {
+                        if (_allAlarms == null) _allAlarms = _aalarmService.GetAlarms();
+                        var _alarms = _allAlarms.FindAll(a => Common.IsSystemSCAlarm(a.FsuId));
+                        if (_alarms.Count > 0) {
+                            var _points = this.GetALPoints();
+                            var _groups = this.GetGroups();
+                            _scAlarms = from alarm in _alarms
+                                        join point in _points on alarm.PointId equals point.Id
+                                        join sc in _groups on alarm.DeviceId equals sc.Id
+                                        select new AlmStore<A_AAlarm> {
+                                            Current = alarm,
+                                            PointName = point.Name,
+                                            AlarmName = point.Name,
+                                            DeviceName = sc.Name,
+                                            DeviceTypeId = SSHSystem.SC.Type.Id,
+                                            SubDeviceTypeId = SSHSystem.SC.SubType.Id,
+                                            SubLogicTypeId = SSHSystem.SC.SubLogicType.Id,
+                                            RoomName = SSHSystem.Room.Name,
+                                            RoomTypeId = SSHSystem.Room.Type.Id,
+                                            StationName = SSHSystem.Station.Name,
+                                            StationTypeId = SSHSystem.Station.Type.Id,
+                                            AreaName = SSHSystem.Area.Name,
+                                            SubCompany = ""
+                                        };
+
+                            _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_SC_Alarms, _scAlarms, GlobalCacheInterval.ActAlarm_Interval);
+                        }
+                    } else {
+                        _scAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_SC_Alarms);
+                    }
+                }
+            } else {
+                _scAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_SC_Alarms);
+            }
+            #endregion
+
+            #region FSU告警
+            IEnumerable<AlmStore<A_AAlarm>> _fsuAlarms = null;
+            if (!_cacheManager.IsSet(GlobalCacheKeys.System_FSU_Alarms)) {
+                //临界锁,防止多个请求同时计算并缓存告警
+                using (_cacheManager.AcquireLock("LOCK:SYSTEM:FSU:ALARM", 10)) {
+                    if (!_cacheManager.IsSet(GlobalCacheKeys.System_FSU_Alarms)) {
+                        if (_allAlarms == null) _allAlarms = _aalarmService.GetAlarms();
+                        var _alarms = _allAlarms.FindAll(a => Common.IsSystemFSUAlarm(a.FsuId));
+                        if (_alarms.Count > 0) {
+                            var _points = this.GetALPoints();
+                            var _fsus = this.GetAllFsus();
+                            _fsuAlarms = from alarm in _alarms
+                                         join point in _points on alarm.PointId equals point.Id
+                                         join fsu in _fsus on alarm.DeviceId equals fsu.Id
+                                         select new AlmStore<A_AAlarm> {
+                                             Current = alarm,
+                                             PointName = point.Name,
+                                             AlarmName = point.Name,
+                                             DeviceName = fsu.Name,
+                                             DeviceTypeId = SSHSystem.FSU.Type.Id,
+                                             SubDeviceTypeId = SSHSystem.FSU.SubType.Id,
+                                             SubLogicTypeId = SSHSystem.FSU.SubLogicType.Id,
+                                             RoomName = fsu.RoomName,
+                                             RoomTypeId = fsu.RoomTypeId,
+                                             StationName = fsu.StationName,
+                                             StationTypeId = fsu.StaTypeId,
+                                             AreaName = fsu.AreaName,
+                                             SubCompany = ""
+                                         };
+
+                            _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_FSU_Alarms, _fsuAlarms, GlobalCacheInterval.ActAlarm_Interval);
+                        }
+                    } else {
+                        _fsuAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_FSU_Alarms);
+                    }
+                }
+            } else {
+                _fsuAlarms = _cacheManager.GetItemsFromList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_FSU_Alarms);
+            }
+            #endregion
+
+            _cachedAllAlarms = new List<AlmStore<A_AAlarm>>();
+            if (_actAlarms != null && _actAlarms.Any()) {
+                _cachedAllAlarms.AddRange(_actAlarms);
+            }
+            if (_scAlarms != null && _scAlarms.Any()) {
+                _cachedAllAlarms.AddRange(_scAlarms);
+            }
+            if (_fsuAlarms != null && _fsuAlarms.Any()) {
+                _cachedAllAlarms.AddRange(_fsuAlarms);
             }
 
-            if (_cacheManager.IsSet(GlobalCacheKeys.System_Alarms)) {
-                _systemAlarms = _cacheManager.Get<IEnumerable<AlmStore<A_AAlarm>>>(GlobalCacheKeys.System_Alarms);
-            } else {
-                if (_allAlarms == null) _allAlarms = _aalarmService.GetAlarms();
-                var sysAlarms = _allAlarms.FindAll(a => a.RoomId == "-1");
-                if (sysAlarms.Count > 0) {
-                    _systemAlarms = from alarm in sysAlarms
-                                    join point in this.GetALPoints() on alarm.PointId equals point.Id
-                                    join gp in this.GetGroups() on alarm.DeviceId equals gp.Id
-                                    select new AlmStore<A_AAlarm> {
-                                        Current = alarm,
-                                        PointName = point.Name,
-                                        DeviceName = gp.Name,
-                                        DeviceTypeId = SSHSystem.SC.Type.Id,
-                                        SubDeviceTypeId = SSHSystem.SC.SubType.Id,
-                                        SubLogicTypeId = SSHSystem.SC.SubLogicType.Id,
-                                        RoomName = SSHSystem.Room.Name,
-                                        RoomTypeId = SSHSystem.Room.Type.Id,
-                                        StationName = SSHSystem.Station.Name,
-                                        StationTypeId = SSHSystem.Station.Type.Id,
-                                        AreaName = SSHSystem.Area.Name,
-                                        AreaFullName = SSHSystem.Area.Name
-                                    };
-                }
-
-                _cacheManager.Set(GlobalCacheKeys.System_Alarms, _systemAlarms, GlobalCacheInterval.ActAlarm_Interval);
-            }
-
-            if (_activeAlarms == null) _activeAlarms = new List<AlmStore<A_AAlarm>>();
-            if (_systemAlarms == null) _systemAlarms = new List<AlmStore<A_AAlarm>>();
-            return _cachedAllAlarms = _activeAlarms.Concat(_systemAlarms).OrderByDescending(a => a.Current.AlarmTime).ToList();
+            return _cachedAllAlarms = _cachedAllAlarms.OrderByDescending(a => a.Current.AlarmTime).ToList();
         }
 
         public List<AlmStore<A_AAlarm>> AlarmsToStore(string id, List<A_AAlarm> alarms) {
             if (alarms == null || alarms.Count == 0)
                 return new List<AlmStore<A_AAlarm>>();
 
+            var _signals = _signalService.GetSimpleSignals(alarms.Select(a => new Kv<string, string>(a.DeviceId, a.PointId)));
+            var _points = this.GetALPoints();
+            var _devices = this.GetDevices(id);
             return (from alarm in alarms
-                    join point in this.GetALPoints() on alarm.PointId equals point.Id
-                    join device in this.GetDevices(id) on alarm.DeviceId equals device.Id
-                    join room in this.GetRooms(id) on device.RoomId equals room.Id
-                    join station in this.GetStations(id) on room.StationId equals station.Id
-                    join area in this.GetAreas(id) on station.AreaId equals area.Current.Id
+                    join signal in _signals on new { alarm.DeviceId, alarm.PointId } equals new { signal.DeviceId, signal.PointId }
+                    join point in _points on alarm.PointId equals point.Id
+                    join device in _devices on alarm.DeviceId equals device.Id
                     orderby alarm.AlarmTime descending
                     select new AlmStore<A_AAlarm> {
                         Current = alarm,
-                        PointName = point.Name,
+                        PointName = signal.PointName,
+                        AlarmName = point.Name,
                         DeviceName = device.Name,
                         DeviceTypeId = device.Type.Id,
                         SubDeviceTypeId = device.SubType.Id,
                         SubLogicTypeId = device.SubLogicType.Id,
-                        RoomName = room.Name,
-                        RoomTypeId = room.Type.Id,
-                        StationName = station.Name,
-                        StationTypeId = station.Type.Id,
-                        AreaName = area.Current.Name,
-                        AreaFullName = area.ToString()
+                        RoomName = device.RoomName,
+                        RoomTypeId = device.RoomTypeId,
+                        StationName = device.StationName,
+                        StationTypeId = device.StaTypeId,
+                        AreaName = device.Name
                     }).ToList();
         }
 
@@ -574,12 +657,13 @@ namespace iPem.Site.Infrastructure {
             if(alarms == null || alarms.Count == 0) 
                 return new List<AlmStore<A_HAlarm>>();
 
+            var _signals = _signalService.GetSimpleSignals(alarms.Select(a => new Kv<string, string>(a.DeviceId, a.PointId)));
+            var _points = this.GetALPoints();
+            var _devices = this.GetDevices(id);
             return (from alarm in alarms
-                    join point in this.GetALPoints() on alarm.PointId equals point.Id
-                    join device in this.GetDevices(id) on alarm.DeviceId equals device.Id
-                    join room in this.GetRooms(id) on device.RoomId equals room.Id
-                    join station in this.GetStations(id) on room.StationId equals station.Id
-                    join area in this.GetAreas(id) on station.AreaId equals area.Current.Id
+                    join signal in _signals on new { alarm.DeviceId, alarm.PointId } equals new { signal.DeviceId, signal.PointId }
+                    join point in _points on alarm.PointId equals point.Id
+                    join device in _devices on alarm.DeviceId equals device.Id
                     orderby alarm.StartTime descending
                     select new AlmStore<A_HAlarm> {
                         Current = alarm,
@@ -588,12 +672,11 @@ namespace iPem.Site.Infrastructure {
                         DeviceTypeId = device.Type.Id,
                         SubDeviceTypeId = device.SubType.Id,
                         SubLogicTypeId = device.SubLogicType.Id,
-                        RoomName = room.Name,
-                        RoomTypeId = room.Type.Id,
-                        StationName = station.Name,
-                        StationTypeId = station.Type.Id,
-                        AreaName = area.Current.Name,
-                        AreaFullName = area.ToString()
+                        RoomName = device.RoomName,
+                        RoomTypeId = device.RoomTypeId,
+                        StationName = device.StationName,
+                        StationTypeId = device.StaTypeId,
+                        AreaName = device.Name
                     }).ToList();
         }
 

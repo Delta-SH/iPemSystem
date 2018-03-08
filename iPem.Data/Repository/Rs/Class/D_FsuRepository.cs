@@ -45,6 +45,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
@@ -78,6 +79,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
@@ -109,6 +111,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.StaTypeId = SqlTypeConverter.DBNullStringHandler(rdr["StaTypeId"]);
                     entity.RoomId = SqlTypeConverter.DBNullStringHandler(rdr["RoomId"]);
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
+                    entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
 
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);

@@ -23,15 +23,16 @@ Ext.define("Ext.ux.PointMultiCombo", {
         me.callParent(arguments);
         me.store.load();
     },
-    bind: function (device, AI, AO, DI, DO) {
+    bind: function (device, _ai, _ao, _di, _do, _al) {
         var me = this;
         if (Ext.isEmpty(device)) return false;
 
         me.store.proxy.extraParams.device = device;
-        me.store.proxy.extraParams.AI = AI;
-        me.store.proxy.extraParams.AO = AO;
-        me.store.proxy.extraParams.DI = DI;
-        me.store.proxy.extraParams.DO = DO;
+        me.store.proxy.extraParams._ai = _ai || false;
+        me.store.proxy.extraParams._ao = _ao || false;
+        me.store.proxy.extraParams._di = _di || false;
+        me.store.proxy.extraParams._do = _do || false;
+        me.store.proxy.extraParams._al = _al || false;
         me.store.load();
     }
 });
@@ -61,15 +62,16 @@ Ext.define("Ext.ux.PointComboBox", {
             }
         });
     },
-    bind: function (device, AI, AO, DI, DO) {
+    bind: function (device, _ai, _ao, _di, _do, _al) {
         var me = this;
         if (Ext.isEmpty(device)) return false;
 
         me.store.proxy.extraParams.device = device;
-        me.store.proxy.extraParams.AI = AI;
-        me.store.proxy.extraParams.AO = AO;
-        me.store.proxy.extraParams.DI = DI;
-        me.store.proxy.extraParams.DO = DO;
+        me.store.proxy.extraParams._ai = _ai || false;
+        me.store.proxy.extraParams._ao = _ao || false;
+        me.store.proxy.extraParams._di = _di || false;
+        me.store.proxy.extraParams._do = _do || false;
+        me.store.proxy.extraParams._al = _al || false;
         me.store.load({
             scope: me,
             callback: function (records, operation, success) {

@@ -8,8 +8,6 @@ namespace iPem.Site.Models {
     public class PointStore<T> where T : class {
         public T Current { get; set; }
 
-        public EnmPoint Type { get; set; }
-
         public string DeviceId { get; set; }
 
         public string DeviceCode { get; set; }

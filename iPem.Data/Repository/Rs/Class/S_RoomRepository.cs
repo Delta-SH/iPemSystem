@@ -61,6 +61,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -103,6 +104,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
@@ -143,6 +145,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.AirSubMain = SqlTypeConverter.DBNullStringHandler(rdr["AirSubMain"]);
                     entity.Contact = SqlTypeConverter.DBNullStringHandler(rdr["Contact"]);
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);
+                    entity.AreaName = SqlTypeConverter.DBNullStringHandler(rdr["AreaName"]);
                     entity.StationId = SqlTypeConverter.DBNullStringHandler(rdr["StationId"]);
                     entity.StationName = SqlTypeConverter.DBNullStringHandler(rdr["StationName"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);

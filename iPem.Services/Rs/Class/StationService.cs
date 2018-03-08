@@ -38,32 +38,20 @@ namespace iPem.Services.Rs {
         }
 
         public List<S_Station> GetStationsInArea(string id) {
-            var key = GlobalCacheKeys.Rs_StationsRepository;
-            if (!_cacheManager.IsSet(key)) {
-                return this.GetStations().FindAll(c => c.AreaId == id);
-            }
-
-            if (_cacheManager.IsHashSet(key, id)) {
-                return _cacheManager.GetFromHash<List<S_Station>>(key, id);
-            } else {
-                var data = _repository.GetStationsInArea(id);
-                _cacheManager.SetInHash(key, id, data);
-                return data;
-            }
+            return _repository.GetStationsInArea(id);
         }
 
-        public List<S_Station> GetStationsWithPoints(IList<string> points) {
+        public List<S_Station> GetStationsWithPoints(IEnumerable<string> points) {
             return _repository.GetStationsWithPoints(points);
         }
 
         public List<S_Station> GetStations() {
             var key = GlobalCacheKeys.Rs_StationsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetAllFromHash<List<S_Station>>(key).SelectMany(d => d).ToList();
+                return _cacheManager.GetItemsFromList<S_Station>(key).ToList();
             } else {
                 var data = _repository.GetStations();
-                var caches = data.GroupBy(d => d.AreaId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
-                _cacheManager.SetRangeInHash(key, caches);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

@@ -9,11 +9,6 @@ namespace iPem.Data.Repository.Rs {
     /// </summary>
     public partial interface IP_PointRepository {
         /// <summary>
-        /// 获得指定设备下的信号
-        /// </summary>
-        List<P_Point> GetPointsInDevice(string id);
-
-        /// <summary>
         /// 获得指定模版下的信号
         /// </summary>
         List<P_Point> GetPointsInProtocol(string id);

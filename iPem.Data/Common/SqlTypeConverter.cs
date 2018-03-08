@@ -261,5 +261,12 @@ namespace iPem.Data.Common {
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmMaskType), v) ? (EnmMaskType)v : EnmMaskType.Point;
         }
+
+        public static EnmProfile DBNullProfileHandler(object val) {
+            if (val == DBNull.Value) { return EnmProfile.Follow; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmProfile), v) ? (EnmProfile)v : EnmProfile.Follow;
+        }
     }
 }

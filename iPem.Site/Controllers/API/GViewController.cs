@@ -28,6 +28,7 @@ namespace iPem.Site.Controllers {
         private readonly IFsuService _fsuService;
         private readonly IDeviceService _deviceService;
         private readonly IPointService _pointService;
+        private readonly ISignalService _signalService;
         private readonly IAMeasureService _ameasureService;
         private readonly IGImageService _gimageService;
         private readonly IGPageService _gpageService;
@@ -46,6 +47,7 @@ namespace iPem.Site.Controllers {
             IFsuService fsuService,
             IDeviceService deviceService,
             IPointService pointService,
+            ISignalService signalService,
             IAMeasureService ameasureService,
             IGImageService gimageService,
             IGPageService gpageService,
@@ -58,6 +60,7 @@ namespace iPem.Site.Controllers {
             this._fsuService = fsuService;
             this._deviceService = deviceService;
             this._pointService = pointService;
+            this._signalService = signalService;
             this._ameasureService = ameasureService;
             this._gimageService = gimageService;
             this._gpageService = gpageService;
@@ -490,11 +493,11 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if ((int)EnmAPISCObj.Device == type) {
-                    var points = _pointService.GetPointsInDevice(id);
-                    foreach (var child in points) {
+                    var signals = _signalService.GetSimpleSignalsInDevice(id);
+                    foreach (var child in signals) {
                         data.Add(new API_GV_SCObj {
-                            ID = Common.JoinKeys(id, child.Id),
-                            Name = child.Name,
+                            ID = Common.JoinKeys(id, child.PointId),
+                            Name = child.PointName,
                             Type = (int)EnmAPISCObj.Signal
                         });
                     }
@@ -737,8 +740,9 @@ namespace iPem.Site.Controllers {
                 if (curGroup == null) throw new iPemException("未找到SC采集组");
                 if (!curGroup.Status) throw new iPemException("SC通信中断");
 
-                var curPoint = _pointService.GetPointsInDevice(device).Find(p => p.Id.Equals(point));
-                if (curPoint == null) throw new iPemException("未找到信号");
+                var signals = _signalService.GetSimpleSignals(new Kv<string, string>[] { new Kv<string, string>(device, point) });
+                if (signals.Count == 0) throw new iPemException("未找到信号");
+                var curPoint = signals.First();
 
                 var package = new SetPointPackage() {
                     FsuId = curFsu.Code,
@@ -749,7 +753,7 @@ namespace iPem.Site.Controllers {
                                 new TSemaphore() {
                                     Id = curPoint.Code,
                                     SignalNumber = curPoint.Number,
-                                    Type = (EnmBIPoint)((int)curPoint.Type),
+                                    Type = (EnmBIPoint)((int)curPoint.PointType),
                                     MeasuredVal = "NULL",
                                     SetupVal = value.ToString(),
                                     Status = EnmBIState.NOALARM,

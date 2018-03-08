@@ -366,4 +366,26 @@
         AlarmConnection,
         AlarmReversal
     }
+
+    /// <summary>
+    /// 用户自定义参数类型
+    /// </summary>
+    public enum EnmProfile {
+        /// <summary>
+        /// 用户关注信号
+        /// </summary>
+        Follow,
+        /// <summary>
+        /// 综合测值模版
+        /// </summary>
+        Matrix,
+        /// <summary>
+        /// 告警筛选条件
+        /// </summary>
+        Condition,
+        /// <summary>
+        /// 告警语音播报
+        /// </summary>
+        Speech
+    }
 }

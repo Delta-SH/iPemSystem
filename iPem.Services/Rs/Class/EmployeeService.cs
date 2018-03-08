@@ -42,28 +42,16 @@ namespace iPem.Services.Rs {
         }
 
         public List<U_Employee> GetEmployeesByDept(string id) {
-            var key = GlobalCacheKeys.Rs_EmployeesRepository;
-            if (!_cacheManager.IsSet(key)) {
-                return this.GetEmployees().FindAll(c => c.DeptId == id);
-            }
-
-            if (_cacheManager.IsHashSet(key, id)) {
-                return _cacheManager.GetFromHash<List<U_Employee>>(key, id);
-            } else {
-                var data = _repository.GetEmployeesByDept(id);
-                _cacheManager.SetInHash(key, id, data);
-                return data;
-            }
+            return _repository.GetEmployeesByDept(id);
         }
 
         public List<U_Employee> GetEmployees() {
             var key = GlobalCacheKeys.Rs_EmployeesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetAllFromHash<List<U_Employee>>(key).SelectMany(d => d).ToList();
+                return _cacheManager.GetItemsFromList<U_Employee>(key).ToList();
             } else {
                 var data = _repository.GetEmployees();
-                var caches = data.GroupBy(d => d.DeptId).Select(d => new KeyValuePair<string, object>(d.Key, d.ToList()));
-                _cacheManager.SetRangeInHash(key, caches);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }
@@ -83,10 +71,10 @@ namespace iPem.Services.Rs {
         public List<U_OutEmployee> GetOutEmployees() {
             var key = GlobalCacheKeys.Rs_OutEmployeesRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.Get<List<U_OutEmployee>>(key);
+                return _cacheManager.GetItemsFromList<U_OutEmployee>(key).ToList();
             } else {
                 var data = _repository.GetOutEmployees();
-                _cacheManager.Set(key, data);
+                _cacheManager.AddItemsToList(key, data);
                 return data;
             }
         }

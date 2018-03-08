@@ -239,6 +239,7 @@
     <Compile Include="Models\DetailModel400210.cs" />
     <Compile Include="Models\DetailModel400211.cs" />
     <Compile Include="Models\DiffModel.cs" />
+    <Compile Include="Models\FollowPoint.cs" />
     <Compile Include="Models\FsuAlmPointModel.cs" />
     <Compile Include="Models\FsuPointModel.cs" />
     <Compile Include="Models\GridColumn.cs" />
@@ -344,10 +345,8 @@
     <Compile Include="Models\SSH\SSHRoom.cs" />
     <Compile Include="Models\SSH\SSHStation.cs" />
     <Compile Include="Models\PointStore.cs" />
-    <Compile Include="Models\iProfile.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RtValues.cs" />
-    <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\ShiDianModel.cs" />
     <Compile Include="Models\SSH\SSHSystem.cs" />
     <Compile Include="Models\ThresholdModel.cs" />
@@ -519,6 +518,7 @@
     <Content Include="Resources\database\update\P2S_V1_002.sql" />
     <Content Include="Resources\database\update\P2S_V1_003.sql" />
     <Content Include="Resources\database\update\P2S_V1_004.sql" />
+    <Content Include="Resources\database\update\P2S_V1_005.sql" />
     <Content Include="Resources\install\create\create_cs_data.sql" />
     <Content Include="Resources\install\create\create_cs_database.sql" />
     <Content Include="Resources\install\create\create_sc_data.sql" />

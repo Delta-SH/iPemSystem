@@ -9,6 +9,8 @@ namespace iPem.Site.Models {
 
         public string PointName { get; set; }
 
+        public string AlarmName { get; set; }
+
         public string DeviceName { get; set; }
 
         public string DeviceTypeId { get; set; }

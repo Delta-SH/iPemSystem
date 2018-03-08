@@ -22,7 +22,7 @@ namespace iPem.Services.Rs {
         /// 获得包含指定信号的站点
         /// 将CityElectNumber（市电路数）用来存储该站点下指定信号的数量
         /// </summary>
-        List<S_Station> GetStationsWithPoints(IList<string> points);
+        List<S_Station> GetStationsWithPoints(IEnumerable<string> points);
 
         /// <summary>
         /// 获得所有的站点

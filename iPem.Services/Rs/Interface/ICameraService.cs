@@ -16,7 +16,7 @@ namespace iPem.Services.Rs {
         /// <summary>
         /// 获得所有的摄像机信息
         /// </summary>
-        List<V_Camera> GetAllCameras();
+        List<V_Camera> GetCameras();
 
         /// <summary>
         /// 获得所有的摄像机信息

@@ -1,4 +1,5 @@
-﻿using iPem.Core.Domain.Rs;
+﻿using iPem.Core;
+using iPem.Core.Domain.Rs;
 using System;
 using System.Collections.Generic;
 
@@ -66,5 +67,20 @@ namespace iPem.Data.Repository.Rs {
         /// 获得设置了翻转告警的信号
         /// </summary>
         List<D_Signal> GetAlarmReversals();
+
+        /// <summary>
+        /// 获得简单信号对象
+        /// </summary>
+        List<D_SimpleSignal> GetSimpleSignals(IEnumerable<Kv<string, string>> pairs);
+
+        /// <summary>
+        /// 获得指定设备的简单信号对象
+        /// </summary>
+        List<D_SimpleSignal> GetSimpleSignalsInDevice(string device);
+
+        /// <summary>
+        /// 获得指定设备的简单信号对象
+        /// </summary>
+        List<D_SimpleSignal> GetSimpleSignalsInDevices(IEnumerable<string> devices);
     }
 }

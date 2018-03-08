@@ -7,11 +7,11 @@ using System.Web.Script.Serialization;
 namespace iPem.Site.Models {
     [Serializable]
     public class HisAlmModel {
+        [ExcelIgnore]
+        public string id { get; set; }
+
         [ExcelDisplayName("序号")]
         public int index { get; set; }
-
-        [ExcelDisplayName("告警管理编号")]
-        public string nmalarmid { get; set; }
 
         [ExcelColor]
         [ExcelDisplayName("告警级别")]
@@ -23,20 +23,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("结束时间")]
         public string endtime { get; set; }
 
+        [ExcelDisplayName("告警名称")]
+        public string name { get; set; }
+
+        [ExcelDisplayName("管理编号")]
+        public string nmalarmid { get; set; }
+
         [ExcelDisplayName("告警历时")]
         public string interval { get; set; }
-
-        [ExcelDisplayName("告警描述")]
-        public string comment { get; set; }
-
-        [ExcelDisplayName("开始值")]
-        public string startvalue { get; set; }
-
-        [ExcelDisplayName("结束值")]
-        public string endvalue { get; set; }
-
-        [ExcelDisplayName("维护厂家")]
-        public string supporter { get; set; }
 
         [ExcelDisplayName("信号名称")]
         public string point { get; set; }
@@ -53,6 +47,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 
+        [ExcelDisplayName("维护厂家")]
+        public string supporter { get; set; }
+
         [ExcelDisplayName("确认状态")]
         public string confirmed { get; set; }
 
@@ -67,9 +64,6 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("告警翻转")]
         public int reversalcount { get; set; }
-
-        [ExcelIgnore]
-        public string id { get; set; }
 
         [ExcelIgnore]
         public string areaid { get; set; }

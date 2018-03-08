@@ -40,11 +40,6 @@ namespace iPem.Services.Cs {
         List<A_AAlarm> GetAlarms();
 
         /// <summary>
-        /// 获得所有的告警
-        /// </summary>
-        List<A_AAlarm> GetSystemAlarms();
-
-        /// <summary>
         /// 获取指定时间段内告警(包括次告警、关联告警、屏蔽告警等)
         /// </summary>
         List<A_AAlarm> GetAllAlarmsInSpan(DateTime start, DateTime end);

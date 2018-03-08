@@ -629,5 +629,17 @@ namespace iPem.Site.Infrastructure {
             }
             return false;
         }
+
+        public static bool IsSystemAlarm(string flag) {
+            return IsSystemSCAlarm(flag) || IsSystemFSUAlarm(flag);
+        }
+
+        public static bool IsSystemSCAlarm(string flag) {
+            return "-1".Equals(flag);
+        }
+
+        public static bool IsSystemFSUAlarm(string flag) {
+            return "-2".Equals(flag);
+        }
     }
 }
