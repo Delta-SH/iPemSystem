@@ -20,7 +20,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static byte[] CreateCaptcha(string code, int width = 100, int height = 30) {
-            if(string.IsNullOrWhiteSpace(code))
+            if (string.IsNullOrWhiteSpace(code))
                 throw new ArgumentNullException("code");
 
             Graphics g = null;
@@ -41,7 +41,7 @@ namespace iPem.Site.Infrastructure {
                     fontSize--;
                     font = new Font("Arial", fontSize, FontStyle.Bold);
                     size = g.MeasureString(code, font);
-                } while(size.Width > rect.Width);
+                } while (size.Width > rect.Width);
 
                 var format = new StringFormat();
                 format.Alignment = StringAlignment.Center;
@@ -68,7 +68,7 @@ namespace iPem.Site.Infrastructure {
 
                 var m = Math.Max(rect.Width, rect.Height);
                 var ct = (int)(rect.Width * rect.Height / 8F);
-                for(var i = 0; i < ct; i++) {
+                for (var i = 0; i < ct; i++) {
                     var x = random.Next(rect.Width);
                     var y = random.Next(rect.Height);
                     var w = random.Next(m / 30);
@@ -77,7 +77,7 @@ namespace iPem.Site.Infrastructure {
                 }
 
                 var bzct = random.Next(0, 3);
-                for(int i = 0; i < bzct; i++) {
+                for (int i = 0; i < bzct; i++) {
                     var p1 = new PointF(random.Next(rect.Width / 8), random.Next(rect.Height));
                     var p2 = new PointF(random.Next(rect.Width / 8), random.Next(rect.Height / 4));
                     var p3 = new PointF(random.Next(rect.Width - rect.Width / 2, rect.Width), random.Next(rect.Height));
@@ -89,9 +89,9 @@ namespace iPem.Site.Infrastructure {
                 image.Save(ms, ImageFormat.Png);
                 return ms.ToArray();
             } finally {
-                if(font != null) font.Dispose();
-                if(hatchBrush != null) hatchBrush.Dispose();
-                if(g != null) g.Dispose();
+                if (font != null) font.Dispose();
+                if (hatchBrush != null) hatchBrush.Dispose();
+                if (g != null) g.Dispose();
             }
         }
 
@@ -100,7 +100,7 @@ namespace iPem.Site.Infrastructure {
 
             var code = "";
             var index = 0;
-            for(var i = 0; i < length; i++) {
+            for (var i = 0; i < length; i++) {
                 index = CommonHelper.GenerateRandomInteger(0, chars.Length - 1);
                 code += chars[index].ToString();
             }
@@ -108,11 +108,11 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static byte[] MergeSvgXml(string[] svgs) {
-            if(svgs == null || svgs.Length == 0)
+            if (svgs == null || svgs.Length == 0)
                 return null;
 
             var images = new Bitmap[svgs.Length];
-            for(var i = 0; i < svgs.Length; i++) {
+            for (var i = 0; i < svgs.Length; i++) {
                 var xml = new XmlDocument();
                 xml.XmlResolver = null;
                 xml.LoadXml(HttpUtility.HtmlDecode(svgs[i]));
@@ -122,24 +122,24 @@ namespace iPem.Site.Infrastructure {
             }
 
             int width = 0, height = 0;
-            foreach(var image in images) {
+            foreach (var image in images) {
                 width = width + image.Width;
-                if(image.Height > height)
+                if (image.Height > height)
                     height = image.Height;
             }
 
-            using(var result = new Bitmap(width, height)) {
-                using(var canvas = Graphics.FromImage(result)) {
+            using (var result = new Bitmap(width, height)) {
+                using (var canvas = Graphics.FromImage(result)) {
                     var start = 0;
                     canvas.Clear(Color.White);
-                    for(var i = 0; i < images.Length; i++) {
+                    for (var i = 0; i < images.Length; i++) {
                         canvas.DrawImage(images[i], new Rectangle(start, 0, images[i].Width, images[i].Height));
                         start += images[i].Width;
                     }
                     canvas.Save();
                 }
 
-                using(var ms = new MemoryStream()) {
+                using (var ms = new MemoryStream()) {
                     result.Save(ms, ImageFormat.Png);
                     return ms.ToArray();
                 }
@@ -147,19 +147,19 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetCachedKey(string pattern, IWorkContext workContext) {
-            if(!workContext.IsAuthenticated())throw new iPemException("Unauthorized");
+            if (!workContext.IsAuthenticated()) throw new iPemException("Unauthorized");
             return string.Format(pattern, workContext.Identifier());
         }
 
         public static string GetSexDisplay(EnmSex sex) {
-            if(sex == EnmSex.Female)
+            if (sex == EnmSex.Female)
                 return "女";
             else
                 return "男";
         }
 
         public static string GetDictionaryDisplay(EnmDictionary dic) {
-            switch(dic) {
+            switch (dic) {
                 case EnmDictionary.Ws:
                     return "数据通信";
                 case EnmDictionary.Ts:
@@ -174,7 +174,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetEventLevelDisplay(EnmEventLevel level) {
-            switch(level) {
+            switch (level) {
                 case EnmEventLevel.Debug:
                     return "调试信息";
                 case EnmEventLevel.Information:
@@ -191,7 +191,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetEventTypeDisplay(EnmEventType type) {
-            switch(type) {
+            switch (type) {
                 case EnmEventType.Login:
                     return "登录系统";
                 case EnmEventType.Logout:
@@ -208,7 +208,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetPermissionDisplay(EnmPermission op) {
-            switch(op) {
+            switch (op) {
                 case EnmPermission.Control:
                     return "信号遥控";
                 case EnmPermission.Adjust:
@@ -217,13 +217,15 @@ namespace iPem.Site.Infrastructure {
                     return "告警确认";
                 case EnmPermission.Threshold:
                     return "门限设置";
+                case EnmPermission.Check:
+                    return "预约审核";
                 default:
                     return "其他";
             }
         }
 
         public static string GetPointTypeDisplay(EnmPoint type) {
-            switch(type) {
+            switch (type) {
                 case EnmPoint.AI:
                     return "遥测";
                 case EnmPoint.AO:
@@ -240,7 +242,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetPointStatusDisplay(EnmState status) {
-            switch(status) {
+            switch (status) {
                 case EnmState.Normal:
                     return "正常数据";
                 case EnmState.Level1:
@@ -280,7 +282,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetAlarmDisplay(EnmAlarm level) {
-            switch(level) {
+            switch (level) {
                 case EnmAlarm.Level0:
                     return "正常";
                 case EnmAlarm.Level1:
@@ -312,7 +314,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetConfirmDisplay(EnmConfirm status) {
-            switch(status) {
+            switch (status) {
                 case EnmConfirm.Confirmed:
                     return "已确认";
                 case EnmConfirm.Unconfirmed:
@@ -357,16 +359,16 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetValueDisplay(EnmPoint type, string value, string unit) {
-            switch(type) {
+            switch (type) {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
                     var result = string.Empty;
                     var units = (unit ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach(var u in units) {
+                    foreach (var u in units) {
                         var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
-                        if(vs.Length != 2) continue;
+                        if (vs.Length != 2) continue;
 
-                        if(vs[0].Trim() == value) {
+                        if (vs[0].Trim() == value) {
                             result = vs[1].Trim();
                             break;
                         }
@@ -381,16 +383,16 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static string GetUnitDisplay(EnmPoint type, string value, string unit) {
-            switch(type) {
+            switch (type) {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
                     var result = string.Empty;
                     var units = (unit ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach(var u in units) {
+                    foreach (var u in units) {
                         var vs = u.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
-                        if(vs.Length != 2) continue;
+                        if (vs.Length != 2) continue;
 
-                        if(vs[0].Trim() == value) {
+                        if (vs[0].Trim() == value) {
                             result = vs[1].Trim();
                             break;
                         }
@@ -404,7 +406,7 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
-        public static List<Kv<int,string>> GetDIStatus(string status) {
+        public static List<Kv<int, string>> GetDIStatus(string status) {
             var result = new List<Kv<int, string>>();
             var units = (status ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var unit in units) {
@@ -533,7 +535,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static Color GetAlarmColor(EnmAlarm level) {
-            switch(level) {
+            switch (level) {
                 case EnmAlarm.Level1:
                     return Color.Red;
                 case EnmAlarm.Level2:
@@ -548,7 +550,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public static Color GetPointColor(EnmState status) {
-            switch(status) {
+            switch (status) {
                 case EnmState.Normal:
                     return Color.LimeGreen;
                 case EnmState.Invalid:
@@ -610,17 +612,17 @@ namespace iPem.Site.Infrastructure {
         public static bool SetAllowUnsafeHeaderParsing() {
             //Get the assembly that contains the internal class
             var aNetAssembly = Assembly.GetAssembly(typeof(System.Net.Configuration.SettingsSection));
-            if(aNetAssembly != null) {
+            if (aNetAssembly != null) {
                 //Use the assembly in order to get the internal type for the internal class
                 var aSettingsType = aNetAssembly.GetType("System.Net.Configuration.SettingsSectionInternal");
-                if(aSettingsType != null) {
+                if (aSettingsType != null) {
                     //Use the internal static property to get an instance of the internal settings class.
                     //If the static instance isn't created allready the property will create it for us.
                     var anInstance = aSettingsType.InvokeMember("Section", BindingFlags.Static | BindingFlags.GetProperty | BindingFlags.NonPublic, null, null, new object[] { });
-                    if(anInstance != null) {
+                    if (anInstance != null) {
                         //Locate the private bool field that tells the framework is unsafe header parsing should be allowed or not
                         var aUseUnsafeHeaderParsing = aSettingsType.GetField("useUnsafeHeaderParsing", BindingFlags.NonPublic | BindingFlags.Instance);
-                        if(aUseUnsafeHeaderParsing != null) {
+                        if (aUseUnsafeHeaderParsing != null) {
                             aUseUnsafeHeaderParsing.SetValue(anInstance, true);
                             return true;
                         }
@@ -640,6 +642,17 @@ namespace iPem.Site.Infrastructure {
 
         public static bool IsSystemFSUAlarm(string flag) {
             return "-2".Equals(flag);
+        }
+
+        public static string GetResStatusDisplay(EnmResult status) {
+            switch (status) {
+                case EnmResult.Failure:
+                    return "未通过";
+                case EnmResult.Success:
+                    return "已通过";
+                default:
+                    return "未审核";
+            }
         }
     }
 }

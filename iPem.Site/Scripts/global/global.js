@@ -241,6 +241,7 @@ window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
 window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
 window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
 window.$$iPems.Period = { Year: 0, Month: 1, Week: 2, Day: 3 };
+window.$$iPems.Result = { Undefine: -1, Failure: 0, Success: 1 };
 
 window.$$iPems.GetStateCls = function (value) {
     switch (value) {

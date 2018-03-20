@@ -19,7 +19,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_AAlarm](
-	[Id] [varchar](200) NOT NULL,
+	[Id] [varchar](100) NOT NULL,
 	[AreaId] [varchar](100) NOT NULL,
 	[StationId] [varchar](100) NOT NULL,
 	[RoomId] [varchar](100) NOT NULL,
@@ -37,10 +37,10 @@ CREATE TABLE [dbo].[A_AAlarm](
 	[Confirmer] [varchar](100) NULL,
 	[ConfirmedTime] [datetime] NULL,
 	[ReservationId] [varchar](100) NULL,
-	[PrimaryId] [varchar](200) NULL,
-	[RelatedId] [varchar](200) NULL,
-	[FilterId] [varchar](200) NULL,
-	[ReversalId] [varchar](200) NULL,
+	[PrimaryId] [varchar](100) NULL,
+	[RelatedId] [varchar](100) NULL,
+	[FilterId] [varchar](100) NULL,
+	[ReversalId] [varchar](100) NULL,
 	[ReversalCount] [int] NOT NULL,
 	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
@@ -68,6 +68,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_FAlarm](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[FsuId] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
@@ -83,9 +84,7 @@ CREATE TABLE [dbo].[A_FAlarm](
 	[AlarmRemark] [varchar](100) NULL,
  CONSTRAINT [PK_A_FAlarm] PRIMARY KEY CLUSTERED 
 (
-	[FsuId] ASC,
-	[SerialNo] ASC,
-	[AlarmFlag] ASC
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -107,7 +106,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_HAlarm](
-	[Id] [varchar](200) NOT NULL,
+	[Id] [varchar](100) NOT NULL,
 	[AreaId] [varchar](100) NOT NULL,
 	[StationId] [varchar](100) NOT NULL,
 	[RoomId] [varchar](100) NOT NULL,
@@ -127,10 +126,10 @@ CREATE TABLE [dbo].[A_HAlarm](
 	[Confirmer] [varchar](100) NULL,
 	[ConfirmedTime] [datetime] NULL,
 	[ReservationId] [varchar](100) NULL,
-	[PrimaryId] [varchar](200) NULL,
-	[RelatedId] [varchar](200) NULL,
-	[FilterId] [varchar](200) NULL,
-	[ReversalId] [varchar](200) NULL,
+	[PrimaryId] [varchar](100) NULL,
+	[RelatedId] [varchar](100) NULL,
+	[FilterId] [varchar](100) NULL,
+	[ReversalId] [varchar](100) NULL,
 	[ReversalCount] [int] NOT NULL,
 	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
@@ -158,6 +157,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_IAlarm](
+	[Id] [bigint] NOT NULL,
 	[AreaId] [varchar](100) NOT NULL,
 	[StationId] [varchar](100) NOT NULL,
 	[RoomId] [varchar](100) NOT NULL,
@@ -179,17 +179,68 @@ CREATE TABLE [dbo].[A_IAlarm](
 	[ReservationName] [varchar](200) NULL,
 	[ReservationStart] [datetime] NULL,
 	[ReservationEnd] [datetime] NULL,
-	[PrimaryId] [varchar](200) NULL,
-	[RelatedId] [varchar](200) NULL,
-	[FilterId] [varchar](200) NULL,
-	[ReversalId] [varchar](200) NULL,
+	[PrimaryId] [varchar](100) NULL,
+	[RelatedId] [varchar](100) NULL,
+	[FilterId] [varchar](100) NULL,
+	[ReversalId] [varchar](100) NULL,
 	[Masked] [bit] NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_A_IAlarm] PRIMARY KEY CLUSTERED 
 (
-	[FsuId] ASC,
-	[SerialNo] ASC,
-	[AlarmFlag] ASC
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[A_MAlarm]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_MAlarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_MAlarm]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[A_MAlarm](
+	[Id] [bigint] NOT NULL,
+	[AreaId] [varchar](100) NOT NULL,
+	[AreaName] [varchar](200) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[StationName] [varchar](200) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[RoomName] [varchar](200) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[DeviceName] [varchar](200) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[PointName] [varchar](200) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[NMAlarmId] [varchar](100) NOT NULL,
+	[AlarmTime] [datetime] NOT NULL,
+	[AlarmLevel] [int] NOT NULL,
+	[AlarmFlag] [int] NOT NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmValue] [float] NULL,
+	[AlarmRemark] [varchar](100) NULL,
+	[Confirmed] [int] NULL,
+	[Confirmer] [varchar](100) NULL,
+	[ConfirmedTime] [datetime] NULL,
+	[ReservationId] [varchar](100) NULL,
+	[PrimaryId] [varchar](100) NULL,
+	[RelatedId] [varchar](100) NULL,
+	[FilterId] [varchar](100) NULL,
+	[ReversalId] [varchar](100) NULL,
+	[Masked] [bit] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_A_MAlarm] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -265,6 +316,59 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[A_SAlarm]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_SAlarm]') AND type in (N'U'))
+DROP TABLE [dbo].[A_SAlarm]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[A_SAlarm](
+	[Id] [bigint] NOT NULL,
+	[AreaId] [varchar](100) NOT NULL,
+	[AreaName] [varchar](200) NOT NULL,
+	[StationId] [varchar](100) NOT NULL,
+	[StationName] [varchar](200) NOT NULL,
+	[RoomId] [varchar](100) NOT NULL,
+	[RoomName] [varchar](200) NOT NULL,
+	[DeviceId] [varchar](100) NOT NULL,
+	[DeviceName] [varchar](200) NOT NULL,
+	[PointId] [varchar](100) NOT NULL,
+	[PointName] [varchar](200) NOT NULL,
+	[SerialNo] [varchar](100) NOT NULL,
+	[NMAlarmId] [varchar](100) NOT NULL,
+	[AlarmTime] [datetime] NOT NULL,
+	[AlarmLevel] [int] NOT NULL,
+	[AlarmFlag] [int] NOT NULL,
+	[AlarmDesc] [varchar](120) NULL,
+	[AlarmValue] [float] NULL,
+	[AlarmRemark] [varchar](100) NULL,
+	[Confirmed] [int] NULL,
+	[Confirmer] [varchar](100) NULL,
+	[ConfirmedTime] [datetime] NULL,
+	[ReservationId] [varchar](100) NULL,
+	[PrimaryId] [varchar](100) NULL,
+	[RelatedId] [varchar](100) NULL,
+	[FilterId] [varchar](100) NULL,
+	[ReversalId] [varchar](100) NULL,
+	[Masked] [bit] NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_A_SAlarm] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[A_TAlarm]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[A_TAlarm]') AND type in (N'U'))
 DROP TABLE [dbo].[A_TAlarm]
@@ -278,6 +382,7 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [dbo].[A_TAlarm](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
 	[FsuId] [varchar](100) NOT NULL,
 	[DeviceId] [varchar](100) NOT NULL,
 	[PointId] [varchar](100) NOT NULL,
@@ -293,9 +398,7 @@ CREATE TABLE [dbo].[A_TAlarm](
 	[AlarmRemark] [varchar](100) NULL,
  CONSTRAINT [PK_A_TAlarm] PRIMARY KEY CLUSTERED 
 (
-	[FsuId] ASC,
-	[SerialNo] ASC,
-	[AlarmFlag] ASC
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

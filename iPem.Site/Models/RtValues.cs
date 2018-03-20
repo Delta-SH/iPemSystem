@@ -172,5 +172,11 @@ namespace iPem.Site.Models {
         /// 放电时间
         /// </summary>
         public double qtxdchbschglShiJian { get; set; }
+
+        /// <summary>
+        /// 工程预约审核生效时长
+        /// 生效时长
+        /// </summary>
+        public double gcyyshsxShiChang { get; set; }
     }
 }

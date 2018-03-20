@@ -4,14 +4,18 @@
         { name: 'index', type: 'int' },
         { name: 'id', type: 'string' },
         { name: 'name', type: 'string' },
+        { name: 'expStartDate', type: 'string' },
         { name: 'startDate', type: 'string' },
         { name: 'endDate', type: 'string' },
         { name: 'projectId', type: 'string' },
         { name: 'projectName', type: 'string' },
         { name: 'creator', type: 'string' },
+        { name: 'user', type: 'string' },
         { name: 'createdTime', type: 'string' },
         { name: 'comment', type: 'string' },
-        { name: 'enabled', type: 'boolean' }
+        { name: 'enabled', type: 'boolean' },
+        { name: 'statusId', type: 'int' },
+        { name: 'status', type: 'string' }
     ],
     idProperty: 'id'
 });
@@ -121,7 +125,7 @@ var detailWnd = Ext.create('Ext.window.Window', {
 
 var saveWnd = Ext.create('Ext.window.Window', {
     title: 'Reservation',
-    height: 400,
+    height: 445,
     width: 600,
     modal: true,
     border: false,
@@ -176,8 +180,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 allowBlank: false
             },
             {
-                id: 'startDate',
-                name: 'startDate',
+                id: 'expStartDate',
+                name: 'expStartDate',
                 xtype: 'datetimepicker',
                 fieldLabel: '开始时间',
                 editable: false,
@@ -268,19 +272,23 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             separator = '/',
                             root = tree.getRootNode();
 
-                        if (Ext.isEmpty(text, false)) {
+                        if (Ext.isEmpty(text, false))
+                        {
                             return;
                         }
 
-                        if (text.length < 2) {
+                        if (text.length < 2)
+                        {
                             return;
                         }
 
                         if (search._filterData != null
-                            && search._filterIndex != null) {
+                            && search._filterIndex != null)
+                        {
                             var index = search._filterIndex + 1;
                             var paths = search._filterData;
-                            if (index >= paths.length) {
+                            if (index >= paths.length)
+                            {
                                 index = 0;
                                 Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                             }
@@ -289,26 +297,31 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
                             tree.selectPath(path);
                             search._filterIndex = index;
-                        } else {
+                        } else
+                        {
                             Ext.Ajax.request({
                                 url: '/Component/FilterRoomPath',
                                 params: { text: text },
                                 mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
                                 success: function (response, options) {
                                     var data = Ext.decode(response.responseText, true);
-                                    if (data.success) {
+                                    if (data.success)
+                                    {
                                         var len = data.data.length;
-                                        if (len > 0) {
+                                        if (len > 0)
+                                        {
                                             var nodes = Ext.Array.from(data.data[0]);
                                             var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
                                             tree.selectPath(path);
 
                                             search._filterData = data.data;
                                             search._filterIndex = 0;
-                                        } else {
+                                        } else
+                                        {
                                             Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                         }
-                                    } else {
+                                    } else
+                                    {
                                         Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                     }
                                 }
@@ -330,19 +343,21 @@ var saveWnd = Ext.create('Ext.window.Window', {
                   tree = Ext.getCmp('organization'),
                   nodes = [];
 
-              var start = $$iPems.datetimeParse(Ext.getCmp('startDate').getValue()),
-                  starttime = start.getTime(),
-                  starttime_30 = Ext.Date.subtract(start, Ext.Date.MINUTE, 30).getTime(),
-                  nowtime = Ext.Date.now();
+              //var start = $$iPems.datetimeParse(Ext.getCmp('startDate').getValue()),
+              //    starttime = start.getTime(),
+              //    starttime_30 = Ext.Date.subtract(start, Ext.Date.MINUTE, 30).getTime(),
+              //    nowtime = Ext.Date.now();
 
               result.setTextWithIcon('', '');
-              if (!form.isValid()) {
+              if (!form.isValid())
+              {
                   result.setTextWithIcon('表单填写错误', 'x-icon-error');
                   return false;
               }
 
               var ckNodes = tree.getChecked();
-              if (ckNodes.length === 0) {
+              if (ckNodes.length === 0)
+              {
                   result.setTextWithIcon('请选择需要预约的监控点', 'x-icon-error');
                   return false;
               }
@@ -351,32 +366,135 @@ var saveWnd = Ext.create('Ext.window.Window', {
                   nodes.push(c.getId());
               });
 
-              if (starttime < nowtime) {
-                  Ext.Msg.confirm('确认对话框', '开始时间早于当前时间，您确定要继续吗？', function (buttonId, text) {
-                      if (buttonId === 'yes') {
-                          submit(form, nodes, result);
+              //if (starttime < nowtime)
+              //{
+              //    Ext.Msg.confirm('确认对话框', '开始时间早于当前时间，您确定要继续吗？', function (buttonId, text) {
+              //        if (buttonId === 'yes')
+              //        {
+              //            submit(form, nodes, result);
+              //        }
+              //    });
+              //} else if (starttime_30 < nowtime)
+              //{
+              //    Ext.Msg.confirm('确认对话框', '开始时间距现在不足30分钟，您确定要继续吗？', function (buttonId, text) {
+              //        if (buttonId === 'yes')
+              //        {
+              //            submit(form, nodes, result);
+              //        }
+              //    });
+              //} else
+              //{
+              submit(form, nodes, result);
+              //}
+          }
+      },
+      {
+          xtype: 'button',
+          text: '关闭',
+          handler: function (el, e) {
+              saveWnd.close();
+          }
+      }
+    ]
+});
+
+var checkWnd = Ext.create('Ext.window.Window', {
+    title: '工程预约审核',
+    height: 150,
+    width: 300,
+    glyph: 0xf040,
+    modal: true,
+    border: false,
+    hidden: true,
+    closeAction: 'hide',
+    items: [{
+        xtype: 'form',
+        id: 'checkForm',
+        border: false,
+        padding: 10,
+        items: [
+        {
+            itemId: 'id',
+            name: 'id',
+            xtype: 'hiddenfield',
+            value: ''
+        }, {
+            itemId: 'checkradio',
+            xtype: 'radiogroup',
+            columns: 1,
+            vertical: true,
+            items: [
+                { boxLabel: '不通过', name: 'ctrl', inputValue: $$iPems.Result.Failure, checked: true },
+                { boxLabel: '通过', name: 'ctrl', inputValue: $$iPems.Result.Success }
+            ]
+        }]
+    }],
+    buttons: [
+      { id: 'checkResult', xtype: 'iconlabel', text: '' },
+      { xtype: 'tbfill' },
+      {
+          xtype: 'button',
+          text: '提交',
+          handler: function (el, e) {
+              var form = checkWnd.getComponent('checkForm'),
+                  baseForm = form.getForm(),
+                  id = form.getComponent('id').getValue(),
+                  status = form.getComponent('checkradio').getValue(),
+                  result = Ext.getCmp('checkResult');
+
+              result.setTextWithIcon('', '');
+              if (baseForm.isValid())
+              {
+                  result.setTextWithIcon('正在处理...', 'x-icon-loading');
+                  baseForm.submit({
+                      submitEmptyText: false,
+                      clientValidation: true,
+                      preventWindow: true,
+                      url: '/Project/CheckReservation',
+                      params: {
+                          id: id,
+                          status: status
+                      },
+                      success: function (form, action) {
+                          result.setTextWithIcon(action.result.message, 'x-icon-accept');
+                          query();
+                      },
+                      failure: function (form, action) {
+                          var message = 'undefined error.';
+                          if (!Ext.isEmpty(action.result) && !Ext.isEmpty(action.result.message))
+                              message = action.result.message;
+
+                          result.setTextWithIcon(message, 'x-icon-error');
                       }
                   });
-              } else if (starttime_30 < nowtime) {
-                  Ext.Msg.confirm('确认对话框', '开始时间距现在不足30分钟，您确定要继续吗？', function (buttonId, text) {
-                      if (buttonId === 'yes') {
-                          submit(form, nodes, result);
-                      }
-                  });
-              } else {
-                  submit(form, nodes, result);
+              } else
+              {
+                  result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
       },
       {
           xtype: 'button',
           text: '关闭',
-          handler:function (el, e) {
-              saveWnd.close();
+          handler: function (el, e) {
+              checkWnd.close();
           }
       }
     ]
 });
+
+var checkCellClick = function (grid, rowIndex, colIndex) {
+    var record = grid.getStore().getAt(rowIndex);
+    if (Ext.isEmpty(record)) return false;
+    if (record.get('statusId') === $$iPems.Result.Undefine)
+    {
+        var form = Ext.getCmp('checkForm');
+        form.getForm().reset();
+        form.getComponent('id').setValue(record.getId());
+        Ext.getCmp('checkResult').setTextWithIcon('', '');
+        checkWnd.show();
+    }
+};
 
 var detailCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
@@ -385,10 +503,11 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
     Ext.Ajax.request({
         url: '/Project/GetReservationDetails',
         Method: 'POST',
-        params:{id: record.data.id},
+        params: { id: record.data.id },
         success: function (response, options) {
             var data = Ext.decode(response.responseText, true);
-            if (data.success) {
+            if (data.success)
+            {
                 var detailname = detailWnd.getComponent('detail_name');
                 var detailarea = detailWnd.getComponent('detail_area');
                 var detailstation = detailWnd.getComponent('detail_station');
@@ -401,7 +520,8 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
                 detailroom.setValue(data.data.rooms);
                 detaildevice.setValue(data.data.devices);
                 detailWnd.show();
-            } else {
+            } else
+            {
                 Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         }
@@ -416,7 +536,8 @@ var editCellClick = function (grid, rowIndex, colIndex) {
         tree = Ext.getCmp('organization'),
         root = tree.getRootNode();
 
-    if (root.hasChildNodes()) {
+    if (root.hasChildNodes())
+    {
         root.eachChild(function (c) {
             c.cascadeBy(function (n) {
                 n.set('checked', false);
@@ -427,20 +548,22 @@ var editCellClick = function (grid, rowIndex, colIndex) {
 
     basic.load({
         url: '/Project/GetReservation',
-        params:{id: record.data.id,action: $$iPems.Action.Edit},
+        params: { id: record.data.id, action: $$iPems.Action.Edit },
         waitMsg: '正在处理...',
         waitTitle: '系统提示',
         success: function (form, action) {
             var separator = '/',
                 nodes = action.result.data.nodes;
 
-            if (nodes && nodes.length > 0) {
+            if (nodes && nodes.length > 0)
+            {
                 Ext.Ajax.request({
                     url: '/Component/GetDevicePath',
                     params: { nodes: nodes },
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
-                        if (data.success) {
+                        if (data.success)
+                        {
                             Ext.defer(function () {
                                 Ext.Array.each(data.data, function (item, index, all) {
                                     item = Ext.Array.from(item);
@@ -474,7 +597,8 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     if (Ext.isEmpty(record)) return false;
 
     Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
-        if (buttonId === 'yes') {
+        if (buttonId === 'yes')
+        {
             Ext.Ajax.request({
                 url: '/Project/DeleteReservation',
                 params: { id: record.raw.id },
@@ -517,7 +641,11 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         dataIndex: 'name',
         sortable: false
     }, {
-        text: '开始时间',
+        text: '预期开始时间',
+        dataIndex: 'expStartDate',
+        sortable: true
+    }, {
+        text: '实际开始时间',
         dataIndex: 'startDate',
         sortable: true
     }, {
@@ -533,6 +661,10 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         dataIndex: 'creator',
         sortable: true
     }, {
+        text: '创建账号',
+        dataIndex: 'user',
+        sortable: true
+    }, {
         text: '创建时间',
         dataIndex: 'createdTime',
         sortable: true
@@ -546,6 +678,10 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         sortable: true,
         renderer: function (value) { return value ? '有效' : '禁用'; }
     }, {
+        text: "审核状态",
+        dataIndex: 'status',
+        sortable: true,
+    }, {
         xtype: 'actioncolumn',
         width: 120,
         align: 'center',
@@ -554,6 +690,14 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         text: '操作',
         items: [
             {
+                getClass: function (v, metadata, r, rowIndex, colIndex, store) {
+                    return (r.get('statusId') === $$iPems.Result.Undefine) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
+                },
+                handler: function (grid, rowIndex, colIndex) {
+                    checkCellClick(grid, rowIndex, colIndex);
+                }
+            },
+            {
                 iconCls: 'x-cell-icon x-icon-detail',
                 handler: function (grid, rowIndex, colIndex) {
                     detailCellClick(grid, rowIndex, colIndex);
@@ -561,12 +705,13 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
             },
             {
                 getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                    return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
+                    return (r.get('statusId') !== $$iPems.Result.Success && r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-edit' : 'x-cell-icon x-icon-hidden';
                 },
                 handler: function (grid, rowIndex, colIndex) {
                     editCellClick(grid, rowIndex, colIndex);
                 }
             }
+
             //{
             //    getClass: function (v, metadata, r, rowIndex, colIndex, store) {
             //        return (r.get('creator') === $$iPems.currentEmployee) ? 'x-cell-icon x-icon-delete' : 'x-cell-icon x-icon-hidden';
@@ -652,7 +797,8 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
                                 tree = Ext.getCmp('organization'),
                                 root = tree.getRootNode();
 
-                            if (root.hasChildNodes()) {
+                            if (root.hasChildNodes())
+                            {
                                 root.eachChild(function (c) {
                                     c.cascadeBy(function (n) {
                                         n.set('checked', false);
@@ -663,7 +809,7 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
 
                             basic.load({
                                 url: '/Project/GetReservation',
-                                params:{ action: $$iPems.Action.Add },
+                                params: { action: $$iPems.Action.Add },
                                 waitMsg: '正在处理...',
                                 waitTitle: '系统提示',
                                 success: function (form, action) {
@@ -750,7 +896,8 @@ var submit = function (form, nodes, result) {
 Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
-    if (!Ext.isEmpty(pageContentPanel)) {
+    if (!Ext.isEmpty(pageContentPanel))
+    {
         pageContentPanel.add(currentPanel);
 
         //load data

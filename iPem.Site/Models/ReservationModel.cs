@@ -13,7 +13,10 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("预约名称")]
         public string name { get; set; }
 
-        [ExcelDisplayName("开始时间")]
+        [ExcelDisplayName("预期开始时间")]
+        public string expStartDate { get; set; }
+
+        [ExcelDisplayName("实际开始时间")]
         public string startDate { get; set; }
 
         [ExcelDisplayName("结束时间")]
@@ -28,6 +31,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("创建人员")]
         public string creator { get; set; }
 
+        [ExcelDisplayName("创建账号")]
+        public string user { get; set; }
+
         [ExcelDisplayName("创建时间")]
         public string createdTime { get; set; }
 
@@ -37,6 +43,12 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("预约状态")]
         [ExcelBooleanNameAttribute(True = "有效", False = "禁用")]
         public bool enabled { get; set; }
+
+        [ExcelIgnore]
+        public int statusId { get; set; }
+
+        [ExcelDisplayName("审核状态")]
+        public string status { get; set; }
 
         [ExcelIgnore]
         public string[] nodes { get; set; }

@@ -802,14 +802,14 @@
                             margin: 15
                         },
                         items: [{
-                                xtype: 'checkboxgroup',
-                                columns: 2,
-                                items: [
-                                    { boxLabel: '一级告警', name: 'levels', inputValue: $$iPems.Level.Level1 },
-                                    { boxLabel: '二级告警', name: 'levels', inputValue: $$iPems.Level.Level2 },
-                                    { boxLabel: '三级告警', name: 'levels', inputValue: $$iPems.Level.Level3 },
-                                    { boxLabel: '四级告警', name: 'levels', inputValue: $$iPems.Level.Level4 }
-                                ]
+                            xtype: 'checkboxgroup',
+                            columns: 2,
+                            items: [
+                                { boxLabel: '一级告警', name: 'levels', inputValue: $$iPems.Level.Level1 },
+                                { boxLabel: '二级告警', name: 'levels', inputValue: $$iPems.Level.Level2 },
+                                { boxLabel: '三级告警', name: 'levels', inputValue: $$iPems.Level.Level3 },
+                                { boxLabel: '四级告警', name: 'levels', inputValue: $$iPems.Level.Level4 }
+                            ]
                         }]
                     }
                 ]
@@ -2145,6 +2145,38 @@
                         }, {
                             xtype: 'displayfield',
                             value: '（注：设置"站点动环通信中断告警"信号）',
+                            margin: '0 0 0 15',
+                            flex: 1
+                        }]
+                    }
+                ]
+            },
+            {
+                xtype: 'fieldset',
+                title: '工程预约审核生效时长',
+                margin: '10 35 20 20',
+                fieldDefaults: {
+                    anchor: '100%',
+                    labelWidth: 80,
+                    labelAlign: 'left'
+                },
+                items: [
+                    {
+                        xtype: 'container',
+                        anchor: '100%',
+                        layout: 'hbox',
+                        margin: 15,
+                        items: [{
+                            name: 'gcyyshsxShiChang',
+                            xtype: 'numberfield',
+                            fieldLabel: '生效时长',
+                            allowBlank: false,
+                            value: 0,
+                            minValue: 0,
+                            flex: 1
+                        }, {
+                            xtype: 'displayfield',
+                            value: '分钟（注：使工程预约在该规定时长后生效）',
                             margin: '0 0 0 15',
                             flex: 1
                         }]

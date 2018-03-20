@@ -53,10 +53,10 @@ namespace iPem.Site.Controllers {
         #region Action
 
         public ActionResult Index() {
-            var cachedKey = string.Format("Installation-{0}", Session.SessionID);
-            if(!_cacheManager.IsSet(cachedKey)) {
+            var key = "ipems:install:installation";
+            if (Session[key] == null || DateTime.Now.Ticks > (long)Session[key]) {
                 return View("Authentication", new AuthModel {
-                    key = cachedKey,
+                    key = key,
                     name = "安装向导鉴权",
                     service = "/Installation"
                 });
@@ -371,7 +371,7 @@ namespace iPem.Site.Controllers {
 
         public ActionResult DbConfiguration() {
             var key = "ipems:install:auth-configuration";
-            if(Session[key] == null || DateTime.Now > new DateTime((long)Session[key])) {
+            if (Session[key] == null || DateTime.Now.Ticks > (long)Session[key]) {
                 return View("Authentication", new AuthModel {
                     key = key,
                     name = "数据库操作鉴权",
