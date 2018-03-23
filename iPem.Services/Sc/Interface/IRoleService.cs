@@ -12,7 +12,7 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定角色编号的角色
         /// </summary>
-        U_Role GetRoleById(Guid id);
+        U_Role GetRoleById(string id);
 
         /// <summary>
         /// 获得指定角色名称的角色
@@ -22,7 +22,7 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定用户编号的角色
         /// </summary>
-        U_Role GetRoleByUid(Guid id);
+        U_Role GetRoleByUid(string id);
 
         /// <summary>
         /// 获得所有的角色
@@ -32,7 +32,7 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定角色下属的角色
         /// </summary>
-        List<U_Role> GetRolesByRole(Guid id);
+        List<U_Role> GetRolesByRole(string id);
 
         /// <summary>
         /// 获得指定角色名称的角色
@@ -67,6 +67,6 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 验证角色
         /// </summary>
-        EnmLoginResults Validate(Guid uid);
+        EnmLoginResults Validate(string id);
     }
 }

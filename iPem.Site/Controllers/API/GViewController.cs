@@ -82,7 +82,7 @@ namespace iPem.Site.Controllers {
                 if (string.IsNullOrWhiteSpace(id))
                     throw new ArgumentNullException("id");
 
-                return _gpageService.GetNames((int)EnmAPISCObj.Device == type ? U_Role.SuperId.ToString() : role, id, type);
+                return _gpageService.GetNames((int)EnmAPISCObj.Device == type ? U_Role.SuperId : role, id, type);
             } catch {
             }
 
@@ -100,7 +100,7 @@ namespace iPem.Site.Controllers {
                 if (string.IsNullOrWhiteSpace(id))
                     throw new ArgumentNullException("id");
 
-                foreach (var page in _gpageService.GetPages((int)EnmAPISCObj.Device == type ? U_Role.SuperId.ToString() : role, id, type)) {
+                foreach (var page in _gpageService.GetPages((int)EnmAPISCObj.Device == type ? U_Role.SuperId : role, id, type)) {
                     data.Add(new API_GV_Page {
                         Name = page.Name,
                         IsHome = page.IsHome,
@@ -160,7 +160,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("value");
 
                 var target = new G_Page {
-                    RoleId = (int)EnmAPISCObj.Device == page.SCObjType ? U_Role.SuperId.ToString() : role,
+                    RoleId = (int)EnmAPISCObj.Device == page.SCObjType ? U_Role.SuperId : role,
                     Name = page.Name,
                     IsHome = page.IsHome,
                     Content = page.Content,
@@ -337,7 +337,7 @@ namespace iPem.Site.Controllers {
                         Content = JsonConvert.SerializeObject(image.Content)
                     });
                 }
-            } catch{
+            } catch {
             }
 
             return data;
@@ -431,7 +431,7 @@ namespace iPem.Site.Controllers {
         [HttpGet]
         public List<API_GV_SCObj> GetSubSCObjs(string role, string id, int type) {
             var data = new List<API_GV_SCObj>();
- 
+
             try {
                 if (string.IsNullOrWhiteSpace(role))
                     throw new ArgumentNullException("role");
@@ -570,7 +570,7 @@ namespace iPem.Site.Controllers {
                                 });
                             }
                         }
-                        
+
                         #endregion
                     } else if ((int)EnmAPISCObj.Station == key.Key) {
                         #region 计算站点状态

@@ -7,6 +7,8 @@ GO
 SET ANSI_PADDING ON
 GO
 
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[X_ASerialNo]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[X_ASerialNo](
 	[Name] [varchar](50) NOT NULL,
 	[Code] [bigint] IDENTITY(0,1) NOT NULL,
@@ -16,6 +18,7 @@ CREATE TABLE [dbo].[X_ASerialNo](
 	[Name] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+END
 GO
 
 SET ANSI_PADDING OFF
@@ -85,6 +88,13 @@ GO
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Appointments_M_Projects]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Reservations]'))
 ALTER TABLE [dbo].[M_Reservations] DROP CONSTRAINT [FK_M_Appointments_M_Projects]
 GO
+--删除外键[dbo].[FK_M_NodesInReservation_M_Reservations]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_NodesInReservation_M_Reservations]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_NodesInReservation]'))
+ALTER TABLE [dbo].[M_NodesInReservation] DROP CONSTRAINT [FK_M_NodesInReservation_M_Reservations]
+GO
+--清空表[dbo].[M_NodesInReservation]
+DELETE FROM [dbo].[M_NodesInReservation]
+GO
 
 --删除表[dbo].[M_Reservations]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[M_Reservations]') AND type in (N'U'))
@@ -133,4 +143,23 @@ GO
 --检查外键[dbo].[FK_M_Appointments_M_Projects]
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_Appointments_M_Projects]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_Reservations]'))
 ALTER TABLE [dbo].[M_Reservations] CHECK CONSTRAINT [FK_M_Appointments_M_Projects]
+GO
+
+--添加外键[dbo].[FK_M_NodesInReservation_M_Reservations]
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_NodesInReservation_M_Reservations]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_NodesInReservation]'))
+ALTER TABLE [dbo].[M_NodesInReservation]  WITH CHECK ADD  CONSTRAINT [FK_M_NodesInReservation_M_Reservations] FOREIGN KEY([ReservationId])
+REFERENCES [dbo].[M_Reservations] ([Id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+--检查外键[dbo].[FK_M_NodesInReservation_M_Reservations]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_M_NodesInReservation_M_Reservations]') AND parent_object_id = OBJECT_ID(N'[dbo].[M_NodesInReservation]'))
+ALTER TABLE [dbo].[M_NodesInReservation] CHECK CONSTRAINT [FK_M_NodesInReservation_M_Reservations]
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--新增脚本升级日志
+DECLARE @Id VARCHAR(100) = 'P2S_V1_005';
+DELETE FROM [dbo].[H_DBScript] WHERE [Id] = @Id;
+INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES(@Id,'优化缓存，新增工程预约审核','Steven',GETDATE(),NULL,GETDATE(),'优化缓存，新增工程预约审核');
 GO

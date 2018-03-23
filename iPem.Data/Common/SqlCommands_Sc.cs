@@ -52,7 +52,7 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_H_Notice_Repository_GetNotice = @"SELECT * FROM [dbo].[H_Notices] WHERE [Id]=@Id;";
         public const string Sql_H_Notice_Repository_GetNotices = @"SELECT * FROM [dbo].[H_Notices] ORDER BY [CreatedTime] DESC;";
-        public const string Sql_H_Notice_Repository_GetNoticesInSpan = @"SELECT * FROM [dbo].[H_Notices] WHERE [CreatedTime] BETWEEN @Start AND @End ORDER BY [CreatedTime] DESC;";        
+        public const string Sql_H_Notice_Repository_GetNoticesInSpan = @"SELECT * FROM [dbo].[H_Notices] WHERE [CreatedTime] BETWEEN @Start AND @End ORDER BY [CreatedTime] DESC;";
         public const string Sql_H_Notice_Repository_GetNoticesInUser = @"SELECT N.* FROM [dbo].[H_Notices] N INNER JOIN [dbo].[H_NoticesInUsers] NIU ON N.[Id]=NIU.[NoticeId] AND NIU.[UserId]=@UserId ORDER BY [CreatedTime] DESC;";
         public const string Sql_H_Notice_Repository_GetUnreadNotices = @"SELECT N.* FROM [dbo].[H_Notices] N INNER JOIN [dbo].[H_NoticesInUsers] NIU ON N.[Id]=NIU.[NoticeId] WHERE N.[Enabled] = 1 AND NIU.[Readed] = 0 AND NIU.[UserId]=@UserId;";
         public const string Sql_H_Notice_Repository_Insert = @"INSERT INTO [dbo].[H_Notices]([Id],[Title],[Content],[CreatedTime],[Enabled]) VALUES(@Id,@Title,@Content,@CreatedTime,@Enabled);";
@@ -118,11 +118,12 @@ namespace iPem.Data.Common {
         /// 工程预约表
         /// </summary>
         public const string Sql_M_Reservation_Repository_GetReservations = @"SELECT * FROM [dbo].[M_Reservations] ORDER BY [CreatedTime];";
-        public const string Sql_M_Reservation_Repository_GetReservationsInSpan = @"SELECT * FROM [dbo].[M_Reservations] WHERE [StartTime]>=@startTime and [EndTime]<=@endTime ORDER BY [CreatedTime];";
+        public const string Sql_M_Reservation_Repository_GetReservationsInSpan = @"SELECT * FROM [dbo].[M_Reservations] WHERE [ExpStartTime]>=@expStartTime and [EndTime]<=@endTime ORDER BY [CreatedTime];";
         public const string Sql_M_Reservation_Repository_GetReservation = @"SELECT * FROM [dbo].[M_Reservations] WHERE [Id]=@Id;";
-        public const string Sql_M_Reservation_Repository_Insert = @"INSERT INTO [dbo].[M_Reservations]([Id],[Name],[StartTime],[EndTime],[ProjectId],[Creator],[CreatedTime],[Comment],[Enabled]) VALUES(@Id,@Name,@StartTime,@EndTime,@ProjectId,@Creator,@CreatedTime,@Comment,@Enabled);";
-        public const string Sql_M_Reservation_Repository_Update = @"UPDATE [dbo].[M_Reservations] SET [Name]=@Name,[StartTime]=@StartTime,[EndTime]=@EndTime,[ProjectId]=@ProjectId,[Creator]=@Creator,[CreatedTime]=@CreatedTime,[Comment]=@Comment,[Enabled]=@Enabled WHERE [Id]=@Id;";
+        public const string Sql_M_Reservation_Repository_Insert = @"INSERT INTO [dbo].[M_Reservations]([Id],[Name],[ExpStartTime],[EndTime],[ProjectId],[Creator],[UserId],[CreatedTime],[Comment],[Enabled],[Status]) VALUES(@Id,@Name,@ExpStartTime,@EndTime,@ProjectId,@Creator,@UserId,@CreatedTime,@Comment,@Enabled,@Status);";
+        public const string Sql_M_Reservation_Repository_Update = @"UPDATE [dbo].[M_Reservations] SET [Name]=@Name,[ExpStartTime]=@ExpStartTime,[EndTime]=@EndTime,[ProjectId]=@ProjectId,[Creator]=@Creator,[CreatedTime]=@CreatedTime,[Comment]=@Comment,[Enabled]=@Enabled,[Status]=@Status WHERE [Id]=@Id;";
         public const string Sql_M_Reservation_Repository_Delete = @"DELETE FROM [dbo].[M_Reservations] WHERE [Id]=@Id;";
+        public const string Sql_M_Reservation_Repository_Check = @"UPDATE [dbo].[M_Reservations] SET [StartTime]=@StartTime,[Status]=@Status WHERE [Id]=@Id;";
 
         /// <summary>
         /// 系统菜单表

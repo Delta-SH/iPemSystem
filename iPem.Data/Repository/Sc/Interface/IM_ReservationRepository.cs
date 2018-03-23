@@ -1,4 +1,5 @@
 ﻿using iPem.Core.Domain.Sc;
+using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -36,5 +37,10 @@ namespace iPem.Data.Repository.Sc {
         /// 删除工程预约
         /// </summary>
         void Delete(IList<M_Reservation> entities);
+
+        /// <summary>
+        /// 审核工程预约
+        /// </summary>
+        void Check(String id, DateTime start, EnmResult status);
     }
 }

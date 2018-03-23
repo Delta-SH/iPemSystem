@@ -8,55 +8,55 @@ using System.Web;
 
 namespace iPem.Site.Extensions {
     public static class LoggerExtensions {
-        public static void Debug(this IWebEventService logger, EnmEventType type, string message, Exception exception = null, Guid? userId = null) {
-            FilteredLog(logger, EnmEventLevel.Debug, type, message, exception, userId);
+        public static void Debug(this IWebEventService logger, EnmEventType type, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Debug, type, message, userId, exception);
         }
-        public static void Information(this IWebEventService logger, EnmEventType type, string message, Exception exception = null, Guid? userId = null) {
-            FilteredLog(logger, EnmEventLevel.Information, type, message, exception, userId);
+        public static void Information(this IWebEventService logger, EnmEventType type, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Information, type, message, userId, exception);
         }
-        public static void Warning(this IWebEventService logger, EnmEventType type, string message, Exception exception = null, Guid? userId = null) {
-            FilteredLog(logger, EnmEventLevel.Warning, type, message, exception, userId);
+        public static void Warning(this IWebEventService logger, EnmEventType type, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Warning, type, message, userId, exception);
         }
-        public static void Error(this IWebEventService logger, EnmEventType type, string message, Exception exception = null, Guid? userId = null) {
-            FilteredLog(logger, EnmEventLevel.Error, type, message, exception, userId);
+        public static void Error(this IWebEventService logger, EnmEventType type, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Error, type, message, userId, exception);
         }
-        public static void Fatal(this IWebEventService logger, EnmEventType type, string message, Exception exception = null, Guid? userId = null) {
-            FilteredLog(logger, EnmEventLevel.Fatal, type, message, exception, userId);
-        }
-
-        public static void Debug(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
-            FilteredLog(logger, EnmEventLevel.Debug, type, ip, url, referrer, message, exception, uid);
-        }
-        public static void Information(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
-            FilteredLog(logger, EnmEventLevel.Information, type, ip, url, referrer, message, exception, uid);
-        }
-        public static void Warning(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
-            FilteredLog(logger, EnmEventLevel.Warning, type, ip, url, referrer, message, exception, uid);
-        }
-        public static void Error(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
-            FilteredLog(logger, EnmEventLevel.Error, type, ip, url, referrer, message, exception, uid);
-        }
-        public static void Fatal(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
-            FilteredLog(logger, EnmEventLevel.Fatal, type, ip, url, referrer, message, exception, uid);
+        public static void Fatal(this IWebEventService logger, EnmEventType type, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Fatal, type, message, userId, exception);
         }
 
-        private static void FilteredLog(IWebEventService logger, EnmEventLevel level, EnmEventType type, string message, Exception exception = null, Guid? uid = null) {
+        public static void Debug(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Debug, type, ip, url, referrer, message, userId, exception);
+        }
+        public static void Information(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Information, type, ip, url, referrer, message, userId, exception);
+        }
+        public static void Warning(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Warning, type, ip, url, referrer, message, userId, exception);
+        }
+        public static void Error(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Error, type, ip, url, referrer, message, userId, exception);
+        }
+        public static void Fatal(this IWebEventService logger, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
+            FilteredLog(logger, EnmEventLevel.Fatal, type, ip, url, referrer, message, userId, exception);
+        }
+
+        private static void FilteredLog(IWebEventService logger, EnmEventLevel level, EnmEventType type, string message, string userId, Exception exception = null) {
             //don't log thread abort exception
-            if(exception is System.Threading.ThreadAbortException)
+            if (exception is System.Threading.ThreadAbortException)
                 return;
 
-            if(logger.IsEnabled(level)) {
+            if (logger.IsEnabled(level)) {
                 var webHelper = EngineContext.Current.Resolve<IWebHelper>();
-                FilteredLog(logger, level, type, webHelper.GetCurrentIpAddress(), webHelper.GetThisPageUrl(true), webHelper.GetUrlReferrer(), message, exception, uid);
+                FilteredLog(logger, level, type, webHelper.GetCurrentIpAddress(), webHelper.GetThisPageUrl(true), webHelper.GetUrlReferrer(), message, userId, exception);
             }
         }
 
-        private static void FilteredLog(IWebEventService logger, EnmEventLevel level, EnmEventType type, string ip, string url, string referrer, string message, Exception exception = null, Guid? uid = null) {
+        private static void FilteredLog(IWebEventService logger, EnmEventLevel level, EnmEventType type, string ip, string url, string referrer, string message, string userId, Exception exception = null) {
             //don't log thread abort exception
-            if(exception is System.Threading.ThreadAbortException)
+            if (exception is System.Threading.ThreadAbortException)
                 return;
 
-            if(logger.IsEnabled(level)) {
+            if (logger.IsEnabled(level)) {
                 try {
                     var log = new H_WebEvent {
                         Id = Guid.NewGuid(),
@@ -67,12 +67,12 @@ namespace iPem.Site.Extensions {
                         IpAddress = ip,
                         PageUrl = url,
                         ReferrerUrl = referrer,
-                        UserId = uid,
+                        UserId = userId,
                         CreatedTime = DateTime.Now
                     };
 
                     logger.Insert(log);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     Console.Write(ex.Message);
                 }
             }

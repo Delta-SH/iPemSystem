@@ -1,6 +1,7 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Domain.Sc;
+using iPem.Core.Enum;
 using iPem.Data.Repository.Sc;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,13 @@ namespace iPem.Services.Sc {
                 throw new ArgumentNullException("reservations");
 
             _repository.Delete(reservations);
+        }
+
+        public void Check(string id, DateTime start, EnmResult status) {
+            if (id == null || string.IsNullOrEmpty(id))
+                throw new ArgumentNullException("id");
+
+            _repository.Check(id, start, status);
         }
 
         #endregion

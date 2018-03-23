@@ -50,7 +50,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 触发用户
         /// </summary>
-        public Guid? UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 创建时间

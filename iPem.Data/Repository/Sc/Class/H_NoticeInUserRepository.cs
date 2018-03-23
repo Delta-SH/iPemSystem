@@ -29,11 +29,11 @@ namespace iPem.Data.Repository.Sc {
 
         public List<H_NoticeInUser> GetNoticesInUsers() {
             var entities = new List<H_NoticeInUser>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_GetNoticesInUsers, null)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_GetNoticesInUsers, null)) {
+                while (rdr.Read()) {
                     var entity = new H_NoticeInUser();
                     entity.NoticeId = SqlTypeConverter.DBNullGuidHandler(rdr["NoticeId"]);
-                    entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
+                    entity.UserId = SqlTypeConverter.DBNullStringHandler(rdr["UserId"]);
                     entity.Readed = SqlTypeConverter.DBNullBooleanHandler(rdr["Readed"]);
                     entity.ReadTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReadTime"]);
                     entities.Add(entity);
@@ -42,16 +42,16 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public List<H_NoticeInUser> GetNoticesInUser(Guid uid) {
+        public List<H_NoticeInUser> GetNoticesInUser(string uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
 
             var entities = new List<H_NoticeInUser>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_GetNoticesInUser, parms)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_GetNoticesInUser, parms)) {
+                while (rdr.Read()) {
                     var entity = new H_NoticeInUser();
                     entity.NoticeId = SqlTypeConverter.DBNullGuidHandler(rdr["NoticeId"]);
-                    entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
+                    entity.UserId = SqlTypeConverter.DBNullStringHandler(rdr["UserId"]);
                     entity.Readed = SqlTypeConverter.DBNullBooleanHandler(rdr["Readed"]);
                     entity.ReadTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ReadTime"]);
                     entities.Add(entity);
@@ -66,13 +66,13 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Readed", SqlDbType.Bit),
                                      new SqlParameter("@ReadTime", SqlDbType.DateTime) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.NoticeId);
-                        parms[1].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.UserId);
                         parms[2].Value = entity.Readed;
                         parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.ReadTime);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_Insert, parms);
@@ -91,13 +91,13 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Readed", SqlDbType.Bit),
                                      new SqlParameter("@ReadTime", SqlDbType.DateTime) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.NoticeId);
-                        parms[1].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.UserId);
                         parms[2].Value = entity.Readed;
                         parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.ReadTime);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_Update, parms);
@@ -114,13 +114,13 @@ namespace iPem.Data.Repository.Sc {
             SqlParameter[] parms = { new SqlParameter("@NoticeId", SqlDbType.VarChar,100),
                                      new SqlParameter("@UserId", SqlDbType.VarChar,100) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.NoticeId);
-                        parms[1].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.UserId);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_H_NoticeInUser_Repository_Delete, parms);
                     }
                     trans.Commit();

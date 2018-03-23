@@ -32,7 +32,7 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public U_Profile GetProfile(Guid uid, EnmProfile type) {
+        public U_Profile GetProfile(string uid, EnmProfile type) {
             return _repository.Get(uid, type);
         }
 
@@ -40,11 +40,11 @@ namespace iPem.Services.Sc {
             _repository.Save(profile);
         }
 
-        public void RemoveProfile(Guid uid, EnmProfile type) {
+        public void RemoveProfile(string uid, EnmProfile type) {
             _repository.Delete(uid, type);
         }
 
-        public void ClearProfiles(Guid uid) {
+        public void ClearProfiles(string uid) {
             _repository.Clear(uid);
         }
 

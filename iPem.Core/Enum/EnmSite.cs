@@ -4,6 +4,10 @@
     /// </summary>
     public enum EnmResult {
         /// <summary>
+        /// 未定义
+        /// </summary>
+        Undefine = -1,
+        /// <summary>
         /// 失败
         /// </summary>
         Failure,
@@ -50,7 +54,11 @@
         /// <summary>
         /// 告警阈值
         /// </summary>
-        Threshold
+        Threshold,
+        /// <summary>
+        /// 预约审核
+        /// </summary>
+        Check
     }
 
     /// <summary>
@@ -233,7 +241,7 @@
     /// <summary>
     /// 设备类型层级结构
     /// </summary>
-    public enum EnmDTH{
+    public enum EnmDTH {
         /// <summary>
         /// 设备类型
         /// </summary>

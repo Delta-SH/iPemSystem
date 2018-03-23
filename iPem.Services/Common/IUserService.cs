@@ -1,10 +1,10 @@
 ﻿using iPem.Core;
-using iPem.Core.Domain.Sc;
+using iPem.Core.Domain.Common;
 using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
-namespace iPem.Services.Sc {
+namespace iPem.Services.Common {
     /// <summary>
     /// 用户信息API
     /// </summary>
@@ -12,7 +12,7 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定用户编号的用户
         /// </summary>
-        U_User GetUserById(Guid id);
+        U_User GetUserById(string id);
 
         /// <summary>
         /// 获得指定用户名称的用户
@@ -25,19 +25,19 @@ namespace iPem.Services.Sc {
         List<U_User> GetUsers();
 
         /// <summary>
+        /// 获得所有的用户信息(分页)
+        /// </summary>
+        IPagedList<U_User> GetPagedUsers(int pageIndex = 0, int pageSize = int.MaxValue);
+
+        /// <summary>
         /// 获得指定角色的用户信息
         /// </summary>
-        List<U_User> GetUsersInRole(Guid id, bool deep = true);
+        List<U_User> GetUsersInRole(string id, bool deep = true);
 
         /// <summary>
         /// 获得指定角色的用户信息（分页）
         /// </summary>
-        IPagedList<U_User> GetUsers(Guid id, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
-
-        /// <summary>
-        /// 获得所有的用户信息(分页)
-        /// </summary>
-        IPagedList<U_User> GetPagedUsers(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<U_User> GetUsers(string id, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue);
 
         /// <summary>
         /// 新增用户
@@ -57,17 +57,17 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 更新用户最后登录时间
         /// </summary>
-        void SetLastLoginDate(Guid id, DateTime lastDate);
+        void SetLastLoginDate(String id, DateTime lastDate);
 
         /// <summary>
         /// 更新用户登录失败时间
         /// </summary>
-        void SetFailedPasswordDate(Guid id, DateTime failedDate);
+        void SetFailedPasswordDate(String id, DateTime failedDate);
 
         /// <summary>
         /// 更新用户锁定信息
         /// </summary>
-        void SetLockedOut(Guid id, Boolean isLockedOut, DateTime lastLockoutDate);
+        void SetLockedOut(String id, Boolean isLockedOut, DateTime lastLockoutDate);
 
         /// <summary>
         /// 用户登录

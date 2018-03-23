@@ -46,7 +46,7 @@ namespace iPem.Site.Controllers {
             if (!_workContext.Authorizations().Menus.Contains(3001))
                 throw new HttpException(404, "Page not found.");
 
-            ViewBag.RoleId = _workContext.Role().Id.ToString();
+            ViewBag.RoleId = _workContext.Role().Id;
             return View();
         }
 

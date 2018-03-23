@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iPem.Core.Enum;
+using System;
 
 namespace iPem.Core.Domain.Sc {
     /// <summary>
@@ -17,7 +18,12 @@ namespace iPem.Core.Domain.Sc {
         public string Name { get; set; }
 
         /// <summary>
-        /// 开始时间
+        /// 预期开始时间
+        /// </summary>
+        public DateTime ExpStartTime { get; set; }
+
+        /// <summary>
+        /// 实际开始时间
         /// </summary>
         public DateTime StartTime { get; set; }
 
@@ -37,6 +43,11 @@ namespace iPem.Core.Domain.Sc {
         public string Creator { get; set; }
 
         /// <summary>
+        /// 创建人员登录名称
+        /// </summary>
+        public string UserId { get; set; }
+
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreatedTime { get; set; }
@@ -50,5 +61,10 @@ namespace iPem.Core.Domain.Sc {
         /// 状态
         /// </summary>
         public bool Enabled { get; set; }
+
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public EnmResult Status { get; set; }
     }
 }

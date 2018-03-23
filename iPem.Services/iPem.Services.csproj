@@ -30,13 +30,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.Mvc4.3.1.0\lib\net40\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Cache.cs" />
+    <Compile Include="Common\IServiceGetter.cs" />
+    <Compile Include="Common\IUserService.cs" />
+    <Compile Include="Common\ServiceGetter.cs" />
     <Compile Include="Cs\Class\AAlarmService.cs" />
     <Compile Include="Cs\Class\AMeasureService.cs" />
     <Compile Include="Cs\Class\BatCurveService.cs" />
@@ -77,6 +89,7 @@
     <Compile Include="Rs\Class\RedefinePointService.cs" />
     <Compile Include="Rs\Class\SCVendorService.cs" />
     <Compile Include="Rs\Class\SignalService.cs" />
+    <Compile Include="Rs\Class\UserService.cs" />
     <Compile Include="Rs\Interface\ICameraService.cs" />
     <Compile Include="Rs\Interface\IChannelService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
@@ -125,7 +138,6 @@
     <Compile Include="Rs\Interface\IProtocolService.cs" />
     <Compile Include="Sc\Interface\IRoleService.cs" />
     <Compile Include="Sc\Interface\ISDBScriptService.cs" />
-    <Compile Include="Sc\Interface\IUserService.cs" />
     <Compile Include="Sc\Interface\IWebEventService.cs" />
     <Compile Include="Sc\Class\MenuService.cs" />
     <Compile Include="Sc\Class\NoticeService.cs" />
@@ -175,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">

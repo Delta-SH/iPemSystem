@@ -26,12 +26,12 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定用户的系统消息
         /// </summary>
-        List<H_Notice> GetNoticesInUser(Guid uid);
+        List<H_Notice> GetNoticesInUser(string uid);
 
         /// <summary>
         /// 获得指定用户的未读消息
         /// </summary>
-        List<H_Notice> GetUnreadNotices(Guid uid);
+        List<H_Notice> GetUnreadNotices(string uid);
 
         /// <summary>
         /// 获得所有的系统消息
@@ -46,12 +46,12 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得指定用户的系统消息
         /// </summary>
-        IPagedList<H_Notice> GetPagedNoticesInUser(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<H_Notice> GetPagedNoticesInUser(string uid, int pageIndex = 0, int pageSize = int.MaxValue);
 
         /// <summary>
         /// 获得指定用户的未读消息
         /// </summary>
-        IPagedList<H_Notice> GetPagedUnreadNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<H_Notice> GetPagedUnreadNotices(string uid, int pageIndex = 0, int pageSize = int.MaxValue);
 
         /// <summary>
         /// 新增系统消息

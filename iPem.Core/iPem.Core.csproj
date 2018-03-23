@@ -105,6 +105,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Common\U_User.cs" />
     <Compile Include="Domain\Cs\A_AAlarm.cs" />
     <Compile Include="Domain\Cs\A_TAlarm.cs" />
     <Compile Include="Domain\Cs\H_CardRecord.cs" />
@@ -200,7 +201,6 @@
     <Compile Include="Data\SqliteDataProvider.cs" />
     <Compile Include="Domain\Sc\U_Menu.cs" />
     <Compile Include="Domain\Sc\U_Role.cs" />
-    <Compile Include="Domain\Sc\U_User.cs" />
     <Compile Include="Domain\Sc\H_WebEvent.cs" />
     <Compile Include="Enum\EnmAccount.cs" />
     <Compile Include="Enum\EnmCaching.cs" />

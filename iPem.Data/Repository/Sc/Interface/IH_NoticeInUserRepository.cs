@@ -15,7 +15,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定的用户消息映射关系
         /// </summary>
-        List<H_NoticeInUser> GetNoticesInUser(Guid uid);
+        List<H_NoticeInUser> GetNoticesInUser(string uid);
 
         /// <summary>
         /// 新增用户消息映射关系

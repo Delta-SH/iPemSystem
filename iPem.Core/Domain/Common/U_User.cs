@@ -1,7 +1,7 @@
 ﻿using System;
 using iPem.Core.Enum;
 
-namespace iPem.Core.Domain.Sc {
+namespace iPem.Core.Domain.Common {
     /// <summary>
     /// 用户信息表
     /// </summary>
@@ -10,12 +10,12 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 角色编号
         /// </summary>
-        public Guid RoleId { get; set; }
+        public string RoleId { get; set; }
 
         /// <summary>
         /// 用户编号
         /// </summary>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// 登录名称
@@ -91,5 +91,6 @@ namespace iPem.Core.Domain.Sc {
         /// 状态
         /// </summary>
         public Boolean Enabled { get; set; }
+
     }
 }

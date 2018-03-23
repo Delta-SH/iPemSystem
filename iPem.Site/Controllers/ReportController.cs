@@ -158,15 +158,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetBase400101(parent, types);
-                if(models != null) {
+                if (models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
 
@@ -177,15 +177,15 @@ namespace iPem.Site.Controllers {
                                      Count = g.Count()
                                  };
 
-                    foreach(var group in groups) {
+                    foreach (var group in groups) {
                         data.chart.Add(new ChartModel {
                             name = group.Key,
                             value = group.Count
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -197,11 +197,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadBase400101(string parent, int[] types) {
             try {
                 var models = this.GetBase400101(parent, types);
-                using(var ms = _excelManager.Export<Model400101>(models, "区域统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400101>(models, "区域统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -218,15 +218,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetBase400102(parent, types);
-                if(models != null) {
+                if (models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
 
@@ -237,15 +237,15 @@ namespace iPem.Site.Controllers {
                                      Count = g.Count()
                                  };
 
-                    foreach(var group in groups) {
+                    foreach (var group in groups) {
                         data.chart.Add(new ChartModel {
                             name = group.Key,
                             value = group.Count
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -257,11 +257,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadBase400102(string parent, string[] types) {
             try {
                 var models = this.GetBase400102(parent, types);
-                using(var ms = _excelManager.Export<Model400102>(models, "站点统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400102>(models, "站点统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -278,15 +278,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetBase400103(parent, types);
-                if(models != null) {
+                if (models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
 
@@ -297,15 +297,15 @@ namespace iPem.Site.Controllers {
                                      Count = g.Count()
                                  };
 
-                    foreach(var group in groups) {
+                    foreach (var group in groups) {
                         data.chart.Add(new ChartModel {
                             name = group.Key,
                             value = group.Count
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -317,11 +317,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadBase400103(string parent, string[] types) {
             try {
                 var models = this.GetBase400103(parent, types);
-                using(var ms = _excelManager.Export<Model400103>(models, "机房统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400103>(models, "机房统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -338,15 +338,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetBase400104(parent, types);
-                if(models != null) {
+                if (models != null) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
 
@@ -357,15 +357,15 @@ namespace iPem.Site.Controllers {
                                      Count = g.Count()
                                  };
 
-                    foreach(var group in groups) {
+                    foreach (var group in groups) {
                         data.chart.Add(new ChartModel {
                             name = group.Key,
                             value = group.Count
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -377,11 +377,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadBase400104(string parent, string[] types) {
             try {
                 var models = this.GetBase400104(parent, types);
-                using(var ms = _excelManager.Export<Model400104>(models, "设备统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400104>(models, "设备统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -410,7 +410,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -427,7 +427,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -456,7 +456,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -473,7 +473,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -502,7 +502,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -519,7 +519,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -548,7 +548,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -565,7 +565,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -581,12 +581,12 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetHistory400201(parent, startDate, endDate, statypes, roomtypes, devtypes, points, keywords, cache);
-                if(stores != null && stores.Count > 0) {
+                if (stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
 
                     var end = start + limit;
-                    if(end > stores.Count)
+                    if (end > stores.Count)
                         end = stores.Count;
 
                     for (int i = start; i < end; i++) {
@@ -595,8 +595,8 @@ namespace iPem.Site.Controllers {
                         data.data.Add(store);
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -616,8 +616,8 @@ namespace iPem.Site.Controllers {
                 using (var ms = _excelManager.Export<Model400201>(models, "历史测值信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -634,15 +634,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetHistory400202(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, types, confirmers, keywords, confirm, project, cache);
-                if(stores != null) {
+                if (stores != null) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
 
                     var end = start + limit;
-                    if(end > stores.Count)
+                    if (end > stores.Count)
                         end = stores.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new Model400202 {
                             id = stores[i].Current.Id,
                             index = i + 1,
@@ -677,8 +677,8 @@ namespace iPem.Site.Controllers {
                     data.chart[0] = this.GetHisAlmChart1(stores);
                     data.chart[1] = this.GetHisAlmChart2(parent, stores);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -692,8 +692,8 @@ namespace iPem.Site.Controllers {
             try {
                 var models = new List<Model400202>();
                 var stores = this.GetHistory400202(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, types, confirmers, keywords, confirm, project, cache);
-                if(stores != null && stores.Count > 0) {
-                    for(int i = 0; i < stores.Count; i++) {
+                if (stores != null && stores.Count > 0) {
+                    for (int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400202 {
                             id = stores[i].Current.Id,
                             index = i + 1,
@@ -727,11 +727,11 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                using(var ms = _excelManager.Export<Model400202>(models, "历史告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400202>(models, "历史告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -799,7 +799,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -863,7 +863,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -879,20 +879,20 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetHistory400203(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if(stores != null) {
+                if (stores != null) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
 
                     var end = start + limit;
-                    if(end > stores.Count)
+                    if (end > stores.Count)
                         end = stores.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(stores[i]);
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -905,11 +905,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadHistory400203(string parent, DateTime startDate, DateTime endDate, string[] staTypes, string[] roomTypes, string[] subDeviceTypes, string[] subLogicTypes, string[] points, int[] levels, int confirm, int project, bool cache) {
             try {
                 var models = this.GetHistory400203(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
-                using(var ms = _excelManager.Export<Model400203>(models, "历史告警分类信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400203>(models, "历史告警分类信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -930,7 +930,7 @@ namespace iPem.Site.Controllers {
                 var stores = _cacheManager.GetItemsFromList<Model400203>(key);
                 if (stores != null) {
                     var current = stores.FirstOrDefault(s => s.stationid == station);
-                    if(current != null) {
+                    if (current != null) {
                         var alarms = new List<AlmStore<A_HAlarm>>();
                         if (level == (int)EnmAlarm.Level0) {
                             alarms = current.alarms;
@@ -985,7 +985,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1057,7 +1057,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1090,7 +1090,7 @@ namespace iPem.Site.Controllers {
                 data.data.Add(new GridColumn { name = "total", type = "string", column = "总计", align = "center", detail = true });
                 data.total = data.data.Count;
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1110,7 +1110,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetHistory400204(parent, startDate, endDate, staTypes, roomTypes, devTypes, subLogicTypes, points, levels, confirm, project, cache);
-                if(stores != null && stores.Count > 0) {
+                if (stores != null && stores.Count > 0) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
 
@@ -1164,8 +1164,8 @@ namespace iPem.Site.Controllers {
                         data.chart.Add(charts);
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1204,8 +1204,8 @@ namespace iPem.Site.Controllers {
                 using (var ms = _excelManager.Export(models, "设备告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1271,7 +1271,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1333,7 +1333,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1362,7 +1362,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1375,11 +1375,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadHistory400205(string parent, DateTime startDate, DateTime endDate) {
             try {
                 var models = this.GetHistory400205(parent, startDate, endDate);
-                using(var ms = _excelManager.Export<Model400205>(models, "工程项目信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400205>(models, "工程项目信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1408,7 +1408,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1421,11 +1421,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadHistory400206(string parent, DateTime startDate, DateTime endDate) {
             try {
                 var models = this.GetHistory400206(parent, startDate, endDate);
-                using(var ms = _excelManager.Export<Model400206>(models, "工程预约信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400206>(models, "工程预约信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1441,20 +1441,20 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetHistory400207(parent, types, startDate, endDate, cache);
-                if(models != null && models.Count > 0) {
+                if (models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1467,11 +1467,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadHistory400207(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             try {
                 var models = this.GetHistory400207(parent, types, startDate, endDate, cache);
-                using(var ms = _excelManager.Export<Model400207>(models, "市电停电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400207>(models, "市电停电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1513,7 +1513,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1550,7 +1550,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1566,20 +1566,20 @@ namespace iPem.Site.Controllers {
 
             try {
                 var models = this.GetHistory400208(parent, types, startDate, endDate, cache);
-                if(models != null && models.Count > 0) {
+                if (models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
 
                     var end = start + limit;
-                    if(end > models.Count)
+                    if (end > models.Count)
                         end = models.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(models[i]);
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1592,11 +1592,11 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadHistory400208(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             try {
                 var models = this.GetHistory400208(parent, types, startDate, endDate, cache);
-                using(var ms = _excelManager.Export<Model400208>(models, "油机发电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400208>(models, "油机发电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1638,7 +1638,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1675,7 +1675,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1705,7 +1705,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1726,7 +1726,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1756,7 +1756,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1777,7 +1777,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1812,7 +1812,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1842,7 +1842,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1871,7 +1871,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1888,7 +1888,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1923,7 +1923,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1951,7 +1951,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1969,7 +1969,7 @@ namespace iPem.Site.Controllers {
                 if (!string.IsNullOrWhiteSpace(device)) {
                     var curves = _batCurveService.GetProcedures(device, proctime, proctime.AddDays(3));
                     if (curves.Count > 0) {
-                        var points = _workContext.Points().FindAll(p=>p.Type == EnmPoint.AI);
+                        var points = _workContext.Points().FindAll(p => p.Type == EnmPoint.AI);
                         var values = from curve in curves
                                      group curve by curve.PointId into g
                                      join point in points on g.Key equals point.Id
@@ -1998,7 +1998,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2042,8 +2042,8 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2089,8 +2089,8 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2134,8 +2134,8 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2167,7 +2167,7 @@ namespace iPem.Site.Controllers {
                     if (end > stores.Count)
                         end = stores.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new Model400401 {
                             id = stores[i].Current.Id,
                             index = i + 1,
@@ -2199,8 +2199,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2216,7 +2216,7 @@ namespace iPem.Site.Controllers {
                 var model = this.GetCustom400401(parent, startDate, endDate, staTypes, roomTypes, subDeviceTypes, subLogicTypes, points, levels, confirm, project, cache);
                 if (model != null && model.Key != null) {
                     var stores = model.Key;
-                    for(int i = 0; i < stores.Count; i++) {
+                    for (int i = 0; i < stores.Count; i++) {
                         models.Add(new Model400401 {
                             id = stores[i].Current.Id,
                             index = i + 1,
@@ -2250,11 +2250,11 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                using(var ms = _excelManager.Export<Model400401>(models, "超频告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400401>(models, "超频告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2315,8 +2315,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2366,11 +2366,11 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                using(var ms = _excelManager.Export<Model400402>(models, "超短告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400402>(models, "超短告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2431,8 +2431,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2482,11 +2482,11 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                using(var ms = _excelManager.Export<Model400403>(models, "超长告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<Model400403>(models, "超长告警信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2495,14 +2495,14 @@ namespace iPem.Site.Controllers {
             var index = 0;
             var result = new List<Model400101>();
 
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 #region root
                 var areas = _workContext.Areas();
-                if(types != null && types.Length > 0) 
+                if (types != null && types.Length > 0)
                     areas = areas.FindAll(a => types.Contains(a.Current.Type.Key));
 
                 var ordered = areas.OrderBy(a => a.Current.Type.Key);
-                foreach(var current in ordered) {
+                foreach (var current in ordered) {
                     result.Add(new Model400101 {
                         index = ++index,
                         id = current.Current.Id,
@@ -2516,13 +2516,13 @@ namespace iPem.Site.Controllers {
             } else {
                 #region children
                 var current = _workContext.Areas().Find(a => a.Current.Id == parent);
-                if(current != null && current.HasChildren) {
+                if (current != null && current.HasChildren) {
                     var children = current.Children;
-                    if(types != null && types.Length > 0)
+                    if (types != null && types.Length > 0)
                         children = children.FindAll(a => types.Contains(a.Current.Type.Key));
 
                     var ordered = children.OrderBy(a => a.Current.Type.Key);
-                    foreach(var child in ordered) {
+                    foreach (var child in ordered) {
                         result.Add(new Model400101 {
                             index = ++index,
                             id = child.Current.Id,
@@ -2544,14 +2544,14 @@ namespace iPem.Site.Controllers {
             var result = new List<Model400102>();
 
             var stations = new List<SSHStation>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 stations = _workContext.Stations();
             } else {
                 var current = _workContext.Areas().Find(a => a.Current.Id == parent);
-                if(current != null) stations = _workContext.Stations().FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                if (current != null) stations = _workContext.Stations().FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
-            if(types != null && types.Length > 0)
+            if (types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
 
             var loadTypes = _enumMethodService.GetEnumsByType(EnmMethodType.Station, "市电引入方式");
@@ -2570,7 +2570,7 @@ namespace iPem.Site.Controllers {
                              PowerType = def2 ?? new C_EnumMethod { Name = "未定义", Index = 0 }
                          };
 
-            foreach (var store in stores.OrderBy(s=>s.Area).ThenBy(s => s.Station.Name)) {
+            foreach (var store in stores.OrderBy(s => s.Area).ThenBy(s => s.Station.Name)) {
                 result.Add(new Model400102 {
                     index = ++index,
                     area = store.Area,
@@ -2602,25 +2602,25 @@ namespace iPem.Site.Controllers {
             var result = new List<Model400103>();
 
             var rooms = new List<S_Room>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 rooms.AddRange(_workContext.Rooms().Select(r => r.Current));
             } else {
                 var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+                if (keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
+                    if (nodeType == EnmSSH.Area) {
                         var current = _workContext.Areas().Find(a => a.Current.Id == id);
-                        if(current != null) rooms.AddRange(_workContext.Rooms().FindAll(s => current.Keys.Contains(s.Current.AreaId)).Select(r => r.Current));
-                    } else if(nodeType == EnmSSH.Station) {
+                        if (current != null) rooms.AddRange(_workContext.Rooms().FindAll(s => current.Keys.Contains(s.Current.AreaId)).Select(r => r.Current));
+                    } else if (nodeType == EnmSSH.Station) {
                         var current = _workContext.Stations().Find(a => a.Current.Id == id);
-                        if(current != null) rooms = current.Rooms;
+                        if (current != null) rooms = current.Rooms;
                     }
                 }
             }
 
-            if(types != null && types.Length > 0)
+            if (types != null && types.Length > 0)
                 rooms = rooms.FindAll(s => types.Contains(s.Type.Id));
 
             var parms = _enumMethodService.GetEnumsByType(EnmMethodType.Room, "产权");
@@ -2674,27 +2674,27 @@ namespace iPem.Site.Controllers {
             var result = new List<Model400104>();
 
             var devices = new List<D_Device>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
-                devices.AddRange(_workContext.Devices().Select(d=>d.Current));
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
+                devices.AddRange(_workContext.Devices().Select(d => d.Current));
             } else {
                 var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+                if (keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
+                    if (nodeType == EnmSSH.Area) {
                         var current = _workContext.Areas().Find(a => a.Current.Id == id);
                         if (current != null) devices.AddRange(_workContext.Devices().FindAll(s => current.Keys.Contains(s.Current.AreaId)).Select(d => d.Current));
-                    } else if(nodeType == EnmSSH.Station) {
+                    } else if (nodeType == EnmSSH.Station) {
                         devices.AddRange(_workContext.Devices().FindAll(d => d.Current.StationId == id).Select(d => d.Current));
-                    } else if(nodeType == EnmSSH.Room) {
+                    } else if (nodeType == EnmSSH.Room) {
                         var current = _workContext.Rooms().Find(a => a.Current.Id == id);
-                        if(current != null) devices = current.Devices;
+                        if (current != null) devices = current.Devices;
                     }
                 }
             }
 
-            if(types != null && types.Length > 0)
+            if (types != null && types.Length > 0)
                 devices = devices.FindAll(d => types.Contains(d.Type.Id));
 
             var status = _enumMethodService.GetEnumsByType(EnmMethodType.Device, "使用状态");
@@ -2773,7 +2773,7 @@ namespace iPem.Site.Controllers {
             if (empys.Count == 0) return stores;
 
             var auths = _mauthorizationService.GetAuthorizationsInType(EnmEmpType.Employee);
-            if (_workContext.Role().Id != U_Role.SuperId) {
+            if (!_workContext.Role().Id.Equals(U_Role.SuperId)) {
                 auths = auths.FindAll(a => _workContext.DeviceKeys().Contains(a.DeviceId));
             }
 
@@ -2886,7 +2886,7 @@ namespace iPem.Site.Controllers {
             if (empys.Count == 0) return stores;
 
             var auths = _mauthorizationService.GetAuthorizationsInType(EnmEmpType.OutEmployee);
-            if (_workContext.Role().Id != U_Role.SuperId) {
+            if (!_workContext.Role().Id.Equals(U_Role.SuperId)) {
                 auths = auths.FindAll(a => _workContext.DeviceKeys().Contains(a.DeviceId));
             }
 
@@ -2910,7 +2910,7 @@ namespace iPem.Site.Controllers {
                             workPhone = emp.WorkPhone,
                             mobilePhone = emp.MobilePhone,
                             email = emp.Email,
-                            empName = string.IsNullOrWhiteSpace(emp.EmpName) ? "" : string.Format("{0}({1})",emp.EmpName,emp.EmpCode??""),
+                            empName = string.IsNullOrWhiteSpace(emp.EmpName) ? "" : string.Format("{0}({1})", emp.EmpName, emp.EmpCode ?? ""),
                             remarks = emp.Remarks,
                             enabled = emp.Enabled,
                             cardId = emp.CardId ?? "",
@@ -2959,35 +2959,35 @@ namespace iPem.Site.Controllers {
             if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400201>(key).ToList();
 
             var values = new List<V_HMeasure>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 values = _measureService.GetMeasures(startDate, endDate);
             } else {
                 var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+                if (keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
+                    if (nodeType == EnmSSH.Area) {
                         var current = _workContext.Areas().Find(a => a.Current.Id == id);
-                        if(current != null) values = _measureService.GetMeasures(startDate, endDate).FindAll(s => current.Keys.Contains(s.AreaId));
-                    } else if(nodeType == EnmSSH.Station) {
+                        if (current != null) values = _measureService.GetMeasures(startDate, endDate).FindAll(s => current.Keys.Contains(s.AreaId));
+                    } else if (nodeType == EnmSSH.Station) {
                         values = _measureService.GetMeasuresInStation(id, startDate, endDate);
-                    } else if(nodeType == EnmSSH.Room) {
+                    } else if (nodeType == EnmSSH.Room) {
                         values = _measureService.GetMeasuresInRoom(id, startDate, endDate);
-                    } else if(nodeType == EnmSSH.Device) {
+                    } else if (nodeType == EnmSSH.Device) {
                         values = _measureService.GetMeasuresInDevice(id, startDate, endDate);
                     }
                 }
             }
 
             var devices = _workContext.Devices();
-            if(statypes != null && statypes.Length > 0)
+            if (statypes != null && statypes.Length > 0)
                 devices = devices.FindAll(d => statypes.Contains(d.Current.StaTypeId));
 
-            if(roomtypes != null && roomtypes.Length > 0)
+            if (roomtypes != null && roomtypes.Length > 0)
                 devices = devices.FindAll(d => roomtypes.Contains(d.Current.RoomTypeId));
-            
-            if(devtypes != null && devtypes.Length > 0)
+
+            if (devtypes != null && devtypes.Length > 0)
                 devices = devices.FindAll(d => devtypes.Contains(d.Current.SubType.Id));
 
             if (points != null && points.Length > 0)
@@ -3063,7 +3063,7 @@ namespace iPem.Site.Controllers {
                 else
                     noralarms.Add(alarm);
             }
-            
+
             var stores = _workContext.AlarmsToStore(noralarms);
             if (types != null && types.Contains(1)) {
                 if (scalarms.Count > 0) {
@@ -3099,10 +3099,10 @@ namespace iPem.Site.Controllers {
                 stores.AddRange(_workContext.AlarmsToStore(masks));
             }
 
-            if(staTypes != null && staTypes.Length > 0)
+            if (staTypes != null && staTypes.Length > 0)
                 stores = stores.FindAll(d => staTypes.Contains(d.StationTypeId));
 
-            if(roomTypes != null && roomTypes.Length > 0)
+            if (roomTypes != null && roomTypes.Length > 0)
                 stores = stores.FindAll(d => roomTypes.Contains(d.RoomTypeId));
 
             if (subDeviceTypes != null && subDeviceTypes.Length > 0)
@@ -3114,7 +3114,7 @@ namespace iPem.Site.Controllers {
             if (points != null && points.Length > 0)
                 stores = stores.FindAll(p => points.Contains(p.Current.PointId));
 
-            if(levels != null && levels.Length > 0)
+            if (levels != null && levels.Length > 0)
                 stores = stores.FindAll(a => levels.Contains((int)a.Current.AlarmLevel));
 
             if (!string.IsNullOrWhiteSpace(confirmers)) {
@@ -3127,10 +3127,10 @@ namespace iPem.Site.Controllers {
                 if (names.Length > 0) stores = stores.FindAll(p => CommonHelper.ConditionContain(p.PointName, names));
             }
 
-            if(confirm == 1) stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Confirmed);
-            if(confirm == 0) stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Unconfirmed);
-            if(project == 1) stores = stores.FindAll(a => !string.IsNullOrWhiteSpace(a.Current.ReservationId));
-            if(project == 0) stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
+            if (confirm == 1) stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Confirmed);
+            if (confirm == 0) stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Unconfirmed);
+            if (project == 1) stores = stores.FindAll(a => !string.IsNullOrWhiteSpace(a.Current.ReservationId));
+            if (project == 0) stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
 
             stores = stores.OrderByDescending(s => s.Current.StartTime).ToList();
             if (stores.Count <= GlobalCacheLimit.Default_Limit) {
@@ -3149,7 +3149,7 @@ namespace iPem.Site.Controllers {
             var stations = _workContext.Stations();
             var alarms = _hisAlarmService.GetAlarms(startDate, endDate).FindAll(a => !Common.IsSystemAlarm(a.FsuId));
             var stores = _workContext.AlarmsToStore(alarms);
-            if(!string.IsNullOrWhiteSpace(parent) && !parent.Equals("root")){
+            if (!string.IsNullOrWhiteSpace(parent) && !parent.Equals("root")) {
                 var current = _workContext.Areas().Find(a => a.Current.Id == parent);
                 if (current != null) {
                     stations = stations.FindAll(d => current.Keys.Contains(d.Current.AreaId));
@@ -3197,20 +3197,20 @@ namespace iPem.Site.Controllers {
                 var _alarms4 = _alarms.FindAll(a => a.Current.AlarmLevel == EnmAlarm.Level4);
 
                 result.Add(new Model400203 {
-                     index = ++index,
-                     area = station.Current.AreaName,
-                     stationid = station.Current.Id,
-                     station = station.Current.Name,
-                     level1 = _alarms1.Count,
-                     alarms1 = _alarms1,
-                     level2 = _alarms2.Count,
-                     alarms2 = _alarms2,
-                     level3 = _alarms3.Count,
-                     alarms3 = _alarms3,
-                     level4 = _alarms4.Count,
-                     alarms4 = _alarms4,
-                     total = _alarms.Count,
-                     alarms = _alarms
+                    index = ++index,
+                    area = station.Current.AreaName,
+                    stationid = station.Current.Id,
+                    station = station.Current.Name,
+                    level1 = _alarms1.Count,
+                    alarms1 = _alarms1,
+                    level2 = _alarms2.Count,
+                    alarms2 = _alarms2,
+                    level3 = _alarms3.Count,
+                    alarms3 = _alarms3,
+                    level4 = _alarms4.Count,
+                    alarms4 = _alarms4,
+                    total = _alarms.Count,
+                    alarms = _alarms
                 });
             }
 
@@ -3326,9 +3326,9 @@ namespace iPem.Site.Controllers {
 
             var models = new List<Model400205>();
             var stations = _workContext.Stations();
-            if(!string.IsNullOrWhiteSpace(parent) && parent != "root") {
+            if (!string.IsNullOrWhiteSpace(parent) && parent != "root") {
                 var current = _workContext.Areas().Find(a => a.Current.Id == parent);
-                if(current != null) stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
+                if (current != null) stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
             var index = 0;
@@ -3906,35 +3906,35 @@ namespace iPem.Site.Controllers {
 
         private List<Kv<M_Reservation, HashSet<string>>> GetReservationsInDevices(IEnumerable<M_Reservation> entities) {
             var appSets = new List<Kv<M_Reservation, HashSet<string>>>();
-            foreach(var entity in entities) {
+            foreach (var entity in entities) {
                 var appSet = new Kv<M_Reservation, HashSet<string>>() { Key = entity, Value = new HashSet<string>() };
                 var nodes = _nodesInReservationService.GetNodesInReservationsInReservation(entity.Id);
-                foreach(var node in nodes) {
-                    if(node.NodeType == EnmSSH.Device) {
+                foreach (var node in nodes) {
+                    if (node.NodeType == EnmSSH.Device) {
                         appSet.Value.Add(node.NodeId);
                     }
 
-                    if(node.NodeType == EnmSSH.Room) {
+                    if (node.NodeType == EnmSSH.Room) {
                         var current = _workContext.Rooms().Find(r => r.Current.Id == node.NodeId);
-                        if(current != null) {
-                            foreach(var device in current.Devices) {
+                        if (current != null) {
+                            foreach (var device in current.Devices) {
                                 appSet.Value.Add(device.Id);
                             }
                         }
                     }
 
-                    if(node.NodeType == EnmSSH.Station) {
+                    if (node.NodeType == EnmSSH.Station) {
                         var devices = _workContext.Devices().FindAll(d => d.Current.StationId == node.NodeId);
-                        foreach(var device in devices) {
+                        foreach (var device in devices) {
                             appSet.Value.Add(device.Current.Id);
                         }
                     }
 
-                    if(node.NodeType == EnmSSH.Area) {
+                    if (node.NodeType == EnmSSH.Area) {
                         var current = _workContext.Areas().Find(a => a.Current.Id == node.NodeId);
-                        if(current != null) {
+                        if (current != null) {
                             var devices = _workContext.Devices().FindAll(d => current.Keys.Contains(d.Current.AreaId));
-                            foreach(var device in devices) {
+                            foreach (var device in devices) {
                                 appSet.Value.Add(device.Current.Id);
                             }
                         }
@@ -3951,20 +3951,20 @@ namespace iPem.Site.Controllers {
             endDate = endDate.AddSeconds(86399);
 
             var rtValues = _workContext.RtValues();
-            if(rtValues == null) return null;
+            if (rtValues == null) return null;
 
             var key1 = string.Format(GlobalCacheKeys.Report_400401, "alarm", _workContext.Identifier());
             var key2 = string.Format(GlobalCacheKeys.Report_400401, "chart", _workContext.Identifier());
 
             if (!cache) {
-                if(_cacheManager.IsSet(key1))
+                if (_cacheManager.IsSet(key1))
                     _cacheManager.Remove(key1);
 
-                if(_cacheManager.IsSet(key2))
+                if (_cacheManager.IsSet(key2))
                     _cacheManager.Remove(key2);
             }
 
-            if(_cacheManager.IsSet(key1) && _cacheManager.IsSet(key2)){
+            if (_cacheManager.IsSet(key1) && _cacheManager.IsSet(key2)) {
                 var cache1 = _cacheManager.GetItemsFromList<AlmStore<A_HAlarm>>(key1).ToList();
                 var cache2 = _cacheManager.GetItemsFromList<ChartsModel>(key2).ToList();
                 return new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(cache1, cache2);
@@ -4301,10 +4301,10 @@ namespace iPem.Site.Controllers {
 
         private List<ChartModel> GetHisAlmChart2(string parent, List<AlmStore<A_HAlarm>> stores) {
             var models = new List<ChartModel>();
-            if(string.IsNullOrWhiteSpace(parent) || parent == "root") {
+            if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 #region root
                 var roots = _workContext.Areas().FindAll(a => !a.HasParents);
-                foreach(var root in roots) {
+                foreach (var root in roots) {
                     var curstores = stores.FindAll(s => root.Keys.Contains(s.Current.AreaId));
                     models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                     models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = root.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
@@ -4314,24 +4314,24 @@ namespace iPem.Site.Controllers {
                 #endregion
             } else {
                 var keys = Common.SplitKeys(parent);
-                if(keys.Length == 2) {
+                if (keys.Length == 2) {
                     var type = int.Parse(keys[0]);
                     var id = keys[1];
                     var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if(nodeType == EnmSSH.Area) {
+                    if (nodeType == EnmSSH.Area) {
                         #region area
                         var current = _workContext.Areas().Find(a => a.Current.Id == id);
-                        if(current != null) {
-                            if(current.HasChildren) {
-                                foreach(var child in current.ChildRoot) {
+                        if (current != null) {
+                            if (current.HasChildren) {
+                                foreach (var child in current.ChildRoot) {
                                     var curstores = stores.FindAll(s => child.Keys.Contains(s.Current.AreaId));
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level3, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level3), comment = Common.GetAlarmDisplay(EnmAlarm.Level3) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level4, name = child.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level4), comment = Common.GetAlarmDisplay(EnmAlarm.Level4) });
                                 }
-                            } else if(current.Stations.Count > 0) {
-                                foreach(var station in current.Stations) {
+                            } else if (current.Stations.Count > 0) {
+                                foreach (var station in current.Stations) {
                                     var curstores = stores.FindAll(s => s.Current.StationId == station.Id);
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = station.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                     models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = station.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
@@ -4341,11 +4341,11 @@ namespace iPem.Site.Controllers {
                             }
                         }
                         #endregion
-                    } else if(nodeType == EnmSSH.Station) {
+                    } else if (nodeType == EnmSSH.Station) {
                         #region station
                         var current = _workContext.Stations().Find(s => s.Current.Id == id);
-                        if(current != null && current.Rooms.Count > 0) {
-                            foreach(var room in current.Rooms) {
+                        if (current != null && current.Rooms.Count > 0) {
+                            foreach (var room in current.Rooms) {
                                 var curstores = stores.FindAll(m => m.Current.RoomId == room.Id);
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = room.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = room.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
@@ -4354,11 +4354,11 @@ namespace iPem.Site.Controllers {
                             }
                         }
                         #endregion
-                    } else if(nodeType == EnmSSH.Room) {
+                    } else if (nodeType == EnmSSH.Room) {
                         #region room
                         var current = _workContext.Rooms().Find(r => r.Current.Id == id);
-                        if(current != null && current.Devices.Count > 0) {
-                            foreach(var device in current.Devices) {
+                        if (current != null && current.Devices.Count > 0) {
+                            foreach (var device in current.Devices) {
                                 var curstores = stores.FindAll(s => s.Current.DeviceId == device.Id);
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = device.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                                 models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = device.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });
@@ -4367,10 +4367,10 @@ namespace iPem.Site.Controllers {
                             }
                         }
                         #endregion
-                    } else if(nodeType == EnmSSH.Device) {
+                    } else if (nodeType == EnmSSH.Device) {
                         #region device
                         var current = _workContext.Devices().Find(d => d.Current.Id == id);
-                        if(current != null) {
+                        if (current != null) {
                             var curstores = stores.FindAll(s => s.Current.DeviceId == current.Current.Id);
                             models.Add(new ChartModel { index = (int)EnmAlarm.Level1, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level1), comment = Common.GetAlarmDisplay(EnmAlarm.Level1) });
                             models.Add(new ChartModel { index = (int)EnmAlarm.Level2, name = current.Current.Name, value = curstores.Count(s => s.Current.AlarmLevel == EnmAlarm.Level2), comment = Common.GetAlarmDisplay(EnmAlarm.Level2) });

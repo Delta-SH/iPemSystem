@@ -5,17 +5,21 @@ using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Data.Repository.Common;
 using iPem.Services.Common;
+using iPem.Services.Sc;
 using System;
 using System.Collections.Generic;
 
-namespace iPem.Services.Sc {
+namespace iPem.Services.Rs {
     public partial class UserService : IUserService {
 
         #region Fields
 
         private readonly IU_UserRepository _repository;
+        private readonly IU_UserRepository _userRepository;
         private readonly ICacheManager _cacheManager;
         private readonly EnmPasswordFormat _passwordFormat;
+        private readonly IRoleService _roleService;
+        private readonly IServiceGetter _svcGetter;
 
         #endregion
 
@@ -26,10 +30,15 @@ namespace iPem.Services.Sc {
         /// </summary>
         public UserService(
             IU_UserRepository repository,
-            ICacheManager cacheManager) {
+            ICacheManager cacheManager,
+            IRoleService roleService,
+            IServiceGetter svcGetter) {
             this._repository = repository;
             this._cacheManager = cacheManager;
-            this._passwordFormat = EnmPasswordFormat.Hashed;
+            this._passwordFormat = EnmPasswordFormat.Clear;
+            this._roleService = roleService;
+            this._svcGetter = svcGetter;
+            this._userRepository = svcGetter.GetByName<IU_UserRepository>("sc_user_repository");
         }
 
         #endregion
@@ -37,15 +46,55 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public U_User GetUserById(string id) {
-            return _repository.GetUserById(id);
+            var user = _repository.GetUserById(id);
+            if (user != null) {
+                if (user.RoleId.Equals(U_Role.RsSuperId)) {
+                    user.RoleId = U_Role.SuperId;
+                } else {
+                    var role = _roleService.GetRoleByUid(user.Id);
+                    if (role != null) {
+                        user.RoleId = role.Id;
+                    }
+                }
+            }
+            return user;
         }
 
         public U_User GetUserByName(string name) {
-            return _repository.GetUserByName(name);
+            var user = _repository.GetUserByName(name);
+            if (user != null) {
+                if (user.RoleId.Equals(U_Role.RsSuperId)) {
+                    user.RoleId = U_Role.SuperId;
+                } else {
+                    var role = _roleService.GetRoleByUid(user.Id);
+                    if (role != null) {
+                        user.RoleId = role.Id;
+                    }
+                }
+            }
+
+            return user;
         }
 
         public List<U_User> GetUsers() {
-            return _repository.GetUsers();
+            var users = _repository.GetUsers();
+            var csUsers = _userRepository.GetUsers();
+
+            if (users != null && users.Count > 0) {
+                foreach (var user in users) {
+                    if (user.RoleId.Equals(U_Role.RsSuperId)) {
+                        user.RoleId = U_Role.SuperId;
+                        continue;
+                    }
+
+                    var current = csUsers.Find(u => u.Id.Equals(user.Id));
+                    if (current != null) {
+                        user.RoleId = current.RoleId;
+                    }
+                }
+            }
+
+            return users;
         }
 
         public IPagedList<U_User> GetPagedUsers(int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -56,7 +105,9 @@ namespace iPem.Services.Sc {
             if (deep && role.Equals(U_Role.SuperId))
                 return this.GetUsers();
 
-            return _repository.GetUsersInRole(role);
+            var users = this.GetUsers().FindAll(u => u.RoleId.Equals(role.ToString()));
+
+            return users;
         }
 
         public IPagedList<U_User> GetUsers(string role, bool deep = true, int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -71,6 +122,7 @@ namespace iPem.Services.Sc {
             user.PasswordSalt = _repository.GenerateSalt();
             user.Password = _repository.EncodePassword(user.Password, user.PasswordFormat, user.PasswordSalt);
             _repository.Insert(new List<U_User> { user });
+            _userRepository.Insert(new List<U_User> { user });
         }
 
         public void Update(params U_User[] users) {
@@ -78,6 +130,14 @@ namespace iPem.Services.Sc {
                 throw new ArgumentNullException("users");
 
             _repository.Update(users);
+            foreach (var user in users) {
+                var scUser = _userRepository.GetUserById(user.Id);
+                if (scUser == null) {
+                    _userRepository.Insert(new List<U_User> { user });
+                } else {
+                    _userRepository.Update(new List<U_User> { user });
+                }
+            }
         }
 
         public void Remove(params U_User[] users) {
@@ -85,6 +145,7 @@ namespace iPem.Services.Sc {
                 throw new ArgumentNullException("users");
 
             _repository.Delete(users);
+            _userRepository.Delete(users);
         }
 
         public void SetLastLoginDate(String id, DateTime lastDate) {

@@ -10,7 +10,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定角色编号的角色
         /// </summary>
-        U_Role GetRoleById(Guid id);
+        U_Role GetRoleById(string id);
 
         /// <summary>
         /// 获得指定角色名称的角色
@@ -20,7 +20,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定用户编号的角色
         /// </summary>
-        U_Role GetRoleByUid(Guid id);
+        U_Role GetRoleByUid(string id);
 
         /// <summary>
         /// 获得所有的角色

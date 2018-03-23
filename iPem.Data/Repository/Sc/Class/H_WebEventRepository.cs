@@ -48,7 +48,7 @@ namespace iPem.Data.Repository.Sc {
                     entity.IpAddress = SqlTypeConverter.DBNullStringHandler(rdr["IpAddress"]);
                     entity.PageUrl = SqlTypeConverter.DBNullStringHandler(rdr["PageUrl"]);
                     entity.ReferrerUrl = SqlTypeConverter.DBNullStringHandler(rdr["ReferrerUrl"]);
-                    entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
+                    entity.UserId = SqlTypeConverter.DBNullStringHandler(rdr["UserId"]);
                     entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
@@ -61,17 +61,17 @@ namespace iPem.Data.Repository.Sc {
             var conditions = new List<String>();
             if (start.HasValue) conditions.Add(String.Format(@"[CreatedTime] >= '{0}'", CommonHelper.DateTimeConverter(start.Value)));
             if (end.HasValue) conditions.Add(String.Format(@"[CreatedTime] <= '{0}'", CommonHelper.DateTimeConverter(end.Value)));
-            if (levels !=null && levels.Length>0){
+            if (levels != null && levels.Length > 0) {
                 var _levels = new List<int>();
-                foreach(var level in levels)
+                foreach (var level in levels)
                     _levels.Add((int)level);
 
                 conditions.Add(String.Format(@"[Level] IN ({0})", string.Join(",", _levels)));
             }
 
-            if(types != null && types.Length > 0) {
+            if (types != null && types.Length > 0) {
                 var _types = new List<int>();
-                foreach(var type in types)
+                foreach (var type in types)
                     _types.Add((int)type);
 
                 conditions.Add(String.Format(@"[Type] IN ({0})", string.Join(",", _types)));
@@ -79,7 +79,7 @@ namespace iPem.Data.Repository.Sc {
 
             var orders = new List<String>();
             orders.Add(@"[CreatedTime] DESC");
-            
+
             if (conditions.Count > 0)
                 query += @" WHERE " + string.Join(@" AND ", conditions);
             if (orders.Count > 0)
@@ -97,7 +97,7 @@ namespace iPem.Data.Repository.Sc {
                     entity.IpAddress = SqlTypeConverter.DBNullStringHandler(rdr["IpAddress"]);
                     entity.PageUrl = SqlTypeConverter.DBNullStringHandler(rdr["PageUrl"]);
                     entity.ReferrerUrl = SqlTypeConverter.DBNullStringHandler(rdr["ReferrerUrl"]);
-                    entity.UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]);
+                    entity.UserId = SqlTypeConverter.DBNullStringHandler(rdr["UserId"]);
                     entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
@@ -130,8 +130,7 @@ namespace iPem.Data.Repository.Sc {
                         parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.IpAddress);
                         parms[6].Value = SqlTypeConverter.DBNullStringChecker(entity.PageUrl);
                         parms[7].Value = SqlTypeConverter.DBNullStringChecker(entity.ReferrerUrl);
-                        parms[8].Value = DBNull.Value;
-                        if(entity.UserId.HasValue) parms[8].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId.Value);
+                        parms[8].Value = SqlTypeConverter.DBNullStringChecker(entity.UserId);
                         parms[9].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreatedTime);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_H_WebEvent_Repository_Insert, parms);
                     }
@@ -144,7 +143,7 @@ namespace iPem.Data.Repository.Sc {
         }
 
         public void Delete(IList<H_WebEvent> entities) {
-            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar,100) };
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);

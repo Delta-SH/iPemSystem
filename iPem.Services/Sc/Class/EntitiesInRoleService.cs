@@ -36,7 +36,7 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public U_EntitiesInRole GetEntitiesInRole(Guid id) {
+        public U_EntitiesInRole GetEntitiesInRole(string id) {
             if (id == U_Role.SuperId) {
                 var key = GlobalCacheKeys.SSH_Authorizations;
                 if (_cacheManager.IsSet(key)) {
@@ -66,20 +66,20 @@ namespace iPem.Services.Sc {
 
         public void Add(U_EntitiesInRole entities) {
             var key = string.Format(GlobalCacheKeys.SSH_AreasPattern, entities.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             key = string.Format(GlobalCacheKeys.SSH_AuthorizationsPattern, entities.RoleId);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _repository.Insert(entities);
         }
 
-        public void Remove(Guid id) {
+        public void Remove(string id) {
             var key = string.Format(GlobalCacheKeys.SSH_AreasPattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             key = string.Format(GlobalCacheKeys.SSH_AuthorizationsPattern, id);
-            if(_cacheManager.IsSet(key)) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
             _repository.Delete(id);
         }

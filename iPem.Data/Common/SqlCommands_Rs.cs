@@ -9,7 +9,7 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 区域信息表
         /// </summary>
-        public const string Sql_A_Area_Repository_GetArea = @"SELECT A.*,V.[Name] AS [Vendor] FROM [dbo].[A_Area] A LEFT OUTER JOIN [dbo].[C_SCVendor] V ON A.[VendorID]=V.[ID] WHERE [Id] = @Id;";
+        public const string Sql_A_Area_Repository_GetArea = @"SELECT A.*,V.[Name] AS [Vendor] FROM [dbo].[A_Area] A LEFT OUTER JOIN [dbo].[C_SCVendor] V ON A.[VendorID]=V.[ID] WHERE A.[Id] = @Id;";
         public const string Sql_A_Area_Repository_GetAreas = @"SELECT A.*,V.[Name] AS [Vendor] FROM [dbo].[A_Area] A LEFT OUTER JOIN [dbo].[C_SCVendor] V ON A.[VendorID]=V.[ID] WHERE [Enabled] = 1 ORDER BY A.[Name];";
 
         /// <summary>
@@ -531,6 +531,21 @@ namespace iPem.Data.Common {
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID];";
+
+        /// <summary>
+        /// 用户信息表
+        /// </summary>
+        public const string Sql_U_User_Repository_GetUserById = @"SELECT [ID],[EmpID],[Enabled],[UID],[PWD],[PwdFormat],[PwdSalt],[RoleID],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark] FROM [dbo].[U_User] WHERE [ID]=@ID;";
+        public const string Sql_U_User_Repository_GetUserByName = @"SELECT [ID],[EmpID],[Enabled],[UID],[PWD],[PwdFormat],[PwdSalt],[RoleID],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark] FROM [dbo].[U_User] WHERE [UID]=@UID;";
+        public const string Sql_U_User_Repository_GetUsers = @"SELECT [ID],[EmpID],[Enabled],[UID],[PWD],[PwdFormat],[PwdSalt],[RoleID],[OnlineTime],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark] FROM [dbo].[U_User];";
+        public const string Sql_U_User_Repository_GetUsersInRole = @"";
+        public const string Sql_U_User_Repository_Insert = @"INSERT INTO [dbo].[U_User]([ID],[EmpID],[Enabled],[UID],[PWD],[PwdFormat],[PwdSalt],[RoleID],[LimitTime],[CreateTime],[LastLoginTime],[LastPwdChangedTime],[FailedPwdAttemptCount],[FailedPwdTime],[IsLockedOut],[LastLockoutTime],[Remark]) VALUES(@ID,@EmpID,@Enabled,@UID,@PWD,@PwdFormat,@PwdSalt,@RoleID,@LimitTime,@CreateTime,@LastLoginTime,@LastPwdChangedTime,@FailedPwdAttemptCount,@FailedPwdTime,@IsLockedOut,@LastLockoutTime,@Remark);";
+        public const string Sql_U_User_Repository_Update = @"UPDATE [dbo].[U_User]  SET [EmpID] = @EmpID,[Enabled] = @Enabled,[UID] = @UID,[LimitTime] = @LimitTime,[CreateTime] = @CreateTime,[LastLoginTime] = @LastLoginTime,[FailedPwdAttemptCount] = @FailedPwdAttemptCount,[FailedPwdTime] = @FailedPwdTime,[IsLockedOut] = @IsLockedOut,[LastLockoutTime] = @LastLockoutTime,[Remark] = @Remark WHERE [ID] = @ID";
+        public const string Sql_U_User_Repository_Delete = @"DELETE FROM [dbo].[U_User] WHERE [ID]=@ID;";
+        public const string Sql_U_User_Repository_ChangePassword = @"UPDATE [dbo].[U_User] SET [PWD] = @PWD,[PwdFormat] = @PwdFormat,[PwdSalt] = @PwdSalt,[LastPwdChangedTime] = GETDATE() WHERE [ID] = @ID;";
+        public const string Sql_U_User_Repository_SetLastLoginDate = @"UPDATE [dbo].[U_User] SET [LastLoginTime] = @LastLoginTime,[FailedPwdAttemptCount] = 0 WHERE [ID] = @ID;";
+        public const string Sql_U_User_Repository_SetFailedPasswordDate = @"UPDATE [dbo].[U_User] SET [FailedPwdAttemptCount] = ISNULL([FailedPwdAttemptCount], 0) + 1,[FailedPwdTime] = @FailedPwdTime WHERE [ID] = @ID;";
+        public const string Sql_U_User_Repository_SetLockedOut = @"UPDATE [dbo].[U_User] SET [IsLockedOut] = @IsLockedOut,[LastLockoutTime] = @LastLockoutTime WHERE [ID] = @ID;";
 
         /// <summary>
         /// 脚本升级表

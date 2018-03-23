@@ -35,7 +35,7 @@ namespace iPem.Services.Sc {
             return _repository.GetNoticesInUsers();
         }
 
-        public List<H_NoticeInUser> GetNoticesInUser(Guid uid) {
+        public List<H_NoticeInUser> GetNoticesInUser(string uid) {
             return _repository.GetNoticesInUser(uid);
         }
 

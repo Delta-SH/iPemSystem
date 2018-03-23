@@ -27,15 +27,15 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public U_Role GetRoleById(Guid id) {
+        public U_Role GetRoleById(string id) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             U_Role entity = null;
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Role_Repository_GetRoleById, parms)) {
-                if(rdr.Read()) {
+                if (rdr.Read()) {
                     entity = new U_Role();
-                    entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -52,7 +52,7 @@ namespace iPem.Data.Repository.Sc {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Role_Repository_GetRoleByName, parms)) {
                 if (rdr.Read()) {
                     entity = new U_Role();
-                    entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -61,15 +61,15 @@ namespace iPem.Data.Repository.Sc {
             return entity;
         }
 
-        public U_Role GetRoleByUid(Guid uid) {
+        public U_Role GetRoleByUid(string uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
 
             U_Role entity = null;
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Role_Repository_GetRoleByUid, parms)) {
-                if(rdr.Read()) {
+                if (rdr.Read()) {
                     entity = new U_Role();
-                    entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -83,7 +83,7 @@ namespace iPem.Data.Repository.Sc {
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Role_Repository_GetRoles, null)) {
                 while (rdr.Read()) {
                     var entity = new U_Role();
-                    entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
+                    entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.Enabled = SqlTypeConverter.DBNullBooleanHandler(rdr["Enabled"]);
@@ -104,7 +104,7 @@ namespace iPem.Data.Repository.Sc {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
-                        parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
                         parms[3].Value = entity.Enabled;
@@ -129,7 +129,7 @@ namespace iPem.Data.Repository.Sc {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
-                        parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
                         parms[3].Value = entity.Enabled;
@@ -150,7 +150,7 @@ namespace iPem.Data.Repository.Sc {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities) {
-                        parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_Role_Repository_Delete, parms);
                     }
                     trans.Commit();

@@ -25,12 +25,12 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定用户的系统消息
         /// </summary>
-        List<H_Notice> GetNoticesInUser(Guid uid);
+        List<H_Notice> GetNoticesInUser(string uid);
 
         /// <summary>
         /// 获得指定用户的未读消息
         /// </summary>
-        List<H_Notice> GetUnreadNotices(Guid uid);
+        List<H_Notice> GetUnreadNotices(string uid);
 
         /// <summary>
         /// 新增系统消息

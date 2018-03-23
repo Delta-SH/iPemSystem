@@ -37,14 +37,14 @@ namespace iPem.Site.Tasks {
         public void Execute() {
             try {
                 var keys = new List<Guid>(EngineContext.Current.WorkStores.Keys);
-                foreach(var key in keys) {
-                    if(EngineContext.Current.WorkStores[key].Expire < DateTime.Now) {
+                foreach (var key in keys) {
+                    if (EngineContext.Current.WorkStores[key].Expire < DateTime.Now) {
                         EngineContext.Current.WorkStores.Remove(key);
                     }
                 }
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 var logger = EngineContext.Current.Resolve<IWebEventService>();
-                logger.Error(EnmEventType.Other, "", "#task.cache.clear", "ClearCacheTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), exc);
+                logger.Error(EnmEventType.Other, "", "#task.cache.clear", "ClearCacheTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), null, exc);
             }
         }
 

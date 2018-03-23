@@ -28,9 +28,9 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public U_EntitiesInRole GetEntitiesInRole(Guid id) {
+        public U_EntitiesInRole GetEntitiesInRole(string id) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             var entity = new U_EntitiesInRole() { RoleId = id, Menus = new List<int>(), Areas = new List<string>(), Permissions = new List<EnmPermission>() };
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_GetEntitiesInRole, parms)) {
@@ -77,31 +77,31 @@ namespace iPem.Data.Repository.Sc {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     foreach (var entity in entities.Menus) {
-                        parms1[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms1[0].Value = SqlTypeConverter.DBNullStringChecker(entities.RoleId);
                         parms1[1].Value = SqlTypeConverter.DBNullInt32Checker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert1, parms1);
                     }
 
                     foreach (var entity in entities.Areas) {
-                        parms2[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms2[0].Value = SqlTypeConverter.DBNullStringChecker(entities.RoleId);
                         parms2[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert2, parms2);
                     }
 
                     foreach (var entity in entities.Stations) {
-                        parms3[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms3[0].Value = SqlTypeConverter.DBNullStringChecker(entities.RoleId);
                         parms3[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert3, parms3);
                     }
 
                     foreach (var entity in entities.Rooms) {
-                        parms4[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms4[0].Value = SqlTypeConverter.DBNullStringChecker(entities.RoleId);
                         parms4[1].Value = SqlTypeConverter.DBNullStringChecker(entity);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert4, parms4);
                     }
 
                     foreach (var entity in entities.Permissions) {
-                        parms5[0].Value = SqlTypeConverter.DBNullGuidChecker(entities.RoleId);
+                        parms5[0].Value = SqlTypeConverter.DBNullStringChecker(entities.RoleId);
                         parms5[1].Value = (int)entity;
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_U_EntitiesInRole_Repository_Insert5, parms5);
                     }
@@ -114,9 +114,9 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public void Delete(Guid id) {
+        public void Delete(string id) {
             SqlParameter[] parms = { new SqlParameter("@RoleId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();

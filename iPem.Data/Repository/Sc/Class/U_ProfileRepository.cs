@@ -28,18 +28,18 @@ namespace iPem.Data.Repository.Sc {
 
         #region Methods
 
-        public U_Profile Get(Guid uid, EnmProfile type) {
+        public U_Profile Get(string uid, EnmProfile type) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int) };
 
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
             parms[1].Value = (int)type;
 
             U_Profile entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Profile_Repository_GetProfile, parms)) {
-                if(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_U_Profile_Repository_GetProfile, parms)) {
+                if (rdr.Read()) {
                     entity = new U_Profile {
-                        UserId = SqlTypeConverter.DBNullGuidHandler(rdr["UserId"]),
+                        UserId = SqlTypeConverter.DBNullStringHandler(rdr["UserId"]),
                         Type = SqlTypeConverter.DBNullProfileHandler(rdr["Type"]),
                         ValuesJson = SqlTypeConverter.DBNullStringHandler(rdr["ValuesJson"]),
                         ValuesBinary = SqlTypeConverter.DBNullBytesHandler(rdr["ValuesBinary"]),
@@ -58,11 +58,11 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@ValuesBinary", SqlDbType.Image),
                                      new SqlParameter("@LastUpdatedDate", SqlDbType.DateTime) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.UserId);
+                    parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.UserId);
                     parms[1].Value = (int)entity.Type;
                     parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.ValuesJson);
                     parms[3].Value = SqlTypeConverter.DBNullBytesChecker(entity.ValuesBinary);
@@ -77,14 +77,14 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public void Delete(Guid uid, EnmProfile type) {
+        public void Delete(string uid, EnmProfile type) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Type", SqlDbType.Int) };
 
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
             parms[1].Value = (int)type;
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
@@ -97,9 +97,9 @@ namespace iPem.Data.Repository.Sc {
             }
         }
 
-        public void Clear(Guid uid) {
+        public void Clear(string uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
 
             using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();

@@ -1,9 +1,9 @@
-﻿using iPem.Core.Domain.Sc;
+﻿using iPem.Core.Domain.Common;
 using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
-namespace iPem.Data.Repository.Sc {
+namespace iPem.Data.Repository.Common {
     /// <summary>
     /// 用户信息表
     /// </summary>
@@ -11,7 +11,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定用户编号的用户
         /// </summary>
-        U_User GetUserById(Guid id);
+        U_User GetUserById(string id);
 
         /// <summary>
         /// 获得指定用户名称的用户
@@ -26,7 +26,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定角色的用户信息
         /// </summary>
-        List<U_User> GetUsersInRole(Guid id);
+        List<U_User> GetUsersInRole(string roleId);
 
         /// <summary>
         /// 新增用户
@@ -46,22 +46,22 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 更新用户最后登录时间
         /// </summary>
-        void SetLastLoginDate(Guid id, DateTime lastDate);
+        void SetLastLoginDate(string id, DateTime lastDate);
 
         /// <summary>
         /// 更新用户登录失败时间
         /// </summary>
-        void SetFailedPasswordDate(Guid id, DateTime failedDate);
+        void SetFailedPasswordDate(string id, DateTime failedDate);
 
         /// <summary>
         /// 更新用户锁定信息
         /// </summary>
-        void SetLockedOut(Guid id, Boolean isLockedOut, DateTime lastLockoutDate);
+        void SetLockedOut(string id, Boolean isLockedOut, DateTime lastLockoutDate);
 
         /// <summary>
         /// 更新密码
         /// </summary>
-        void ChangePassword(Guid uId, String nPwd, EnmPasswordFormat nFormat, String nSalt);
+        void ChangePassword(string uId, String nPwd, EnmPasswordFormat nFormat, String nSalt);
 
         /// <summary>
         /// 散列盐值

@@ -1,6 +1,7 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
 using iPem.Core.Data;
+using iPem.Core.Domain.Common;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Data.Common;
@@ -62,7 +63,7 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            if(_dbManager.DatabaseIsInstalled())
+            if (_dbManager.DatabaseIsInstalled())
                 return RedirectToRoute("HomePage");
 
             return View();
@@ -88,7 +89,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); 
+                var installed = (type == 0);
                 var created = (database.crdnew == 0);
 
                 var scripts = new List<string>(){
@@ -96,20 +97,20 @@ namespace iPem.Site.Controllers {
                         "~/Resources/install/create/create_rs_data.sql"
                     };
 
-                if(!created)
+                if (!created)
                     database.name = database.oname;
 
-                if(created) {
+                if (created) {
                     var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
                     _dbInstaller.InstallDatabase(createdString, database.name, database.path);
-                } else if(!database.uncheck) {
-                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
+                } else if (!database.uncheck) {
+                    if (!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
                         throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
                 }
 
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
-                using(var scope = new System.Transactions.TransactionScope()) {
-                    foreach(var file in scripts) {
+                using (var scope = new System.Transactions.TransactionScope()) {
+                    foreach (var file in scripts) {
                         _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
@@ -134,7 +135,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -150,7 +151,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); 
+                var installed = (type == 0);
                 var created = (database.crdnew == 0);
 
                 var scripts = new List<string>(){
@@ -158,20 +159,20 @@ namespace iPem.Site.Controllers {
                         "~/Resources/install/create/create_cs_data.sql"
                     };
 
-                if(!created)
+                if (!created)
                     database.name = database.oname;
 
-                if(created) {
+                if (created) {
                     var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
                     _dbInstaller.InstallDatabase(createdString, database.name, database.path);
-                } else if(!database.uncheck) {
-                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
+                } else if (!database.uncheck) {
+                    if (!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
                         throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
                 }
 
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
-                using(var scope = new System.Transactions.TransactionScope()) {
-                    foreach(var file in scripts) {
+                using (var scope = new System.Transactions.TransactionScope()) {
+                    foreach (var file in scripts) {
                         _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
@@ -196,7 +197,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -212,7 +213,7 @@ namespace iPem.Site.Controllers {
 
             try {
                 var database = JsonConvert.DeserializeObject<DbModel>(data);
-                var installed = (type == 0); 
+                var installed = (type == 0);
                 var created = (database.crdnew == 0);
 
                 var scripts = new List<string>(){
@@ -220,20 +221,20 @@ namespace iPem.Site.Controllers {
                         "~/Resources/install/create/create_sc_data.sql"
                     };
 
-                if(!created)
+                if (!created)
                     database.name = database.oname;
 
-                if(created) {
+                if (created) {
                     var createdString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, "master", database.uid, database.pwd);
                     _dbInstaller.InstallDatabase(createdString, database.name, database.path);
-                } else if(!database.uncheck) {
-                    if(!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
+                } else if (!database.uncheck) {
+                    if (!SqlHelper.DatabaseExists(false, database.ipv4, database.port, database.name, database.uid, database.pwd))
                         throw new iPemException(string.Format("数据库 '{0}' 不存在", database.name));
                 }
 
                 var connectionString = SqlHelper.CreateConnectionString(false, database.ipv4, database.port, database.name, database.uid, database.pwd);
-                using(var scope = new System.Transactions.TransactionScope()) {
-                    foreach(var file in scripts) {
+                using (var scope = new System.Transactions.TransactionScope()) {
+                    foreach (var file in scripts) {
                         _dbInstaller.ExecuteScript(connectionString, file);
                     }
 
@@ -258,7 +259,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -273,7 +274,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(!_dbManager.DatabaseIsInstalled())
+                if (!_dbManager.DatabaseIsInstalled())
                     throw new iPemException("数据库尚未配置，请完成配置后重试。");
 
                 var model = JsonConvert.DeserializeObject<iPem.Site.Models.Installation.RoleModel>(data);
@@ -282,7 +283,7 @@ namespace iPem.Site.Controllers {
                 var installed = (type == 0);
 
                 var entity = service.GetRoleById(U_Role.SuperId);
-                if(entity != null) service.Remove(entity);
+                if (entity != null) service.Remove(entity);
 
                 entity = new U_Role() {
                     Id = U_Role.SuperId,
@@ -295,7 +296,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -310,20 +311,20 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(!_dbManager.DatabaseIsInstalled())
+                if (!_dbManager.DatabaseIsInstalled())
                     throw new iPemException("数据库尚未配置，请完成配置后重试。");
 
                 var model = JsonConvert.DeserializeObject<iPem.Site.Models.Installation.UserModel>(data);
-                var repository = new UserRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
+                var repository = new U_UserRepository(_dbManager.CurrentConnetions[EnmDbType.Sc]);
                 var service = new UserService(repository, _cacheManager);
                 var installed = (type == 0);
 
                 var entity = service.GetUserByName(model.name);
-                if(entity != null) service.Remove(entity);
+                if (entity != null) service.Remove(entity);
 
                 service.Add(new U_User() {
                     RoleId = U_Role.SuperId,
-                    Id = Guid.NewGuid(),
+                    Id = "0",
                     Uid = model.name,
                     Password = model.pwd,
                     CreatedDate = DateTime.Now,
@@ -342,7 +343,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -362,7 +363,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "OK";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -379,7 +380,7 @@ namespace iPem.Site.Controllers {
                 });
             }
 
-            if(!_dbManager.DatabaseIsInstalled())
+            if (!_dbManager.DatabaseIsInstalled())
                 return RedirectToAction("Index");
 
             ViewData["RsDbSet"] = _dbManager.CurrentDbSets[EnmDbType.Rs];
@@ -398,7 +399,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(entity == null) throw new ArgumentException("参数无效 entity");
+                if (entity == null) throw new ArgumentException("参数无效 entity");
 
                 entity.Id = Guid.NewGuid();
                 entity.Provider = EnmDbProvider.SqlServer;
@@ -413,7 +414,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "数据保存成功";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -430,7 +431,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(entity == null) throw new ArgumentException("参数无效 entity");
+                if (entity == null) throw new ArgumentException("参数无效 entity");
 
                 entity.Id = Guid.NewGuid();
                 entity.Provider = EnmDbProvider.SqlServer;
@@ -445,7 +446,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "数据保存成功";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -462,7 +463,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(entity == null) throw new ArgumentException("参数无效 entity");
+                if (entity == null) throw new ArgumentException("参数无效 entity");
 
                 entity.Id = Guid.NewGuid();
                 entity.Provider = EnmDbProvider.SqlServer;
@@ -477,7 +478,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "数据保存成功";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -494,7 +495,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(string.IsNullOrWhiteSpace(password))
+                if (string.IsNullOrWhiteSpace(password))
                     throw new ArgumentException("确认密码验证失败，请与管理员联系。");
 
                 if (!string.Format("{0}@10078", CommonHelper.CreateDynamicKeys()).Equals(password))
@@ -508,7 +509,7 @@ namespace iPem.Site.Controllers {
                 result.success = true;
                 result.code = 200;
                 result.message = "删除成功，页面将在<span id='leftseconds'>5</span>秒后跳转到安装向导。";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -525,12 +526,12 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(entity == null) throw new ArgumentException("参数无效 entity");
+                if (entity == null) throw new ArgumentException("参数无效 entity");
                 SqlHelper.TestConnection(false, entity.IP, entity.Port, entity.Name, entity.Uid, entity.Password);
                 result.success = true;
                 result.code = 200;
                 result.message = "数据库连接成功";
-            } catch(Exception err) {
+            } catch (Exception err) {
                 result.message = err.Message;
             }
 
@@ -545,29 +546,29 @@ namespace iPem.Site.Controllers {
         [ValidateAntiForgeryToken]
         public ActionResult Authentication(AuthModel model, string password) {
             try {
-                if(model == null)
+                if (model == null)
                     ModelState.AddModelError("", "应用Model不能为空。");
 
-                if(ModelState.IsValid && String.IsNullOrWhiteSpace(model.key))
+                if (ModelState.IsValid && String.IsNullOrWhiteSpace(model.key))
                     ModelState.AddModelError("", "应用Key不能为空。");
 
-                if(ModelState.IsValid && String.IsNullOrWhiteSpace(model.service))
+                if (ModelState.IsValid && String.IsNullOrWhiteSpace(model.service))
                     ModelState.AddModelError("", "无法获取应用地址。");
 
-                if(ModelState.IsValid && !Url.IsLocalUrl(model.service))
+                if (ModelState.IsValid && !Url.IsLocalUrl(model.service))
                     ModelState.AddModelError("", "应用地址不是有效的URL。");
 
-                if(String.IsNullOrWhiteSpace(password))
+                if (String.IsNullOrWhiteSpace(password))
                     ModelState.AddModelError("", "鉴权密码不能为空。");
 
-                if(ModelState.IsValid && CommonHelper.CreateDynamicKeys() != password) 
+                if (ModelState.IsValid && CommonHelper.CreateDynamicKeys() != password)
                     ModelState.AddModelError("", "密码验证失败，请与管理员联系。");
 
-                if(ModelState.IsValid) {
+                if (ModelState.IsValid) {
                     Session[model.key] = DateTime.Now.AddMinutes(5).Ticks;
                     return Redirect(model.service);
                 }
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 ModelState.AddModelError("", exc.Message);
             }
 

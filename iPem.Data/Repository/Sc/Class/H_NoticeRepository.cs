@@ -32,8 +32,8 @@ namespace iPem.Data.Repository.Sc {
             parms[0].Value = SqlTypeConverter.DBNullGuidChecker(id);
 
             H_Notice entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNotice, parms)) {
-                if(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNotice, parms)) {
+                if (rdr.Read()) {
                     entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
@@ -47,8 +47,8 @@ namespace iPem.Data.Repository.Sc {
 
         public List<H_Notice> GetNotices() {
             var entities = new List<H_Notice>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNotices, null)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNotices, null)) {
+                while (rdr.Read()) {
                     var entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
@@ -83,13 +83,13 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public List<H_Notice> GetNoticesInUser(Guid uid) {
+        public List<H_Notice> GetNoticesInUser(string uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
 
             var entities = new List<H_Notice>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNoticesInUser, parms)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetNoticesInUser, parms)) {
+                while (rdr.Read()) {
                     var entity = new H_Notice();
                     entity.Id = SqlTypeConverter.DBNullGuidHandler(rdr["Id"]);
                     entity.Title = SqlTypeConverter.DBNullStringHandler(rdr["Title"]);
@@ -102,9 +102,9 @@ namespace iPem.Data.Repository.Sc {
             return entities;
         }
 
-        public List<H_Notice> GetUnreadNotices(Guid uid) {
+        public List<H_Notice> GetUnreadNotices(string uid) {
             SqlParameter[] parms = { new SqlParameter("@UserId", SqlDbType.VarChar, 100) };
-            parms[0].Value = SqlTypeConverter.DBNullGuidChecker(uid);
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(uid);
 
             var entities = new List<H_Notice>();
             using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_GetUnreadNotices, parms)) {
@@ -128,11 +128,11 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@CreatedTime", SqlDbType.DateTime),
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Title);
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Content);
@@ -155,11 +155,11 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@CreatedTime", SqlDbType.DateTime),
                                      new SqlParameter("@Enabled", SqlDbType.Bit) };
 
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Title);
                         parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Content);
@@ -177,11 +177,11 @@ namespace iPem.Data.Repository.Sc {
 
         public void Delete(IList<H_Notice> entities) {
             SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100) };
-            using(var conn = new SqlConnection(this._databaseConnectionString)) {
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
-                    foreach(var entity in entities) {
+                    foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullGuidChecker(entity.Id);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_H_Notice_Repository_Delete, parms);
                     }
@@ -194,6 +194,6 @@ namespace iPem.Data.Repository.Sc {
         }
 
         #endregion
-        
+
     }
 }

@@ -34,7 +34,7 @@ namespace iPem.Services.Sc {
 
         #region Methods
 
-        public U_Role GetRoleById(Guid id) {
+        public U_Role GetRoleById(string id) {
             return _repository.GetRoleById(id);
         }
 
@@ -42,22 +42,22 @@ namespace iPem.Services.Sc {
             return _repository.GetRoleByName(name);
         }
 
-        public U_Role GetRoleByUid(Guid uid) {
+        public U_Role GetRoleByUid(string uid) {
             return _repository.GetRoleByUid(uid);
         }
 
         public List<U_Role> GetRoles() {
-            return _repository.GetRoles().FindAll(r => r.Id != U_Role.SuperId);
+            return _repository.GetRoles().FindAll(r => !r.Id.Equals(U_Role.SuperId));
         }
 
-        public List<U_Role> GetRolesByRole(Guid id) {
+        public List<U_Role> GetRolesByRole(string id) {
             var roles = _repository.GetRoles();
             return id.Equals(U_Role.SuperId) ? roles : roles.FindAll(r => r.Id.Equals(id));
         }
 
         public List<U_Role> GetRoleByNames(string[] names) {
             var roles = _repository.GetRoles();
-            return roles.FindAll(r => r.Id != U_Role.SuperId && CommonHelper.ConditionContain(r.Name, names));
+            return roles.FindAll(r => !r.Id.Equals(U_Role.SuperId) && CommonHelper.ConditionContain(r.Name, names));
         }
 
         public IPagedList<U_Role> GetPagedRoles(int pageIndex = 0, int pageSize = int.MaxValue) {
@@ -93,11 +93,11 @@ namespace iPem.Services.Sc {
 
         #region Validate
 
-        public EnmLoginResults Validate(Guid uid) {
-            var role = this.GetRoleByUid(uid);
-            if(role == null)
+        public EnmLoginResults Validate(string id) {
+            var role = this.GetRoleById(id);
+            if (role == null)
                 return EnmLoginResults.RoleNotExist;
-            if(!role.Enabled)
+            if (!role.Enabled)
                 return EnmLoginResults.RoleNotEnabled;
 
             return EnmLoginResults.Successful;

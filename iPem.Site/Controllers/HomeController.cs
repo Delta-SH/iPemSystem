@@ -121,7 +121,7 @@ namespace iPem.Site.Controllers {
         public ActionResult ActiveData() {
             ViewBag.BarIndex = 1;
             ViewBag.MenuVisible = false;
-            ViewBag.RoleId = _workContext.Role().Id.ToString();
+            ViewBag.RoleId = _workContext.Role().Id;
             ViewBag.Control = _workContext.Authorizations().Permissions.Contains(EnmPermission.Control);
             ViewBag.Adjust = _workContext.Authorizations().Permissions.Contains(EnmPermission.Adjust);
             ViewBag.Threshold = _workContext.Authorizations().Permissions.Contains(EnmPermission.Threshold);
@@ -174,7 +174,7 @@ namespace iPem.Site.Controllers {
                     cameras = cameras.FindAll(d => d.Current.DeviceId == nodeKey.Value);
                 }
 
-                if (cameras.Count > 200) 
+                if (cameras.Count > 200)
                     cameras = cameras.Take(200).ToList();
 
                 foreach (var camera in cameras) {
@@ -203,7 +203,7 @@ namespace iPem.Site.Controllers {
                     models.Add(model);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
             }
 
             if ("recorder".Equals(view, StringComparison.CurrentCultureIgnoreCase)) return View("Recorder", models);
@@ -211,7 +211,7 @@ namespace iPem.Site.Controllers {
         }
 
         public ActionResult Viewer(string id, int type, string name) {
-            ViewBag.RoleId = _workContext.Role().Id.ToString();
+            ViewBag.RoleId = _workContext.Role().Id;
             ViewBag.Id = id ?? "";
             ViewBag.Type = type;
             ViewBag.Name = name ?? "";
@@ -228,12 +228,12 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var lastNoticeTime =  _workContext.GetLastNoticeTime();
+                var lastNoticeTime = _workContext.GetLastNoticeTime();
                 data.data.notices = _noticeService.GetUnreadNotices(_workContext.User().Id).Count;
                 data.data.alarms = _workContext.ActAlarms().FindAll(a => a.Current.CreatedTime >= lastNoticeTime).Count;
                 return Json(data, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -250,49 +250,49 @@ namespace iPem.Site.Controllers {
 
             try {
                 var config = _workContext.TsValues();
-                if(config == null) return Json(data, JsonRequestBehavior.AllowGet);
+                if (config == null) return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.bases == null || !config.bases.Contains(1))
+                if (config.bases == null || !config.bases.Contains(1))
                     return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.levels == null || config.levels.Length == 0)
+                if (config.levels == null || config.levels.Length == 0)
                     return Json(data, JsonRequestBehavior.AllowGet);
 
-                if(config.contents == null || config.contents.Length == 0)
+                if (config.contents == null || config.contents.Length == 0)
                     return Json(data, JsonRequestBehavior.AllowGet);
 
                 var start = _workContext.GetLastSpeechTime(); var end = DateTime.Now;
                 var stores = _workContext.ActAlarms().FindAll(a => a.Current.CreatedTime >= start && a.Current.CreatedTime < end && config.levels.Contains((int)a.Current.AlarmLevel));
-                if(config.bases.Contains(3))
+                if (config.bases.Contains(3))
                     stores = stores.FindAll(a => string.IsNullOrWhiteSpace(a.Current.ReservationId));
-                if(config.bases.Contains(4))
+                if (config.bases.Contains(4))
                     stores = stores.FindAll(a => a.Current.Confirmed == EnmConfirm.Unconfirmed);
 
-                if(config.stationTypes != null && config.stationTypes.Length > 0)
+                if (config.stationTypes != null && config.stationTypes.Length > 0)
                     stores = stores.FindAll(a => config.stationTypes.Contains(a.StationTypeId));
 
-                if(config.roomTypes != null && config.roomTypes.Length > 0)
+                if (config.roomTypes != null && config.roomTypes.Length > 0)
                     stores = stores.FindAll(a => config.roomTypes.Contains(a.RoomTypeId));
 
-                if(config.subDeviceTypes != null && config.subDeviceTypes.Length > 0)
+                if (config.subDeviceTypes != null && config.subDeviceTypes.Length > 0)
                     stores = stores.FindAll(a => config.subDeviceTypes.Contains(a.SubDeviceTypeId));
 
-                if(config.subLogicTypes != null && config.subLogicTypes.Length > 0)
+                if (config.subLogicTypes != null && config.subLogicTypes.Length > 0)
                     stores = stores.FindAll(a => config.subLogicTypes.Contains(a.SubLogicTypeId));
 
                 if (config.points != null && config.points.Length > 0)
                     stores = stores.FindAll(a => config.points.Contains(a.Current.PointId));
 
-                if(!string.IsNullOrWhiteSpace(config.keywords)) {
+                if (!string.IsNullOrWhiteSpace(config.keywords)) {
                     var keywords = Common.SplitCondition(config.keywords);
-                    if(keywords.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.PointName, keywords));
+                    if (keywords.Length > 0) stores = stores.FindAll(a => CommonHelper.ConditionContain(a.PointName, keywords));
                 }
 
                 data.data.AddRange(stores.Select(s => s.Current.Id).Take(1000));
-                if(!config.bases.Contains(2)) _workContext.SetLastSpeechTime(end);
+                if (!config.bases.Contains(2)) _workContext.SetLastSpeechTime(end);
                 return Json(data, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -392,7 +392,7 @@ namespace iPem.Site.Controllers {
                 data.data = string.Join("，", contents);
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -400,14 +400,14 @@ namespace iPem.Site.Controllers {
 
         public FileResult Speaker(string text) {
             try {
-                if(string.IsNullOrWhiteSpace(text))
+                if (string.IsNullOrWhiteSpace(text))
                     throw new ArgumentException("text");
 
                 var bytes = CommonHelper.ConvertTextToSpeech(text);
-                if(bytes == null) throw new iPemException("语音转换失败");
+                if (bytes == null) throw new iPemException("语音转换失败");
                 return File(bytes, "audio/wav");
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return File(new byte[] { }, "audio/wav");
             }
         }
@@ -422,19 +422,19 @@ namespace iPem.Site.Controllers {
 
             try {
                 var menus = _workContext.Authorizations().MenuItems;
-                if(menus != null && menus.Count > 0) {
+                if (menus != null && menus.Count > 0) {
                     var roots = new List<U_Menu>();
-                    foreach(var menu in menus) {
-                        if(!menus.Any(m => m.Id == menu.LastId))
+                    foreach (var menu in menus) {
+                        if (!menus.Any(m => m.Id == menu.LastId))
                             roots.Add(menu);
                     }
 
                     var _menus = roots.OrderBy(m => m.Index).ToList();
-                    if(_menus.Count > 0) {
+                    if (_menus.Count > 0) {
                         data.success = true;
                         data.message = "200 Ok";
                         data.total = menus.Count;
-                        for(var i = 0; i < _menus.Count; i++) {
+                        for (var i = 0; i < _menus.Count; i++) {
                             var root = new TreeModel {
                                 id = _menus[i].Id.ToString(),
                                 text = _menus[i].Name,
@@ -449,7 +449,7 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -459,9 +459,9 @@ namespace iPem.Site.Controllers {
 
         private void MenusRecursion(List<U_Menu> menus, int pid, TreeModel node) {
             var _menus = menus.FindAll(m => m.LastId == pid).OrderBy(m => m.Index).ToList();
-            if(_menus.Count > 0) {
+            if (_menus.Count > 0) {
                 node.data = new List<TreeModel>();
-                for(var i = 0; i < _menus.Count; i++) {
+                for (var i = 0; i < _menus.Count; i++) {
                     var children = new TreeModel {
                         id = _menus[i].Id.ToString(),
                         text = _menus[i].Name,
@@ -489,7 +489,7 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(string.IsNullOrWhiteSpace(listModel))
+                if (string.IsNullOrWhiteSpace(listModel))
                     throw new ArgumentException("listModel");
 
                 var notices = _noticeService.GetNoticesInUser(_workContext.User().Id);
@@ -508,30 +508,30 @@ namespace iPem.Site.Controllers {
                                  readtime = CommonHelper.DateTimeConverter(niu.ReadTime)
                              };
 
-                if("all".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
-                    if(models.Any()) {
+                if ("all".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
+                    if (models.Any()) {
                         var result = new PagedList<NoticeModel>(models, start / limit, limit, models.Count());
-                        if(result.Count > 0) {
+                        if (result.Count > 0) {
                             data.message = "200 Ok";
                             data.total = result.TotalCount;
                             data.data.AddRange(result);
                         }
                     }
-                } else if("readed".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
+                } else if ("readed".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
                     var readed = models.Where(m => m.readed);
-                    if(readed.Any()) {
+                    if (readed.Any()) {
                         var result = new PagedList<NoticeModel>(readed, start / limit, limit, readed.Count());
-                        if(result.Count > 0) {
+                        if (result.Count > 0) {
                             data.message = "200 Ok";
                             data.total = result.TotalCount;
                             data.data.AddRange(result);
                         }
                     }
-                } else if("unread".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
+                } else if ("unread".Equals(listModel, StringComparison.CurrentCultureIgnoreCase)) {
                     var unread = models.Where(m => !m.readed);
-                    if(unread.Any()) {
+                    if (unread.Any()) {
                         var result = new PagedList<NoticeModel>(unread, start / limit, limit, unread.Count());
-                        if(result.Count > 0) {
+                        if (result.Count > 0) {
                             data.message = "200 Ok";
                             data.total = result.TotalCount;
                             data.data.AddRange(result);
@@ -542,8 +542,8 @@ namespace iPem.Site.Controllers {
                 }
 
                 return Json(data, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -577,14 +577,14 @@ namespace iPem.Site.Controllers {
                 if (result.Count > 0) _noticeInUserService.Update(result.ToArray());
                 return Json(new AjaxResultModel { success = true, code = 200, message = "Ok" }, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult RequestActAlarms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations,bool onlySystem , int start, int limit) {
+        public JsonResult RequestActAlarms(ActAlmCondition condition, bool onlyConfirms, bool onlyReservations, bool onlySystem, int start, int limit) {
             var data = new AjaxDataModel<List<ActAlmModel>> {
                 success = true,
                 message = "无数据",
@@ -594,15 +594,15 @@ namespace iPem.Site.Controllers {
 
             try {
                 var stores = this.GetActAlmStore(condition, onlyConfirms, onlyReservations, onlySystem);
-                if(stores != null) {
+                if (stores != null) {
                     data.message = "200 Ok";
                     data.total = stores.Count;
 
                     var end = start + limit;
-                    if(end > stores.Count)
+                    if (end > stores.Count)
                         end = stores.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new ActAlmModel {
                             id = stores[i].Current.Id,
                             index = i + 1,
@@ -633,8 +633,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -681,13 +681,13 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-                
 
-                using(var ms = _excelManager.Export<ActAlmModel>(models, "实时告警列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+
+                using (var ms = _excelManager.Export<ActAlmModel>(models, "实时告警列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -745,7 +745,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -798,7 +798,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -814,15 +814,15 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if (string.IsNullOrWhiteSpace(id))  
+                if (string.IsNullOrWhiteSpace(id))
                     throw new ArgumentException("id");
-                
+
                 List<AlmStore<A_AAlarm>> stores = null;
                 if (primary)
                     stores = _workContext.AlarmsToStore(_actAlarmService.GetPrimaryAlarms(id));
-                else if(related)
+                else if (related)
                     stores = _workContext.AlarmsToStore(_actAlarmService.GetRelatedAlarms(id));
-                else if(filter)
+                else if (filter)
                     stores = _workContext.AlarmsToStore(_actAlarmService.GetFilterAlarms(id));
 
                 if (stores != null) {
@@ -865,7 +865,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -927,7 +927,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -990,7 +990,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1048,7 +1048,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1063,9 +1063,9 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(types != null && types.Length > 0) {
+                if (types != null && types.Length > 0) {
                     var stores = this.GetActPoints(node, types);
-                    if(stores.Count > 0) {
+                    if (stores.Count > 0) {
                         var nodeKey = Common.ParseNode(node);
                         var models = new List<ActPointModel>();
 
@@ -1176,8 +1176,8 @@ namespace iPem.Site.Controllers {
                         }
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1236,7 +1236,7 @@ namespace iPem.Site.Controllers {
                 data.data.keywords = current.keywords;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -1252,7 +1252,7 @@ namespace iPem.Site.Controllers {
 
                 if (action == (int)EnmAction.Add) {
                     var conditions = _workContext.ProfileConditions().ToList();
-                    if(conditions.Any(c => c.name.Equals(condition.name)))
+                    if (conditions.Any(c => c.name.Equals(condition.name)))
                         throw new iPemException("条件名称已存在");
 
                     conditions.Add(condition);
@@ -1265,7 +1265,7 @@ namespace iPem.Site.Controllers {
                         LastUpdatedDate = DateTime.Now
                     });
                     _workContext.ResetProfile(EnmProfile.Condition);
-                    _webLogger.Information(EnmEventType.Other, string.Format("新增告警条件[{0}]", condition.name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增告警条件[{0}]", condition.name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if (action == (int)EnmAction.Edit) {
                     var conditions = _workContext.ProfileConditions().ToList();
@@ -1283,13 +1283,13 @@ namespace iPem.Site.Controllers {
                         LastUpdatedDate = DateTime.Now
                     });
                     _workContext.ResetProfile(EnmProfile.Condition);
-                    _webLogger.Information(EnmEventType.Other, string.Format("更新告警条件[{0}]", condition.name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新告警条件[{0}]", condition.name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1306,7 +1306,7 @@ namespace iPem.Site.Controllers {
 
                 var current = conditions.Find(c => c.id == id);
                 if (current == null) throw new iPemException("未找到数据对象");
-                
+
                 conditions.Remove(current);
 
                 var userId = _workContext.User().Id;
@@ -1317,10 +1317,10 @@ namespace iPem.Site.Controllers {
                     LastUpdatedDate = DateTime.Now
                 });
                 _workContext.ResetProfile(EnmProfile.Condition);
-                _webLogger.Information(EnmEventType.Other, string.Format("删除告警条件[{0}]", current.name), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除告警条件[{0}]", current.name), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1332,11 +1332,11 @@ namespace iPem.Site.Controllers {
                 if (!_workContext.Authorizations().Permissions.Contains(EnmPermission.Confirm))
                     return Json(new AjaxResultModel { success = false, code = 500, message = "您没有操作权限" });
 
-                if(keys == null || keys.Length == 0)
+                if (keys == null || keys.Length == 0)
                     throw new ArgumentException("keys");
 
                 var entities = new List<A_AAlarm>();
-                foreach(var key in keys) {
+                foreach (var key in keys) {
                     entities.Add(new A_AAlarm {
                         Id = key,
                         Confirmed = EnmConfirm.Confirmed,
@@ -1347,8 +1347,8 @@ namespace iPem.Site.Controllers {
 
                 _actAlarmService.Confirm(entities.ToArray());
                 return Json(new AjaxResultModel { success = true, code = 200, message = "告警确认成功" });
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1376,7 +1376,7 @@ namespace iPem.Site.Controllers {
                 _actAlarmService.Confirm(entities.ToArray());
                 return Json(new AjaxResultModel { success = true, code = 200, message = "告警确认成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1392,11 +1392,11 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if(string.IsNullOrWhiteSpace(id))
+                if (string.IsNullOrWhiteSpace(id))
                     throw new ArgumentException("id");
 
                 var current = _reservationService.GetReservation(id);
-                if(current == null) throw new iPemException("未找到数据对象");
+                if (current == null) throw new iPemException("未找到数据对象");
                 var project = _projectService.GetProject(current.ProjectId);
 
                 data.data.id = current.Id;
@@ -1410,8 +1410,8 @@ namespace iPem.Site.Controllers {
                 data.data.comment = current.Comment;
                 data.data.enabled = current.Enabled;
                 return Json(data);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data);
             }
@@ -1421,7 +1421,7 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult ControlPoint(string password, string device, string point, int ctrl, string remark, int custom = 0) {
             try {
-                if(!_workContext.Authorizations().Permissions.Contains(EnmPermission.Control))
+                if (!_workContext.Authorizations().Permissions.Contains(EnmPermission.Control))
                     return Json(new AjaxResultModel { success = false, code = 500, message = "您没有遥控权限" });
 
                 if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("password");
@@ -1429,50 +1429,50 @@ namespace iPem.Site.Controllers {
                 if (string.IsNullOrWhiteSpace(point)) throw new ArgumentException("point");
 
                 var validResult = _userService.Validate(_workContext.User().Uid, password);
-                if(validResult != EnmLoginResults.Successful)
+                if (validResult != EnmLoginResults.Successful)
                     return Json(new AjaxResultModel { success = false, code = 500, message = "密码验证失败" });
 
                 var curDevice = _workContext.Devices().Find(d => d.Current.Id == device);
                 if (curDevice == null) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("未找到设备[{0}]", device), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("未找到设备[{0}]", device), _workContext.User().Id, null);
                     throw new iPemException("未找到设备");
                 }
 
                 var curFsu = _workContext.Fsus().Find(f => f.Current.Id == curDevice.Current.FsuId);
                 if (curFsu == null) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("未找到Fsu[{0}]", curDevice.Current.FsuId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("未找到Fsu[{0}]", curDevice.Current.FsuId), _workContext.User().Id, null);
                     throw new iPemException("未找到Fsu");
                 }
 
                 var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
                 if (curExtFsu == null) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("未找到Fsu[{0}]", curFsu.Current.Id), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("未找到Fsu[{0}]", curFsu.Current.Id), _workContext.User().Id, null);
                     throw new iPemException("未找到Fsu");
                 }
 
                 if (!curExtFsu.Status) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("Fsu通信中断[{0}]", curFsu.Current.Id), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("Fsu通信中断[{0}]", curFsu.Current.Id), _workContext.User().Id, null);
                     throw new iPemException("Fsu通信中断");
                 }
 
                 var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
                 if (curGroup == null) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("未找到SC采集组[{0}]", curExtFsu.GroupId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("未找到SC采集组[{0}]", curExtFsu.GroupId), _workContext.User().Id, null);
                     throw new iPemException("未找到SC采集组");
                 }
 
                 if (!curGroup.Status) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("SC采集组通信中断[{0}]", curExtFsu.GroupId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("SC采集组通信中断[{0}]", curExtFsu.GroupId), _workContext.User().Id, null);
                     throw new iPemException("SC采集组通信中断");
                 }
 
                 var curPoint = curDevice.DO.Find(p => p.PointId.Equals(point));
                 if (curPoint == null) {
-                    _webLogger.Error(EnmEventType.Control, string.Format("未找到信号[{0}]", point), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Control, string.Format("未找到信号[{0}]", point), _workContext.User().Id, null);
                     throw new iPemException("未找到信号");
                 }
 
-                if(ctrl == 3) ctrl = custom;
+                if (ctrl == 3) ctrl = custom;
                 var package = new SetPointPackage() {
                     FsuId = curFsu.Current.Code,
                     DeviceList = new List<SetPointDevice>() {
@@ -1494,24 +1494,24 @@ namespace iPem.Site.Controllers {
                 };
 
                 var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
-                if(result != null) {
+                if (result != null) {
                     if (result.Result == EnmBIResult.FAILURE) {
-                        _webLogger.Error(EnmEventType.Control, string.Format("{0}[{1},{2}:{3}],备注:{4}。", result.FailureCause ?? "信号遥控失败", device, point, ctrl, remark ?? ""), null, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Control, string.Format("{0}[{1},{2}:{3}],备注:{4}。", result.FailureCause ?? "信号遥控失败", device, point, ctrl, remark ?? ""), _workContext.User().Id, null);
                         throw new iPemException(result.FailureCause ?? "信号遥控失败");
                     }
-                    
-                    if(result.DeviceList != null) {
+
+                    if (result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
                         if (devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number)) {
-                            _webLogger.Information(EnmEventType.Control, string.Format("信号遥控成功[{0},{1}:{2}],备注:{3}。", device, point, ctrl, remark ?? ""), null, _workContext.User().Id);
+                            _webLogger.Information(EnmEventType.Control, string.Format("信号遥控成功[{0},{1}:{2}],备注:{3}。", device, point, ctrl, remark ?? ""), _workContext.User().Id, null);
                             return Json(new AjaxResultModel { success = true, code = 200, message = "信号遥控成功" });
                         }
                     }
                 }
 
-                _webLogger.Error(EnmEventType.Control, string.Format("信号遥控失败[{0},{1}:{2}],备注:{3}。", device, point, ctrl, remark ?? ""), null, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Control, string.Format("信号遥控失败[{0},{1}:{2}],备注:{3}。", device, point, ctrl, remark ?? ""), _workContext.User().Id, null);
                 throw new iPemException("信号遥控失败");
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1520,7 +1520,7 @@ namespace iPem.Site.Controllers {
         [AjaxAuthorize]
         public JsonResult AdjustPoint(string password, string device, string point, float adjust, string remark) {
             try {
-                if(!_workContext.Authorizations().Permissions.Contains(EnmPermission.Control))
+                if (!_workContext.Authorizations().Permissions.Contains(EnmPermission.Control))
                     return Json(new AjaxResultModel { success = false, code = 500, message = "您没有遥调权限" });
 
                 if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("password");
@@ -1533,41 +1533,41 @@ namespace iPem.Site.Controllers {
 
                 var curDevice = _workContext.Devices().Find(d => d.Current.Id == device);
                 if (curDevice == null) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到设备[{0}]", device), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到设备[{0}]", device), _workContext.User().Id, null);
                     throw new iPemException("未找到设备");
                 }
 
                 var curFsu = _workContext.Fsus().Find(f => f.Current.Id == curDevice.Current.FsuId);
                 if (curFsu == null) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到Fsu[{0}]", curDevice.Current.FsuId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到Fsu[{0}]", curDevice.Current.FsuId), _workContext.User().Id, null);
                     throw new iPemException("未找到Fsu");
                 }
 
                 var curExtFsu = _fsuService.GetExtFsu(curFsu.Current.Id);
                 if (curExtFsu == null) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到Fsu[{0}]", curFsu.Current.Id), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到Fsu[{0}]", curFsu.Current.Id), _workContext.User().Id, null);
                     throw new iPemException("未找到Fsu");
                 }
 
                 if (!curExtFsu.Status) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("Fsu通信中断[{0}]", curFsu.Current.Id), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("Fsu通信中断[{0}]", curFsu.Current.Id), _workContext.User().Id, null);
                     throw new iPemException("Fsu通信中断");
                 }
 
                 var curGroup = _groupService.GetGroup(curExtFsu.GroupId);
                 if (curGroup == null) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到SC采集组[{0}]", curExtFsu.GroupId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到SC采集组[{0}]", curExtFsu.GroupId), _workContext.User().Id, null);
                     throw new iPemException("未找到SC采集组");
                 }
 
                 if (!curGroup.Status) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("SC采集组通信中断[{0}]", curExtFsu.GroupId), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("SC采集组通信中断[{0}]", curExtFsu.GroupId), _workContext.User().Id, null);
                     throw new iPemException("SC采集组通信中断");
                 }
 
                 var curPoint = curDevice.AO.Find(p => p.PointId.Equals(point));
                 if (curPoint == null) {
-                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到信号[{0}]", point), null, _workContext.User().Id);
+                    _webLogger.Error(EnmEventType.Adjust, string.Format("未找到信号[{0}]", point), _workContext.User().Id, null);
                     throw new iPemException("未找到信号");
                 }
 
@@ -1592,24 +1592,24 @@ namespace iPem.Site.Controllers {
                 };
 
                 var result = _packMgr.SetPoint(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
-                if(result != null) {
+                if (result != null) {
                     if (result.Result == EnmBIResult.FAILURE) {
-                        _webLogger.Error(EnmEventType.Adjust, string.Format("{0}[{1},{2}:{3}],备注:{4}。", result.FailureCause ?? "信号遥调失败", device, point, adjust, remark ?? ""), null, _workContext.User().Id);
+                        _webLogger.Error(EnmEventType.Adjust, string.Format("{0}[{1},{2}:{3}],备注:{4}。", result.FailureCause ?? "信号遥调失败", device, point, adjust, remark ?? ""), _workContext.User().Id, null);
                         throw new iPemException(result.FailureCause ?? "信号遥调失败");
                     }
 
-                    if(result.DeviceList != null) {
+                    if (result.DeviceList != null) {
                         var devResult = result.DeviceList.Find(d => d.Id == curDevice.Current.Code);
                         if (devResult != null && devResult.SuccessList.Any(s => s.Id == curPoint.Code && s.SignalNumber == curPoint.Number)) {
-                            _webLogger.Information(EnmEventType.Adjust, string.Format("信号遥调成功[{0},{1}:{2}],备注:{3}。", device, point, adjust, remark ?? ""), null, _workContext.User().Id);
+                            _webLogger.Information(EnmEventType.Adjust, string.Format("信号遥调成功[{0},{1}:{2}],备注:{3}。", device, point, adjust, remark ?? ""), _workContext.User().Id, null);
                             return Json(new AjaxResultModel { success = true, code = 200, message = "信号遥调成功" });
                         }
                     }
                 }
 
-                _webLogger.Error(EnmEventType.Adjust, string.Format("信号遥调失败[{0},{1}:{2}],备注:{3}。", device, point, adjust, remark ?? ""), null, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Adjust, string.Format("信号遥调失败[{0},{1}:{2}],备注:{3}。", device, point, adjust, remark ?? ""), _workContext.User().Id, null);
                 throw new iPemException("信号遥调失败");
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1635,8 +1635,8 @@ namespace iPem.Site.Controllers {
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "关注成功" }, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1665,8 +1665,8 @@ namespace iPem.Site.Controllers {
                 }
 
                 return Json(new AjaxResultModel { success = true, code = 200, message = "已取消关注" }, JsonRequestBehavior.AllowGet);
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1691,7 +1691,7 @@ namespace iPem.Site.Controllers {
                 model.alarms = new List<HomeAreaAlmModel>();
 
                 var roots = _workContext.Areas().FindAll(a => !a.HasChildren);
-                foreach(var root in roots) {
+                foreach (var root in roots) {
                     var alarmsInRoot = alarms.FindAll(alarm => alarm.Current.AreaId.Equals(root.Current.Id));
 
                     var alarmsInArea = new HomeAreaAlmModel();
@@ -1707,8 +1707,8 @@ namespace iPem.Site.Controllers {
                 data.data = model;
                 data.total = 1;
                 data.message = "200 Ok";
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1733,8 +1733,8 @@ namespace iPem.Site.Controllers {
                 data.data = model;
                 data.total = 1;
                 data.message = "200 Ok";
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1754,7 +1754,7 @@ namespace iPem.Site.Controllers {
             try {
                 var energies = _elecService.GetEnergies(EnmSSH.Station, new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1), DateTime.Now);
                 var roots = _workContext.Areas().FindAll(a => !a.HasChildren);
-                foreach(var root in roots) {
+                foreach (var root in roots) {
                     var children = _workContext.Stations().FindAll(s => s.Current.AreaId == root.Current.Id).Select(s => s.Current.Id);
                     var categories = energies.FindAll(e => children.Contains(e.Id));
 
@@ -1777,8 +1777,8 @@ namespace iPem.Site.Controllers {
 
                 data.total = data.data.Count;
                 data.message = "200 Ok";
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1807,15 +1807,15 @@ namespace iPem.Site.Controllers {
                 data.chart[1] = new ChartModel { index = 2, name = "离线", value = allFsus.Count(f => !f.Status) };
 
                 var offFsus = allFsus.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
-                if(offFsus.Count > 0) {
+                if (offFsus.Count > 0) {
                     data.message = "200 Ok";
                     data.total = offFsus.Count;
 
                     var end = start + limit;
-                    if(end > offFsus.Count)
+                    if (end > offFsus.Count)
                         end = offFsus.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new HomeOffModel {
                             index = i + 1,
                             area = offFsus[i].Area.ToString(),
@@ -1828,8 +1828,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1848,7 +1848,7 @@ namespace iPem.Site.Controllers {
 
                 var offFsus = allFsus.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
                 var models = new List<HomeOffModel>();
-                for(int i = 0; i < offFsus.Count; i++) {
+                for (int i = 0; i < offFsus.Count; i++) {
                     models.Add(new HomeOffModel {
                         index = i + 1,
                         area = offFsus[i].Area.ToString(),
@@ -1861,11 +1861,11 @@ namespace iPem.Site.Controllers {
                     });
                 }
 
-                using(var ms = _excelManager.Export<HomeOffModel>(models, "Fsu离线列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<HomeOffModel>(models, "Fsu离线列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1906,7 +1906,7 @@ namespace iPem.Site.Controllers {
                     if (end > unStations.Count)
                         end = unStations.Count;
 
-                    for(int i = start; i < end; i++) {
+                    for (int i = start; i < end; i++) {
                         data.data.Add(new HomeUnconnectedModel {
                             index = i + 1,
                             area = unStations[i].area,
@@ -1916,8 +1916,8 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -1945,8 +1945,8 @@ namespace iPem.Site.Controllers {
                 using (var ms = _excelManager.Export<HomeUnconnectedModel>(unStations, "站点断站列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
-            } catch(Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -1998,7 +1998,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2027,7 +2027,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2079,7 +2079,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2108,7 +2108,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2153,7 +2153,7 @@ namespace iPem.Site.Controllers {
                 _workContext.ResetProfile(EnmProfile.Matrix);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2192,7 +2192,7 @@ namespace iPem.Site.Controllers {
                     data.total++;
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -2246,7 +2246,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
                 data.total = 0;
@@ -2290,7 +2290,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2319,7 +2319,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -2335,7 +2335,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -2604,7 +2604,7 @@ namespace iPem.Site.Controllers {
             } else {
                 stores = this.GetFollowPoints(nodeKey.Value, nodeKey.Key);
             }
-            
+
             stores = stores.FindAll(p => types.Contains((int)p.Current.PointType));
             return stores.OrderByDescending(p => (int)p.Current.PointType).ToList();
         }
@@ -2648,15 +2648,15 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(node) || "root".Equals(node)) 
+            if (string.IsNullOrWhiteSpace(node) || "root".Equals(node))
                 return stores.ToList();
 
-            if(type == EnmSSH.Area) {
+            if (type == EnmSSH.Area) {
                 var current = _workContext.Areas().Find(a => a.Current.Id == node);
-                if(current != null) stores = stores.Where(p => current.Keys.Contains(p.AreaId));
-            } else if(type == EnmSSH.Station) {
+                if (current != null) stores = stores.Where(p => current.Keys.Contains(p.AreaId));
+            } else if (type == EnmSSH.Station) {
                 stores = stores.Where(p => p.StationId == node);
-            } else if(type == EnmSSH.Room) {
+            } else if (type == EnmSSH.Room) {
                 stores = stores.Where(p => p.RoomId == node);
             }
 

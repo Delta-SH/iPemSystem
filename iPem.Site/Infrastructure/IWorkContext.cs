@@ -1,4 +1,4 @@
-﻿using iPem.Core;
+﻿using iPem.Core.Domain.Common;
 using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;

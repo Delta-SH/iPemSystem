@@ -7,9 +7,11 @@ using iPem.Core.Data;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
 using iPem.Data.Installation;
+using iPem.Data.Repository.Common;
 using iPem.Data.Repository.Cs;
 using iPem.Data.Repository.Rs;
 using iPem.Data.Repository.Sc;
+using iPem.Services.Common;
 using iPem.Services.Cs;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
@@ -55,21 +57,11 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             //register http context
-            builder.Register(c => new HttpContextWrapper(HttpContext.Current) as HttpContextBase)
-                .As<HttpContextBase>()
-                .InstancePerLifetimeScope();
-            builder.Register(c => c.Resolve<HttpContextBase>().Request)
-                .As<HttpRequestBase>()
-                .InstancePerLifetimeScope();
-            builder.Register(c => c.Resolve<HttpContextBase>().Response)
-                .As<HttpResponseBase>()
-                .InstancePerLifetimeScope();
-            builder.Register(c => c.Resolve<HttpContextBase>().Server)
-                .As<HttpServerUtilityBase>()
-                .InstancePerLifetimeScope();
-            builder.Register(c => c.Resolve<HttpContextBase>().Session)
-                .As<HttpSessionStateBase>()
-                .InstancePerLifetimeScope();
+            builder.Register(c => new HttpContextWrapper(HttpContext.Current) as HttpContextBase).As<HttpContextBase>().InstancePerLifetimeScope();
+            builder.Register(c => c.Resolve<HttpContextBase>().Request).As<HttpRequestBase>().InstancePerLifetimeScope();
+            builder.Register(c => c.Resolve<HttpContextBase>().Response).As<HttpResponseBase>().InstancePerLifetimeScope();
+            builder.Register(c => c.Resolve<HttpContextBase>().Server).As<HttpServerUtilityBase>().InstancePerLifetimeScope();
+            builder.Register(c => c.Resolve<HttpContextBase>().Session).As<HttpSessionStateBase>().InstancePerLifetimeScope();
 
             //register core class
             builder.RegisterType<WebHelper>().As<IWebHelper>().InstancePerLifetimeScope();
@@ -78,6 +70,7 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<DbInstaller>().As<IDbInstaller>().SingleInstance();
             builder.RegisterType<RedisCacheManager>().As<ICacheManager>().SingleInstance();
             builder.RegisterType<ExcelManager>().As<IExcelManager>().SingleInstance();
+            builder.RegisterType<ServiceGetter>().As<IServiceGetter>().SingleInstance();
             builder.RegisterType<iPemWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
             builder.RegisterType<ApiWorkContext>().As<IApiWorkContext>().InstancePerApiRequest();
 
@@ -85,7 +78,7 @@ namespace iPem.Site.Infrastructure {
             builder.RegisterType<SCPackMgr>().As<IPackMgr>().InstancePerLifetimeScope();
 
             var dbManager = new SqlDbManager(new SqliteDataProvider());
-            if(dbManager.IsValid(EnmDbType.Rs)) {
+            if (dbManager.IsValid(EnmDbType.Rs)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Rs];
 
                 //register executor
@@ -98,7 +91,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IC_DeviceTypeRepository>(c => new C_DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_DutyRepository>(c => new C_DutyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_EnumMethodRepository>(c => new C_EnumMethodRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IC_GroupRepository>(c => new C_GroupRepository(connectionString)).InstancePerLifetimeScope();                
+                builder.Register<IC_GroupRepository>(c => new C_GroupRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_LogicTypeRepository>(c => new C_LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_ProductorRepository>(c => new C_ProductorRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_RoomTypeRepository>(c => new C_RoomTypeRepository(connectionString)).InstancePerLifetimeScope();
@@ -117,12 +110,16 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IM_CardRepository>(c => new M_CardRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_PointRepository>(c => new P_PointRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IP_ProtocolRepository>(c => new P_ProtocolRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IR_DBScriptRepository>(c => new R_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
+                builder.Register<IR_DBScriptRepository>(c => new R_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IS_RoomRepository>(c => new S_RoomRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IS_StationRepository>(c => new S_StationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_EmployeeRepository>(c => new U_EmployeeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_CameraRepository>(c => new V_CameraRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_ChannelRepository>(c => new V_ChannelRepository(connectionString)).InstancePerLifetimeScope();
+                //默认UserRepository
+                //builder.Register<IU_UserRepository>(c => new iPem.Data.Repository.Rs.U_UserRepository(connectionString)).InstancePerLifetimeScope();
+                //指定名称的UserRepository
+                builder.Register(c => new iPem.Data.Repository.Rs.U_UserRepository(connectionString)).Named<IU_UserRepository>("rs_user_repository").InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<AreaService>().As<IAreaService>().InstancePerLifetimeScope();
@@ -142,7 +139,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProductorService>().As<IProductorService>().InstancePerLifetimeScope();
                 builder.RegisterType<ProtocolService>().As<IProtocolService>().InstancePerLifetimeScope();
-                builder.RegisterType<RDBScriptService>().As<IRDBScriptService>().InstancePerLifetimeScope();                
+                builder.RegisterType<RDBScriptService>().As<IRDBScriptService>().InstancePerLifetimeScope();
                 builder.RegisterType<RedefinePointService>().As<IRedefinePointService>().InstancePerLifetimeScope();
                 builder.RegisterType<MAuthorizationService>().As<IMAuthorizationService>().InstancePerLifetimeScope();
                 builder.RegisterType<MCardService>().As<IMCardService>().InstancePerLifetimeScope();
@@ -156,9 +153,10 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<SubCompanyService>().As<ISubCompanyService>().InstancePerLifetimeScope();
                 builder.RegisterType<SupplierService>().As<ISupplierService>().InstancePerLifetimeScope();
                 builder.RegisterType<UnitService>().As<IUnitService>().InstancePerLifetimeScope();
+                //builder.RegisterType<iPem.Services.Rs.UserService>().As<IUserService>().InstancePerLifetimeScope();
             }
 
-            if(dbManager.IsValid(EnmDbType.Cs)) {
+            if (dbManager.IsValid(EnmDbType.Cs)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Cs];
 
                 //register executor
@@ -171,7 +169,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IH_CardRecordRepository>(c => new H_CardRecordRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_DBScriptRepository>(c => new H_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_FsuEventRepository>(c => new H_FsuEventRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();                
+                builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IDeviceRepository>(c => new H_IDeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IStationRepository>(c => new H_IStationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_AMeasureRepository>(c => new V_AMeasureRepository(connectionString)).InstancePerLifetimeScope();
@@ -207,7 +205,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<TAlarmService>().As<ITAlarmService>().InstancePerLifetimeScope();
             }
 
-            if(dbManager.IsValid(EnmDbType.Sc)) {
+            if (dbManager.IsValid(EnmDbType.Sc)) {
                 var connectionString = dbManager.CurrentConnetions[EnmDbType.Sc];
 
                 //register executor
@@ -225,12 +223,15 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IM_NodesInReservationRepository>(c => new M_NodesInReservationRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_ProjectRepository>(c => new M_ProjectRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IM_ReservationRepository>(c => new M_ReservationRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IS_DBScriptRepository>(c => new S_DBScriptRepository(connectionString)).InstancePerLifetimeScope();                
+                builder.Register<IS_DBScriptRepository>(c => new S_DBScriptRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_EntitiesInRoleRepository>(c => new U_EntitiesInRoleRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_MenuRepository>(c => new U_MenuRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_ProfileRepository>(c => new U_ProfileRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IU_RoleRepository>(c => new U_RoleRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IU_UserRepository>(c => new UserRepository(connectionString)).InstancePerLifetimeScope();
+                //默认UserRepository
+                builder.Register<IU_UserRepository>(c => new iPem.Data.Repository.Sc.U_UserRepository(connectionString)).InstancePerLifetimeScope();
+                //指定名称的UserRepository
+                builder.Register(c => new iPem.Data.Repository.Sc.U_UserRepository(connectionString)).Named<IU_UserRepository>("sc_user_repository").InstancePerLifetimeScope();
 
                 //register service
                 builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerLifetimeScope();
@@ -247,9 +248,9 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<ProjectService>().As<IProjectService>().InstancePerLifetimeScope();
                 builder.RegisterType<ReservationService>().As<IReservationService>().InstancePerLifetimeScope();
                 builder.RegisterType<RoleService>().As<IRoleService>().InstancePerLifetimeScope();
-                builder.RegisterType<SDBScriptService>().As<ISDBScriptService>().InstancePerLifetimeScope();                
-                builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
+                builder.RegisterType<SDBScriptService>().As<ISDBScriptService>().InstancePerLifetimeScope();
                 builder.RegisterType<WebEventService>().As<IWebEventService>().InstancePerLifetimeScope();
+                builder.RegisterType<iPem.Services.Sc.UserService>().As<IUserService>().InstancePerLifetimeScope();
             }
 
             builder.Update(container);

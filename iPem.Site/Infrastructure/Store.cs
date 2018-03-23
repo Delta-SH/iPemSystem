@@ -1,9 +1,8 @@
-﻿using iPem.Core.Domain.Rs;
+﻿using iPem.Core.Domain.Common;
+using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
 using iPem.Services.Common;
-using iPem.Site.Models;
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace iPem.Site.Infrastructure {

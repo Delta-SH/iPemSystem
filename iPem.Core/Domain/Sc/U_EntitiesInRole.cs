@@ -11,7 +11,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 角色编号
         /// </summary>
-        public Guid RoleId { get; set; }
+        public string RoleId { get; set; }
 
         /// <summary>
         /// 角色菜单

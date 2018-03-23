@@ -9,7 +9,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 角色编号
         /// </summary>
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// 角色名称
@@ -29,8 +29,13 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 超级管理员编号
         /// </summary>
-        public static Guid SuperId {
-            get { return new Guid("A0000000-6000-2000-1000-F00000000000"); }
+        public static string SuperId {
+            get { return "a0000000-6000-2000-1000-f00000000000"; }
         }
+
+        public static string RsSuperId {
+            get { return "0"; }
+        }
+
     }
 }

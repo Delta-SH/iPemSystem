@@ -37,16 +37,16 @@ namespace iPem.Site.Tasks {
         public void Execute() {
             try {
                 var local = EngineContext.Current.AppStore.Location;
-                if(String.IsNullOrWhiteSpace(local))
+                if (String.IsNullOrWhiteSpace(local))
                     return;
 
                 var keepAliveUrl = string.Format("{0}keepalive", local);
-                using(var wc = new WebClient()) {
+                using (var wc = new WebClient()) {
                     wc.DownloadString(keepAliveUrl);
                 }
-            } catch(Exception exc) {
+            } catch (Exception exc) {
                 var logger = EngineContext.Current.Resolve<IWebEventService>();
-                logger.Error(EnmEventType.Other, "", "#task.alive.keep", "KeepAliveTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), exc);
+                logger.Error(EnmEventType.Other, "", "#task.alive.keep", "KeepAliveTask Class", string.Format("Error while running the '{0}' schedule task. {1}", this.Name, exc.Message), null, exc);
             }
         }
 

@@ -51,6 +51,7 @@
     <Compile Include="Installation\RsExecutor.cs" />
     <Compile Include="Installation\ScExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Common\IU_UserRepository.cs" />
     <Compile Include="Repository\Cs\Class\A_AAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Class\A_TAlarmRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_CardRecordRepository.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Repository\Rs\Class\M_AuthorizationRepository.cs" />
     <Compile Include="Repository\Rs\Class\M_CardRepository.cs" />
     <Compile Include="Repository\Rs\Class\R_DBScriptRepository.cs" />
+    <Compile Include="Repository\Rs\Class\U_UserRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_ChannelRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_GroupRepository.cs" />
@@ -138,7 +140,6 @@
     <Compile Include="Repository\Sc\Interface\IM_ProjectRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IP_ProtocolRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IU_RoleRepository.cs" />
-    <Compile Include="Repository\Sc\Interface\IU_UserRepository.cs" />
     <Compile Include="Repository\Sc\Interface\IH_WebEventRepository.cs" />
     <Compile Include="Repository\Sc\Class\U_MenuRepository.cs" />
     <Compile Include="Repository\Sc\Class\H_NoticeRepository.cs" />

@@ -44,11 +44,11 @@ namespace iPem.Services.Sc {
             return _repository.GetNoticesInSpan(start, end);
         }
 
-        public List<H_Notice> GetNoticesInUser(Guid uid) {
+        public List<H_Notice> GetNoticesInUser(string uid) {
             return _repository.GetNoticesInUser(uid);
         }
 
-        public List<H_Notice> GetUnreadNotices(Guid uid) {
+        public List<H_Notice> GetUnreadNotices(string uid) {
             return _repository.GetUnreadNotices(uid);
         }
 
@@ -60,18 +60,18 @@ namespace iPem.Services.Sc {
             return new PagedList<H_Notice>(this.GetNoticesInSpan(start, end), pageIndex, pageSize);
         }
 
-        public IPagedList<H_Notice> GetPagedNoticesInUser(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public IPagedList<H_Notice> GetPagedNoticesInUser(string uid, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<H_Notice>(this.GetNoticesInUser(uid), pageIndex, pageSize);
         }
 
-        public IPagedList<H_Notice> GetPagedUnreadNotices(Guid uid, int pageIndex = 0, int pageSize = int.MaxValue) {
+        public IPagedList<H_Notice> GetPagedUnreadNotices(string uid, int pageIndex = 0, int pageSize = int.MaxValue) {
             return new PagedList<H_Notice>(this.GetUnreadNotices(uid), pageIndex, pageSize);
         }
 
         public void Add(params H_Notice[] notices) {
-            if(notices == null || notices.Length == 0) 
+            if (notices == null || notices.Length == 0)
                 throw new ArgumentNullException("notices");
-            
+
             _repository.Insert(notices);
         }
 

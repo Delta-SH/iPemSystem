@@ -45,36 +45,36 @@ namespace iPem.Site {
         protected void Application_BeginRequest(object sender, EventArgs e) {
             //ignore static resources
             var webHelper = EngineContext.Current.Resolve<IWebHelper>();
-            if(webHelper.IsStaticResource(this.Request))
+            if (webHelper.IsStaticResource(this.Request))
                 return;
 
             //sets application store.
             var local = webHelper.GetAppLocation();
             var host = webHelper.GetAppHost();
             var port = webHelper.GetAppPort();
-            if(!local.Equals(EngineContext.Current.AppStore.Location, StringComparison.InvariantCultureIgnoreCase))
+            if (!local.Equals(EngineContext.Current.AppStore.Location, StringComparison.InvariantCultureIgnoreCase))
                 EngineContext.Current.AppStore.Location = local;
-            if(!host.Equals(EngineContext.Current.AppStore.Host, StringComparison.InvariantCultureIgnoreCase))
+            if (!host.Equals(EngineContext.Current.AppStore.Host, StringComparison.InvariantCultureIgnoreCase))
                 EngineContext.Current.AppStore.Host = host;
-            if(port != EngineContext.Current.AppStore.Port)
+            if (port != EngineContext.Current.AppStore.Port)
                 EngineContext.Current.AppStore.Port = port;
 
             //keep alive page requested (we ignore it to prevent creating a guest customer records)
             var currentPage = webHelper.GetThisPageUrl(false);
             var keepAliveUrl = string.Format("{0}keepalive", local);
-            if(currentPage.StartsWith(keepAliveUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (currentPage.StartsWith(keepAliveUrl, StringComparison.InvariantCultureIgnoreCase))
                 return;
 
             //ensure database is installed
             var dbManager = EngineContext.Current.Resolve<IDbManager>();
-            if(!dbManager.DatabaseIsInstalled()) {
+            if (!dbManager.DatabaseIsInstalled()) {
                 var installUrl = string.Format("{0}installation", local);
-                if(!currentPage.StartsWith(installUrl, StringComparison.InvariantCultureIgnoreCase)) {
+                if (!currentPage.StartsWith(installUrl, StringComparison.InvariantCultureIgnoreCase)) {
                     this.Response.Redirect(installUrl);
                 }
             }
 
-            if(!dbManager.DatabaseIsInstalled())
+            if (!dbManager.DatabaseIsInstalled())
                 return;
         }
 
@@ -89,17 +89,17 @@ namespace iPem.Site {
 
         protected void Application_Error(Object sender, EventArgs e) {
             var exception = Server.GetLastError();
-            if(exception == null)
+            if (exception == null)
                 return;
 
             var dbManager = EngineContext.Current.Resolve<IDbManager>();
-            if(!dbManager.DatabaseIsInstalled())
+            if (!dbManager.DatabaseIsInstalled())
                 return;
 
             try {
                 var logger = EngineContext.Current.Resolve<IWebEventService>();
-                logger.Error(EnmEventType.Other, exception.Message, exception);
-            } catch(Exception) {
+                logger.Error(EnmEventType.Other, exception.Message, null, exception);
+            } catch (Exception) {
                 //don't throw new exception if occurs
             }
         }
@@ -114,23 +114,23 @@ namespace iPem.Site {
         protected void SetWorkingCulture() {
             //ensure database is installed
             var dbManager = EngineContext.Current.Resolve<IDbManager>();
-            if(!dbManager.DatabaseIsInstalled())
+            if (!dbManager.DatabaseIsInstalled())
                 return;
 
             //ignore static resources
             var webHelper = EngineContext.Current.Resolve<IWebHelper>();
-            if(webHelper.IsStaticResource(this.Request))
+            if (webHelper.IsStaticResource(this.Request))
                 return;
 
             //keep alive page requested (we ignore it to prevent creation of guest customer records)
             var currentPage = webHelper.GetThisPageUrl(false);
             var keepAliveUrl = string.Format("{0}keepalive", webHelper.GetAppLocation());
-            if(currentPage.StartsWith(keepAliveUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (currentPage.StartsWith(keepAliveUrl, StringComparison.InvariantCultureIgnoreCase))
                 return;
 
-            if(this.Request.Cookies["UICulture"] != null) {
+            if (this.Request.Cookies["UICulture"] != null) {
                 var languageCulture = this.Request.Cookies["UICulture"].Value;
-                if(!String.IsNullOrWhiteSpace(languageCulture)) {
+                if (!String.IsNullOrWhiteSpace(languageCulture)) {
                     var culture = new CultureInfo(languageCulture);
                     System.Threading.Thread.CurrentThread.CurrentCulture = culture;
                     System.Threading.Thread.CurrentThread.CurrentUICulture = culture;

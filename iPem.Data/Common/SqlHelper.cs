@@ -87,7 +87,7 @@ namespace iPem.Data.Common {
         /// <param name="commandText">the stored procedure name or T-SQL command</param>
         /// <param name="commandParameters">an array of SqlParamters used to execute the command</param>
         /// <returns>A SqlDataReader containing the results</returns>
-        public static SqlDataReader ExecuteReader(string connectionString, CommandType cmdType, string cmdText, params SqlParameter[] commandParameters) {
+        public static SqlDataReader ExecuteReader(string connectionString, CommandType cmdType, string cmdText, params SqlParameter[] commandParameters)  {
             var cmd = new SqlCommand();
             var conn = new SqlConnection(connectionString);
 

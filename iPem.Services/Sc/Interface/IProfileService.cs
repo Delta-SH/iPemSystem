@@ -10,7 +10,7 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 获得用户的订制信息
         /// </summary>
-        U_Profile GetProfile(Guid uid, EnmProfile type);
+        U_Profile GetProfile(string uid, EnmProfile type);
 
         /// <summary>
         /// 保存用户的订制信息
@@ -20,12 +20,12 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 删除用户的订制信息
         /// </summary>
-        void RemoveProfile(Guid uid, EnmProfile type);
+        void RemoveProfile(string uid, EnmProfile type);
 
         /// <summary>
         /// 清空用户的所有订制信息
         /// </summary>
         /// <param name="uid"></param>
-        void ClearProfiles(Guid uid);
+        void ClearProfiles(string uid);
     }
 }

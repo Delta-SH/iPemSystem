@@ -10,7 +10,7 @@ namespace iPem.Core.Domain.Sc {
         /// <summary>
         /// 用户编号
         /// </summary>
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// 信息类型

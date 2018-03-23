@@ -11,7 +11,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得用户的订制信息
         /// </summary>
-        U_Profile Get(Guid uid, EnmProfile type);
+        U_Profile Get(string uid, EnmProfile type);
 
         /// <summary>
         /// 保存用户的订制信息
@@ -21,11 +21,11 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 删除用户的订制信息
         /// </summary>
-        void Delete(Guid uid, EnmProfile type);
+        void Delete(string uid, EnmProfile type);
 
         /// <summary>
         /// 清空用户的所有订制信息
         /// </summary>
-        void Clear(Guid uid);
+        void Clear(string uid);
     }
 }

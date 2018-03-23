@@ -10,7 +10,7 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 获得指定角色的对象关系映射信息
         /// </summary>
-        U_EntitiesInRole GetEntitiesInRole(Guid id);
+        U_EntitiesInRole GetEntitiesInRole(string id);
 
         /// <summary>
         /// 新增角色对象关系映射信息
@@ -20,6 +20,6 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 删除指定角色的对象关系映射信息
         /// </summary>
-        void Delete(Guid id);
+        void Delete(string id);
     }
 }

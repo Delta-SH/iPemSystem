@@ -4,6 +4,7 @@ using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
+using iPem.Services.Common;
 using iPem.Services.Rs;
 using iPem.Services.Sc;
 using iPem.Site.Extensions;
@@ -132,7 +133,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -184,7 +185,7 @@ namespace iPem.Site.Controllers {
                 data.data.enabled = project.Enabled;
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -211,7 +212,7 @@ namespace iPem.Site.Controllers {
                     };
 
                     _projectService.Add(newOne);
-                    _webLogger.Information(EnmEventType.Other, string.Format("新增工程[{0}]", project.name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增工程[{0}]", project.name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if (action == (int)EnmAction.Edit) {
                     var existed = _projectService.GetProject(project.id);
@@ -229,13 +230,13 @@ namespace iPem.Site.Controllers {
                     existed.Enabled = project.enabled;
 
                     _projectService.Update(existed);
-                    _webLogger.Information(EnmEventType.Other, string.Format("更新工程[{0}]", existed.Name), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新工程[{0}]", existed.Name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -274,7 +275,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -383,7 +384,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -409,7 +410,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -467,7 +468,7 @@ namespace iPem.Site.Controllers {
                 data.data.nodes = nodes.Select(m => Common.JoinKeys((int)m.NodeType, m.NodeId)).ToArray();
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -531,7 +532,7 @@ namespace iPem.Site.Controllers {
                 data.data.devices = deviceMatchs.Any() ? string.Join(",", deviceMatchs.Select(a => a.Name)) : "无设备";
                 return Json(data, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -584,7 +585,7 @@ namespace iPem.Site.Controllers {
 
                     _reservationService.Add(newOne);
                     _nodesInReservationService.Add(nodes.ToArray());
-                    _webLogger.Information(EnmEventType.Other, string.Format("新增预约[{0}]", newOne.Id), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增预约[{0}]", newOne.Id), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if (action == (int)EnmAction.Edit) {
                     var existed = _reservationService.GetReservation(model.id);
@@ -615,13 +616,13 @@ namespace iPem.Site.Controllers {
                     _reservationService.Update(existed);
                     _nodesInReservationService.Remove(existed.Id);
                     _nodesInReservationService.Add(nodes.ToArray());
-                    _webLogger.Information(EnmEventType.Other, string.Format("更新预约[{0}]", model.id), null, _workContext.User().Id);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新预约[{0}]", model.id), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
                 throw new ArgumentException("action");
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -636,10 +637,10 @@ namespace iPem.Site.Controllers {
                 if (reservation.Creator != _workContext.Employee().Name) throw new ArgumentException("您没有操作权限。");
                 _reservationService.Delete(reservation);
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
-                _webLogger.Information(EnmEventType.Other, string.Format("删除预约[{0}]", reservation.Id), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除预约[{0}]", reservation.Id), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -701,10 +702,10 @@ namespace iPem.Site.Controllers {
                 _noticeInUserService.Add(noticesInUsers.ToArray());
                 #endregion
 
-                _webLogger.Information(EnmEventType.Other, string.Format("审核工程预约[ {0} ]，审核结果：[ {1} ]，预约编号：[ {2} ]，预期开始时间：[ {3} ]，实际开始时间：[ {4} ]，结束时间：[ {5} ]，创建人员：[ {6} ]，备注[ {7} ]", reservation.Name, Common.GetResStatusDisplay(reservation.Status), reservation.Id, CommonHelper.DateTimeConverter(reservation.ExpStartTime), CommonHelper.DateTimeConverter(reservation.StartTime), CommonHelper.DateTimeConverter(reservation.EndTime), reservation.Creator, reservation.Comment), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("审核工程预约[ {0} ]，审核结果：[ {1} ]，预约编号：[ {2} ]，预期开始时间：[ {3} ]，实际开始时间：[ {4} ]，结束时间：[ {5} ]，创建人员：[ {6} ]，备注[ {7} ]", reservation.Name, Common.GetResStatusDisplay(reservation.Status), reservation.Id, CommonHelper.DateTimeConverter(reservation.ExpStartTime), CommonHelper.DateTimeConverter(reservation.StartTime), CommonHelper.DateTimeConverter(reservation.EndTime), reservation.Creator, reservation.Comment), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "审核完成" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -805,7 +806,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }

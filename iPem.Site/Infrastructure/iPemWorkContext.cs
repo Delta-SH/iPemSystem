@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Domain.Common;
 using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
@@ -246,7 +247,12 @@ namespace iPem.Site.Infrastructure {
                 return _cachedRole = store.Role;
 
             if (!IsAuthenticated()) throw new iPemException("Unauthorized");
-            var role = _roleService.GetRoleByUid(this.User().Id);
+            var role = new U_Role();
+            if (this.User().RoleId.Equals(U_Role.SuperId)) {
+                role = _roleService.GetRoleById(U_Role.SuperId);
+                return store.Role = _cachedRole = role;
+            }
+            role = _roleService.GetRoleByUid(this.User().Id);
             if (role == null) throw new iPemException("Current role not found.");
             return store.Role = _cachedRole = role;
         }
@@ -503,7 +509,7 @@ namespace iPem.Site.Infrastructure {
 
             return _cachedDepartments = _departmentService.GetDepartments();
         }
-        
+
         public List<SSHArea> AllAreas() {
             if (_cachedAllAreas != null)
                 return _cachedAllAreas;
@@ -585,7 +591,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHArea> Areas() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllAreas();
 
             if (_cachedAreas != null)
@@ -613,7 +619,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHStation> Stations() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllStations();
 
             if (_cachedStations != null)
@@ -629,7 +635,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHRoom> Rooms() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllRooms();
 
             if (_cachedRooms != null)
@@ -645,7 +651,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHFsu> Fsus() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllFsus();
 
             if (_cachedFsus != null)
@@ -661,7 +667,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHDevice> Devices() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllDevices();
 
             if (_cachedDevices != null)
@@ -677,7 +683,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<SSHCamera> Cameras() {
-            if (this.Role().Id == U_Role.SuperId)
+            if (this.Role().Id.Equals(U_Role.SuperId))
                 return this.AllCameras();
 
             if (_cachedCameras != null)
@@ -738,7 +744,7 @@ namespace iPem.Site.Infrastructure {
                 return _cachedActAlarms;
 
             _cachedActAlarms = this.AllAlarms();
-            if (_cachedActAlarms.Count > 0 && this.Role().Id != U_Role.SuperId) {
+            if (_cachedActAlarms.Count > 0 && !this.Role().Id.Equals(U_Role.SuperId)) {
                 var keys = this.Authorizations().Areas;
                 _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.AreaId));
             }
@@ -758,9 +764,9 @@ namespace iPem.Site.Infrastructure {
 
             // 缓存活动告警，减小服务器压力
             List<A_AAlarm> _allAlarms = null;
-            
+
             #region 正常告警
-            IEnumerable<AlmStore<A_AAlarm>> _actAlarms = null;            
+            IEnumerable<AlmStore<A_AAlarm>> _actAlarms = null;
             if (!_cacheManager.IsSet(GlobalCacheKeys.Active_Alarms)) {
                 //获得临界锁,同步多个请求
                 using (_cacheManager.AcquireLock("LOCK:ACTIVE:ALARM", 10)) {
@@ -930,7 +936,7 @@ namespace iPem.Site.Infrastructure {
 
         public void ResetProfile(EnmProfile type) {
             var userId = this.User().Id;
-            if(type == EnmProfile.Follow){
+            if (type == EnmProfile.Follow) {
                 var cacheId = string.Format(GlobalCacheKeys.ProfileFollowPattern, userId);
                 if (_cacheManager.IsSet(cacheId)) {
                     _cacheManager.Remove(cacheId);
@@ -960,7 +966,7 @@ namespace iPem.Site.Infrastructure {
                          join iStation in iStations on iDevice.StationId equals iStation.Id
                          join iArea in iAreas on iStation.AreaId equals iArea.Id
                          select new iSSHDevice { Current = iDevice, iStation = iStation, iArea = iArea }).ToList();
-            
+
             return iFull;
         }
 
@@ -980,7 +986,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<P_Point> GetPoints(bool _ai, bool _ao, bool _di, bool _do, bool _al) {
-            return this.Points().FindAll(p => 
+            return this.Points().FindAll(p =>
                    (_ai && p.Type == EnmPoint.AI)
                 || (_ao && p.Type == EnmPoint.AO)
                 || (_di && p.Type == EnmPoint.DI && string.IsNullOrWhiteSpace(p.AlarmId))
@@ -1023,12 +1029,12 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<AlmStore<A_HAlarm>> AlarmsToStore(List<A_HAlarm> alarms) {
-            if(alarms == null || alarms.Count == 0) 
+            if (alarms == null || alarms.Count == 0)
                 return new List<AlmStore<A_HAlarm>>();
 
             var _signals = _signalService.GetSimpleSignals(alarms.Select(a => new Kv<string, string>(a.DeviceId, a.PointId)));
             var _points = this.AL();
-            var _devices = this.Devices(); 
+            var _devices = this.Devices();
             return (from alarm in alarms
                     join signal in _signals on new { alarm.DeviceId, alarm.PointId } equals new { signal.DeviceId, signal.PointId }
                     join point in _points on alarm.PointId equals point.Id

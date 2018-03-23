@@ -99,7 +99,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false;
                 data.message = exc.Message;
             }
@@ -116,7 +116,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -154,10 +154,10 @@ namespace iPem.Site.Controllers {
                     AlarmRemark = "人工结束告警"
                 });
 
-                _webLogger.Information(EnmEventType.Other, string.Format("下发结束告警命令[{0}]", JsonConvert.SerializeObject(existed)), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("下发结束告警命令[{0}]", JsonConvert.SerializeObject(existed)), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "告警结束命令已下发,请稍后查询。" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -175,10 +175,10 @@ namespace iPem.Site.Controllers {
                 var key = string.Format(GlobalCacheKeys.RedundantAlarmsPattern, _workContext.Identifier());
                 if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
 
-                _webLogger.Information(EnmEventType.Other, string.Format("人工删除告警[{0}]", JsonConvert.SerializeObject(existed)), null, _workContext.User().Id);
+                _webLogger.Information(EnmEventType.Other, string.Format("人工删除告警[{0}]", JsonConvert.SerializeObject(existed)), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "告警删除成功" });
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -207,7 +207,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -222,7 +222,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -251,7 +251,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 data.success = false; data.message = exc.Message;
             }
 
@@ -266,7 +266,7 @@ namespace iPem.Site.Controllers {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, exc, _workContext.User().Id);
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
@@ -347,7 +347,7 @@ namespace iPem.Site.Controllers {
                     confirmer = store.Current.Confirmer,
                     confirmedtime = store.Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(store.Current.ConfirmedTime.Value) : "",
                     reservation = string.IsNullOrWhiteSpace(store.Current.ReservationId) ? "否" : "是",
-                    primary = string.IsNullOrWhiteSpace(store.Current.PrimaryId) ? "否":"是",
+                    primary = string.IsNullOrWhiteSpace(store.Current.PrimaryId) ? "否" : "是",
                     related = string.IsNullOrWhiteSpace(store.Current.RelatedId) ? "否" : "是",
                     filter = string.IsNullOrWhiteSpace(store.Current.FilterId) ? "否" : "是",
                     masked = !store.Current.Masked ? "否" : "是",

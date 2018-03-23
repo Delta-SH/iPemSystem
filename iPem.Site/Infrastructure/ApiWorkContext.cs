@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Caching;
+using iPem.Core.Domain.Common;
 using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Rs;
 using iPem.Core.Domain.Sc;
@@ -13,7 +14,6 @@ using iPem.Site.Models.SSH;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace iPem.Site.Infrastructure {
     public class ApiWorkContext : IApiWorkContext {
@@ -142,13 +142,13 @@ namespace iPem.Site.Infrastructure {
         #region Methods
 
         public U_Role GetRole(string id) {
-            if (string.IsNullOrWhiteSpace(id)) 
+            if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException("id");
 
             if (_cachedRole != null)
                 return _cachedRole;
 
-            var role = _roleService.GetRoleById(new Guid(id));
+            var role = _roleService.GetRoleById(id);
             if (role == null) throw new iPemException("current role not found.");
             return _cachedRole = role;
         }
@@ -182,7 +182,7 @@ namespace iPem.Site.Infrastructure {
             if (_cachedAuth != null)
                 return _cachedAuth;
 
-            var auth = _authService.GetEntitiesInRole(new Guid(id));
+            var auth = _authService.GetEntitiesInRole(id);
             if (auth == null) throw new iPemException("current auth not found.");
             return _cachedAuth = auth;
         }
@@ -654,7 +654,7 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<AlmStore<A_HAlarm>> AlarmsToStore(string id, List<A_HAlarm> alarms) {
-            if(alarms == null || alarms.Count == 0) 
+            if (alarms == null || alarms.Count == 0)
                 return new List<AlmStore<A_HAlarm>>();
 
             var _signals = _signalService.GetSimpleSignals(alarms.Select(a => new Kv<string, string>(a.DeviceId, a.PointId)));
