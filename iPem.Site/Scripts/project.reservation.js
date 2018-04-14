@@ -691,7 +691,7 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
         items: [
             {
                 getClass: function (v, metadata, r, rowIndex, colIndex, store) {
-                    return (r.get('statusId') === $$iPems.Result.Undefine) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
+                    return (r.get('statusId') === $$iPems.Result.Undefine && $$iPems.CheckOperation) ? 'x-cell-icon x-icon-remote-control' : 'x-cell-icon x-icon-hidden';
                 },
                 handler: function (grid, rowIndex, colIndex) {
                     checkCellClick(grid, rowIndex, colIndex);

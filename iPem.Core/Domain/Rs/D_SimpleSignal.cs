@@ -38,6 +38,11 @@ namespace iPem.Core.Domain.Rs {
         public string PointName { get; set; }
 
         /// <summary>
+        /// 信号标准化名称
+        /// </summary>
+        public string OfficialName { get; set; }
+
+        /// <summary>
         /// 单位/描述
         /// </summary>
         public string UnitState { get; set; }

@@ -23,7 +23,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("结束时间")]
         public string endtime { get; set; }
 
-        [ExcelDisplayName("告警名称")]
+        [ExcelDisplayName("告警标准化名称")]
         public string name { get; set; }
 
         [ExcelDisplayName("管理编号")]
@@ -47,8 +47,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 
-        [ExcelDisplayName("维护厂家")]
+        [ExcelDisplayName("代维公司")]
         public string supporter { get; set; }
+
+        [ExcelDisplayName("代维负责人")]
+        public string manager { get; set; }
 
         [ExcelDisplayName("确认状态")]
         public string confirmed { get; set; }

@@ -133,6 +133,15 @@ ul.nav-pills.affix{
     background-color: #1b809e;
 }
 
+.jumbotron {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.btn {
+    width:120px;
+}
+
 @media screen and (max-width: 992px) {
     ul.nav-pills{
 	    width: 150px;

@@ -5225,7 +5225,7 @@ DELETE FROM [dbo].[U_Employee];
 GO
 
 INSERT INTO [dbo].[U_Employee]([ID],[Name],[EngName],[UsedName],[EmpNo],[DeptId],[DutyId],[ICardId],[Sex],[Birthday],[Degree],[Marriage],[Nation],[Provinces],[Native],[Address],[PostalCode],[AddrPhone],[WorkPhone],[MobilePhone],[Email],[Photo],[Leaving],[EntryTime],[RetireTime],[IsFormal],[Remarks],[Enabled]) 
-VALUES('00001', '默认员工', 'Default Employee', NULL, 'W00001', '001', '001', '310000198501010001', 0, '1985-01-01', 4, 1, N'中国', N'上海', N'江苏', N'上海市浦东新区', '200000', '68120000', '58660000', '13800138000', '13800138000@vip.com', NULL, 0, '2011-01-01', '2099-12-31' , 1, NULL, 1);
+VALUES('00', '默认员工', 'Default Employee', NULL, 'W00001', '001', '001', '310000198501010001', 0, '1985-01-01', 4, 1, N'中国', N'上海', N'江苏', N'上海市浦东新区', '200000', '68120000', '58660000', '13800138000', '13800138000@vip.com', NULL, 0, '2011-01-01', '2099-12-31' , 1, NULL, 1);
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

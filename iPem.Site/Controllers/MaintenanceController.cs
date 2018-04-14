@@ -319,7 +319,8 @@ namespace iPem.Site.Controllers {
                              StationName = device.Current.StationName,
                              StationTypeId = device.Current.StaTypeId,
                              AreaName = device.Current.AreaName,
-                             SubCompany = device.Current.SubCompany ?? "--"
+                             SubCompany = device.Current.SubCompany ?? "--",
+                             SubManager = device.Current.SubManager ?? "--"
                          };
 
             var index = 0;
@@ -343,6 +344,7 @@ namespace iPem.Site.Controllers {
                     station = store.StationName,
                     area = store.AreaName,
                     supporter = store.SubCompany,
+                    manager = store.SubManager,
                     confirmed = Common.GetConfirmDisplay(store.Current.Confirmed),
                     confirmer = store.Current.Confirmer,
                     confirmedtime = store.Current.ConfirmedTime.HasValue ? CommonHelper.DateTimeConverter(store.Current.ConfirmedTime.Value) : "",

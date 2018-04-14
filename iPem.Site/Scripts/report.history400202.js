@@ -165,6 +165,7 @@
             { name: 'station', type: 'string' },
             { name: 'area', type: 'string' },
             { name: 'supporter', type: 'string' },
+            { name: 'manager', type: 'string' },
             { name: 'confirmed', type: 'string' },
             { name: 'confirmer', type: 'string' },
             { name: 'confirmedtime', type: 'string' },
@@ -410,7 +411,7 @@
                     width: 150
                 },
                 {
-                    text: '告警名称',
+                    text: '告警标准化名称',
                     dataIndex: 'name',
                     width: 150
                 },
@@ -447,8 +448,12 @@
                     dataIndex: 'area'
                 },
                 {
-                    text: '维护厂家',
+                    text: '代维公司',
                     dataIndex: 'supporter'
+                },
+                {
+                    text: '代维负责人',
+                    dataIndex: 'manager'
                 },
                 {
                     text: '确认状态',
@@ -727,7 +732,7 @@
                 width: 150
             },
             {
-                text: '告警名称',
+                text: '告警标准化名称',
                 dataIndex: 'name',
                 width: 150
             },
@@ -764,8 +769,12 @@
                 dataIndex: 'area'
             },
             {
-                text: '维护厂家',
+                text: '代维公司',
                 dataIndex: 'supporter'
+            },
+            {
+                text: '代维负责人',
+                dataIndex: 'manager'
             },
             {
                 text: '确认状态',

@@ -8,6 +8,7 @@
 			{ name: 'room', type: 'string' },
             { name: 'device', type: 'string' },
             { name: 'point', type: 'string' },
+            { name: 'name', type: 'string' },
             { name: 'type', type: 'string' },
             { name: 'value', type: 'float' },
             { name: 'unit', type: 'string' },
@@ -95,7 +96,13 @@
                 },
                 {
                     text: '信号名称',
-                    dataIndex: 'point'
+                    dataIndex: 'point',
+                    width: 150
+                },
+                {
+                    text: '信号标准化名称',
+                    dataIndex: 'name',
+                    width: 150
                 },
                 {
                     text: '信号类型',

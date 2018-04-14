@@ -7,6 +7,7 @@ Ext.define('PointModel', {
         { name: 'station', type: 'string' },
 		{ name: 'room', type: 'string' },
         { name: 'device', type: 'string' },
+        { name: 'name', type: 'string' },
         { name: 'point', type: 'string' },
         { name: 'type', type: 'string' },
         { name: 'value', type: 'string' },
@@ -40,6 +41,7 @@ Ext.define('ActAlarmModel', {
         { name: 'station', type: 'string' },
         { name: 'area', type: 'string' },
         { name: 'supporter', type: 'string' },
+        { name: 'manager', type: 'string' },
         { name: 'confirmed', type: 'string' },
         { name: 'confirmer', type: 'string' },
         { name: 'confirmedtime', type: 'string' },
@@ -622,7 +624,16 @@ var pointGrid = Ext.create('Ext.grid.Panel', {
         { text: '所属站点', dataIndex: 'station' },
         { text: '所属机房', dataIndex: 'room' },
         { text: '所属设备', dataIndex: 'device' },
-        { text: '信号名称', dataIndex: 'point' },
+        {
+            text: '信号名称',
+            dataIndex: 'point',
+            width: 150
+        },
+        {
+            text: '信号标准化名称',
+            dataIndex: 'name',
+            width: 150
+        },
         { text: '信号类型', dataIndex: 'type' },
         { text: '信号测值', dataIndex: 'value' },
         { text: '单位/描述', dataIndex: 'unit' },
@@ -989,7 +1000,7 @@ var alarmGrid = Ext.create('Ext.grid.Panel', {
             width: 150
         },
         {
-            text: '告警名称',
+            text: '告警标准化名称',
             dataIndex: 'name',
             width: 150
         },
@@ -1026,8 +1037,12 @@ var alarmGrid = Ext.create('Ext.grid.Panel', {
             dataIndex: 'area'
         },
         {
-            text: '维护厂家',
+            text: '代维公司',
             dataIndex: 'supporter'
+        },
+        {
+            text: '代维负责人',
+            dataIndex: 'manager'
         },
         {
             text: '确认状态',

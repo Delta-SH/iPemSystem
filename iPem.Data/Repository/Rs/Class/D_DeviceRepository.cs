@@ -50,6 +50,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Brand = SqlTypeConverter.DBNullStringHandler(rdr["Brand"]);
                     entity.Supplier = SqlTypeConverter.DBNullStringHandler(rdr["Supplier"]);
                     entity.SubCompany = SqlTypeConverter.DBNullStringHandler(rdr["SubCompany"]);
+                    entity.SubManager = SqlTypeConverter.DBNullStringHandler(rdr["SubManager"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -95,6 +96,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Brand = SqlTypeConverter.DBNullStringHandler(rdr["Brand"]);
                     entity.Supplier = SqlTypeConverter.DBNullStringHandler(rdr["Supplier"]);
                     entity.SubCompany = SqlTypeConverter.DBNullStringHandler(rdr["SubCompany"]);
+                    entity.SubManager = SqlTypeConverter.DBNullStringHandler(rdr["SubManager"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -141,6 +143,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Brand = SqlTypeConverter.DBNullStringHandler(rdr["Brand"]);
                     entity.Supplier = SqlTypeConverter.DBNullStringHandler(rdr["Supplier"]);
                     entity.SubCompany = SqlTypeConverter.DBNullStringHandler(rdr["SubCompany"]);
+                    entity.SubManager = SqlTypeConverter.DBNullStringHandler(rdr["SubManager"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -187,6 +190,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Brand = SqlTypeConverter.DBNullStringHandler(rdr["Brand"]);
                     entity.Supplier = SqlTypeConverter.DBNullStringHandler(rdr["Supplier"]);
                     entity.SubCompany = SqlTypeConverter.DBNullStringHandler(rdr["SubCompany"]);
+                    entity.SubManager = SqlTypeConverter.DBNullStringHandler(rdr["SubManager"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);
@@ -230,6 +234,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Brand = SqlTypeConverter.DBNullStringHandler(rdr["Brand"]);
                     entity.Supplier = SqlTypeConverter.DBNullStringHandler(rdr["Supplier"]);
                     entity.SubCompany = SqlTypeConverter.DBNullStringHandler(rdr["SubCompany"]);
+                    entity.SubManager = SqlTypeConverter.DBNullStringHandler(rdr["SubManager"]);
                     entity.StartTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["StartTime"]);
                     entity.ScrapTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ScrapTime"]);
                     entity.StatusId = SqlTypeConverter.DBNullInt32Handler(rdr["StatusId"]);

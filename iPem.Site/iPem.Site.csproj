@@ -518,6 +518,7 @@
     <Content Include="Resources\database\update\P2S_V1_002.sql" />
     <Content Include="Resources\database\update\P2S_V1_003.sql" />
     <Content Include="Resources\database\update\P2S_V1_004.sql" />
+    <Content Include="Resources\database\update\P2S_V1_006.sql" />
     <Content Include="Resources\database\update\P2S_V1_005.sql" />
     <Content Include="Resources\install\create\create_cs_data.sql" />
     <Content Include="Resources\install\create\create_cs_database.sql" />
@@ -1394,6 +1395,7 @@
     <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\XDLib.dll.deploy" />
     <Content Include="WGViewPlayer\GVPlayer.xbap" />
     <Content Include="Views\Home\Viewer.cshtml" />
+    <Content Include="Views\Help\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

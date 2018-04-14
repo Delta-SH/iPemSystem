@@ -17,8 +17,13 @@ namespace iPem.Site.Controllers {
             return View();
         }
 
-        public ActionResult Contact() {
+        public ActionResult Register() {
             ViewBag.active = 2;
+            return View();
+        }
+
+        public ActionResult Contact() {
+            ViewBag.active = 3;
             return View();
         }
     }

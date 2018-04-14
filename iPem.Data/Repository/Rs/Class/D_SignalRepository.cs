@@ -437,7 +437,7 @@ namespace iPem.Data.Repository.Rs {
             ", pairs.Select(p => string.Format(@"SELECT '{0}','{1}'", p.Key, p.Value))));
 
             sqlBuilder.Append(@"
-            SELECT S.[DeviceId],S.[PointId],P.[Code],P.[Number],P.[Type] AS [PointType],S.[Name] AS [PointName],P.[UnitState],P.[AlarmID] FROM [dbo].[D_Signal] S 
+            SELECT S.[DeviceId],S.[PointId],P.[Code],P.[Number],P.[Type] AS [PointType],S.[Name] AS [PointName],P.[Name] AS [OfficialName],P.[UnitState],P.[AlarmID] FROM [dbo].[D_Signal] S 
             INNER JOIN [dbo].[P_Point] P ON S.[PointID]=P.[ID]
             INNER JOIN #TEMP T ON S.[DeviceId]=T.[DeviceId] AND S.[PointId]=T.[PointId];
             DROP TABLE #TEMP;");
@@ -452,6 +452,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.PointName = SqlTypeConverter.DBNullStringHandler(rdr["PointName"]);
+                    entity.OfficialName = SqlTypeConverter.DBNullStringHandler(rdr["OfficialName"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
 
                     //判断是否为告警信号
@@ -481,6 +482,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.PointName = SqlTypeConverter.DBNullStringHandler(rdr["PointName"]);
+                    entity.OfficialName = SqlTypeConverter.DBNullStringHandler(rdr["OfficialName"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
 
                     //判断是否为告警信号
@@ -516,7 +518,7 @@ namespace iPem.Data.Repository.Rs {
             ", devices.Select(d => string.Format(@"SELECT '{0}'", d))));
 
             sqlBuilder.Append(@"
-            SELECT S.[DeviceId],S.[PointId],P.[Code],P.[Number],P.[Type] AS [PointType],S.[Name] AS [PointName],P.[UnitState],P.[AlarmID] FROM [dbo].[D_Signal] S 
+            SELECT S.[DeviceId],S.[PointId],P.[Code],P.[Number],P.[Type] AS [PointType],S.[Name] AS [PointName],P.[Name] AS [OfficialName],P.[UnitState],P.[AlarmID] FROM [dbo].[D_Signal] S 
             INNER JOIN [dbo].[P_Point] P ON S.[PointID]=P.[ID]
             INNER JOIN #TEMP T ON S.[DeviceId]=T.[DeviceId];
             DROP TABLE #TEMP;");
@@ -531,6 +533,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
                     entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
                     entity.PointName = SqlTypeConverter.DBNullStringHandler(rdr["PointName"]);
+                    entity.OfficialName = SqlTypeConverter.DBNullStringHandler(rdr["OfficialName"]);
                     entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
 
                     //判断是否为告警信号

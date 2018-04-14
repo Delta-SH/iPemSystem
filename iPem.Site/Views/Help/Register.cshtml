@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "~/Views/Shared/_Help.cshtml";
+}
+
+<div class="container" role="main">
+    <div class="jumbotron">
+        <h2>欢迎使用 @iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name</h2>
+        <p>@iPem.Site.Infrastructure.EngineContext.Current.AppStore.Name 是中达电通股份有限公司新一代的全新智能动力环境监控系统管理平台。通过该系统可向管理者提供：对前端设备的实时遥测、遥信、遥控及遥调，对重要数据、告警的统计、对比分析和归类整理，为设备建设及维护提供客观、科学的依据，为企业提供可靠、安全、综合全面的解决方案。</p>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">软件注册信息</h3>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">机器标识码</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">email@example.com</p>
+                        <div class="alert alert-info" role="alert" style="padding: 5px; padding-left:10px; margin-bottom: 0; margin-top: 0;">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">友情提示:</span>
+                            <span>请将机器标识码提供给服务商以获取产品注册码</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">客户名称</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">email@example.com</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">有效日期</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">2099-12-31</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">用户数量</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">最多允许50个用户同时在线</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">站点数量</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">最多允许同时接入50个局站</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">授权说明</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">授权功能如下：基本功能、虚拟界面、系统报表、系统指标。</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-2 control-label">注册码</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="5"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

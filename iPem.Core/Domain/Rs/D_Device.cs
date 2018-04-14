@@ -72,9 +72,14 @@ namespace iPem.Core.Domain.Rs {
         public string Supplier { get; set; }
 
         /// <summary>
-        /// 维护厂家
+        /// 代维公司
         /// </summary>
         public string SubCompany { get; set; }
+
+        /// <summary>
+        /// 代维负责人
+        /// </summary>
+        public string SubManager { get; set; }
 
         /// <summary>
         /// 开始使用时间

@@ -336,7 +336,7 @@ namespace iPem.Site.Controllers {
                     IsLockedOut = false,
                     LastLockoutDate = DateTime.Now,
                     Comment = model.comment,
-                    EmployeeId = "00001",
+                    EmployeeId = "00",
                     Enabled = true
                 });
 

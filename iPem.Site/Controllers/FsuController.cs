@@ -473,7 +473,7 @@ namespace iPem.Site.Controllers {
 
                 var key = string.Format(GlobalCacheKeys.Fsu_Points, _workContext.Identifier());
                 if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
@@ -737,7 +737,7 @@ namespace iPem.Site.Controllers {
 
                 var key = string.Format(GlobalCacheKeys.Fsu_Alarm_Points, _workContext.Identifier());
                 if (_cacheManager.IsSet(key)) _cacheManager.Remove(key);
-                _cacheManager.Set(key, models, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.Site_Interval);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "配置读取完成" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
@@ -1040,7 +1040,7 @@ namespace iPem.Site.Controllers {
             if (!ext.Status) return result;
 
             var key = string.Format(GlobalCacheKeys.Fsu_Ftp_Files, current.Current.Id);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<FtpFileModel>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<FtpFileModel>(key).ToList();
 
             var helper = new FtpHelper(ext.IP, string.IsNullOrWhiteSpace(current.Current.FtpFilePath) ? "logs" : string.Format("{0}/logs", current.Current.FtpFilePath), current.Current.FtpUid ?? "", current.Current.FtpPwd ?? "");
             var files = helper.GetFtpFiles().OrderByDescending(f => f.Name);
@@ -1056,7 +1056,7 @@ namespace iPem.Site.Controllers {
             }
 
             if (result.Count > 0 && result.Count <= GlobalCacheLimit.Default_Limit) {
-                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
             }
 
             return result;
@@ -1283,7 +1283,7 @@ namespace iPem.Site.Controllers {
         private List<DiffModel> GetParamDiff(string parent, string[] points, string date, string keywords, bool cache) {
             var key = string.Format(GlobalCacheKeys.Fsu_Param_Diff, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<DiffModel>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<DiffModel>(key).ToList();
 
             if (string.IsNullOrWhiteSpace(date)) date = DateTime.Today.ToString("yyyyMM");
             var curDate = DateTime.ParseExact(date, "yyyyMM", CultureInfo.CurrentCulture);
@@ -1347,7 +1347,7 @@ namespace iPem.Site.Controllers {
             }
 
             if (result.Count <= GlobalCacheLimit.Default_Limit) {
-                _cacheManager.Set(key, result, GlobalCacheInterval.Site_Interval);
+                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
             }
 
             return result;

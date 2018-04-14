@@ -23,6 +23,9 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("信号名称")]
         public string point { get; set; }
 
+        [ExcelDisplayName("信号标准化名称")]
+        public string name { get; set; }
+
         [ExcelDisplayName("信号类型")]
         public string type { get; set; }
 

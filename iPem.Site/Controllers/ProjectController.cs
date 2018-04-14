@@ -154,7 +154,7 @@ namespace iPem.Site.Controllers {
                     responsible = "",
                     contact = "",
                     company = "",
-                    creator = _workContext.Employee().Name,
+                    creator = _workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid,
                     createdtime = CommonHelper.DateConverter(DateTime.Now),
                     comment = "",
                     enabled = true
@@ -205,7 +205,7 @@ namespace iPem.Site.Controllers {
                         Responsible = project.responsible,
                         ContactPhone = project.contact,
                         Company = project.company,
-                        Creator = _workContext.Employee().Name,
+                        Creator = _workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid,
                         CreatedTime = DateTime.Now,
                         Comment = project.comment,
                         Enabled = project.enabled
@@ -217,7 +217,7 @@ namespace iPem.Site.Controllers {
                 } else if (action == (int)EnmAction.Edit) {
                     var existed = _projectService.GetProject(project.id);
                     if (existed == null) throw new iPemException("工程不存在，保存失败。");
-                    if (existed.Creator != _workContext.Employee().Name) throw new iPemException("您没有操作权限。");
+                    if (existed.Creator != (_workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid)) throw new iPemException("您没有操作权限。");
 
                     //existed.Id = projectId;
                     existed.Name = project.name;
@@ -432,7 +432,7 @@ namespace iPem.Site.Controllers {
                     endDate = CommonHelper.DateTimeConverter(DateTime.Now.AddSeconds(88500)),
                     projectId = "",
                     projectName = "",
-                    creator = _workContext.Employee().Name,
+                    creator = _workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid,
                     //user = _workContext.User().Uid,
                     createdTime = CommonHelper.DateTimeConverter(DateTime.Now),
                     comment = "",
@@ -562,7 +562,7 @@ namespace iPem.Site.Controllers {
                         ExpStartTime = startTime,
                         EndTime = endTime,
                         ProjectId = project.Id,
-                        Creator = _workContext.Employee().Name,
+                        Creator = _workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid,
                         UserId = _workContext.User().Id,
                         CreatedTime = DateTime.Now,
                         Comment = model.comment,
@@ -590,7 +590,7 @@ namespace iPem.Site.Controllers {
                 } else if (action == (int)EnmAction.Edit) {
                     var existed = _reservationService.GetReservation(model.id);
                     if (existed == null) throw new iPemException("预约不存在，保存失败。");
-                    if (existed.Creator != _workContext.Employee().Name) throw new iPemException("您没有操作权限。");
+                    if (existed.Creator != (_workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid)) throw new iPemException("您没有操作权限。");
 
                     existed.Name = model.name;
                     existed.ExpStartTime = startTime;
@@ -634,7 +634,7 @@ namespace iPem.Site.Controllers {
                 if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
                 var reservation = _reservationService.GetReservation(id);
                 if (reservation == null) throw new iPemException("预约不存在，删除失败。");
-                if (reservation.Creator != _workContext.Employee().Name) throw new ArgumentException("您没有操作权限。");
+                if (reservation.Creator != (_workContext.Employee() != null ? _workContext.Employee().Name : _workContext.User().Uid)) throw new ArgumentException("您没有操作权限。");
                 _reservationService.Delete(reservation);
                 _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Reservations", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步工程预约" });
                 _webLogger.Information(EnmEventType.Other, string.Format("删除预约[{0}]", reservation.Id), _workContext.User().Id, null);

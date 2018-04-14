@@ -29,8 +29,8 @@ namespace iPem.Site.Models {
 
         public string AreaName { get; set; }
 
-        public string AreaFullName { get; set; }
-
         public string SubCompany { get; set; }
+
+        public string SubManager { get; set; }
     }
 }

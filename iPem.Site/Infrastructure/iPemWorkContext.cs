@@ -794,7 +794,8 @@ namespace iPem.Site.Infrastructure {
                                              StationName = device.Current.StationName,
                                              StationTypeId = device.Current.StaTypeId,
                                              AreaName = device.Current.AreaName,
-                                             SubCompany = device.Current.SubCompany ?? "--"
+                                             SubCompany = device.Current.SubCompany ?? "--",
+                                             SubManager = device.Current.SubManager ?? "--"
                                          };
 
                             _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.Active_Alarms, _actAlarms, GlobalCacheInterval.ActAlarm_Interval);
@@ -835,7 +836,8 @@ namespace iPem.Site.Infrastructure {
                                             StationName = SSHSystem.Station.Name,
                                             StationTypeId = SSHSystem.Station.Type.Id,
                                             AreaName = SSHSystem.Area.Name,
-                                            SubCompany = "--"
+                                            SubCompany = "--",
+                                            SubManager = "--"
                                         };
 
                             _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_SC_Alarms, _scAlarms, GlobalCacheInterval.ActAlarm_Interval);
@@ -876,7 +878,8 @@ namespace iPem.Site.Infrastructure {
                                              StationName = fsu.Current.StationName,
                                              StationTypeId = fsu.Current.StaTypeId,
                                              AreaName = fsu.Current.AreaName,
-                                             SubCompany = "--"
+                                             SubCompany = "--",
+                                             SubManager = "--"
                                          };
 
                             _cacheManager.AddItemsToList<AlmStore<A_AAlarm>>(GlobalCacheKeys.System_FSU_Alarms, _fsuAlarms, GlobalCacheInterval.ActAlarm_Interval);
@@ -1024,7 +1027,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = device.Current.StationName,
                         StationTypeId = device.Current.StaTypeId,
                         AreaName = device.Current.Name,
-                        SubCompany = device.Current.SubCompany ?? "--"
+                        SubCompany = device.Current.SubCompany ?? "--",
+                        SubManager = device.Current.SubManager ?? "--"
                     }).ToList();
         }
 
@@ -1053,7 +1057,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = device.Current.StationName,
                         StationTypeId = device.Current.StaTypeId,
                         AreaName = device.Current.Name,
-                        SubCompany = device.Current.SubCompany ?? "--"
+                        SubCompany = device.Current.SubCompany ?? "--",
+                        SubManager = device.Current.SubManager ?? "--"
                     }).ToList();
         }
 
@@ -1079,7 +1084,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = SSHSystem.Station.Name,
                         StationTypeId = SSHSystem.Station.Type.Id,
                         AreaName = SSHSystem.Area.Name,
-                        SubCompany = "--"
+                        SubCompany = "--",
+                        SubManager = "--"
                     }).ToList();
         }
 
@@ -1105,7 +1111,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = SSHSystem.Station.Name,
                         StationTypeId = SSHSystem.Station.Type.Id,
                         AreaName = SSHSystem.Area.Name,
-                        SubCompany = "--"
+                        SubCompany = "--",
+                        SubManager = "--"
                     }).ToList();
         }
 
@@ -1131,7 +1138,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = fsu.Current.StationName,
                         StationTypeId = fsu.Current.StaTypeId,
                         AreaName = fsu.Current.AreaName,
-                        SubCompany = "--"
+                        SubCompany = "--",
+                        SubManager = "--"
                     }).ToList();
         }
 
@@ -1157,7 +1165,8 @@ namespace iPem.Site.Infrastructure {
                         StationName = fsu.Current.StationName,
                         StationTypeId = fsu.Current.StaTypeId,
                         AreaName = fsu.Current.AreaName,
-                        SubCompany = "--"
+                        SubCompany = "--",
+                        SubManager = "--"
                     }).ToList();
         }
 
