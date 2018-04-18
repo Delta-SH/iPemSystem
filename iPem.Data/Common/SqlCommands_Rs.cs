@@ -97,6 +97,12 @@ namespace iPem.Data.Common {
         public const string Sql_C_Supplier_Repository_GetSuppliers = @"SELECT * FROM [dbo].[C_Supplier] WHERE [Enabled] = 1;";
 
         /// <summary>
+        /// FTP
+        /// </summary>
+        public const string Sql_C_FTP_Repository_GetFTPInType = @"SELECT [ID],[Name],[IP],[Port],[UID] AS [User],[PWD] AS [Password],[FilePath] AS [Directory],[Type],[Authority],[Desc] AS [Remark] FROM [dbo].[C_FTP] WHERE [Type]=@Type;";
+        public const string Sql_C_FTP_Repository_GetFTPs = @"SELECT [ID],[Name],[IP],[Port],[UID] AS [User],[PWD] AS [Password],[FilePath] AS [Directory],[Type],[Authority],[Desc] AS [Remark] FROM [dbo].[C_FTP];";
+
+        /// <summary>
         /// 计量单位表
         /// </summary>
         public const string Sql_C_Unit_Repository_GetUnit = @"SELECT * FROM [dbo].[C_Unit] WHERE [Id]=@Id;";
@@ -180,7 +186,7 @@ namespace iPem.Data.Common {
         /// FSU信息表
         /// </summary>
         public const string Sql_D_Fsu_Repository_GetFsu = @"
-        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
         INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
@@ -188,7 +194,7 @@ namespace iPem.Data.Common {
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
         WHERE F.[DeviceId] = @Id;";
         public const string Sql_D_Fsu_Repository_GetFsusInRoom = @"
-        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
         INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
@@ -196,17 +202,19 @@ namespace iPem.Data.Common {
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
         WHERE R.[Id] = @RoomId;";
         public const string Sql_D_Fsu_Repository_GetFsus = @"
-        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName],F.[IP],F.[Port],F.[Uid],F.[Pwd],F.[FtpUid],F.[FtpPwd],F.[FtpFilePath],F.[FtpAuthority]
+        SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],A.[Name] AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
         INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
         INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
         INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id];";
         public const string Sql_D_Fsu_Repository_GetExtFsu = @"
-        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
+        SELECT [DeviceId] AS [Id],[IP],[Port],[Uid],[Pwd],[FtpUid],[FtpPwd],[FtpFilePath],[FtpAuthority],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId],[UpgradeStatus],[UpgradeStatusDesc] AS [UpgradeResult],[UpgradeTime],[UpgradeUser] AS [Upgrader] FROM [dbo].[D_Fsu] WHERE [DeviceId]=@Id;";
         public const string Sql_D_Fsu_Repository_GetExtFsus = @"
-        SELECT [DeviceId] AS [Id],[IP],[Port],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId] FROM [dbo].[D_Fsu];";
+        SELECT [DeviceId] AS [Id],[IP],[Port],[Uid],[Pwd],[FtpUid],[FtpPwd],[FtpFilePath],[FtpAuthority],[ChangeTime],[LastTime],[Status],[Desc] AS [Comment],[GroupId],[UpgradeStatus],[UpgradeStatusDesc] AS [UpgradeResult],[UpgradeTime],[UpgradeUser] AS [Upgrader] FROM [dbo].[D_Fsu];";
         public const string Sql_D_Fsu_Repository_UpdateFsus = @"UPDATE [dbo].[D_FSU] SET [RoomID] = D.[RoomID] FROM [dbo].[D_FSU] F INNER JOIN [dbo].[D_Device] D ON F.[DeviceID] = D.[ID];";
+        public const string Sql_D_Fsu_Repository_UpdateExes = @"UPDATE [dbo].[D_FSU] SET [UpgradeStatus] = @UpgradeStatus,[UpgradeStatusDesc] = @UpgradeResult,[UpgradeTime] = @UpgradeTime,[UpgradeUser] = @Upgrader WHERE [DeviceID]=@Id;";
+
 
         /// <summary>
         /// 信号重定义表
@@ -349,10 +357,8 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_H_Note_Repository_GetEntities = @"SELECT * FROM [dbo].[H_Note] WHERE [SysType] = 2;";
         public const string Sql_H_Note_Repository_Insert = @"
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[H_Note] WHERE [SysType]=@SysType AND CONVERT(VARCHAR(MAX),[Name]) = @Name)
-        BEGIN
-	        INSERT INTO [dbo].[H_Note]([SysType],[GroupID],[Name],[DtType],[OpType],[Time],[Desc]) VALUES(@SysType,@GroupID,@Name,@DtType,@OpType,@Time,@Desc);	
-        END";
+        DELETE FROM [dbo].[H_Note] WHERE [SysType]=@SysType AND [DtType]=@DtType AND CONVERT(VARCHAR(1024),[Name]) = @Name;
+	    INSERT INTO [dbo].[H_Note]([SysType],[GroupID],[Name],[DtType],[OpType],[Time],[Desc]) VALUES(@SysType,@GroupID,@Name,@DtType,@OpType,@Time,@Desc);";
         public const string Sql_H_Note_Repository_Delete = @"DELETE FROM [dbo].[H_Note] WHERE [ID]=@Id;";
         public const string Sql_H_Note_Repository_Clear = @"DELETE FROM [dbo].[H_Note] WHERE [SysType] = 2;";
 

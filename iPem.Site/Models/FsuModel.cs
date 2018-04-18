@@ -10,6 +10,9 @@ namespace iPem.Site.Models {
         [ExcelIgnore]
         public string id { get; set; }
 
+        [ExcelIgnore]
+        public bool _status { get; set; }
+
         [ExcelDisplayName("编号")]
         public string code { get; set; }
 
@@ -45,5 +48,17 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("备注")]
         public string comment { get; set; }
+
+        [ExcelDisplayName("执行状态")]
+        public string exestatus { get; set; }
+
+        [ExcelDisplayName("执行说明")]
+        public string execomment { get; set; }
+
+        [ExcelDisplayName("执行时间")]
+        public string exetime { get; set; }
+
+        [ExcelDisplayName("执行人")]
+        public string exer { get; set; }
     }
 }

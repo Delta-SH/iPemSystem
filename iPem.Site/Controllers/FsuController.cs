@@ -31,7 +31,7 @@ namespace iPem.Site.Controllers {
         private readonly IWebEventService _webLogger;
         private readonly IDictionaryService _dictionaryService;
         private readonly IFsuService _fsuService;
-        private readonly IFsuEventService _ftpService;
+        private readonly IFsuEventService _evtService;
         private readonly IGroupService _groupService;
         private readonly IParamDiffService _diffService;
         private readonly INoteService _noteService;
@@ -48,7 +48,7 @@ namespace iPem.Site.Controllers {
             IWorkContext workContext,
             IWebEventService webLogger,
             IFsuService fsuService,
-            IFsuEventService ftpService,
+            IFsuEventService evtService,
             IDictionaryService dictionaryService,
             IGroupService groupService,
             IParamDiffService diffService,
@@ -60,7 +60,7 @@ namespace iPem.Site.Controllers {
             this._workContext = workContext;
             this._webLogger = webLogger;
             this._fsuService = fsuService;
-            this._ftpService = ftpService;
+            this._evtService = evtService;
             this._dictionaryService = dictionaryService;
             this._groupService = groupService;
             this._diffService = diffService;
@@ -121,7 +121,27 @@ namespace iPem.Site.Controllers {
                         end = models.Count;
 
                     for (int i = start; i < end; i++) {
-                        data.data.Add(models[i]);
+                        data.data.Add(new FsuModel {
+                            index = i+1,
+                            id = models[i].id,
+                            code = models[i].code,
+                            name = models[i].name,
+                            area = models[i].area,
+                            station = models[i].station,
+                            room = models[i].room,
+                            vendor = models[i].vendor,
+                            ip = models[i].ip,
+                            port = models[i].port,
+                            last = models[i].last,
+                            change = models[i].change,
+                            status = models[i].status,
+                            _status = models[i]._status,
+                            comment = models[i].comment,
+                            exestatus = models[i].exestatus,
+                            execomment = models[i].execomment,
+                            exetime = models[i].exetime,
+                            exer = models[i].exer
+                        });
                     }
                 }
             } catch (Exception exc) {
@@ -136,61 +156,33 @@ namespace iPem.Site.Controllers {
         public ActionResult DownloadFsu(string parent, int[] status, string[] vendors, int filter, string keywords) {
             try {
                 var models = this.GetFsus(parent, status, vendors, filter, keywords);
+                var stores = new List<FsuModel>();
+                for (int i = 0; i < models.Count; i++) {
+                    stores.Add(new FsuModel {
+                        index = i + 1,
+                        id = models[i].id,
+                        code = models[i].code,
+                        name = models[i].name,
+                        area = models[i].area,
+                        station = models[i].station,
+                        room = models[i].room,
+                        vendor = models[i].vendor,
+                        ip = models[i].ip,
+                        port = models[i].port,
+                        last = models[i].last,
+                        change = models[i].change,
+                        status = models[i].status,
+                        _status = models[i]._status,
+                        comment = models[i].comment,
+                        exestatus = models[i].exestatus,
+                        execomment = models[i].execomment,
+                        exetime = models[i].exetime,
+                        exer = models[i].exer
+                    });
+                }
+
                 using (var ms = _excelManager.Export<FsuModel>(models, "FSU信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult RequestFtpFiles(int start, int limit, string id) {
-            var data = new AjaxDataModel<List<FtpFileModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<FtpFileModel>()
-            };
-
-            try {
-                var models = this.GetFtpFiles(id);
-                if (models != null) {
-                    data.message = "200 Ok";
-                    data.total = models.Count;
-
-                    var end = start + limit;
-                    if (end > models.Count)
-                        end = models.Count;
-
-                    for (int i = start; i < end; i++) {
-                        data.data.Add(models[i]);
-                    }
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                data.success = false; data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult DownloadFtpFile(string fsu, string path) {
-            try {
-                if (string.IsNullOrWhiteSpace(fsu)) throw new ArgumentNullException("fsu");
-                if (string.IsNullOrWhiteSpace(path)) throw new ArgumentNullException("path");
-
-                var current = _workContext.Fsus().Find(f => f.Current.Id == fsu);
-                if (current == null) throw new iPemException("未找到FSU");
-                var ext = _fsuService.GetExtFsu(current.Current.Id);
-                if (ext == null) throw new iPemException("未找到FSU");
-                if (!ext.Status) throw new iPemException("FSU通信中断");
-
-                var helper = new FtpHelper(ext.IP, string.IsNullOrWhiteSpace(current.Current.FtpFilePath) ? "logs" : string.Format("{0}/logs", current.Current.FtpFilePath), current.Current.FtpUid ?? "", current.Current.FtpPwd ?? "");
-                using (var ms = helper.Download(path)) {
-                    return File(ms.ToArray(), "application/octet-stream", path);
                 }
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
@@ -243,6 +235,184 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetFsuLogin(string fsu) {
+            var data = new AjaxDataModel<FsuLoginModel> {
+                success = false,
+                message = "无数据",
+                total = 1,
+                data = new FsuLoginModel()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(fsu))
+                    throw new ArgumentNullException("fsu");
+
+                var ext = _fsuService.GetExtFsu(fsu);
+                if (ext == null) throw new iPemException("未找到Fsu");
+                if (!ext.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(ext.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var package = new GetFsuLoginPackage() { FsuId = ext.Id };
+                var result = _packMgr.GetFsuLogin(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
+                if (result == null) throw new iPemException("响应超时");
+
+                data.data.user = result.Username;
+                data.data.password = result.Password;
+                data.data.package = result.Origin;
+
+                if (result.Result == EnmBIResult.FAILURE)
+                    throw new iPemException(result.FailureCause ?? "获取FSU注册信息失败");
+
+                data.success = true; data.message = "获取FSU注册信息成功";
+                _webLogger.Information(EnmEventType.Other, string.Format("获取FSU注册信息成功[{0}]", ext.Id), _workContext.User().Id, null);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SetFsuLogin(string fsu, string user, string password) {
+            try {
+                if (string.IsNullOrWhiteSpace(fsu))
+                    throw new ArgumentNullException("fsu");
+                if (string.IsNullOrWhiteSpace(user))
+                    throw new ArgumentNullException("user");
+                if (string.IsNullOrWhiteSpace(password))
+                    throw new ArgumentNullException("password");
+
+                var ext = _fsuService.GetExtFsu(fsu);
+                if (ext == null) throw new iPemException("未找到Fsu");
+                if (!ext.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(ext.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var package = new SetFsuLoginPackage() { FsuId = ext.Id, Username = user, Password = password };
+                var result = _packMgr.SetFsuLogin(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
+                if (result == null) throw new iPemException("响应超时");
+                if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "下发配置失败");
+
+                _webLogger.Information(EnmEventType.Other, string.Format("配置下发成功(更新FSU用户名密码)[{0}]", ext.Id), _workContext.User().Id, null);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发成功(更新FSU用户名密码)" });
+            } catch (Exception exc) {
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFtpLogin(string fsu) {
+            var data = new AjaxDataModel<FtpLoginModel> {
+                success = false,
+                message = "无数据",
+                total = 1,
+                data = new FtpLoginModel()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(fsu))
+                    throw new ArgumentNullException("fsu");
+
+                var ext = _fsuService.GetExtFsu(fsu);
+                if (ext == null) throw new iPemException("未找到Fsu");
+                if (!ext.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(ext.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var package = new GetFtpLoginPackage() { FsuId = ext.Id };
+                var result = _packMgr.GetFtpLogin(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
+                if (result == null) throw new iPemException("响应超时");
+
+                data.data.user = result.Username;
+                data.data.password = result.Password;
+                data.data.package = result.Origin;
+
+                if (result.Result == EnmBIResult.FAILURE)
+                    throw new iPemException(result.FailureCause ?? "获取FTP信息失败");
+
+                data.success = true; data.message = "获取FTP信息成功";
+                _webLogger.Information(EnmEventType.Other, string.Format("获取FTP信息成功[{0}]", ext.Id), _workContext.User().Id, null);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SetFtpLogin(string fsu, string user, string password) {
+            try {
+                if (string.IsNullOrWhiteSpace(fsu))
+                    throw new ArgumentNullException("fsu");
+                if (string.IsNullOrWhiteSpace(user))
+                    throw new ArgumentNullException("user");
+                if (string.IsNullOrWhiteSpace(password))
+                    throw new ArgumentNullException("password");
+
+                var ext = _fsuService.GetExtFsu(fsu);
+                if (ext == null) throw new iPemException("未找到Fsu");
+                if (!ext.Status) throw new iPemException("Fsu通信中断");
+
+                var curGroup = _groupService.GetGroup(ext.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                var package = new SetFtpLoginPackage() { FsuId = ext.Id, Username = user, Password = password };
+                var result = _packMgr.SetFtpLogin(new UriBuilder("http", curGroup.IP, curGroup.Port, (_workContext.WsValues() != null && _workContext.WsValues().fsuPath != null) ? _workContext.WsValues().fsuPath : "").ToString(), package);
+                if (result == null) throw new iPemException("响应超时");
+                if (result.Result == EnmBIResult.FAILURE) throw new iPemException(result.FailureCause ?? "下发配置失败");
+
+                _webLogger.Information(EnmEventType.Other, string.Format("配置下发成功(更新FTP用户名密码)[{0}]", ext.Id), _workContext.User().Id, null);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "配置下发成功(更新FTP用户名密码)" });
+            } catch (Exception exc) {
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult Upgrade(string fsuid, string upgradefile) {
+            try {
+                if (string.IsNullOrWhiteSpace(fsuid))
+                    throw new ArgumentNullException("fsuid");
+                if (string.IsNullOrWhiteSpace(upgradefile))
+                    throw new ArgumentNullException("upgradefile");
+
+                var ext = _fsuService.GetExtFsu(fsuid);
+                if (ext == null) throw new iPemException("未找到Fsu");
+                if (!ext.Status) throw new iPemException("Fsu通信中断");
+                //if (ext.UpgradeStatus == EnmUpgradeStatus.Running) throw new iPemException("Fsu正在执行其他任务");
+
+                var curGroup = _groupService.GetGroup(ext.GroupId);
+                if (curGroup == null) throw new iPemException("未找到SC采集组");
+                if (!curGroup.Status) throw new iPemException("SC通信中断");
+
+                ext.UpgradeStatus = EnmUpgradeStatus.Ready;
+                ext.UpgradeResult = "命令已下发，等待升级。";
+                ext.UpgradeTime = DateTime.Now;
+                ext.Upgrader = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name;
+                
+                _noteService.Add(new H_Note { SysType = 1, GroupID = ext.GroupId, Name = ext.Id, DtType = 1, OpType = 0, Time = DateTime.Now, Desc = upgradefile });
+                _fsuService.UpdateExes(ext);
+                _webLogger.Information(EnmEventType.Other, string.Format("执行FSU升级命令[{0}]", ext.Id), _workContext.User().Id, null);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "升级命令已下发" });
+            } catch (Exception exc) {
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
         public JsonResult Reboot(string id) {
             try {
                 if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("id");
@@ -265,20 +435,6 @@ namespace iPem.Site.Controllers {
 
                 _webLogger.Information(EnmEventType.Other, string.Format("FSU重启成功[{0}]", curFsu.Current.Code), _workContext.User().Id, null);
                 return Json(new AjaxResultModel { success = true, code = 200, message = "重启成功" });
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult UpdateRelation() {
-            try {
-                _fsuService.UpdateFsus();
-                _cacheManager.Remove(GlobalCacheKeys.Rs_FsusRepository);
-                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_FSU", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步FSU数据" });
-                _webLogger.Information(EnmEventType.Other, "更新FSU关联信息", _workContext.User().Id, null);
-                return Json(new AjaxResultModel { success = true, code = 200, message = "更新关联成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
@@ -946,7 +1102,6 @@ namespace iPem.Site.Controllers {
         }
 
         private List<FsuModel> GetFsus(string parent, int[] status, string[] vendors, int filter, string keywords) {
-            var result = new List<FsuModel>();
             var fsus = new List<D_Fsu>();
             if (string.IsNullOrWhiteSpace(parent) || parent == "root") {
                 fsus.AddRange(_workContext.Fsus().Select(f => f.Current));
@@ -991,12 +1146,12 @@ namespace iPem.Site.Controllers {
 
             var stores = from fsu in fsus
                          join ext in extFsus on fsu.Id equals ext.Id
-                         join area in _workContext.Areas() on fsu.AreaId equals area.Current.Id
+                         orderby fsu.Code
                          select new FsuModel {
                              id = fsu.Id,
                              code = fsu.Code,
                              name = fsu.Name,
-                             area = area.ToString(),
+                             area = fsu.AreaName,
                              station = fsu.StationName,
                              room = fsu.RoomName,
                              vendor = fsu.VendorName,
@@ -1005,61 +1160,15 @@ namespace iPem.Site.Controllers {
                              last = CommonHelper.DateTimeConverter(ext.LastTime),
                              change = CommonHelper.DateTimeConverter(ext.ChangeTime),
                              status = ext.Status ? "在线" : "离线",
-                             comment = ext.Comment ?? string.Empty
+                             _status = ext.Status,
+                             comment = ext.Comment ?? string.Empty,
+                             exestatus = Common.GetExeDisplay(ext.UpgradeStatus),
+                             execomment = ext.UpgradeResult ?? string.Empty,
+                             exetime = CommonHelper.DateTimeConverter(ext.UpgradeTime),
+                             exer = ext.Upgrader ?? string.Empty
                          };
 
-            var index = 0;
-            foreach (var store in stores.OrderBy(s => s.code)) {
-                result.Add(new FsuModel {
-                    index = ++index,
-                    id = store.id,
-                    code = store.code,
-                    name = store.name,
-                    area = store.area,
-                    station = store.station,
-                    room = store.room,
-                    vendor = store.vendor,
-                    ip = store.ip,
-                    port = store.port,
-                    last = store.last,
-                    change = store.change,
-                    status = store.status,
-                    comment = store.comment
-                });
-            }
-
-            return result;
-        }
-
-        private List<FtpFileModel> GetFtpFiles(string id) {
-            var result = new List<FtpFileModel>();
-            var current = _workContext.Fsus().Find(f => f.Current.Id == id);
-            if (current == null) return result;
-            var ext = _fsuService.GetExtFsu(id);
-            if (ext == null) return result;
-            if (!ext.Status) return result;
-
-            var key = string.Format(GlobalCacheKeys.Fsu_Ftp_Files, current.Current.Id);
-            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<FtpFileModel>(key).ToList();
-
-            var helper = new FtpHelper(ext.IP, string.IsNullOrWhiteSpace(current.Current.FtpFilePath) ? "logs" : string.Format("{0}/logs", current.Current.FtpFilePath), current.Current.FtpUid ?? "", current.Current.FtpPwd ?? "");
-            var files = helper.GetFtpFiles().OrderByDescending(f => f.Name);
-            var index = 0;
-            foreach (var file in files) {
-                result.Add(new FtpFileModel {
-                    index = ++index,
-                    name = file.Name,
-                    size = file.Size,
-                    path = file.Path,
-                    time = CommonHelper.DateTimeConverter(file.CreatedTime)
-                });
-            }
-
-            if (result.Count > 0 && result.Count <= GlobalCacheLimit.Default_Limit) {
-                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
-            }
-
-            return result;
+            return stores.ToList();
         }
 
         private List<FsuEventModel> GetFsuEvents(string parent, int[] types, DateTime startDate, DateTime endDate, int filter, string keywords) {
@@ -1101,7 +1210,7 @@ namespace iPem.Site.Controllers {
                 }
             }
 
-            var events = _ftpService.GetEvents(startDate, endDate);
+            var events = _evtService.GetEvents(startDate, endDate);
             if (types != null && types.Length > 0) events = events.FindAll(e => types.Contains((int)e.EventType));
 
             var stores = from evt in events

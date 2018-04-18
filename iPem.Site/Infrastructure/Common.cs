@@ -358,6 +358,21 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetExeDisplay(EnmUpgradeStatus status) {
+            switch (status) {
+                case EnmUpgradeStatus.Ready:
+                    return "准备就绪";
+                case EnmUpgradeStatus.Running:
+                    return "正在执行";
+                case EnmUpgradeStatus.Success:
+                    return "执行成功";
+                case EnmUpgradeStatus.Failure:
+                    return "执行失败";
+                default:
+                    return "未定义";
+            }
+        }
+
         public static string GetValueDisplay(EnmPoint type, string value, string unit) {
             switch (type) {
                 case EnmPoint.DI:

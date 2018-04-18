@@ -275,5 +275,19 @@ namespace iPem.Data.Common {
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmResult), v) ? (EnmResult)v : EnmResult.Undefine;
         }
+
+        public static EnmFtp DBNullFtpHandler(object val) {
+            if (val == DBNull.Value) { return EnmFtp.Master; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmFtp), v) ? (EnmFtp)v : EnmFtp.Master;
+        }
+
+        public static EnmUpgradeStatus DBNullUpgradeStatusHandler(object val) {
+            if (val == DBNull.Value) { return EnmUpgradeStatus.Ready; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmUpgradeStatus), v) ? (EnmUpgradeStatus)v : EnmUpgradeStatus.Ready;
+        }
     }
 }

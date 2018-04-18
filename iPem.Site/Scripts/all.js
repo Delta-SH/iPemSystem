@@ -2521,6 +2521,89 @@ window.$$iPems.SetIcon = function (node, icon) {
         node.set('iconCls', Ext.String.format('{0}-level-4', prefix));
 };
 
+window.$$iPems.FileType = {
+    zip: [".zip", ".rar", ".7z", ".gz", ".tar", ".jar"],
+    img: [".bmp", ".jpg", ".jpeg", ".png", ".gif", ".ico"],
+    music: [".mp3", ".wav", ".wma", ".ogg", ".m4a", ".mmf", ".amr"],
+    video: [".mp4", ".3gp", ".mpg", ".avi", ".wmv", ".flv", ".swf"],
+    word: [".doc", ".docx", ".wps", ".rtf"],
+    excel: [".xls", ".xlsx", ".et", ".csv"],
+    power: [".ppt", ".pptx", ".dps"],
+    exe: [".exe", ".msi", ".cmd", ".bat"],
+    pdf: [".pdf"],
+    txt: [".txt", ".log", ".cfg", ".config", ".sql"],
+    xml: [".xml", ".js", ".css", ".cs"],
+    html: [".htm", ".html", ".shtml", ".shtm", ".cshtml"]
+};
+
+window.$$iPems.FileIcon16 = function (file) {
+    if (Ext.isEmpty(file)) return '/Content/themes/icons/files/file16.png';
+
+    var ext = file.substr(file.lastIndexOf(".")).toLowerCase();
+
+    if (Ext.Array.contains($$iPems.FileType.zip, ext)) {
+        return "/Content/themes/icons/files/zip16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.img, ext)) {
+        return "/Content/themes/icons/files/img16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.music, ext)) {
+        return "/Content/themes/icons/files/music16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.video, ext)) {
+        return "/Content/themes/icons/files/video16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.word, ext)) {
+        return "/Content/themes/icons/files/word16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.excel, ext)) {
+        return "/Content/themes/icons/files/excel16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.power, ext)) {
+        return "/Content/themes/icons/files/pp16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.exe, ext)) {
+        return "/Content/themes/icons/files/exe16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.pdf, ext)) {
+        return "/Content/themes/icons/files/pdf16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.txt, ext)) {
+        return "/Content/themes/icons/files/txt16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.xml, ext)) {
+        return "/Content/themes/icons/files/xml16.png"
+    } else if (Ext.Array.contains($$iPems.FileType.html, ext)) {
+        return "/Content/themes/icons/files/html16.png"
+    }
+
+    return '/Content/themes/icons/files/file16.png';
+};
+
+window.$$iPems.FileIcon32 = function (file) {
+    if (Ext.isEmpty(file)) return '/Content/themes/icons/files/file32.png';
+
+    var ext = file.substr(file.lastIndexOf(".")).toLowerCase();
+
+    if (Ext.Array.contains($$iPems.FileType.zip, ext)) {
+        return "/Content/themes/icons/files/zip32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.img, ext)) {
+        return "/Content/themes/icons/files/img32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.music, ext)) {
+        return "/Content/themes/icons/files/music32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.video, ext)) {
+        return "/Content/themes/icons/files/video32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.word, ext)) {
+        return "/Content/themes/icons/files/word32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.excel, ext)) {
+        return "/Content/themes/icons/files/excel32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.power, ext)) {
+        return "/Content/themes/icons/files/pp32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.exe, ext)) {
+        return "/Content/themes/icons/files/exe32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.pdf, ext)) {
+        return "/Content/themes/icons/files/pdf32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.txt, ext)) {
+        return "/Content/themes/icons/files/txt32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.xml, ext)) {
+        return "/Content/themes/icons/files/xml32.png"
+    } else if (Ext.Array.contains($$iPems.FileType.html, ext)) {
+        return "/Content/themes/icons/files/html32.png"
+    }
+
+    return '/Content/themes/icons/files/file32.png';
+};
+
 /*global delimiter*/
 window.$$iPems.Delimiter = ';';
 window.$$iPems.Separator = '┆';
@@ -2889,7 +2972,13 @@ window.$$iPems.Tasks = {
             interval: 15000,
             repeat: 1
         })
-    }
+    },
+    fsuTask: Ext.util.TaskManager.newTask({
+        run: Ext.emptyFn,
+        fireOnStart: true,
+        interval: 10000,
+        repeat: 1
+    })
 };
 
 /* ========================================================================

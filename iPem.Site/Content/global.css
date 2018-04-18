@@ -490,6 +490,11 @@ a.grid-link {
     color:#157fcc;
 }
 
+span.grid-link-split {
+    color:#ededed;
+    margin:0 5px;
+}
+
 /**custom button css*/
 a.custom-button {
   display: inline-block;

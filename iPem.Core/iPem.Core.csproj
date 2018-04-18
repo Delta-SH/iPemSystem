@@ -122,6 +122,7 @@
     <Compile Include="Domain\Cs\H_IStation.cs" />
     <Compile Include="Domain\Cs\V_AMeasure.cs" />
     <Compile Include="Domain\Cs\V_ParamDiff.cs" />
+    <Compile Include="Domain\Rs\C_Ftp.cs" />
     <Compile Include="Domain\Rs\C_Group.cs" />
     <Compile Include="Domain\Rs\C_SCVendor.cs" />
     <Compile Include="Domain\Rs\D_ExtFsu.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Enum\EnmSite.cs" />
     <Compile Include="Extensions\IgnoreJsonAttributesResolver.cs" />
     <Compile Include="Extensions\JsonRedisIgnoreAttribute.cs" />
+    <Compile Include="FileType.cs" />
     <Compile Include="FtpHelper.cs" />
     <Compile Include="iPemStore.cs" />
     <Compile Include="BaseEntity.cs" />

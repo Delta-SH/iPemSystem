@@ -80,6 +80,7 @@
     <Compile Include="Cs\Interface\ITAlarmService.cs" />
     <Compile Include="Rs\Class\CameraService.cs" />
     <Compile Include="Rs\Class\ChannelService.cs" />
+    <Compile Include="Rs\Class\FtpService.cs" />
     <Compile Include="Rs\Class\GroupService.cs" />
     <Compile Include="Rs\Class\MaskingService.cs" />
     <Compile Include="Rs\Class\MAuthorizationService.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Rs\Class\UserService.cs" />
     <Compile Include="Rs\Interface\ICameraService.cs" />
     <Compile Include="Rs\Interface\IChannelService.cs" />
+    <Compile Include="Rs\Interface\IFtpService.cs" />
     <Compile Include="Rs\Interface\IGroupService.cs" />
     <Compile Include="Rs\Interface\IMaskingService.cs" />
     <Compile Include="Rs\Interface\IMAuthorizationService.cs" />

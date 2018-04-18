@@ -4,6 +4,30 @@ using System;
 
 namespace iPem.Site.Infrastructure {
     public class SCPackMgr : IPackMgr {
+        public GetFsuLoginAckPackage GetFsuLogin(string uri, GetFsuLoginPackage package) {
+            var service = new LSCServiceService() { Url = uri, Timeout = 15000 };
+            var xmlData = service.invoke(package.ToXml());
+            return new GetFsuLoginAckPackage(xmlData);
+        }
+
+        public SetFsuLoginAckPackage SetFsuLogin(string uri, SetFsuLoginPackage package) {
+            var service = new LSCServiceService() { Url = uri, Timeout = 15000 };
+            var xmlData = service.invoke(package.ToXml());
+            return new SetFsuLoginAckPackage(xmlData);
+        }
+
+        public GetFtpLoginAckPackage GetFtpLogin(string uri, GetFtpLoginPackage package) {
+            var service = new LSCServiceService() { Url = uri, Timeout = 15000 };
+            var xmlData = service.invoke(package.ToXml());
+            return new GetFtpLoginAckPackage(xmlData);
+        }
+
+        public SetFtpLoginAckPackage SetFtpLogin(string uri, SetFtpLoginPackage package) {
+            var service = new LSCServiceService() { Url = uri, Timeout = 15000 };
+            var xmlData = service.invoke(package.ToXml());
+            return new SetFtpLoginAckPackage(xmlData);
+        }
+
         public GetDataAckPackage GetData(string uri, GetDataPackage package) {
             var service = new LSCServiceService() { Url = uri, Timeout = 10000 };
             var xmlData = service.invoke(package.ToXml());

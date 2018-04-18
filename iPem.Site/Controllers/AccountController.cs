@@ -38,6 +38,7 @@ namespace iPem.Site.Controllers {
         private readonly IEmployeeService _employeeService;
         private readonly IEntitiesInRoleService _entitiesInRoleService;
         private readonly IFormulaService _formulaService;
+        private readonly IFsuService _fsuService;
         private readonly ISignalService _signalService;
         private readonly IMenuService _menuService;
         private readonly INoticeService _noticeService;
@@ -66,6 +67,7 @@ namespace iPem.Site.Controllers {
             IEmployeeService employeeService,
             IEntitiesInRoleService entitiesInRoleService,
             IFormulaService formulaService,
+            IFsuService fsuService,
             ISignalService signalService,
             IMenuService menuService,
             INoticeService noticeService,
@@ -87,6 +89,7 @@ namespace iPem.Site.Controllers {
             this._employeeService = employeeService;
             this._entitiesInRoleService = entitiesInRoleService;
             this._formulaService = formulaService;
+            this._fsuService = fsuService;
             this._signalService = signalService;
             this._menuService = menuService;
             this._noticeService = noticeService;
@@ -1867,6 +1870,7 @@ namespace iPem.Site.Controllers {
             try {
                 this.ClearGlobalCache();
                 this.ClearUserCache();
+                this.UpdateFsuRelation();
                 return Json(new AjaxResultModel { success = true, code = 200, message = "所有缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
@@ -1900,6 +1904,20 @@ namespace iPem.Site.Controllers {
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult UpdateFsuRelation() {
+            try {
+                _fsuService.UpdateFsus();
+                _cacheManager.Remove(GlobalCacheKeys.Rs_FsusRepository);
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_FSU", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步FSU数据" });
+                _webLogger.Information(EnmEventType.Other, "更新FSU关联信息", _workContext.User().Id, null);
+                return Json(new AjaxResultModel { success = true, code = 200, message = "更新关联成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
         }
 

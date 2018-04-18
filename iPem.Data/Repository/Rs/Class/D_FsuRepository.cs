@@ -47,15 +47,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);
-                    entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
-                    entity.Pwd = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
-                    entity.FtpUid = SqlTypeConverter.DBNullStringHandler(rdr["FtpUid"]);
-                    entity.FtpPwd = SqlTypeConverter.DBNullStringHandler(rdr["FtpPwd"]);
-                    entity.FtpFilePath = SqlTypeConverter.DBNullStringHandler(rdr["FtpFilePath"]);
-                    entity.FtpAuthority = SqlTypeConverter.DBNullInt32Handler(rdr["FtpAuthority"]);
                 }
             }
             return entity;
@@ -81,15 +74,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);
-                    entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
-                    entity.Pwd = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
-                    entity.FtpUid = SqlTypeConverter.DBNullStringHandler(rdr["FtpUid"]);
-                    entity.FtpPwd = SqlTypeConverter.DBNullStringHandler(rdr["FtpPwd"]);
-                    entity.FtpFilePath = SqlTypeConverter.DBNullStringHandler(rdr["FtpFilePath"]);
-                    entity.FtpAuthority = SqlTypeConverter.DBNullInt32Handler(rdr["FtpAuthority"]);
                     entities.Add(entity);
                 }
             }
@@ -113,15 +99,8 @@ namespace iPem.Data.Repository.Rs {
                     entity.RoomName = SqlTypeConverter.DBNullStringHandler(rdr["RoomName"]);
                     entity.RoomTypeId = SqlTypeConverter.DBNullStringHandler(rdr["RoomTypeId"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-
                     entity.VendorId = SqlTypeConverter.DBNullStringHandler(rdr["VendorId"]);
                     entity.VendorName = SqlTypeConverter.DBNullStringHandler(rdr["VendorName"]);
-                    entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
-                    entity.Pwd = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
-                    entity.FtpUid = SqlTypeConverter.DBNullStringHandler(rdr["FtpUid"]);
-                    entity.FtpPwd = SqlTypeConverter.DBNullStringHandler(rdr["FtpPwd"]);
-                    entity.FtpFilePath = SqlTypeConverter.DBNullStringHandler(rdr["FtpFilePath"]);
-                    entity.FtpAuthority = SqlTypeConverter.DBNullInt32Handler(rdr["FtpAuthority"]);
                     entities.Add(entity);
                 }
             }
@@ -139,11 +118,22 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
                     entity.Port = SqlTypeConverter.DBNullInt32Handler(rdr["Port"]);
+                    entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
+                    entity.Pwd = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
+                    entity.FtpUid = SqlTypeConverter.DBNullStringHandler(rdr["FtpUid"]);
+                    entity.FtpPwd = SqlTypeConverter.DBNullStringHandler(rdr["FtpPwd"]);
+                    entity.FtpFilePath = SqlTypeConverter.DBNullStringHandler(rdr["FtpFilePath"]);
+                    entity.FtpAuthority = SqlTypeConverter.DBNullInt32Handler(rdr["FtpAuthority"]);
                     entity.ChangeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ChangeTime"]);
                     entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
                     entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.GroupId = SqlTypeConverter.DBNullStringHandler(rdr["GroupId"]);
+                    entity.UpgradeStatus = SqlTypeConverter.DBNullUpgradeStatusHandler(rdr["UpgradeStatus"]);
+                    entity.UpgradeResult = SqlTypeConverter.DBNullStringHandler(rdr["UpgradeResult"]);
+                    entity.UpgradeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpgradeTime"]);
+                    entity.Upgrader = SqlTypeConverter.DBNullStringHandler(rdr["Upgrader"]);
+
                 }
             }
             return entity;
@@ -157,11 +147,21 @@ namespace iPem.Data.Repository.Rs {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
                     entity.Port = SqlTypeConverter.DBNullInt32Handler(rdr["Port"]);
+                    entity.Uid = SqlTypeConverter.DBNullStringHandler(rdr["Uid"]);
+                    entity.Pwd = SqlTypeConverter.DBNullStringHandler(rdr["Pwd"]);
+                    entity.FtpUid = SqlTypeConverter.DBNullStringHandler(rdr["FtpUid"]);
+                    entity.FtpPwd = SqlTypeConverter.DBNullStringHandler(rdr["FtpPwd"]);
+                    entity.FtpFilePath = SqlTypeConverter.DBNullStringHandler(rdr["FtpFilePath"]);
+                    entity.FtpAuthority = SqlTypeConverter.DBNullInt32Handler(rdr["FtpAuthority"]);
                     entity.ChangeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["ChangeTime"]);
                     entity.LastTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["LastTime"]);
                     entity.Status = SqlTypeConverter.DBNullBooleanHandler(rdr["Status"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
                     entity.GroupId = SqlTypeConverter.DBNullStringHandler(rdr["GroupId"]);
+                    entity.UpgradeStatus = SqlTypeConverter.DBNullUpgradeStatusHandler(rdr["UpgradeStatus"]);
+                    entity.UpgradeResult = SqlTypeConverter.DBNullStringHandler(rdr["UpgradeResult"]);
+                    entity.UpgradeTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["UpgradeTime"]);
+                    entity.Upgrader = SqlTypeConverter.DBNullStringHandler(rdr["Upgrader"]);
                     entities.Add(entity);
                 }
             }
@@ -174,6 +174,33 @@ namespace iPem.Data.Repository.Rs {
                 var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
                 try {
                     SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_UpdateFsus, null);
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public void UpdateExes(IEnumerable<D_ExtFsu> entities) {
+            SqlParameter[] parms = { new SqlParameter("@Id", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@UpgradeStatus", SqlDbType.Int),
+                                     new SqlParameter("@UpgradeResult", SqlDbType.VarChar, 512),
+                                     new SqlParameter("@UpgradeTime", SqlDbType.DateTime),
+                                     new SqlParameter("@Upgrader", SqlDbType.VarChar, 200) };
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                if (conn.State != ConnectionState.Open) conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var entity in entities) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
+                        parms[1].Value = (int)entity.UpgradeStatus;
+                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.UpgradeResult);
+                        parms[3].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.UpgradeTime);
+                        parms[4].Value = SqlTypeConverter.DBNullStringChecker(entity.Upgrader);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_UpdateExes, parms);
+                    }
                     trans.Commit();
                 } catch {
                     trans.Rollback();

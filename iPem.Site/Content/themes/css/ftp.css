@@ -1,0 +1,17 @@
+﻿body {
+    font-size: 1.25em;
+    font-family: 'Microsoft Yahei', Arial, SimSun, Sans-Serif;
+    color: #535353;
+    padding-top:60px;
+}
+
+.cell-img {
+    width:32px;
+    height:32px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.x-grid-td {
+    vertical-align: middle;
+}

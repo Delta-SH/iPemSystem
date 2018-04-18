@@ -91,6 +91,7 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IC_DeviceTypeRepository>(c => new C_DeviceTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_DutyRepository>(c => new C_DutyRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_EnumMethodRepository>(c => new C_EnumMethodRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IC_FtpRepository>(c => new C_FtpRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_GroupRepository>(c => new C_GroupRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_LogicTypeRepository>(c => new C_LogicTypeRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IC_ProductorRepository>(c => new C_ProductorRepository(connectionString)).InstancePerLifetimeScope();
@@ -134,6 +135,7 @@ namespace iPem.Site.Infrastructure {
                 builder.RegisterType<EnumMethodService>().As<IEnumMethodService>().InstancePerLifetimeScope();
                 builder.RegisterType<GroupService>().As<IGroupService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuService>().As<IFsuService>().InstancePerLifetimeScope();
+                builder.RegisterType<FtpService>().As<IFtpService>().InstancePerLifetimeScope();
                 builder.RegisterType<LogicTypeService>().As<ILogicTypeService>().InstancePerLifetimeScope();
                 builder.RegisterType<MaskingService>().As<IMaskingService>().InstancePerLifetimeScope();
                 builder.RegisterType<PointService>().As<IPointService>().InstancePerLifetimeScope();

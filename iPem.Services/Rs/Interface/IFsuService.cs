@@ -39,6 +39,11 @@ namespace iPem.Services.Rs {
         void UpdateFsus();
 
         /// <summary>
+        /// 更新执行状态
+        /// </summary>
+        void UpdateExes(params D_ExtFsu[] fsus);
+
+        /// <summary>
         /// 获得所有的FSU(分页)
         /// </summary>
         IPagedList<D_Fsu> GetPagedFsus(int pageIndex = 0, int pageSize = int.MaxValue);

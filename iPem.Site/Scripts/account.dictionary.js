@@ -649,14 +649,14 @@
                         text: '更新FSU关联',
                         cls: 'custom-button custom-success',
                         margin: 15,
+                        hidden: true,
                         handler: function () {
                             Ext.Msg.confirm('确认对话框', '您确认要更新FSU关联的机房吗？', function (buttonId, text) {
-                                if (buttonId === 'yes')
-                                {
+                                if (buttonId === 'yes') {
                                     var cacheResult = Ext.getCmp('cacheResult');
                                     cacheResult.setTextWithIcon('正在处理...', 'x-icon-loading');
                                     Ext.Ajax.request({
-                                        url: '/Fsu/UpdateRelation',
+                                        url: '/Account/UpdateFsuRelation',
                                         method: 'POST',
                                         success: function (response, options) {
                                             var data = Ext.decode(response.responseText, true);

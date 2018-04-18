@@ -493,6 +493,40 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[C_FTP]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_FTP]') AND type in (N'U'))
+DROP TABLE [dbo].[C_FTP]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[C_FTP](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[IP] [varchar](20) NULL,
+	[Port] [int] NULL,
+	[UID] [varchar](20) NULL,
+	[PWD] [varchar](20) NULL,
+	[FilePath] [varchar](20) NULL,
+	[Type] [int] NOT NULL,
+	[Authority] [int] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_C_FTP] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[C_Group]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_Group]') AND type in (N'U'))
 DROP TABLE [dbo].[C_Group]
@@ -1234,8 +1268,12 @@ CREATE TABLE [dbo].[D_FSU](
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_Room] DEFAULT ((0)),
+	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_RoomID]  DEFAULT ((0)),
 	[IsFtpSync] [bit] NULL,
+	[UpgradeStatus] [int] NULL,
+	[UpgradeStatusDesc] [varchar](512) NULL,
+	[UpgradeTime] [datetime] NULL,
+	[UpgradeUser] [varchar](200) NULL,
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC

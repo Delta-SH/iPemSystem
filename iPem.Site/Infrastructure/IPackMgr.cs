@@ -3,6 +3,14 @@ using System;
 
 namespace iPem.Site.Infrastructure {
     public interface IPackMgr {
+        GetFsuLoginAckPackage GetFsuLogin(string uri, GetFsuLoginPackage package);
+
+        SetFsuLoginAckPackage SetFsuLogin(string uri, SetFsuLoginPackage package);
+
+        GetFtpLoginAckPackage GetFtpLogin(string uri, GetFtpLoginPackage package);
+
+        SetFtpLoginAckPackage SetFtpLogin(string uri, SetFtpLoginPackage package);
+        
         GetDataAckPackage GetData(string uri, GetDataPackage package);
 
         SetPointActPackage SetPoint(string uri, SetPointPackage package);

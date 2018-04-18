@@ -21,6 +21,7 @@ namespace iPem.Services.Common {
         public const string Rs_DeviceTypeRepository = @"ipems:global:rs-device-type";
         public const string Rs_EmployeesRepository = @"ipems:global:rs-employees";
         public const string Rs_FsusRepository = @"ipems:global:rs-fsus";
+        public const string Rs_FtpsRepository = @"ipems:global:rs-ftps";
         public const string Rs_GroupsRepository = @"ipems:global:rs-groups";
         public const string Rs_LogicTypesRepository = @"ipems:global:rs-logic-types";
         public const string Rs_MaskingRepository = @"ipems:global:rs-maskings";
@@ -83,10 +84,15 @@ namespace iPem.Services.Common {
         /// <summary>
         /// Fsu应用缓存
         /// </summary>
-        public const string Fsu_Ftp_Files = @"ipems:fsu:{0}:fsu-ftp-files";
         public const string Fsu_Points = @"ipems:fsu:{0}:points";
         public const string Fsu_Alarm_Points = @"ipems:fsu:{0}:alarm-points";
         public const string Fsu_Param_Diff = @"ipems:fsu:{0}:param-diff";
+
+        /// <summary>
+        /// FTP应用缓存
+        /// </summary>
+        public const string Ftp_Info_Cfg = @"ipems:ftp:info:{0}";
+        public const string Ftp_Files_List = @"ipems:ftp:files:{0}";
     }
 
     /// <summary>

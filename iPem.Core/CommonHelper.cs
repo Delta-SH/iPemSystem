@@ -385,5 +385,24 @@ namespace iPem.Core {
 
             return string.Join(";", conditions);
         }
+
+        public static string GetFileType(string file) {
+            if (string.IsNullOrWhiteSpace(file)) return FileType.Undefined.Key;
+
+            var ext = Path.GetExtension(file).ToLower();
+            if (FileType.ZIP.Value.Contains(ext)) return FileType.ZIP.Key;
+            if (FileType.IMG.Value.Contains(ext)) return FileType.IMG.Key;
+            if (FileType.MUSIC.Value.Contains(ext)) return FileType.MUSIC.Key;
+            if (FileType.VIDEO.Value.Contains(ext)) return FileType.VIDEO.Key;
+            if (FileType.WORD.Value.Contains(ext)) return FileType.WORD.Key;
+            if (FileType.EXCEL.Value.Contains(ext)) return FileType.EXCEL.Key;
+            if (FileType.POWER.Value.Contains(ext)) return FileType.POWER.Key;
+            if (FileType.EXE.Value.Contains(ext)) return FileType.EXE.Key;
+            if (FileType.PDF.Value.Contains(ext)) return FileType.PDF.Key;
+            if (FileType.TXT.Value.Contains(ext)) return FileType.TXT.Key;
+            if (FileType.XML.Value.Contains(ext)) return FileType.XML.Key;
+            if (FileType.HTML.Value.Contains(ext)) return FileType.HTML.Key;
+            return FileType.Undefined.Key;
+        }
     }
 }

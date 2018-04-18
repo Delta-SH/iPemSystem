@@ -81,6 +81,7 @@
     <Compile Include="Repository\Cs\Interface\IV_AMeasureRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_CutRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_ParamDiffRepository.cs" />
+    <Compile Include="Repository\Rs\Class\C_FtpRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Class\D_RedefinePointRepository.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Repository\Rs\Class\U_UserRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_CameraRepository.cs" />
     <Compile Include="Repository\Rs\Class\V_ChannelRepository.cs" />
+    <Compile Include="Repository\Rs\Interface\IC_FtpRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_GroupRepository.cs" />
     <Compile Include="Repository\Rs\Interface\IC_SCVendorRepository.cs" />
     <Compile Include="Repository\Rs\Interface\ID_RedefinePointRepository.cs" />

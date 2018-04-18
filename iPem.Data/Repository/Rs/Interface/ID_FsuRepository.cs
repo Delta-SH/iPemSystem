@@ -36,5 +36,10 @@ namespace iPem.Data.Repository.Rs {
         /// 更新FSU所属的机房
         /// </summary>
         void UpdateFsus();
+
+        /// <summary>
+        /// 更新执行状态
+        /// </summary>
+        void UpdateExes(IEnumerable<D_ExtFsu> entities);
     }
 }

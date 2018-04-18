@@ -503,6 +503,40 @@ SET ANSI_PADDING OFF
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--创建表[dbo].[C_FTP]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_FTP]') AND type in (N'U'))
+DROP TABLE [dbo].[C_FTP]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING OFF
+GO
+
+CREATE TABLE [dbo].[C_FTP](
+	[ID] [varchar](100) NOT NULL,
+	[Name] [varchar](200) NOT NULL,
+	[IP] [varchar](20) NULL,
+	[Port] [int] NULL,
+	[UID] [varchar](20) NULL,
+	[PWD] [varchar](20) NULL,
+	[FilePath] [varchar](20) NULL,
+	[Type] [int] NOT NULL,
+	[Authority] [int] NULL,
+	[Desc] [varchar](512) NULL,
+ CONSTRAINT [PK_C_FTP] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 --创建表[dbo].[C_Group]
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[C_Group]') AND type in (N'U'))
 DROP TABLE [dbo].[C_Group]
@@ -1244,8 +1278,12 @@ CREATE TABLE [dbo].[D_FSU](
 	[ChangeTime] [datetime] NOT NULL,
 	[LastTime] [datetime] NOT NULL,
 	[Desc] [varchar](512) NULL,
-	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_Room] DEFAULT ((0)),
+	[RoomID] [varchar](100) NOT NULL CONSTRAINT [DF_D_FSU_RoomID]  DEFAULT ((0)),
 	[IsFtpSync] [bit] NULL,
+	[UpgradeStatus] [int] NULL,
+	[UpgradeStatusDesc] [varchar](512) NULL,
+	[UpgradeTime] [datetime] NULL,
+	[UpgradeUser] [varchar](200) NULL,
  CONSTRAINT [PK_D_FSU] PRIMARY KEY CLUSTERED 
 (
 	[DeviceID] ASC
@@ -8887,41 +8925,10 @@ DELETE FROM [dbo].[Sys_Menu]
 GO
 
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('1', 1, '0', 1, N'中心资产', 'Assets.png', 'Asset_Panel', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('2', 1, '0', 2, N'设备工具', 'Tools.png', '', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('3', 1, '0', 3, N'标准字典', 'Books.png', '', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('4', 1, '0', 4, N'系统管理', 'Sys.png', '', 5, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('5', 1, '0', 5, N'门禁管理', 'Door.png', NULL, 3, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('6', 1, '0', 6, N'视频管理', 'Video.png', 'Video_View', 4, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('100', 1, '1', 1, N'区域', 'Area.png', 'Area_GrdPanel', 0, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('101', 1, '1', 1, N'站点', 'Station.png', 'Station_Panel', 1, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('102', 1, '1', 1, N'机房', 'Room.png', 'Room_Panel', 2, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('103', 1, '1', 1, N'设备', 'Device.png', 'Device_Panel', 3, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('104', 1, '1', 1, N'模板', 'Protocol.png', 'Protocol_View', 4, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('105', 1, '3', 3, N'标准信号', 'Point.png', 'Point_View', 8, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('106', 1, '1', 1, N'FSU', 'Fsu.png', 'FSU_Panel', 6, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('107', 1, '1', 1, N'通讯', 'Bus.png', 'Bus_View', 7, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('108', 1, '107', 1, N'驱动', 'Driver.png', 'Driver_View', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('200', 1, '2', 2, N'生产厂家', 'DevTool.png', 'Productor_GrdPanel', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('201', 1, '2', 2, N'品牌', 'DevTool.png', 'Brand_GrdPanel', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('202', 1, '2', 2, N'供应商', 'DevTool.png', 'Supplier_GrdPanel', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('203', 1, '2', 2, N'代维公司', 'DevTool.png', 'SubCompany_GrdPanel', 3, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('300', 1, '3', 3, N'站点类型', 'Book.png', 'StaType_GrdPanel', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('301', 1, '3', 3, N'机房类型', 'Book.png', 'RoomType_GrdPanel', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('302', 1, '3', 3, N'设备类型', 'Book.png', 'DevType_GrdPanel', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('303', 1, '3', 3, N'设备子类', 'Book.png', 'SubDevType_GrdPanel', 3, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('304', 1, '3', 3, N'逻辑分类', 'Book.png', 'LogicType_GrdPanel', 5, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('305', 1, '3', 3, N'逻辑子类', 'Book.png', 'SubLogicType_GrdPanel', 6, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('306', 1, '3', 3, N'单位状态', 'Book.png', 'Unit_GrdPanel', 7, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('307', 1, '3', 3, N'枚举类型', 'Book.png', 'EnumMethod_GrdPanel', 9, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('308', 1, '3', 3, N'采集组群', 'Book.png', 'GroupForm', 10, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('401', 1, '4', 4, N'人员', 'Users.png', '', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('402', 1, '4', 4, N'角色', 'Role.png', 'Role_Panel', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('403', 1, '4', 4, N'账号', 'UID.png', 'User_Panel', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('404', 1, '4', 4, N'维护', 'Maintain.png', '', 3, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('500', 1, '5', 5, N'时段', 'Time.png', NULL, 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('501', 1, '5', 5, N'门卡', 'Card.png', 'Card_View', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('502', 1, '5', 5, N'控制器', 'accessControl.png', NULL, 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('600', 1, '6', 6, N'摄影机', 'Camera.png', 'Camera_View', 0, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10301', 1, '103', 1, N'UPS', 'DevType.png', 'UPS_Panel', 1, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10302', 1, '103', 1, N'变压器', 'DevType.png', 'Transformer_Panel', 2, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10303', 1, '103', 1, N'电池恒温箱', 'DevType.png', 'BattTempBox_Panel', 3, GETDATE(), NULL);
@@ -8951,23 +8958,56 @@ INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10327', 1, '103', 1, N'中央空调主机系统', 'DevType.png', 'AirCondHost_Panel', 27, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10328', 1, '103', 1, N'专用空调', 'DevType.png', 'SpecAirCond_Panel', 28, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10329', 1, '103', 1, N'自动电源切换柜', 'DevType.png', 'ElecSourCabi_Panel', 29, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('104', 1, '1', 1, N'模板', 'Protocol.png', 'Protocol_View', 4, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('105', 1, '3', 3, N'标准信号', 'Point.png', 'Point_View', 8, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('10500', 1, '105', 1, N'参数', 'SubPoint.png', 'SubPoint_View', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('106', 1, '308', 1, N'FSU', 'Fsu.png', 'FSU_Panel', 6, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('107', 1, '308', 1, N'总线', 'Bus.png', 'Bus_View', 7, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('108', 1, '107', 1, N'协议', 'Driver.png', 'Driver_View', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('2', 1, '0', 2, N'设备工具', 'Tools.png', '', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('200', 1, '2', 2, N'生产厂家', 'DevTool.png', 'Productor_GrdPanel', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('201', 1, '2', 2, N'品牌', 'DevTool.png', 'Brand_GrdPanel', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('202', 1, '2', 2, N'供应商', 'DevTool.png', 'Supplier_GrdPanel', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('203', 1, '2', 2, N'代维公司', 'DevTool.png', 'SubCompany_GrdPanel', 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('3', 1, '0', 3, N'标准字典', 'Books.png', '', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('300', 1, '3', 3, N'站点类型', 'Book.png', 'StaType_GrdPanel', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('301', 1, '3', 3, N'机房类型', 'Book.png', 'RoomType_GrdPanel', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('302', 1, '3', 3, N'设备类型', 'Book.png', 'DevType_GrdPanel', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('303', 1, '3', 3, N'设备子类', 'Book.png', 'SubDevType_GrdPanel', 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('304', 1, '3', 3, N'逻辑分类', 'Book.png', 'LogicType_GrdPanel', 5, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('305', 1, '3', 3, N'逻辑子类', 'Book.png', 'SubLogicType_GrdPanel', 6, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('306', 1, '3', 3, N'单位状态', 'Book.png', 'Unit_GrdPanel', 7, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('307', 1, '3', 3, N'枚举类型', 'Book.png', 'EnumMethod_GrdPanel', 9, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('308', 1, '1', 1, N'采集', 'Group.png', 'GroupForm', 8, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('309', 1, '1', 1, N'接口', 'Client.png', 'Client_View', 9, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('4', 1, '0', 4, N'系统管理', 'Sys.png', '', 5, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('401', 1, '4', 4, N'人员', 'Users.png', '', 0, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40101', 1, '401', 2, N'职位', 'Duty.png', 'Duty_GrdPanel', 0, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40102', 1, '401', 2, N'部门', 'Department.png', 'Department_GrdPanel', 1, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40103', 1, '401', 2, N'员工', 'User.png', 'Employee_Panel', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('402', 1, '4', 4, N'角色', 'Role.png', 'Role_Panel', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('403', 1, '4', 4, N'账号', 'UID.png', 'User_Panel', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('404', 1, '4', 4, N'维护', 'Maintain.png', '', 3, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40400', 1, '404', 4, N'升级', 'UpGrade.png', 'UpGrade_View', 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40401', 0, '404', 4, N'冗余', 'Redundancy.png', '', 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40402', 1, '404', 4, N'日志', 'UserLog.png', 'UserLog_Panel', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50001', 1, '500', 5, N'工作', 'workTime.png', NULL, 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50002', 1, '500', 5, N'星期', 'workTime.png', NULL, 1, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50003', 1, '500', 5, N'红外', 'workTime.png', NULL, 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50004', 1, '500', 5, N'节假日', 'workTime.png', NULL, 4, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50005', 1, '500', 5, N'周末', 'workTime.png', NULL, 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40401', 1, '404', 4, N'冗余', 'Redundancy.png', 'Redundancy_View', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40402', 1, '404', 4, N'日志', 'UserLog.png', 'UserLog_Panel', 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('40403', 1, '404', 4, N'替换', 'Replace.png', 'Replace_View', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('5', 1, '0', 5, N'门禁管理', 'Door.png', NULL, 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('500', 1, '5', 5, N'时段', 'Time.png', NULL, 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50001', 1, '500', 5, N'工作', 'workTime.png', 'WorkTime_View', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50002', 1, '500', 5, N'星期', 'workTime.png', 'WeekTime_View', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50003', 1, '500', 5, N'红外', 'workTime.png', 'InfraredTime_View', 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50004', 1, '500', 5, N'节假日', 'workTime.png', 'HolidayTime_View', 4, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50005', 1, '500', 5, N'周末', 'workTime.png', 'WeekEndTime_View', 3, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('501', 1, '5', 5, N'门卡', 'Card.png', 'Card_View', 1, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50100', 1, '501', 5, N'外协', 'OutEmployee.png', 'OutEmployee_View', 0, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50101', 1, '501', 5, N'发卡', 'bindCard.png', 'CardsInEmployee_View', 1, GETDATE(), NULL);
 INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50102', 1, '501', 5, N'授权', 'cardGrand.png', 'AuthorizationCard_View', 2, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50201', 1, '502', 5, N'授时', 'TimeGrand.png', NULL, 0, GETDATE(), NULL);
-INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50202', 1, '502', 5, N'授权', 'cardGrand.png', 'DoorAuthorization_View', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('502', 1, '5', 5, N'控制器', 'accessControl.png', NULL, 2, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50201', 1, '502', 5, N'授时', 'TimeGrand.png', 'DriversInTime_View', 0, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('50202', 1, '502', 5, N'授权', 'cardGrand.png', 'AuthorizationDriver_View', 1, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('6', 1, '0', 6, N'视频管理', 'Video.png', 'Video_View', 4, GETDATE(), NULL);
+INSERT INTO [dbo].[Sys_Menu]([ID],[Enabled],[ParentID],[Type],[Name],[NameImg],[Url],[Index],[CreateTime],[Desc]) VALUES('600', 1, '6', 6, N'摄影机', 'Camera.png', 'Camera_View', 0, GETDATE(), NULL);
 GO
 
 --■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■

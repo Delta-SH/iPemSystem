@@ -396,4 +396,24 @@
         /// </summary>
         Speech
     }
+
+    /// <summary>
+    /// FTP类型
+    /// </summary>
+    public enum EnmFtp {
+        /// <summary>
+        /// FTP主服务器
+        /// </summary>
+        Master
+    }
+
+    /// <summary>
+    /// FSU升级状态
+    /// </summary>
+    public enum EnmUpgradeStatus {
+        Ready,
+        Running,
+        Success,
+        Failure
+    }
 }

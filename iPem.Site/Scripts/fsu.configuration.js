@@ -558,6 +558,15 @@
                     fieldLabel: '存储参考时间',
                     allowBlank: false,
                     margin: '15 15 0 15'
+                },
+                {
+                    id: 'StorageRefTime',
+                    name: 'StorageRefTime',
+                    xtype: 'datetimepicker',
+                    fieldLabel: '存储参考时间',
+                    editable: false,
+                    allowBlank: false,
+                    margin: '15 15 0 15'
                 }
             ]
         }],
@@ -740,7 +749,7 @@
         Ext.Msg.confirm('确认对话框', '您确认要更新关联吗？', function (buttonId, text) {
             if (buttonId === 'yes') {
                 Ext.Ajax.request({
-                    url: '/Fsu/UpdateRelation',
+                    url: '/Account/UpdateFsuRelation',
                     method: 'POST',
                     mask: new Ext.LoadMask(currentLayout, { msg: '正在处理...' }),
                     success: function (response, options) {

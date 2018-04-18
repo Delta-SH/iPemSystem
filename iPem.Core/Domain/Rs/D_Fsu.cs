@@ -75,35 +75,5 @@ namespace iPem.Core.Domain.Rs {
         /// 所属厂家名称
         /// </summary>
         public string VendorName { get; set; }
-
-        /// <summary>
-        /// 用户名
-        /// </summary>
-        public string Uid { get; set; }
-
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public string Pwd { get; set; }
-
-        /// <summary>
-        /// FTP用户名
-        /// </summary>
-        public string FtpUid { get; set; }
-
-        /// <summary>
-        /// FTP密码
-        /// </summary>
-        public string FtpPwd { get; set; }
-
-        /// <summary>
-        /// FTP文件路径
-        /// </summary>
-        public string FtpFilePath { get; set; }
-
-        /// <summary>
-        /// FTP权限
-        /// </summary>
-        public int FtpAuthority { get; set; }
     }
 }
