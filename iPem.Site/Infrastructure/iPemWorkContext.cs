@@ -379,7 +379,7 @@ namespace iPem.Site.Infrastructure {
                 return _cachedAuths;
 
             var auth = _entitiesInRoleService.GetEntitiesInRole(this.Role().Id);
-            return _cachedAuths = new iAuth { Menus = new HashSet<int>(auth.Menus), Areas = new HashSet<string>(auth.Areas), Permissions = new HashSet<EnmPermission>(auth.Permissions) };
+            return _cachedAuths = new iAuth { Menus = new HashSet<int>(auth.Menus), Permissions = new HashSet<EnmPermission>(auth.Permissions), Authorizations = new HashSet<string>(auth.Authorizations) };
         }
 
         public DateTime GetLastNoticeTime() {
@@ -602,20 +602,61 @@ namespace iPem.Site.Infrastructure {
                 return _cachedAreas = _cacheManager.Get<List<SSHArea>>(cachedKey);
 
             _cachedAreas = new List<SSHArea>();
-            var auths = this.Authorizations().Areas;
+            var auths = this.Authorizations().Authorizations;
+
             if (auths.Count == 0) return _cachedAreas;
 
-            foreach (var _current in _areaService.GetAreas()) {
-                if (!auths.Contains(_current.Id)) continue;
-                _cachedAreas.Add(new SSHArea { Current = _current });
-            }
+            var roleType = this.Role().Type;
+            var allAreas = _areaService.GetAreas();
+            var parents = new List<A_Area>();
 
+            if (roleType == EnmSSH.Area) {
+                foreach (var area in allAreas) {
+                    if (!auths.Contains(area.Id)) continue;
+                    GetParents(allAreas, parents, area);
+                    _cachedAreas.Add(new SSHArea { Current = area });
+                }
+            } else if (roleType == EnmSSH.Station) {
+                var areaIds = new HashSet<string>(this.Stations().Select(s => s.Current.AreaId));
+                foreach (var area in allAreas) {
+                    if (!areaIds.Contains(area.Id)) continue;
+                    GetParents(allAreas, parents, area);
+                    _cachedAreas.Add(new SSHArea { Current = area });
+                }
+            } else if (roleType == EnmSSH.Room) {
+                var areaIds = new HashSet<string>(this.Rooms().Select(r => r.Current.AreaId));
+                foreach (var area in allAreas) {
+                    if (!areaIds.Contains(area.Id)) continue;
+                    GetParents(allAreas, parents, area);
+                    _cachedAreas.Add(new SSHArea { Current = area });
+
+                }
+            } else if (roleType == EnmSSH.Device) {
+                var areaIds = new HashSet<string>(this.Devices().Select(d => d.Current.AreaId));
+                foreach (var area in allAreas) {
+                    if (!areaIds.Contains(area.Id)) continue;
+                    GetParents(allAreas, parents, area);
+                    _cachedAreas.Add(new SSHArea { Current = area });
+                }
+            }
+            foreach (var parent in parents) {
+                _cachedAreas.Add(new SSHArea { Current = parent });
+            }
             foreach (var _current in _cachedAreas) {
                 _current.Initializer(_cachedAreas);
             }
 
             _cacheManager.Set(cachedKey, _cachedAreas);
             return _cachedAreas;
+        }
+
+        private void GetParents(List<A_Area> areas, List<A_Area> parents, A_Area area) {
+            var parent = areas.Find(a => a.Id == area.ParentId);
+            if (parent != null) {
+                GetParents(areas, parents, parent);
+                if (!parents.Contains(parent))
+                    parents.Add(parent);
+            }
         }
 
         public List<SSHStation> Stations() {
@@ -626,11 +667,36 @@ namespace iPem.Site.Infrastructure {
                 return _cachedStations;
 
             _cachedStations = new List<SSHStation>();
-            foreach (var _current in _stationService.GetStations()) {
-                if (!this.Authorizations().Areas.Contains(_current.AreaId)) continue;
-                _cachedStations.Add(new SSHStation { Current = _current });
-            }
+            var auths = this.Authorizations().Authorizations;
 
+            if (auths.Count == 0) return _cachedStations;
+
+            var roleType = this.Role().Type;
+            var allStations = _stationService.GetStations();
+
+            if (roleType == EnmSSH.Station) {
+                foreach (var station in allStations) {
+                    if (!auths.Contains(station.Id)) continue;
+                    _cachedStations.Add(new SSHStation { Current = station });
+                }
+            } else if (roleType == EnmSSH.Area) {
+                var stations = allStations.FindAll(s => auths.Contains(s.AreaId));
+                foreach (var station in stations) {
+                    _cachedStations.Add(new SSHStation { Current = station });
+                }
+            } else if (roleType == EnmSSH.Room) {
+                var stationIds = new HashSet<string>(this.Rooms().Select(r => r.Current.StationId));
+                foreach (var station in allStations) {
+                    if (!stationIds.Contains(station.Id)) continue;
+                    _cachedStations.Add(new SSHStation { Current = station });
+                }
+            } else if (roleType == EnmSSH.Device) {
+                var stationIds = new HashSet<string>(this.Devices().Select(d => d.Current.StationId));
+                foreach (var station in allStations) {
+                    if (!stationIds.Contains(station.Id)) continue;
+                    _cachedStations.Add(new SSHStation { Current = station });
+                }
+            }
             return _cachedStations;
         }
 
@@ -642,11 +708,36 @@ namespace iPem.Site.Infrastructure {
                 return _cachedRooms;
 
             _cachedRooms = new List<SSHRoom>();
-            foreach (var _current in _roomService.GetRooms()) {
-                if (!this.Authorizations().Areas.Contains(_current.AreaId)) continue;
-                _cachedRooms.Add(new SSHRoom { Current = _current });
-            }
+            var auths = this.Authorizations().Authorizations;
 
+            if (auths.Count == 0) return _cachedRooms;
+
+            var roleType = this.Role().Type;
+            var allRooms = _roomService.GetRooms();
+
+            if (roleType == EnmSSH.Room) {
+                foreach (var room in allRooms) {
+                    if (!auths.Contains(room.Id)) continue;
+                    _cachedRooms.Add(new SSHRoom { Current = room });
+                }
+            } else if (roleType == EnmSSH.Area) {
+                var rooms = allRooms.FindAll(r => auths.Contains(r.AreaId));
+                foreach (var room in rooms) {
+                    _cachedRooms.Add(new SSHRoom { Current = room });
+                }
+            } else if (roleType == EnmSSH.Station) {
+                var rooms = allRooms.FindAll(r => auths.Contains(r.StationId));
+                foreach (var room in rooms) {
+                    _cachedRooms.Add(new SSHRoom { Current = room });
+                }
+            } else if (roleType == EnmSSH.Device) {
+                var roomIds = new HashSet<string>(this.Devices().Select(d => d.Current.RoomId));
+                foreach (var room in allRooms) {
+                    if (roomIds.Contains(room.Id)) {
+                        _cachedRooms.Add(new SSHRoom { Current = room });
+                    }
+                }
+            }
             return _cachedRooms;
         }
 
@@ -658,11 +749,36 @@ namespace iPem.Site.Infrastructure {
                 return _cachedFsus;
 
             _cachedFsus = new List<SSHFsu>();
-            foreach (var _current in _fsuService.GetFsus()) {
-                if (!this.Authorizations().Areas.Contains(_current.AreaId)) continue;
-                _cachedFsus.Add(new SSHFsu { Current = _current });
-            }
+            var auths = this.Authorizations().Authorizations;
 
+            if (auths.Count == 0) return _cachedFsus;
+
+            var roleType = this.Role().Type;
+            var allFsus = _fsuService.GetFsus();
+
+            if (roleType == EnmSSH.Area) {
+                var fsus = allFsus.FindAll(f => auths.Contains(f.AreaId));
+                foreach (var fsu in fsus) {
+                    _cachedFsus.Add(new SSHFsu { Current = fsu });
+                }
+            } else if (roleType == EnmSSH.Station) {
+                var fsus = allFsus.FindAll(f => auths.Contains(f.StationId));
+                foreach (var fsu in fsus) {
+                    _cachedFsus.Add(new SSHFsu { Current = fsu });
+                }
+            } else if (roleType == EnmSSH.Room) {
+                var fsus = allFsus.FindAll(f => auths.Contains(f.RoomId));
+                foreach (var fsu in fsus) {
+                    _cachedFsus.Add(new SSHFsu { Current = fsu });
+                }
+            } else if (roleType == EnmSSH.Device) {
+                var fsuIds = new HashSet<string>(this.Devices().Select(d => d.Current.FsuId));
+                foreach (var fsu in allFsus) {
+                    if (fsuIds.Contains(fsu.Id)) {
+                        _cachedFsus.Add(new SSHFsu { Current = fsu });
+                    }
+                }
+            }
             return _cachedFsus;
         }
 
@@ -674,11 +790,34 @@ namespace iPem.Site.Infrastructure {
                 return _cachedDevices;
 
             _cachedDevices = new List<SSHDevice>();
-            foreach (var _current in _deviceService.GetDevices()) {
-                if (!this.Authorizations().Areas.Contains(_current.AreaId)) continue;
-                _cachedDevices.Add(new SSHDevice { Current = _current });
-            }
 
+            var auths = this.Authorizations().Authorizations;
+            if (auths.Count == 0) return _cachedDevices;
+
+            var roleType = this.Role().Type;
+            var allDevices = _deviceService.GetDevices();
+
+            if (roleType == EnmSSH.Device) {
+                foreach (var device in allDevices) {
+                    if (!auths.Contains(device.Id)) continue;
+                    _cachedDevices.Add(new SSHDevice { Current = device });
+                }
+            } else if (roleType == EnmSSH.Area) {
+                var devices = allDevices.FindAll(d => auths.Contains(d.AreaId));
+                foreach (var device in devices) {
+                    _cachedDevices.Add(new SSHDevice { Current = device });
+                }
+            } else if (roleType == EnmSSH.Station) {
+                var devices = allDevices.FindAll(d => auths.Contains(d.StationId));
+                foreach (var device in devices) {
+                    _cachedDevices.Add(new SSHDevice { Current = device });
+                }
+            } else if (roleType == EnmSSH.Room) {
+                var devices = allDevices.FindAll(d => auths.Contains(d.RoomId));
+                foreach (var device in devices) {
+                    _cachedDevices.Add(new SSHDevice { Current = device });
+                }
+            }
             return _cachedDevices;
         }
 
@@ -690,11 +829,34 @@ namespace iPem.Site.Infrastructure {
                 return _cachedCameras;
 
             _cachedCameras = new List<SSHCamera>();
-            foreach (var _current in _cameraService.GetCameras()) {
-                if (!this.Authorizations().Areas.Contains(_current.AreaId)) continue;
-                _cachedCameras.Add(new SSHCamera { Current = _current });
-            }
+            var auths = this.Authorizations().Authorizations;
 
+            if (auths.Count == 0) return _cachedCameras;
+
+            var roleType = this.Role().Type;
+            var allCameras = _cameraService.GetCameras();
+
+            if (roleType == EnmSSH.Area) {
+                var cameras = allCameras.FindAll(c => auths.Contains(c.AreaId));
+                foreach (var camera in cameras) {
+                    _cachedCameras.Add(new SSHCamera { Current = camera });
+                }
+            } else if (roleType == EnmSSH.Station) {
+                var cameras = allCameras.FindAll(c => auths.Contains(c.StationId));
+                foreach (var camera in cameras) {
+                    _cachedCameras.Add(new SSHCamera { Current = camera });
+                }
+            } else if (roleType == EnmSSH.Room) {
+                var cameras = allCameras.FindAll(c => auths.Contains(c.RoomId));
+                foreach (var camera in cameras) {
+                    _cachedCameras.Add(new SSHCamera { Current = camera });
+                }
+            } else if (roleType == EnmSSH.Device) {
+                var cameras = allCameras.FindAll(c => auths.Contains(c.DeviceId));
+                foreach (var camera in cameras) {
+                    _cachedCameras.Add(new SSHCamera { Current = camera });
+                }
+            }
             return _cachedCameras;
         }
 
@@ -745,8 +907,16 @@ namespace iPem.Site.Infrastructure {
 
             _cachedActAlarms = this.AllAlarms();
             if (_cachedActAlarms.Count > 0 && !this.Role().Id.Equals(U_Role.SuperId)) {
-                var keys = this.Authorizations().Areas;
-                _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.AreaId));
+                var keys = this.Authorizations().Authorizations;
+                var roleType = this.Role().Type;
+                if (roleType == EnmSSH.Area)
+                    _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.AreaId));
+                if (roleType == EnmSSH.Station)
+                    _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.StationId));
+                if (roleType == EnmSSH.Room)
+                    _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.RoomId));
+                if (roleType == EnmSSH.Device)
+                    _cachedActAlarms = _cachedActAlarms.FindAll(a => Common.IsSystemAlarm(a.Current.FsuId) || keys.Contains(a.Current.DeviceId));
             }
 
             return _cachedActAlarms;
@@ -999,7 +1169,27 @@ namespace iPem.Site.Infrastructure {
         }
 
         public List<S_Station> GetStationsWithPoints(IList<string> points) {
-            return _stationService.GetStationsWithPoints(points).FindAll(s => this.Authorizations().Areas.Contains(s.AreaId));
+            var stations = _stationService.GetStationsWithPoints(points);
+            if (this.Role().Id.Equals(U_Role.SuperId))
+                return stations;
+
+            var roleType = this.Role().Type;
+            var auths = this.Authorizations().Authorizations;
+            if (auths.Count == 0) return new List<S_Station>();
+
+            if (roleType == EnmSSH.Area)
+                stations = stations.FindAll(s => auths.Contains(s.AreaId));
+            if (roleType == EnmSSH.Station)
+                stations = stations.FindAll(s => auths.Contains(s.Id));
+            if (roleType == EnmSSH.Room) {
+                var stationIds = new HashSet<string>(this.Rooms().Select(r => r.Current.StationId));
+                stations = stations.FindAll(s => stationIds.Contains(s.Id));
+            }
+            if (roleType == EnmSSH.Device) {
+                var stationIds = new HashSet<string>(this.Devices().Select(d => d.Current.StationId));
+                stations = stations.FindAll(s => stationIds.Contains(s.Id));
+            }
+            return stations;
         }
 
         public List<AlmStore<A_AAlarm>> AlarmsToStore(List<A_AAlarm> alarms) {

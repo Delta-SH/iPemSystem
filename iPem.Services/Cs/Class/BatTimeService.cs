@@ -32,32 +32,20 @@ namespace iPem.Services.Cs {
 
         #region Methods
 
-        public List<V_BatTime> GetValuesInDevice(string id, DateTime start, DateTime end) {
-            return _repository.GetValuesInDevice(id, start, end);
-        }
-
-        public List<V_BatTime> GetValuesInPoint(string device, string point, DateTime start, DateTime end) {
-            return _repository.GetValuesInPoint(device, point, start, end);
-        }
-
         public List<V_BatTime> GetValues(DateTime start, DateTime end) {
             return _repository.GetValues(start, end);
         }
 
         public List<V_BatTime> GetValues(DateTime start, DateTime end, EnmBatStatus status) {
-            return this.GetValues(start, end).FindAll(v => v.Type == status);
+            return _repository.GetValues(start, end, status);
         }
 
         public List<V_BatTime> GetProcedures(DateTime start, DateTime end) {
             return _repository.GetProcedures(start, end);
         }
 
-        public IPagedList<V_BatTime> GetPagedValues(DateTime start, DateTime end, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<V_BatTime>(this.GetValues(start, end), pageIndex, pageSize);
-        }
-
-        public IPagedList<V_BatTime> GetPagedValues(DateTime start, DateTime end, EnmBatStatus status, int pageIndex = 0, int pageSize = int.MaxValue) {
-            return new PagedList<V_BatTime>(this.GetValues(start, end, status), pageIndex, pageSize);
+        public List<V_BatTime> GetProcedures(string device, DateTime start, DateTime end) {
+            return _repository.GetProcedures(device, start, end);
         }
 
         #endregion

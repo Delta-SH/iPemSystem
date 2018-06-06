@@ -66,3 +66,8 @@
     background-image: url("../themes/icons/junheng.png") !important;
     background-repeat: no-repeat;
 }
+
+.x-icon-cog {
+    background-image: url("../themes/icons/cog.png") !important;
+    background-repeat: no-repeat;
+}

@@ -12,6 +12,7 @@ using System.IO;
 using System.Reflection;
 using System.Web;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace iPem.Site.Infrastructure {
     public class Common {
@@ -313,6 +314,102 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetPeriodDisplay(EnmPDH period) {
+            switch (period) {
+                case EnmPDH.Year:
+                    return "按年统计";
+                case EnmPDH.Month:
+                    return "按月统计";
+                case EnmPDH.Week:
+                    return "按周统计";
+                case EnmPDH.Day:
+                    return "按日统计";
+                case EnmPDH.Hour:
+                    return "按时统计";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetEnergyDisplay(EnmFormula formula) {
+            switch (formula) {
+                case EnmFormula.KT:
+                    return "空调";
+                case EnmFormula.ZM:
+                    return "照明";
+                case EnmFormula.BG:
+                    return "办公";
+                case EnmFormula.DY:
+                    return "开关电源";
+                case EnmFormula.UPS:
+                    return "UPS";
+                case EnmFormula.IT:
+                    return "IT设备";
+                case EnmFormula.QT:
+                    return "其他";
+                case EnmFormula.TT:
+                    return "总计";
+                case EnmFormula.PUE:
+                    return "PUE";
+                case EnmFormula.WD:
+                    return "温度";
+                case EnmFormula.SD:
+                    return "湿度";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static string GetEnergyIconCls(EnmFormula formula) {
+            switch (formula) {
+                case EnmFormula.KT:
+                    return "ipems-icon-font-kongtiao";
+                case EnmFormula.ZM:
+                    return "ipems-icon-font-zhaoming";
+                case EnmFormula.BG:
+                    return "ipems-icon-font-computer";
+                case EnmFormula.DY:
+                    return "ipems-icon-font-dianyuan";
+                case EnmFormula.UPS:
+                    return "ipems-icon-font-ups";
+                case EnmFormula.IT:
+                    return "ipems-icon-font-vdevice";
+                case EnmFormula.QT:
+                    return "ipems-icon-font-nenghao";
+                case EnmFormula.TT:
+                    return "ipems-icon-font-jifang";
+                case EnmFormula.PUE:
+                    return "ipems-icon-font-zhishu";
+                default:
+                    return "ipems-icon-font-nenghao";
+            }
+        }
+
+        public static string GetEnergyColorCls(EnmFormula formula) {
+            switch (formula) {
+                case EnmFormula.KT:
+                    return "indicator-kt";
+                case EnmFormula.ZM:
+                    return "indicator-zm";
+                case EnmFormula.BG:
+                    return "indicator-bg";
+                case EnmFormula.DY:
+                    return "indicator-dy";
+                case EnmFormula.UPS:
+                    return "indicator-ups";
+                case EnmFormula.IT:
+                    return "indicator-it";
+                case EnmFormula.QT:
+                    return "indicator-qt";
+                case EnmFormula.TT:
+                    return "indicator-tt";
+                case EnmFormula.PUE:
+                    return "indicator-pue";
+                default:
+                    return "indicator-qt";
+            }
+        }
+
         public static string GetConfirmDisplay(EnmConfirm status) {
             switch (status) {
                 case EnmConfirm.Confirmed:
@@ -335,12 +432,29 @@ namespace iPem.Site.Infrastructure {
             }
         }
 
+        public static string GetVSignalCategoryDisplay(EnmVSignalCategory ext) {
+            switch (ext) {
+                case EnmVSignalCategory.Category01:
+                    return "普通虚拟信号";
+                case EnmVSignalCategory.Category02:
+                    return "能耗虚拟信号";
+                case EnmVSignalCategory.Category03:
+                    return "列头柜分路功率";
+                case EnmVSignalCategory.Category04:
+                    return "列头柜分路电流";
+                case EnmVSignalCategory.Category05:
+                    return "列头柜分路电量";
+                default:
+                    return "未定义";
+            }
+        }
+
         public static string GetComputeDisplay(EnmCompute compute) {
             switch (compute) {
-                case EnmCompute.Diff:
+                case EnmCompute.Kwh:
                     return "电表电度运算";
-                case EnmCompute.Avg:
-                    return "电压电流运算";
+                case EnmCompute.Power:
+                    return "功率时间运算";
                 default:
                     return "未定义";
             }
@@ -401,6 +515,7 @@ namespace iPem.Site.Infrastructure {
             switch (type) {
                 case EnmPoint.DI:
                 case EnmPoint.DO:
+                case EnmPoint.AL:
                     var result = string.Empty;
                     var units = (unit ?? string.Empty).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var u in units) {
@@ -668,6 +783,103 @@ namespace iPem.Site.Infrastructure {
                 default:
                     return "未审核";
             }
+        }
+
+        public static string GetSSHDisplay(EnmSSH type) {
+            switch (type) {
+                case EnmSSH.Root:
+                    return "全部";
+                case EnmSSH.Area:
+                    return "区域";
+                case EnmSSH.Station:
+                    return "站点";
+                case EnmSSH.Room:
+                    return "机房";
+                case EnmSSH.Fsu:
+                    return "FSU";
+                case EnmSSH.Device:
+                    return "设备";
+                case EnmSSH.Point:
+                    return "信号";
+                default:
+                    return "未定义";
+            }
+        }
+
+        public static bool ValidateFormula(string formula) {
+            if (string.IsNullOrWhiteSpace(formula)) return false;
+            formula = Regex.Replace(formula, @"\s+", "");
+
+            if (Regex.IsMatch(formula, @"[\+\-\*\/]{2,}")) return false;
+            if (Regex.IsMatch(formula, @"[\+\-\*\/]{2,}")) return false;
+
+            var stack = new Stack<char>();
+            foreach (var letter in formula) {
+                if (letter == '(') {
+                    stack.Push('(');
+                } else if (letter == ')') {
+                    if (stack.Count == 0) return false;
+                    stack.Pop();
+                }
+            }
+
+            if (stack.Count != 0) return false;
+            if (Regex.IsMatch(formula, @"\([\+\-\*\/]")) return false;
+            if (Regex.IsMatch(formula, @"[\+\-\*\/]\)")) return false;
+            if (Regex.IsMatch(formula, @"[^\+\-\*\/\(]\(")) return false;
+            if (Regex.IsMatch(formula, @"\)[^\+\-\*\/\)]")) return false;
+
+            formula = Regex.Replace(formula, @"\(|\)", "");
+            formula = Regex.Replace(formula, @"[\+\-\*\/]", CommonHelper.GlobalSeparator);
+            var variables = SplitKeys(formula);
+            foreach (var variable in variables) {
+                if (Regex.IsMatch(variable, @"^\d+(\.\d+)?$")) continue;
+                if (!Regex.IsMatch(variable, @"^@.+>>.+>>.+$")) return false;
+                var starts = Regex.Matches(variable, @"@");
+                if (starts.Count != 1) return false;
+                var separators = Regex.Matches(variable, @">>");
+                if (separators.Count != 2) return false;
+            }
+
+            return true;
+        }
+
+        public static List<string> GetFormulaVariables(string formula) {
+            var result = new List<string>();
+            if (string.IsNullOrWhiteSpace(formula)) 
+                return result;
+
+            formula = Regex.Replace(formula, @"\s+", "");
+            formula = Regex.Replace(formula, @"\(|\)", "");
+            formula = Regex.Replace(formula, @"[\+\-\*\/]", CommonHelper.GlobalSeparator);
+            var variables = SplitKeys(formula);
+            foreach (var variable in variables) {
+                if (Regex.IsMatch(variable, @"^\d+(\.\d+)?$")) continue;
+                if (result.Contains(variable)) continue;
+                result.Add(variable);
+            }
+
+            return result;
+        }
+
+        public static void CheckPeriods(DateTime start, DateTime end, EnmPDH period) {
+            if (end < start)
+                throw new ArgumentException("结束时间必须大于开始时间");
+
+            if (period == EnmPDH.Hour && end.Subtract(start).TotalDays > 1)
+                throw new ArgumentException("按时统计最大支持1天");
+
+            if (period == EnmPDH.Day && end.Subtract(start).TotalDays > 31)
+                throw new ArgumentException("按日统计最大支持1个月");
+
+            if (period == EnmPDH.Week && end.Subtract(start).TotalDays > 186)
+                throw new ArgumentException("按周统计最大支持6个月");
+
+            if (period == EnmPDH.Month && end.Subtract(start).TotalDays > 366)
+                throw new ArgumentException("按月统计最大支持12个月");
+
+            if (period == EnmPDH.Year && end.Subtract(start).TotalDays > 732)
+                throw new ArgumentException("按月统计最大支持2年");
         }
     }
 }

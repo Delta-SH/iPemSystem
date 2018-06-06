@@ -110,6 +110,11 @@ namespace iPem.Site.Controllers {
         #region Actions
 
         public ActionResult Login(string returnUrl) {
+            Session.RemoveAll();
+            Response.Cookies.Clear();
+            Request.Cookies.Clear();
+            FormsAuthentication.SignOut();
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -296,6 +301,7 @@ namespace iPem.Site.Controllers {
                             index = start + i + 1,
                             id = roles[i].Id,
                             name = roles[i].Name,
+                            type = roles[i].Type.ToString(),
                             comment = roles[i].Comment,
                             enabled = roles[i].Enabled
                         });
@@ -315,7 +321,8 @@ namespace iPem.Site.Controllers {
                 success = true,
                 message = "200 Ok",
                 total = 0,
-                data = new RoleModel { index = 1, id = Guid.NewGuid().ToString(), name = "", comment = "", enabled = true, menus = new string[] { }, areas = new string[] { }, permissions = new string[] { } }
+                data = new RoleModel { index = 1, id = Guid.NewGuid().ToString(), name = "", comment = "", enabled = true, menus = new string[] { }, permissions = new string[] { }, authorizations = new string[] { } }
+
             };
 
             try {
@@ -331,15 +338,29 @@ namespace iPem.Site.Controllers {
                 var role = _roleService.GetRoleById(id);
                 if (role == null) throw new iPemException("未找到数据对象");
 
+                var values = new RoleModel() { };
+                if (!string.IsNullOrWhiteSpace(role.ValuesJson))
+                    values = JsonConvert.DeserializeObject<RoleModel>(role.ValuesJson);
+
                 var auth = _entitiesInRoleService.GetEntitiesInRole(role.Id);
                 data.data.id = role.Id;
                 data.data.name = role.Name;
+                data.data.type = role.Type.ToString();
                 data.data.comment = role.Comment;
                 data.data.enabled = role.Enabled;
                 data.data.menus = auth.Menus.Select(m => m.ToString()).ToArray();
-                data.data.areas = auth.Areas.ToArray();
                 data.data.permissions = auth.Permissions.Select(o => ((int)o).ToString()).ToArray();
+                data.data.authorizations = auth.Authorizations.ToArray();
+                data.data.sms = (role.Config & (int)EnmRoleConfig.SMS) > 0 ? true : false;
+                data.data.voice = (role.Config & (int)EnmRoleConfig.Voice) > 0 ? true : false;
+                data.data.SMSLevels = values.SMSLevels;
+                data.data.SMSDevices = values.SMSDevices;
+                data.data.SMSSignals = values.SMSSignals;
+                data.data.voiceLevels = values.voiceLevels;
+                data.data.voiceDevices = values.voiceDevices;
+                data.data.voiceSignals = values.voiceSignals;
                 return Json(data, JsonRequestBehavior.AllowGet);
+
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, _workContext.User().Id, exc.Message, exc);
                 data.success = false; data.message = exc.Message;
@@ -420,74 +441,6 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAllAreas() {
-            var data = new AjaxDataModel<List<TreeModel>> {
-                success = false,
-                message = "无数据",
-                total = 0,
-                data = new List<TreeModel>()
-            };
-
-            try {
-                var areas = _workContext.AllAreas();
-                if (areas.Count > 0) {
-                    var roots = areas.FindAll(m => !m.HasParents);
-                    if (roots.Count > 0) {
-                        data.success = true;
-                        data.message = "200 Ok";
-                        data.total = areas.Count;
-                        for (var i = 0; i < roots.Count; i++) {
-                            var current = roots[i];
-                            var root = new TreeModel {
-                                id = current.Current.Id,
-                                text = current.Current.Name,
-                                selected = false,
-                                icon = Icons.Diqiu,
-                                expanded = false,
-                                leaf = false
-                            };
-
-                            AreasRecursion(current, root);
-                            data.data.Add(root);
-                        }
-                    }
-                }
-            } catch (Exception exc) {
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return new JsonNetResult {
-                Data = data,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            };
-        }
-
-        private void AreasRecursion(SSHArea parent, TreeModel node) {
-            if (parent.HasChildren) {
-                node.data = new List<TreeModel>();
-                for (var i = 0; i < parent.ChildRoot.Count; i++) {
-                    var current = parent.ChildRoot[i];
-                    var child = new TreeModel {
-                        id = current.Current.Id,
-                        text = current.Current.Name,
-                        selected = false,
-                        icon = Icons.Diqiu,
-                        expanded = false,
-                        leaf = false
-                    };
-
-                    AreasRecursion(current, child);
-                    node.data.Add(child);
-                }
-            } else {
-                node.leaf = true;
-                node.icon = Icons.Dingwei;
-            }
-        }
-
-        [AjaxAuthorize]
         public JsonResult GetAllPermissions() {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
@@ -525,36 +478,216 @@ namespace iPem.Site.Controllers {
             };
         }
 
+        [AjaxAuthorize]
+        public JsonResult GetAllAuthorizations(EnmSSH type) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = false,
+                message = "无数据",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                var areas = _workContext.AllAreas();
+                if (areas.Count > 0) {
+                    var roots = areas.FindAll(m => !m.HasParents);
+                    if (roots.Count > 0) {
+                        for (var i = 0; i < roots.Count; i++) {
+                            var current = roots[i];
+                            var root = new TreeModel {
+                                id = current.Current.Id,
+                                text = current.Current.Name,
+                                selected = false,
+                                icon = Icons.Diqiu,
+                                expanded = false,
+                                leaf = false
+                            };
+
+                            GetAllAreas(current, root, type);
+                            data.data.Add(root);
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = areas.Count;
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult {
+                Data = data,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                DefaultValueHandling = DefaultValueHandling.Ignore
+            };
+        }
+
+        private void GetAllAreas(SSHArea parent, TreeModel node, EnmSSH type) {
+            if (parent.HasChildren) {
+                node.data = new List<TreeModel>();
+                for (var i = 0; i < parent.ChildRoot.Count; i++) {
+                    var current = parent.ChildRoot[i];
+                    var child = new TreeModel {
+                        id = current.Current.Id,
+                        text = current.Current.Name,
+                        selected = false,
+                        icon = Icons.Diqiu,
+                        expanded = false,
+                        leaf = false
+                    };
+                    GetAllAreas(current, child, type);
+                    node.data.Add(child);
+                }
+            } else {
+                if (type == EnmSSH.Area) {
+                    node.leaf = true;
+                } else {
+                    GetAllStations(parent, node, type);
+                }
+            }
+        }
+
+        private void GetAllStations(SSHArea area, TreeModel node, EnmSSH type) {
+            if (area.Stations.Count > 0) {
+                var stations = _workContext.Stations().FindAll(s => s.Current.AreaId.Equals(area.Current.Id));
+                node.data = new List<TreeModel>();
+                for (int i = 0; i < stations.Count; i++) {
+                    var current = stations[i];
+                    var child = new TreeModel {
+                        id = current.Current.Id,
+                        text = current.Current.Name,
+                        selected = false,
+                        icon = Icons.Juzhan,
+                        expanded = false,
+                        leaf = false
+                    };
+                    if (type == EnmSSH.Station) {
+                        child.leaf = true;
+                        node.data.Add(child);
+                    } else {
+                        GetAllRooms(current, child, type);
+                        node.data.Add(child);
+                    }
+                }
+            } else {
+                node.leaf = true;
+            }
+        }
+
+        private void GetAllRooms(SSHStation station, TreeModel node, EnmSSH type) {
+            if (station.Rooms.Count > 0) {
+                var rooms = _workContext.Rooms().FindAll(r => r.Current.StationId.Equals(station.Current.Id));
+                node.data = new List<TreeModel>();
+                for (int i = 0; i < rooms.Count; i++) {
+                    var current = rooms[i];
+                    var child = new TreeModel {
+                        id = current.Current.Id,
+                        text = current.Current.Name,
+                        selected = false,
+                        icon = Icons.Jifang,
+                        expanded = false,
+                        leaf = false
+                    };
+                    if (type == EnmSSH.Room) {
+                        child.leaf = true;
+                        node.data.Add(child);
+                    } else {
+                        GetAllDevices(current, child, type);
+                        node.data.Add(child);
+                    }
+                }
+            } else {
+                node.leaf = true;
+            }
+        }
+
+        private void GetAllDevices(SSHRoom room, TreeModel node, EnmSSH type) {
+            if (room.Devices.Count > 0) {
+                var devices = _workContext.Devices().FindAll(d => d.Current.RoomId.Equals(room.Current.Id));
+                node.data = new List<TreeModel>();
+                for (int i = 0; i < devices.Count; i++) {
+                    var current = devices[i];
+                    var child = new TreeModel {
+                        id = current.Current.Id,
+                        text = current.Current.Name,
+                        selected = false,
+                        icon = Icons.Device,
+                        expanded = false,
+                        leaf = true
+                    };
+                    node.data.Add(child);
+                }
+            } else {
+                node.leaf = true;
+            }
+        }
+
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult SaveRole(RoleModel role, int action) {
+        public JsonResult SaveRole(RoleModel role, RoleValues values, int action) {
             try {
                 if (role == null) throw new ArgumentException("role");
 
                 if (role.menus == null || role.menus.Length == 0)
                     throw new iPemException("尚未选择菜单权限");
 
-                if (role.areas == null || role.areas.Length == 0)
-                    throw new iPemException("尚未选择区域权限");
+                if (role.authorizations == null || role.authorizations.Length == 0) {
+                    if (EnmSSH.Area.Equals(role.type))
+                        throw new iPemException("尚未选择区域权限");
+                    if (EnmSSH.Station.Equals(role.type))
+                        throw new iPemException("尚未选择站点权限");
+                    if (EnmSSH.Room.Equals(role.type))
+                        throw new iPemException("尚未选择机房权限");
+                    if (EnmSSH.Device.Equals(role.type))
+                        throw new iPemException("尚未选择设备权限");
+                }
 
                 var auth = new U_EntitiesInRole {
                     RoleId = role.id,
+                    Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type),
                     Menus = role.menus.Select(i => int.Parse(i)).ToList(),
-                    Areas = role.areas.ToList(),
-                    Stations = new List<string>(),
-                    Rooms = new List<string>(),
                     Permissions = role.permissions != null && role.permissions.Length > 0 ? role.permissions.Select(o => (EnmPermission)(int.Parse(o))).ToList() : new List<EnmPermission>()
                 };
 
+                if (EnmSSH.Area.Equals(role.type)) {
+                    auth.Authorizations = role.authorizations.ToList();
+                }
+                if (EnmSSH.Station.Equals(role.type)) {
+                    var ids = _workContext.Stations().Select(d => d.Current.Id);
+                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
+                    auth.Authorizations = nodes;
+                }
+                if (EnmSSH.Room.Equals(role.type)) {
+                    var ids = _workContext.Rooms().Select(d => d.Current.Id);
+                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
+                    auth.Authorizations = nodes;
+                }
+                if (EnmSSH.Device.Equals(role.type)) {
+                    var ids = _workContext.Devices().Select(d => d.Current.Id);
+                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
+                    auth.Authorizations = nodes;
+                }
+
+                var sms = role.sms == true ? (int)EnmRoleConfig.SMS : 0;
+                var voice = role.voice == true ? (int)EnmRoleConfig.Voice : 0;
+
                 if (action == (int)EnmAction.Add) {
-                    var existed = _roleService.GetRoleByName(role.name);
+                    var existed = _roleService.GetRoleById(role.id);
+                    if (existed != null) role.id = Guid.NewGuid().ToString();
+                    auth.RoleId = role.id;
+
+                    existed = _roleService.GetRoleByName(role.name);
                     if (existed != null) throw new iPemException("角色已存在");
 
                     var newRole = new U_Role {
                         Id = role.id,
                         Name = role.name,
+                        Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type),
                         Comment = role.comment,
-                        Enabled = role.enabled
+                        Enabled = role.enabled,
+                        Config = sms + voice,
+                        ValuesJson = JsonConvert.SerializeObject(values)
                     };
 
                     _roleService.Add(newRole);
@@ -565,10 +698,12 @@ namespace iPem.Site.Controllers {
                     var existed = _roleService.GetRoleByName(role.name);
                     if (existed == null) throw new iPemException("角色不存在");
 
-                    //existedRole.Id = new Guid(role.id);
                     existed.Name = role.name;
+                    existed.Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type);
                     existed.Comment = role.comment;
                     existed.Enabled = role.enabled;
+                    existed.Config = sms + voice;
+                    existed.ValuesJson = JsonConvert.SerializeObject(values);
 
                     _roleService.Update(existed);
                     _entitiesInRoleService.Remove(existed.Id);
@@ -620,8 +755,11 @@ namespace iPem.Site.Controllers {
                         index = i + 1,
                         id = roles[i].Id,
                         name = roles[i].Name,
+                        type = Common.GetSSHDisplay(roles[i].Type),
                         comment = roles[i].Comment,
-                        enabled = true
+                        enabled = true,
+                        sms = (roles[i].Config & (int)EnmRoleConfig.SMS) > 0 ? true : false,
+                        voice = (roles[i].Config & (int)EnmRoleConfig.Voice) > 0 ? true : false
                     });
                 }
 
@@ -814,7 +952,10 @@ namespace iPem.Site.Controllers {
                 if (user == null) throw new ArgumentException("user");
 
                 if (action == (int)EnmAction.Add) {
-                    var existed = _userService.GetUserByName(user.uid);
+                    var existed = _userService.GetUserById(user.id);
+                    if (existed != null) user.id = Guid.NewGuid().ToString();
+
+                    existed = _userService.GetUserByName(user.uid);
                     if (existed != null) throw new iPemException("用户已存在");
 
                     var newUser = new U_User {
@@ -839,20 +980,20 @@ namespace iPem.Site.Controllers {
                     _webLogger.Information(EnmEventType.Other, string.Format("新增用户[{0}]", newUser.Uid), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 } else if (action == (int)EnmAction.Edit) {
-                    var existedUser = _userService.GetUserByName(user.uid);
-                    if (existedUser == null) throw new iPemException("用户不存在");
+                    var existed = _userService.GetUserByName(user.uid);
+                    if (existed == null) throw new iPemException("用户不存在");
 
-                    existedUser.RoleId = user.roleId;
-                    existedUser.LimitedDate = DateTime.Parse(user.limited);
-                    existedUser.FailedPasswordAttemptCount = 0;
-                    existedUser.IsLockedOut = user.isLockedOut;
-                    if (user.isLockedOut) existedUser.LastLockoutDate = DateTime.Now;
-                    existedUser.Comment = user.comment;
-                    existedUser.EmployeeId = user.empId;
-                    existedUser.Enabled = user.enabled;
+                    existed.RoleId = user.roleId;
+                    existed.LimitedDate = DateTime.Parse(user.limited);
+                    existed.FailedPasswordAttemptCount = 0;
+                    existed.IsLockedOut = user.isLockedOut;
+                    if (user.isLockedOut) existed.LastLockoutDate = DateTime.Now;
+                    existed.Comment = user.comment;
+                    existed.EmployeeId = user.empId;
+                    existed.Enabled = user.enabled;
 
-                    _userService.Update(existedUser);
-                    _webLogger.Information(EnmEventType.Other, string.Format("更新用户[{0}]", existedUser.Uid), _workContext.User().Id, null);
+                    _userService.Update(existed);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新用户[{0}]", existed.Uid), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
                 }
 
@@ -1524,7 +1665,13 @@ namespace iPem.Site.Controllers {
                     whlHuLue = 0,
                     jslGuiDing = 0,
                     jslHuLue = 0,
-                    jslQueRen = 0
+                    jslQueRen = 0,
+                    indicator01 = (int)EnmFormula.KT,
+                    indicator02 = (int)EnmFormula.KT,
+                    indicator03 = (int)EnmFormula.KT,
+                    indicator04 = (int)EnmFormula.KT,
+                    indicator05 = (int)EnmFormula.KT,
+                    indicator = (int)EnmFormula.TT
                 }
             };
 
@@ -1562,315 +1709,11 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetFormula(string current) {
-            var data = new AjaxDataModel<FormulaModel> {
-                success = true,
-                message = "200 OK",
-                total = 0,
-                data = new FormulaModel()
-            };
-
-            try {
-                var keys = Common.SplitKeys(current);
-                if (keys.Length == 2) {
-                    var type = int.Parse(keys[0]);
-                    var id = keys[1];
-                    var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                    if (nodeType == EnmSSH.Station || nodeType == EnmSSH.Room) {
-                        var formulas = _formulaService.GetFormulas(id, nodeType);
-                        foreach (var formula in formulas) {
-                            switch (formula.FormulaType) {
-                                case EnmFormula.KT:
-                                    data.data.ktFormulas = formula.FormulaText;
-                                    data.data.ktCompute = (int)formula.ComputeType;
-                                    data.data.ktRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.ZM:
-                                    data.data.zmFormulas = formula.FormulaText;
-                                    data.data.zmCompute = (int)formula.ComputeType;
-                                    data.data.zmRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.BG:
-                                    data.data.bgFormulas = formula.FormulaText;
-                                    data.data.bgCompute = (int)formula.ComputeType;
-                                    data.data.bgRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.SB:
-                                    data.data.sbFormulas = formula.FormulaText;
-                                    data.data.sbCompute = (int)formula.ComputeType;
-                                    data.data.sbRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.KGDY:
-                                    data.data.kgdyFormulas = formula.FormulaText;
-                                    data.data.kgdyCompute = (int)formula.ComputeType;
-                                    data.data.kgdyRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.UPS:
-                                    data.data.upsFormulas = formula.FormulaText;
-                                    data.data.upsCompute = (int)formula.ComputeType;
-                                    data.data.upsRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.QT:
-                                    data.data.qtFormulas = formula.FormulaText;
-                                    data.data.qtCompute = (int)formula.ComputeType;
-                                    data.data.qtRemarks = formula.Comment;
-                                    break;
-                                case EnmFormula.ZL:
-                                    data.data.zlFormulas = formula.FormulaText;
-                                    data.data.zlCompute = (int)formula.ComputeType;
-                                    data.data.zlRemarks = formula.Comment;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                return Json(data, JsonRequestBehavior.AllowGet);
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                data.success = false; data.message = exc.Message;
-                return Json(data, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        /**
-         *TODO:判断变量中设备和信号的有效性
-         *在保存公式之前，需要判断每个公式中变量里的设备、信号是否存在
-         */
-        [HttpPost]
-        [AjaxAuthorize]
-        public JsonResult SaveFormula(string current, FormulaModel formula) {
-            try {
-                var keys = Common.SplitKeys(current);
-                if (keys.Length != 2)
-                    throw new ArgumentException("current");
-
-                if (formula == null)
-                    throw new ArgumentException("formula");
-
-                var type = int.Parse(keys[0]);
-                var id = keys[1];
-                var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                if (nodeType != EnmSSH.Station && nodeType != EnmSSH.Room)
-                    throw new ArgumentException("能耗公式仅支持站点、机房。");
-
-                var formulas = new List<M_Formula>();
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KT, ComputeType = (EnmCompute)formula.ktCompute, FormulaText = formula.ktFormulas, Comment = formula.ktRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZM, ComputeType = (EnmCompute)formula.zmCompute, FormulaText = formula.zmFormulas, Comment = formula.zmRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.BG, ComputeType = (EnmCompute)formula.bgCompute, FormulaText = formula.bgFormulas, Comment = formula.bgRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.SB, ComputeType = (EnmCompute)formula.sbCompute, FormulaText = formula.sbFormulas, Comment = formula.sbRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.KGDY, ComputeType = (EnmCompute)formula.kgdyCompute, FormulaText = formula.kgdyFormulas, Comment = formula.kgdyRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.UPS, ComputeType = (EnmCompute)formula.upsCompute, FormulaText = formula.upsFormulas, Comment = formula.upsRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.QT, ComputeType = (EnmCompute)formula.qtCompute, FormulaText = formula.qtFormulas, Comment = formula.qtRemarks, CreatedTime = DateTime.Now });
-                formulas.Add(new M_Formula { Id = id, Type = nodeType, FormulaType = EnmFormula.ZL, ComputeType = (EnmCompute)formula.zlCompute, FormulaText = formula.zlFormulas, Comment = formula.zlRemarks, CreatedTime = DateTime.Now });
-                _formulaService.Save(formulas.ToArray());
-                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
-                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        /**
-         *TODO:判断变量中设备和信号的有效性
-         *在保存公式之前，需要判断每个公式中变量里的设备、信号是否存在
-         */
-        [AjaxAuthorize]
-        public JsonResult PasteFormula(string source, string target) {
-            try {
-                var srcKeys = Common.SplitKeys(source);
-                if (srcKeys.Length != 2)
-                    throw new ArgumentException("source");
-
-                var tgtKeys = Common.SplitKeys(target);
-                if (tgtKeys.Length != 2)
-                    throw new ArgumentException("target");
-
-                var srcType = int.Parse(srcKeys[0]);
-                var srcId = srcKeys[1];
-                var srcEnmType = Enum.IsDefined(typeof(EnmSSH), srcType) ? (EnmSSH)srcType : EnmSSH.Area;
-                if (srcEnmType != EnmSSH.Station && srcEnmType != EnmSSH.Room) throw new ArgumentException("能耗对象仅支持站点、机房");
-
-                var tgtType = int.Parse(tgtKeys[0]);
-                var tgtId = tgtKeys[1];
-                var tgtEnmType = Enum.IsDefined(typeof(EnmSSH), tgtType) ? (EnmSSH)tgtType : EnmSSH.Area;
-                if (tgtEnmType != EnmSSH.Station && tgtEnmType != EnmSSH.Room) throw new ArgumentException("能耗对象仅支持站点、机房");
-                if (srcEnmType != tgtEnmType) throw new ArgumentException("能耗对象类型不匹配");
-
-                var formulas = _formulaService.GetFormulas(srcId, srcEnmType);
-                if (formulas.Count == 0) throw new ArgumentException("复制的能耗对象未配置公式");
-
-                for (var i = 0; i < formulas.Count; i++) {
-                    formulas[i].Comment = string.Format("批量复制({0})", formulas[i].Id);
-                    formulas[i].CreatedTime = DateTime.Now;
-                    formulas[i].Id = tgtId;
-                }
-
-                _formulaService.Save(formulas.ToArray());
-                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
-                return Json(new AjaxResultModel { success = true, code = 200, message = "粘贴成功" });
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult GetFormulaDevices(string node, string[] devTypes) {
-            var data = new AjaxDataModel<List<TreeModel>> {
-                success = true,
-                message = "No data",
-                total = 0,
-                data = new List<TreeModel>()
-            };
-
-            try {
-                if (!string.IsNullOrWhiteSpace(node)) {
-                    var keys = Common.SplitKeys(node);
-                    if (keys.Length == 2) {
-                        var type = int.Parse(keys[0]);
-                        var id = keys[1];
-                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
-                        if (nodeType == EnmSSH.Area) {
-                            #region area
-                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
-                            if (current != null) {
-                                if (current.HasChildren) {
-                                    data.success = true;
-                                    data.message = "200 Ok";
-                                    data.total = current.ChildRoot.Count;
-                                    for (var i = 0; i < current.ChildRoot.Count; i++) {
-                                        var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Area, current.ChildRoot[i].Current.Id),
-                                            text = current.ChildRoot[i].Current.Name,
-                                            icon = Icons.Diqiu,
-                                            expanded = false,
-                                            leaf = false
-                                        };
-
-                                        data.data.Add(root);
-                                    }
-                                } else {
-                                    if (current.Stations.Count > 0) {
-                                        data.success = true;
-                                        data.message = "200 Ok";
-                                        data.total = current.Stations.Count;
-                                        for (var i = 0; i < current.Stations.Count; i++) {
-                                            var root = new TreeModel {
-                                                id = Common.JoinKeys((int)EnmSSH.Station, current.Stations[i].Id),
-                                                text = current.Stations[i].Name,
-                                                icon = Icons.Juzhan,
-                                                expanded = false,
-                                                leaf = false
-                                            };
-
-                                            data.data.Add(root);
-                                        }
-                                    }
-                                }
-                            }
-                            #endregion
-                        } else if (nodeType == EnmSSH.Station) {
-                            #region station
-                            var current = _workContext.Stations().Find(s => s.Current.Id == id);
-                            if (current != null) {
-                                if (current.Rooms.Count > 0) {
-                                    data.success = true;
-                                    data.message = "200 Ok";
-                                    data.total = current.Rooms.Count;
-                                    for (var i = 0; i < current.Rooms.Count; i++) {
-                                        var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Room, current.Rooms[i].Id),
-                                            text = current.Rooms[i].Name,
-                                            icon = Icons.Room,
-                                            expanded = false,
-                                            leaf = false
-                                        };
-
-                                        data.data.Add(root);
-                                    }
-                                }
-                            }
-                            #endregion
-                        } else if (nodeType == EnmSSH.Room) {
-                            #region room
-                            var current = _workContext.Rooms().Find(d => d.Current.Id == id);
-                            if (current != null) {
-                                if (current.Devices.Count > 0) {
-                                    data.success = true;
-                                    data.message = "200 Ok";
-                                    data.total = current.Devices.Count;
-                                    for (var i = 0; i < current.Devices.Count; i++) {
-                                        if (devTypes != null && devTypes.Length > 0 && !devTypes.Contains(current.Devices[i].Type.Id))
-                                            continue;
-
-                                        var root = new TreeModel {
-                                            id = Common.JoinKeys((int)EnmSSH.Device, current.Devices[i].Id),
-                                            text = current.Devices[i].Name,
-                                            icon = Icons.Device,
-                                            expanded = false,
-                                            leaf = true
-                                        };
-
-                                        data.data.Add(root);
-                                    }
-                                }
-                            }
-                            #endregion
-                        }
-                    }
-                }
-            } catch (Exception exc) {
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [AjaxAuthorize]
-        public JsonResult GetFormulaPoints(int start, int limit, string parent) {
-            var data = new AjaxDataModel<List<Kv<int, string>>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<Kv<int, string>>()
-            };
-
-            try {
-                if (!string.IsNullOrWhiteSpace(parent)) {
-                    var nodeKey = Common.ParseNode(parent);
-                    if (nodeKey.Key == EnmSSH.Device) {
-                        var current = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
-                        if (current != null) {
-                            var signals = current.AI;
-                            for (var i = 0; i < signals.Count; i++) {
-                                data.data.Add(new Kv<int, string> {
-                                    Key = i + 1,
-                                    Value = string.Format("@{0}>>{1}>>{2}", current.Current.RoomName, current.Current.Name, signals[i].PointName)
-                                });
-                            }
-                        }
-                    }
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [AjaxAuthorize]
         public JsonResult ClearCache() {
             try {
+                this.UpdateFsuRelation();
                 this.ClearGlobalCache();
                 this.ClearUserCache();
-                this.UpdateFsuRelation();
                 return Json(new AjaxResultModel { success = true, code = 200, message = "所有缓存清除成功" }, JsonRequestBehavior.AllowGet);
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);

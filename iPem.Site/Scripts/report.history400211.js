@@ -1,7 +1,10 @@
 ﻿var lineChart = null,
     lineOption = {
         tooltip: {
-            trigger: 'axis',
+            trigger: 'item',
+            axisPointer: {
+                type: 'cross'
+            },
             formatter: function (params) {
                 if (lineOption.series.length > 0) {
                     if (!Ext.isArray(params))
@@ -18,6 +21,12 @@
                 return '无数据';
             }
         },
+        legend: {
+            type: 'scroll',
+            left: 'center',
+            top: 48,
+            data: []
+        },
         title: {
             text: '蓄电池组放电曲线',
             subtext: '2017-01-01 00:00:00 ~ 2017-12-31 23:59:59',
@@ -27,12 +36,25 @@
             }
         },
         grid: {
-            top: 45,
+            top: 80,
             left: 10,
             right: 15,
-            bottom: 10,
+            bottom: 45,
             containLabel: true
         },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'slider',
+                show: true,
+                start: 0,
+                end: 100
+            }
+        ],
         xAxis: [{
             name: '放电时间(min)',
             nameLocation: 'middle',
@@ -45,7 +67,9 @@
             nameLocation: 'middle',
             nameGap: -18,
             type: 'value',
-
+            min:function (value) {
+                return (value.min - (value.max - value.min) / 3).toFixed(2);
+            }
         }],
         series: []
     };
@@ -55,11 +79,11 @@ Ext.define('ReportModel', {
     fields: [
         { name: 'index', type: 'int' },
         { name: 'area', type: 'string' },
-        { name: 'station', type: 'string' },
+        { name: 'id', type: 'string' },
+        { name: 'name', type: 'string' },
         { name: 'type', type: 'string' },
         { name: 'count', type: 'int' },
-        { name: 'interval', type: 'string' },
-        { name: 'stationid', type: 'string' }
+        { name: 'interval', type: 'string' }
     ],
     idProperty: 'index'
 });
@@ -71,11 +95,12 @@ Ext.define('DetailModel', {
         { name: 'area', type: 'string' },
         { name: 'station', type: 'string' },
         { name: 'room', type: 'string' },
-        { name: 'device', type: 'string' },
+        { name: 'id', type: 'string' },
+        { name: 'pack', type: 'int' },
+        { name: 'name', type: 'string' },
         { name: 'start', type: 'string' },
         { name: 'end', type: 'string' },
         { name: 'interval', type: 'string' },
-        { name: 'deviceid', type: 'string' },
         { name: 'proctime', type: 'string' }
     ],
     idProperty: 'index'
@@ -160,8 +185,8 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         width: 150,
         sortable: true
     }, {
-        text: '所属站点',
-        dataIndex: 'station',
+        text: '站点名称',
+        dataIndex: 'name',
         align: 'left',
         width: 150,
         sortable: true
@@ -177,7 +202,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         width: 150,
         align: 'center',
         renderer: function (value, p, record) {
-            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', record.get('stationid'), value);
+            return Ext.String.format('<a data="{0}" class="grid-link" href="javascript:void(0);">{1}</a>', record.get('id'), value);
         }
     }, {
         text: '放电时长',
@@ -205,11 +230,12 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         id: 'rangePicker',
                         xtype: 'AreaPicker',
                         fieldLabel: '查询范围',
-                        width: 220
+                        width: 280
                     },
                     {
                         id: 'station-type-multicombo',
                         xtype: 'StationTypeMultiCombo',
+                        width: 280,
                         emptyText: '默认全部'
                     },
                     {
@@ -231,7 +257,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'datefield',
                         fieldLabel: '开始时间',
                         labelWidth: 60,
-                        width: 220,
+                        width: 280,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                         editable: false,
                         allowBlank: false
@@ -241,7 +267,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
                         xtype: 'datefield',
                         fieldLabel: '结束时间',
                         labelWidth: 60,
-                        width: 220,
+                        width: 280,
                         value: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                         editable: false,
                         allowBlank: false
@@ -281,6 +307,14 @@ var detailGrid = Ext.create('Ext.grid.Panel', {
             text: '序号',
             dataIndex: 'index',
             width: 60
+        }, {
+            text: '放电曲线',
+            dataIndex: 'id',
+            align: 'center',
+            width: 200,
+            renderer: function (value, p, record) {
+                return '<a data="zdy" class="grid-link" href="javascript:void(0);">总电压</a><span class="grid-link-split">|</span><a data="zdl" class="grid-link" href="javascript:void(0);">总电流</a><span class="grid-link-split">|</span><a data="dy" class="grid-link" href="javascript:void(0);">电压</a><span class="grid-link-split">|</span><a data="wd" class="grid-link" href="javascript:void(0);">温度</a>';
+            }
         },
         {
             text: '所属区域',
@@ -298,8 +332,13 @@ var detailGrid = Ext.create('Ext.grid.Panel', {
             align: 'left'
         },
         {
-            text: '所属设备',
-            dataIndex: 'device',
+            text: '电池组名',
+            dataIndex: 'name',
+            align: 'left'
+        },
+        {
+            text: '电池组号',
+            dataIndex: 'pack',
             align: 'left'
         },
         {
@@ -315,25 +354,41 @@ var detailGrid = Ext.create('Ext.grid.Panel', {
             width: 150
         },
         {
-            text: '时长',
+            text: '放电时长',
             dataIndex: 'interval',
             align: 'center',
             width: 150
-        }, {
-            text: '曲线',
-            dataIndex: 'deviceid',
-            align: 'center',
-            renderer: function (value, p, record) {
-                return Ext.String.format('<a data1="{0}" data2="{1}" class="grid-link" href="javascript:void(0);">查看</a>', value, record.get('proctime'));
-            }
         }
     ],
     listeners: {
         cellclick: function (view, td, cellIndex, record, tr, rowIndex, e) {
-            var elements = Ext.fly(td).select('a.grid-link');
-            if (elements.getCount() == 0) return false;
-            var first = elements.first();
-            ddetail(first.getAttribute('data1'), first.getAttribute('data2'), record.get('device'), record.get('start'), record.get('end'));
+            var columns = view.getGridColumns();
+            if (columns.length == 0 || columns.length <= cellIndex) return false;
+            var colname = columns[cellIndex].dataIndex;
+            if (colname === 'id') {
+                var target = e.getTarget('a.grid-link');
+                if (!Ext.isEmpty(target)) {
+                    var operate = target.getAttribute("data");
+                    if (!Ext.isEmpty(operate)) {
+                        var id = record.get('id');
+                        var pack = record.get('pack');
+                        var proc = record.get('proctime');
+                        var start = record.get('start');
+                        var end = record.get('end');
+                        var name = record.get('name');
+                        
+                        if (operate === 'zdy') {
+                            dochart(id, pack, proc, operate, start, end, Ext.String.format('{0}-总电压放电曲线', name), '电池组总电压(V)');
+                        } else if (operate === 'zdl') {
+                            dochart(id, pack, proc, operate, start, end, Ext.String.format('{0}-总电流放电曲线', name), '电池组总电流(A)');
+                        } else if (operate === 'dy') {
+                            dochart(id, pack, proc, operate, start, end, Ext.String.format('{0}-单体电压放电曲线', name), '电池组单体电压(V)');
+                        } else if (operate === 'wd') {
+                            dochart(id, pack, proc, operate, start, end, Ext.String.format('{0}-单体温度放电曲线', name), '电池组单体温度(℃)');
+                        }
+                    }
+                }
+            }
         }
     }
 });
@@ -365,7 +420,7 @@ var detailWnd = Ext.create('Ext.window.Window', {
     }]
 });
 
-var ddetailWnd = Ext.create('Ext.window.Window', {
+var lineWnd = Ext.create('Ext.window.Window', {
     title: '电池放电曲线',
     glyph: 0xf031,
     height: 600,
@@ -392,7 +447,7 @@ var ddetailWnd = Ext.create('Ext.window.Window', {
         xtype: 'button',
         text: '关闭',
         handler: function (el, e) {
-            ddetailWnd.hide();
+            lineWnd.hide();
         }
     }]
 });
@@ -428,31 +483,35 @@ var print = function (store) {
     });
 };
 
-var detail = function (station) {
-    if (Ext.isEmpty(station)) return false;
+var detail = function (id) {
+    if (Ext.isEmpty(id)) return false;
 
     var proxy = detailStore.getProxy();
-    proxy.extraParams.station = station;
+    proxy.extraParams.id = id;
 
     detailStore.removeAll();
     detailStore.loadPage(1);
     detailWnd.show();
 };
 
-var ddetail = function (device, proc, title, start, end) {
-    if (Ext.isEmpty(device)) return false;
+var dochart = function (id, pack, proc, action, start, end, title, yaxis) {
+    if (Ext.isEmpty(id)) return false;
+    if (Ext.isEmpty(pack)) return false;
     if (Ext.isEmpty(proc)) return false;
+    if (Ext.isEmpty(start)) return false;
+    if (Ext.isEmpty(end)) return false;
 
-    lineOption.title.text = Ext.String.format('{0}放电曲线', title);
+    lineOption.title.text = title;
     lineOption.title.subtext = Ext.String.format('{0} ~ {1}', start, end);
     lineOption.series = [];
+    lineOption.yAxis[0].name = yaxis;
     lineChart.setOption(lineOption, true);
-    ddetailWnd.show();
+    lineWnd.show();
 
     Ext.Ajax.request({
-        url: '/Report/RequestChart400211',
-        params: { device: device, proctime: proc },
-        mask: new Ext.LoadMask(ddetailWnd, { msg: '正在处理...' }),
+        url: '/Report/RequestBatteryChart',
+        params: { id: id, pack: pack, proc: proc, action: action },
+        mask: new Ext.LoadMask(lineWnd, { msg: '正在处理...' }),
         success: function (response, options) {
             var data = Ext.decode(response.responseText, true);
             if (data.success) {
@@ -460,6 +519,7 @@ var ddetail = function (device, proc, title, start, end) {
                     && !Ext.isEmpty(data.data)
                     && Ext.isArray(data.data)) {
                     var series = [];
+                    var legends = [];
                     Ext.Array.each(data.data, function (item, index) {
                         var models = [];
                         Ext.Array.each(item.models, function (model) {
@@ -472,12 +532,16 @@ var ddetail = function (device, proc, title, start, end) {
                         series.push({
                             name: item.name,
                             type: 'line',
-                            showSymbol: false,
+                            showSymbol: true,
+                            symbolSize: 1,
                             data: models
                         });
+
+                        legends.push(item.name);
                     });
 
                     lineOption.series = series;
+                    lineOption.legend.data = legends;
                     lineChart.setOption(lineOption, true);
                 }
             } else {
@@ -485,7 +549,7 @@ var ddetail = function (device, proc, title, start, end) {
             }
         }
     });
-};
+}
 
 Ext.onReady(function () {
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');

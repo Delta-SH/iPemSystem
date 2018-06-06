@@ -50,7 +50,8 @@ namespace iPem.Site.Extensions {
             if (!String.IsNullOrEmpty(ContentType)) {
                 response.ContentType = ContentType;
             } else {
-                response.ContentType = "application/json";
+                //response.ContentType = "application/json";
+                response.ContentType = "text/html";
             }
             if (ContentEncoding != null) {
                 response.ContentEncoding = ContentEncoding;

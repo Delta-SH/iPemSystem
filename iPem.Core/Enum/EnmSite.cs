@@ -291,18 +291,8 @@
         Year,
         Month,
         Week,
-        Day
-    }
-
-    /// <summary>
-    /// 断站-0
-    /// 停电-1
-    /// 发电-2
-    /// </summary>
-    public enum EnmCutType {
-        Off,
-        Cut,
-        Power
+        Day,
+        Hour
     }
 
     /// <summary>
@@ -316,15 +306,26 @@
         /// <summary>
         /// 充电
         /// </summary>
-        Charge,
+        Charge
+    }
+
+    public enum EnmBatPoint {
         /// <summary>
-        /// 均充
+        /// 电池总电压信号
         /// </summary>
-        Equalizing,
+        DCZDY,
         /// <summary>
-        /// 浮充
+        /// 电池总电流信号
         /// </summary>
-        Floating
+        DCZDL,
+        /// <summary>
+        /// 电池电压信号
+        /// </summary>
+        DCDY,
+        /// <summary>
+        /// 电池温度信号
+        /// </summary>
+        DCWD
     }
 
     /// <summary>
@@ -415,5 +416,45 @@
         Running,
         Success,
         Failure
+    }
+
+    /// <summary>
+    /// 角色功能
+    /// </summary>
+    public enum EnmRoleConfig {
+        /// <summary>
+        /// 短信功能
+        /// </summary>
+        SMS = 1,
+        /// <summary>
+        /// 语音功能
+        /// </summary>
+        Voice = 2
+    }
+
+    /// <summary>
+    /// 虚拟信号分类
+    /// </summary>
+    public enum EnmVSignalCategory {
+        /// <summary>
+        /// 普通虚拟信号
+        /// </summary>
+        Category01 = 1001,
+        /// <summary>
+        /// 能耗虚拟信号
+        /// </summary>
+        Category02 = 1002,
+        /// <summary>
+        /// 列头柜分路功率
+        /// </summary>
+        Category03 = 1003,
+        /// <summary>
+        /// 列头柜分路电流
+        /// </summary>
+        Category04 = 1004,
+        /// <summary>
+        /// 列头柜分路电量
+        /// </summary>
+        Category05 = 1005
     }
 }

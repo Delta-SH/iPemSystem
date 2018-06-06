@@ -1,0 +1,148 @@
+﻿@model iPem.Site.Models.IndicatorModel
+
+@section head {
+    <link href="@Url.Content("~/Content/themes/css/home.consumption.css?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" rel="stylesheet" type="text/css" />
+}
+
+<div id="defaut-title-bar">
+    <div class="title-bar clearfix">
+        <h1 class="l">实时能耗</h1>
+        <div class="desc l"></div>
+        <a id="help-btn" title="点击可查看详细帮助" class="help l" href="javascript:void(0);">&nbsp;</a>
+    </div>
+    <div id="help-tip" class="help-tip" style=" display:none;">
+        <div id="tip-arrow" class="tip-arrow"></div>
+        <div class="help-tip-content">
+            <div class="tip-content">
+                <p class="text">实时能耗展示站点/机房的各项能耗指标。</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="indicator-01" class="indicator-box @Model.indicator01.color">
+    <div class="indicator-title-box">
+        <span class="symbol">
+            <i class="@Model.indicator01.icon"></i>
+        </span>
+        <small>@Model.indicator01.name</small>
+    </div>
+    <h1><span id="indicator-01-value" data-category="@Model.indicator01.id">--</span><small>&nbsp;kW·h</small></h1>
+</div>
+<div id="indicator-02" class="indicator-box @Model.indicator02.color">
+    <div class="indicator-title-box">
+        <span class="symbol">
+            <i class="@Model.indicator02.icon"></i>
+        </span>
+        <small>@Model.indicator02.name</small>
+    </div>
+    <h1><span id="indicator-02-value" data-category="@Model.indicator02.id">--</span><small>&nbsp;kW·h</small></h1>
+</div>
+<div id="indicator-03" class="indicator-box @Model.indicator03.color">
+    <div class="indicator-title-box">
+        <span class="symbol">
+            <i class="@Model.indicator03.icon"></i>
+        </span>
+        <small>@Model.indicator03.name</small>
+    </div>
+    <h1><span id="indicator-03-value" data-category="@Model.indicator03.id">--</span><small>&nbsp;kW·h</small></h1>
+</div>
+<div id="indicator-04" class="indicator-box @Model.indicator04.color">
+    <div class="indicator-title-box">
+        <span class="symbol">
+            <i class="@Model.indicator04.icon"></i>
+        </span>
+        <small>@Model.indicator04.name</small>
+    </div>
+    <h1><span id="indicator-04-value" data-category="@Model.indicator04.id">--</span><small>&nbsp;kW·h</small></h1>
+</div>
+<div id="indicator-05" class="indicator-box @Model.indicator05.color">
+    <div class="indicator-title-box">
+        <span class="symbol">
+            <i class="@Model.indicator05.icon"></i>
+        </span>
+        <small>@Model.indicator05.name</small>
+    </div>
+    <h1><span id="indicator-05-value" data-category="@Model.indicator05.id">--</span><small>&nbsp;kW·h</small></h1>
+</div>
+<div id="indicator-06" class="indicator-box">
+    <div class="left-box">
+        <div class="content">
+            <small>室内温度</small>
+            <h2><span id="indicator-06-lvalue">--</span><small>&nbsp;℃</small></h2>
+            <span class="symbol">
+                <i class="ipems-icon-font-wendu"></i>
+            </span>
+        </div>
+    </div>
+    <div class="right-box">
+        <div class="content">
+            <small>室内湿度</small>
+            <h2><span id="indicator-06-rvalue">--</span><small>&nbsp;%</small></h2>
+            <span class="symbol">
+                <i class="ipems-icon-font-shidu"></i>
+            </span>
+        </div>
+    </div>
+</div>
+<div id="indicator-rate-container" class="indicator-chart none-border-left">
+    <div id="indicator-month-container" class="indicator-viewbox">
+        <div class="current">
+            <span class="view-icon">
+                <i class="ipems-icon-font-zhishu"></i>
+            </span>
+            <small class="title">本月</small>
+            <h4><span id="indicator-rate-value1">--</span><small>&nbsp;kW·h</small></h4>
+        </div>
+        <div class="last">
+            <span class="view-icon">
+                <i class="ipems-icon-font-zhishu"></i>
+            </span>
+            <small class="title">上月</small>
+            <h4><span id="indicator-rate-value2">--</span><small>&nbsp;kW·h</small></h4>
+        </div>
+    </div>
+    <div id="indicator-year-container" class="indicator-viewbox">
+        <div class="current">
+            <span class="view-icon">
+                <i class="ipems-icon-font-zhishu"></i>
+            </span>
+            <small class="title">本年</small>
+            <h4><span id="indicator-rate-value3">--</span><small>&nbsp;kW·h</small></h4>
+        </div>
+        <div class="last">
+            <span class="view-icon">
+                <i class="ipems-icon-font-zhishu"></i>
+            </span>
+            <small class="title">上年</small>
+            <h4><span id="indicator-rate-value4">--</span><small>&nbsp;kW·h</small></h4>
+        </div>
+    </div>
+</div>
+<div id="indicator-pie-container" class="indicator-chart">
+    <div id="indicator-pie" class="chart"></div>
+    <span class="icon">
+        <i class="ipems-icon-font-pie"></i>
+    </span>
+</div>
+<div id="indicator-pue-container" class="indicator-chart">
+    <div id="indicator-pue" class="chart"></div>
+    <span class="icon">
+        <i class="ipems-icon-font-gauge"></i>
+    </span>
+</div>
+<div id="indicator-line-container" class="indicator-chart">
+    <div id="indicator-line" class="chart"></div>
+    <span class="icon">
+        <i class="ipems-icon-font-line"></i>
+    </span>
+</div>
+<div id="indicator-bar-container" class="indicator-chart">
+    <div id="indicator-bar" class="chart"></div>
+    <span class ="icon">
+        <i class="ipems-icon-font-mixedline"></i>
+    </span>
+</div>
+
+@section scripts {
+    <script src="@Url.Content("~/Scripts/home.active.consumption.js?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" type="text/javascript"></script>
+}

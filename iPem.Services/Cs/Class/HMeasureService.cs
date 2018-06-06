@@ -47,8 +47,8 @@ namespace iPem.Services.Cs {
             return _repository.GetMeasuresInDevice(id, start, end);
         }
 
-        public List<V_HMeasure> GetMeasuresInPoint(string device, string point, DateTime start, DateTime end) {
-            return _repository.GetMeasuresInPoint(device, point, start, end);
+        public List<V_HMeasure> GetMeasuresInPoints(string device, string[] points, DateTime start, DateTime end) {
+            return _repository.GetMeasuresInPoints(device, points, start, end);
         }
 
         public List<V_HMeasure> GetMeasures(DateTime start, DateTime end) {

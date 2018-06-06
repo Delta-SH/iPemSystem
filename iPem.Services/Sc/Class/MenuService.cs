@@ -59,7 +59,7 @@ namespace iPem.Services.Sc {
             if (menus == null || menus.Length == 0)
                 throw new ArgumentNullException("menus");
 
-            if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
+            if (_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
             _repository.Insert(menus);
@@ -69,7 +69,7 @@ namespace iPem.Services.Sc {
             if (menus == null || menus.Length == 0)
                 throw new ArgumentNullException("menus");
 
-            if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
+            if (_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
             _repository.Update(menus);
@@ -79,7 +79,7 @@ namespace iPem.Services.Sc {
             if (menus == null || menus.Length == 0)
                 throw new ArgumentNullException("menus");
 
-            if(_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
+            if (_cacheManager.IsSet(GlobalCacheKeys.Sc_MenusRepository))
                 _cacheManager.Remove(GlobalCacheKeys.Sc_MenusRepository);
 
             _repository.Delete(menus);

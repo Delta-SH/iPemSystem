@@ -20,7 +20,7 @@ using System.Web.Mvc;
 
 namespace iPem.Site.Controllers {
     [Authorize]
-    public class FtpController : Controller {
+    public class FtpController : JsonNetController {
 
         #region Fields
 
@@ -61,12 +61,7 @@ namespace iPem.Site.Controllers {
         public ActionResult Update() {
             var ftp = _ftpService.GetFtps(EnmFtp.Master).FirstOrDefault();
             if (ftp != null) {
-                if (!string.IsNullOrWhiteSpace(ftp.Directory) && ftp.Directory.EndsWith("/")) {
-                    ftp.Directory = string.Format("{0}Update", ftp.Directory);
-                } else {
-                    ftp.Directory = string.Format("{0}/Update", ftp.Directory);
-                }
-
+                ftp.Directory = "Update";
                 var key = this.GetFtpKey(ftp);
                 _cacheManager.Set(string.Format(GlobalCacheKeys.Ftp_Info_Cfg, key), ftp, TimeSpan.FromDays(1));
                 ViewBag.FTPKey = key;
@@ -77,12 +72,7 @@ namespace iPem.Site.Controllers {
         public ActionResult Config() {
             var ftp = _ftpService.GetFtps(EnmFtp.Master).FirstOrDefault();
             if (ftp != null) {
-                if (!string.IsNullOrWhiteSpace(ftp.Directory) && ftp.Directory.EndsWith("/")) {
-                    ftp.Directory = string.Format("{0}Config", ftp.Directory);
-                } else {
-                    ftp.Directory = string.Format("{0}/Config", ftp.Directory);
-                }
-
+                ftp.Directory = "Config";
                 var key = this.GetFtpKey(ftp);
                 _cacheManager.Set(string.Format(GlobalCacheKeys.Ftp_Info_Cfg, key), ftp, TimeSpan.FromDays(1));
                 ViewBag.FTPKey = key;
@@ -99,7 +89,7 @@ namespace iPem.Site.Controllers {
                     Port = 21,
                     User = ext.FtpUid,
                     Password = ext.FtpPwd,
-                    Directory = "/Logs"
+                    Directory = "logs"
                 };
 
                 var key = this.GetFtpKey(ftp);
@@ -117,7 +107,7 @@ namespace iPem.Site.Controllers {
                     Port = 21,
                     User = ext.FtpUid,
                     Password = ext.FtpPwd,
-                    Directory = "/Config"
+                    Directory = "Config"
                 };
 
                 var key = this.GetFtpKey(ftp);
@@ -135,7 +125,7 @@ namespace iPem.Site.Controllers {
                     Port = 21,
                     User = ext.FtpUid,
                     Password = ext.FtpPwd,
-                    Directory = string.Format("/Alarm/{0}", dt)
+                    Directory = string.Format("Alarm/{0}", dt)
                 };
 
                 var key = this.GetFtpKey(ftp);
@@ -153,7 +143,25 @@ namespace iPem.Site.Controllers {
                     Port = 21,
                     User = ext.FtpUid,
                     Password = ext.FtpPwd,
-                    Directory = "/Measurement"
+                    Directory = "Measurement"
+                };
+
+                var key = this.GetFtpKey(ftp);
+                _cacheManager.Set(string.Format(GlobalCacheKeys.Ftp_Info_Cfg, key), ftp, TimeSpan.FromHours(1));
+                ViewBag.FTPKey = key;
+            }
+            return View("Index");
+        }
+
+        public ActionResult FsuUpgrade(string fsu) {
+            var ext = _fsuService.GetExtFsu(fsu);
+            if (ext != null) {
+                var ftp = new C_Ftp {
+                    IP = ext.IP,
+                    Port = 21,
+                    User = ext.FtpUid,
+                    Password = ext.FtpPwd,
+                    Directory = "upgrade"
                 };
 
                 var key = this.GetFtpKey(ftp);
@@ -252,7 +260,7 @@ namespace iPem.Site.Controllers {
 
                 byte[] file;
                 using (FtpClient conn = this.GetFtpClient(key)) {
-                    if (!conn.FileExists(name)) 
+                    if (!conn.FileExists(name))
                         throw new iPemException("文件不存在");
 
                     conn.Download(out file, name);
@@ -279,9 +287,9 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("newname");
 
                 using (FtpClient conn = this.GetFtpClient(key)) {
-                    if (!conn.FileExists(oldname)) 
+                    if (!conn.FileExists(oldname))
                         throw new iPemException(string.Format("\"{0}\"文件不存在", oldname));
-                    if (conn.FileExists(newname)) 
+                    if (conn.FileExists(newname))
                         throw new iPemException(string.Format("\"{0}\"文件已存在", newname));
 
                     conn.Rename(oldname, newname);
@@ -302,7 +310,7 @@ namespace iPem.Site.Controllers {
                     throw new ArgumentNullException("name");
 
                 using (FtpClient conn = this.GetFtpClient(key)) {
-                    if (!conn.FileExists(name)) 
+                    if (!conn.FileExists(name))
                         throw new iPemException(string.Format("\"{0}\"文件不存在", name));
 
                     conn.DeleteFile(name);
@@ -326,13 +334,8 @@ namespace iPem.Site.Controllers {
             try {
                 var ftp = _ftpService.GetFtps(EnmFtp.Master).FirstOrDefault();
                 if (ftp != null) {
-                    if (!string.IsNullOrWhiteSpace(ftp.Directory) && ftp.Directory.EndsWith("/")) {
-                        ftp.Directory = string.Format("{0}Update", ftp.Directory);
-                    } else {
-                        ftp.Directory = string.Format("{0}/Update", ftp.Directory);
-                    }
-
-                    var files = this.GetFtpFiles(ftp).FindAll(f => f.name.EndsWith(".gz"));
+                    ftp.Directory = "Update";
+                    var files = this.GetFtpFiles(ftp);
                     foreach (var file in files.OrderByDescending(f => f.date)) {
                         data.data.Add(new ComboItem<string, string>() { id = file.name, text = file.name, comment = file.date });
                     }
@@ -428,7 +431,7 @@ namespace iPem.Site.Controllers {
 
         private string GetFtpKey(C_Ftp ftp) {
             if (ftp == null) throw new ArgumentNullException("ftp");
-           return string.Format("ftp://{0}:{1}{2}", ftp.IP, ftp.Port, ftp.Directory);
+           return string.Format("ftp://{0}:{1}/{2}", ftp.IP, ftp.Port, ftp.Directory);
         }
 
         #endregion

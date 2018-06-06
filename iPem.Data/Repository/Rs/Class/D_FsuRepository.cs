@@ -33,8 +33,8 @@ namespace iPem.Data.Repository.Rs {
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             D_Fsu entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsu, parms)) {
-                if(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsu, parms)) {
+                if (rdr.Read()) {
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
                     entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
@@ -84,8 +84,8 @@ namespace iPem.Data.Repository.Rs {
 
         public List<D_Fsu> GetFsus() {
             var entities = new List<D_Fsu>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsus, null)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetFsus, null)) {
+                while (rdr.Read()) {
                     var entity = new D_Fsu();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
@@ -112,8 +112,8 @@ namespace iPem.Data.Repository.Rs {
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             D_ExtFsu entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetExtFsu, parms)) {
-                if(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetExtFsu, parms)) {
+                if (rdr.Read()) {
                     entity = new D_ExtFsu();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);
@@ -141,8 +141,8 @@ namespace iPem.Data.Repository.Rs {
 
         public List<D_ExtFsu> GetExtFsus() {
             var entities = new List<D_ExtFsu>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetExtFsus, null)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Fsu_Repository_GetExtFsus, null)) {
+                while (rdr.Read()) {
                     var entity = new D_ExtFsu();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.IP = SqlTypeConverter.DBNullStringHandler(rdr["IP"]);

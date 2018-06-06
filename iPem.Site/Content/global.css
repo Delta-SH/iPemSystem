@@ -289,15 +289,15 @@ div.help-tip div.help-tip-content p {
 }
 
 /** alarm charts */
-.almview-almchart {
+.almview-bar {
     height: 242px;
 }
 
-.svrview-cpuchart {
+.cpuview-line {
     height: 100px;
 }
 
-.svrview-memorychart {
+.memoryview-line {
     height: 100px;
 }
 
@@ -309,19 +309,7 @@ div.help-tip div.help-tip-content p {
 	height: 260px;
 }
 
-.unconnectedview-pie {
-	height: 262px;
-}
-
-.unconnectedview-list {
-	height: 262px;
-}
-
 .cuttingview-pie {
-	height: 262px;
-}
-
-.cuttingview-list {
 	height: 262px;
 }
 
@@ -329,15 +317,7 @@ div.help-tip div.help-tip-content p {
 	height: 262px;
 }
 
-.powerview-list {
-	height: 262px;
-}
-
-.offlineview-pie {
-	height: 262px;
-}
-
-.offlineview-list {
+.fsuview-pie {
 	height: 262px;
 }
 

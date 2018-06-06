@@ -272,23 +272,19 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             separator = '/',
                             root = tree.getRootNode();
 
-                        if (Ext.isEmpty(text, false))
-                        {
+                        if (Ext.isEmpty(text, false)) {
                             return;
                         }
 
-                        if (text.length < 2)
-                        {
+                        if (text.length < 2) {
                             return;
                         }
 
                         if (search._filterData != null
-                            && search._filterIndex != null)
-                        {
+                            && search._filterIndex != null) {
                             var index = search._filterIndex + 1;
                             var paths = search._filterData;
-                            if (index >= paths.length)
-                            {
+                            if (index >= paths.length) {
                                 index = 0;
                                 Ext.Msg.show({ title: '系统提示', msg: '搜索完毕', buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                             }
@@ -297,31 +293,26 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
                             tree.selectPath(path);
                             search._filterIndex = index;
-                        } else
-                        {
+                        } else {
                             Ext.Ajax.request({
                                 url: '/Component/FilterRoomPath',
                                 params: { text: text },
                                 mask: new Ext.LoadMask({ target: tree, msg: '正在处理...' }),
                                 success: function (response, options) {
                                     var data = Ext.decode(response.responseText, true);
-                                    if (data.success)
-                                    {
+                                    if (data.success) {
                                         var len = data.data.length;
-                                        if (len > 0)
-                                        {
+                                        if (len > 0) {
                                             var nodes = Ext.Array.from(data.data[0]);
                                             var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), nodes.join(separator));
                                             tree.selectPath(path);
 
                                             search._filterData = data.data;
                                             search._filterIndex = 0;
-                                        } else
-                                        {
+                                        } else {
                                             Ext.Msg.show({ title: '系统提示', msg: Ext.String.format('未找到指定内容:<br/>{0}', text), buttons: Ext.Msg.OK, icon: Ext.Msg.INFO });
                                         }
-                                    } else
-                                    {
+                                    } else {
                                         Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
                                     }
                                 }
@@ -349,15 +340,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
               //    nowtime = Ext.Date.now();
 
               result.setTextWithIcon('', '');
-              if (!form.isValid())
-              {
+              if (!form.isValid()) {
                   result.setTextWithIcon('表单填写错误', 'x-icon-error');
                   return false;
               }
 
               var ckNodes = tree.getChecked();
-              if (ckNodes.length === 0)
-              {
+              if (ckNodes.length === 0) {
                   result.setTextWithIcon('请选择需要预约的监控点', 'x-icon-error');
                   return false;
               }
@@ -443,8 +432,7 @@ var checkWnd = Ext.create('Ext.window.Window', {
                   result = Ext.getCmp('checkResult');
 
               result.setTextWithIcon('', '');
-              if (baseForm.isValid())
-              {
+              if (baseForm.isValid()) {
                   result.setTextWithIcon('正在处理...', 'x-icon-loading');
                   baseForm.submit({
                       submitEmptyText: false,
@@ -467,8 +455,7 @@ var checkWnd = Ext.create('Ext.window.Window', {
                           result.setTextWithIcon(message, 'x-icon-error');
                       }
                   });
-              } else
-              {
+              } else {
                   result.setTextWithIcon('表单填写错误', 'x-icon-error');
               }
           }
@@ -486,8 +473,7 @@ var checkWnd = Ext.create('Ext.window.Window', {
 var checkCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
-    if (record.get('statusId') === $$iPems.Result.Undefine)
-    {
+    if (record.get('statusId') === $$iPems.Result.Undefine) {
         var form = Ext.getCmp('checkForm');
         form.getForm().reset();
         form.getComponent('id').setValue(record.getId());
@@ -506,8 +492,7 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
         params: { id: record.data.id },
         success: function (response, options) {
             var data = Ext.decode(response.responseText, true);
-            if (data.success)
-            {
+            if (data.success) {
                 var detailname = detailWnd.getComponent('detail_name');
                 var detailarea = detailWnd.getComponent('detail_area');
                 var detailstation = detailWnd.getComponent('detail_station');
@@ -520,8 +505,7 @@ var detailCellClick = function (grid, rowIndex, colIndex) {
                 detailroom.setValue(data.data.rooms);
                 detaildevice.setValue(data.data.devices);
                 detailWnd.show();
-            } else
-            {
+            } else {
                 Ext.Msg.show({ title: '系统错误', msg: data.message, buttons: Ext.Msg.OK, icon: Ext.Msg.ERROR });
             }
         }
@@ -536,8 +520,7 @@ var editCellClick = function (grid, rowIndex, colIndex) {
         tree = Ext.getCmp('organization'),
         root = tree.getRootNode();
 
-    if (root.hasChildNodes())
-    {
+    if (root.hasChildNodes()) {
         root.eachChild(function (c) {
             c.cascadeBy(function (n) {
                 n.set('checked', false);
@@ -555,15 +538,13 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             var separator = '/',
                 nodes = action.result.data.nodes;
 
-            if (nodes && nodes.length > 0)
-            {
+            if (nodes && nodes.length > 0) {
                 Ext.Ajax.request({
                     url: '/Component/GetDevicePath',
                     params: { nodes: nodes },
                     success: function (response, options) {
                         var data = Ext.decode(response.responseText, true);
-                        if (data.success)
-                        {
+                        if (data.success) {
                             Ext.defer(function () {
                                 Ext.Array.each(data.data, function (item, index, all) {
                                     item = Ext.Array.from(item);
@@ -597,8 +578,7 @@ var deleteCellClick = function (grid, rowIndex, colIndex) {
     if (Ext.isEmpty(record)) return false;
 
     Ext.Msg.confirm('确认对话框', '您确认要删除吗？', function (buttonId, text) {
-        if (buttonId === 'yes')
-        {
+        if (buttonId === 'yes') {
             Ext.Ajax.request({
                 url: '/Project/DeleteReservation',
                 params: { id: record.raw.id },
@@ -797,8 +777,7 @@ var currentPanel = Ext.create('Ext.grid.Panel', {
                                 tree = Ext.getCmp('organization'),
                                 root = tree.getRootNode();
 
-                            if (root.hasChildNodes())
-                            {
+                            if (root.hasChildNodes()) {
                                 root.eachChild(function (c) {
                                     c.cascadeBy(function (n) {
                                         n.set('checked', false);
@@ -896,8 +875,7 @@ var submit = function (form, nodes, result) {
 Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
-    if (!Ext.isEmpty(pageContentPanel))
-    {
+    if (!Ext.isEmpty(pageContentPanel)) {
         pageContentPanel.add(currentPanel);
 
         //load data

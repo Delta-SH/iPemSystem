@@ -4,6 +4,7 @@
         { name: 'index', type: 'int' },
         { name: 'id', type: 'string' },
         { name: 'name', type: 'string' },
+        { name: 'type', type: 'string' },
         { name: 'comment', type: 'string' },
         { name: 'enabled', type: 'boolean' }
     ],
@@ -36,7 +37,7 @@ var currentStore = Ext.create('Ext.data.Store', {
     }
 });
 
-var menuStore = Ext.create('Ext.data.TreeStore',{
+var menuStore = Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     root: {
         id: -10078,
@@ -47,27 +48,6 @@ var menuStore = Ext.create('Ext.data.TreeStore',{
     proxy: {
         type: 'ajax',
         url: '/Account/GetAllMenus',
-        reader: {
-            type: 'json',
-            successProperty: 'success',
-            messageProperty: 'message',
-            totalProperty: 'total',
-            root: 'data'
-        }
-    }
-});
-
-var areaStore = Ext.create('Ext.data.TreeStore',{
-    autoLoad: false,
-    root: {
-        id: -10078,
-        text: '系统主页',
-        icon: $$iPems.icons.Home,
-        root: true
-    },
-    proxy: {
-        type: 'ajax',
-        url: '/Account/GetAllAreas',
         reader: {
             type: 'json',
             successProperty: 'success',
@@ -99,12 +79,36 @@ var permissionStore = Ext.create('Ext.data.TreeStore', {
     }
 });
 
+var authorizationStore = Ext.create('Ext.data.TreeStore', {
+    autoLoad: false,
+    root: {
+        id: -10078,
+        text: '系统主页',
+        icon: $$iPems.icons.Home,
+        root: true
+    },
+    proxy: {
+        type: 'ajax',
+        url: '/Account/GetAllAuthorizations',
+        reader: {
+            type: 'json',
+            successProperty: 'success',
+            messageProperty: 'message',
+            totalProperty: 'total',
+            root: 'data'
+        },
+        extraParams: {
+            type: $$iPems.SSH.Area
+        },
+    }
+});
+
 var currentPagingToolbar = $$iPems.clonePagingToolbar(currentStore);
 
 var saveWnd = Ext.create('Ext.window.Window', {
     title: 'Role',
-    height: 400,
-    width: 600,
+    height: 450,
+    width: 800,
     modal: true,
     border: false,
     hidden: true,
@@ -118,7 +122,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
         id: 'saveForm',
         xtype: 'form',
         margin: '5 5 5 5',
-        flex: 2,
+        flex: 1,
         border: false,
         defaultType: 'textfield',
         defaults: {
@@ -134,11 +138,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
             {
                 id: 'id',
                 name: 'id',
-                xtype: 'textfield',
-                fieldLabel: '角色标识',
-                allowBlank: false,
-                readOnly: true,
-                labelAlign: 'top'
+                xtype: 'hiddenfield',
             },
             {
                 id: 'name',
@@ -147,6 +147,40 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 fieldLabel: '角色名称',
                 allowBlank: false,
                 labelAlign: 'top'
+            },
+            {
+                id: 'type',
+                name: 'type',
+                xtype: 'radiogroup',
+                fieldLabel: '角色类型',
+                allowBlank: false,
+                labelAlign: 'top',
+                columns: 4,
+                items: [
+                    { boxLabel: '区域', name: 'roleType', inputValue: $$iPems.SSH.Area, checked: true },
+                    { boxLabel: '站点', name: 'roleType', inputValue: $$iPems.SSH.Station },
+                    { boxLabel: '机房', name: 'roleType', inputValue: $$iPems.SSH.Room },
+                    { boxLabel: '设备', name: 'roleType', inputValue: $$iPems.SSH.Device }
+                ],
+                listeners: {
+                    change: function (me, newValue, oldValue) {
+                        if (newValue.roleType === $$iPems.SSH.Area) {
+                            Ext.getCmp("authorizationMenus").setTitle("区域权限");
+                            Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        } else if (newValue.roleType === $$iPems.SSH.Station) {
+                            Ext.getCmp("authorizationMenus").setTitle("站点权限");
+                            Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        } else if (newValue.roleType === $$iPems.SSH.Room) {
+                            Ext.getCmp("authorizationMenus").setTitle("机房权限");
+                            Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        } else if (newValue.roleType === $$iPems.SSH.Device) {
+                            Ext.getCmp("authorizationMenus").setTitle("设备权限");
+                            Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        }
+                        authorizationStore.proxy.extraParams.type = newValue;
+                        authorizationStore.reload();
+                    }
+                }
             },
             {
                 id: 'comment',
@@ -163,14 +197,51 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 fieldLabel: '角色状态',
                 boxLabel: '(勾选表示启用)',
                 inputValue: true,
+                checked: false
+            },
+            {
+                id: 'sms',
+                name: 'sms',
+                xtype: 'checkboxfield',
+                fieldLabel: '短信告警',
+                boxLabel: '(勾选表示启用)',
+                inputValue: true,
                 checked: false,
-                labelAlign: 'top'
+                listeners: {
+                    change: function () {
+                        if (this.checked) {
+                            Ext.getCmp("SMSConfig").setDisabled(false);
+                        } else {
+                            Ext.getCmp("SMSConfig").setDisabled(true);
+                            Ext.getCmp("SMSConfig").getForm().reset();
+                        }
+                    }
+                }
+            },
+            {
+                id: 'voice',
+                name: 'voice',
+                xtype: 'checkboxfield',
+                fieldLabel: '语音告警',
+                boxLabel: '(勾选表示启用)',
+                inputValue: true,
+                checked: false,
+                listeners: {
+                    change: function () {
+                        if (this.checked) {
+                            Ext.getCmp("voiceConfig").setDisabled(false);
+                        } else {
+                            Ext.getCmp("voiceConfig").setDisabled(true);
+                            Ext.getCmp("voiceConfig").getForm().reset();
+                        }
+                    }
+                }
             }
         ]
     },
     {
         xtype: "tabpanel",
-        flex: 3,
+        flex: 2,
         margin: '5 5 5 5',
         activeTab: 0,
         plain: true,
@@ -186,25 +257,6 @@ var saveWnd = Ext.create('Ext.window.Window', {
             title: '菜单权限',
             glyph: 0xf011,
             store: menuStore,
-            listeners: {
-                load: function (el, node, records, successful) {
-                    if (successful)
-                        this.getRootNode().expand(false);
-                },
-                checkchange: function (node, checked) {
-                    node.eachChild(function (c) {
-                        c.cascadeBy(function (n) {
-                            n.set('checked', checked);
-                        });
-                    });
-                }
-            }
-        },{
-            id: 'areaMenus',
-            xtype: 'treepanel',
-            title: '区域权限',
-            glyph: 0xf019,
-            store: areaStore,
             listeners: {
                 load: function (el, node, records, successful) {
                     if (successful)
@@ -237,6 +289,113 @@ var saveWnd = Ext.create('Ext.window.Window', {
                     });
                 }
             }
+        }, {
+            id: 'authorizationMenus',
+            xtype: 'treepanel',
+            title: '区域权限',
+            glyph: 0xf019,
+            store: authorizationStore,
+            listeners: {
+                load: function (el, node, records, successful) {
+                    if (successful)
+                        this.getRootNode().expand(false);
+                },
+                checkchange: function (node, checked) {
+                    node.eachChild(function (c) {
+                        c.cascadeBy(function (n) {
+                            n.set('checked', checked);
+                        });
+                    });
+                }
+            }
+        }, {
+            id: 'SMSConfig',
+            xtype: 'form',
+            title: '短信配置',
+            glyph: 0xf025,
+            margin: '5 5 5 5',
+            border: false,
+            disabled: true,
+            defaultType: 'textfield',
+            defaults: {
+                anchor: '100%',
+            },
+            fieldDefaults: {
+                labelWidth: 60,
+                labelAlign: "left",
+                flex: 1,
+                margin: '10 5 10 5'
+            },
+            items: [
+                {
+                    id: 'SMSLevels',
+                    xtype: 'AlarmLevelMultiCombo',
+                    emptyText: '请选择告警级别',
+                    labelAlign: 'top'
+                },
+                {
+                    id: 'SMSDevices',
+                    name: 'SMSDevices',
+                    xtype: 'textareafield',
+                    fieldLabel: '设备名称',
+                    height: 100,
+                    emptyText: '多个名称请以;分隔，例: A;B;C',
+                    labelAlign: 'top'
+                },
+                {
+                    id: 'SMSSignals',
+                    name: 'SMSSignals',
+                    xtype: 'textareafield',
+                    fieldLabel: '信号名称',
+                    height: 100,
+                    emptyText: '多个名称请以;分隔，例: A;B;C',
+                    labelAlign: 'top'
+                }
+            ]
+        }, {
+            id: 'voiceConfig',
+            xtype: 'form',
+            title: '语音配置',
+            glyph: 0xf048,
+            margin: '5 5 5 5',
+            border: false,
+            disabled: true,
+            defaultType: 'textfield',
+            defaults: {
+                anchor: '100%',
+            },
+            fieldDefaults: {
+                labelWidth: 60,
+                labelAlign: "left",
+                flex: 1,
+                margin: '10 5 10 5'
+            },
+            items: [
+                {
+                    id: 'voiceLevels',
+                    xtype: 'AlarmLevelMultiCombo',
+                    emptyText: '请选择告警级别',
+                    labelAlign: 'top'
+                },
+                {
+                    id: 'voiceDevices',
+                    name: 'voiceDevices',
+                    xtype: 'textareafield',
+                    fieldLabel: '设备名称',
+                    height: 100,
+                    emptyText: '多个名称请以;分隔，例: A;B;C',
+                    labelAlign: 'top'
+                },
+                {
+                    id: 'voiceSignals',
+                    name: 'voiceSignals',
+                    xtype: 'textareafield',
+                    fieldLabel: '信号名称',
+                    height: 100,
+                    emptyText: '多个名称请以;分隔，例: A;B;C',
+                    labelAlign: 'top'
+                }
+            ]
         }]
     }],
     buttons: [
@@ -251,34 +410,51 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (form.isValid()) {
+                  var type = Ext.getCmp('type').getValue();
+
                   var menus = Ext.getCmp('treeMenus').getChecked();
                   if (menus.length === 0) {
                       result.setTextWithIcon('请选择角色的菜单权限...', 'x-icon-error');
                       return false;
                   }
 
-                  var areas = Ext.getCmp('areaMenus').getChecked();
-                  if (areas.length === 0) {
-                      result.setTextWithIcon('请选择角色的区域权限...', 'x-icon-error');
+                  var permissions = Ext.getCmp('permissionMenus').getChecked();
+
+                  var authorization = Ext.getCmp('authorizationMenus').getChecked();
+                  if (authorization.length === 0) {
+                      if (type.roleType === $$iPems.SSH.Area)
+                          result.setTextWithIcon('请选择角色的区域权限...', 'x-icon-error');
+                      if (type.roleType === $$iPems.SSH.Station)
+                          result.setTextWithIcon('请选择角色的站点权限...', 'x-icon-error');
+                      if (type.roleType === $$iPems.SSH.Room)
+                          result.setTextWithIcon('请选择角色的机房权限...', 'x-icon-error');
+                      if (type.roleType === $$iPems.SSH.Device)
+                          result.setTextWithIcon('请选择角色的设备权限...', 'x-icon-error');
                       return false;
                   }
-
-                  var permissions = Ext.getCmp('permissionMenus').getChecked();
 
                   var menuIds = [];
                   menus.forEach(function (m) {
                       menuIds.push(m.data.id);
                   });
 
-                  var areaIds = [];
-                  areas.forEach(function (m) {
-                      areaIds.push(m.data.id);
-                  });
-
                   var permissionIds = [];
                   permissions.forEach(function (m) {
                       permissionIds.push(m.data.id);
                   });
+
+                  var authorizationIds = [];
+                  authorization.forEach(function (m) {
+                      if (m.data.leaf)
+                          authorizationIds.push(m.data.id);
+                  });
+
+                  var SMSLevels = Ext.getCmp("SMSLevels").getValue();
+                  var SMSDevices = Ext.getCmp("SMSDevices").getValue();
+                  var SMSSignals = Ext.getCmp("SMSSignals").getValue();
+                  var voiceLevels = Ext.getCmp("voiceLevels").getValue();
+                  var voiceDevices = Ext.getCmp("voiceDevices").getValue();
+                  var voiceSignals = Ext.getCmp("voiceSignals").getValue();
 
                   result.setTextWithIcon('正在处理...', 'x-icon-loading');
                   form.submit({
@@ -287,10 +463,17 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       preventWindow: true,
                       url: '/Account/SaveRole',
                       params: {
+                          type: type,
                           menus: menuIds,
-                          areas: areaIds,
                           permissions: permissionIds,
-                          action: saveWnd.opaction
+                          authorizations: authorizationIds,
+                          action: saveWnd.opaction,
+                          SMSLevels: SMSLevels,
+                          SMSDevices: SMSDevices,
+                          SMSSignals: SMSSignals,
+                          voiceLevels: voiceLevels,
+                          voiceDevices: voiceDevices,
+                          voiceSignals: voiceSignals
                       },
                       success: function (form, action) {
                           result.setTextWithIcon(action.result.message, 'x-icon-accept');
@@ -325,6 +508,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 var editCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
+    Ext.getCmp('type').setValue({ roleType: record.raw.type });
 
     var basic = Ext.getCmp('saveForm').getForm();
     basic.load({
@@ -338,12 +522,12 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             Ext.getCmp('saveResult').setTextWithIcon('', '');
 
             var menuIds = [];
-            if(!Ext.isEmpty(action.result.data.menus))
+            if (!Ext.isEmpty(action.result.data.menus))
                 menuIds = action.result.data.menus;
 
-            var areaIds = [];
-            if (!Ext.isEmpty(action.result.data.areas))
-                areaIds = action.result.data.areas;
+            var authorizationIds = [];
+            if (!Ext.isEmpty(action.result.data.authorizations))
+                authorizationIds = action.result.data.authorizations;
 
             var permissionIds = [];
             if (!Ext.isEmpty(action.result.data.permissions))
@@ -359,11 +543,11 @@ var editCellClick = function (grid, rowIndex, colIndex) {
                 });
             }
 
-            var root2 = Ext.getCmp('areaMenus').getRootNode();
+            var root2 = Ext.getCmp('authorizationMenus').getRootNode();
             if (root2.hasChildNodes()) {
                 root2.eachChild(function (c) {
                     c.cascadeBy(function (n) {
-                        var checked = Ext.Array.contains(areaIds, n.data.id);
+                        var checked = Ext.Array.contains(authorizationIds, n.data.id);
                         n.set('checked', checked);
                     });
                 });
@@ -378,6 +562,13 @@ var editCellClick = function (grid, rowIndex, colIndex) {
                     });
                 });
             }
+
+            Ext.getCmp("SMSLevels").setValue(action.result.data.SMSLevels);
+            Ext.getCmp("SMSDevices").setValue(action.result.data.SMSDevices);
+            Ext.getCmp("SMSSignals").setValue(action.result.data.SMSSignals);
+            Ext.getCmp("voiceLevels").setValue(action.result.data.voiceLevels);
+            Ext.getCmp("voiceDevices").setValue(action.result.data.voiceDevices);
+            Ext.getCmp("voiceSignals").setValue(action.result.data.voiceSignals);
 
             saveWnd.setGlyph(0xf002);
             saveWnd.setTitle('编辑角色');
@@ -499,13 +690,13 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                         if (!Ext.isEmpty(action.result.data.menus))
                             menuIds = action.result.data.menus;
 
-                        var areaIds = [];
-                        if (!Ext.isEmpty(action.result.data.areas))
-                            areaIds = action.result.data.areas;
-
                         var permissionIds = [];
                         if (!Ext.isEmpty(action.result.data.permissions))
                             permissionIds = action.result.data.permissions;
+
+                        var authorizationIds = [];
+                        if (!Ext.isEmpty(action.result.data.authorizations))
+                            authorizationIds = action.result.data.authorizations;
 
                         var root1 = Ext.getCmp('treeMenus').getRootNode();
                         if (root1.hasChildNodes()) {
@@ -517,11 +708,11 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                             });
                         }
 
-                        var root2 = Ext.getCmp('areaMenus').getRootNode();
+                        var root2 = Ext.getCmp('authorizationMenus').getRootNode();
                         if (root2.hasChildNodes()) {
                             root2.eachChild(function (c) {
                                 c.cascadeBy(function (n) {
-                                    var checked = Ext.Array.contains(areaIds, n.data.id);
+                                    var checked = Ext.Array.contains(authorizationIds, n.data.id);
                                     n.set('checked', checked);
                                 });
                             });
@@ -595,6 +786,13 @@ var print = function () {
     });
 };
 
+var reload = function (current) {
+    var pager = (current || currentTab()).pager;
+    if (Ext.isEmpty(pager)) return;
+
+    pager.getStore().loadPage(1);
+};
+
 Ext.onReady(function () {
     /*add components to viewport panel*/
     var pageContentPanel = Ext.getCmp('center-content-panel-fw');
@@ -603,7 +801,7 @@ Ext.onReady(function () {
 
         //load store data
         menuStore.load();
-        areaStore.load();
         permissionStore.load();
+        authorizationStore.load();
     }
 });

@@ -17,11 +17,19 @@ Ext.define("Ext.ux.PointTypeMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    _ai: true,
+    _ao: true,
+    _di: true,
+    _do: true,
+    _al: true,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetPointTypes';
         me.callParent(arguments);
-        me.store.load();
+        me.store.load({
+            scope: me,
+            params: { _ai: me._ai, _ao: me._ao, _di: me._di, _do: me._do, _al: me._al }
+        });
     }
 });
 
@@ -38,12 +46,18 @@ Ext.define("Ext.ux.PointTypeComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    _ai: true,
+    _ao: true,
+    _di: true,
+    _do: true,
+    _al: true,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetPointTypes';
         me.callParent(arguments);
         me.store.load({
             scope: me,
+            params: { _ai: me._ai, _ao: me._ao, _di: me._di, _do: me._do, _al: me._al },
             callback: function (records, operation, success) {
                 if (success && records.length > 0)
                     me.select(records[0]);

@@ -174,7 +174,49 @@ namespace iPem.Site.Models {
         public double qtxdchbschglShiJian { get; set; }
 
         /// <summary>
-        /// 工程预约审核生效时长
+        /// 油机发电统计
+        /// 设备类型
+        /// </summary>
+        public string[] fdjzLeiXing { get; set; }
+
+        /// <summary>
+        /// 变压器能耗统计
+        /// 设备类型
+        /// </summary>
+        public string[] byqnhLeiXing { get; set; }
+
+        /// <summary>
+        /// 能耗首页第一指标
+        /// </summary>
+        public int indicator01 { get; set; }
+
+        /// <summary>
+        /// 能耗首页第二指标
+        /// </summary>
+        public int indicator02 { get; set; }
+
+        /// <summary>
+        /// 能耗首页第三指标
+        /// </summary>
+        public int indicator03 { get; set; }
+
+        /// <summary>
+        /// 能耗首页第四指标
+        /// </summary>
+        public int indicator04 { get; set; }
+
+        /// <summary>
+        /// 能耗首页第五指标
+        /// </summary>
+        public int indicator05 { get; set; }
+
+        /// <summary>
+        /// 能耗首页统计指标
+        /// </summary>
+        public int indicator { get; set; }
+
+        /// <summary>
+        /// 工程预约审核
         /// 生效时长
         /// </summary>
         public double gcyyshsxShiChang { get; set; }

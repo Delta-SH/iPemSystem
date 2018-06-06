@@ -32,6 +32,11 @@ namespace iPem.Core.Domain.Rs {
         public C_SubDeviceType SubType { get; set; }
 
         /// <summary>
+        /// 逻辑分类
+        /// </summary>
+        public C_LogicType LogicType { get; set; }
+
+        /// <summary>
         /// 逻辑子类
         /// </summary>
         public C_SubLogicType SubLogicType { get; set; }

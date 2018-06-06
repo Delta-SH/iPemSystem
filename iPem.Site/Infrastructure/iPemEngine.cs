@@ -174,11 +174,12 @@ namespace iPem.Site.Infrastructure {
                 builder.Register<IH_IAreaRepository>(c => new H_IAreaRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IDeviceRepository>(c => new H_IDeviceRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IH_IStationRepository>(c => new H_IStationRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_ACabinetRepository>(c => new V_ACabinetRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_AMeasureRepository>(c => new V_AMeasureRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatCurveRepository>(c => new V_BatCurveRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatRepository>(c => new V_BatRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_BatTimeRepository>(c => new V_BatTimeRepository(connectionString)).InstancePerLifetimeScope();
-                builder.Register<IV_CutRepository>(c => new V_CutRepository(connectionString)).InstancePerLifetimeScope();
+                builder.Register<IV_OfflineRepository>(c => new V_OfflineRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_ElecRepository>(c => new V_ElecRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_HMeasureRepository>(c => new V_HMeasureRepository(connectionString)).InstancePerLifetimeScope();
                 builder.Register<IV_LoadRepository>(c => new V_LoadRepository(connectionString)).InstancePerLifetimeScope();
@@ -187,12 +188,13 @@ namespace iPem.Site.Infrastructure {
 
                 //register service
                 builder.RegisterType<AAlarmService>().As<IAAlarmService>().InstancePerLifetimeScope();
+                builder.RegisterType<ACabinetService>().As<IACabinetService>().InstancePerLifetimeScope();
                 builder.RegisterType<AMeasureService>().As<IAMeasureService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatCurveService>().As<IBatCurveService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatService>().As<IBatService>().InstancePerLifetimeScope();
                 builder.RegisterType<BatTimeService>().As<IBatTimeService>().InstancePerLifetimeScope();
                 builder.RegisterType<CardRecordService>().As<ICardRecordService>().InstancePerLifetimeScope();
-                builder.RegisterType<CutService>().As<ICutService>().InstancePerLifetimeScope();
+                builder.RegisterType<OfflineService>().As<IOfflineService>().InstancePerLifetimeScope();
                 builder.RegisterType<ElecService>().As<IElecService>().InstancePerLifetimeScope();
                 builder.RegisterType<FsuEventService>().As<IFsuEventService>().InstancePerLifetimeScope();
                 builder.RegisterType<HAlarmService>().As<IHAlarmService>().InstancePerLifetimeScope();

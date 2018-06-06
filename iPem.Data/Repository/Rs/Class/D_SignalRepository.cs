@@ -53,7 +53,7 @@ namespace iPem.Data.Repository.Rs {
                     //判断是否为告警信号
                     if (entity.PointType == EnmPoint.DI) {
                         var alarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmID"]);
-                        if (!string.IsNullOrWhiteSpace(alarmId)) 
+                        if (!string.IsNullOrWhiteSpace(alarmId))
                             entity.PointType = EnmPoint.AL;
                     }
 
@@ -415,6 +415,37 @@ namespace iPem.Data.Repository.Rs {
             return entities;
         }
 
+        public D_SimpleSignal GetSimpleSignal(string device, string point) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar, 100) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
+
+            D_SimpleSignal entity = null;
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetSimpleSignal, parms)) {
+                if (rdr.Read()) {
+                    entity = new D_SimpleSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
+                    entity.Number = SqlTypeConverter.DBNullStringHandler(rdr["Number"]);
+                    entity.PointType = SqlTypeConverter.DBNullEnmPointHandler(rdr["PointType"]);
+                    entity.PointName = SqlTypeConverter.DBNullStringHandler(rdr["PointName"]);
+                    entity.OfficialName = SqlTypeConverter.DBNullStringHandler(rdr["OfficialName"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+
+                    //判断是否为告警信号
+                    if (entity.PointType == EnmPoint.DI) {
+                        var alarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
+                        if (!string.IsNullOrWhiteSpace(alarmId))
+                            entity.PointType = EnmPoint.AL;
+                    }
+                }
+            }
+            return entity;
+        }
+
         public List<D_SimpleSignal> GetSimpleSignals(IEnumerable<Kv<string, string>> pairs) {
             var sqlBuilder = new StringBuilder();
             sqlBuilder.AppendLine(@"
@@ -458,7 +489,7 @@ namespace iPem.Data.Repository.Rs {
                     //判断是否为告警信号
                     if (entity.PointType == EnmPoint.DI) {
                         var alarmId = SqlTypeConverter.DBNullStringHandler(rdr["AlarmId"]);
-                        if (!string.IsNullOrWhiteSpace(alarmId)) 
+                        if (!string.IsNullOrWhiteSpace(alarmId))
                             entity.PointType = EnmPoint.AL;
                     }
 
@@ -547,6 +578,279 @@ namespace iPem.Data.Repository.Rs {
                 }
             }
             return entities;
+        }
+
+        public D_VSignal GetVSignal(string device, string point) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar, 100) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
+
+            D_VSignal entity = null;
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetVSignal, parms)) {
+                if (rdr.Read()) {
+                    entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                }
+            }
+            return entity;
+        }
+
+        public List<D_VSignal> GetVSignals() {
+            var entities = new List<D_VSignal>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetVSignals1, null)) {
+                while (rdr.Read()) {
+                    var entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<D_VSignal> GetVSignals(IEnumerable<Kv<string, string>> pairs) {
+            var sqlBuilder = new StringBuilder();
+            sqlBuilder.AppendLine(@"
+            CREATE TABLE #TEMP(
+	            [DeviceId] [varchar](100) NOT NULL,
+	            [PointId] [varchar](100) NOT NULL,
+	            PRIMARY KEY CLUSTERED 
+	            (
+		            [DeviceId] ASC,
+		            [PointId] ASC
+	            )
+            );");
+
+            sqlBuilder.Append(@"
+            INSERT INTO #TEMP([DeviceId],[PointId])
+            ");
+
+            sqlBuilder.AppendLine(string.Join(@"
+            UNION ALL
+            ", pairs.Select(p => string.Format(@"SELECT '{0}','{1}'", p.Key, p.Value))));
+
+            sqlBuilder.Append(@"
+            SELECT * FROM [dbo].[D_VSignal] S 
+            INNER JOIN #TEMP T ON S.[DeviceId]=T.[DeviceId] AND S.[PointId]=T.[PointId];
+            DROP TABLE #TEMP;");
+
+            var entities = new List<D_VSignal>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, sqlBuilder.ToString(), null)) {
+                while (rdr.Read()) {
+                    var entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<D_VSignal> GetVSignals(string device) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100) };
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+
+            var entities = new List<D_VSignal>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetVSignals2, parms)) {
+                while (rdr.Read()) {
+                    var entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<D_VSignal> GetVSignals(string device, EnmVSignalCategory category) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
+                                     new SqlParameter("@Category", SqlDbType.Int) };
+
+            parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
+            parms[1].Value = (int)category;
+
+            var entities = new List<D_VSignal>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetVSignals3, parms)) {
+                while (rdr.Read()) {
+                    var entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public List<D_VSignal> GetVSignals(EnmVSignalCategory category) {
+            SqlParameter[] parms = { new SqlParameter("@Category", SqlDbType.Int) };
+            parms[0].Value = (int)category;
+
+            var entities = new List<D_VSignal>();
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_GetVSignals4, parms)) {
+                while (rdr.Read()) {
+                    var entity = new D_VSignal();
+                    entity.DeviceId = SqlTypeConverter.DBNullStringHandler(rdr["DeviceId"]);
+                    entity.PointId = SqlTypeConverter.DBNullStringHandler(rdr["PointId"]);
+                    entity.Name = SqlTypeConverter.DBNullStringHandler(rdr["Name"]);
+                    entity.Type = SqlTypeConverter.DBNullEnmPointHandler(rdr["Type"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
+                    entity.UnitState = SqlTypeConverter.DBNullStringHandler(rdr["UnitState"]);
+                    entity.SavedPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["SavedPeriod"]);
+                    entity.StaticPeriod = SqlTypeConverter.DBNullInt32Handler(rdr["StaticPeriod"]);
+                    entity.Category = SqlTypeConverter.DBNullVSignalCategoryHandler(rdr["Category"]);
+                    entity.Remark = SqlTypeConverter.DBNullStringHandler(rdr["Remark"]);
+                    entities.Add(entity);
+                }
+            }
+            return entities;
+        }
+
+        public void InsertVSignal(IList<D_VSignal> entities) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@Name", SqlDbType.VarChar,200),
+                                     new SqlParameter("@Type",SqlDbType.Int),
+                                     new SqlParameter("@FormulaText", SqlDbType.VarChar),
+                                     new SqlParameter("@FormulaValue", SqlDbType.VarChar),
+                                     new SqlParameter("@UnitState", SqlDbType.VarChar,160),
+                                     new SqlParameter("@SavedPeriod",SqlDbType.Int),
+                                     new SqlParameter("@StaticPeriod",SqlDbType.Int),
+                                     new SqlParameter("@Category",SqlDbType.VarChar),
+                                     new SqlParameter("@Remark",SqlDbType.VarChar,1024)};
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                if (conn.State != ConnectionState.Open) conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var entity in entities) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.DeviceId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.PointId);
+                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
+                        parms[3].Value = entity.Type;
+                        parms[4].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaText);
+                        parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaValue);
+                        parms[6].Value = SqlTypeConverter.DBNullStringChecker(entity.UnitState);
+                        parms[7].Value = SqlTypeConverter.DBNullInt32Checker(entity.SavedPeriod);
+                        parms[8].Value = SqlTypeConverter.DBNullInt32Checker(entity.StaticPeriod);
+                        parms[9].Value = (int)entity.Category;
+                        parms[10].Value = SqlTypeConverter.DBNullStringChecker(entity.Remark);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_InsertVSignal, parms);
+                    }
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public void UpdateVSignal(IList<D_VSignal> entities) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@Name", SqlDbType.VarChar,200),
+                                     new SqlParameter("@Type",SqlDbType.Int),
+                                     new SqlParameter("@FormulaText", SqlDbType.VarChar),
+                                     new SqlParameter("@FormulaValue", SqlDbType.VarChar),
+                                     new SqlParameter("@UnitState", SqlDbType.VarChar,160),
+                                     new SqlParameter("@SavedPeriod",SqlDbType.Int),
+                                     new SqlParameter("@StaticPeriod",SqlDbType.Int),
+                                     new SqlParameter("@Category",SqlDbType.VarChar),
+                                     new SqlParameter("@Remark",SqlDbType.VarChar,1024)};
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                if (conn.State != ConnectionState.Open) conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var entity in entities) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.DeviceId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.PointId);
+                        parms[2].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
+                        parms[3].Value = entity.Type;
+                        parms[4].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaText);
+                        parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaValue);
+                        parms[6].Value = SqlTypeConverter.DBNullStringChecker(entity.UnitState);
+                        parms[7].Value = SqlTypeConverter.DBNullInt32Checker(entity.SavedPeriod);
+                        parms[8].Value = SqlTypeConverter.DBNullInt32Checker(entity.StaticPeriod);
+                        parms[9].Value = (int)entity.Category;
+                        parms[10].Value = SqlTypeConverter.DBNullStringChecker(entity.Remark);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_UpdateVSignal, parms);
+                    }
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public void DeleteVSignal(IList<D_VSignal> entities) {
+            SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar,100),
+                                     new SqlParameter("@PointId", SqlDbType.VarChar,100) };
+
+            using (var conn = new SqlConnection(this._databaseConnectionString)) {
+                if (conn.State != ConnectionState.Open) conn.Open();
+                var trans = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+                try {
+                    foreach (var entity in entities) {
+                        parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.DeviceId);
+                        parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.PointId);
+                        SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Rs.Sql_D_Signal_Repository_DeleteVSignal, parms);
+                    }
+                    trans.Commit();
+                } catch {
+                    trans.Rollback();
+                    throw;
+                }
+            }
         }
 
         #endregion

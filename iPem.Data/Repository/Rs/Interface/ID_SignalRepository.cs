@@ -1,5 +1,6 @@
 ﻿using iPem.Core;
 using iPem.Core.Domain.Rs;
+using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -71,6 +72,11 @@ namespace iPem.Data.Repository.Rs {
         /// <summary>
         /// 获得简单信号对象
         /// </summary>
+        D_SimpleSignal GetSimpleSignal(string device, string point);
+
+        /// <summary>
+        /// 获得简单信号对象
+        /// </summary>
         List<D_SimpleSignal> GetSimpleSignals(IEnumerable<Kv<string, string>> pairs);
 
         /// <summary>
@@ -82,5 +88,50 @@ namespace iPem.Data.Repository.Rs {
         /// 获得指定设备的简单信号对象
         /// </summary>
         List<D_SimpleSignal> GetSimpleSignalsInDevices(IEnumerable<string> devices);
+
+        /// <summary>
+        /// 获得指定的虚拟信号
+        /// </summary>
+        D_VSignal GetVSignal(string device, string point);
+
+        /// <summary>
+        /// 获得所有的虚拟信号
+        /// </summary>
+        List<D_VSignal> GetVSignals();
+
+        /// <summary>
+        /// 获得虚拟信号对象
+        /// </summary>
+        List<D_VSignal> GetVSignals(IEnumerable<Kv<string, string>> pairs);
+
+        /// <summary>
+        /// 获得指定设备的虚拟信号
+        /// </summary>
+        List<D_VSignal> GetVSignals(string device);
+
+        /// <summary>
+        /// 获得指定分类的虚拟信号
+        /// </summary>
+        List<D_VSignal> GetVSignals(string device, EnmVSignalCategory category);
+
+        /// <summary>
+        /// 获得指定分类的虚拟信号
+        /// </summary>
+        List<D_VSignal> GetVSignals(EnmVSignalCategory category);
+
+        /// <summary>
+        /// 新增虚拟信号
+        /// </summary>
+        void InsertVSignal(IList<D_VSignal> entities);
+
+        /// <summary>
+        /// 更新虚拟信号
+        /// </summary>
+        void UpdateVSignal(IList<D_VSignal> entities);
+
+        /// <summary>
+        /// 删除虚拟信号
+        /// </summary>
+        void DeleteVSignal(IList<D_VSignal> entities);
     }
 }

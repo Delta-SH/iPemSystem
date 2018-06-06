@@ -203,10 +203,10 @@
                 pack: 'start'
             },
             items: [{
-                    xtype: 'container',
-                    flex: 1,
-                    contentEl: 'bar-chart'
-                }
+                xtype: 'container',
+                flex: 1,
+                contentEl: 'bar-chart'
+            }
             ],
             listeners: {
                 resize: function (me, width, height, oldWidth, oldHeight) {

@@ -49,7 +49,7 @@ namespace iPem.Site.Controllers {
         private readonly IElecService _elecService;
         private readonly IAMeasureService _aMeasureService;
         private readonly IGroupService _groupService;
-        private readonly ICutService _cutService;
+        private readonly IOfflineService _offlineService;
         private readonly IPackMgr _packMgr;
         private readonly IUserService _userService;
         private readonly ISignalService _signalService;
@@ -79,7 +79,7 @@ namespace iPem.Site.Controllers {
             IElecService elecService,
             IAMeasureService aMeasureService,
             IGroupService groupService,
-            ICutService cutService,
+            IOfflineService offlineService,
             IPackMgr packMgr,
             IUserService userService,
             ISignalService signalService) {
@@ -103,7 +103,7 @@ namespace iPem.Site.Controllers {
             this._elecService = elecService;
             this._aMeasureService = aMeasureService;
             this._groupService = groupService;
-            this._cutService = cutService;
+            this._offlineService = offlineService;
             this._packMgr = packMgr;
             this._userService = userService;
             this._signalService = signalService;
@@ -136,9 +136,60 @@ namespace iPem.Site.Controllers {
             return View();
         }
 
+        public ActionResult ActiveConsumption() {
+            ViewBag.BarIndex = 5;
+            ViewBag.MenuVisible = false;
+            var indicator = new IndicatorModel {
+                indicator01 = new IndicatorItemModel { id = (int)EnmFormula.TT, name = string.Format("{0}耗电量", Common.GetEnergyDisplay(EnmFormula.TT)), icon = Common.GetEnergyIconCls(EnmFormula.TT), color = Common.GetEnergyColorCls(EnmFormula.TT) },
+                indicator02 = new IndicatorItemModel { id = (int)EnmFormula.KT, name = string.Format("{0}耗电量", Common.GetEnergyDisplay(EnmFormula.KT)), icon = Common.GetEnergyIconCls(EnmFormula.KT), color = Common.GetEnergyColorCls(EnmFormula.KT) },
+                indicator03 = new IndicatorItemModel { id = (int)EnmFormula.ZM, name = string.Format("{0}耗电量", Common.GetEnergyDisplay(EnmFormula.ZM)), icon = Common.GetEnergyIconCls(EnmFormula.ZM), color = Common.GetEnergyColorCls(EnmFormula.ZM) },
+                indicator04 = new IndicatorItemModel { id = (int)EnmFormula.BG, name = string.Format("{0}耗电量", Common.GetEnergyDisplay(EnmFormula.BG)), icon = Common.GetEnergyIconCls(EnmFormula.BG), color = Common.GetEnergyColorCls(EnmFormula.BG) },
+                indicator05 = new IndicatorItemModel { id = (int)EnmFormula.IT, name = string.Format("{0}耗电量", Common.GetEnergyDisplay(EnmFormula.IT)), icon = Common.GetEnergyIconCls(EnmFormula.IT), color = Common.GetEnergyColorCls(EnmFormula.IT) }
+            };
+
+            var rt = _workContext.RtValues();
+            if (rt != null) {
+                if (Enum.IsDefined(typeof(EnmFormula), rt.indicator01)) {
+                    indicator.indicator01.id = rt.indicator01;
+                    indicator.indicator01.name = string.Format("{0}耗电量", Common.GetEnergyDisplay((EnmFormula)rt.indicator01));
+                    indicator.indicator01.icon = Common.GetEnergyIconCls((EnmFormula)rt.indicator01);
+                    indicator.indicator01.color = Common.GetEnergyColorCls((EnmFormula)rt.indicator01);
+                }
+
+                if (Enum.IsDefined(typeof(EnmFormula), rt.indicator02)) {
+                    indicator.indicator02.id = rt.indicator02;
+                    indicator.indicator02.name = string.Format("{0}耗电量", Common.GetEnergyDisplay((EnmFormula)rt.indicator02));
+                    indicator.indicator02.icon = Common.GetEnergyIconCls((EnmFormula)rt.indicator02);
+                    indicator.indicator02.color = Common.GetEnergyColorCls((EnmFormula)rt.indicator02);
+                }
+
+                if (Enum.IsDefined(typeof(EnmFormula), rt.indicator03)) {
+                    indicator.indicator03.id = rt.indicator03;
+                    indicator.indicator03.name = string.Format("{0}耗电量", Common.GetEnergyDisplay((EnmFormula)rt.indicator03));
+                    indicator.indicator03.icon = Common.GetEnergyIconCls((EnmFormula)rt.indicator03);
+                    indicator.indicator03.color = Common.GetEnergyColorCls((EnmFormula)rt.indicator03);
+                }
+
+                if (Enum.IsDefined(typeof(EnmFormula), rt.indicator04)) {
+                    indicator.indicator04.id = rt.indicator04;
+                    indicator.indicator04.name = string.Format("{0}耗电量", Common.GetEnergyDisplay((EnmFormula)rt.indicator04));
+                    indicator.indicator04.icon = Common.GetEnergyIconCls((EnmFormula)rt.indicator04);
+                    indicator.indicator04.color = Common.GetEnergyColorCls((EnmFormula)rt.indicator04);
+                }
+
+                if (Enum.IsDefined(typeof(EnmFormula), rt.indicator05)) {
+                    indicator.indicator05.id = rt.indicator05;
+                    indicator.indicator05.name = string.Format("{0}耗电量", Common.GetEnergyDisplay((EnmFormula)rt.indicator05));
+                    indicator.indicator05.icon = Common.GetEnergyIconCls((EnmFormula)rt.indicator05);
+                    indicator.indicator05.color = Common.GetEnergyColorCls((EnmFormula)rt.indicator05);
+                }
+            }
+            return View(indicator);
+        }
+
         public ActionResult Notice() {
             ViewBag.BarIndex = 3;
-            ViewBag.MenuVisible = true;
+            ViewBag.MenuVisible = false;
             return View();
         }
 
@@ -1475,7 +1526,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("SC采集组通信中断");
                 }
 
-                var curPoint = curDevice.DO.Find(p => p.PointId.Equals(point));
+                var curPoint = curDevice.Signals.Find(p => p.PointId.Equals(point) && p.PointType == EnmPoint.DO);
                 if (curPoint == null) {
                     _webLogger.Error(EnmEventType.Control, string.Format("未找到信号[{0}]", point), _workContext.User().Id, null);
                     throw new iPemException("未找到信号");
@@ -1574,7 +1625,7 @@ namespace iPem.Site.Controllers {
                     throw new iPemException("SC采集组通信中断");
                 }
 
-                var curPoint = curDevice.AO.Find(p => p.PointId.Equals(point));
+                var curPoint = curDevice.Signals.Find(p => p.PointId.Equals(point) && p.PointType == EnmPoint.AO);
                 if (curPoint == null) {
                     _webLogger.Error(EnmEventType.Adjust, string.Format("未找到信号[{0}]", point), _workContext.User().Id, null);
                     throw new iPemException("未找到信号");
@@ -1761,26 +1812,35 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var energies = _elecService.GetEnergies(EnmSSH.Station, new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1), DateTime.Now);
-                var roots = _workContext.Areas().FindAll(a => !a.HasChildren);
-                foreach (var root in roots) {
-                    var children = _workContext.Stations().FindAll(s => s.Current.AreaId == root.Current.Id).Select(s => s.Current.Id);
-                    var categories = energies.FindAll(e => children.Contains(e.Id));
+                var energies = _elecService.GetActive(EnmSSH.Station);
+                var children = _workContext.Areas().FindAll(a => !a.HasChildren);
+                foreach (var child in children) {
+                    var stationIds = _workContext.Stations().FindAll(s => s.Current.AreaId.Equals(child.Current.Id)).Select(s => s.Current.Id);
+                    var categories = energies.FindAll(e => stationIds.Contains(e.Id));
+                    var _kts = categories.FindAll(c => c.FormulaType == EnmFormula.KT);
+                    var _zms = categories.FindAll(c => c.FormulaType == EnmFormula.ZM);
+                    var _bgs = categories.FindAll(c => c.FormulaType == EnmFormula.BG);
+                    var _its = categories.FindAll(c => c.FormulaType == EnmFormula.IT);
+                    var _dys = categories.FindAll(c => c.FormulaType == EnmFormula.DY);
+                    var _ups = categories.FindAll(c => c.FormulaType == EnmFormula.UPS);
+                    var _qts = categories.FindAll(c => c.FormulaType == EnmFormula.QT);
+                    var _tts = categories.FindAll(c => c.FormulaType == EnmFormula.TT);
+                    var _pues = categories.FindAll(c => c.FormulaType == EnmFormula.PUE);
 
                     var model = new HomeEnergyModel {
-                        name = root.Current.Name,
-                        kt = categories.FindAll(c => c.FormulaType == EnmFormula.KT).Sum(c => c.Value),
-                        zm = categories.FindAll(c => c.FormulaType == EnmFormula.ZM).Sum(c => c.Value),
-                        bg = categories.FindAll(c => c.FormulaType == EnmFormula.BG).Sum(c => c.Value),
-                        sb = categories.FindAll(c => c.FormulaType == EnmFormula.SB).Sum(c => c.Value),
-                        kgdy = categories.FindAll(c => c.FormulaType == EnmFormula.KGDY).Sum(c => c.Value),
-                        ups = categories.FindAll(c => c.FormulaType == EnmFormula.UPS).Sum(c => c.Value),
-                        qt = categories.FindAll(c => c.FormulaType == EnmFormula.QT).Sum(c => c.Value),
-                        zl = categories.FindAll(c => c.FormulaType == EnmFormula.ZL).Sum(c => c.Value)
+                        name = child.Current.Name,
+                        kt = _kts.Count > 0 ? Math.Round(_kts.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        zm = _zms.Count > 0 ? Math.Round(_zms.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        bg = _bgs.Count > 0 ? Math.Round(_bgs.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        it = _its.Count > 0 ? Math.Round(_its.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        dy = _dys.Count > 0 ? Math.Round(_dys.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        ups = _ups.Count > 0 ? Math.Round(_ups.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        qt = _qts.Count > 0 ? Math.Round(_qts.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        tt = _tts.Count > 0 ? Math.Round(_tts.Sum(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
+                        pue = _pues.Count > 0 ? Math.Round(_pues.Average(e => e.Value), 3, MidpointRounding.AwayFromZero) : 0,
                     };
 
-                    if (model.sb > 0) model.pue = Math.Round(model.zl / model.sb, 2);
-                    if (model.zl > 0) model.eer = Math.Round(model.sb / model.zl, 2);
+                    model.eer = model.tt > 0 ? Math.Round(model.it / model.tt, 3, MidpointRounding.AwayFromZero) : 0;
                     data.data.Add(model);
                 }
 
@@ -1796,7 +1856,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHomeOff(int start, int limit) {
+        public JsonResult RequestHomeFsu(int start, int limit) {
             var data = new AjaxChartModel<List<HomeOffModel>, ChartModel[]> {
                 success = true,
                 message = "无数据",
@@ -1806,34 +1866,32 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var extFsus = _fsuService.GetExtFsus();
-                var allFsus = from fsu in _workContext.Fsus()
-                              join ext in extFsus on fsu.Current.Id equals ext.Id
-                              join area in _workContext.Areas() on fsu.Current.AreaId equals area.Current.Id
-                              select new { Area = area, Fsu = fsu, LastTime = ext.LastTime, Status = ext.Status };
+                var fsus = _workContext.Fsus();
+                var exts = _fsuService.GetExtFsus();
+                var alls = from fsu in fsus
+                           join ext in exts on fsu.Current.Id equals ext.Id
+                           select new { Fsu = fsu, LastTime = ext.LastTime, Status = ext.Status };
 
-                data.chart[0] = new ChartModel { index = 1, name = "正常", value = allFsus.Count(f => f.Status) };
-                data.chart[1] = new ChartModel { index = 2, name = "离线", value = allFsus.Count(f => !f.Status) };
+                data.chart[0] = new ChartModel { index = 1, name = "正常", value = alls.Count(f => f.Status) };
+                data.chart[1] = new ChartModel { index = 2, name = "离线", value = alls.Count(f => !f.Status) };
 
-                var offFsus = allFsus.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
-                if (offFsus.Count > 0) {
+                var offs = alls.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
+                if (offs.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = offFsus.Count;
+                    data.total = offs.Count;
 
                     var end = start + limit;
-                    if (end > offFsus.Count)
-                        end = offFsus.Count;
+                    if (end > offs.Count)
+                        end = offs.Count;
 
                     for (int i = start; i < end; i++) {
                         data.data.Add(new HomeOffModel {
                             index = i + 1,
-                            area = offFsus[i].Area.ToString(),
-                            station = offFsus[i].Fsu.Current.StationName,
-                            room = offFsus[i].Fsu.Current.RoomName,
-                            vendor = offFsus[i].Fsu.Current.VendorName,
-                            name = offFsus[i].Fsu.Current.Name,
-                            time = CommonHelper.DateTimeConverter(offFsus[i].LastTime),
-                            interval = CommonHelper.IntervalConverter(offFsus[i].LastTime)
+                            room = string.Format("{0},{1},{2}", offs[i].Fsu.Current.AreaName, offs[i].Fsu.Current.StationName, offs[i].Fsu.Current.RoomName),
+                            name = offs[i].Fsu.Current.Name,
+                            vendor = offs[i].Fsu.Current.VendorName,
+                            time = CommonHelper.DateTimeConverter(offs[i].LastTime),
+                            interval = CommonHelper.IntervalConverter(offs[i].LastTime)
                         });
                     }
                 }
@@ -1847,111 +1905,28 @@ namespace iPem.Site.Controllers {
         }
 
         [HttpPost]
-        public ActionResult DownloadHomeOff() {
+        public ActionResult DownloadHomeFsu() {
             try {
-                var extFsus = _fsuService.GetExtFsus();
-                var allFsus = from fsu in _workContext.Fsus()
-                              join ext in extFsus on fsu.Current.Id equals ext.Id
-                              join area in _workContext.Areas() on fsu.Current.AreaId equals area.Current.Id
-                              select new { Area = area, Fsu = fsu, LastTime = ext.LastTime, Status = ext.Status };
+                var fsus = _workContext.Fsus();
+                var exts = _fsuService.GetExtFsus();
+                var alls = from fsu in fsus
+                           join ext in exts on fsu.Current.Id equals ext.Id
+                           select new { Fsu = fsu, LastTime = ext.LastTime, Status = ext.Status };
 
-                var offFsus = allFsus.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
                 var models = new List<HomeOffModel>();
-                for (int i = 0; i < offFsus.Count; i++) {
+                var offs = alls.Where(f => !f.Status).OrderByDescending(f => f.LastTime).ToList();
+                for (int i = 0; i < offs.Count; i++) {
                     models.Add(new HomeOffModel {
                         index = i + 1,
-                        area = offFsus[i].Area.ToString(),
-                        station = offFsus[i].Fsu.Current.StationName,
-                        room = offFsus[i].Fsu.Current.RoomName,
-                        vendor = offFsus[i].Fsu.Current.VendorName,
-                        name = offFsus[i].Fsu.Current.Name,
-                        time = CommonHelper.DateTimeConverter(offFsus[i].LastTime),
-                        interval = CommonHelper.IntervalConverter(offFsus[i].LastTime)
+                        room = string.Format("{0},{1},{2}", offs[i].Fsu.Current.AreaName, offs[i].Fsu.Current.StationName, offs[i].Fsu.Current.RoomName),
+                        name = offs[i].Fsu.Current.Name,
+                        vendor = offs[i].Fsu.Current.VendorName,
+                        time = CommonHelper.DateTimeConverter(offs[i].LastTime),
+                        interval = CommonHelper.IntervalConverter(offs[i].LastTime)
                     });
                 }
 
                 using (var ms = _excelManager.Export<HomeOffModel>(models, "Fsu离线列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
-                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
-            }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult RequestHomeUnconnected(int start, int limit) {
-            var data = new AjaxChartModel<List<HomeUnconnectedModel>, ChartModel[]> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<HomeUnconnectedModel>(),
-                chart = new ChartModel[2]
-            };
-
-            try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Off).GroupBy(c => new { c.AreaId, c.StationId });
-                var unStations = new List<HomeUnconnectedModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomeUnconnectedModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
-                }
-
-                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations().Count - unStations.Count };
-                data.chart[1] = new ChartModel { index = 2, name = "断站", value = unStations.Count };
-
-                if (unStations.Count > 0) {
-                    data.message = "200 Ok";
-                    data.total = unStations.Count;
-
-                    var end = start + limit;
-                    if (end > unStations.Count)
-                        end = unStations.Count;
-
-                    for (int i = start; i < end; i++) {
-                        data.data.Add(new HomeUnconnectedModel {
-                            index = i + 1,
-                            area = unStations[i].area,
-                            station = unStations[i].station,
-                            time = unStations[i].time,
-                            interval = unStations[i].interval
-                        });
-                    }
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult DownloadHomeUnconnected() {
-            try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Off).GroupBy(c => new { c.AreaId, c.StationId });
-                var unStations = new List<HomeUnconnectedModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomeUnconnectedModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
-                }
-
-                using (var ms = _excelManager.Export<HomeUnconnectedModel>(unStations, "站点断站列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
@@ -1971,22 +1946,31 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Cut).GroupBy(c => new { c.AreaId, c.StationId });
+                var offlines = _offlineService.GetActive(EnmSSH.Station, EnmFormula.TD);
+                var stations = _workContext.Stations();
                 var unStations = new List<HomeCuttingModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomeCuttingModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
+                if (offlines.Count > 0) {
+                    var offs = from off in offlines
+                               join sta in stations on off.Id equals sta.Current.Id
+                               select new {
+                                   StationId = sta.Current.Id,
+                                   StationName = string.Format("{0},{1}", sta.Current.AreaName, sta.Current.Name),
+                                   StartTime = off.StartTime
+                               };
+
+                    var index = 0;
+                    foreach (var off in offs) {
+                        unStations.Add(new HomeCuttingModel {
+                            index = ++index,
+                            station = off.StationName,
+                            time = CommonHelper.DateTimeConverter(off.StartTime),
+                            interval = CommonHelper.IntervalConverter(off.StartTime)
+                        });
+                    }
                 }
 
-                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations().Count - unStations.Count };
-                data.chart[1] = new ChartModel { index = 2, name = "停电", value = unStations.Count };
+                data.chart[0] = new ChartModel { index = 1, name = "正常站点", value = stations.Count - unStations.Count };
+                data.chart[1] = new ChartModel { index = 2, name = "停电站点", value = unStations.Count };
 
                 if (unStations.Count > 0) {
                     data.message = "200 Ok";
@@ -1997,13 +1981,7 @@ namespace iPem.Site.Controllers {
                         end = unStations.Count;
 
                     for (int i = start; i < end; i++) {
-                        data.data.Add(new HomeCuttingModel {
-                            index = i + 1,
-                            area = unStations[i].area,
-                            station = unStations[i].station,
-                            time = unStations[i].time,
-                            interval = unStations[i].interval
-                        });
+                        data.data.Add(unStations[i]);
                     }
                 }
             } catch (Exception exc) {
@@ -2018,18 +1996,27 @@ namespace iPem.Site.Controllers {
         [HttpPost]
         public ActionResult DownloadHomeCutting() {
             try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Cut).GroupBy(c => new { c.AreaId, c.StationId });
+                var offlines = _offlineService.GetActive(EnmSSH.Station, EnmFormula.TD);
+                var stations = _workContext.Stations();
                 var unStations = new List<HomeCuttingModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomeCuttingModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
+                if (offlines.Count > 0) {
+                    var offs = from off in offlines
+                               join sta in stations on off.Id equals sta.Current.Id
+                               select new {
+                                   StationId = sta.Current.Id,
+                                   StationName = string.Format("{0},{1}", sta.Current.AreaName, sta.Current.Name),
+                                   StartTime = off.StartTime
+                               };
+
+                    var index = 0;
+                    foreach (var off in offs) {
+                        unStations.Add(new HomeCuttingModel {
+                            index = ++index,
+                            station = off.StationName,
+                            time = CommonHelper.DateTimeConverter(off.StartTime),
+                            interval = CommonHelper.IntervalConverter(off.StartTime)
+                        });
+                    }
                 }
 
                 using (var ms = _excelManager.Export<HomeCuttingModel>(unStations, "站点停电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
@@ -2052,39 +2039,48 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Power).GroupBy(c => new { c.AreaId, c.StationId });
-                var unStations = new List<HomePowerModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomePowerModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
+                var offlines = _offlineService.GetActive(EnmSSH.Device, EnmFormula.FD);
+                var devices = _workContext.Devices();
+                var stations = _workContext.Stations();
+                var pwDevices = new List<HomePowerModel>();
+                var staKeys = new HashSet<string>();
+                if (offlines.Count > 0) {
+                    var offs = from off in offlines
+                               join dev in devices on off.Id equals dev.Current.Id
+                               select new {
+                                   StationId = dev.Current.StationId,
+                                   StationName = string.Format("{0},{1}", dev.Current.AreaName, dev.Current.StationName),
+                                   DeviceId = dev.Current.Id,
+                                   DeviceName = dev.Current.Name,
+                                   StartTime = off.StartTime
+                               };
+
+                    var index = 0;
+                    foreach (var off in offs) {
+                        staKeys.Add(off.StationId);
+                        pwDevices.Add(new HomePowerModel {
+                            index = ++index,
+                            station = off.StationName,
+                            device = off.DeviceName,
+                            time = CommonHelper.DateTimeConverter(off.StartTime),
+                            interval = CommonHelper.IntervalConverter(off.StartTime)
+                        });
+                    }
                 }
 
-                data.chart[0] = new ChartModel { index = 1, name = "正常", value = _workContext.Stations().Count - unStations.Count };
-                data.chart[1] = new ChartModel { index = 2, name = "发电", value = unStations.Count };
+                data.chart[0] = new ChartModel { index = 1, name = "正常站点", value = stations.Count - staKeys.Count };
+                data.chart[1] = new ChartModel { index = 2, name = "发电站点", value = staKeys.Count };
 
-                if (unStations.Count > 0) {
+                if (pwDevices.Count > 0) {
                     data.message = "200 Ok";
-                    data.total = unStations.Count;
+                    data.total = pwDevices.Count;
 
                     var end = start + limit;
-                    if (end > unStations.Count)
-                        end = unStations.Count;
+                    if (end > pwDevices.Count)
+                        end = pwDevices.Count;
 
                     for (int i = start; i < end; i++) {
-                        data.data.Add(new HomePowerModel {
-                            index = i + 1,
-                            area = unStations[i].area,
-                            station = unStations[i].station,
-                            time = unStations[i].time,
-                            interval = unStations[i].interval
-                        });
+                        data.data.Add(pwDevices[i]);
                     }
                 }
             } catch (Exception exc) {
@@ -2099,21 +2095,264 @@ namespace iPem.Site.Controllers {
         [HttpPost]
         public ActionResult DownloadHomePower() {
             try {
-                var cuttings = _cutService.GetCuttings(EnmCutType.Power).GroupBy(c => new { c.AreaId, c.StationId });
-                var unStations = new List<HomePowerModel>();
-                if (cuttings.Any()) {
-                    unStations = (from cut in cuttings
-                                  join sta in _workContext.Stations() on cut.Key.StationId equals sta.Current.Id
-                                  join area in _workContext.Areas() on cut.Key.AreaId equals area.Current.Id
-                                  select new HomePowerModel {
-                                      area = area.ToString(),
-                                      station = sta.Current.Name,
-                                      time = CommonHelper.DateTimeConverter(cut.Min(c => c.StartTime)),
-                                      interval = CommonHelper.IntervalConverter(cut.Min(c => c.StartTime))
-                                  }).ToList();
+                var offlines = _offlineService.GetActive(EnmSSH.Device, EnmFormula.FD);
+                var devices = _workContext.Devices();
+                var pwDevices = new List<HomePowerModel>();
+                if (offlines.Count > 0) {
+                    var offs = from off in offlines
+                               join dev in devices on off.Id equals dev.Current.Id
+                               select new {
+                                   StationId = dev.Current.StationId,
+                                   StationName = string.Format("{0},{1}", dev.Current.AreaName, dev.Current.StationName),
+                                   DeviceId = dev.Current.Id,
+                                   DeviceName = dev.Current.Name,
+                                   StartTime = off.StartTime
+                               };
+
+                    var index = 0;
+                    foreach (var off in offs) {
+                        pwDevices.Add(new HomePowerModel {
+                            index = ++index,
+                            station = off.StationName,
+                            device = off.DeviceName,
+                            time = CommonHelper.DateTimeConverter(off.StartTime),
+                            interval = CommonHelper.IntervalConverter(off.StartTime)
+                        });
+                    }
                 }
 
-                using (var ms = _excelManager.Export<HomePowerModel>(unStations, "站点发电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<HomePowerModel>(pwDevices, "油机发电列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomeConsumptionChart(string parent) {
+            var data = new AjaxDataModel<HomeConsumptionModel> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = null
+            };
+
+            try {
+                var nodeKey = Common.ParseNode(parent);
+                if (nodeKey.Key == EnmSSH.Station || nodeKey.Key == EnmSSH.Room) {
+                    var rt = _workContext.RtValues();
+                    var master = rt != null && Enum.IsDefined(typeof(EnmFormula), rt.indicator) ? (EnmFormula)rt.indicator : EnmFormula.TT;
+
+                    data.data = new HomeConsumptionModel {
+                        id = nodeKey.Value,
+                        kt = new ChartModel { index = (int)EnmFormula.KT, name = Common.GetEnergyDisplay(EnmFormula.KT), value = 0 },
+                        zm = new ChartModel { index = (int)EnmFormula.ZM, name = Common.GetEnergyDisplay(EnmFormula.ZM), value = 0 },
+                        bg = new ChartModel { index = (int)EnmFormula.BG, name = Common.GetEnergyDisplay(EnmFormula.BG), value = 0 },
+                        dy = new ChartModel { index = (int)EnmFormula.DY, name = Common.GetEnergyDisplay(EnmFormula.DY), value = 0 },
+                        ups = new ChartModel { index = (int)EnmFormula.UPS, name = Common.GetEnergyDisplay(EnmFormula.UPS), value = 0 },
+                        it = new ChartModel { index = (int)EnmFormula.IT, name = Common.GetEnergyDisplay(EnmFormula.IT), value = 0 },
+                        qt = new ChartModel { index = (int)EnmFormula.QT, name = Common.GetEnergyDisplay(EnmFormula.QT), value = 0 },
+                        tt = new ChartModel { index = (int)EnmFormula.TT, name = Common.GetEnergyDisplay(EnmFormula.TT), value = 0 },
+                        wd = 0,
+                        sd = 0,
+                        pue = 1,
+                        curmonth = 0,
+                        lastmonth = 0,
+                        curyear = 0,
+                        lastyear = 0,
+                        dayline = new List<ChartsModel>(),
+                        monthbar = new List<ChartsModel>()
+                    };
+
+                    var values = _elecService.GetActive(nodeKey.Value, nodeKey.Key);
+                    foreach (var value in values) {
+                        if (value.FormulaType == EnmFormula.KT)
+                            data.data.kt.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.ZM)
+                            data.data.zm.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.BG)
+                            data.data.bg.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.DY)
+                            data.data.dy.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.UPS)
+                            data.data.ups.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.IT)
+                            data.data.it.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.QT)
+                            data.data.qt.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.TT)
+                            data.data.tt.value = Math.Round(value.Value, 0, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.WD)
+                            data.data.wd = Math.Round(value.Value, 1, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.SD)
+                            data.data.sd = Math.Round(value.Value, 1, MidpointRounding.AwayFromZero);
+                        else if (value.FormulaType == EnmFormula.PUE)
+                            data.data.pue = Math.Round(value.Value, 2, MidpointRounding.AwayFromZero);
+                    }
+
+                    data.data.curmonth = Math.Round(_elecService.GetCurrentMonthTotal(nodeKey.Value, nodeKey.Key, master), 0, MidpointRounding.AwayFromZero);
+                    data.data.lastmonth = Math.Round(_elecService.GetLastMonthTotal(nodeKey.Value, nodeKey.Key, master), 0, MidpointRounding.AwayFromZero);
+                    data.data.curyear = Math.Round(_elecService.GetCurrentYearTotal(nodeKey.Value, nodeKey.Key, master), 0, MidpointRounding.AwayFromZero);
+                    data.data.lastyear = Math.Round(_elecService.GetLastYearTotal(nodeKey.Value, nodeKey.Key, master), 0, MidpointRounding.AwayFromZero);
+
+                    var daylines = _elecService.GetHistory(nodeKey.Value, nodeKey.Key, master, DateTime.Today.AddDays(-1), DateTime.Now);
+                    var hours = CommonHelper.GetPeriods(DateTime.Today, DateTime.Now, EnmPDH.Hour);
+                    foreach (var hour in hours) {
+                        var dl0 = daylines.Find(d => d.StartTime.Equals(hour.Start));
+                        var dl1 = daylines.Find(d => d.StartTime.AddDays(1).Equals(hour.Start));
+                        data.data.dayline.Add(new ChartsModel {
+                            name = CommonHelper.TimeConverter(hour.Start),
+                            models = new List<ChartModel>{
+                                new ChartModel{ index = 0, value=dl0 != null ? dl0.Value : 0},
+                                new ChartModel{ index = 1, value=dl1 != null ? dl1.Value : 0}
+                            }
+                        });
+                    }
+
+                    var now = DateTime.Now;
+                    var cur = new DateTime(now.Year, now.Month, 1);
+                    var monthbars = _elecService.GetEachDay(nodeKey.Value, nodeKey.Key, master, cur.AddMonths(-1), now);
+                    var days = CommonHelper.GetPeriods(cur, DateTime.Now, EnmPDH.Day);
+                    foreach (var day in days) {
+                        var mb0 = monthbars.Find(m => m.StartTime.Equals(day.Start));
+                        var mb1 = monthbars.Find(m => m.StartTime.AddMonths(1).Equals(day.Start));
+                        data.data.monthbar.Add(new ChartsModel {
+                            name = CommonHelper.DayConverter(day.Start),
+                            models = new List<ChartModel>{
+                                new ChartModel{ index = 0, value=mb0 != null ? mb0.Value : 0},
+                                new ChartModel{ index = 1, value=mb1 != null ? mb1.Value : 0}
+                            }
+                        });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHomeConsumption(string parent, int start, int limit) {
+            var data = new AjaxDataModel<List<HomeLineLossModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<HomeLineLossModel>()
+            };
+
+            try {
+                var rtValues = _workContext.RtValues();
+                if (rtValues != null && rtValues.byqnhLeiXing != null && rtValues.byqnhLeiXing.Length > 0 && !string.IsNullOrWhiteSpace(parent)) {
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Station) {
+                        var devices = _workContext.Devices().FindAll(d => rtValues.byqnhLeiXing.Contains(d.Current.SubType.Id) && d.Current.StationId.Equals(nodeKey.Value));
+                        if (devices.Count > 0) {
+                            data.message = "200 Ok";
+                            data.total = devices.Count;
+
+                            var end = start + limit;
+                            if (end > devices.Count)
+                                end = devices.Count;
+
+                            var values = _elecService.GetActive(EnmSSH.Device, EnmFormula.XS);
+                            for (int i = start; i < end; i++) {
+                                var device = devices[i];
+                                var detail = values.Find(o => o.Id.Equals(device.Current.Id));
+                                data.data.Add(new HomeLineLossModel {
+                                    index = i,
+                                    station = string.Format("{0},{1}", device.Current.AreaName, device.Current.StationName),
+                                    room = device.Current.RoomName,
+                                    device = device.Current.Name,
+                                    value = detail != null ? detail.Value.ToString() : "--",
+                                    time = detail != null ? CommonHelper.DateTimeConverter(detail.StartTime) : "--"
+                                });
+                            }
+                        }
+                    } else if (nodeKey.Key == EnmSSH.Room) {
+                        var devices = _workContext.Devices().FindAll(d => rtValues.byqnhLeiXing.Contains(d.Current.SubType.Id) && d.Current.RoomId.Equals(nodeKey.Value));
+                        if (devices.Count > 0) {
+                            data.message = "200 Ok";
+                            data.total = devices.Count;
+
+                            var end = start + limit;
+                            if (end > devices.Count)
+                                end = devices.Count;
+
+                            var values = _elecService.GetActive(EnmSSH.Device, EnmFormula.XS);
+                            for (int i = start; i < end; i++) {
+                                var device = devices[i];
+                                var detail = values.Find(o => o.Id.Equals(device.Current.Id));
+                                data.data.Add(new HomeLineLossModel {
+                                    index = i,
+                                    station = string.Format("{0},{1}", device.Current.AreaName, device.Current.StationName),
+                                    room = device.Current.RoomName,
+                                    device = device.Current.Name,
+                                    value = detail != null ? detail.Value.ToString() : "--",
+                                    time = detail != null ? CommonHelper.DateTimeConverter(detail.StartTime) : "--"
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DownloadHomeConsumption(string parent) {
+            try {
+                var models = new List<HomeLineLossModel>();
+                var rtValues = _workContext.RtValues();
+                if (rtValues != null && rtValues.byqnhLeiXing != null && rtValues.byqnhLeiXing.Length > 0 && !string.IsNullOrWhiteSpace(parent)) {
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Station) {
+                        var devices = _workContext.Devices().FindAll(d => rtValues.byqnhLeiXing.Contains(d.Current.SubType.Id) && d.Current.StationId.Equals(nodeKey.Value));
+                        if (devices.Count > 0) {
+                            var values = _elecService.GetActive(EnmSSH.Device, EnmFormula.XS);
+                            for (int i = 0; i < devices.Count; i++) {
+                                var device = devices[i];
+                                var detail = values.Find(o => o.Id.Equals(device.Current.Id));
+                                models.Add(new HomeLineLossModel {
+                                    index = i,
+                                    station = string.Format("{0},{1}", device.Current.AreaName, device.Current.StationName),
+                                    room = device.Current.RoomName,
+                                    device = device.Current.Name,
+                                    value = detail != null ? detail.Value.ToString() : "--",
+                                    time = detail != null ? CommonHelper.DateTimeConverter(detail.StartTime) : "--"
+                                });
+                            }
+                        }
+                    } else if (nodeKey.Key == EnmSSH.Room) {
+                        var devices = _workContext.Devices().FindAll(d => rtValues.byqnhLeiXing.Contains(d.Current.SubType.Id) && d.Current.RoomId.Equals(nodeKey.Value));
+                        if (devices.Count > 0) {
+                            var values = _elecService.GetActive(EnmSSH.Device, EnmFormula.XS);
+                            for (int i = 0; i < devices.Count; i++) {
+                                var device = devices[i];
+                                var detail = values.Find(o => o.Id.Equals(device.Current.Id));
+                                models.Add(new HomeLineLossModel {
+                                    index = i,
+                                    station = string.Format("{0},{1}", device.Current.AreaName, device.Current.StationName),
+                                    room = device.Current.RoomName,
+                                    device = device.Current.Name,
+                                    value = detail != null ? detail.Value.ToString() : "--",
+                                    time = detail != null ? CommonHelper.DateTimeConverter(detail.StartTime) : "--"
+                                });
+                            }
+                        }
+                    }
+                }
+
+                using (var ms = _excelManager.Export<HomeLineLossModel>(models, "变压器实时损耗信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
@@ -2168,7 +2407,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetMatrixColumns(string id) {
+        public JsonResult GetMatrixColumns(string node, string id, bool cache) {
             var data = new AjaxDataModel<List<GridColumn>> {
                 success = true,
                 message = "无数据",
@@ -2177,26 +2416,21 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                if (string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException("id");
-                var matrixs = _workContext.ProfileMatrixs();
-                if (matrixs == null) throw new iPemException("尚未配置测值模版");
-                if (!matrixs.Any()) throw new iPemException("尚未配置测值模版");
-                var template = matrixs.FirstOrDefault(t => t.id.Equals(id));
-                if (template == null) throw new iPemException("未找到需要应用的测值模版");
-                if (template.points == null || template.points.Length == 0) throw new iPemException("尚未映射测值模版信号列");
-
+                var models = this.GetMatrixTable(node, id, cache);
                 data.success = true;
                 data.message = "200 Ok";
+
                 data.data = new List<GridColumn> { 
-                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
-                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 150 },
-                    new GridColumn { name = "deviceid", type = "string" },
-                    new GridColumn { name = "device", type = "string", column = "所属设备", width = 150 }
+                    new GridColumn { name = models.Columns[0].ColumnName, type = "int", column = models.Columns[0].ExtendedProperties["ExcelDisplayName"] as string, width = 60 },
+                    new GridColumn { name = models.Columns[1].ColumnName, type = "string", column = models.Columns[1].ExtendedProperties["ExcelDisplayName"] as string, width = 150 },
+                    new GridColumn { name = models.Columns[2].ColumnName, type = "string" },
+                    new GridColumn { name = models.Columns[3].ColumnName, type = "string", column = models.Columns[3].ExtendedProperties["ExcelDisplayName"] as string, width = 150 }
                 };
 
-                var templateKeys = new HashSet<string>(template.points);
-                var points = _workContext.Points().FindAll(p => templateKeys.Contains(p.Id));
-                foreach (var point in points) {
+                for (var k = 4; k < models.Columns.Count; k++) {
+                    var column = models.Columns[k];
+                    var point = JsonConvert.DeserializeObject<P_Point>(column.ExtendedProperties["Target"].ToString());
+
                     data.data.Add(new GridColumn { name = point.Id, type = "string", column = point.Name });
                     data.total++;
                 }
@@ -2244,12 +2478,11 @@ namespace iPem.Site.Controllers {
                         var deviceid = row["deviceid"].ToString();
                         for (var k = 4; k < data.data.Columns.Count; k++) {
                             var column = data.data.Columns[k];
-                            var point = column.ExtendedProperties["Target"] as P_Point;
-                            if (point != null) {
-                                var current = values.Find(v => v.DeviceId == deviceid && v.PointId == point.Id);
-                                if (current != null) {
-                                    row[column.ColumnName] = Common.GetValueDisplay(point.Type, current.Value.ToString(), point.UnitState);
-                                }
+                            var point = JsonConvert.DeserializeObject<P_Point>(column.ExtendedProperties["Target"].ToString());
+
+                            var current = values.Find(v => v.DeviceId == deviceid && v.PointId == point.Id);
+                            if (current != null) {
+                                row[column.ColumnName] = Common.GetValueDisplay(point.Type, current.Value.ToString(), point.UnitState);
                             }
                         }
                     }
@@ -2284,12 +2517,11 @@ namespace iPem.Site.Controllers {
                         var deviceid = row["deviceid"].ToString();
                         for (var k = 4; k < models.Columns.Count; k++) {
                             var column = models.Columns[k];
-                            var point = column.ExtendedProperties["Target"] as P_Point;
-                            if (point != null) {
-                                var current = values.Find(v => v.DeviceId == deviceid && v.PointId == point.Id);
-                                if (current != null) {
-                                    row[column.ColumnName] = Common.GetValueDisplay(point.Type, current.Value.ToString(), point.UnitState);
-                                }
+                            var point = JsonConvert.DeserializeObject<P_Point>(column.ExtendedProperties["Target"].ToString());
+
+                            var current = values.Find(v => v.DeviceId == deviceid && v.PointId == point.Id);
+                            if (current != null) {
+                                row[column.ColumnName] = Common.GetValueDisplay(point.Type, current.Value.ToString(), point.UnitState);
                             }
                         }
                     }
@@ -2586,7 +2818,7 @@ namespace iPem.Site.Controllers {
             if (nodeKey.Key == EnmSSH.Device) {
                 var current = _deviceService.GetDevice(nodeKey.Value);
                 if (current != null) {
-                    var signals = _signalService.GetSimpleSignalsInDevice(current.Id);
+                    var signals = _signalService.GetAllSignals(current.Id);
                     if (signals.Count > 0) {
                         var follows = new HashSet<string>(_workContext.ProfileFollows().Select(f => string.Format("{0}-{1}", f.device, f.point)));
                         foreach (var signal in signals) {
@@ -2629,7 +2861,7 @@ namespace iPem.Site.Controllers {
                 var follows = _workContext.ProfileFollows();
                 if (follows != null && follows.Any()) {
                     var devices = _workContext.Devices();
-                    var signals = _signalService.GetSimpleSignals(follows.Select(p => new Kv<string, string>(p.device, p.point)));
+                    var signals = _signalService.GetAllSignals(follows.Select(p => new Kv<string, string>(p.device, p.point)));
                     stores = from follow in follows
                              join signal in signals on new { DeviceId = follow.device, PointId = follow.point } equals new { signal.DeviceId, signal.PointId }
                              join device in devices on follow.device equals device.Current.Id
@@ -2672,43 +2904,12 @@ namespace iPem.Site.Controllers {
             return stores.ToList();
         }
 
-        private DataTable GetMatrixModel(string title, IEnumerable<P_Point> points) {
-            var model = new DataTable(title ?? "MatrixModel");
-            var column0 = new DataColumn("index", typeof(int));
-            column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
-            column0.AutoIncrement = true;
-            column0.AutoIncrementSeed = 1;
-            model.Columns.Add(column0);
-
-            var column1 = new DataColumn("station", typeof(string));
-            column1.ExtendedProperties.Add("ExcelDisplayName", "所属站点");
-            model.Columns.Add(column1);
-
-            var column2 = new DataColumn("deviceid", typeof(string));
-            column2.ExtendedProperties.Add("ExcelIgnore", null);
-            model.Columns.Add(column2);
-
-            var column3 = new DataColumn("device", typeof(string));
-            column3.ExtendedProperties.Add("ExcelDisplayName", "所属设备");
-            model.Columns.Add(column3);
-
-            foreach (var point in points) {
-                var column = new DataColumn(point.Id, typeof(string));
-                column.ExtendedProperties.Add("ExcelDisplayName", point.Name);
-                column.ExtendedProperties.Add("Target", point);
-                column.DefaultValue = "--";
-                model.Columns.Add(column);
-            }
-
-            return model;
-        }
-
         private DataTable GetMatrixTable(string node, string id, bool cache) {
             var key = string.Format(GlobalCacheKeys.MatrixTablePattern, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
             if (_cacheManager.IsSet(key)) {
                 var bytes = _cacheManager.Get<byte[]>(key);
-                return CommonHelper.BytesToObject<DataTable>(bytes);
+                return CommonHelper.XmlToDt(bytes);
             }
 
             if (string.IsNullOrWhiteSpace(node)) throw new ArgumentNullException("node");
@@ -2723,7 +2924,7 @@ namespace iPem.Site.Controllers {
             var templateKeys = new HashSet<string>(template.points);
             var points = _workContext.Points().FindAll(p => templateKeys.Contains(p.Id));
             var devices = _workContext.Devices().FindAll(d => d.Current.Type.Id == template.type);
-            var model = this.GetMatrixModel(template.name, points);
+            var model = this.GetMatrixModel(template, points);
 
             var nodeKey = Common.ParseNode(node);
             if (nodeKey.Key == EnmSSH.Area) {
@@ -2752,8 +2953,40 @@ namespace iPem.Site.Controllers {
             }
 
             if (model.Rows.Count <= GlobalCacheLimit.Default_Limit) {
-                var bytes = CommonHelper.ObjectToBytes(model);
+                var bytes = CommonHelper.DtToXml(model);
                 _cacheManager.Set(key, bytes, GlobalCacheInterval.Site_Interval);
+            }
+
+            return model;
+        }
+
+        private DataTable GetMatrixModel(MatrixTemplate template, IEnumerable<P_Point> points) {
+            var model = new DataTable(template.name ?? "MatrixModel");
+            var column0 = new DataColumn("index", typeof(int));
+            column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
+            column0.AutoIncrement = true;
+            column0.AutoIncrementSeed = 1;
+            model.Columns.Add(column0);
+
+            var column1 = new DataColumn("station", typeof(string));
+            column1.ExtendedProperties.Add("ExcelDisplayName", "所属站点");
+            model.Columns.Add(column1);
+
+            var column2 = new DataColumn("deviceid", typeof(string));
+            column2.ExtendedProperties.Add("ExcelIgnore", null);
+            model.Columns.Add(column2);
+
+            var column3 = new DataColumn("device", typeof(string));
+            column3.ExtendedProperties.Add("ExcelDisplayName", "所属设备");
+            column3.ExtendedProperties.Add("Type", template.type);
+            model.Columns.Add(column3);
+
+            foreach (var point in points) {
+                var column = new DataColumn(point.Id, typeof(string));
+                column.ExtendedProperties.Add("ExcelDisplayName", point.Name);
+                column.ExtendedProperties.Add("Target", JsonConvert.SerializeObject(point));
+                column.DefaultValue = "--";
+                model.Columns.Add(column);
             }
 
             return model;

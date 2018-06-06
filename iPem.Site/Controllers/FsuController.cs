@@ -122,7 +122,7 @@ namespace iPem.Site.Controllers {
 
                     for (int i = start; i < end; i++) {
                         data.data.Add(new FsuModel {
-                            index = i+1,
+                            index = i + 1,
                             id = models[i].id,
                             code = models[i].code,
                             name = models[i].name,
@@ -402,7 +402,7 @@ namespace iPem.Site.Controllers {
                 ext.UpgradeResult = "命令已下发，等待升级。";
                 ext.UpgradeTime = DateTime.Now;
                 ext.Upgrader = _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name;
-                
+
                 _noteService.Add(new H_Note { SysType = 1, GroupID = ext.GroupId, Name = ext.Id, DtType = 1, OpType = 0, Time = DateTime.Now, Desc = upgradefile });
                 _fsuService.UpdateExes(ext);
                 _webLogger.Information(EnmEventType.Other, string.Format("执行FSU升级命令[{0}]", ext.Id), _workContext.User().Id, null);
@@ -1117,8 +1117,7 @@ namespace iPem.Site.Controllers {
                     } else if (nodeType == EnmSSH.Station) {
                         fsus.AddRange(_workContext.Fsus().FindAll(f => f.Current.StationId == id).Select(f => f.Current));
                     } else if (nodeType == EnmSSH.Room) {
-                        var current = _workContext.Rooms().Find(a => a.Current.Id == id);
-                        if (current != null) fsus = current.Fsus;
+                        fsus.AddRange(_workContext.Fsus().FindAll(a => a.Current.RoomId == id).Select(f => f.Current));
                     }
                 }
             }
@@ -1190,8 +1189,7 @@ namespace iPem.Site.Controllers {
                     } else if (nodeType == EnmSSH.Station) {
                         fsus.AddRange(_workContext.Fsus().FindAll(f => f.Current.StationId == id).Select(f => f.Current));
                     } else if (nodeType == EnmSSH.Room) {
-                        var current = _workContext.Rooms().Find(a => a.Current.Id == id);
-                        if (current != null) fsus = current.Fsus;
+                        fsus.AddRange(_workContext.Fsus().FindAll(a => a.Current.RoomId == id).Select(f => f.Current));
                     }
                 }
             }

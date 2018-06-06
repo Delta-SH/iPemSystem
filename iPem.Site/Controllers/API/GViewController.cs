@@ -493,7 +493,7 @@ namespace iPem.Site.Controllers {
                         });
                     }
                 } else if ((int)EnmAPISCObj.Device == type) {
-                    var signals = _signalService.GetSimpleSignalsInDevice(id);
+                    var signals = _signalService.GetAllSignals(id);
                     foreach (var child in signals) {
                         data.Add(new API_GV_SCObj {
                             ID = Common.JoinKeys(id, child.PointId),
@@ -740,7 +740,7 @@ namespace iPem.Site.Controllers {
                 if (curGroup == null) throw new iPemException("未找到SC采集组");
                 if (!curGroup.Status) throw new iPemException("SC通信中断");
 
-                var signals = _signalService.GetSimpleSignals(new Kv<string, string>[] { new Kv<string, string>(device, point) });
+                var signals = _signalService.GetAllSignals(new Kv<string, string>[] { new Kv<string, string>(device, point) });
                 if (signals.Count == 0) throw new iPemException("未找到信号");
                 var curPoint = signals.First();
 

@@ -20,8 +20,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属机房")]
         public string room { get; set; }
 
-        [ExcelDisplayName("所属设备")]
-        public string device { get; set; }
+        [ExcelIgnore]
+        public string id { get; set; }
+
+        [ExcelDisplayName("电池组名")]
+        public string name { get; set; }
+
+        [ExcelDisplayName("电池组号")]
+        public int pack { get; set; }
 
         [ExcelDisplayName("开始时间")]
         public string start { get; set; }
@@ -31,9 +37,6 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("放电时长")]
         public string interval { get; set; }
-
-        [ExcelIgnore]
-        public string deviceid { get; set; }
 
         [ExcelIgnore]
         public string proctime { get; set; }

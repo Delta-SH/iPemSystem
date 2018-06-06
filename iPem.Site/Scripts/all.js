@@ -2409,7 +2409,6 @@ window.$$iPems.SSH = { Root: -1, Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4
 window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
 window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
 window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
-window.$$iPems.Period = { Year: 0, Month: 1, Week: 2, Day: 3 };
 window.$$iPems.Result = { Undefine: -1, Failure: 0, Success: 1 };
 
 window.$$iPems.GetStateCls = function (value) {
@@ -2945,31 +2944,31 @@ window.$$iPems.Tasks = {
         energyTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 300000,
-            repeat: 1
-        }),
-        unconnectedTask: Ext.util.TaskManager.newTask({
-            run: Ext.emptyFn,
-            fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         cuttingTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         powerTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         offTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
+            repeat: 1
+        }),
+        consumptionTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 300000,
             repeat: 1
         })
     },
@@ -3765,6 +3764,95 @@ Ext.define("Ext.ux.ComputeComboBox", {
     }
 });
 
+Ext.define("Ext.ux.PeriodComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "PeriodCombo",
+    fieldLabel: '统计周期',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    year: true,
+    month: true,
+    week: true,
+    day: true,
+    hour: true,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetPeriods';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { year: me.year, month: me.month, week: me.week, day: me.day, hour: me.hour },
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
+Ext.define("Ext.ux.EnergyMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "EnergyMultiCombo",
+    fieldLabel: '能耗分类',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    tt: false,
+    pue: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetEnergys';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { tt: me.tt, pue: me.pue }
+        });
+    }
+});
+
+Ext.define("Ext.ux.EnergyComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "EnergyComboBox",
+    fieldLabel: '能耗分类',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    tt: false,
+    pue: false,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetEnergys';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            params: { tt: me.tt, pue: me.pue },
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
 /* ========================================================================
  * Components: ImageExporterComponent.js
  * /Scripts/components/ImageExporterComponent.js
@@ -4125,6 +4213,54 @@ Ext.define("Ext.ux.PointTreePanel", {
     }
 });
 
+Ext.define("Ext.ux.VsCategoryMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "VsCategoryMultiCombo",
+    fieldLabel: '信号分类',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetVSignalCategories';
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.VsCategoryComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "VsCategoryCombo",
+    fieldLabel: '信号分类',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetVSignalCategories';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});
+
 /* ========================================================================
  * Components: PointTypeComponent.js
  * /Scripts/components/PointTypeComponent.js
@@ -4144,11 +4280,19 @@ Ext.define("Ext.ux.PointTypeMultiCombo", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    _ai: true,
+    _ao: true,
+    _di: true,
+    _do: true,
+    _al: true,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetPointTypes';
         me.callParent(arguments);
-        me.store.load();
+        me.store.load({
+            scope: me,
+            params: { _ai: me._ai, _ao: me._ao, _di: me._di, _do: me._do, _al: me._al }
+        });
     }
 });
 
@@ -4165,12 +4309,18 @@ Ext.define("Ext.ux.PointTypeComboBox", {
     forceSelection: true,
     labelWidth: 60,
     width: 220,
+    _ai: true,
+    _ao: true,
+    _di: true,
+    _do: true,
+    _al: true,
     initComponent: function () {
         var me = this;
         me.storeUrl = '/Component/GetPointTypes';
         me.callParent(arguments);
         me.store.load({
             scope: me,
+            params: { _ai: me._ai, _ao: me._ao, _di: me._di, _do: me._do, _al: me._al },
             callback: function (records, operation, success) {
                 if (success && records.length > 0)
                     me.select(records[0]);

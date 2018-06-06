@@ -16,11 +16,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("办公")]
         public double bg { get; set; }
 
-        [ExcelDisplayName("设备")]
-        public double sb { get; set; }
+        [ExcelDisplayName("IT设备")]
+        public double it { get; set; }
 
         [ExcelDisplayName("开关电源")]
-        public double kgdy { get; set; }
+        public double dy { get; set; }
 
         [ExcelDisplayName("UPS")]
         public double ups { get; set; }
@@ -29,7 +29,7 @@ namespace iPem.Site.Models {
         public double qt { get; set; }
 
         [ExcelDisplayName("总能耗")]
-        public double zl { get; set; }
+        public double tt { get; set; }
 
         [ExcelDisplayName("PUE")]
         public double pue { get; set; }

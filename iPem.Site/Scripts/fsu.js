@@ -172,11 +172,11 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
         text: 'FTP',
         align: 'center',
         dataIndex: 'id',
-        width: 200,
+        width: 250,
         renderer: function (value, p, record) {
             if (Ext.isEmpty(value)) return Ext.emptyString;
-            if (record.get('_status') === false) return "--";
-            return '<a data="logger" class="grid-link" href="javascript:void(0);">日志</a><span class="grid-link-split">|</span><a data="config" class="grid-link" href="javascript:void(0);">参数</a><span class="grid-link-split">|</span><a data="alarm" class="grid-link" href="javascript:void(0);">告警</a><span class="grid-link-split">|</span><a data="measurement" class="grid-link" href="javascript:void(0);">性能</a>';
+            //if (record.get('_status') === false) return "--";
+            return '<a data="logger" class="grid-link" href="javascript:void(0);">日志</a><span class="grid-link-split">|</span><a data="config" class="grid-link" href="javascript:void(0);">参数</a><span class="grid-link-split">|</span><a data="alarm" class="grid-link" href="javascript:void(0);">告警</a><span class="grid-link-split">|</span><a data="measurement" class="grid-link" href="javascript:void(0);">性能</a><span class="grid-link-split">|</span><a data="fsupgrade" class="grid-link" href="javascript:void(0);">升级</a>';
         }
     }, {
         text: '操作',
@@ -185,7 +185,7 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
         width: 150,
         renderer: function (value, p, record) {
             if (Ext.isEmpty(value)) return Ext.emptyString;
-            if (record.get('_status') === false) return "--";
+            //if (record.get('_status') === false) return "--";
             return '<a data="setting" class="grid-link" href="javascript:void(0);">配置</a><span class="grid-link-split">|</span><a data="upgrade" class="grid-link" href="javascript:void(0);">升级</a><span class="grid-link-split">|</span><a data="reboot" class="grid-link" href="javascript:void(0);">重启</a>';
         }
     }],
@@ -208,6 +208,8 @@ var currentLayout = Ext.create('Ext.grid.Panel', {
                             alarm(id);
                         } else if (operate == 'measurement') {
                             measurement(id);
+                        } else if (operate == 'fsupgrade') {
+                            fsupgrade(id);
                         } else if (operate == 'setting') {
                             setting(id);
                         } else if (operate == 'upgrade') {
@@ -789,13 +791,13 @@ var iframe = Ext.create('Ext.ux.IFrame', {
 });
 
 var ftpWin = Ext.create('Ext.window.Window', {
-    header:false,
+    header: false,
     height: 600,
     width: 850,
     modal: true,
     border: false,
     hidden: true,
-    shadow : false,
+    shadow: false,
     closeAction: 'hide',
     resizable: {
         transparent: true
@@ -865,6 +867,16 @@ var measurement = function (id) {
     });
 }
 
+var fsupgrade = function (id) {
+    if (Ext.isEmpty(id)) return false;
+    ftpWin.show(null, function () {
+        if (iframe.rendered) {
+            iframe.src = Ext.String.format('/Ftp/FsuUpgrade?title={0}&fsu={1}', encodeURI('FSU升级文件管理'), id);
+            iframe.load();
+        }
+    });
+}
+
 var setting = function (id) {
     if (Ext.isEmpty(id)) return false;
     var fsu_userForm = Ext.getCmp('fsu_userForm'),
@@ -903,7 +915,7 @@ var upgrade = function (record) {
     upgradeWin.show();
 };
 
-var reboot = function(id) {
+var reboot = function (id) {
     if (Ext.isEmpty(id)) return false;
     Ext.Msg.confirm('确认对话框', '您确认要重启吗？', function (buttonId, text) {
         if (buttonId === 'yes') {

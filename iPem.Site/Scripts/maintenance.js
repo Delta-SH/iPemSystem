@@ -175,7 +175,7 @@
         store: currentStore,
         bbar: currentPagingToolbar,
         dockedItems: [alarmToolbar],
-        flex:1,
+        flex: 1,
         viewConfig: {
             loadMask: false,
             stripeRows: true,
@@ -245,7 +245,7 @@
                 dataIndex: 'area'
             },
             {
-                text: '代维厂家',
+                text: '代维公司',
                 dataIndex: 'supporter'
             },
             {

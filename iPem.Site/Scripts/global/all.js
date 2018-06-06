@@ -282,7 +282,6 @@ window.$$iPems.SSH = { Root: -1, Area: 0, Station: 1, Room: 2, Fsu: 3, Device: 4
 window.$$iPems.Point = { AL: 0, DO: 1, AO: 2, AI: 3, DI: 4 };
 window.$$iPems.State = { Normal: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4, Opevent: 5, Invalid: 6 };
 window.$$iPems.Level = { Level0: 0, Level1: 1, Level2: 2, Level3: 3, Level4: 4 };
-window.$$iPems.Period = { Year: 0, Month: 1, Week: 2, Day: 3 };
 window.$$iPems.Result = { Undefine: -1, Failure: 0, Success: 1 };
 
 window.$$iPems.GetStateCls = function (value) {
@@ -818,31 +817,31 @@ window.$$iPems.Tasks = {
         energyTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 300000,
-            repeat: 1
-        }),
-        unconnectedTask: Ext.util.TaskManager.newTask({
-            run: Ext.emptyFn,
-            fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         cuttingTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         powerTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
             repeat: 1
         }),
         offTask: Ext.util.TaskManager.newTask({
             run: Ext.emptyFn,
             fireOnStart: true,
-            interval: 15000,
+            interval: 60000,
+            repeat: 1
+        }),
+        consumptionTask: Ext.util.TaskManager.newTask({
+            run: Ext.emptyFn,
+            fireOnStart: true,
+            interval: 300000,
             repeat: 1
         })
     },

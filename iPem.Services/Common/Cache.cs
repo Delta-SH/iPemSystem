@@ -73,13 +73,25 @@ namespace iPem.Services.Common {
         public const string Report_400202 = @"ipems:report:{0}:400202";
         public const string Report_400203 = @"ipems:report:{0}:400203";
         public const string Report_400204 = @"ipems:report:{0}:400204";
-        public const string Report_400207 = @"ipems:report:{0}:400207";
-        public const string Report_400208 = @"ipems:report:{0}:400208";
+        public const string Report_400207_1 = @"ipems:report:{0}:400207_1";
+        public const string Report_400207_2 = @"ipems:report:{0}:400207_2";
+        public const string Report_400208_1 = @"ipems:report:{0}:400208_1";
+        public const string Report_400208_2 = @"ipems:report:{0}:400208_2";
+        public const string Report_400208_3 = @"ipems:report:{0}:400208_3";
         public const string Report_400210 = @"ipems:report:{0}:400210";
         public const string Report_400211 = @"ipems:report:{0}:400211";
+        public const string Report_400303 = @"ipems:report:{0}:400303";
         public const string Report_400401 = @"ipems:report:{0}:{1}:400401";
         public const string Report_400402 = @"ipems:report:{0}:{1}:400402";
         public const string Report_400403 = @"ipems:report:{0}:{1}:400403";
+        public const string Report_400404 = @"ipems:report:{0}:400404";
+        public const string Report_400405 = @"ipems:report:{0}:400405";
+        public const string Report_500302 = @"ipems:report:{0}:500302";
+        public const string Report_500303 = @"ipems:report:{0}:500303";
+        public const string Report_500304 = @"ipems:report:{0}:500304";
+        public const string Report_500305 = @"ipems:report:{0}:500305";
+        public const string Report_500306 = @"ipems:report:{0}:500306";
+        public const string Report_500307 = @"ipems:report:{0}:500307";
 
         /// <summary>
         /// Fsu应用缓存

@@ -111,10 +111,10 @@
     <Compile Include="Domain\Cs\H_CardRecord.cs" />
     <Compile Include="Domain\Cs\H_DBScript.cs" />
     <Compile Include="Domain\Cs\H_IArea.cs" />
+    <Compile Include="Domain\Cs\V_ACabinet.cs" />
     <Compile Include="Domain\Cs\V_BatCurve.cs" />
     <Compile Include="Domain\Cs\V_BatTime.cs" />
-    <Compile Include="Domain\Cs\V_Cuted.cs" />
-    <Compile Include="Domain\Cs\V_Cutting.cs" />
+    <Compile Include="Domain\Cs\V_Offline.cs" />
     <Compile Include="Domain\Cs\V_Elec.cs" />
     <Compile Include="Domain\Cs\H_FsuEvent.cs" />
     <Compile Include="Domain\Cs\V_Load.cs" />
@@ -129,6 +129,7 @@
     <Compile Include="Domain\Rs\D_RedefinePoint.cs" />
     <Compile Include="Domain\Rs\D_Signal.cs" />
     <Compile Include="Domain\Rs\D_SimpleSignal.cs" />
+    <Compile Include="Domain\Rs\D_VSignal.cs" />
     <Compile Include="Domain\Rs\H_Masking.cs" />
     <Compile Include="Domain\Rs\H_Note.cs" />
     <Compile Include="Domain\Rs\M_Authorization.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="NPOI\ExcelConverter.cs" />
     <Compile Include="NPOI\ExcelManager.cs" />
     <Compile Include="NPOI\IExcelManager.cs" />
+    <Compile Include="Period.cs" />
     <Compile Include="Task\ITask.cs" />
     <Compile Include="IWebHelper.cs" />
     <Compile Include="PagedList.cs" />

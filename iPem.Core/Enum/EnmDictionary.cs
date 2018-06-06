@@ -44,25 +44,57 @@ namespace iPem.Core.Enum {
         /// </summary>
         BG,
         /// <summary>
-        /// IT设备
-        /// </summary>
-        SB,
-        /// <summary>
         /// 开关电源
         /// </summary>
-        KGDY,
+        DY,
         /// <summary>
         /// UPS
         /// </summary>
         UPS,
         /// <summary>
+        /// IT设备
+        /// </summary>
+        IT,
+        /// <summary>
         /// 其他
         /// </summary>
         QT,
         /// <summary>
-        /// 总量
+        /// 总计
         /// </summary>
-        ZL
+        TT,
+        /// <summary>
+        /// PUE
+        /// </summary>
+        PUE,
+        /// <summary>
+        /// 停电标识
+        /// </summary>
+        TD,
+        /// <summary>
+        /// 温度标识
+        /// </summary>
+        WD,
+        /// <summary>
+        /// 湿度标识
+        /// </summary>
+        SD,
+        /// <summary>
+        /// 发电标识
+        /// </summary>
+        FD,
+        /// <summary>
+        /// 发电量
+        /// </summary>
+        FDL,
+        /// <summary>
+        /// 变压器
+        /// </summary>
+        BY,
+        /// <summary>
+        /// 线损
+        /// </summary>
+        XS
     }
 
     /// <summary>
@@ -70,12 +102,12 @@ namespace iPem.Core.Enum {
     /// </summary>
     public enum EnmCompute {
         /// <summary>
-        /// 电表电度
+        /// 电度
         /// </summary>
-        Diff,
+        Kwh,
         /// <summary>
-        /// 电压电流
+        /// 功率
         /// </summary>
-        Avg
+        Power
     }
 }

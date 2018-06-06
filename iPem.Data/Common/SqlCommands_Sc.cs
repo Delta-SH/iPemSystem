@@ -87,12 +87,13 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_M_Formula_Repository_GetFormula = @"SELECT * FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;";
         public const string Sql_M_Formula_Repository_GetFormulas = @"SELECT * FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type;";
-        public const string Sql_M_Formula_Repository_GetAllFormulas = @"SELECT * FROM [dbo].[M_Formulas];";
+        public const string Sql_M_Formula_Repository_GetAllFormulas = @"SELECT * FROM [dbo].[M_Formulas] ORDER BY [Type],[Id],[FormulaType];";
         public const string Sql_M_Formula_Repository_Save = @"
-        UPDATE [dbo].[M_Formulas] SET [ComputeType]=@ComputeType,[Formula]=@Formula,[Comment]=@Comment,[CreatedTime]=@CreatedTime WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;
-        IF(@@ROWCOUNT = 0)
+        DELETE FROM [dbo].[M_Formulas] WHERE [Id]=@Id AND [Type]=@Type AND [FormulaType]=@FormulaType;
+        IF(@FormulaValue IS NOT NULL)
         BEGIN
-	        INSERT INTO [dbo].[M_Formulas]([Id],[Type],[FormulaType],[ComputeType],[Formula],[Comment],[CreatedTime]) VALUES(@Id,@Type,@FormulaType,@ComputeType,@Formula,@Comment,@CreatedTime);
+	        INSERT INTO [dbo].[M_Formulas]([Id],[Type],[FormulaType],[ComputeType],[FormulaText],[FormulaValue],[Comment]) 
+	        VALUES(@Id,@Type,@FormulaType,@ComputeType,@FormulaText,@FormulaValue,@Comment);
         END";
 
         /// <summary>
@@ -140,21 +141,24 @@ namespace iPem.Data.Common {
         /// </summary>
         public const string Sql_U_EntitiesInRole_Repository_GetEntitiesInRole = @"
         SELECT * FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@RoleId;
+        SELECT * FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_AreasInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_StationsInRoles] WHERE [RoleId]=@RoleId;
         SELECT * FROM [dbo].[U_RoomsInRoles] WHERE [RoleId]=@RoleId;
-        SELECT * FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;";
+        SELECT * FROM [dbo].[U_DevicesInRoles] WHERE [RoleId]=@RoleId;";
         public const string Sql_U_EntitiesInRole_Repository_Insert1 = @"INSERT INTO [dbo].[U_MenusInRoles]([RoleId],[MenuId]) VALUES(@RoleId,@MenuId);";
-        public const string Sql_U_EntitiesInRole_Repository_Insert2 = @"INSERT INTO [dbo].[U_AreasInRoles]([RoleId],[AreaId]) VALUES(@RoleId,@AreaId);";
-        public const string Sql_U_EntitiesInRole_Repository_Insert3 = @"INSERT INTO [dbo].[U_StationsInRoles]([RoleId],[StationId]) VALUES(@RoleId,@StationId);";
-        public const string Sql_U_EntitiesInRole_Repository_Insert4 = @"INSERT INTO [dbo].[U_RoomsInRoles]([RoleId],[RoomId]) VALUES(@RoleId,@RoomId);";
-        public const string Sql_U_EntitiesInRole_Repository_Insert5 = @"INSERT INTO [dbo].[U_PermissionsInRoles]([RoleId],[Permission]) VALUES(@RoleId, @Permission);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert2 = @"INSERT INTO [dbo].[U_PermissionsInRoles]([RoleId],[Permission]) VALUES(@RoleId, @Permission);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert3 = @"INSERT INTO [dbo].[U_AreasInRoles]([RoleId],[NodeId]) VALUES(@RoleId,@NodeId);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert4 = @"INSERT INTO [dbo].[U_StationsInRoles]([RoleId],[NodeId]) VALUES(@RoleId,@NodeId);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert5 = @"INSERT INTO [dbo].[U_RoomsInRoles]([RoleId],[NodeId]) VALUES(@RoleId,@NodeId);";
+        public const string Sql_U_EntitiesInRole_Repository_Insert6 = @"INSERT INTO [dbo].[U_DevicesInRoles]([RoleId],[NodeId]) VALUES(@RoleId,@NodeId);";
         public const string Sql_U_EntitiesInRole_Repository_Delete = @"
         DELETE FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@RoleId;
+        DELETE FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;
         DELETE FROM [dbo].[U_AreasInRoles] WHERE [RoleId]=@RoleId;
         DELETE FROM [dbo].[U_StationsInRoles] WHERE [RoleId]=@RoleId;
         DELETE FROM [dbo].[U_RoomsInRoles] WHERE [RoleId]=@RoleId;
-        DELETE FROM [dbo].[U_PermissionsInRoles] WHERE [RoleId]=@RoleId;";
+        DELETE FROM [dbo].[U_DevicesInRoles] WHERE [RoleId]=@RoleId;";
 
         /// <summary>
         /// 用户自定义信息表
@@ -176,8 +180,8 @@ namespace iPem.Data.Common {
         public const string Sql_U_Role_Repository_GetRoleByName = @"SELECT * FROM [dbo].[U_Roles] WHERE [Name]=@Name;";
         public const string Sql_U_Role_Repository_GetRoleByUid = @"SELECT UR.* FROM [dbo].[U_Roles] UR INNER JOIN [dbo].[U_UsersInRoles] UIR ON UR.[Id] = UIR.[RoleId] WHERE UIR.[UserId] = @UserId;";
         public const string Sql_U_Role_Repository_GetRoles = @"SELECT * FROM [dbo].[U_Roles] ORDER BY [Name];";
-        public const string Sql_U_Role_Repository_Insert = @"INSERT INTO [dbo].[U_Roles]([Id],[Name],[Comment],[Enabled]) VALUES(@Id,@Name,@Comment,@Enabled);";
-        public const string Sql_U_Role_Repository_Update = @"UPDATE [dbo].[U_Roles] SET [Name] = @Name,[Comment] = @Comment,[Enabled] = @Enabled WHERE [Id]=@Id;";
+        public const string Sql_U_Role_Repository_Insert = @"INSERT INTO [dbo].[U_Roles]([Id],[Name],[Type],[Comment],[Enabled],[Config],[ValuesJson]) VALUES(@Id,@Name,@Type,@Comment,@Enabled,@Config,@ValuesJson);";
+        public const string Sql_U_Role_Repository_Update = @"UPDATE [dbo].[U_Roles] SET [Name] = @Name,[Type] = @Type,[Comment] = @Comment,[Enabled] = @Enabled,[Config] = @Config,[ValuesJson] = @ValuesJson WHERE [Id]=@Id;";
         public const string Sql_U_Role_Repository_Delete = @"
         DELETE FROM [dbo].[U_UsersInRoles] WHERE [RoleId]=@Id;
         DELETE FROM [dbo].[U_MenusInRoles] WHERE [RoleId]=@Id;

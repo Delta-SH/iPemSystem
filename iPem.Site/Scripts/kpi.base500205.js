@@ -69,7 +69,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '已完成放电基站蓄电池后备时长合格基站数量',
+        text: '蓄电池后备时长合格基站数量',
         dataIndex: 'count',
         width: 150,
         align: 'left',

@@ -13,8 +13,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("所属区域")]
         public string area { get; set; }
 
-        [ExcelDisplayName("所属站点")]
-        public string station { get; set; }
+        [ExcelIgnore]
+        public string id { get; set; }
+
+        [ExcelDisplayName("站点名称")]
+        public string name { get; set; }
 
         [ExcelDisplayName("站点类型")]
         public string type { get; set; }
@@ -24,9 +27,6 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("放电时长")]
         public string interval { get; set; }
-
-        [ExcelIgnore]
-        public string stationid { get; set; }
 
         [JsonIgnore]
         [ExcelIgnore]

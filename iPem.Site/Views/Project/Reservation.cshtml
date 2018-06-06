@@ -4,5 +4,5 @@
         window.$$iPems.CheckOperation = @((ViewBag.Check ?? false) ? 1 : 0) === 1;
     </script>
 
-    <script src="@Url.Content("~/Scripts/project.reservation.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/project.reservation.js?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" type="text/javascript"></script>
 }

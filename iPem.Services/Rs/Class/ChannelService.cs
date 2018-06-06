@@ -51,10 +51,13 @@ namespace iPem.Services.Rs {
         public List<V_Channel> GetChannels() {
             var key = GlobalCacheKeys.Rs_ChannelsRepository;
             if (_cacheManager.IsSet(key)) {
-                return _cacheManager.GetItemsFromList<V_Channel>(key).ToList();
+                return _cacheManager.GetAllFromHash<V_Channel>(key).ToList();
             } else {
                 var data = _repository.GetEntities();
-                _cacheManager.AddItemsToList(key, data);
+                var groups = data.GroupBy(d => d.CameraId);
+                foreach (var group in groups) {
+                    _cacheManager.SetInHash(key, group.Key, group.ToList());
+                }
                 return data;
             }
         }

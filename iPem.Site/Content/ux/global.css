@@ -126,12 +126,20 @@
 
 .x-toolbar-footer {
     background: #f8f8f8 none repeat scroll 0 0;
+}
+
+.x-tabpanel-child > .x-toolbar-footer {
     border-top: 1px solid #c0c0c0 !important;
     border-right: 0 none;
     border-bottom: 0 none;
     border-left: 0 none;
-    margin: 0;
-    padding: 6px 0 6px 6px;
+}
+
+.x-box-item > .x-toolbar-footer {
+    border-top: 0 none;
+    border-right: 1px solid #c0c0c0 !important;
+    border-bottom: 1px solid #c0c0c0 !important;
+    border-left: 1px solid #c0c0c0 !important;
 }
 
 .x-layout-split-left,
@@ -181,4 +189,8 @@
 
 .x-fx-trigger {
   background-image: url('images/fx-trigger.png');
+}
+
+.x-wd-trigger {
+  background-image: url('images/wd-trigger.png');
 }

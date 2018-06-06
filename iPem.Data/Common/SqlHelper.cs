@@ -218,6 +218,7 @@ namespace iPem.Data.Common {
             if(conn.State != ConnectionState.Open) { conn.Open(); }
             cmd.Connection = conn;
             cmd.CommandText = cmdText;
+            cmd.CommandTimeout = 1800;
 
             if(trans != null) { cmd.Transaction = trans; }
             cmd.CommandType = cmdType;

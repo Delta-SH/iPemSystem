@@ -59,24 +59,22 @@
         <small>四级告警</small>
     </div>
 </div>
-<div id="alm-chart" class="almview-almchart">
+<div id="alm-chart" class="almview-bar">
 </div>
-<div id="cpu-chart" class="svrview-cpuchart">
+<div id="cpu-chart" class="cpuview-line">
 </div>
-<div id="memory-chart" class="svrview-memorychart">
+<div id="memory-chart" class="memoryview-line">
 </div>
 <div id="energy-bar" class="energyview-bar">
 </div>
 <div id="energy-pie" class="energyview-pie">
 </div>
-<div id="unconnected-pie" class="unconnectedview-pie">
-</div>
 <div id="cutting-pie" class="cuttingview-pie">
 </div>
-@*<div id="power-pie" class="powerview-pie">
-</div>*@
-<div id="offline-pie" class="offlineview-pie">
+<div id="power-pie" class="powerview-pie">
+</div>
+<div id="fsu-pie" class="fsuview-pie">
 </div>
 @section scripts {
-    <script src="@Url.Content("~/Scripts/home.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/home.js?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" type="text/javascript"></script>
 }

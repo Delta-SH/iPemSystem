@@ -37,18 +37,19 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public U_EntitiesInRole GetEntitiesInRole(string id) {
-            if (id == U_Role.SuperId) {
+            if (U_Role.SuperId.Equals(id)) {
                 var key = GlobalCacheKeys.SSH_Authorizations;
                 if (_cacheManager.IsSet(key)) {
                     return _cacheManager.Get<U_EntitiesInRole>(key);
                 } else {
-                    var auth = new U_EntitiesInRole { RoleId = id, Menus = new List<int>(), Permissions = new List<EnmPermission>(), Areas = new List<string>() };
+                    var auth = new U_EntitiesInRole { RoleId = id, Menus = new List<int>(), Permissions = new List<EnmPermission>(), Authorizations = new List<string>() };
                     foreach (var menu in _menuRepository.GetMenus()) {
                         auth.Menus.Add(menu.Id);
                     }
                     foreach (EnmPermission permission in Enum.GetValues(typeof(EnmPermission))) {
                         auth.Permissions.Add(permission);
                     }
+
                     _cacheManager.Set(key, auth);
                     return auth;
                 }

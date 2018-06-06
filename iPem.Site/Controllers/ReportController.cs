@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -38,8 +39,8 @@ namespace iPem.Site.Controllers {
         private readonly IBrandService _brandService;
         private readonly IHAlarmService _hisAlarmService;
         private readonly IBatService _batService;
-        private readonly IBatCurveService _batCurveService;
-        private readonly IBatTimeService _batTimeService;
+        private readonly IBatCurveService _batcurveService;
+        private readonly IBatTimeService _batimeService;
         private readonly IStaticService _staticService;
         private readonly ISignalService _signalService;
         private readonly IHMeasureService _measureService;
@@ -50,8 +51,9 @@ namespace iPem.Site.Controllers {
         private readonly IProductorService _productorService;
         private readonly ISubCompanyService _subCompanyService;
         private readonly ISupplierService _supplierService;
-        private readonly ICutService _cutService;
+        private readonly IOfflineService _offlineService;
         private readonly ICardRecordService _cardRecordService;
+        private readonly IACabinetService _cabinetService;
 
         #endregion
 
@@ -69,8 +71,8 @@ namespace iPem.Site.Controllers {
             IBrandService brandService,
             IHAlarmService hisAlarmService,
             IBatService batService,
-            IBatCurveService batCurveService,
-            IBatTimeService batTimeService,
+            IBatCurveService batcurveService,
+            IBatTimeService batimeService,
             IStaticService staticService,
             ISignalService signalService,
             IHMeasureService measureService,
@@ -81,8 +83,9 @@ namespace iPem.Site.Controllers {
             IProductorService productorService,
             ISubCompanyService subCompanyService,
             ISupplierService supplierService,
-            ICutService cutService,
-            ICardRecordService cardRecordService) {
+            IOfflineService offlineService,
+            ICardRecordService cardRecordService,
+            IACabinetService cabinetService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -94,8 +97,8 @@ namespace iPem.Site.Controllers {
             this._brandService = brandService;
             this._hisAlarmService = hisAlarmService;
             this._batService = batService;
-            this._batCurveService = batCurveService;
-            this._batTimeService = batTimeService;
+            this._batcurveService = batcurveService;
+            this._batimeService = batimeService;
             this._staticService = staticService;
             this._signalService = signalService;
             this._measureService = measureService;
@@ -106,8 +109,9 @@ namespace iPem.Site.Controllers {
             this._productorService = productorService;
             this._subCompanyService = subCompanyService;
             this._supplierService = supplierService;
-            this._cutService = cutService;
+            this._offlineService = offlineService;
             this._cardRecordService = cardRecordService;
+            this._cabinetService = cabinetService;
         }
 
         #endregion
@@ -1439,16 +1443,48 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400207(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
-            var data = new AjaxDataModel<List<Model400207>> {
+        public JsonResult RequestHistory400207_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400207_1>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<Model400207>()
+                data = new List<Model400207_1>()
             };
 
             try {
-                var models = this.GetHistory400207(parent, types, startDate, endDate, cache);
+                var models = this.GetHistory400207_1(parent, types, startDate, endDate, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistory400207_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400207_2>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400207_2>()
+            };
+
+            try {
+                var models = this.GetHistory400207_2(parent, types, startDate, endDate, cache);
                 if (models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -1472,10 +1508,24 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistory400207(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+        public ActionResult DownloadHistory400207_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             try {
-                var models = this.GetHistory400207(parent, types, startDate, endDate, cache);
-                using (var ms = _excelManager.Export<Model400207>(models, "市电停电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                var models = this.GetHistory400207_1(parent, types, startDate, endDate, cache);
+                using (var ms = _excelManager.Export<Model400207_1>(models, "站点停电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400207_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+            try {
+                var models = this.GetHistory400207_2(parent, types, startDate, endDate, cache);
+                using (var ms = _excelManager.Export<Model400207_2>(models, "机房停电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
@@ -1485,21 +1535,21 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistoryDetail400207(string station, int start, int limit) {
-            var data = new AjaxDataModel<List<ShiDianModel>> {
+        public JsonResult RequestHistoryDetail400207_1(string id, int start, int limit) {
+            var data = new AjaxDataModel<List<DetailModel400207_1>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<ShiDianModel>()
+                data = new List<DetailModel400207_1>()
             };
 
             try {
-                var key = string.Format(GlobalCacheKeys.Report_400207, _workContext.Identifier());
+                var key = string.Format(GlobalCacheKeys.Report_400207_1, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var stores = _cacheManager.Get<List<Model400207>>(key);
+                var stores = _cacheManager.GetItemsFromList<Model400207_1>(key).ToList();
                 if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                    var current = stores.Find(s => s.id.Equals(id));
                     if (current != null) {
                         data.message = "200 Ok";
                         data.total = current.details.Count;
@@ -1509,13 +1559,59 @@ namespace iPem.Site.Controllers {
                             end = current.details.Count;
 
                         for (int i = start; i < end; i++) {
-                            data.data.Add(new ShiDianModel {
+                            data.data.Add(new DetailModel400207_1 {
+                                index = i + 1,
+                                area = current.details[i].area,
+                                name = current.details[i].name,
+                                start = current.details[i].start,
+                                end = current.details[i].end,
+                                interval = current.details[i].interval
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistoryDetail400207_2(string id, int start, int limit) {
+            var data = new AjaxDataModel<List<DetailModel400207_2>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400207_2>()
+            };
+
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400207_2, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var stores = _cacheManager.GetItemsFromList<Model400207_2>(key).ToList();
+                if (stores != null) {
+                    var current = stores.Find(s => s.id.Equals(id));
+                    if (current != null) {
+                        data.message = "200 Ok";
+                        data.total = current.details.Count;
+
+                        var end = start + limit;
+                        if (end > current.details.Count)
+                            end = current.details.Count;
+
+                        for (int i = start; i < end; i++) {
+                            data.data.Add(new DetailModel400207_2 {
                                 index = i + 1,
                                 area = current.details[i].area,
                                 station = current.details[i].station,
+                                name = current.details[i].name,
                                 start = current.details[i].start,
                                 end = current.details[i].end,
-                                timespan = current.details[i].timespan
+                                interval = current.details[i].interval
                             });
                         }
                     }
@@ -1531,30 +1627,65 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistoryDetail400207(string station) {
+        public ActionResult DownloadHistoryDetail400207_1(string id) {
             try {
-                var key = string.Format(GlobalCacheKeys.Report_400207, _workContext.Identifier());
+                var key = string.Format(GlobalCacheKeys.Report_400207_1, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var result = new List<ShiDianModel>();
-                var stores = _cacheManager.Get<List<Model400207>>(key);
+                var result = new List<DetailModel400207_1>();
+                var stores = _cacheManager.GetItemsFromList<Model400207_1>(key).ToList();
                 if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                    var current = stores.Find(s => s.id.Equals(id));
                     if (current != null) {
                         for (int i = 0; i < current.details.Count; i++) {
-                            result.Add(new ShiDianModel {
+                            result.Add(new DetailModel400207_1 {
                                 index = i + 1,
                                 area = current.details[i].area,
-                                station = current.details[i].station,
+                                name = current.details[i].name,
                                 start = current.details[i].start,
                                 end = current.details[i].end,
-                                timespan = current.details[i].timespan
+                                interval = current.details[i].interval
                             });
                         }
                     }
                 }
 
-                using (var ms = _excelManager.Export<ShiDianModel>(result, "市电停电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<DetailModel400207_1>(result, "站点停电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistoryDetail400207_2(string id) {
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400207_2, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var result = new List<DetailModel400207_2>();
+                var stores = _cacheManager.GetItemsFromList<Model400207_2>(key).ToList();
+                if (stores != null) {
+                    var current = stores.Find(s => s.id.Equals(id));
+                    if (current != null) {
+                        for (int i = 0; i < current.details.Count; i++) {
+                            result.Add(new DetailModel400207_2 {
+                                index = i + 1,
+                                area = current.details[i].area,
+                                station = current.details[i].station,
+                                name = current.details[i].name,
+                                start = current.details[i].start,
+                                end = current.details[i].end,
+                                interval = current.details[i].interval
+                            });
+                        }
+                    }
+                }
+
+                using (var ms = _excelManager.Export<DetailModel400207_2>(result, "机房停电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
@@ -1564,16 +1695,16 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistory400208(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
-            var data = new AjaxDataModel<List<Model400208>> {
+        public JsonResult RequestHistory400208_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400208_1>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<Model400208>()
+                data = new List<Model400208_1>()
             };
 
             try {
-                var models = this.GetHistory400208(parent, types, startDate, endDate, cache);
+                var models = this.GetHistory400208_1(parent, types, startDate, endDate, cache);
                 if (models != null && models.Count > 0) {
                     data.message = "200 Ok";
                     data.total = models.Count;
@@ -1597,10 +1728,10 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistory400208(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+        public ActionResult DownloadHistory400208_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             try {
-                var models = this.GetHistory400208(parent, types, startDate, endDate, cache);
-                using (var ms = _excelManager.Export<Model400208>(models, "油机发电统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                var models = this.GetHistory400208_1(parent, types, startDate, endDate, cache);
+                using (var ms = _excelManager.Export<Model400208_1>(models, "站点发电次数统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
@@ -1610,21 +1741,120 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistoryDetail400208(string station, int start, int limit) {
-            var data = new AjaxDataModel<List<ShiDianModel>> {
+        public JsonResult RequestHistory400208_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400208_2>> {
                 success = true,
                 message = "无数据",
                 total = 0,
-                data = new List<ShiDianModel>()
+                data = new List<Model400208_2>()
             };
 
             try {
-                var key = string.Format(GlobalCacheKeys.Report_400208, _workContext.Identifier());
+                var models = this.GetHistory400208_2(parent, types, startDate, endDate, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400208_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+            try {
+                var models = this.GetHistory400208_2(parent, types, startDate, endDate, cache);
+                using (var ms = _excelManager.Export<Model400208_2>(models, "油机发电次数统计信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistory400208_3(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<JObject>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<JObject>()
+            };
+
+            try {
+                var models = this.GetHistory400208_3(parent, period, startDate, endDate, cache);
+                if (models != null && models.Rows.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Rows.Count;
+
+                    var end = start + limit;
+                    if (end > models.Rows.Count)
+                        end = models.Rows.Count;
+
+                    for (int i = start; i < end; i++) {
+                        var row = models.Rows[i];
+                        var jObject = new JObject();
+                        for (int j = 0; j < models.Columns.Count; j++) {
+                            var column = models.Columns[j];
+                            if (column.ExtendedProperties.ContainsKey("JsonIgnore")) continue;
+                            jObject.Add(column.ColumnName, row[j].ToString());
+                        }
+                        data.data.Add(jObject);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistory400208_3(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache) {
+            try {
+                var models = this.GetHistory400208_3(parent, period, startDate, endDate, cache);
+                using (var ms = _excelManager.Export(models, string.Format("油机发电量统计({0})", CommonHelper.PeriodConverter(startDate, endDate)), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistoryDetail400208_1(string id, int start, int limit) {
+            var data = new AjaxDataModel<List<DetailModel400208>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400208>()
+            };
+
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400208_1, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var stores = _cacheManager.Get<List<Model400208>>(key);
+                var stores = _cacheManager.GetItemsFromList<Model400208_1>(key);
                 if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
                     if (current != null) {
                         data.message = "200 Ok";
                         data.total = current.details.Count;
@@ -1634,13 +1864,16 @@ namespace iPem.Site.Controllers {
                             end = current.details.Count;
 
                         for (int i = start; i < end; i++) {
-                            data.data.Add(new ShiDianModel {
+                            data.data.Add(new DetailModel400208 {
                                 index = i + 1,
                                 area = current.details[i].area,
                                 station = current.details[i].station,
+                                room = current.details[i].room,
+                                name = current.details[i].name,
                                 start = current.details[i].start,
                                 end = current.details[i].end,
-                                timespan = current.details[i].timespan
+                                interval = current.details[i].interval,
+                                value = current.details[i].value
                             });
                         }
                     }
@@ -1656,36 +1889,197 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistoryDetail400208(string station) {
+        public ActionResult DownloadHistoryDetail400208_1(string id) {
             try {
-                var key = string.Format(GlobalCacheKeys.Report_400208, _workContext.Identifier());
+                var key = string.Format(GlobalCacheKeys.Report_400208_1, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var result = new List<ShiDianModel>();
-                var stores = _cacheManager.Get<List<Model400208>>(key);
+                var result = new List<DetailModel400208>();
+                var stores = _cacheManager.GetItemsFromList<Model400208_1>(key);
                 if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
                     if (current != null) {
                         for (int i = 0; i < current.details.Count; i++) {
-                            result.Add(new ShiDianModel {
+                            result.Add(new DetailModel400208 {
                                 index = i + 1,
                                 area = current.details[i].area,
                                 station = current.details[i].station,
+                                room = current.details[i].room,
+                                name = current.details[i].name,
                                 start = current.details[i].start,
                                 end = current.details[i].end,
-                                timespan = current.details[i].timespan
+                                interval = current.details[i].interval,
+                                value = current.details[i].value
                             });
                         }
                     }
                 }
 
-                using (var ms = _excelManager.Export<ShiDianModel>(result, "油机发电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                using (var ms = _excelManager.Export<DetailModel400208>(result, "油机发电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestHistoryDetail400208_2(string id, int start, int limit) {
+            var data = new AjaxDataModel<List<DetailModel400208>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<DetailModel400208>()
+            };
+
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400208_2, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var stores = _cacheManager.GetItemsFromList<Model400208_2>(key);
+                if (stores != null) {
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
+                    if (current != null) {
+                        data.message = "200 Ok";
+                        data.total = current.details.Count;
+
+                        var end = start + limit;
+                        if (end > current.details.Count)
+                            end = current.details.Count;
+
+                        for (int i = start; i < end; i++) {
+                            data.data.Add(new DetailModel400208 {
+                                index = i + 1,
+                                area = current.details[i].area,
+                                station = current.details[i].station,
+                                room = current.details[i].room,
+                                name = current.details[i].name,
+                                start = current.details[i].start,
+                                end = current.details[i].end,
+                                interval = current.details[i].interval,
+                                value = current.details[i].value
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadHistoryDetail400208_2(string id) {
+            try {
+                var key = string.Format(GlobalCacheKeys.Report_400208_2, _workContext.Identifier());
+                if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
+
+                var result = new List<DetailModel400208>();
+                var stores = _cacheManager.GetItemsFromList<Model400208_2>(key);
+                if (stores != null) {
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
+                    if (current != null) {
+                        for (int i = 0; i < current.details.Count; i++) {
+                            result.Add(new DetailModel400208 {
+                                index = i + 1,
+                                area = current.details[i].area,
+                                station = current.details[i].station,
+                                room = current.details[i].room,
+                                name = current.details[i].name,
+                                start = current.details[i].start,
+                                end = current.details[i].end,
+                                interval = current.details[i].interval,
+                                value = current.details[i].value
+                            });
+                        }
+                    }
+                }
+
+                using (var ms = _excelManager.Export<DetailModel400208>(result, "油机发电详情", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFields400208_3(EnmPDH period, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<GridColumn>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<GridColumn> {
+                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
+                    new GridColumn { name = "area", type = "string", column = "所属区域", width = 150 },
+                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 150 },
+                    new GridColumn { name = "room", type = "string", column = "所属机房", width = 150 },
+                    new GridColumn { name = "name", type = "string", column = "设备名称", width = 150 }
+                }
+            };
+
+            try {
+                endDate = endDate.AddSeconds(86399);
+                Common.CheckPeriods(startDate, endDate, period);
+
+                var fields = CommonHelper.GetPeriods(startDate, endDate, period);
+                if (fields.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = fields.Count;
+                    foreach (var field in fields) {
+                        data.data.Add(new GridColumn { name = field.Name, type = "string", column = field.Name, align = "left" });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        private DataTable GetDataTable400208_3(EnmPDH period, DateTime start, DateTime end) {
+            var model = new DataTable("DataTable400208_3");
+            var column0 = new DataColumn("index", typeof(int));
+            column0.AutoIncrement = true;
+            column0.AutoIncrementSeed = 1;
+            column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
+            model.Columns.Add(column0);
+
+            var column1 = new DataColumn("area", typeof(string));
+            column1.ExtendedProperties.Add("ExcelDisplayName", "所属区域");
+            model.Columns.Add(column1);
+
+            var column2 = new DataColumn("station", typeof(string));
+            column2.ExtendedProperties.Add("ExcelDisplayName", "所属站点");
+            model.Columns.Add(column2);
+
+            var column3 = new DataColumn("room", typeof(string));
+            column3.ExtendedProperties.Add("ExcelDisplayName", "所属机房");
+            model.Columns.Add(column3);
+
+            var column4 = new DataColumn("name", typeof(string));
+            column4.ExtendedProperties.Add("ExcelDisplayName", "设备名称");
+            model.Columns.Add(column4);
+
+            var dates = CommonHelper.GetPeriods(start, end, period);
+            foreach (var date in dates) {
+                var column = new DataColumn(date.Name, typeof(double));
+                column.DefaultValue = 0;
+                column.ExtendedProperties.Add("Start", date.Start);
+                column.ExtendedProperties.Add("End", date.End);
+                column.ExtendedProperties.Add("ExcelDisplayName", date.Name);
+                model.Columns.Add(column);
+            }
+
+            return model;
         }
 
         [AjaxAuthorize]
@@ -1902,7 +2296,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestHistoryDetail400211(string station, int start, int limit) {
+        public JsonResult RequestHistoryDetail400211(string id, int start, int limit) {
             var data = new AjaxDataModel<List<DetailModel400211>> {
                 success = true,
                 message = "无数据",
@@ -1914,9 +2308,9 @@ namespace iPem.Site.Controllers {
                 var key = string.Format(GlobalCacheKeys.Report_400211, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
-                var stores = _cacheManager.Get<List<Model400211>>(key);
-                if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                var stores = _cacheManager.GetItemsFromList<Model400211>(key);
+                if (stores != null && stores.Any()) {
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
                     if (current != null) {
                         data.message = "200 Ok";
                         data.total = current.details.Count;
@@ -1926,6 +2320,7 @@ namespace iPem.Site.Controllers {
                             end = current.details.Count;
 
                         for (int i = start; i < end; i++) {
+                            current.details[i].index = i + 1;
                             data.data.Add(current.details[i]);
                         }
                     }
@@ -1941,15 +2336,15 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [Authorize]
-        public ActionResult DownloadHistoryDetail400211(string station) {
+        public ActionResult DownloadHistoryDetail400211(string id) {
             try {
                 var key = string.Format(GlobalCacheKeys.Report_400211, _workContext.Identifier());
                 if (!_cacheManager.IsSet(key)) throw new iPemException("缓存已过期，请重新查询。");
 
                 var result = new List<DetailModel400211>();
-                var stores = _cacheManager.Get<List<Model400211>>(key);
-                if (stores != null) {
-                    var current = stores.Find(s => s.stationid == station);
+                var stores = _cacheManager.GetItemsFromList<Model400211>(key);
+                if (stores != null && stores.Any()) {
+                    var current = stores.FirstOrDefault(s => s.id.Equals(id));
                     if (current != null) {
                         result = current.details;
                     }
@@ -1962,56 +2357,6 @@ namespace iPem.Site.Controllers {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
             }
-        }
-
-        [AjaxAuthorize]
-        public JsonResult RequestChart400211(string device, DateTime proctime) {
-            var data = new AjaxDataModel<List<ChartsModel>> {
-                success = true,
-                message = "无数据",
-                total = 0,
-                data = new List<ChartsModel>()
-            };
-
-            try {
-                if (!string.IsNullOrWhiteSpace(device)) {
-                    var curves = _batCurveService.GetProcedures(device, proctime, proctime.AddDays(3));
-                    if (curves.Count > 0) {
-                        var points = _workContext.Points().FindAll(p => p.Type == EnmPoint.AI);
-                        var values = from curve in curves
-                                     group curve by curve.PointId into g
-                                     join point in points on g.Key equals point.Id
-                                     select new { point, curves = g };
-
-                        var index = 0;
-                        foreach (var val in values) {
-                            var model = new ChartsModel {
-                                index = ++index,
-                                name = val.point.Name,
-                                models = new List<ChartModel>()
-                            };
-
-                            var _index = 0;
-                            foreach (var curve in val.curves.OrderBy(c => c.ValueTime)) {
-                                model.models.Add(new ChartModel {
-                                    index = ++_index,
-                                    name = Math.Round(curve.ValueTime.Subtract(proctime).TotalMinutes, 2).ToString(),
-                                    value = curve.Value,
-                                    comment = val.point.UnitState
-                                });
-                            }
-
-                            data.data.Add(model);
-                        }
-                    }
-                }
-            } catch (Exception exc) {
-                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
-                data.success = false;
-                data.message = exc.Message;
-            }
-
-            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [AjaxAuthorize]
@@ -2029,7 +2374,7 @@ namespace iPem.Site.Controllers {
                     var curDevice = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
                     if (curDevice != null) {
                         var curPoints = curDevice.Signals.FindAll(p => points.Contains(p.PointId));
-                        var curValues = _measureService.GetMeasuresInDevice(curDevice.Current.Id, startDate, endDate);
+                        var curValues = _measureService.GetMeasuresInPoints(curDevice.Current.Id, curPoints.Select(p => p.PointId).ToArray(), startDate, endDate);
                         for (var i = 0; i < curPoints.Count; i++) {
                             var values = curValues.FindAll(v => v.PointId == curPoints[i].PointId);
                             var models = new List<ChartModel>();
@@ -2107,7 +2452,53 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult RequestChart400303(string device, string[] points, DateTime starttime, DateTime endtime) {
+        public JsonResult RequestChart400303(string parent, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400303>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400303>()
+            };
+
+            try {
+                var models = this.GetChart400303(parent, startDate, endDate, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadChart400303(string parent, DateTime startDate, DateTime endDate, bool cache) {
+            try {
+                var models = this.GetChart400303(parent, startDate, endDate, cache);
+                using (var ms = _excelManager.Export<Model400303>(models, "电池放电曲线", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestBatteryChart(string id, int pack, DateTime proc, string action) {
             var data = new AjaxDataModel<List<ChartsModel>> {
                 success = true,
                 message = "无数据",
@@ -2116,28 +2507,252 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var nodeKey = Common.ParseNode(device);
-                if (nodeKey.Key == EnmSSH.Device) {
-                    var curDevice = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
-                    if (curDevice != null) {
-                        var curPoints = curDevice.Signals.FindAll(p => points.Contains(p.PointId));
-                        var curValues = _batCurveService.GetValues(curDevice.Current.Id, starttime, endtime);
-                        for (var i = 0; i < curPoints.Count; i++) {
-                            var values = curValues.FindAll(v => v.PointId == curPoints[i].PointId);
-                            var models = new List<ChartModel>();
-                            for (var k = 0; k < values.Count; k++) {
-                                models.Add(new ChartModel {
-                                    index = k + 1,
-                                    name = Math.Round(values[k].ValueTime.Subtract(values[k].StartTime).TotalMinutes, 2).ToString(),
-                                    value = values[k].Value,
-                                    comment = curPoints[i].UnitState
-                                });
-                            }
+                if (string.IsNullOrWhiteSpace(id))
+                    throw new ArgumentNullException("id");
 
-                            data.data.Add(new ChartsModel {
-                                index = i + 1,
-                                name = curPoints[i].PointName,
-                                models = models
+                var curves = new List<V_BatCurve>();
+                if ("zdy".Equals(action)) {
+                    curves = _batcurveService.GetProcedures(id, pack, EnmBatPoint.DCZDY, proc, proc.AddDays(3));
+                } else if ("zdl".Equals(action)) {
+                    curves = _batcurveService.GetProcedures(id, pack, EnmBatPoint.DCZDL, proc, proc.AddDays(3));
+                } else if ("dy".Equals(action)) {
+                    curves = _batcurveService.GetProcedures(id, pack, EnmBatPoint.DCDY, proc, proc.AddDays(3));
+                } else if ("wd".Equals(action)) {
+                    curves = _batcurveService.GetProcedures(id, pack, EnmBatPoint.DCWD, proc, proc.AddDays(3));
+                }
+
+                if (curves.Count > 0) {
+                    var signals = _signalService.GetSimpleSignalsInDevice(id, true, false, false, false, false);
+                    var groups = curves.GroupBy(c => c.PointId);
+                    var values = from gop in groups
+                                 join signal in signals on gop.Key equals signal.PointId
+                                 select new { signal, curves = gop };
+
+                    var index = 0;
+                    foreach (var val in values) {
+                        var model = new ChartsModel {
+                            index = ++index,
+                            name = val.signal.PointName,
+                            models = new List<ChartModel>()
+                        };
+
+                        var _index = 0;
+                        foreach (var curve in val.curves.OrderBy(c => c.ValueTime)) {
+                            model.models.Add(new ChartModel {
+                                index = ++_index,
+                                name = Math.Round(curve.ValueTime.Subtract(curve.ProcTime).TotalMinutes, 2).ToString(),
+                                value = curve.Value,
+                                comment = val.signal.UnitState
+                            });
+                        }
+
+                        data.data.Add(model);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestChart400304_1(string parent, int[] levels, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<ChartsModel>[]> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ChartsModel>[]{ 
+                    new List<ChartsModel>(),
+                    new List<ChartsModel>(),
+                    new List<ChartsModel>(),
+                    new List<ChartsModel>()
+                }
+            };
+
+            try {
+                var alarms = _hisAlarmService.GetAlarms(startDate, endDate);
+                if (levels != null && levels.Length > 0) {
+                    alarms = alarms.FindAll(a => levels.Contains((int)a.AlarmLevel));
+                }
+
+                if (alarms.Count > 0) {
+                    var devices = _workContext.Devices();
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Area) {
+                        var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                        if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                    } else if (nodeKey.Key == EnmSSH.Station) {
+                        devices = devices.FindAll(d => d.Current.StationId.Equals(nodeKey.Value));
+                    } else if (nodeKey.Key == EnmSSH.Room) {
+                        devices = devices.FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                    } else if (nodeKey.Key == EnmSSH.Device) {
+                        devices = devices.FindAll(d => d.Current.Id.Equals(nodeKey.Value));
+                    }
+
+                    var all = from alarm in alarms
+                              join device in devices on alarm.DeviceId equals device.Current.Id
+                              select new { Device = device.Current, Alarm = alarm };
+
+                    if (all.Any()) {
+                        data.message = "200 Ok";
+                        data.total = all.Count();
+
+                        //按设备类型分组
+                        var charts1 = all.GroupBy(a => a.Device.Type.Name);
+                        foreach (var gc in charts1) {
+                            var values = new List<ChartModel>();
+                            values.Add(new ChartModel { index = 1, name = Common.GetAlarmDisplay(EnmAlarm.Level1), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level1) });
+                            values.Add(new ChartModel { index = 2, name = Common.GetAlarmDisplay(EnmAlarm.Level2), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level2) });
+                            values.Add(new ChartModel { index = 3, name = Common.GetAlarmDisplay(EnmAlarm.Level3), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level3) });
+                            values.Add(new ChartModel { index = 4, name = Common.GetAlarmDisplay(EnmAlarm.Level4), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level4) });
+
+                            data.data[0].Add(new ChartsModel {
+                                index = 0,
+                                name = gc.Key,
+                                models = values
+                            });
+                        }
+
+                        //按告警类型分组
+                        var charts2 = all.GroupBy(a => a.Device.LogicType.Name);
+                        foreach (var gc in charts2) {
+                            var values = new List<ChartModel>();
+                            values.Add(new ChartModel { index = 1, name = Common.GetAlarmDisplay(EnmAlarm.Level1), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level1) });
+                            values.Add(new ChartModel { index = 2, name = Common.GetAlarmDisplay(EnmAlarm.Level2), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level2) });
+                            values.Add(new ChartModel { index = 3, name = Common.GetAlarmDisplay(EnmAlarm.Level3), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level3) });
+                            values.Add(new ChartModel { index = 4, name = Common.GetAlarmDisplay(EnmAlarm.Level4), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level4) });
+
+                            data.data[1].Add(new ChartsModel {
+                                index = 1,
+                                name = gc.Key,
+                                models = values
+                            });
+                        }
+
+                        //按告警级别分组
+                        var charts3 = all.GroupBy(a => a.Alarm.AlarmLevel);
+                        foreach (var gc in charts3) {
+                            var values = new List<ChartModel>();
+                            values.Add(new ChartModel { index = 1, name = Common.GetAlarmDisplay(EnmAlarm.Level1), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level1) });
+                            values.Add(new ChartModel { index = 2, name = Common.GetAlarmDisplay(EnmAlarm.Level2), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level2) });
+                            values.Add(new ChartModel { index = 3, name = Common.GetAlarmDisplay(EnmAlarm.Level3), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level3) });
+                            values.Add(new ChartModel { index = 4, name = Common.GetAlarmDisplay(EnmAlarm.Level4), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level4) });
+
+                            data.data[2].Add(new ChartsModel {
+                                index = 2,
+                                name = Common.GetAlarmDisplay(gc.Key),
+                                models = values
+                            });
+                        }
+
+                        //按确认类型分组
+                        var charts4 = all.GroupBy(a => a.Alarm.Confirmed);
+                        foreach (var gc in charts4) {
+                            var values = new List<ChartModel>();
+                            values.Add(new ChartModel { index = 1, name = Common.GetAlarmDisplay(EnmAlarm.Level1), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level1) });
+                            values.Add(new ChartModel { index = 2, name = Common.GetAlarmDisplay(EnmAlarm.Level2), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level2) });
+                            values.Add(new ChartModel { index = 3, name = Common.GetAlarmDisplay(EnmAlarm.Level3), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level3) });
+                            values.Add(new ChartModel { index = 4, name = Common.GetAlarmDisplay(EnmAlarm.Level4), value = gc.Count(a => a.Alarm.AlarmLevel == EnmAlarm.Level4) });
+
+                            data.data[3].Add(new ChartsModel {
+                                index = 3,
+                                name = Common.GetConfirmDisplay(gc.Key),
+                                models = values
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestChart400304_2(string parent, int[] levels, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<ChartModel>[]> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<ChartModel>[]{ 
+                    new List<ChartModel>(),
+                    new List<ChartModel>(),
+                    new List<ChartModel>(),
+                    new List<ChartModel>()
+                }
+            };
+
+            try {
+                var alarms = _hisAlarmService.GetAlarms(startDate, endDate);
+                if (levels != null && levels.Length > 0) {
+                    alarms = alarms.FindAll(a => levels.Contains((int)a.AlarmLevel));
+                }
+
+                if (alarms.Count > 0) {
+                    var devices = _workContext.Devices();
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Area) {
+                        var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                        if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                    } else if (nodeKey.Key == EnmSSH.Station) {
+                        devices = devices.FindAll(d => d.Current.StationId.Equals(nodeKey.Value));
+                    } else if (nodeKey.Key == EnmSSH.Room) {
+                        devices = devices.FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                    } else if (nodeKey.Key == EnmSSH.Device) {
+                        devices = devices.FindAll(d => d.Current.Id.Equals(nodeKey.Value));
+                    }
+
+                    var all = from alarm in alarms
+                              join device in devices on alarm.DeviceId equals device.Current.Id
+                              select new { Device = device.Current, Alarm = alarm };
+
+                    if (all.Any()) {
+                        data.message = "200 Ok";
+                        data.total = all.Count();
+
+                        //按设备类型分组
+                        var charts1 = all.GroupBy(a => a.Device.Type.Name);
+                        foreach (var gc in charts1) {
+                            data.data[0].Add(new ChartModel {
+                                index = 0,
+                                name = gc.Key,
+                                value = gc.Count()
+                            });
+                        }
+
+                        //按告警类型分组
+                        var charts2 = all.GroupBy(a => a.Device.LogicType.Name);
+                        foreach (var gc in charts2) {
+                            data.data[1].Add(new ChartModel {
+                                index = 1,
+                                name = gc.Key,
+                                value = gc.Count()
+                            });
+                        }
+
+                        //按告警级别分组
+                        var charts3 = all.GroupBy(a => a.Alarm.AlarmLevel);
+                        foreach (var gc in charts3) {
+                            data.data[2].Add(new ChartModel {
+                                index = 2,
+                                name = Common.GetAlarmDisplay(gc.Key),
+                                value = gc.Count()
+                            });
+                        }
+
+                        //按确认类型分组
+                        var charts4 = all.GroupBy(a => a.Alarm.Confirmed);
+                        foreach (var gc in charts4) {
+                            data.data[3].Add(new ChartModel {
+                                index = 3,
+                                name = Common.GetConfirmDisplay(gc.Key),
+                                value = gc.Count()
                             });
                         }
                     }
@@ -2505,6 +3120,140 @@ namespace iPem.Site.Controllers {
             }
         }
 
+        [AjaxAuthorize]
+        public JsonResult GetFields400404(EnmPDH period, DateTime startDate, DateTime endDate) {
+            var data = new AjaxDataModel<List<GridColumn>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<GridColumn> {
+                    new GridColumn { name = "index", type = "int", column = "序号", width = 60 },
+                    new GridColumn { name = "area", type = "string", column = "所属区域", width = 150 },
+                    new GridColumn { name = "station", type = "string", column = "所属站点", width = 150 },
+                    new GridColumn { name = "room", type = "string", column = "所属机房", width = 150 },
+                    new GridColumn { name = "name", type = "string", column = "分路编号", width = 150 }
+                }
+            };
+
+            try {
+                endDate = endDate.AddSeconds(86399);
+                Common.CheckPeriods(startDate, endDate, period);
+
+                var fields = CommonHelper.GetPeriods(startDate, endDate, period);
+                if (fields.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = fields.Count;
+                    foreach (var field in fields) {
+                        data.data.Add(new GridColumn { name = field.Name, type = "float", column = field.Name, align = "left" });
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestCustom400404(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<JObject>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<JObject>()
+            };
+
+            try {
+                var models = this.GetCustom400404(parent, period, startDate, endDate, cache);
+                if (models != null && models.Rows.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Rows.Count;
+
+                    var end = start + limit;
+                    if (end > models.Rows.Count)
+                        end = models.Rows.Count;
+
+                    for (int i = start; i < end; i++) {
+                        var row = models.Rows[i];
+                        var jObject = new JObject();
+                        for (int j = 0; j < models.Columns.Count; j++) {
+                            var column = models.Columns[j];
+                            if (column.ExtendedProperties.ContainsKey("JsonIgnore")) continue;
+                            jObject.Add(column.ColumnName, row[j].ToString());
+                        }
+                        data.data.Add(jObject);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadCustom400404(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache) {
+            try {
+                var models = this.GetCustom400404(parent, period, startDate, endDate, cache);
+                using (var ms = _excelManager.Export(models, string.Format("列头柜分路功率信息({0})", CommonHelper.PeriodConverter(startDate, endDate)), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult RequestCustom400405(string parent, string date, bool cache, int start, int limit) {
+            var data = new AjaxDataModel<List<Model400405>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Model400405>()
+            };
+
+            try {
+                var models = this.GetCustom400405(parent, date, cache);
+                if (models != null && models.Count > 0) {
+                    data.message = "200 Ok";
+                    data.total = models.Count;
+
+                    var end = start + limit;
+                    if (end > models.Count)
+                        end = models.Count;
+
+                    for (int i = start; i < end; i++) {
+                        data.data.Add(models[i]);
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadCustom400405(string parent, string date, bool cache) {
+            try {
+                var models = this.GetCustom400405(parent, date, cache);
+                using (var ms = _excelManager.Export<Model400405>(models, string.Format("列头柜分路电量({0})", date), string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
         private List<Model400101> GetBase400101(string parent, int[] types) {
             var index = 0;
             var result = new List<Model400101>();
@@ -2629,7 +3378,7 @@ namespace iPem.Site.Controllers {
                         if (current != null) rooms.AddRange(_workContext.Rooms().FindAll(s => current.Keys.Contains(s.Current.AreaId)).Select(r => r.Current));
                     } else if (nodeType == EnmSSH.Station) {
                         var current = _workContext.Stations().Find(a => a.Current.Id == id);
-                        if (current != null) rooms = current.Rooms;
+                        rooms.AddRange(_workContext.Rooms().FindAll(r => r.Current.StationId == id).Select(r => r.Current));
                     }
                 }
             }
@@ -2702,8 +3451,7 @@ namespace iPem.Site.Controllers {
                     } else if (nodeType == EnmSSH.Station) {
                         devices.AddRange(_workContext.Devices().FindAll(d => d.Current.StationId == id).Select(d => d.Current));
                     } else if (nodeType == EnmSSH.Room) {
-                        var current = _workContext.Rooms().Find(a => a.Current.Id == id);
-                        if (current != null) devices = current.Devices;
+                        devices.AddRange(_workContext.Devices().FindAll(d => d.Current.RoomId == id).Select(d => d.Current));
                     }
                 }
             }
@@ -2751,7 +3499,6 @@ namespace iPem.Site.Controllers {
                     enabled = store.Device.Enabled
                 });
             }
-
             return result;
         }
 
@@ -3007,7 +3754,7 @@ namespace iPem.Site.Controllers {
             if (points != null && points.Length > 0)
                 values = values.FindAll(p => points.Contains(p.PointId));
 
-            var signals = _signalService.GetSimpleSignals(values.Select(v => new Kv<string, string>(v.DeviceId, v.PointId)));
+            var signals = _signalService.GetAllSignals(values.Select(v => new Kv<string, string>(v.DeviceId, v.PointId)));
             if (!string.IsNullOrWhiteSpace(keywords)) {
                 var names = Common.SplitCondition(keywords);
                 if (names.Length > 0) signals = signals.FindAll(p => CommonHelper.ConditionContain(p.PointName, names));
@@ -3468,14 +4215,14 @@ namespace iPem.Site.Controllers {
             return models;
         }
 
-        private List<Model400207> GetHistory400207(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+        private List<Model400207_1> GetHistory400207_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             endDate = endDate.AddSeconds(86399);
 
-            var key = string.Format(GlobalCacheKeys.Report_400207, _workContext.Identifier());
+            var key = string.Format(GlobalCacheKeys.Report_400207_1, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400207>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400207_1>(key).ToList();
 
-            var models = new List<Model400207>();
+            var models = new List<Model400207_1>();
             var stations = _workContext.Stations();
             if (types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -3486,44 +4233,96 @@ namespace iPem.Site.Controllers {
             }
 
             var index = 0;
-            var cutteds = _cutService.GetCuteds(startDate, endDate, EnmCutType.Cut);
+            var offs = _offlineService.GetHistory(EnmSSH.Station, EnmFormula.TD, startDate, endDate);
             foreach (var station in stations) {
-                var details = cutteds.FindAll(a => a.StationId == station.Current.Id);
-                var area = _workContext.Areas().Find(a => a.Current.Id == station.Current.AreaId);
-
-                models.Add(new Model400207 {
+                var details = offs.FindAll(a => a.Id.Equals(station.Current.Id));
+                models.Add(new Model400207_1 {
                     index = ++index,
-                    area = area != null ? area.ToString() : "",
-                    stationid = station.Current.Id,
-                    station = station.Current.Name,
+                    area = station.Current.AreaName,
+                    id = station.Current.Id,
+                    name = station.Current.Name,
                     type = station.Current.Type.Name,
                     count = details.Count,
                     interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
-                    details = details.Select(d => new ShiDianModel {
-                        area = area != null ? area.ToString() : "",
-                        station = station.Current.Name,
+                    details = details.Select(d => new DetailModel400207_1 {
+                        area = station.Current.AreaName,
+                        name = station.Current.Name,
                         start = CommonHelper.DateTimeConverter(d.StartTime),
                         end = CommonHelper.DateTimeConverter(d.EndTime),
-                        timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
+                        interval = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
                     }).ToList()
                 });
             }
 
-            if (cutteds.Count <= GlobalCacheLimit.ReSet_Limit) {
-                _cacheManager.Set(key, models, GlobalCacheInterval.ReSet_Interval);
+            if (offs.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.ReSet_Interval);
             }
 
             return models;
         }
 
-        private List<Model400208> GetHistory400208(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+        private List<Model400207_2> GetHistory400207_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
             endDate = endDate.AddSeconds(86399);
 
-            var key = string.Format(GlobalCacheKeys.Report_400208, _workContext.Identifier());
+            var key = string.Format(GlobalCacheKeys.Report_400207_2, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400208>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400207_2>(key).ToList();
 
-            var models = new List<Model400208>();
+            var models = new List<Model400207_2>();
+            var rooms = _workContext.Rooms();
+            if (types != null && types.Length > 0)
+                rooms = rooms.FindAll(s => types.Contains(s.Current.Type.Id));
+
+
+            if (!string.IsNullOrWhiteSpace(parent) && !"root".Equals(parent)) {
+                var nodeKey = Common.ParseNode(parent);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) rooms = rooms.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    rooms = rooms.FindAll(r => r.Current.StationId.Equals(nodeKey.Value));
+                }
+            }
+
+            var index = 0;
+            var offs = _offlineService.GetHistory(EnmSSH.Room, EnmFormula.TD, startDate, endDate);
+            foreach (var room in rooms) {
+                var details = offs.FindAll(a => a.Id.Equals(room.Current.Id));
+                models.Add(new Model400207_2 {
+                    index = ++index,
+                    area = room.Current.AreaName,
+                    station = room.Current.StationName,
+                    id = room.Current.Id,
+                    name = room.Current.Name,
+                    type = room.Current.Type.Name,
+                    count = details.Count,
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
+                    details = details.Select(d => new DetailModel400207_2 {
+                        area = room.Current.AreaName,
+                        station = room.Current.StationName,
+                        name = room.Current.Name,
+                        start = CommonHelper.DateTimeConverter(d.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.EndTime),
+                        interval = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
+                    }).ToList()
+                });
+            }
+
+            if (offs.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.ReSet_Interval);
+            }
+
+            return models;
+        }
+
+        private List<Model400208_1> GetHistory400208_1(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400208_1, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400208_1>(key).ToList();
+
+            var models = new List<Model400208_1>();
             var stations = _workContext.Stations();
             if (types != null && types.Length > 0)
                 stations = stations.FindAll(s => types.Contains(s.Current.Type.Id));
@@ -3533,35 +4332,157 @@ namespace iPem.Site.Controllers {
                 if (current != null) stations = stations.FindAll(s => current.Keys.Contains(s.Current.AreaId));
             }
 
-            var index = 0;
-            var cutteds = _cutService.GetCuteds(startDate, endDate, EnmCutType.Power);
-            foreach (var station in stations) {
-                var details = cutteds.FindAll(a => a.StationId == station.Current.Id);
-                var area = _workContext.Areas().Find(a => a.Current.Id == station.Current.AreaId);
+            var offlines = _offlineService.GetHistory(EnmSSH.Device, EnmFormula.FD, startDate, endDate);
+            var offdevs = from off in offlines
+                          join dev in _workContext.Devices() on off.Id equals dev.Current.Id
+                          select new { Device = dev.Current, Off = off };
 
-                models.Add(new Model400208 {
+            var index = 0;
+            foreach (var station in stations) {
+                var details = offdevs.Where(o => o.Device.StationId.Equals(station.Current.Id));
+                models.Add(new Model400208_1 {
                     index = ++index,
-                    area = area != null ? area.ToString() : "",
-                    stationid = station.Current.Id,
-                    station = station.Current.Name,
+                    area = station.Current.AreaName,
+                    id = station.Current.Id,
+                    name = station.Current.Name,
                     type = station.Current.Type.Name,
-                    count = details.Count,
-                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
-                    details = details.Select(d => new ShiDianModel {
-                        area = area != null ? area.ToString() : "",
-                        station = station.Current.Name,
-                        start = CommonHelper.DateTimeConverter(d.StartTime),
-                        end = CommonHelper.DateTimeConverter(d.EndTime),
-                        timespan = CommonHelper.IntervalConverter(d.StartTime, d.EndTime)
+                    count = details.Count(),
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Any() ? details.Sum(d => d.Off.EndTime.Subtract(d.Off.StartTime).TotalSeconds) : 0)),
+                    value = details.Sum(d => d.Off.Value).ToString(),
+                    details = details.Select(d => new DetailModel400208 {
+                        area = d.Device.AreaName,
+                        station = d.Device.StationName,
+                        room = d.Device.RoomName,
+                        name = d.Device.Name,
+                        start = CommonHelper.DateTimeConverter(d.Off.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.Off.EndTime),
+                        interval = CommonHelper.IntervalConverter(d.Off.StartTime, d.Off.EndTime),
+                        value = d.Off.Value.ToString()
                     }).ToList()
                 });
             }
 
-            if (cutteds.Count <= GlobalCacheLimit.ReSet_Limit) {
-                _cacheManager.Set(key, models, GlobalCacheInterval.ReSet_Interval);
+            if (offlines.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.ReSet_Interval);
             }
 
             return models;
+        }
+
+        private List<Model400208_2> GetHistory400208_2(string parent, string[] types, DateTime startDate, DateTime endDate, bool cache) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400208_2, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400208_2>(key).ToList();
+
+            var models = new List<Model400208_2>();
+            var rtValues = _workContext.RtValues();
+            if (rtValues == null || rtValues.fdjzLeiXing == null || rtValues.fdjzLeiXing.Length == 0)
+                return models;
+
+            var devices = _workContext.Devices().FindAll(d => rtValues.fdjzLeiXing.Contains(d.Current.SubType.Id));
+            if (types != null && types.Length > 0) devices = devices.FindAll(d => types.Contains(d.Current.SubType.Id));
+
+            if (!string.IsNullOrWhiteSpace(parent) && !"root".Equals(parent)) {
+                var nodeKey = Common.ParseNode(parent);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) devices = devices.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(r => r.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(r => r.Current.RoomId.Equals(nodeKey.Value));
+                }
+            }
+
+            var index = 0;
+            var offlines = _offlineService.GetHistory(EnmSSH.Device, EnmFormula.FD, startDate, endDate);
+            foreach (var device in devices) {
+                var details = offlines.FindAll(o => o.Id.Equals(device.Current.Id));
+                models.Add(new Model400208_2 {
+                    index = ++index,
+                    area = device.Current.AreaName,
+                    station = device.Current.StationName,
+                    room = device.Current.RoomName,
+                    id = device.Current.Id,
+                    name = device.Current.Name,
+                    type = device.Current.Type.Name,
+                    count = details.Count,
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Sum(d => d.EndTime.Subtract(d.StartTime).TotalSeconds))),
+                    value = details.Sum(d => d.Value).ToString(),
+                    details = details.Select(d => new DetailModel400208 {
+                        area = device.Current.AreaName,
+                        station = device.Current.StationName,
+                        room = device.Current.RoomName,
+                        name = device.Current.Name,
+                        start = CommonHelper.DateTimeConverter(d.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.EndTime),
+                        interval = CommonHelper.IntervalConverter(d.StartTime, d.EndTime),
+                        value = d.Value.ToString()
+                    }).ToList()
+                });
+            }
+
+            if (offlines.Count <= GlobalCacheLimit.ReSet_Limit) {
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.ReSet_Interval);
+            }
+
+            return models;
+        }
+
+        private DataTable GetHistory400208_3(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400208_3, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) {
+                var bytes = _cacheManager.Get<byte[]>(key);
+                return CommonHelper.XmlToDt(bytes);
+            }
+
+            var model = this.GetDataTable400208_3(period, startDate, endDate);
+            var rtValues = _workContext.RtValues();
+            if (rtValues == null || rtValues.fdjzLeiXing == null || rtValues.fdjzLeiXing.Length == 0)
+                return model;
+
+            var devices = _workContext.Devices().FindAll(d => rtValues.fdjzLeiXing.Contains(d.Current.SubType.Id));
+            if (!string.IsNullOrWhiteSpace(parent) && !"root".Equals(parent)) {
+                var nodeKey = Common.ParseNode(parent);
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) devices = devices.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(r => r.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(r => r.Current.RoomId.Equals(nodeKey.Value));
+                }
+            }
+
+            var offlines = _offlineService.GetHistory(EnmSSH.Device, EnmFormula.FD, startDate, endDate);
+            foreach (var device in devices) {
+                var details = offlines.FindAll(o => o.Id.Equals(device.Current.Id));
+
+                var row = model.NewRow();
+                row["area"] = device.Current.AreaName;
+                row["station"] = device.Current.StationName;
+                row["room"] = device.Current.RoomName;
+                row["name"] = device.Current.Name;
+                for (var k = 5; k < model.Columns.Count; k++) {
+                    var column = model.Columns[k];
+                    var start = (DateTime)column.ExtendedProperties["Start"];
+                    var end = (DateTime)column.ExtendedProperties["End"];
+                    row[k] = Math.Round(details.Count > 0 ? details.FindAll(c => c.StartTime >= start && c.StartTime <= end).Sum(c => c.Value) : 0, 3, MidpointRounding.AwayFromZero);
+                }
+                model.Rows.Add(row);
+            }
+
+            if (model.Rows.Count <= GlobalCacheLimit.Default_Limit) {
+                var bytes = CommonHelper.DtToXml(model);
+                _cacheManager.Set(key, bytes, GlobalCacheInterval.Site_Interval);
+            }
+
+            return model;
         }
 
         private List<Model400209> GetHistory400209(bool cache, string parent, DateTime startDate, DateTime endDate, int[] recTypes, int keyType, string keywords) {
@@ -3840,7 +4761,7 @@ namespace iPem.Site.Controllers {
 
             var key = string.Format(GlobalCacheKeys.Report_400211, _workContext.Identifier());
             if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
-            if (_cacheManager.IsSet(key)) return _cacheManager.Get<List<Model400211>>(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400211>(key).ToList();
 
             var models = new List<Model400211>();
             var stations = _workContext.Stations();
@@ -3856,60 +4777,107 @@ namespace iPem.Site.Controllers {
             if (stations.Count == 0) return models;
 
             var index = 0;
-            var procedures = _batTimeService.GetProcedures(startDate, endDate);
-            var _procedures = from proc in procedures
-                              join device in _workContext.Devices() on proc.DeviceId equals device.Current.Id
-                              select new { Procedure = proc, Device = device.Current };
+            var procedures = _batimeService.GetProcedures(startDate, endDate);
+            var procdevs = from proc in procedures
+                           join device in _workContext.Devices() on proc.DeviceId equals device.Current.Id
+                           select new { Device = device.Current, Procedure = proc };
 
             foreach (var station in stations) {
-                var area = _workContext.Areas().Find(a => a.Current.Id == station.Current.AreaId);
+                var details = procdevs.Where(a => a.Device.StationId == station.Current.Id);
                 var model = new Model400211 {
                     index = ++index,
-                    area = area != null ? area.ToString() : "",
-                    stationid = station.Current.Id,
-                    station = station.Current.Name,
+                    area = station.Current.AreaName,
+                    id = station.Current.Id,
+                    name = station.Current.Name,
                     type = station.Current.Type.Name,
-                    count = 0,
-                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(0)),
-                    details = new List<DetailModel400211>()
+                    count = details.Count(),
+                    interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(details.Any() ? details.Sum(d => d.Procedure.EndTime.Subtract(d.Procedure.StartTime).TotalSeconds) : 0)),
+                    details = details.Select(d => new DetailModel400211 {
+                        area = d.Device.AreaName,
+                        station = d.Device.StationName,
+                        room = d.Device.RoomName,
+                        id = d.Device.Id,
+                        name = d.Device.Name,
+                        pack = d.Procedure.PackId,
+                        start = CommonHelper.DateTimeConverter(d.Procedure.StartTime),
+                        end = CommonHelper.DateTimeConverter(d.Procedure.EndTime),
+                        interval = CommonHelper.IntervalConverter(d.Procedure.StartTime, d.Procedure.EndTime),
+                        proctime = CommonHelper.DateTimeConverter(d.Procedure.ProcTime)
+                    }).ToList()
                 };
-
-                if (_procedures.Any()) {
-                    var _details = _procedures.Where(a => a.Device.StationId == station.Current.Id);
-                    var _index = 0;
-                    var _interval = 0d;
-                    foreach (var _detail in _details) {
-                        _interval += _detail.Procedure.EndTime.Subtract(_detail.Procedure.StartTime).TotalSeconds;
-                        model.details.Add(new DetailModel400211 {
-                            index = ++_index,
-                            area = model.area,
-                            station = model.station,
-                            room = _detail.Device.RoomName,
-                            device = _detail.Device.Name,
-                            start = CommonHelper.DateTimeConverter(_detail.Procedure.StartTime),
-                            end = CommonHelper.DateTimeConverter(_detail.Procedure.EndTime),
-                            interval = CommonHelper.IntervalConverter(_detail.Procedure.StartTime, _detail.Procedure.EndTime),
-                            deviceid = _detail.Device.Id,
-                            proctime = CommonHelper.DateTimeConverter(_detail.Procedure.ProcTime)
-                        });
-                    }
-
-                    model.count = model.details.Count;
-                    model.interval = CommonHelper.IntervalConverter(TimeSpan.FromSeconds(_interval));
-                }
 
                 models.Add(model);
             }
 
             if (procedures.Count <= GlobalCacheLimit.ReSet_Limit) {
-                _cacheManager.Set(key, models, GlobalCacheInterval.ReSet_Interval);
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.ReSet_Interval);
+            }
+
+            return models;
+        }
+
+        private List<Model400303> GetChart400303(string parent, DateTime startDate, DateTime endDate, bool cache) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400303, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400303>(key).ToList();
+
+            var models = new List<Model400303>();
+            var procedures = new List<V_BatTime>();
+            var nodeKey = Common.ParseNode(parent);
+            if (nodeKey.Key == EnmSSH.Device) {
+                procedures.AddRange(_batimeService.GetProcedures(nodeKey.Value, startDate, endDate));
+            } else {
+                procedures = _batimeService.GetProcedures(startDate, endDate);
+            }
+            if (procedures.Count == 0) return models;
+
+            var devices = _workContext.Devices();
+            if (nodeKey.Key == EnmSSH.Area) {
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) devices = devices.FindAll(d => current.Keys.Contains(d.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(d => d.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Device) {
+                    devices = devices.FindAll(d => d.Current.Id.Equals(nodeKey.Value));
+                }
+            }
+            if (devices.Count == 0) return models;
+
+            var procdevs = from proc in procedures
+                           join device in devices on proc.DeviceId equals device.Current.Id
+                           select new { Device = device.Current, Procedure = proc };
+
+            var index = 0;
+            foreach (var proc in procdevs) {
+                models.Add(new Model400303 {
+                    index = ++index,
+                    area = proc.Device.AreaName,
+                    station = proc.Device.StationName,
+                    room = proc.Device.RoomName,
+                    id = proc.Device.Id,
+                    name = proc.Device.Name,
+                    pack = proc.Procedure.PackId,
+                    start = CommonHelper.DateTimeConverter(proc.Procedure.StartTime),
+                    end = CommonHelper.DateTimeConverter(proc.Procedure.EndTime),
+                    interval = CommonHelper.IntervalConverter(proc.Procedure.StartTime, proc.Procedure.EndTime),
+                    proctime = CommonHelper.DateTimeConverter(proc.Procedure.ProcTime)
+                });
+            }
+
+            if (procedures.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.AddItemsToList(key, models, GlobalCacheInterval.Site_Interval);
             }
 
             return models;
         }
 
         private List<Kv<M_Reservation, HashSet<string>>> GetReservationsInDevices(DateTime start, DateTime end) {
-            var entities = _reservationService.GetPagedReservationsInSpan(start, end);
+            var entities = _reservationService.GetReservationsInSpan(start, end).FindAll(r => r.Status == EnmResult.Success);
             return this.GetReservationsInDevices(entities);
         }
 
@@ -3930,11 +4898,9 @@ namespace iPem.Site.Controllers {
                     }
 
                     if (node.NodeType == EnmSSH.Room) {
-                        var current = _workContext.Rooms().Find(r => r.Current.Id == node.NodeId);
-                        if (current != null) {
-                            foreach (var device in current.Devices) {
-                                appSet.Value.Add(device.Id);
-                            }
+                        var devices = _workContext.Devices().FindAll(d => d.Current.RoomId == node.NodeId);
+                        foreach (var device in devices) {
+                            appSet.Value.Add(device.Current.Id);
                         }
                     }
 
@@ -4304,6 +5270,230 @@ namespace iPem.Site.Controllers {
             }
 
             return new Kv<List<AlmStore<A_HAlarm>>, List<ChartsModel>>(stores, charts);
+        }
+
+        private DataTable GetCustom400404(string parent, EnmPDH period, DateTime startDate, DateTime endDate, bool cache) {
+            endDate = endDate.AddSeconds(86399);
+
+            var key = string.Format(GlobalCacheKeys.Report_400404, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) {
+                var bytes = _cacheManager.Get<byte[]>(key);
+                return CommonHelper.XmlToDt(bytes);
+            }
+
+            var model = this.GetDataTable400404(period, startDate, endDate);
+            if (string.IsNullOrWhiteSpace(parent))
+                return model;
+
+            var nodeKey = Common.ParseNode(parent);
+            if (nodeKey.Key == EnmSSH.Device) {
+                var current = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
+                if (current == null) return model;
+                var signals = _signalService.GetVSignals(nodeKey.Value, EnmVSignalCategory.Category03);
+                if (signals.Count == 0) return model;
+                var values = _cabinetService.GetHistory(nodeKey.Value, EnmVSignalCategory.Category03, startDate, endDate);
+                foreach (var signal in signals) {
+                    var details = values.FindAll(v => v.DeviceId.Equals(signal.DeviceId) && v.PointId.Equals(signal.PointId));
+
+                    var row = model.NewRow();
+                    row["area"] = current.Current.AreaName;
+                    row["station"] = current.Current.StationName;
+                    row["room"] = current.Current.RoomName;
+                    row["name"] = signal.Name;
+                    for (var k = 5; k < model.Columns.Count; k++) {
+                        var column = model.Columns[k];
+                        var start = (DateTime)column.ExtendedProperties["Start"];
+                        var end = (DateTime)column.ExtendedProperties["End"];
+
+                        var _values = 0d;
+                        var _details = details.FindAll(d => d.ValueTime >= start && d.ValueTime <= end);
+                        if (_details.Count > 0) _values = Math.Round(_details.Average(d => d.Value), 2, MidpointRounding.AwayFromZero);
+                        row[k] = _values;
+                    }
+                    model.Rows.Add(row);
+                }
+            } else {
+                var signals = _signalService.GetVSignals(EnmVSignalCategory.Category03);
+                if (signals.Count == 0) return model;
+                var devkeys = new HashSet<string>(signals.Select(s => s.DeviceId));
+                var devices = _workContext.Devices().FindAll(d => devkeys.Contains(d.Current.Id));
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) devices = devices.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(r => r.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(r => r.Current.RoomId.Equals(nodeKey.Value));
+                }
+                if (devices.Count == 0) return model;
+
+                var _signals = from signal in signals
+                               join dev in devices on signal.DeviceId equals dev.Current.Id
+                               select new { Device = dev.Current, Signal = signal };
+
+                var values = _cabinetService.GetHistory(EnmVSignalCategory.Category03, startDate, endDate);
+                foreach (var _signal in _signals) {
+                    var details = values.FindAll(v => v.DeviceId.Equals(_signal.Signal.DeviceId) && v.PointId.Equals(_signal.Signal.PointId));
+
+                    var row = model.NewRow();
+                    row["area"] = _signal.Device.AreaName;
+                    row["station"] = _signal.Device.StationName;
+                    row["room"] = _signal.Device.RoomName;
+                    row["name"] = _signal.Signal.Name;
+                    for (var k = 5; k < model.Columns.Count; k++) {
+                        var column = model.Columns[k];
+                        var start = (DateTime)column.ExtendedProperties["Start"];
+                        var end = (DateTime)column.ExtendedProperties["End"];
+
+                        var _values = 0d;
+                        var _details = details.FindAll(d => d.ValueTime >= start && d.ValueTime <= end);
+                        if (_details.Count > 0) _values = Math.Round(_details.Average(d => d.Value), 2, MidpointRounding.AwayFromZero);
+                        row[k] = _values;
+                    }
+                    model.Rows.Add(row);
+                }
+            }
+
+            if (model.Rows.Count <= GlobalCacheLimit.Default_Limit) {
+                var bytes = CommonHelper.DtToXml(model);
+                _cacheManager.Set(key, bytes, GlobalCacheInterval.Site_Interval);
+            }
+
+            return model;
+        }
+
+        private DataTable GetDataTable400404(EnmPDH period, DateTime start, DateTime end) {
+            var model = new DataTable("400404");
+            var column0 = new DataColumn("index", typeof(int));
+            column0.AutoIncrement = true;
+            column0.AutoIncrementSeed = 1;
+            column0.ExtendedProperties.Add("ExcelDisplayName", "序号");
+            model.Columns.Add(column0);
+
+            var column1 = new DataColumn("area", typeof(string));
+            column1.ExtendedProperties.Add("ExcelDisplayName", "所属区域");
+            model.Columns.Add(column1);
+
+            var column2 = new DataColumn("station", typeof(string));
+            column2.ExtendedProperties.Add("ExcelDisplayName", "所属站点");
+            model.Columns.Add(column2);
+
+            var column3 = new DataColumn("room", typeof(string));
+            column3.ExtendedProperties.Add("ExcelDisplayName", "所属机房");
+            model.Columns.Add(column3);
+
+            var column4 = new DataColumn("name", typeof(string));
+            column4.ExtendedProperties.Add("ExcelDisplayName", "分路编号");
+            model.Columns.Add(column4);
+
+            var dates = CommonHelper.GetPeriods(start, end, period);
+            foreach (var date in dates) {
+                var column = new DataColumn(date.Name, typeof(double));
+                column.DefaultValue = 0;
+                column.ExtendedProperties.Add("Start", date.Start);
+                column.ExtendedProperties.Add("End", date.End);
+                column.ExtendedProperties.Add("ExcelDisplayName", date.Name);
+                model.Columns.Add(column);
+            }
+
+            return model;
+        }
+
+        private List<Model400405> GetCustom400405(string parent, string date, bool cache) {
+            var key = string.Format(GlobalCacheKeys.Report_400405, _workContext.Identifier());
+            if (_cacheManager.IsSet(key) && !cache) _cacheManager.Remove(key);
+            if (_cacheManager.IsSet(key)) return _cacheManager.GetItemsFromList<Model400405>(key).ToList();
+
+            var result = new List<Model400405>();
+            if (string.IsNullOrWhiteSpace(parent))
+                return result;
+
+            if (string.IsNullOrWhiteSpace(date))
+                return result;
+
+            var curstart = DateTime.ParseExact(date, "yyyyMM", CultureInfo.CurrentCulture);
+            var curend = curstart.AddMonths(1).AddSeconds(-1);
+            var laststart = curstart.AddMonths(-1);
+            var lastend = curstart.AddSeconds(-1);
+
+            var nodeKey = Common.ParseNode(parent);
+            if (nodeKey.Key == EnmSSH.Device) {
+                var device = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
+                if (device == null) return result;
+                var signals = _signalService.GetVSignals(nodeKey.Value, EnmVSignalCategory.Category05);
+                if (signals.Count == 0) return result;
+
+                var index = 0;
+                var cvalues = _cabinetService.GetLast(nodeKey.Value, EnmVSignalCategory.Category05, curstart, curend);
+                var lvalues = _cabinetService.GetLast(nodeKey.Value, EnmVSignalCategory.Category05, laststart, lastend);
+                foreach (var signal in signals) {
+                    var cdetail = cvalues.Find(v => v.DeviceId.Equals(signal.DeviceId) && v.PointId.Equals(signal.PointId));
+                    var ldetail = lvalues.Find(v => v.DeviceId.Equals(signal.DeviceId) && v.PointId.Equals(signal.PointId));
+
+                    var model = new Model400405 {
+                        index = ++index,
+                        area = device.Current.AreaName,
+                        station = device.Current.StationName,
+                        room = device.Current.RoomName,
+                        name = signal.Name,
+                        last = ldetail != null ? Math.Round(ldetail.Value, 2, MidpointRounding.AwayFromZero) : 0,
+                        current = cdetail != null ? Math.Round(cdetail.Value, 2, MidpointRounding.AwayFromZero) : 0,
+                        currentA = cdetail != null ? Math.Round(cdetail.AValue, 2, MidpointRounding.AwayFromZero) : 0,
+                        currentB = cdetail != null ? Math.Round(cdetail.BValue, 2, MidpointRounding.AwayFromZero) : 0
+                    };
+
+                    model.total = model.current - model.last;
+                    result.Add(model);
+                }
+            } else {
+                var signals = _signalService.GetVSignals(EnmVSignalCategory.Category05);
+                if (signals.Count == 0) return result;
+                var devkeys = new HashSet<string>(signals.Select(s => s.DeviceId));
+                var devices = _workContext.Devices().FindAll(d => devkeys.Contains(d.Current.Id));
+                if (nodeKey.Key == EnmSSH.Area) {
+                    var current = _workContext.Areas().Find(a => a.Current.Id.Equals(nodeKey.Value));
+                    if (current != null) devices = devices.FindAll(r => current.Keys.Contains(r.Current.AreaId));
+                } else if (nodeKey.Key == EnmSSH.Station) {
+                    devices = devices.FindAll(r => r.Current.StationId.Equals(nodeKey.Value));
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    devices = devices.FindAll(r => r.Current.RoomId.Equals(nodeKey.Value));
+                }
+                if (devices.Count == 0) return result;
+
+                var _signals = from signal in signals
+                               join dev in devices on signal.DeviceId equals dev.Current.Id
+                               select new { Device = dev.Current, Signal = signal };
+
+                var index = 0;
+                var cvalues = _cabinetService.GetLast(EnmVSignalCategory.Category05, curstart, curend);
+                var lvalues = _cabinetService.GetLast(EnmVSignalCategory.Category05, laststart, lastend);
+                foreach (var _signal in _signals) {
+                    var cdetail = cvalues.Find(v => v.DeviceId.Equals(_signal.Signal.DeviceId) && v.PointId.Equals(_signal.Signal.PointId));
+                    var ldetail = lvalues.Find(v => v.DeviceId.Equals(_signal.Signal.DeviceId) && v.PointId.Equals(_signal.Signal.PointId));
+
+                    var model = new Model400405 {
+                        index = ++index,
+                        area = _signal.Device.AreaName,
+                        station = _signal.Device.StationName,
+                        room = _signal.Device.RoomName,
+                        name = _signal.Signal.Name,
+                        last = ldetail != null ? Math.Round(ldetail.Value, 2, MidpointRounding.AwayFromZero) : 0,
+                        current = cdetail != null ? Math.Round(cdetail.Value, 2, MidpointRounding.AwayFromZero) : 0,
+                        currentA = cdetail != null ? Math.Round(cdetail.AValue, 2, MidpointRounding.AwayFromZero) : 0,
+                        currentB = cdetail != null ? Math.Round(cdetail.BValue, 2, MidpointRounding.AwayFromZero) : 0
+                    };
+
+                    model.total = Math.Round(model.current - model.last, 2, MidpointRounding.AwayFromZero);
+                    result.Add(model);
+                }
+            }
+
+            if (result.Count <= GlobalCacheLimit.Default_Limit) {
+                _cacheManager.AddItemsToList(key, result, GlobalCacheInterval.Site_Interval);
+            }
+
+            return result;
         }
 
         private List<ChartModel> GetHisAlmChart1(List<AlmStore<A_HAlarm>> stores) {

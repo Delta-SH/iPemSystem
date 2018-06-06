@@ -2,6 +2,7 @@
 using iPem.Core.Caching;
 using iPem.Core.Domain.Cs;
 using iPem.Core.Domain.Rs;
+using iPem.Core.Domain.Sc;
 using iPem.Core.Enum;
 using iPem.Core.NPOI;
 using iPem.Services.Common;
@@ -11,6 +12,7 @@ using iPem.Services.Sc;
 using iPem.Site.Extensions;
 using iPem.Site.Infrastructure;
 using iPem.Site.Models;
+using iPem.Site.Models.SSH;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,7 @@ namespace iPem.Site.Controllers {
         private readonly ITAlarmService _talarmService;
         private readonly INoteService _noteService;
         private readonly ISignalService _signalService;
+        private readonly IFormulaService _formulaService;
 
         #endregion
 
@@ -48,7 +51,8 @@ namespace iPem.Site.Controllers {
             IAAlarmService aalarmService,
             ITAlarmService talarmService,
             INoteService noteService,
-            ISignalService signalService) {
+            ISignalService signalService,
+            IFormulaService formulaService) {
             this._excelManager = excelManager;
             this._cacheManager = cacheManager;
             this._workContext = workContext;
@@ -57,6 +61,7 @@ namespace iPem.Site.Controllers {
             this._talarmService = talarmService;
             this._noteService = noteService;
             this._signalService = signalService;
+            this._formulaService = formulaService;
         }
 
         #endregion
@@ -64,14 +69,37 @@ namespace iPem.Site.Controllers {
         #region Action
 
         public ActionResult Index() {
+            if (!_workContext.Authorizations().Menus.Contains(2005))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
         public ActionResult Masking() {
+            if (!_workContext.Authorizations().Menus.Contains(2008))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
         public ActionResult PointParam() {
+            if (!_workContext.Authorizations().Menus.Contains(2009))
+                throw new HttpException(404, "Page not found.");
+
+            return View();
+        }
+
+        public ActionResult EneFormula() {
+            if (!_workContext.Authorizations().Menus.Contains(2010))
+                throw new HttpException(404, "Page not found.");
+
+            return View();
+        }
+
+        public ActionResult VirtualPoint() {
+            if (!_workContext.Authorizations().Menus.Contains(2011))
+                throw new HttpException(404, "Page not found.");
+
             return View();
         }
 
@@ -265,6 +293,557 @@ namespace iPem.Site.Controllers {
                 using (var ms = _excelManager.Export<PointParam>(models, "信号参数信息", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
                     return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
                 }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFormula(string node) {
+            var data = new AjaxDataModel<FormulaModel> {
+                success = true,
+                message = "200 OK",
+                total = 0,
+                data = new FormulaModel()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+
+                var nodeKey = Common.ParseNode(node);
+                if (nodeKey.Key == EnmSSH.Station || nodeKey.Key == EnmSSH.Room || nodeKey.Key == EnmSSH.Device) {
+                    var formulas = _formulaService.GetFormulas(nodeKey.Value, nodeKey.Key);
+                    foreach (var formula in formulas) {
+                        switch (formula.FormulaType) {
+                            case EnmFormula.KT:
+                                data.data.ktFormulas = formula.FormulaText;
+                                data.data.ktCompute = (int)formula.ComputeType;
+                                data.data.ktRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.ZM:
+                                data.data.zmFormulas = formula.FormulaText;
+                                data.data.zmCompute = (int)formula.ComputeType;
+                                data.data.zmRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.BG:
+                                data.data.bgFormulas = formula.FormulaText;
+                                data.data.bgCompute = (int)formula.ComputeType;
+                                data.data.bgRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.DY:
+                                data.data.dyFormulas = formula.FormulaText;
+                                data.data.dyCompute = (int)formula.ComputeType;
+                                data.data.dyRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.UPS:
+                                data.data.upsFormulas = formula.FormulaText;
+                                data.data.upsCompute = (int)formula.ComputeType;
+                                data.data.upsRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.IT:
+                                data.data.itFormulas = formula.FormulaText;
+                                data.data.itCompute = (int)formula.ComputeType;
+                                data.data.itRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.QT:
+                                data.data.qtFormulas = formula.FormulaText;
+                                data.data.qtCompute = (int)formula.ComputeType;
+                                data.data.qtRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.TT:
+                                data.data.ttFormulas = formula.FormulaText;
+                                data.data.ttCompute = (int)formula.ComputeType;
+                                data.data.ttRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.TD:
+                                data.data.tdFormulas = formula.FormulaText;
+                                data.data.tdRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.WD:
+                                data.data.wdFormulas = formula.FormulaText;
+                                data.data.wdRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.SD:
+                                data.data.sdFormulas = formula.FormulaText;
+                                break;
+                            case EnmFormula.FD:
+                                data.data.fdFormulas = formula.FormulaText;
+                                break;
+                            case EnmFormula.FDL:
+                                data.data.yjFormulas = formula.FormulaText;
+                                data.data.yjCompute = (int)formula.ComputeType;
+                                data.data.yjRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.BY:
+                                data.data.byFormulas = formula.FormulaText;
+                                data.data.byCompute = (int)formula.ComputeType;
+                                data.data.byRemarks = formula.Comment;
+                                break;
+                            case EnmFormula.XS:
+                                data.data.xsFormulas = formula.FormulaText;
+                                data.data.xsCompute = (int)formula.ComputeType;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveFormula(string node, FormulaModel model) {
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+                if (model == null)
+                    throw new ArgumentNullException("model");
+
+                var nodeKey = Common.ParseNode(node);
+                var target = nodeKey.Value;
+                if (nodeKey.Key == EnmSSH.Station) {
+                    var station = _workContext.Stations().Find(r => r.Current.Id.Equals(nodeKey.Value));
+                    if (station == null) throw new iPemException("站点节点未找到");
+                    target = station.Current.Id;
+                } else if (nodeKey.Key == EnmSSH.Room) {
+                    var room = _workContext.Rooms().Find(r => r.Current.Id.Equals(nodeKey.Value));
+                    if (room == null) throw new iPemException("机房节点未找到");
+                    target = room.Current.StationId;
+                } else if (nodeKey.Key == EnmSSH.Device) {
+                    var device = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
+                    if (device == null) throw new iPemException("设备节点未找到");
+                    target = device.Current.StationId;
+                } else {
+                    throw new iPemException("能耗仅支持站点、机房、设备节点。");
+                }
+
+                var formulas = new List<M_Formula>();
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.KT, ComputeType = (EnmCompute)model.ktCompute, FormulaText = model.ktFormulas, Comment = model.ktRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.ZM, ComputeType = (EnmCompute)model.zmCompute, FormulaText = model.zmFormulas, Comment = model.zmRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.BG, ComputeType = (EnmCompute)model.bgCompute, FormulaText = model.bgFormulas, Comment = model.bgRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.DY, ComputeType = (EnmCompute)model.dyCompute, FormulaText = model.dyFormulas, Comment = model.dyRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.UPS, ComputeType = (EnmCompute)model.upsCompute, FormulaText = model.upsFormulas, Comment = model.upsRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.IT, ComputeType = (EnmCompute)model.itCompute, FormulaText = model.itFormulas, Comment = model.itRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.QT, ComputeType = (EnmCompute)model.qtCompute, FormulaText = model.qtFormulas, Comment = model.qtRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.TT, ComputeType = (EnmCompute)model.ttCompute, FormulaText = model.ttFormulas, Comment = model.ttRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.TD, ComputeType = EnmCompute.Kwh, FormulaText = model.tdFormulas, Comment = model.tdRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.WD, ComputeType = EnmCompute.Kwh, FormulaText = model.wdFormulas, Comment = model.wdRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.SD, ComputeType = EnmCompute.Kwh, FormulaText = model.sdFormulas, Comment = null });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.FD, ComputeType = EnmCompute.Kwh, FormulaText = model.fdFormulas, Comment = null });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.FDL, ComputeType = (EnmCompute)model.yjCompute, FormulaText = model.yjFormulas, Comment = model.yjRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.BY, ComputeType = (EnmCompute)model.byCompute, FormulaText = model.byFormulas, Comment = model.byRemarks });
+                formulas.Add(new M_Formula { Id = nodeKey.Value, Type = nodeKey.Key, FormulaType = EnmFormula.XS, ComputeType = (EnmCompute)model.xsCompute, FormulaText = model.xsFormulas, Comment = null });
+
+                //根据名称公式计算编号公式
+                List<SSHDevice> devices = null;
+                foreach (var formula in formulas) {
+                    var text = formula.FormulaText;
+                    if (string.IsNullOrWhiteSpace(text)) continue;
+                    if (!Common.ValidateFormula(text))
+                        throw new iPemException(string.Format("无效的格式({0})。", text));
+
+                    var variables = Common.GetFormulaVariables(text);
+                    foreach (var variable in variables) {
+                        var factors = variable.Split(new string[] { ">>" }, StringSplitOptions.None);
+                        if (factors.Length != 3) throw new iPemException(string.Format("无效的格式({0})。", variable));
+
+                        var room = factors[0].Substring(1);
+                        var dev = factors[1];
+                        var point = factors[2];
+
+                        if (devices == null) devices = _workContext.Devices().FindAll(d => d.Current.StationId.Equals(target));
+                        var device = devices.Find(d => d.Current.RoomName.Equals(room) && d.Current.Name.Equals(dev));
+                        if (device == null) throw new iPemException(string.Format("未找到设备信息({0})。", variable));
+
+                        var signal = device.Signals.Find(s => s.PointName.Equals(point));
+                        if (signal == null) throw new iPemException(string.Format("未找到信号信息({0})。", variable));
+                        text = text.Replace(variable, string.Format("@{0}>>{1}", device.Current.Id, signal.PointId));
+                    }
+
+                    formula.FormulaValue = text;
+                }
+
+                _formulaService.Save(formulas.ToArray());
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "M_Formulas", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步能耗公式" });
+                return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFormulaDevices(string node, string target, string[] devTypes) {
+            var data = new AjaxDataModel<List<TreeModel>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<TreeModel>()
+            };
+
+            try {
+                if (!string.IsNullOrWhiteSpace(node)) {
+                    var nodeKey = Common.ParseNode(node);
+                    if (nodeKey.Key == EnmSSH.Root) {
+                        var tarKey = Common.ParseNode(target);
+                        if (tarKey.Key == EnmSSH.Station) {
+                            var station = _workContext.Stations().Find(r => r.Current.Id.Equals(tarKey.Value));
+                            if (station == null) throw new iPemException("站点节点未找到");
+                            target = station.Current.Id;
+                        } else if (tarKey.Key == EnmSSH.Room) {
+                            var room = _workContext.Rooms().Find(r => r.Current.Id.Equals(tarKey.Value));
+                            if (room == null) throw new iPemException("机房节点未找到");
+                            target = room.Current.StationId;
+                        } else if (tarKey.Key == EnmSSH.Device) {
+                            var device = _workContext.Devices().Find(d => d.Current.Id.Equals(tarKey.Value));
+                            if (device == null) throw new iPemException("设备节点未找到");
+                            target = device.Current.StationId;
+                        } else {
+                            throw new iPemException("能耗仅支持站点、机房、设备节点。");
+                        }
+
+                        #region station
+                        var rooms = _workContext.Rooms().FindAll(r => r.Current.StationId.Equals(target));
+                        if (rooms.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = rooms.Count;
+                            for (var i = 0; i < rooms.Count; i++) {
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmSSH.Room, rooms[i].Current.Id),
+                                    text = rooms[i].Current.Name,
+                                    icon = Icons.Room,
+                                    expanded = false,
+                                    leaf = false
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                        #endregion
+                    } else if (nodeKey.Key == EnmSSH.Room) {
+                        #region room
+                        var devices = _workContext.Devices().FindAll(d => d.Current.RoomId.Equals(nodeKey.Value));
+                        if (devices.Count > 0) {
+                            data.success = true;
+                            data.message = "200 Ok";
+                            data.total = devices.Count;
+                            for (var i = 0; i < devices.Count; i++) {
+                                if (devTypes != null && devTypes.Length > 0 && !devTypes.Contains(devices[i].Current.Type.Id))
+                                    continue;
+
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmSSH.Device, devices[i].Current.Id),
+                                    text = devices[i].Current.Name,
+                                    icon = Icons.Device,
+                                    expanded = false,
+                                    leaf = true
+                                };
+
+                                data.data.Add(root);
+                            }
+                        }
+                        #endregion
+                    }
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return new JsonNetResult(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetFormulaPoints(int start, int limit, string parent, bool ai = true, bool di = false, bool al = false) {
+            var data = new AjaxDataModel<List<Kv<int, string>>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<Kv<int, string>>()
+            };
+
+            try {
+                if (!string.IsNullOrWhiteSpace(parent)) {
+                    var nodeKey = Common.ParseNode(parent);
+                    if (nodeKey.Key == EnmSSH.Device) {
+                        var current = _workContext.Devices().Find(d => d.Current.Id.Equals(nodeKey.Value));
+                        if (current != null) {
+                            var signals = _signalService.GetAllSignals(current.Current.Id, ai, false, di, false, al);
+                            for (var i = 0; i < signals.Count; i++) {
+                                data.data.Add(new Kv<int, string> {
+                                    Key = i + 1,
+                                    Value = string.Format("@{0}>>{1}>>{2}", current.Current.RoomName, current.Current.Name, signals[i].PointName)
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetVSignal(string device, string point, int action) {
+            var data = new AjaxDataModel<VSignalModel> {
+                success = true,
+                message = "200 Ok",
+                total = 0,
+                data = new VSignalModel { dev = device, typevalue = (int)EnmPoint.AI, saved = 30, stats = 0, category = (int)EnmVSignalCategory.Category01, categoryName = Common.GetVSignalCategoryDisplay(EnmVSignalCategory.Category01) }
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(device))
+                    throw new ArgumentNullException("device");
+
+                if (action == (int)EnmAction.Add)
+                    return Json(data, JsonRequestBehavior.AllowGet);
+
+                if (string.IsNullOrWhiteSpace(point))
+                    throw new ArgumentNullException("point");
+
+                if (action != (int)EnmAction.Edit)
+                    throw new ArgumentException("action");
+
+                var signal = _signalService.GetVSignal(device, point);
+                if (signal == null) throw new iPemException("未找到数据对象");
+
+                data.data.dev = signal.DeviceId;
+                data.data.id = signal.PointId;
+                data.data.name = signal.Name;
+                data.data.typevalue = (int)signal.Type;
+                data.data.formula = signal.FormulaText;
+                data.data.unit = signal.UnitState;
+                data.data.saved = signal.SavedPeriod;
+                data.data.stats = signal.StaticPeriod;
+                data.data.categoryName = Common.GetVSignalCategoryDisplay(signal.Category);
+                data.data.category = (int)signal.Category;
+                data.data.remark = signal.Remark;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, _workContext.User().Id, exc.Message, exc);
+                data.success = false; data.message = exc.Message;
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [AjaxAuthorize]
+        public JsonResult GetVSignals(int start, int limit, string node, string name) {
+            var data = new AjaxDataModel<List<VSignalModel>> {
+                success = true,
+                message = "无数据",
+                total = 0,
+                data = new List<VSignalModel>()
+            };
+
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+
+                var nodeKey = Common.ParseNode(node);
+                if (nodeKey.Key == EnmSSH.Device) {
+                    var names = Common.SplitCondition(name);
+                    var signals = _signalService.GetVSignals(nodeKey.Value, names);
+                    if (signals.Count > 0) {
+                        data.message = "200 Ok";
+                        data.total = signals.Count;
+                        for (var i = 0; i < signals.Count; i++) {
+                            data.data.Add(new VSignalModel {
+                                index = start + i + 1,
+                                dev = signals[i].DeviceId,
+                                id = signals[i].PointId,
+                                name = signals[i].Name,
+                                type = Common.GetPointTypeDisplay(signals[i].Type),
+                                typevalue = (int)signals[i].Type,
+                                formula = signals[i].FormulaText,
+                                unit = signals[i].UnitState,
+                                saved = signals[i].SavedPeriod,
+                                stats = signals[i].StaticPeriod,
+                                categoryName = Common.GetVSignalCategoryDisplay(signals[i].Category),
+                                category = (int)signals[i].Category,
+                                remark = signals[i].Remark
+                            });
+                        }
+                    }
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, _workContext.User().Id, exc.Message, exc);
+                data.success = false; data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DownloadVSignals(string node, string name) {
+            try {
+                if (string.IsNullOrWhiteSpace(node))
+                    throw new ArgumentNullException("node");
+
+                var models = new List<VSignalModel>();
+                var nodeKey = Common.ParseNode(node);
+                if (nodeKey.Key == EnmSSH.Device) {
+                    var names = Common.SplitCondition(name);
+                    var signals = _signalService.GetVSignals(nodeKey.Value, names);
+                    if (signals.Count > 0) {
+                        for (var i = 0; i < signals.Count; i++) {
+                            models.Add(new VSignalModel {
+                                index = i + 1,
+                                dev = signals[i].DeviceId,
+                                id = signals[i].PointId,
+                                name = signals[i].Name,
+                                type = Common.GetPointTypeDisplay(signals[i].Type),
+                                typevalue = (int)signals[i].Type,
+                                formula = signals[i].FormulaText,
+                                unit = signals[i].UnitState,
+                                saved = signals[i].SavedPeriod,
+                                stats = signals[i].StaticPeriod,
+                                categoryName = Common.GetVSignalCategoryDisplay(signals[i].Category),
+                                category = (int)signals[i].Category,
+                                remark = signals[i].Remark
+                            });
+                        }
+                    }
+                }
+
+                using (var ms = _excelManager.Export<VSignalModel>(models, "虚拟信号列表", string.Format("操作人员：{0}  操作日期：{1}", _workContext.Employee() != null ? _workContext.Employee().Name : User.Identity.Name, CommonHelper.DateTimeConverter(DateTime.Now)))) {
+                    return File(ms.ToArray(), _excelManager.ContentType, _excelManager.RandomFileName);
+                }
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult SaveVSignal(VSignalModel model, int action) {
+            try {
+                if (model == null)
+                    throw new ArgumentNullException("model");
+
+                if(string.IsNullOrWhiteSpace(model.dev))
+                    throw new ArgumentNullException("model.dev");
+
+                if (string.IsNullOrWhiteSpace(model.id))
+                    throw new ArgumentNullException("model.id");
+
+                if (string.IsNullOrWhiteSpace(model.name))
+                    throw new ArgumentNullException("model.name");
+
+                if (string.IsNullOrWhiteSpace(model.formula))
+                    throw new ArgumentNullException("model.formula");
+
+                //根据名称公式计算编号公式
+                var text = model.formula;
+                var current = _workContext.Devices().Find(d => d.Current.Id.Equals(model.dev));
+                if (current == null) throw new iPemException("设备节点未找到");
+                var devices = _workContext.Devices().FindAll(d => d.Current.StationId.Equals(current.Current.StationId));
+                if (devices.Count == 0) throw new iPemException("设备节点未找到");
+                if (!Common.ValidateFormula(text)) throw new iPemException(string.Format("无效的公式格式({0})。", model.formula));
+                var variables = Common.GetFormulaVariables(text);
+                foreach (var variable in variables) {
+                    var factors = variable.Split(new string[] { ">>" }, StringSplitOptions.None);
+                    if (factors.Length != 3) throw new iPemException(string.Format("无效的公式格式({0})。", variable));
+
+                    var room = factors[0].Substring(1);
+                    var dev = factors[1];
+                    var point = factors[2];
+
+                    var device = devices.Find(d => d.Current.RoomName.Equals(room) && d.Current.Name.Equals(dev));
+                    if (device == null) throw new iPemException(string.Format("未找到设备信息({0})。", variable));
+
+                    var signal = device.Signals.Find(s => s.PointName.Equals(point));
+                    if (signal == null) throw new iPemException(string.Format("未找到信号信息({0})。", variable));
+                    text = text.Replace(variable, string.Format("@{0}>>{1}", device.Current.Id, signal.PointId));
+                }
+
+                if (action == (int)EnmAction.Add) {
+                    var signal = _signalService.GetVSignal(model.dev, model.id);
+                    if (signal != null) throw new iPemException("信号编码已存在");
+
+                    var simple = _signalService.GetSimpleSignal(model.dev, model.id);
+                    if (simple != null) throw new iPemException("信号编码已被真实信号占用");
+
+                    signal = new D_VSignal {
+                        DeviceId = model.dev,
+                        PointId = model.id,
+                        Name = model.name,
+                        Type = (EnmPoint)model.typevalue,
+                        FormulaText = model.formula,
+                        FormulaValue = text,
+                        UnitState = model.unit,
+                        SavedPeriod = model.saved,
+                        StaticPeriod = model.stats,
+                        Category = Enum.IsDefined(typeof(EnmVSignalCategory), model.category) ? (EnmVSignalCategory)model.category : EnmVSignalCategory.Category01,
+                        Remark = model.remark
+                    };
+
+                    _signalService.AddVSignals(signal);
+                    _webLogger.Information(EnmEventType.Other, string.Format("新增虚拟信号[{0},{1},{2}]", signal.DeviceId, signal.PointId, signal.Name), _workContext.User().Id, null);
+                    _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_VSignal", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步虚拟信号" });
+                    return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+                } else if (action == (int)EnmAction.Edit) {
+                    var signal = _signalService.GetVSignal(model.dev, model.id);
+                    if (signal == null) throw new iPemException("信号不存在");
+
+                    //signal.DeviceId = model.dev;
+                    //signal.PointId = model.id;
+                    signal.Name = model.name;
+                    signal.Type = (EnmPoint)model.typevalue;
+                    signal.FormulaText = model.formula;
+                    signal.FormulaValue = text;
+                    signal.UnitState = model.unit;
+                    signal.SavedPeriod = model.saved;
+                    signal.StaticPeriod = model.stats;
+                    signal.Category = Enum.IsDefined(typeof(EnmVSignalCategory), model.category) ? (EnmVSignalCategory)model.category : EnmVSignalCategory.Category01;
+                    signal.Remark = model.remark;
+
+                    _signalService.UpdateVSignals(signal);
+                    _webLogger.Information(EnmEventType.Other, string.Format("更新虚拟信号[{0},{1},{2}]", signal.DeviceId, signal.PointId, signal.Name), _workContext.User().Id, null);
+                    _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_VSignal", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步虚拟信号" });
+                    return Json(new AjaxResultModel { success = true, code = 200, message = "保存成功" });
+                }
+
+                throw new ArgumentException("action");
+            } catch (Exception exc) {
+                _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
+                return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });
+            }
+        }
+
+        [HttpPost]
+        [AjaxAuthorize]
+        public JsonResult DeleteVSignal(string device, string point) {
+            try {
+                if (string.IsNullOrWhiteSpace(device))
+                    throw new ArgumentNullException("device");
+
+                if (string.IsNullOrWhiteSpace(point))
+                    throw new ArgumentNullException("point");
+
+                var signal = _signalService.GetVSignal(device, point);
+                if (signal == null) throw new iPemException("信号不存在");
+
+                _signalService.RemoveVSignals(signal);
+                _webLogger.Information(EnmEventType.Other, string.Format("删除虚拟信号[{0},{1},{2}]", signal.DeviceId, signal.PointId, signal.Name), _workContext.User().Id, null);
+                _noteService.Add(new H_Note { SysType = 2, GroupID = "-1", Name = "D_VSignal", DtType = 0, OpType = 0, Time = DateTime.Now, Desc = "同步虚拟信号" });
+                return Json(new AjaxResultModel { success = true, code = 200, message = "删除成功" });
             } catch (Exception exc) {
                 _webLogger.Error(EnmEventType.Other, exc.Message, _workContext.User().Id, exc);
                 return Json(new AjaxResultModel { success = false, code = 400, message = exc.Message });

@@ -55,10 +55,6 @@
       <HintPath>..\packages\Autofac.WebApi.3.1.0\lib\net40\Autofac.Integration.WebApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FluentFTP, Version=19.1.3.0, Culture=neutral, PublicKeyToken=f4af092b1d8df44f, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentFTP.19.1.3\lib\net45\FluentFTP.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -249,6 +245,8 @@
     <Compile Include="Models\ChannelModel.cs" />
     <Compile Include="Models\DetailModel400106.cs" />
     <Compile Include="Models\DetailModel400105.cs" />
+    <Compile Include="Models\DetailModel400207_2.cs" />
+    <Compile Include="Models\DetailModel400208.cs" />
     <Compile Include="Models\DetailModel400210.cs" />
     <Compile Include="Models\DetailModel400211.cs" />
     <Compile Include="Models\DiffModel.cs" />
@@ -261,16 +259,24 @@
     <Compile Include="Models\GridColumn.cs" />
     <Compile Include="Models\GviewCtrlModel.cs" />
     <Compile Include="Models\GviewModel.cs" />
+    <Compile Include="Models\HomeConsumptionModel.cs" />
     <Compile Include="Models\HomeCuttingModel.cs" />
+    <Compile Include="Models\HomeLineLossModel.cs" />
     <Compile Include="Models\HomePowerModel.cs" />
     <Compile Include="Models\iAuth.cs" />
+    <Compile Include="Models\IndicatorItemModel.cs" />
+    <Compile Include="Models\IndicatorModel.cs" />
     <Compile Include="Models\MaskingModel.cs" />
     <Compile Include="Models\Model400106.cs" />
     <Compile Include="Models\Model400105.cs" />
     <Compile Include="Models\Model400204.cs" />
+    <Compile Include="Models\Model400207_2.cs" />
+    <Compile Include="Models\Model400208_2.cs" />
     <Compile Include="Models\Model400209.cs" />
     <Compile Include="Models\Model400210.cs" />
     <Compile Include="Models\Model400211.cs" />
+    <Compile Include="Models\Model400303.cs" />
+    <Compile Include="Models\Model400405.cs" />
     <Compile Include="Models\NodeIcon.cs" />
     <Compile Include="Models\PointParam.cs" />
     <Compile Include="Models\RedundantAlmModel.cs" />
@@ -300,7 +306,6 @@
     <Compile Include="Models\HomeEnergyModel.cs" />
     <Compile Include="Models\HomeOffModel.cs" />
     <Compile Include="Models\HomeServerModel.cs" />
-    <Compile Include="Models\HomeUnconnectedModel.cs" />
     <Compile Include="Models\MarkerModel.cs" />
     <Compile Include="Models\Model400101.cs" />
     <Compile Include="Models\ChartModel.cs" />
@@ -319,8 +324,8 @@
     <Compile Include="Models\Model400203.cs" />
     <Compile Include="Models\Model400205.cs" />
     <Compile Include="Models\Model400206.cs" />
-    <Compile Include="Models\Model400207.cs" />
-    <Compile Include="Models\Model400208.cs" />
+    <Compile Include="Models\Model400207_1.cs" />
+    <Compile Include="Models\Model400208_1.cs" />
     <Compile Include="Models\Model400401.cs" />
     <Compile Include="Models\Model400402.cs" />
     <Compile Include="Models\Model400403.cs" />
@@ -337,10 +342,6 @@
     <Compile Include="Models\Model500208.cs" />
     <Compile Include="Models\Model500209.cs" />
     <Compile Include="Models\Model500301.cs" />
-    <Compile Include="Models\Model500303.cs" />
-    <Compile Include="Models\Model500304.cs" />
-    <Compile Include="Models\Model500305.cs" />
-    <Compile Include="Models\Model500306.cs" />
     <Compile Include="Models\Model500401.cs" />
     <Compile Include="Models\Model500402.cs" />
     <Compile Include="Models\Model500403.cs" />
@@ -349,6 +350,7 @@
     <Compile Include="Models\NoticeModel.cs" />
     <Compile Include="Models\ScriptModel.cs" />
     <Compile Include="Models\SeniorCondition.cs" />
+    <Compile Include="Models\RoleValues.cs" />
     <Compile Include="Models\SSH\iSSHArea.cs" />
     <Compile Include="Models\SSH\iSSHDevice.cs" />
     <Compile Include="Models\SSH\iSSHStation.cs" />
@@ -362,7 +364,7 @@
     <Compile Include="Models\PointStore.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RtValues.cs" />
-    <Compile Include="Models\ShiDianModel.cs" />
+    <Compile Include="Models\DetailModel400207_1.cs" />
     <Compile Include="Models\SSH\SSHSystem.cs" />
     <Compile Include="Models\ThresholdModel.cs" />
     <Compile Include="Models\TreeCustomModel.cs" />
@@ -371,6 +373,7 @@
     <Compile Include="Models\TsValues.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\MatrixTemplate.cs" />
+    <Compile Include="Models\VSignalModel.cs" />
     <Compile Include="Models\WsValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ClearCacheTask.cs" />
@@ -385,6 +388,7 @@
     <Content Include="Content\framework\bootstrap-3.3.5\css\bootstrap.min.css" />
     <Content Include="Content\framework\bootstrap-3.3.5\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\themes\css\ftp.css" />
+    <Content Include="Content\themes\css\home.consumption.css" />
     <Content Include="Content\themes\css\install.authentication.css" />
     <Content Include="Content\themes\css\install.configuration.css" />
     <Content Include="Content\themes\css\configuration.cfg.iframe.css" />
@@ -454,6 +458,7 @@
     <Content Include="Content\themes\icons\menu-kpi-jkd.png" />
     <Content Include="Content\themes\icons\menu-kpi-nh.png" />
     <Content Include="Content\themes\icons\menu-kpi.png" />
+    <Content Include="Content\themes\icons\menu-nhgl.png" />
     <Content Include="Content\themes\icons\menu-pzgl.png" />
     <Content Include="Content\themes\icons\menu-query.png" />
     <Content Include="Content\themes\icons\menu-report-dz.png" />
@@ -549,6 +554,7 @@
     <Content Include="Content\ux\images\itemselector.png" />
     <Content Include="Content\ux\images\spliter.png" />
     <Content Include="Content\ux\images\unchecked.png" />
+    <Content Include="Content\ux\images\wd-trigger.png" />
     <Content Include="Content\ux\itemselector.css" />
     <Content Include="Content\ux\label.css" />
     <Content Include="Content\ux\multicombo.css" />
@@ -556,12 +562,15 @@
     <Content Include="Resources\database\P2H_V1.sql" />
     <Content Include="Resources\database\P2R_V1.sql" />
     <Content Include="Resources\database\P2S_V1.sql" />
+    <Content Include="Resources\database\update\P2H_V1_001.sql" />
     <Content Include="Resources\database\update\P2S_V1_001.sql" />
     <Content Include="Resources\database\update\P2S_V1_002.sql" />
     <Content Include="Resources\database\update\P2S_V1_003.sql" />
     <Content Include="Resources\database\update\P2S_V1_004.sql" />
     <Content Include="Resources\database\update\P2S_V1_006.sql" />
     <Content Include="Resources\database\update\P2S_V1_005.sql" />
+    <Content Include="Resources\database\update\P2S_V1_008.sql" />
+    <Content Include="Resources\database\update\P2S_V1_007.sql" />
     <Content Include="Resources\install\create\create_cs_data.sql" />
     <Content Include="Resources\install\create\create_cs_database.sql" />
     <Content Include="Resources\install\create\create_sc_data.sql" />
@@ -587,6 +596,10 @@
     <Content Include="Scripts\components\DepartmentComponent.js" />
     <Content Include="Scripts\components\FormulaComponent.js" />
     <Content Include="Scripts\components\VendorComponent.js" />
+    <Content Include="Scripts\echarts\echarts.js" />
+    <Content Include="Scripts\echarts\echarts.min.js" />
+    <Content Include="Scripts\echarts\theme\shine.js" />
+    <Content Include="Scripts\echarts\theme\shine.min.js" />
     <Content Include="Scripts\ext-4.2.1\locale\ext-lang-cn.min.js" />
     <Content Include="Scripts\ext-4.2.1\theme\css\ext-all-neptune.css" />
     <Content Include="Scripts\framework\bootstrap-3.3.5.js" />
@@ -609,10 +622,6 @@
     <Content Include="Scripts\configuration.map.iframe.js" />
     <Content Include="Scripts\configuration.map.js" />
     <Content Include="Scripts\dbconfiguration.js" />
-    <Content Include="Scripts\echarts\echarts.js" />
-    <Content Include="Scripts\echarts\echarts.min.js" />
-    <Content Include="Scripts\echarts\theme\shine.js" />
-    <Content Include="Scripts\echarts\theme\shine.min.js" />
     <Content Include="Scripts\ext-4.2.1\ext-all.js" />
     <Content Include="Scripts\ext-4.2.1\locale\ext-lang-cn.js" />
     <Content Include="Scripts\ext-4.2.1\theme\ext-theme-neptune\ext-theme-neptune-all.css" />
@@ -1066,6 +1075,7 @@
     <Content Include="Scripts\help.js" />
     <Content Include="Scripts\home.active.alarm.js" />
     <Content Include="Scripts\home.active.data.js" />
+    <Content Include="Scripts\home.active.consumption.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\home.notice.js" />
     <Content Include="Scripts\home.speech.js" />
@@ -1225,9 +1235,12 @@
     <Content Include="Scripts\kpi.performance500305.js" />
     <Content Include="Scripts\kpi.performance500306.js" />
     <Content Include="Scripts\home.recorder.js" />
+    <Content Include="Scripts\kpi.performance500307.js" />
+    <Content Include="Scripts\maintenance.eneformula.js" />
     <Content Include="Scripts\maintenance.js" />
     <Content Include="Scripts\maintenance.masking.js" />
     <Content Include="Scripts\maintenance.pointparam.js" />
+    <Content Include="Scripts\maintenance.virtualpoint.js" />
     <Content Include="Scripts\report.base400106.js" />
     <Content Include="Scripts\report.base400105.js" />
     <Content Include="Scripts\report.custom400403.js" />
@@ -1248,6 +1261,8 @@
     <Content Include="Resources\database\data\points.csv" />
     <Content Include="Resources\database\data\subpoints.csv" />
     <Content Include="Registry.db" />
+    <Content Include="Scripts\report.chart400304.js" />
+    <Content Include="Scripts\report.custom400405.js" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.js" />
     <Content Include="Scripts\framework\jquery-1.11.3.min.js" />
@@ -1291,6 +1306,7 @@
     <Content Include="Scripts\report.chart400301.js" />
     <Content Include="Scripts\report.custom400401.js" />
     <Content Include="Scripts\report.custom400402.js" />
+    <Content Include="Scripts\report.custom400404.js" />
     <Content Include="Scripts\report.history400206.js" />
     <Content Include="Scripts\report.history400205.js" />
     <Content Include="Scripts\report.history400204.js" />
@@ -1407,39 +1423,46 @@
     <Content Include="Views\Maintenance\Index.cshtml" />
     <Content Include="Views\Maintenance\Masking.cshtml" />
     <Content Include="Views\Maintenance\PointParam.cshtml" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\3DTools.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\GVE.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\GVEditer.exe.config.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\GVEditer.exe.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\GVEditer.exe.manifest" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\GVEditer.xbap" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\Newtonsoft.Json.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\SCAPI.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\System.Net.Http.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\SystemExtend.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\TeeChart.WPF.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\WGView.SDefineLib.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\WGView.Toolkit.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\WpfJSInteraction.dll.deploy" />
-    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_31\XDLib.dll.deploy" />
-    <Content Include="WGViewEditer\GVEditer.xbap" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\3DTools.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\GVP.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\GVPlayer.exe.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\GVPlayer.exe.manifest" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\GVPlayer.xbap" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\Newtonsoft.Json.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\SCAPI.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\System.Net.Http.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\SystemExtend.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\TeeChart.WPF.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\WGView.Toolkit.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\WpfJSInteraction.dll.deploy" />
-    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_13\XDLib.dll.deploy" />
-    <Content Include="WGViewPlayer\GVPlayer.xbap" />
     <Content Include="Views\Home\Viewer.cshtml" />
     <Content Include="Views\Help\Register.cshtml" />
     <Content Include="Views\Ftp\Index.cshtml" />
+    <Content Include="Views\Maintenance\EneFormula.cshtml" />
+    <Content Include="Views\Maintenance\VirtualPoint.cshtml" />
+    <Content Include="Views\KPI\performance500307.cshtml" />
+    <Content Include="Views\Report\chart400304.cshtml" />
+    <Content Include="Views\Home\ActiveConsumption.cshtml" />
+    <Content Include="Views\Report\custom400404.cshtml" />
+    <Content Include="Views\Report\custom400405.cshtml" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\3DTools.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\GVE.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\GVEditer.exe.config.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\GVEditer.exe.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\GVEditer.exe.manifest" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\GVEditer.xbap" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\Newtonsoft.Json.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\SCAPI.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\System.Net.Http.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\SystemExtend.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\TeeChart.WPF.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\WGView.SDefineLib.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\WGView.Toolkit.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\WpfJSInteraction.dll.deploy" />
+    <Content Include="WGViewEditer\Application Files\GVEditer_1_0_0_39\XDLib.dll.deploy" />
+    <Content Include="WGViewEditer\GVEditer.xbap" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\3DTools.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\GVP.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\GVPlayer.exe.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\GVPlayer.exe.manifest" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\GVPlayer.xbap" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\Newtonsoft.Json.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\SCAPI.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\System.Net.Http.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\SystemExtend.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\TeeChart.WPF.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\WGView.Toolkit.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\WpfJSInteraction.dll.deploy" />
+    <Content Include="WGViewPlayer\Application Files\GVPlayer_1_0_0_17\XDLib.dll.deploy" />
+    <Content Include="WGViewPlayer\GVPlayer.xbap" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1448,6 +1471,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FluentFTP\FluentFTP.csproj">
+      <Project>{a210a5a5-0629-4088-ba03-67ef86e4da36}</Project>
+      <Name>FluentFTP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\iPem.Core\iPem.Core.csproj">
       <Project>{65343199-3a33-4d3a-a9e9-e82857350e7e}</Project>
       <Name>iPem.Core</Name>
@@ -1460,9 +1487,6 @@
       <Project>{bb5412e0-6f9b-45dc-a6ee-53349978fd97}</Project>
       <Name>iPem.Services</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

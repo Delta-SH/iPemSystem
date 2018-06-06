@@ -4,9 +4,11 @@ using System;
 using System.Drawing;
 using System.Web.Script.Serialization;
 
-namespace iPem.Site.Models {
+namespace iPem.Site.Models
+{
     [Serializable]
-    public class Model400202 {
+    public class Model400202
+    {
         [ExcelIgnore]
         public string id { get; set; }
 

@@ -185,3 +185,51 @@ Ext.define("Ext.ux.PointTreePanel", {
         me.store.load();
     }
 });
+
+Ext.define("Ext.ux.VsCategoryMultiCombo", {
+    extend: "Ext.ux.MultiCombo",
+    xtype: "VsCategoryMultiCombo",
+    fieldLabel: '信号分类',
+    valueField: 'id',
+    displayField: 'text',
+    delimiter: $$iPems.Delimiter,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectionMode: 'all',
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetVSignalCategories';
+        me.callParent(arguments);
+        me.store.load();
+    }
+});
+
+Ext.define("Ext.ux.VsCategoryComboBox", {
+    extend: "Ext.ux.SingleCombo",
+    xtype: "VsCategoryCombo",
+    fieldLabel: '信号分类',
+    displayField: 'text',
+    valueField: 'id',
+    typeAhead: true,
+    queryMode: 'local',
+    triggerAction: 'all',
+    selectOnFocus: true,
+    forceSelection: true,
+    labelWidth: 60,
+    width: 220,
+    initComponent: function () {
+        var me = this;
+        me.storeUrl = '/Component/GetVSignalCategories';
+        me.callParent(arguments);
+        me.store.load({
+            scope: me,
+            callback: function (records, operation, success) {
+                if (success && records.length > 0)
+                    me.select(records[0]);
+            }
+        });
+    }
+});

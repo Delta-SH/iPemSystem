@@ -20,10 +20,10 @@ namespace iPem.Site.Models {
         public double bg { get; set; }
 
         [ExcelDisplayName("设备")]
-        public double sb { get; set; }
+        public double it { get; set; }
 
         [ExcelDisplayName("开关电源")]
-        public double kgdy { get; set; }
+        public double dy { get; set; }
 
         [ExcelDisplayName("UPS")]
         public double ups { get; set; }

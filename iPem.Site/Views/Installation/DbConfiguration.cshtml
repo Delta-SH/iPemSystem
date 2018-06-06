@@ -17,7 +17,7 @@
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="bookmark" type="image/x-icon" href="~/favicon.ico" />
     <link href="@Url.Content("~/Content/framework/bootstrap-3.3.5/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/Content/themes/css/install.configuration.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/themes/css/install.configuration.css?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" rel="stylesheet" type="text/css" />
 </head>
 <body data-spy="scroll" data-target="#left-nav">
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -276,6 +276,6 @@
     <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/jquery.validate.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/additional-methods.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/framework/jquery.validation-1.14.0/localization/messages_zh.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/dbconfiguration.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/dbconfiguration.js?v=" + iPem.Site.Infrastructure.EngineContext.Current.AppStore.JSVersion)" type="text/javascript"></script>
 </body>
 </html>

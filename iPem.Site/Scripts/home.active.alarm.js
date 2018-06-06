@@ -1564,49 +1564,49 @@
                                     proxy0.extraParams.stationTypes =
                                     proxy1.extraParams.stationTypes =
                                     proxy2.extraParams.stationTypes =
-                                    proxy3.extraParams.stationTypes = 
+                                    proxy3.extraParams.stationTypes =
                                     proxy4.extraParams.stationTypes = stationTypes;
 
-                                    proxy0.extraParams.roomTypes = 
-                                    proxy1.extraParams.roomTypes = 
+                                    proxy0.extraParams.roomTypes =
+                                    proxy1.extraParams.roomTypes =
                                     proxy2.extraParams.roomTypes =
-                                    proxy3.extraParams.roomTypes = 
+                                    proxy3.extraParams.roomTypes =
                                     proxy4.extraParams.roomTypes = roomTypes;
 
-                                    proxy0.extraParams.subDeviceTypes = 
-                                    proxy1.extraParams.subDeviceTypes = 
+                                    proxy0.extraParams.subDeviceTypes =
+                                    proxy1.extraParams.subDeviceTypes =
                                     proxy2.extraParams.subDeviceTypes =
-                                    proxy3.extraParams.subDeviceTypes = 
+                                    proxy3.extraParams.subDeviceTypes =
                                     proxy4.extraParams.subDeviceTypes = subDeviceTypes;
 
-                                    proxy0.extraParams.subLogicTypes = 
-                                    proxy1.extraParams.subLogicTypes = 
+                                    proxy0.extraParams.subLogicTypes =
+                                    proxy1.extraParams.subLogicTypes =
                                     proxy2.extraParams.subLogicTypes =
-                                    proxy3.extraParams.subLogicTypes = 
+                                    proxy3.extraParams.subLogicTypes =
                                     proxy4.extraParams.subLogicTypes = subLogicTypes;
 
-                                    proxy0.extraParams.points = 
-                                    proxy1.extraParams.points = 
+                                    proxy0.extraParams.points =
+                                    proxy1.extraParams.points =
                                     proxy2.extraParams.points =
-                                    proxy3.extraParams.points = 
+                                    proxy3.extraParams.points =
                                     proxy4.extraParams.points = points;
 
-                                    proxy0.extraParams.levels = 
-                                    proxy1.extraParams.levels = 
+                                    proxy0.extraParams.levels =
+                                    proxy1.extraParams.levels =
                                     proxy2.extraParams.levels =
-                                    proxy3.extraParams.levels = 
+                                    proxy3.extraParams.levels =
                                     proxy4.extraParams.levels = levels;
 
-                                    proxy0.extraParams.confirms = 
-                                    proxy1.extraParams.confirms = 
+                                    proxy0.extraParams.confirms =
+                                    proxy1.extraParams.confirms =
                                     proxy2.extraParams.confirms =
                                     proxy3.extraParams.confirms =
                                     proxy4.extraParams.confirms = confirms;
 
-                                    proxy0.extraParams.reservations = 
-                                    proxy1.extraParams.reservations = 
+                                    proxy0.extraParams.reservations =
+                                    proxy1.extraParams.reservations =
                                     proxy2.extraParams.reservations =
-                                    proxy3.extraParams.reservations = 
+                                    proxy3.extraParams.reservations =
                                     proxy4.extraParams.reservations = reservations;
 
                                     proxy0.extraParams.seniorNode =

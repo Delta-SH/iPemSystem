@@ -115,3 +115,207 @@
 .icon-topbar-mail:before {
     content: "\e903";
 }
+
+.ipems-icon-font-gauge:before { content: "\f039"; }
+
+.ipems-icon-font-delete:before { content: "\f004"; }
+
+.ipems-icon-font-exit:before { content: "\f026"; }
+
+.ipems-icon-font-column:before { content: "\f032"; }
+
+.ipems-icon-font-error:before { content: "\f006"; }
+
+.ipems-icon-font-rss:before { content: "\f041"; }
+
+.ipems-icon-font-cog:before { content: "\f008"; }
+
+.ipems-icon-font-down:before { content: "\f059"; }
+
+.ipems-icon-font-pie:before { content: "\f030"; }
+
+.ipems-icon-font-detail:before { content: "\f016"; }
+
+.ipems-icon-font-station:before { content: "\f018"; }
+
+.ipems-icon-font-department:before { content: "\f020"; }
+
+.ipems-icon-font-save:before { content: "\f009"; }
+
+.ipems-icon-font-category:before { content: "\f043"; }
+
+.ipems-icon-font-employee:before { content: "\f014"; }
+
+.ipems-icon-font-parameter:before { content: "\f044"; }
+
+.ipems-icon-font-lock:before { content: "\f013"; }
+
+.ipems-icon-font-user:before { content: "\f012"; }
+
+.ipems-icon-font-safe001:before { content: "\f063"; }
+
+.ipems-icon-font-add:before { content: "\f001"; }
+
+.ipems-icon-font-print:before { content: "\f010"; }
+
+.ipems-icon-font-leaf:before { content: "\f015"; }
+
+.ipems-icon-font-voice:before { content: "\f048"; }
+
+.ipems-icon-font-dingwei:before { content: "\f019"; }
+
+.ipems-icon-font-remove:before { content: "\f003"; }
+
+.ipems-icon-font-ok:before { content: "\f005"; }
+
+.ipems-icon-font-jujiao2:before { content: "\f085"; }
+
+.ipems-icon-font-role:before { content: "\f033"; }
+
+.ipems-icon-font-tips:before { content: "\f042"; }
+
+.ipems-icon-font-line:before { content: "\f038"; }
+
+.ipems-icon-font-download:before { content: "\f090"; }
+
+.ipems-icon-font-internet:before { content: "\f047"; }
+
+.ipems-icon-font-volume1:before { content: "\f082"; }
+
+.ipems-icon-font-volume2:before { content: "\f083"; }
+
+.ipems-icon-font-zoom:before { content: "\f089"; }
+
+.ipems-icon-font-kuaitui:before { content: "\f086"; }
+
+.ipems-icon-font-jiagou:before { content: "\f056"; }
+
+.ipems-icon-font-clear:before { content: "\f023"; }
+
+.ipems-icon-font-home:before { content: "\f007"; }
+
+.ipems-icon-font-ups:before { content: "\f093"; }
+
+.ipems-icon-font-device:before { content: "\f037"; }
+
+.ipems-icon-font-detail1:before { content: "\f029"; }
+
+.ipems-icon-font-jifang:before { content: "\f017"; }
+
+.ipems-icon-font-juheng:before { content: "\f028"; }
+
+.ipems-icon-font-signal:before { content: "\f049"; }
+
+.ipems-icon-font-diqiu:before { content: "\f021"; }
+
+.ipems-icon-font-fx:before { content: "\f051"; }
+
+.ipems-icon-font-refresh:before { content: "\f058"; }
+
+.ipems-icon-font-cancel:before { content: "\f027"; }
+
+.ipems-icon-font-edit:before { content: "\f002"; }
+
+.ipems-icon-font-room:before { content: "\f036"; }
+
+.ipems-icon-font-unread:before { content: "\f025"; }
+
+.ipems-icon-font-readed:before { content: "\f024"; }
+
+.ipems-icon-font-menu:before { content: "\f011"; }
+
+.ipems-icon-font-project:before { content: "\f046"; }
+
+.ipems-icon-font-capture:before { content: "\f075"; }
+
+.ipems-icon-font-kuaijin:before { content: "\f087"; }
+
+.ipems-icon-font-paste:before { content: "\f054"; }
+
+.ipems-icon-font-all:before { content: "\f055"; }
+
+.ipems-icon-font-key:before { content: "\f022"; }
+
+.ipems-icon-font-filter:before { content: "\f034"; }
+
+.ipems-icon-font-remote:before { content: "\f040"; }
+
+.ipems-icon-font-mixedline:before { content: "\f031"; }
+
+.ipems-icon-font-up:before { content: "\f060"; }
+
+.ipems-icon-font-dianyuan:before { content: "\f094"; }
+
+.ipems-icon-font-stop:before { content: "\f068"; }
+
+.ipems-icon-font-camera:before { content: "\f067"; }
+
+.ipems-icon-font-copy:before { content: "\f053"; }
+
+.ipems-icon-font-frame:before { content: "\f091"; }
+
+.ipems-icon-font-video:before { content: "\f066"; }
+
+.ipems-icon-font-safe002:before { content: "\f064"; }
+
+.ipems-icon-font-unvoice:before { content: "\f077"; }
+
+.ipems-icon-font-bianbei1:before { content: "\f078"; }
+
+.ipems-icon-font-bianbei2:before { content: "\f079"; }
+
+.ipems-icon-font-delta:before { content: "\f050"; }
+
+.ipems-icon-font-formula:before { content: "\f052"; }
+
+.ipems-icon-font-allto:before { content: "\f061"; }
+
+.ipems-icon-font-monitor:before { content: "\f092"; }
+
+.ipems-icon-font-3dseach:before { content: "\f076"; }
+
+.ipems-icon-font-pause:before { content: "\f088"; }
+
+.ipems-icon-font-recovery:before { content: "\f057"; }
+
+.ipems-icon-font-confirmed:before { content: "\f035"; }
+
+.ipems-icon-font-plan:before { content: "\f045"; }
+
+.ipems-icon-font-zhishu:before { content: "\f102"; }
+
+.ipems-icon-font-database:before { content: "\f062"; }
+
+.ipems-icon-font-zhaoming:before { content: "\f095"; }
+
+.ipems-icon-font-alarm:before { content: "\f065"; }
+
+.ipems-icon-font-fullscreen:before { content: "\f070"; }
+
+.ipems-icon-font-play:before { content: "\f071"; }
+
+.ipems-icon-font-wendu:before { content: "\f100"; }
+
+.ipems-icon-font-16screen:before { content: "\f072"; }
+
+.ipems-icon-font-9screen:before { content: "\f073"; }
+
+.ipems-icon-font-4screen:before { content: "\f074"; }
+
+.ipems-icon-font-guangquan1:before { content: "\f080"; }
+
+.ipems-icon-font-guangquan2:before { content: "\f081"; }
+
+.ipems-icon-font-1screen:before { content: "\f069"; }
+
+.ipems-icon-font-jujiao1:before { content: "\f084"; }
+
+.ipems-icon-font-kongtiao:before { content: "\f096"; }
+
+.ipems-icon-font-vdevice:before { content: "\f098"; }
+
+.ipems-icon-font-computer:before { content: "\f097"; }
+
+.ipems-icon-font-nenghao:before { content: "\f099"; }
+
+.ipems-icon-font-shidu:before { content: "\f101"; }

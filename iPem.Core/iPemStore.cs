@@ -1,57 +1,73 @@
 ﻿using System;
 
-namespace iPem.Core {
+namespace iPem.Core
+{
     /// <summary>
     /// 应用程序相关信息
     /// </summary>
     [Serializable]
-    public partial class iPemStore {
+    public partial class iPemStore
+    {
         /// <summary>
         /// 应用程序标识
         /// </summary>
-        public Guid Id {
+        public Guid Id
+        {
             get { return new Guid("cbc23c46-d14d-4b05-99db-243826013069"); }
         }
 
         /// <summary>
         /// 应用程序名称
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get { return "动力环境集中监控管理平台"; }
         }
 
         /// <summary>
         /// 软件版本
         /// </summary>
-        public string Version {
-            get { return "V1.3.2 Build180418"; }
+        public string Version
+        {
+            get { return "V1.3.5 Build180605"; }
+        }
+
+        /// <summary>
+        /// 软件版本
+        /// </summary>
+        public string JSVersion {
+            get { return "1.3.5"; }
         }
 
         /// <summary>
         /// 所属公司
         /// </summary>
-        public string CompanyName {
+        public string CompanyName
+        {
             get { return "中达电通股份有限公司"; }
         }
 
         /// <summary>
         /// 中文版权
         /// </summary>
-        public string Copyright {
+        public string Copyright
+        {
             get { return "中达电通股份有限公司｜台达集团 版权所有 ©2011-2018"; }
         }
 
         /// <summary>
         /// 英文版权
         /// </summary>
-        public string Copyright_Us {
+        public string Copyright_Us
+        {
             get { return "Delta GreenTech(China) Co., Ltd. All Rights Reserved"; }
         }
 
         /// <summary>
         /// 浏览器要求
         /// </summary>
-        public string Requirements {
+        public string Requirements
+        {
             get { return "浏览器：IE10+、Firefox、Chrome"; }
         }
 

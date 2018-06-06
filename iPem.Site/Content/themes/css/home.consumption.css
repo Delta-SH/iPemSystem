@@ -1,0 +1,272 @@
+﻿.indicator-box {
+    height: 85px;
+    color: #fff;
+}
+
+.indicator-title-box {
+    height: 36px;
+    line-height: 36px;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.indicator-title-box .symbol {
+    float: left;
+    height: 36px;
+    width: 40px;
+    text-align: center;
+    display: block;
+}
+
+.indicator-title-box .symbol i {
+    font-size: 25px;
+    line-height: 36px;
+}
+
+.indicator-title-box small {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.indicator-box h1 {
+    font-size: 35px;
+    font-weight: bold;
+    line-height: 1px;
+    text-align: center;
+}
+
+.indicator-box h1 small {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.left-box {
+    position: relative;
+    float: left;
+    height: 85px;
+    width: 50%;
+    background-color: #fcd33e;
+}
+
+.right-box {
+    position: relative;
+    float: right;
+    height: 85px;
+    width: 50%;
+    background-color: #3f94d1;
+    border-left:1px solid #f9f9f9;
+}
+
+.left-box .content {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.left-box small {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.left-box h2 {
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1px;
+    margin: 18px auto 15px auto;
+}
+
+.left-box h2 small {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.left-box .symbol {
+    display: block;
+}
+
+.left-box .symbol i {
+    font-size: 18px;
+    line-height: 1px;
+}
+
+.right-box .content {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.right-box small {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.right-box h2 {
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1px;
+    margin: 18px auto 15px auto;
+}
+
+.right-box h2 small {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.right-box .symbol {
+    display: block;
+}
+
+.right-box .symbol i {
+    font-size: 18px;
+    line-height: 1px;
+}
+
+.indicator-tt {
+    background-color: #b198dc;
+}
+
+.indicator-kt {
+    background-color: #d867b2;
+}
+
+.indicator-zm {
+    background-color: #4bc567;
+}
+
+.indicator-bg {
+    background-color: #26aff0;
+}
+
+.indicator-it {
+    background-color: #ed5441;
+}
+
+.indicator-dy {
+    background-color: #ff9b13;
+}
+
+.indicator-ups {
+    background-color: #a1b033;
+}
+
+.indicator-qt {
+    background-color: #00a4b1;
+}
+
+.indicator-pue {
+    background-color: #7ccaa9;
+}
+
+.indicator-chart {
+    border: 1px solid #cac5c5;
+    height: 260px;
+}
+
+.indicator-chart .chart {
+    height: 100%;
+}
+
+.indicator-chart .icon {
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    color: #26aff0;
+    height: 36px;
+    width: 46px;
+    text-align: center;
+}
+
+.indicator-chart .icon i {
+    font-size: 28px;
+    line-height: 36px;
+}
+
+.none-border-left {
+    border-left: none !important;
+}
+
+.none-border-right {
+    border-right: none !important;
+}
+
+.none-border-top {
+    border-top: none !important;
+}
+
+.none-border-bottom {
+    border-bottom: none !important;
+}
+
+.indicator-viewbox {
+    padding: 0 10px;
+    color: #535353;
+}
+
+.indicator-viewbox small.title {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.indicator-viewbox h4 {
+    margin: 10px auto 0 auto;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.indicator-viewbox h4 > small {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.indicator-viewbox .current {
+    position: relative;
+    height: 50%;
+    padding: 10px 0 0 55px;
+    border-bottom: 1px solid #cac5c5;
+}
+
+.indicator-viewbox .current > h4 {
+    color: #26aff0;
+}
+
+.indicator-viewbox .last {
+    position: relative;
+    padding: 10px 0 0 55px;
+    height: 50%;
+}
+
+.indicator-viewbox .last > h4 {
+    color: #ed5441;
+}
+
+#indicator-month-container {
+    height: 50%;
+    border-bottom: 1px solid #cac5c5;
+}
+
+#indicator-year-container {
+    height: 50%;
+}
+
+.view-icon {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #26aff0;
+    height: 65px;
+    width: 50px;
+    text-align: center;
+}
+
+.view-icon i {
+    font-size: 45px;
+    line-height: 68px;
+}
+
+.indicator-viewbox .current .view-icon i {
+    color: #26aff0;
+}
+
+.indicator-viewbox .last .view-icon i {
+    color: #ed5441;
+}

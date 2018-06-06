@@ -100,7 +100,7 @@ namespace iPem.Core {
         /// 返回指定日期在当年的第几周
         /// </summary>
         public static string WeekConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return string.Format("{0}年{1}周", date.Year, calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday));
@@ -111,7 +111,7 @@ namespace iPem.Core {
         /// yyyy-MM
         /// </summary>
         public static string MonthConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return date.ToString("yyyy-MM");
@@ -119,10 +119,21 @@ namespace iPem.Core {
 
         /// <summary>
         /// 返回指定格式的日期字符串
+        /// yyyy-MM
+        /// </summary>
+        public static string DayConverter(DateTime date) {
+            if (!IsValidDateTime(date))
+                return string.Empty;
+
+            return date.ToString("MM-dd");
+        }
+
+        /// <summary>
+        /// 返回指定格式的日期字符串
         /// yyyy-MM-dd
         /// </summary>
         public static string DateConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return date.ToString("yyyy-MM-dd");
@@ -133,7 +144,7 @@ namespace iPem.Core {
         /// yyyy-MM-dd HH:mm:ss
         /// </summary>
         public static string DateTimeConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return date.ToString("yyyy-MM-dd HH:mm:ss");
@@ -144,7 +155,7 @@ namespace iPem.Core {
         /// HH:mm:ss
         /// </summary>
         public static string TimeConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return date.ToString("HH:mm:ss");
@@ -155,7 +166,7 @@ namespace iPem.Core {
         /// mm′ss″
         /// </summary>
         public static string ShortTimeConverter(DateTime date) {
-            if(!IsValidDateTime(date))
+            if (!IsValidDateTime(date))
                 return string.Empty;
 
             return date.ToString("mm′ss″");
@@ -166,8 +177,8 @@ namespace iPem.Core {
         /// dddd.HH:mm:ss
         /// </summary>
         public static string IntervalConverter(DateTime start, DateTime? end = null) {
-            if(start == default(DateTime)) { return String.Empty; }
-            if(!end.HasValue) { end = DateTime.Now; }
+            if (start == default(DateTime)) { return String.Empty; }
+            if (!end.HasValue) { end = DateTime.Now; }
             var ts = end.Value.Subtract(start);
             return String.Format("{0:0000}.{1:00}:{2:00}:{3:00}", ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
         }
@@ -178,6 +189,62 @@ namespace iPem.Core {
         /// </summary>
         public static string IntervalConverter(TimeSpan span) {
             return String.Format("{0:0000}.{1:00}:{2:00}:{3:00}", span.Days, span.Hours, span.Minutes, span.Seconds);
+        }
+
+        /// <summary>
+        /// 返回指定格式的日期段字符串
+        /// yyyy-MM-dd ~ yyyy-MM-dd
+        /// </summary>
+        public static string PeriodConverter(DateTime start, DateTime end) {
+            if (start == end) return DateConverter(start);
+            return string.Format("{0} ~ {1}", DateConverter(start), DateConverter(end));
+        }
+
+        /// <summary>
+        /// 返回指定格式的日期时间段字符串
+        /// yyyy-MM-dd HH:mm:ss ~ yyyy-MM-dd HH:mm:ss
+        /// </summary>
+        public static string PeriodWithTimeConverter(DateTime start, DateTime end) {
+            if (start == end) return DateTimeConverter(start);
+            return string.Format("{0} ~ {1}", DateTimeConverter(start), DateTimeConverter(end));
+        }
+
+        /// <summary>
+        /// 获得时间周期
+        /// </summary>
+        public static List<Period> GetPeriods(DateTime start, DateTime end, EnmPDH period) {
+            var dates = new List<Period>();
+            if (period == EnmPDH.Month) {
+                while (start <= end) {
+                    var date = new DateTime(start.Year, start.Month, 1).AddMonths(1).AddSeconds(-1);
+                    if (date > end) date = end;
+                    dates.Add(new Period { Name = MonthConverter(start), Start = start, End = date });
+                    start = date.AddSeconds(1);
+                }
+            } else if (period == EnmPDH.Week) {
+                while (start <= end) {
+                    var date = start.Date.AddSeconds((8 - (int)start.DayOfWeek) * 86400 - 1);
+                    if (date > end) date = end;
+                    dates.Add(new Period { Name = WeekConverter(start), Start = start, End = date });
+                    start = date.AddSeconds(1);
+                }
+            } else if (period == EnmPDH.Day) {
+                while (start <= end) {
+                    var date = start.Date.AddSeconds(86399);
+                    if (date > end) date = end;
+                    dates.Add(new Period { Name = DateConverter(start), Start = start, End = date });
+                    start = date.AddSeconds(1);
+                }
+            } else if (period == EnmPDH.Hour) {
+                while (start <= end) {
+                    var date = new DateTime(start.Year, start.Month, start.Day, start.Hour, 0, 0).AddSeconds(3599);
+                    if (date > end) date = end;
+                    dates.Add(new Period { Name = TimeConverter(start), Start = start, End = date });
+                    start = date.AddSeconds(1);
+                }
+            }
+
+            return dates;
         }
 
         /// <summary>
@@ -209,12 +276,12 @@ namespace iPem.Core {
         public static string CreateHash(string plainText, string saltkey = "", string format = "SHA1") {
             var text = String.Concat(plainText, saltkey);
 
-            if(String.IsNullOrWhiteSpace(format))
+            if (String.IsNullOrWhiteSpace(format))
                 format = "SHA1";
 
             //return FormsAuthentication.HashPasswordForStoringInConfigFile(text, format);
             var algorithm = HashAlgorithm.Create(format);
-            if(algorithm == null) throw new ArgumentException("Unrecognized hash name");
+            if (algorithm == null) throw new ArgumentException("Unrecognized hash name");
 
             var hashByteArray = algorithm.ComputeHash(Encoding.UTF8.GetBytes(text));
             return BitConverter.ToString(hashByteArray).Replace("-", "");
@@ -227,11 +294,11 @@ namespace iPem.Core {
         /// <param name="source">带检验的数组</param>
         /// <returns>true/false</returns>
         public static bool ConditionContain(string target, string[] source) {
-            if(target == null || source == null) 
+            if (target == null || source == null)
                 return false;
 
-            foreach(var src in source) {
-                if(target.ToLowerInvariant().Contains(src.ToLowerInvariant()))
+            foreach (var src in source) {
+                if (target.ToLowerInvariant().Contains(src.ToLowerInvariant()))
                     return true;
             }
 
@@ -261,8 +328,8 @@ namespace iPem.Core {
             byte[] bytes = null;
             var task = new Thread(() => {
                 try {
-                    using(var speaker = new SpeechSynthesizer()) {
-                        using(var stream = new MemoryStream()) {
+                    using (var speaker = new SpeechSynthesizer()) {
+                        using (var stream = new MemoryStream()) {
                             speaker.SetOutputToWaveStream(stream);
                             speaker.Speak(word);
                             bytes = stream.ToArray();
@@ -329,7 +396,7 @@ namespace iPem.Core {
         /// <summary>
         /// 序列化对象
         /// </summary>
-        public static byte[] ObjectToBytes(object obj){
+        public static byte[] ObjectToBytes(object obj) {
             using (var memory = new MemoryStream()) {
                 new BinaryFormatter().Serialize(memory, obj);
                 return memory.GetBuffer();
@@ -344,6 +411,29 @@ namespace iPem.Core {
                 memory.Position = 0;
                 return new BinaryFormatter().Deserialize(memory) as T;
             }
+        }
+
+        /// <summary>
+        /// 将DataTable转换为Byte数组
+        /// </summary>
+        public static byte[] DtToXml(DataTable dt) {
+            using (var memory = new MemoryStream()) {
+                dt.WriteXml(memory, XmlWriteMode.WriteSchema, true);
+                return memory.GetBuffer();
+            }
+        }
+
+        /// <summary>
+        /// 将Byte数组转换为DataTable
+        /// </summary>
+        public static DataTable XmlToDt(byte[] bytes) {
+            var dt = new DataTable();
+            using (var memory = new MemoryStream()) {
+                memory.Write(bytes, 0, bytes.Length);
+                memory.Position = 0;
+                dt.ReadXml(memory);
+            }
+            return dt;
         }
 
         /// <summary>
@@ -386,6 +476,9 @@ namespace iPem.Core {
             return string.Join(";", conditions);
         }
 
+        /// <summary>
+        /// 获得文件类型
+        /// </summary>
         public static string GetFileType(string file) {
             if (string.IsNullOrWhiteSpace(file)) return FileType.Undefined.Key;
 

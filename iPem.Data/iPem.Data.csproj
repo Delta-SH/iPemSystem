@@ -57,6 +57,7 @@
     <Compile Include="Repository\Cs\Class\H_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Class\H_IAreaRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_ACabinetRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_BatCurveRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_BatTimeRepository.cs" />
     <Compile Include="Repository\Cs\Class\V_ElecRepository.cs" />
@@ -70,16 +71,17 @@
     <Compile Include="Repository\Cs\Interface\IH_CardRecordRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_DBScriptRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IAreaRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_ACabinetRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatCurveRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_BatTimeRepository.cs" />
-    <Compile Include="Repository\Cs\Interface\IV_CutRepository.cs" />
+    <Compile Include="Repository\Cs\Interface\IV_OfflineRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_ElecRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_FsuEventRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_LoadRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IDeviceRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IH_IStationRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_AMeasureRepository.cs" />
-    <Compile Include="Repository\Cs\Class\V_CutRepository.cs" />
+    <Compile Include="Repository\Cs\Class\V_OfflineRepository.cs" />
     <Compile Include="Repository\Cs\Interface\IV_ParamDiffRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_FtpRepository.cs" />
     <Compile Include="Repository\Rs\Class\C_GroupRepository.cs" />

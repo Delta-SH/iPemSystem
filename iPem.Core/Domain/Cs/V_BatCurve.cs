@@ -1,12 +1,12 @@
 ﻿using iPem.Core.Enum;
 using System;
 
-namespace iPem.Core {
+namespace iPem.Core.Domain.Cs {
     /// <summary>
     /// 电池充放电曲线表
     /// </summary>
     [Serializable]
-    public partial class V_BatCurve {
+    public partial class V_BatCurve : BaseEntity {
         /// <summary>
         /// 区域编码(第三级区域)
         /// </summary>
@@ -41,6 +41,11 @@ namespace iPem.Core {
         /// 电池状态
         /// </summary>
         public EnmBatStatus Type { get; set; }
+
+        /// <summary>
+        /// 电池信号分类
+        /// </summary>
+        public EnmBatPoint PType { get; set; }
 
         /// <summary>
         /// 放电开始时间

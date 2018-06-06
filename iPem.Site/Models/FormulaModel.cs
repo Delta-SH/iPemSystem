@@ -32,23 +32,14 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("办公能耗备注")]
         public string bgRemarks { get; set; }
 
-        [ExcelDisplayName("IT设备能耗")]
-        public string sbFormulas { get; set; }
-
-        [ExcelDisplayName("IT设备运算方式")]
-        public int sbCompute { get; set; }
-
-        [ExcelDisplayName("IT设备能耗备注")]
-        public string sbRemarks { get; set; }
-
         [ExcelDisplayName("开关电源能耗")]
-        public string kgdyFormulas { get; set; }
+        public string dyFormulas { get; set; }
 
         [ExcelDisplayName("开关电源运算方式")]
-        public int kgdyCompute { get; set; }
+        public int dyCompute { get; set; }
 
         [ExcelDisplayName("开关电源能耗备注")]
-        public string kgdyRemarks { get; set; }
+        public string dyRemarks { get; set; }
 
         [ExcelDisplayName("UPS能耗")]
         public string upsFormulas { get; set; }
@@ -58,6 +49,15 @@ namespace iPem.Site.Models {
 
         [ExcelDisplayName("UPS能耗备注")]
         public string upsRemarks { get; set; }
+
+        [ExcelDisplayName("IT设备能耗")]
+        public string itFormulas { get; set; }
+
+        [ExcelDisplayName("IT设备运算方式")]
+        public int itCompute { get; set; }
+
+        [ExcelDisplayName("IT设备能耗备注")]
+        public string itRemarks { get; set; }
 
         [ExcelDisplayName("其他能耗")]
         public string qtFormulas { get; set; }
@@ -69,12 +69,54 @@ namespace iPem.Site.Models {
         public string qtRemarks { get; set; }
 
         [ExcelDisplayName("总能耗")]
-        public string zlFormulas { get; set; }
+        public string ttFormulas { get; set; }
 
         [ExcelDisplayName("总能耗运算方式")]
-        public int zlCompute { get; set; }
+        public int ttCompute { get; set; }
 
         [ExcelDisplayName("总能耗备注")]
-        public string zlRemarks { get; set; }
+        public string ttRemarks { get; set; }
+
+        [ExcelDisplayName("停电标识")]
+        public string tdFormulas { get; set; }
+
+        [ExcelDisplayName("停电备注")]
+        public string tdRemarks { get; set; }
+
+        [ExcelDisplayName("温度标识")]
+        public string wdFormulas { get; set; }
+
+        [ExcelDisplayName("湿度标识")]
+        public string sdFormulas { get; set; }
+
+        [ExcelDisplayName("温度备注")]
+        public string wdRemarks { get; set; }
+
+        [ExcelDisplayName("发电标识")]
+        public string fdFormulas { get; set; }
+
+        [ExcelDisplayName("油机发电量")]
+        public string yjFormulas { get; set; }
+
+        [ExcelDisplayName("发电量运算方式")]
+        public int yjCompute { get; set; }
+
+        [ExcelDisplayName("发电量备注")]
+        public string yjRemarks { get; set; }
+
+        [ExcelDisplayName("变压器能耗")]
+        public string byFormulas { get; set; }
+
+        [ExcelDisplayName("变压器运算方式")]
+        public int byCompute { get; set; }
+
+        [ExcelDisplayName("线损能耗")]
+        public string xsFormulas { get; set; }
+
+        [ExcelDisplayName("线损运算方式")]
+        public int xsCompute { get; set; }
+
+        [ExcelDisplayName("变压器备注")]
+        public string byRemarks { get; set; }
     }
 }

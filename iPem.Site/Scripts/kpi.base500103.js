@@ -82,7 +82,7 @@ var currentPanel = Ext.create("Ext.grid.Panel", {
         align: 'left',
         sortable: true
     }, {
-        text: '高温测点总数',
+        text: '温度测点总数',
         dataIndex: 'total',
         align: 'left',
         sortable: true

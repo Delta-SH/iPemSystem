@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iPem.Core", "iPem.Core\iPem.Core.csproj", "{65343199-3A33-4D3A-A9E9-E82857350E7E}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iPem.Site.Tests", "iPem.Site.Tests\iPem.Site.Tests.csproj", "{E45DE495-F149-4A0A-9000-4059B02D012B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iPem.Keys", "iPem.Keys\iPem.Keys.csproj", "{7BBFD8DD-DB65-4730-901F-A3FC8ED00258}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentFTP", "FluentFTP\FluentFTP.csproj", "{A210A5A5-0629-4088-BA03-67EF86E4DA36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{7BBFD8DD-DB65-4730-901F-A3FC8ED00258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BBFD8DD-DB65-4730-901F-A3FC8ED00258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BBFD8DD-DB65-4730-901F-A3FC8ED00258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A210A5A5-0629-4088-BA03-67EF86E4DA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A210A5A5-0629-4088-BA03-67EF86E4DA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A210A5A5-0629-4088-BA03-67EF86E4DA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A210A5A5-0629-4088-BA03-67EF86E4DA36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

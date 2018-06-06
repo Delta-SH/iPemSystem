@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace iPem.Data.Repository.Cs {
     public partial class V_HMeasureRepository : IV_HMeasureRepository {
@@ -140,19 +141,58 @@ namespace iPem.Data.Repository.Cs {
             return entities;
         }
 
-        public List<V_HMeasure> GetMeasuresInPoint(string device, string point, DateTime start, DateTime end) {
+        public List<V_HMeasure> GetMeasuresInPoints(string device, string[] points, DateTime start, DateTime end) {
+            if (points == null || points.Length == 0)
+                throw new ArgumentNullException("points");
+
+            var keys = string.Join(",", points.Select(p => string.Format("''{0}''", p)));
+            var query = string.Format(@"
+            DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+            SET @tpDate = @Start;
+            WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+            BEGIN
+                SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+                IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+                BEGIN
+                    IF(@tableCnt>0)
+                    BEGIN
+                    SET @SQL += N' 
+                    UNION ALL 
+                    ';
+                    END
+        			
+                    SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] IN ({0})';
+                    SET @tableCnt += 1;
+                END
+                SET @tpDate = DATEADD(MM,1,@tpDate);
+            END
+
+            IF(@tableCnt>0)
+            BEGIN
+	            SET @SQL = N';WITH HisValue AS
+		        (
+			        ' + @SQL + N'
+		        )
+		        SELECT * FROM HisValue ORDER BY [UpdateTime];'
+            END
+
+            EXECUTE sp_executesql @SQL;", keys);
+
+
             SqlParameter[] parms = { new SqlParameter("@DeviceId", SqlDbType.VarChar, 100),
-                                     new SqlParameter("@PointId", SqlDbType.VarChar, 100),
                                      new SqlParameter("@Start", SqlDbType.DateTime),
                                      new SqlParameter("@End", SqlDbType.DateTime) };
 
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(device);
-            parms[1].Value = SqlTypeConverter.DBNullStringChecker(point);
-            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
-            parms[3].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
+            parms[1].Value = SqlTypeConverter.DBNullDateTimeHandler(start);
+            parms[2].Value = SqlTypeConverter.DBNullDateTimeHandler(end);
 
             var entities = new List<V_HMeasure>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Cs.Sql_V_HMeasure_Repository_GetMeasuresInPoint, parms)) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, query, parms)) {
                 while(rdr.Read()) {
                     var entity = new V_HMeasure();
                     entity.AreaId = SqlTypeConverter.DBNullStringHandler(rdr["AreaId"]);

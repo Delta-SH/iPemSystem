@@ -498,6 +498,222 @@ namespace iPem.Data.Common {
         END";
 
         /// <summary>
+        /// 列头柜数据表
+        /// </summary>
+        public const string Sql_V_ACabinet_Repository_GetHistory4 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + '''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result ORDER BY [ValueTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_ACabinet_Repository_GetHistory3 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Category] = '+ CAST(@Category AS NVARCHAR) +' AND [DeviceId] = ''' + @DeviceId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result ORDER BY [ValueTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_ACabinet_Repository_GetHistory2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Category] = '+ CAST(@Category AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_ACabinet_Repository_GetHistory1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_ACabinet_Repository_GetLast1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Category] = '+ CAST(@Category AS NVARCHAR) +' AND [DeviceId] = ''' + @DeviceId + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] 
+	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM Result) AS T WHERE T.[RID] = 1;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_ACabinet_Repository_GetLast2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_ACabinet'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Category] = '+ CAST(@Category AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] 
+	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM Result) AS T WHERE T.[RID] = 1;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
+        /// <summary>
         /// 实时性能数据表
         /// </summary>
         public const string Sql_V_AMeasure_Repository_GetMeasure = @"SELECT * FROM [dbo].[V_AMeasure] WHERE [DeviceId] = @DeviceId AND [PointId] = @PointId;";        
@@ -537,11 +753,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisBat AS
+	        SET @SQL = N';WITH Result AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    SELECT * FROM Result ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -619,7 +835,7 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 电池充放电曲线表
         /// </summary>
-        public const string Sql_V_BatCurve_Repository_GetProceduresInDevice = @"
+        public const string Sql_V_BatCurve_Repository_GetProcedures1 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -638,7 +854,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         		
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ProcTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ProcTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PackId]='+CAST(@PackId AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -654,7 +870,7 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatCurve_Repository_GetProceduresInPoint = @"
+        public const string Sql_V_BatCurve_Repository_GetProcedures2 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -673,42 +889,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         		
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ProcTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PointId]='''+ @PointId + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH V AS
-	        (
-		        ' + @SQL + N'
-	        )
-	        SELECT * FROM V ORDER BY [ValueTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatCurve_Repository_GetValuesInDevice = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_BatCurve'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        		
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId]=''' + @DeviceId + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ProcTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PackId]='+CAST(@PackId AS NVARCHAR)+' AND [PType]='+CAST(@PType AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -724,7 +905,7 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatCurve_Repository_GetValuesInPoint = @"
+        public const string Sql_V_BatCurve_Repository_GetValues1 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -743,7 +924,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         		
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [ValueTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PointId]='''+ @PointId + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PackId]='+CAST(@PackId AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -755,7 +936,42 @@ namespace iPem.Data.Common {
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [ValueTime];'
+	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_BatCurve_Repository_GetValues2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatCurve'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] = ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND [DeviceId]=''' + @DeviceId + N''' AND [PackId]='+CAST(@PackId AS NVARCHAR)+' AND [PType]='+CAST(@PType AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH V AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -794,11 +1010,7 @@ namespace iPem.Data.Common {
         END
 
         EXECUTE sp_executesql @SQL;";
-
-        /// <summary>
-        /// 电池充放电过程表
-        /// </summary>
-        public const string Sql_V_BatTime_Repository_GetValuesInDevice = @"
+        public const string Sql_V_BatCurve_Repository_GetMinValues = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -807,188 +1019,7 @@ namespace iPem.Data.Common {
         SET @tpDate = @Start;
         WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
         BEGIN
-            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH V AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM V ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatTime_Repository_GetValuesInPoint = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH V AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM V ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatTime_Repository_GetValues = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH V AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM V ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_BatTime_Repository_GetProcedures = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH V AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT [DeviceId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM V GROUP BY [DeviceId],[ProcTime] ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-
-        /// <summary>
-        /// 断站、停电、发电表
-        /// </summary>
-        public const string Sql_V_Cut_Repository_GetCuttings = @"SELECT * FROM [dbo].[V_Cutting];";
-        public const string Sql_V_Cut_Repository_GetCuttingsInType = @"SELECT * FROM [dbo].[V_Cutting] WHERE [Type]=@Type;";
-        public const string Sql_V_Cut_Repository_GetCuteds = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Cuted'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH Values AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM Values ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Cut_Repository_GetCutedsInType = @"
-        DECLARE @tpDate DATETIME,
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Cuted'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            SET @tbName = N'[dbo].[V_BatCurve'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
             IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
             BEGIN
                 IF(@tableCnt>0)
@@ -998,7 +1029,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         		
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type] = '+ CAST(@Type AS NVARCHAR);
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]='+CAST(@Type AS NVARCHAR)+' AND [PType]='+CAST(@PType AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1006,11 +1037,310 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Values AS
+	        SET @SQL = N';WITH V AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT B2.* FROM (
+            SELECT [DeviceId],[PackId],[StartTime],MIN([Value]) AS [Value] FROM V GROUP BY [DeviceId],[PackId],[StartTime]
+            ) AS B1,V B2 
+            WHERE B1.[DeviceId]=B2.[DeviceId] AND B1.[PackId]=B2.[PackId] AND B1.[StartTime]=B2.[StartTime] AND B1.[Value]=B2.[Value]
+            ORDER BY B2.[DeviceId],B2.[PackId],B2.[StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_BatCurve_Repository_GetMaxValues = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatCurve'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]='+CAST(@Type AS NVARCHAR)+' AND [PType]='+CAST(@PType AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH V AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT B2.* FROM (
+            SELECT [DeviceId],[PackId],[StartTime],MAX([Value]) AS [Value] FROM V GROUP BY [DeviceId],[PackId],[StartTime]
+            ) AS B1,V B2 
+            WHERE B1.[DeviceId]=B2.[DeviceId] AND B1.[PackId]=B2.[PackId] AND B1.[StartTime]=B2.[StartTime] AND B1.[Value]=B2.[Value]
+            ORDER BY B2.[DeviceId],B2.[PackId],B2.[StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
+        /// <summary>
+        /// 电池充放电过程表
+        /// </summary>
+        public const string Sql_V_BatTime_Repository_GetValues1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH V AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Values ORDER BY [StartTime];'
+		    SELECT * FROM V ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_BatTime_Repository_GetValues2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH V AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM V ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_BatTime_Repository_GetProcedures1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM Result GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_BatTime_Repository_GetProcedures2 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_BatTime'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = '''+@DeviceId+'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM Result GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
+        /// <summary>
+        /// 断站、停电、发电表
+        /// </summary>
+        public const string Sql_V_Offline_Repository_GetActive1 = @"SELECT * FROM [dbo].[V_Offline] ORDER BY [StartTime],[FormulaType],[Type],[Id];";
+        public const string Sql_V_Offline_Repository_GetActive2 = @"SELECT * FROM [dbo].[V_Offline] WHERE [FormulaType]=@FormulaType ORDER BY [StartTime],[Type],[Id];";
+        public const string Sql_V_Offline_Repository_GetActive3 = @"SELECT * FROM [dbo].[V_Offline] WHERE [Type]=@Type AND [FormulaType]=@FormulaType ORDER BY [StartTime],[Id];";
+        public const string Sql_V_Offline_Repository_GetHistory1 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Offline'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Result ORDER BY [StartTime],[FormulaType],[Type],[Id];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Offline_Repository_GetHistory2 = @"
+        DECLARE @tpDate DATETIME,
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Offline'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [FormulaType] = '+ CAST(@FormulaType AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Result ORDER BY [StartTime],[Type],[Id];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Offline_Repository_GetHistory3 = @"
+        DECLARE @tpDate DATETIME,
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Offline'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        		
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type] = '+ CAST(@Type AS NVARCHAR) +' AND [FormulaType] = '+CAST(@FormulaType AS NVARCHAR);
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Result ORDER BY [StartTime],[Id];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1018,7 +1348,11 @@ namespace iPem.Data.Common {
         /// <summary>
         /// 能耗数据表
         /// </summary>
-        public const string Sql_V_Elec_Repository_GetValues1 = @"
+        public const string Sql_V_Elec_Repository_GetActive1 = @"SELECT * FROM [dbo].[V_Elec];";
+        public const string Sql_V_Elec_Repository_GetActive2 = @"SELECT * FROM [dbo].[V_Elec] WHERE [Type]=@Type;";
+        public const string Sql_V_Elec_Repository_GetActive3 = @"SELECT * FROM [dbo].[V_Elec] WHERE [Id]=@Id AND [Type]=@Type;";
+        public const string Sql_V_Elec_Repository_GetActive4 = @"SELECT * FROM [dbo].[V_Elec] WHERE [Type]=@Type AND [FormulaType]=@FormulaType;";
+        public const string Sql_V_Elec_Repository_GetHistory1 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -1037,7 +1371,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1045,85 +1379,15 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisElec AS
+	        SET @SQL = N';WITH Result AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisElec ORDER BY [StartTime];'
+		    SELECT * FROM Result ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Elec_Repository_GetValues2 = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH hisElec AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM hisElec ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Elec_Repository_GetValues3 = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR);
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH hisElec AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM hisElec ORDER BY [StartTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Elec_Repository_GetValues4 = @"
+        public const string Sql_V_Elec_Repository_GetHistory2 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -1150,15 +1414,15 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisElec AS
+	        SET @SQL = N';WITH Result AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisElec ORDER BY [StartTime];'
+		    SELECT * FROM Result ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_Elec_Repository_GetValues5 = @"
+        public const string Sql_V_Elec_Repository_GetHistory3 = @"
         DECLARE @tpDate DATETIME, 
                 @tbName NVARCHAR(255),
                 @tableCnt INT = 0,
@@ -1177,7 +1441,7 @@ namespace iPem.Data.Common {
                 ';
                 END
         			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N'''';
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR);
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);
@@ -1185,15 +1449,155 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisElec AS
+	        SET @SQL = N';WITH Result AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisElec ORDER BY [StartTime];'
+		    SELECT * FROM Result ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
-        
+        public const string Sql_V_Elec_Repository_GetHistory4 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Result ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Elec_Repository_GetHistory5 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+		    (
+			    ' + @SQL + N'
+		    )
+		    SELECT * FROM Result ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Elec_Repository_GetHistory6 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT CONVERT(varchar(10),[StartTime],120) AS [StartTime],ROUND(SUM([Value]),3) AS [Value] FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [Id]=''' + @Id + N''' GROUP BY CONVERT(varchar(10),[StartTime],120)';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT CAST([StartTime] AS DATETIME) AS [StartTime],[Value] FROM Result ORDER BY [StartTime];'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+        public const string Sql_V_Elec_Repository_GetHistory7 = @"
+        DECLARE @tpDate DATETIME, 
+                @tbName NVARCHAR(255),
+                @tableCnt INT = 0,
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Start;
+        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
+        BEGIN
+            SET @tbName = N'[dbo].[V_Elec'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
+            BEGIN
+                IF(@tableCnt>0)
+                BEGIN
+                SET @SQL += N' 
+                UNION ALL 
+                ';
+                END
+        			
+                SET @SQL += N'SELECT SUM([Value]) AS [Total] FROM ' + @tbName + N' WHERE [StartTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [Type]=' + CAST(@Type AS NVARCHAR) + N' AND [FormulaType]=' + CAST(@FormulaType AS NVARCHAR) + N' AND [Id]=''' + @Id + N'''';
+                SET @tableCnt += 1;
+            END
+            SET @tpDate = DATEADD(MM,1,@tpDate);
+        END
+
+        IF(@tableCnt>0)
+        BEGIN
+	        SET @SQL = N';WITH Result AS
+	        (
+		        ' + @SQL + N'
+	        )
+	        SELECT ISNULL(SUM([Total]),0) AS [Total] FROM Result;'
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
         /// <summary>
         /// 历史性能数据表
         /// </summary>
@@ -1322,41 +1726,6 @@ namespace iPem.Data.Common {
                 END
         			
                 SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N'''';
-                SET @tableCnt += 1;
-            END
-            SET @tpDate = DATEADD(MM,1,@tpDate);
-        END
-
-        IF(@tableCnt>0)
-        BEGIN
-	        SET @SQL = N';WITH HisValue AS
-		    (
-			    ' + @SQL + N'
-		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
-        END
-
-        EXECUTE sp_executesql @SQL;";
-        public const string Sql_V_HMeasure_Repository_GetMeasuresInPoint = @"
-        DECLARE @tpDate DATETIME, 
-                @tbName NVARCHAR(255),
-                @tableCnt INT = 0,
-                @SQL NVARCHAR(MAX) = N'';
-
-        SET @tpDate = @Start;
-        WHILE(DATEDIFF(MM,@tpDate,@End)>=0)
-        BEGIN
-            SET @tbName = N'[dbo].[V_HMeasure'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
-            IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
-            BEGIN
-                IF(@tableCnt>0)
-                BEGIN
-                SET @SQL += N' 
-                UNION ALL 
-                ';
-                END
-        			
-                SET @SQL += N'SELECT * FROM ' + @tbName + N' WHERE [UpdateTime] BETWEEN ''' + CONVERT(NVARCHAR,@Start,120) + N''' AND ''' + CONVERT(NVARCHAR,@End,120) + N''' AND [DeviceId] = ''' + @DeviceId + N''' AND [PointId] = ''' + @PointId + N'''';
                 SET @tableCnt += 1;
             END
             SET @tpDate = DATEADD(MM,1,@tpDate);

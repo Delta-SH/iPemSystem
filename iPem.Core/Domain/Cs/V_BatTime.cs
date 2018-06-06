@@ -28,11 +28,6 @@ namespace iPem.Core.Domain.Cs {
         public string DeviceId { get; set; }
 
         /// <summary>
-        /// 信号编码
-        /// </summary>
-        public string PointId { get; set; }
-
-        /// <summary>
         /// 电池组号
         /// </summary>
         public int PackId { get; set; }
@@ -51,16 +46,6 @@ namespace iPem.Core.Domain.Cs {
         /// 结束时间
         /// </summary>
         public DateTime EndTime { get; set; }
-
-        /// <summary>
-        /// 开始测值
-        /// </summary>
-        public double StartValue { get; set; }
-
-        /// <summary>
-        /// 结束测值
-        /// </summary>
-        public double EndValue { get; set; }
 
         /// <summary>
         /// 过程时间

@@ -28,9 +28,9 @@ namespace iPem.Data.Repository.Cs {
         List<V_HMeasure> GetMeasuresInDevice(string id, DateTime start, DateTime end);
 
         /// <summary>
-        /// 获得指定设备下单信号的性能数据
+        /// 获得指定设备的性能数据
         /// </summary>
-        List<V_HMeasure> GetMeasuresInPoint(string device, string point, DateTime start, DateTime end);
+        List<V_HMeasure> GetMeasuresInPoints(string device, string[] points, DateTime start, DateTime end);
 
         /// <summary>
         /// 获得指定时间内的性能数据

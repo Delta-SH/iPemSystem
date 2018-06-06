@@ -33,8 +33,8 @@ namespace iPem.Data.Repository.Rs {
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             D_Device entity = null;
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevice, parms)) {
-                if(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevice, parms)) {
+                if (rdr.Read()) {
                     entity = new D_Device();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
@@ -43,6 +43,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
@@ -89,6 +90,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
@@ -126,8 +128,8 @@ namespace iPem.Data.Repository.Rs {
             parms[0].Value = SqlTypeConverter.DBNullStringChecker(id);
 
             var entities = new List<D_Device>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevicesInRoom, parms)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevicesInRoom, parms)) {
+                while (rdr.Read()) {
                     var entity = new D_Device();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
@@ -136,6 +138,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
@@ -183,6 +186,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);
@@ -217,8 +221,8 @@ namespace iPem.Data.Repository.Rs {
 
         public List<D_Device> GetDevices() {
             var entities = new List<D_Device>();
-            using(var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevices, null)) {
-                while(rdr.Read()) {
+            using (var rdr = SqlHelper.ExecuteReader(this._databaseConnectionString, CommandType.Text, SqlCommands_Rs.Sql_D_Device_Repository_GetDevices, null)) {
+                while (rdr.Read()) {
                     var entity = new D_Device();
                     entity.Id = SqlTypeConverter.DBNullStringHandler(rdr["Id"]);
                     entity.Code = SqlTypeConverter.DBNullStringHandler(rdr["Code"]);
@@ -227,6 +231,7 @@ namespace iPem.Data.Repository.Rs {
                     entity.SysCode = SqlTypeConverter.DBNullStringHandler(rdr["SysCode"]);
                     entity.Type = new C_DeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["DeviceTypeName"]) };
                     entity.SubType = new C_SubDeviceType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubDeviceTypeName"]) };
+                    entity.LogicType = new C_LogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["LogicTypeName"]) };
                     entity.SubLogicType = new C_SubLogicType { Id = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeId"]), Name = SqlTypeConverter.DBNullStringHandler(rdr["SubLogicTypeName"]) };
                     entity.Model = SqlTypeConverter.DBNullStringHandler(rdr["Model"]);
                     entity.Vendor = SqlTypeConverter.DBNullStringHandler(rdr["Vendor"]);

@@ -225,9 +225,9 @@ var alarmStore = Ext.create('Ext.data.Store', {
     }
 });
 
-var columnStore = Ext.create('Ext.data.Store',{
+var columnStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
-    fields: ['id','text'],
+    fields: ['id', 'text'],
     proxy: {
         type: 'ajax',
         url: '/Component/GetPointInDevType',
@@ -269,7 +269,7 @@ var templateStore = Ext.create('Ext.data.Store', {
             if (success && records.length > 0) {
                 var templates = Ext.getCmp('matrixTemplates'),
                     tempcookie = Ext.util.Cookies.get('ipems.matrix.template');
-                    
+
                 var template = null;
                 if (Ext.isEmpty(tempcookie)) {
                     templates.select(records[0]);
@@ -327,8 +327,25 @@ var gaugeChart = null,
             {
                 name: '',
                 type: 'gauge',
-                center: ['50%', 100],
-                radius: '100%',
+                center: ['50%', '58%'],
+                radius: '110%',
+                axisLine: {
+                    lineStyle: {
+                        width: 15
+                    }
+                },
+                axisTick: {
+                    length: 20,
+                    lineStyle: {
+                        color: 'auto'
+                    }
+                },
+                splitLine: {
+                    length: 25,
+                    lineStyle: {
+                        color: 'auto'
+                    }
+                },
                 title: {
                     offsetCenter: [0, 60],
                     textStyle: {
@@ -338,12 +355,12 @@ var gaugeChart = null,
                     }
                 },
                 detail: {
-                    offsetCenter: [0, -30],
+                    offsetCenter: [0, -25],
                     textStyle: {
                         fontSize: 16
                     }
                 },
-                data: [{ value: 0, name: '' }]
+                data: [{ value: 0, name: '信号测值' }]
             }
         ]
     },
@@ -571,7 +588,7 @@ var pointGrid = Ext.create('Ext.grid.Panel', {
                                 currentStore.loadPage(1);
                             }
                         }
-                    },'-',
+                    }, '-',
                     {
                         width: 150,
                         xtype: 'checkbox',
@@ -1542,7 +1559,7 @@ var matrixWnd = Ext.create('Ext.window.Window', {
                                 mask: new Ext.LoadMask(template.getView(), { msg: '正在处理...' }),
                                 success: function (response, options) {
                                     var data = Ext.decode(response.responseText, true);
-                                    if (data.success){
+                                    if (data.success) {
                                         var root = template.getRootNode(),
                                             current = root.createNode(data.data);
 
@@ -1660,7 +1677,7 @@ var matrixWnd = Ext.create('Ext.window.Window', {
 
                             var store = columnStore,
                                 proxy = store.getProxy();
-                                
+
                             proxy.extraParams.node = newValue;
                             store.load();
                         }
@@ -1681,7 +1698,7 @@ var matrixWnd = Ext.create('Ext.window.Window', {
                     value: [],
                     allowBlank: false,
                     minSelections: 1,
-                    maxSelections: 20,
+                    maxSelections: 50,
                     listeners: {
                         change: function (me, newValue, oldValue) {
                             if (matrixWnd.currentNode != null) {
@@ -1768,7 +1785,7 @@ var matrixWnd = Ext.create('Ext.window.Window', {
         }
     ]
 });
-   
+
 //#endregion
 
 //#region ContextMenu
@@ -2162,13 +2179,16 @@ var loadMatrixColumn = function (template) {
         view = grid.getView(),
         mask = new Ext.LoadMask({ target: view, msg: '获取列名...' });
 
+    proxy.extraParams.id = template;
+    proxy.extraParams.cache = false;
     Ext.Ajax.request({
         url: '/Home/GetMatrixColumns',
-        params: { id: template },
+        params: proxy.extraParams,
         mask: grid.rendered === true ? mask : null,
         success: function (response, options) {
             var data = Ext.decode(response.responseText, true);
-            if (data.success) {
+            if (data.success === true) {
+                proxy.extraParams.cache = true;
                 me.model.prototype.fields.clear();
                 me.removeAll();
                 var columns = [];
@@ -2181,11 +2201,8 @@ var loadMatrixColumn = function (template) {
                 }
                 grid.reconfigure(me, columns);
 
-                proxy.extraParams.id = template;
-                proxy.extraParams.cache = false;
                 me.loadPage(1, {
                     callback: function (records, operation, success) {
-                        proxy.extraParams.cache = success;
                         Ext.getCmp('exportButton').setDisabled(success === false);
                     }
                 });

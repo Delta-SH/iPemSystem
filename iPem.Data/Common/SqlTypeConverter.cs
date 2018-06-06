@@ -22,7 +22,7 @@ namespace iPem.Data.Common {
         }
 
         public static object DBNullInt32Checker(int val) {
-            if(val == int.MinValue) { return DBNull.Value; }
+            if (val == int.MinValue) { return DBNull.Value; }
             return val;
         }
 
@@ -32,7 +32,7 @@ namespace iPem.Data.Common {
         }
 
         public static object DBNullInt64Checker(long val) {
-            if(val == long.MinValue) { return DBNull.Value; }
+            if (val == long.MinValue) { return DBNull.Value; }
             return val;
         }
 
@@ -42,7 +42,7 @@ namespace iPem.Data.Common {
         }
 
         public static object DBNullFloatChecker(float val) {
-            if(val == float.MinValue) { return DBNull.Value; }
+            if (val == float.MinValue) { return DBNull.Value; }
             return val;
         }
 
@@ -52,7 +52,7 @@ namespace iPem.Data.Common {
         }
 
         public static object DBNullDoubleChecker(double val) {
-            if(val == double.MinValue) { return DBNull.Value; }
+            if (val == double.MinValue) { return DBNull.Value; }
             return val;
         }
 
@@ -67,7 +67,7 @@ namespace iPem.Data.Common {
         }
 
         public static DateTime? DBNullDateTimeNullableHandler(object val) {
-            if(val == DBNull.Value) { return null; }
+            if (val == DBNull.Value) { return null; }
             return (DateTime)val;
         }
 
@@ -92,80 +92,80 @@ namespace iPem.Data.Common {
         }
 
         public static byte[] DBNullBytesHandler(object val) {
-            if(val == DBNull.Value) { return null; }
+            if (val == DBNull.Value) { return null; }
             return (byte[])val;
         }
 
         public static object DBNullBytesChecker(object val) {
-            if(val == null) { return DBNull.Value; }
+            if (val == null) { return DBNull.Value; }
             return val;
         }
 
         public static EnmEventLevel DBNullEventLevelHandler(object val) {
-            if(val == DBNull.Value) { return EnmEventLevel.Information; }
+            if (val == DBNull.Value) { return EnmEventLevel.Information; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmEventLevel), v) ? (EnmEventLevel)v : EnmEventLevel.Information;
         }
 
         public static EnmEventType DBNullEventTypeHandler(object val) {
-            if(val == DBNull.Value) { return EnmEventType.Other; }
+            if (val == DBNull.Value) { return EnmEventType.Other; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmEventType), v) ? (EnmEventType)v : EnmEventType.Other;
         }
 
         public static EnmPasswordFormat DBNullEnmPasswordFormatHandler(object val) {
-            if(val == DBNull.Value) { return EnmPasswordFormat.Hashed; }
+            if (val == DBNull.Value) { return EnmPasswordFormat.Hashed; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmPasswordFormat), v) ? (EnmPasswordFormat)v : EnmPasswordFormat.Hashed;
         }
 
         public static EnmSex DBNullEnmSexHandler(object val) {
-            if(val == DBNull.Value) { return EnmSex.Male; }
+            if (val == DBNull.Value) { return EnmSex.Male; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmSex), v) ? (EnmSex)v : EnmSex.Male;
         }
 
         public static EnmDegree DBNullEnmDegreeHandler(object val) {
-            if(val == DBNull.Value) { return EnmDegree.Other; }
+            if (val == DBNull.Value) { return EnmDegree.Other; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmDegree), v) ? (EnmDegree)v : EnmDegree.Other;
         }
 
         public static EnmMarriage DBNullEnmMarriageHandler(object val) {
-            if(val == DBNull.Value) { return EnmMarriage.Other; }
+            if (val == DBNull.Value) { return EnmMarriage.Other; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmMarriage), v) ? (EnmMarriage)v : EnmMarriage.Other;
         }
 
         public static EnmPermission DBNullEnmPermissionHandler(object val) {
-            if(val == DBNull.Value) { return EnmPermission.Confirm; }
+            if (val == DBNull.Value) { return EnmPermission.Confirm; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmPermission), v) ? (EnmPermission)v : EnmPermission.Confirm;
         }
 
         public static EnmPoint DBNullEnmPointHandler(object val) {
-            if(val == DBNull.Value) { return EnmPoint.AI; }
+            if (val == DBNull.Value) { return EnmPoint.AI; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmPoint), v) ? (EnmPoint)v : EnmPoint.AI;
         }
 
         public static EnmAlarm DBNullEnmLevelHandler(object val) {
-            if(val == DBNull.Value) { return EnmAlarm.Level1; }
+            if (val == DBNull.Value) { return EnmAlarm.Level1; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmAlarm), v) ? (EnmAlarm)v : EnmAlarm.Level1;
         }
 
         public static EnmConfirm DBNullEnmConfirmStatusHandler(object val) {
-            if(val == DBNull.Value) { return EnmConfirm.Unconfirmed; }
+            if (val == DBNull.Value) { return EnmConfirm.Unconfirmed; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmConfirm), v) ? (EnmConfirm)v : EnmConfirm.Unconfirmed;
@@ -186,38 +186,31 @@ namespace iPem.Data.Common {
         }
 
         public static EnmState DBNullEnmStateHandler(object val) {
-            if(val == DBNull.Value) { return EnmState.Invalid; }
+            if (val == DBNull.Value) { return EnmState.Invalid; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmState), v) ? (EnmState)v : EnmState.Invalid;
         }
 
         public static EnmFormula DBNullEnmFormulaHandler(object val) {
-            if(val == DBNull.Value) { return EnmFormula.KT; }
+            if (val == DBNull.Value) { return EnmFormula.KT; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmFormula), v) ? (EnmFormula)v : EnmFormula.KT;
         }
 
         public static EnmCompute DBNullEnmComputeHandler(object val) {
-            if (val == DBNull.Value) { return EnmCompute.Diff; }
+            if (val == DBNull.Value) { return EnmCompute.Kwh; }
 
             var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmCompute), v) ? (EnmCompute)v : EnmCompute.Diff;
+            return Enum.IsDefined(typeof(EnmCompute), v) ? (EnmCompute)v : EnmCompute.Kwh;
         }
 
         public static EnmFsuEvent DBNullEnmFsuEventHandler(object val) {
-            if(val == DBNull.Value) { return EnmFsuEvent.Undefined; }
+            if (val == DBNull.Value) { return EnmFsuEvent.Undefined; }
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmFsuEvent), v) ? (EnmFsuEvent)v : EnmFsuEvent.Undefined;
-        }
-
-        public static EnmCutType DBNullEnmCutTypeHandler(object val) {
-            if (val == DBNull.Value) { return EnmCutType.Cut; }
-
-            var v = (Int32)val;
-            return Enum.IsDefined(typeof(EnmCutType), v) ? (EnmCutType)v : EnmCutType.Cut;
         }
 
         public static EnmBatStatus DBNullBatStatusHandler(object val) {
@@ -225,6 +218,13 @@ namespace iPem.Data.Common {
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmBatStatus), v) ? (EnmBatStatus)v : EnmBatStatus.Charge;
+        }
+
+        public static EnmBatPoint DBNullBatPointHandler(object val) {
+            if (val == DBNull.Value) { return EnmBatPoint.DCZDY; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmBatPoint), v) ? (EnmBatPoint)v : EnmBatPoint.DCZDY;
         }
 
         public static EnmCardType DBNullCardTypeHandler(object val) {
@@ -288,6 +288,13 @@ namespace iPem.Data.Common {
 
             var v = (Int32)val;
             return Enum.IsDefined(typeof(EnmUpgradeStatus), v) ? (EnmUpgradeStatus)v : EnmUpgradeStatus.Ready;
+        }
+
+        public static EnmVSignalCategory DBNullVSignalCategoryHandler(object val) {
+            if (val == DBNull.Value) { return EnmVSignalCategory.Category01; }
+
+            var v = (Int32)val;
+            return Enum.IsDefined(typeof(EnmVSignalCategory), v) ? (EnmVSignalCategory)v : EnmVSignalCategory.Category01;
         }
     }
 }

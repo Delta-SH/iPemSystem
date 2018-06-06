@@ -1,4 +1,5 @@
 ﻿using iPem.Core.Domain.Cs;
+using iPem.Core.Enum;
 using System;
 using System.Collections.Generic;
 
@@ -8,23 +9,23 @@ namespace iPem.Data.Repository.Cs {
     /// </summary>
     public partial interface IV_BatTimeRepository {
         /// <summary>
-        /// 获得指定设备的充放电过程
-        /// </summary>
-        List<V_BatTime> GetValuesInDevice(string id, DateTime start, DateTime end);
-
-        /// <summary>
-        /// 获得指定设备下单信号的充放电过程
-        /// </summary>
-        List<V_BatTime> GetValuesInPoint(string device, string point, DateTime start, DateTime end);
-
-        /// <summary>
-        /// 获得指定时间内的充放电过程
+        /// 获得指定的充放电过程
         /// </summary>
         List<V_BatTime> GetValues(DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获得指定的充放电过程
+        /// </summary>
+        List<V_BatTime> GetValues(DateTime start, DateTime end, EnmBatStatus type);
 
         /// <summary>
         /// 获得指定时间内的充放电过程
         /// </summary>
         List<V_BatTime> GetProcedures(DateTime start, DateTime end);
+
+        /// <summary>
+        /// 获得指定设备的充放电过程
+        /// </summary>
+        List<V_BatTime> GetProcedures(string device, DateTime start, DateTime end);
     }
 }

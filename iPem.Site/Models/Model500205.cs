@@ -13,7 +13,7 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("区域类型")]
         public string type { get; set; }
 
-        [ExcelDisplayName("已完成放电基站蓄电池后备时长合格基站数量")]
+        [ExcelDisplayName("蓄电池后备时长合格基站数量")]
         public int count { get; set; }
 
         [ExcelDisplayName("已完成放电基站数量")]

@@ -118,9 +118,11 @@ namespace iPem.Data.Repository.Rs {
 	            INNER JOIN [dbo].[S_Room] R ON D.[RoomID]=R.[ID]
 	            GROUP BY R.[StationID]
             )
-            SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],V.[Name] AS [Vendor],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],A.[Name] AS [AreaName],S.[Desc] AS [Comment],S.[Enabled] FROM [dbo].[S_Station] S 
+            SELECT S.[Id],S.[Code],S.[Name],S.[StaTypeId],ST.[Name] AS [StaTypeName],V.[Name] AS [Vendor],S.[Longitude],S.[Latitude],S.[Altitude],S.[CityElecLoadTypeId],S.[CityElectNumber],S.[CityElecCap],S.[CityElecLoad],S.[Contact],S.[LineRadiusSize],S.[LineLength],S.[SuppPowerTypeId],S.[TranInfo],S.[TranContNo],S.[TranPhone],S.[AreaId],CASE WHEN AA.[Name] IS NULL THEN A.[Name] ELSE AA.[Name] + ',' + A.[Name] END AS [AreaName],S.[Desc] AS [Comment],S.[Enabled],ISNULL(SK.[PtCount],0) AS [PtCount] FROM [dbo].[S_Station] S 
             INNER JOIN [dbo].[C_StationType] ST ON S.[StaTypeId] = ST.[Id]
             INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+            LEFT OUTER JOIN [dbo].[A_Area] AA ON A.[ParentID] = AA.[ID]
+            LEFT OUTER JOIN StationKeys SK ON S.[ID]=SK.[StationID]
             LEFT OUTER JOIN [dbo].[C_SCVendor] V ON S.[VendorID]=V.[ID];", string.Join(@" UNION ALL ", commands));
 
             var entities = new List<S_Station>();

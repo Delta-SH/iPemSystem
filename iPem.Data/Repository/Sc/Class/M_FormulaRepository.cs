@@ -44,9 +44,9 @@ namespace iPem.Data.Repository.Sc {
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
-                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                 }
             }
             return entity;
@@ -66,9 +66,9 @@ namespace iPem.Data.Repository.Sc {
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
-                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -84,9 +84,9 @@ namespace iPem.Data.Repository.Sc {
                     entity.Type = SqlTypeConverter.DBNullEnmSSHHandler(rdr["Type"]);
                     entity.FormulaType = SqlTypeConverter.DBNullEnmFormulaHandler(rdr["FormulaType"]);
                     entity.ComputeType = SqlTypeConverter.DBNullEnmComputeHandler(rdr["ComputeType"]);
-                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["Formula"]);
+                    entity.FormulaText = SqlTypeConverter.DBNullStringHandler(rdr["FormulaText"]);
+                    entity.FormulaValue = SqlTypeConverter.DBNullStringHandler(rdr["FormulaValue"]);
                     entity.Comment = SqlTypeConverter.DBNullStringHandler(rdr["Comment"]);
-                    entity.CreatedTime = SqlTypeConverter.DBNullDateTimeHandler(rdr["CreatedTime"]);
                     entities.Add(entity);
                 }
             }
@@ -98,9 +98,9 @@ namespace iPem.Data.Repository.Sc {
                                      new SqlParameter("@Type", SqlDbType.Int),
                                      new SqlParameter("@FormulaType", SqlDbType.Int),
                                      new SqlParameter("@ComputeType", SqlDbType.Int),
-                                     new SqlParameter("@Formula", SqlDbType.VarChar),
-                                     new SqlParameter("@Comment", SqlDbType.VarChar, 1024),
-                                     new SqlParameter("@CreatedTime", SqlDbType.DateTime)};
+                                     new SqlParameter("@FormulaText", SqlDbType.VarChar),
+                                     new SqlParameter("@FormulaValue", SqlDbType.VarChar),
+                                     new SqlParameter("@Comment", SqlDbType.VarChar, 1024) };
 
             using(var conn = new SqlConnection(this._databaseConnectionString)) {
                 if (conn.State != ConnectionState.Open) conn.Open();
@@ -112,8 +112,8 @@ namespace iPem.Data.Repository.Sc {
                         parms[2].Value = (int)entity.FormulaType;
                         parms[3].Value = (int)entity.ComputeType;
                         parms[4].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaText);
-                        parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
-                        parms[6].Value = SqlTypeConverter.DBNullDateTimeChecker(entity.CreatedTime);
+                        parms[5].Value = SqlTypeConverter.DBNullStringChecker(entity.FormulaValue);
+                        parms[6].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
                         SqlHelper.ExecuteNonQuery(trans, CommandType.Text, SqlCommands_Sc.Sql_M_Formula_Repository_Save, parms);
                     }
                     trans.Commit();
