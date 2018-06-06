@@ -270,6 +270,7 @@ namespace iPem.Site.Controllers {
          *TODO:跳转权限判断
          *在跳转时需要判断一下该角色下是否拥有这个菜单权限，每个Action跳转时都需要判断
          */
+
         [Authorize]
         public ActionResult Roles() {
             if (!_workContext.Authorizations().Menus.Contains(1001))
@@ -301,7 +302,8 @@ namespace iPem.Site.Controllers {
                             index = start + i + 1,
                             id = roles[i].Id,
                             name = roles[i].Name,
-                            type = roles[i].Type.ToString(),
+                            type = roles[i].Type,
+                            typeName = Common.GetSSHDisplay(roles[i].Type),
                             comment = roles[i].Comment,
                             enabled = roles[i].Enabled
                         });
@@ -345,12 +347,12 @@ namespace iPem.Site.Controllers {
                 var auth = _entitiesInRoleService.GetEntitiesInRole(role.Id);
                 data.data.id = role.Id;
                 data.data.name = role.Name;
-                data.data.type = role.Type.ToString();
+                data.data.type = role.Type;
                 data.data.comment = role.Comment;
                 data.data.enabled = role.Enabled;
                 data.data.menus = auth.Menus.Select(m => m.ToString()).ToArray();
                 data.data.permissions = auth.Permissions.Select(o => ((int)o).ToString()).ToArray();
-                data.data.authorizations = auth.Authorizations.ToArray();
+                data.data.authorizations = auth.Authorizations.Select(a => Common.JoinKeys((int)role.Type, a)).ToArray();
                 data.data.sms = (role.Config & (int)EnmRoleConfig.SMS) > 0 ? true : false;
                 data.data.voice = (role.Config & (int)EnmRoleConfig.Voice) > 0 ? true : false;
                 data.data.SMSLevels = values.SMSLevels;
@@ -479,7 +481,7 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
-        public JsonResult GetAllAuthorizations(EnmSSH type) {
+        public JsonResult GetAllAuthorizations(EnmSSH roleType, string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = false,
                 message = "无数据",
@@ -488,29 +490,151 @@ namespace iPem.Site.Controllers {
             };
 
             try {
-                var areas = _workContext.AllAreas();
-                if (areas.Count > 0) {
-                    var roots = areas.FindAll(m => !m.HasParents);
-                    if (roots.Count > 0) {
-                        for (var i = 0; i < roots.Count; i++) {
-                            var current = roots[i];
-                            var root = new TreeModel {
-                                id = current.Current.Id,
-                                text = current.Current.Name,
-                                selected = false,
-                                icon = Icons.Diqiu,
-                                expanded = false,
-                                leaf = false
-                            };
-
-                            GetAllAreas(current, root, type);
-                            data.data.Add(root);
+                if (node == "root") {
+                    #region root organization
+                    var areas = _workContext.AllAreas();
+                    if (areas.Count > 0) {
+                        var roots = areas.FindAll(m => !m.HasParents);
+                        if (roots.Count > 0) {
                             data.success = true;
                             data.message = "200 Ok";
                             data.total = areas.Count;
+                            for (var i = 0; i < roots.Count; i++) {
+                                var current = roots[i];
+                                var root = new TreeModel {
+                                    id = Common.JoinKeys((int)EnmSSH.Area, current.Current.Id),
+                                    text = current.Current.Name,
+                                    selected = false,
+                                    icon = Icons.Diqiu,
+                                    expanded = false,
+                                    leaf = current.HasChildren ? false : true
+                                };
+
+                                if (multiselect.HasValue && multiselect.Value) {
+                                    if (!leafselect.HasValue || !leafselect.Value)
+                                        root.selected = false;
+                                }
+
+                                data.data.Add(root);
+                            }
+                        }
+                    }
+                    #endregion
+                } else if (!string.IsNullOrWhiteSpace(node)) {
+                    var keys = Common.SplitKeys(node);
+                    if (keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                        if (nodeType == EnmSSH.Area) {
+                            #region area organization
+                            var current = _workContext.AllAreas().Find(a => a.Current.Id == id);
+                            if (current != null) {
+                                if (current.HasChildren) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = current.ChildRoot.Count;
+                                    for (var i = 0; i < current.ChildRoot.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmSSH.Area, current.ChildRoot[i].Current.Id),
+                                            text = current.ChildRoot[i].Current.Name,
+                                            icon = Icons.Diqiu,
+                                            expanded = false,
+                                            leaf = current.ChildRoot[i].HasChildren ? false : true
+                                        };
+
+                                        if (roleType != EnmSSH.Area)
+                                            root.leaf = false;
+
+                                        if (multiselect.HasValue && multiselect.Value) {
+                                            if (!leafselect.HasValue || !leafselect.Value)
+                                                root.selected = false;
+                                        }
+
+                                        data.data.Add(root);
+                                    }
+                                } else {
+                                    if (roleType != EnmSSH.Area) {
+                                        var stations = _workContext.AllStations().FindAll(s => s.Current.AreaId == id);
+                                        if (stations != null && stations.Count > 0) {
+                                            data.success = true;
+                                            data.message = "200 Ok";
+                                            data.total = stations.Count;
+                                            for (var i = 0; i < stations.Count; i++) {
+                                                var root = new TreeModel {
+                                                    id = Common.JoinKeys((int)EnmSSH.Station, stations[i].Current.Id),
+                                                    text = stations[i].Current.Name,
+                                                    icon = Icons.Juzhan,
+                                                    expanded = false,
+                                                    leaf = roleType == EnmSSH.Station ? true : false
+                                                };
+
+                                                if (multiselect.HasValue && multiselect.Value) {
+                                                    if (!leafselect.HasValue || !leafselect.Value)
+                                                        root.selected = false;
+                                                }
+
+                                                data.data.Add(root);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if (nodeType == EnmSSH.Station) {
+                            #region station organization
+                            if (roleType != EnmSSH.Station) {
+                                var rooms = _workContext.AllRooms().FindAll(r => r.Current.StationId == id);
+                                if (rooms != null && rooms.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = rooms.Count;
+                                    for (var i = 0; i < rooms.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmSSH.Room, rooms[i].Current.Id),
+                                            text = rooms[i].Current.Name,
+                                            icon = Icons.Room,
+                                            expanded = false,
+                                            leaf = roleType == EnmSSH.Room ? true : false
+                                        };
+
+                                        if (multiselect.HasValue && multiselect.Value)
+                                            root.selected = false;
+
+                                        data.data.Add(root);
+                                    }
+                                }
+                            }
+                            #endregion
+                        } else if (nodeType == EnmSSH.Room) {
+                            #region room organization
+                            if (roleType != EnmSSH.Room) {
+                                var devices = _workContext.AllDevices().FindAll(d => d.Current.RoomId == id);
+                                if (devices != null && devices.Count > 0) {
+                                    data.success = true;
+                                    data.message = "200 Ok";
+                                    data.total = devices.Count;
+                                    for (var i = 0; i < devices.Count; i++) {
+                                        var root = new TreeModel {
+                                            id = Common.JoinKeys((int)EnmSSH.Device, devices[i].Current.Id),
+                                            text = devices[i].Current.Name,
+                                            icon = Icons.Device,
+                                            expanded = false,
+                                            leaf = roleType == EnmSSH.Device ? true : false
+                                        };
+
+                                        if (multiselect.HasValue && multiselect.Value)
+                                            root.selected = false;
+
+                                        data.data.Add(root);
+                                    }
+                                }
+                            }
+                            #endregion
                         }
                     }
                 }
+
             } catch (Exception exc) {
                 data.success = false;
                 data.message = exc.Message;
@@ -523,157 +647,197 @@ namespace iPem.Site.Controllers {
             };
         }
 
-        private void GetAllAreas(SSHArea parent, TreeModel node, EnmSSH type) {
-            if (parent.HasChildren) {
-                node.data = new List<TreeModel>();
-                for (var i = 0; i < parent.ChildRoot.Count; i++) {
-                    var current = parent.ChildRoot[i];
-                    var child = new TreeModel {
-                        id = current.Current.Id,
-                        text = current.Current.Name,
-                        selected = false,
-                        icon = Icons.Diqiu,
-                        expanded = false,
-                        leaf = false
-                    };
-                    GetAllAreas(current, child, type);
-                    node.data.Add(child);
-                }
-            } else {
-                if (type == EnmSSH.Area) {
-                    node.leaf = true;
-                } else {
-                    GetAllStations(parent, node, type);
-                }
-            }
-        }
-
-        private void GetAllStations(SSHArea area, TreeModel node, EnmSSH type) {
-            if (area.Stations.Count > 0) {
-                var stations = _workContext.Stations().FindAll(s => s.Current.AreaId.Equals(area.Current.Id));
-                node.data = new List<TreeModel>();
-                for (int i = 0; i < stations.Count; i++) {
-                    var current = stations[i];
-                    var child = new TreeModel {
-                        id = current.Current.Id,
-                        text = current.Current.Name,
-                        selected = false,
-                        icon = Icons.Juzhan,
-                        expanded = false,
-                        leaf = false
-                    };
-                    if (type == EnmSSH.Station) {
-                        child.leaf = true;
-                        node.data.Add(child);
-                    } else {
-                        GetAllRooms(current, child, type);
-                        node.data.Add(child);
-                    }
-                }
-            } else {
-                node.leaf = true;
-            }
-        }
-
-        private void GetAllRooms(SSHStation station, TreeModel node, EnmSSH type) {
-            if (station.Rooms.Count > 0) {
-                var rooms = _workContext.Rooms().FindAll(r => r.Current.StationId.Equals(station.Current.Id));
-                node.data = new List<TreeModel>();
-                for (int i = 0; i < rooms.Count; i++) {
-                    var current = rooms[i];
-                    var child = new TreeModel {
-                        id = current.Current.Id,
-                        text = current.Current.Name,
-                        selected = false,
-                        icon = Icons.Jifang,
-                        expanded = false,
-                        leaf = false
-                    };
-                    if (type == EnmSSH.Room) {
-                        child.leaf = true;
-                        node.data.Add(child);
-                    } else {
-                        GetAllDevices(current, child, type);
-                        node.data.Add(child);
-                    }
-                }
-            } else {
-                node.leaf = true;
-            }
-        }
-
-        private void GetAllDevices(SSHRoom room, TreeModel node, EnmSSH type) {
-            if (room.Devices.Count > 0) {
-                var devices = _workContext.Devices().FindAll(d => d.Current.RoomId.Equals(room.Current.Id));
-                node.data = new List<TreeModel>();
-                for (int i = 0; i < devices.Count; i++) {
-                    var current = devices[i];
-                    var child = new TreeModel {
-                        id = current.Current.Id,
-                        text = current.Current.Name,
-                        selected = false,
-                        icon = Icons.Device,
-                        expanded = false,
-                        leaf = true
-                    };
-                    node.data.Add(child);
-                }
-            } else {
-                node.leaf = true;
-            }
-        }
-
         [HttpPost]
         [AjaxAuthorize]
         public JsonResult SaveRole(RoleModel role, RoleValues values, int action) {
             try {
+
+                #region 异常操作处理
                 if (role == null) throw new ArgumentException("role");
 
                 if (role.menus == null || role.menus.Length == 0)
                     throw new iPemException("尚未选择菜单权限");
 
                 if (role.authorizations == null || role.authorizations.Length == 0) {
-                    if (EnmSSH.Area.Equals(role.type))
+                    if (EnmSSH.Area == role.type)
                         throw new iPemException("尚未选择区域权限");
-                    if (EnmSSH.Station.Equals(role.type))
+                    if (EnmSSH.Station == role.type)
                         throw new iPemException("尚未选择站点权限");
-                    if (EnmSSH.Room.Equals(role.type))
+                    if (EnmSSH.Room == role.type)
                         throw new iPemException("尚未选择机房权限");
-                    if (EnmSSH.Device.Equals(role.type))
+                    if (EnmSSH.Device == role.type)
                         throw new iPemException("尚未选择设备权限");
                 }
+                #endregion
 
                 var auth = new U_EntitiesInRole {
                     RoleId = role.id,
-                    Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type),
+                    Type = role.type,
                     Menus = role.menus.Select(i => int.Parse(i)).ToList(),
                     Permissions = role.permissions != null && role.permissions.Length > 0 ? role.permissions.Select(o => (EnmPermission)(int.Parse(o))).ToList() : new List<EnmPermission>()
                 };
 
-                if (EnmSSH.Area.Equals(role.type)) {
-                    auth.Authorizations = role.authorizations.ToList();
+                #region Authorizations 的处理
+                HashSet<string> authorizations = new HashSet<string>();
+
+                var allAreas = _workContext.AllAreas();
+                var allStations = _workContext.AllStations();
+                var allRooms = _workContext.AllRooms();
+                var allDevices = _workContext.AllDevices();
+
+                var nodes = role.authorizations.ToList();
+                foreach (var node in nodes) {
+                    var keys = Common.SplitKeys(node);
+                    if (keys.Length == 2) {
+                        var nodeType = int.Parse(keys[0]);
+                        var nodeId = keys[1];
+                        if (role.type == EnmSSH.Area) {
+                            #region 区域类型角色
+                            var current = allAreas.Find(a => a.Current.Id == nodeId);
+                            if (current != null) {
+                                if (current.HasChildren && current.Children.Count > 0) {
+                                    var areaIds = current.Children.FindAll(c => !c.HasChildren).Select(a => a.Current.Id);
+                                    if (areaIds != null) {
+                                        foreach (var areaId in areaIds) {
+                                            authorizations.Add(areaId);
+                                        }
+                                    }
+                                } else {
+                                    authorizations.Add(nodeId);
+                                }
+                            }
+                            #endregion
+                        } else if (role.type == EnmSSH.Station) {
+                            #region 站点类型角色
+                            if (nodeType == (int)EnmSSH.Area) {
+                                #region 选择了区域
+                                var current = allAreas.Find(a => a.Current.Id == nodeId);
+                                if (current != null) {
+                                    if (current.HasChildren && current.Children.Count > 0) {
+                                        var areaIds = current.Children.FindAll(c => !c.HasChildren).Select(a => a.Current.Id);
+                                        var stations = allStations.FindAll(s => areaIds.Contains(s.Current.AreaId));
+                                        if (stations != null) {
+                                            foreach (var station in stations) {
+                                                authorizations.Add(station.Current.Id);
+                                            }
+                                        }
+                                    } else {
+                                        var stations = allStations.FindAll(s => s.Current.AreaId == nodeId);
+                                        if (stations != null) {
+                                            foreach (var station in stations) {
+                                                authorizations.Add(station.Current.Id);
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Station) {
+                                #region 选择了站点
+                                authorizations.Add(nodeId);
+                                #endregion
+                            }
+                            #endregion
+                        } else if (role.type == EnmSSH.Room) {
+                            #region 机房类型角色
+                            if (nodeType == (int)EnmSSH.Area) {
+                                #region 选择了区域
+                                var current = allAreas.Find(a => a.Current.Id == nodeId);
+                                if (current != null) {
+                                    if (current.HasChildren && current.Children.Count > 0) {
+                                        var areaIds = current.Children.FindAll(c => !c.HasChildren).Select(a => a.Current.Id);
+                                        var rooms = allRooms.FindAll(r => areaIds.Contains(r.Current.AreaId));
+                                        if (rooms != null) {
+                                            foreach (var room in rooms) {
+                                                authorizations.Add(room.Current.Id);
+                                            }
+                                        }
+                                    } else {
+                                        var rooms = allRooms.FindAll(r => r.Current.AreaId == nodeId);
+                                        if (rooms != null) {
+                                            foreach (var room in rooms) {
+                                                authorizations.Add(room.Current.Id);
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Station) {
+                                #region 选择了站点
+                                var rooms = allRooms.FindAll(r => r.Current.StationId == nodeId);
+                                if (rooms != null) {
+                                    foreach (var room in rooms) {
+                                        authorizations.Add(room.Current.Id);
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Room) {
+                                #region 选择了机房
+                                authorizations.Add(nodeId);
+                                #endregion
+                            }
+                            #endregion
+                        } else if (role.type == EnmSSH.Device) {
+                            #region 设备类型角色
+                            if (nodeType == (int)EnmSSH.Area) {
+                                #region 选择了区域
+                                var current = allAreas.Find(a => a.Current.Id == nodeId);
+                                if (current != null) {
+                                    if (current.HasChildren && current.Children.Count > 0) {
+                                        var areaIds = current.Children.FindAll(c => !c.HasChildren).Select(a => a.Current.Id);
+                                        var devices = allDevices.FindAll(d => areaIds.Contains(d.Current.AreaId));
+                                        if (devices != null) {
+                                            foreach (var device in devices) {
+                                                authorizations.Add(device.Current.Id);
+                                            }
+                                        }
+                                    } else {
+                                        var devices = allDevices.FindAll(d => d.Current.AreaId == nodeId);
+                                        if (devices != null) {
+                                            foreach (var device in devices) {
+                                                authorizations.Add(device.Current.Id);
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Station) {
+                                #region 选择了站点
+                                var devices = allDevices.FindAll(d => d.Current.StationId == nodeId);
+                                if (devices != null) {
+                                    foreach (var device in devices) {
+                                        authorizations.Add(device.Current.Id);
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Room) {
+                                #region 选择了机房
+                                var devices = allDevices.FindAll(d => d.Current.RoomId == nodeId);
+                                if (devices != null) {
+                                    foreach (var device in devices) {
+                                        authorizations.Add(device.Current.Id);
+                                    }
+                                }
+                                #endregion
+                            } else if (nodeType == (int)EnmSSH.Device) {
+                                #region 选择了设备
+                                authorizations.Add(nodeId);
+                                #endregion
+                            }
+                            #endregion
+                        }
+                    }
                 }
-                if (EnmSSH.Station.Equals(role.type)) {
-                    var ids = _workContext.Stations().Select(d => d.Current.Id);
-                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
-                    auth.Authorizations = nodes;
-                }
-                if (EnmSSH.Room.Equals(role.type)) {
-                    var ids = _workContext.Rooms().Select(d => d.Current.Id);
-                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
-                    auth.Authorizations = nodes;
-                }
-                if (EnmSSH.Device.Equals(role.type)) {
-                    var ids = _workContext.Devices().Select(d => d.Current.Id);
-                    var nodes = role.authorizations.ToList().FindAll(n => ids.Contains(n));
-                    auth.Authorizations = nodes;
-                }
+                #endregion
+
+                auth.Authorizations = authorizations.ToList();
 
                 var sms = role.sms == true ? (int)EnmRoleConfig.SMS : 0;
                 var voice = role.voice == true ? (int)EnmRoleConfig.Voice : 0;
 
                 if (action == (int)EnmAction.Add) {
+                    #region 新增角色操作
                     var existed = _roleService.GetRoleById(role.id);
+                    //连续新增角色时更换角色编号
                     if (existed != null) role.id = Guid.NewGuid().ToString();
                     auth.RoleId = role.id;
 
@@ -683,7 +847,7 @@ namespace iPem.Site.Controllers {
                     var newRole = new U_Role {
                         Id = role.id,
                         Name = role.name,
-                        Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type),
+                        Type = role.type,
                         Comment = role.comment,
                         Enabled = role.enabled,
                         Config = sms + voice,
@@ -694,12 +858,14 @@ namespace iPem.Site.Controllers {
                     _entitiesInRoleService.Add(auth);
                     _webLogger.Information(EnmEventType.Other, string.Format("新增角色[{0}]", newRole.Name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
+                    #endregion
                 } else if (action == (int)EnmAction.Edit) {
+                    #region 编辑角色操作
                     var existed = _roleService.GetRoleByName(role.name);
                     if (existed == null) throw new iPemException("角色不存在");
 
                     existed.Name = role.name;
-                    existed.Type = (EnmSSH)Enum.Parse(typeof(EnmSSH), role.type);
+                    existed.Type = role.type;
                     existed.Comment = role.comment;
                     existed.Enabled = role.enabled;
                     existed.Config = sms + voice;
@@ -710,6 +876,7 @@ namespace iPem.Site.Controllers {
                     _entitiesInRoleService.Add(auth);
                     _webLogger.Information(EnmEventType.Other, string.Format("更新角色[{0}]", existed.Name), _workContext.User().Id, null);
                     return Json(new AjaxResultModel { success = true, code = 200, message = "角色保存成功" });
+                    #endregion
                 }
 
                 throw new ArgumentException("action");
@@ -755,7 +922,7 @@ namespace iPem.Site.Controllers {
                         index = i + 1,
                         id = roles[i].Id,
                         name = roles[i].Name,
-                        type = Common.GetSSHDisplay(roles[i].Type),
+                        typeName = Common.GetSSHDisplay(roles[i].Type),
                         comment = roles[i].Comment,
                         enabled = true,
                         sms = (roles[i].Config & (int)EnmRoleConfig.SMS) > 0 ? true : false,

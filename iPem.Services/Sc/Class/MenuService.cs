@@ -34,7 +34,14 @@ namespace iPem.Services.Sc {
         #region Methods
 
         public U_Menu GetMenu(int id) {
-            return _repository.GetMenu(id);
+            var key = GlobalCacheKeys.Sc_MenusRepository;
+            if (_cacheManager.IsSet(key)) {
+                var menus = _cacheManager.GetItemsFromList<U_Menu>(key).ToList();
+                var menu = menus.Find(m => m.Id == id);
+                return menu;
+            } else {
+                return _repository.GetMenu(id);
+            }
         }
 
         public List<U_Menu> GetMenus() {

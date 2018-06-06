@@ -1,13 +1,11 @@
 ﻿using System;
 
-namespace iPem.Data.Common
-{
+namespace iPem.Data.Common {
     /// <summary>
     /// The SqlText class is intended to encapsulate high performance, 
     /// scalable best practices for common uses of SqlClient.
     /// </summary>
-    public static partial class SqlCommands_Rs
-    {
+    public static partial class SqlCommands_Rs {
         /// <summary>
         /// 区域信息表
         /// </summary>
@@ -200,27 +198,27 @@ namespace iPem.Data.Common
         public const string Sql_D_Fsu_Repository_GetFsu = @"
         SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],CASE WHEN AA.[Name] IS NULL THEN A.[Name] ELSE AA.[Name] + ',' + A.[Name] END AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
-        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
-        INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        LEFT OUTER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
+        LEFT OUTER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
         LEFT OUTER JOIN [dbo].[A_Area] AA ON A.[ParentID] = AA.[ID]
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
         WHERE F.[DeviceId] = @Id;";
         public const string Sql_D_Fsu_Repository_GetFsusInRoom = @"
         SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],CASE WHEN AA.[Name] IS NULL THEN A.[Name] ELSE AA.[Name] + ',' + A.[Name] END AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
-        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
-        INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        LEFT OUTER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
+        LEFT OUTER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
         LEFT OUTER JOIN [dbo].[A_Area] AA ON A.[ParentID] = AA.[ID]
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id]
         WHERE R.[Id] = @RoomId;";
         public const string Sql_D_Fsu_Repository_GetFsus = @"
         SELECT F.[DeviceID] AS [Id],F.[Code],F.[Name],A.[ID] AS [AreaId],CASE WHEN AA.[Name] IS NULL THEN A.[Name] ELSE AA.[Name] + ',' + A.[Name] END AS [AreaName],S.[Id] AS [StationId],S.[Name] AS [StationName],S.[StaTypeId],R.[ID] AS [RoomId],R.[Name] AS [RoomName],R.[RoomTypeID],F.[Desc] AS [Comment],F.[VendorId],V.[Name] AS [VendorName]
         FROM [dbo].[D_FSU] F 
-        INNER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
-        INNER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
-        INNER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
+        LEFT OUTER JOIN [dbo].[S_Room] R ON F.[RoomId] = R.[Id]
+        LEFT OUTER JOIN [dbo].[S_Station] S ON R.[StationId] = S.[Id]
+        LEFT OUTER JOIN [dbo].[A_Area] A ON S.[AreaID] = A.[ID]
         LEFT OUTER JOIN [dbo].[A_Area] AA ON A.[ParentID] = AA.[ID]
         LEFT OUTER JOIN [dbo].[C_SCVendor] V ON F.[VendorId] = V.[Id];";
         public const string Sql_D_Fsu_Repository_GetExtFsu = @"
@@ -369,7 +367,6 @@ namespace iPem.Data.Common
         public const string Sql_D_Signal_Repository_GetVSignals2 = @"SELECT * FROM [dbo].[D_VSignal] WHERE [DeviceID]=@DeviceId ORDER BY [PointID];";
         public const string Sql_D_Signal_Repository_GetVSignals3 = @"SELECT * FROM [dbo].[D_VSignal] WHERE [DeviceID]=@DeviceId AND [Category]=@Category ORDER BY [PointID];";
         public const string Sql_D_Signal_Repository_GetVSignals4 = @"SELECT * FROM [dbo].[D_VSignal] WHERE [Category]=@Category ORDER BY [DeviceID],[PointID];";
-        
         public const string Sql_D_Signal_Repository_InsertVSignal = @"INSERT INTO [dbo].[D_VSignal]([DeviceID],[PointID],[Name],[Type],[FormulaText],[FormulaValue],[UnitState],[SavedPeriod],[StaticPeriod],[Category],[Remark]) VALUES(@DeviceID,@PointID,@Name,@Type,@FormulaText,@FormulaValue,@UnitState,@SavedPeriod,@StaticPeriod,@Category,@Remark);";
         public const string Sql_D_Signal_Repository_UpdateVSignal = @"UPDATE [dbo].[D_VSignal] SET [Name] = @Name,[Type] = @Type,[FormulaText] = @FormulaText,[FormulaValue] = @FormulaValue,[UnitState] = @UnitState,[SavedPeriod] = @SavedPeriod,[StaticPeriod] = @StaticPeriod,[Category] = @Category,[Remark] = @Remark WHERE [DeviceID] = @DeviceID AND [PointID] = @PointID;";
         public const string Sql_D_Signal_Repository_DeleteVSignal = @"DELETE FROM [dbo].[D_VSignal] WHERE [DeviceID] = @DeviceID AND [PointID] = @PointID;";
@@ -483,7 +480,7 @@ namespace iPem.Data.Common
         /// 员工信息表
         /// </summary>
         public const string Sql_U_Employee_Repository_GetEmployeeById = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[EmployeeID]=@Id AND E.[TypeID] = @Type
@@ -491,10 +488,10 @@ namespace iPem.Data.Common
         SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
-        LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON E.[ID] = C.[EmployeeID]
         WHERE E.[Id] = @Id;";
         public const string Sql_U_Employee_Repository_GetEmployeeByCode = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -502,10 +499,10 @@ namespace iPem.Data.Common
         SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
-        LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON E.[ID] = C.[EmployeeID]
         WHERE E.[EmpNo] = @Code;";
         public const string Sql_U_Employee_Repository_GetEmployeesByDept = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -513,10 +510,10 @@ namespace iPem.Data.Common
         SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
-        LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON E.[ID] = C.[EmployeeID]
         WHERE E.[DeptId] = @DeptId;";
         public const string Sql_U_Employee_Repository_GetEmployees = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -524,13 +521,13 @@ namespace iPem.Data.Common
         SELECT E.*,D.[Name] AS [DeptName],U.[Name] AS [DutyName],C.[HexCode] AS [CardId] FROM [dbo].[U_Employee] E
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
         LEFT OUTER JOIN [dbo].[C_Duty] U ON E.[DutyID]=U.[ID]
-        LEFT OUTER JOIN Cards C ON E.[ID] = C.[EmployeeID];";
+        LEFT OUTER JOIN TResult C ON E.[ID] = C.[EmployeeID];";
 
         /// <summary>
         /// 外协人员信息表
         /// </summary>
         public const string Sql_U_Employee_Repository_GetOutEmployeeById = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[EmployeeID]=@Id AND E.[TypeID] = @Type
@@ -538,10 +535,10 @@ namespace iPem.Data.Common
         SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
-        LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON OE.[ID] = C.[EmployeeID]
         WHERE OE.[Id] = @Id;";
         public const string Sql_U_Employee_Repository_GetOutEmployeesByEmp = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -549,10 +546,10 @@ namespace iPem.Data.Common
         SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
-        LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON OE.[ID] = C.[EmployeeID]
         WHERE OE.[EmpId] = @EmpId;";
         public const string Sql_U_Employee_Repository_GetOutEmployeesByDept = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -560,10 +557,10 @@ namespace iPem.Data.Common
         SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         INNER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         INNER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
-        LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID]
+        LEFT OUTER JOIN TResult C ON OE.[ID] = C.[EmployeeID]
         WHERE E.[DeptID] = @DeptId;";
         public const string Sql_U_Employee_Repository_GetOutEmployees = @"
-        ;WITH Cards AS (
+        ;WITH TResult AS (
 	        SELECT E.[EmployeeID],C.[HexCode] FROM [dbo].[M_Card] C 
 	        INNER JOIN [dbo].[M_CardsInEmployee] E ON C.[ID]=E.[CardID]
 	        WHERE E.[TypeID] = @Type
@@ -571,7 +568,7 @@ namespace iPem.Data.Common
         SELECT OE.*,E.[EmpNo] AS [EmpCode],E.[Name] AS [EmpName],E.[DeptID],D.[Name] AS [DeptName],C.[HexCode] AS [CardId] FROM [dbo].[U_OutEmployee] OE
         LEFT OUTER JOIN [dbo].[U_Employee] E ON OE.[EmpID]=E.[ID]
         LEFT OUTER JOIN [dbo].[C_Department] D ON E.[DeptID]=D.[ID]
-        LEFT OUTER JOIN Cards C ON OE.[ID] = C.[EmployeeID];";
+        LEFT OUTER JOIN TResult C ON OE.[ID] = C.[EmployeeID];";
 
         /// <summary>
         /// 用户信息表

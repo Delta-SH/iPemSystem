@@ -121,7 +121,7 @@ namespace iPem.Data.Repository.Sc {
                     foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
-                        parms[2].Value = entity.Type;
+                        parms[2].Value = (int)entity.Type;
                         parms[3].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
                         parms[4].Value = entity.Enabled;
                         parms[5].Value = entity.Config;
@@ -152,7 +152,7 @@ namespace iPem.Data.Repository.Sc {
                     foreach (var entity in entities) {
                         parms[0].Value = SqlTypeConverter.DBNullStringChecker(entity.Id);
                         parms[1].Value = SqlTypeConverter.DBNullStringChecker(entity.Name);
-                        parms[2].Value = entity.Type;
+                        parms[2].Value = (int)entity.Type;
                         parms[3].Value = SqlTypeConverter.DBNullStringChecker(entity.Comment);
                         parms[4].Value = entity.Enabled;
                         parms[5].Value = entity.Config;

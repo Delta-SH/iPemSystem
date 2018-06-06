@@ -124,7 +124,7 @@ namespace iPem.Data.Common {
         public const string Sql_M_Reservation_Repository_Insert = @"INSERT INTO [dbo].[M_Reservations]([Id],[Name],[ExpStartTime],[EndTime],[ProjectId],[Creator],[UserId],[CreatedTime],[Comment],[Enabled],[Status]) VALUES(@Id,@Name,@ExpStartTime,@EndTime,@ProjectId,@Creator,@UserId,@CreatedTime,@Comment,@Enabled,@Status);";
         public const string Sql_M_Reservation_Repository_Update = @"UPDATE [dbo].[M_Reservations] SET [Name]=@Name,[ExpStartTime]=@ExpStartTime,[EndTime]=@EndTime,[ProjectId]=@ProjectId,[Creator]=@Creator,[CreatedTime]=@CreatedTime,[Comment]=@Comment,[Enabled]=@Enabled,[Status]=@Status WHERE [Id]=@Id;";
         public const string Sql_M_Reservation_Repository_Delete = @"DELETE FROM [dbo].[M_Reservations] WHERE [Id]=@Id;";
-        public const string Sql_M_Reservation_Repository_Check = @"UPDATE [dbo].[M_Reservations] SET [StartTime]=@StartTime,[Status]=@Status WHERE [Id]=@Id;";
+        public const string Sql_M_Reservation_Repository_Check = @"UPDATE [dbo].[M_Reservations] SET [StartTime]=@StartTime,[Status]=@Status,[Comment]=@Comment WHERE [Id]=@Id;";
 
         /// <summary>
         /// 系统菜单表

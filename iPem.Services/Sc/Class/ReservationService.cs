@@ -73,11 +73,11 @@ namespace iPem.Services.Sc {
             _repository.Delete(reservations);
         }
 
-        public void Check(string id, DateTime start, EnmResult status) {
+        public void Check(string id, DateTime start, EnmResult status, string comment) {
             if (id == null || string.IsNullOrEmpty(id))
                 throw new ArgumentNullException("id");
 
-            _repository.Check(id, start, status);
+            _repository.Check(id, start, status, comment);
         }
 
         #endregion

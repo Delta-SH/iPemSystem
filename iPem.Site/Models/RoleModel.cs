@@ -14,8 +14,11 @@ namespace iPem.Site.Models {
         [ExcelDisplayName("角色名称")]
         public string name { get; set; }
 
+        [ExcelIgnore]
+        public EnmSSH type { get; set; }
+
         [ExcelDisplayName("角色类型")]
-        public string type { get; set; }
+        public string typeName { get; set; }
 
         [ExcelDisplayName("角色备注")]
         public string comment { get; set; }

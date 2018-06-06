@@ -959,11 +959,11 @@ namespace iPem.Site.Infrastructure {
                                              DeviceTypeId = device.Current.Type.Id,
                                              SubDeviceTypeId = device.Current.SubType.Id,
                                              SubLogicTypeId = device.Current.SubLogicType.Id,
-                                             RoomName = device.Current.RoomName,
-                                             RoomTypeId = device.Current.RoomTypeId,
-                                             StationName = device.Current.StationName,
-                                             StationTypeId = device.Current.StaTypeId,
-                                             AreaName = device.Current.AreaName,
+                                             RoomName = device.Current.RoomName ?? "--",
+                                             RoomTypeId = device.Current.RoomTypeId ?? "--",
+                                             StationName = device.Current.StationName ?? "--",
+                                             StationTypeId = device.Current.StaTypeId ?? "--",
+                                             AreaName = device.Current.AreaName ?? "--",
                                              SubCompany = device.Current.SubCompany ?? "--",
                                              SubManager = device.Current.SubManager ?? "--"
                                          };
@@ -1172,7 +1172,7 @@ namespace iPem.Site.Infrastructure {
             var stations = _stationService.GetStationsWithPoints(points);
             if (this.Role().Id.Equals(U_Role.SuperId))
                 return stations;
-
+                
             var roleType = this.Role().Type;
             var auths = this.Authorizations().Authorizations;
             if (auths.Count == 0) return new List<S_Station>();

@@ -41,6 +41,6 @@ namespace iPem.Data.Repository.Sc {
         /// <summary>
         /// 审核工程预约
         /// </summary>
-        void Check(String id, DateTime start, EnmResult status);
+        void Check(string id, DateTime start, EnmResult status, string common);
     }
 }

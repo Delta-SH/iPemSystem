@@ -52,6 +52,6 @@ namespace iPem.Services.Sc {
         /// <summary>
         /// 审核工程预约
         /// </summary>
-        void Check(string id, DateTime start, EnmResult status);
+        void Check(string id, DateTime start, EnmResult status, string comment);
     }
 }

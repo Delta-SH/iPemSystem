@@ -57,6 +57,17 @@ var typeStore = Ext.create('Ext.data.Store', {
     ]
 });
 
+var resultStore = Ext.create('Ext.data.Store', {
+    fields: [
+        { name: 'value', type: 'int' },
+        { name: 'name', type: 'string' }
+    ],
+    data: [
+        { "value": $$iPems.Result.Success, "name": '通过' },
+        { "value": $$iPems.Result.Failure, "name": '不通过' }
+    ]
+})
+
 var projectStore = Ext.create('Ext.data.Store', {
     autoLoad: false,
     pageSize: 1024,
@@ -389,7 +400,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
 var checkWnd = Ext.create('Ext.window.Window', {
     title: '工程预约审核',
-    height: 150,
+    height: 240,
     width: 300,
     glyph: 0xf040,
     modal: true,
@@ -402,21 +413,34 @@ var checkWnd = Ext.create('Ext.window.Window', {
         border: false,
         padding: 10,
         items: [
-        {
-            itemId: 'id',
-            name: 'id',
-            xtype: 'hiddenfield',
-            value: ''
-        }, {
-            itemId: 'checkradio',
-            xtype: 'radiogroup',
-            columns: 1,
-            vertical: true,
-            items: [
-                { boxLabel: '不通过', name: 'ctrl', inputValue: $$iPems.Result.Failure, checked: true },
-                { boxLabel: '通过', name: 'ctrl', inputValue: $$iPems.Result.Success }
-            ]
-        }]
+            {
+                itemId: 'id',
+                name: 'id',
+                xtype: 'hiddenfield',
+                value: ''
+            }, {
+                id: 'result',
+                xtype: 'combobox',
+                fieldLabel: '审核结果',
+                labelAlign: 'top',
+                labelWidth: 60,
+                width: 270,
+                store: resultStore,
+                align: 'center',
+                value: 1,
+                editable: false,
+                displayField: 'name',
+                valueField: 'value',
+            }, {
+                itemId: 'comment',
+                name: 'comment',
+                xtype: 'textareafield',
+                fieldLabel: '审核意见',
+                labelAlign: 'top',
+                height: 80,
+                width: '100%'
+            }
+        ]
     }],
     buttons: [
       { id: 'checkResult', xtype: 'iconlabel', text: '' },
@@ -428,7 +452,8 @@ var checkWnd = Ext.create('Ext.window.Window', {
               var form = checkWnd.getComponent('checkForm'),
                   baseForm = form.getForm(),
                   id = form.getComponent('id').getValue(),
-                  status = form.getComponent('checkradio').getValue(),
+                  status = form.getComponent('result').getValue(),
+                  comment = form.getComponent('comment').getValue(),
                   result = Ext.getCmp('checkResult');
 
               result.setTextWithIcon('', '');
@@ -441,7 +466,8 @@ var checkWnd = Ext.create('Ext.window.Window', {
                       url: '/Project/CheckReservation',
                       params: {
                           id: id,
-                          status: status
+                          status: status,
+                          comment: comment
                       },
                       success: function (form, action) {
                           result.setTextWithIcon(action.result.message, 'x-icon-accept');

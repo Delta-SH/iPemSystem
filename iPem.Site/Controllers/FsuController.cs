@@ -1150,9 +1150,9 @@ namespace iPem.Site.Controllers {
                              id = fsu.Id,
                              code = fsu.Code,
                              name = fsu.Name,
-                             area = fsu.AreaName,
-                             station = fsu.StationName,
-                             room = fsu.RoomName,
+                             area = fsu.AreaName ?? "--",
+                             station = fsu.StationName ?? "--",
+                             room = fsu.RoomName ?? "--",
                              vendor = fsu.VendorName,
                              ip = ext.IP ?? string.Empty,
                              port = ext.Port,
@@ -1213,17 +1213,20 @@ namespace iPem.Site.Controllers {
 
             var stores = from evt in events
                          join fsu in fsus on evt.FsuId equals fsu.Id
-                         join room in _workContext.Rooms() on fsu.RoomId equals room.Current.Id
-                         join station in _workContext.Stations() on fsu.StationId equals station.Current.Id
-                         join area in _workContext.Areas() on fsu.AreaId equals area.Current.Id
+                         join room in _workContext.Rooms() on (fsu.RoomId ?? "null") equals room.Current.Id into lt
+                         from def in lt.DefaultIfEmpty()
+                         join station in _workContext.Stations() on (fsu.StationId ?? "null") equals station.Current.Id into lt2
+                         from def2 in lt2.DefaultIfEmpty()
+                         join area in _workContext.Areas() on (fsu.AreaId ?? "null") equals area.Current.Id into lt3
+                         from def3 in lt3.DefaultIfEmpty()
                          select new FsuEventModel {
                              id = fsu.Id,
                              code = fsu.Code,
                              name = fsu.Name,
                              vendor = fsu.VendorName,
-                             area = area.ToString(),
-                             station = station.Current.Name,
-                             room = room.Current.Name,
+                             area = def3 == null ? "--" : def3.ToString(),
+                             station = def2 == null ? "--" : def2.Current.Name,
+                             room = def == null ? "--" : def.Current.Name,
                              type = Common.GetFsuEventDisplay(evt.EventType),
                              message = evt.Message ?? string.Empty,
                              time = CommonHelper.DateTimeConverter(evt.EventTime)

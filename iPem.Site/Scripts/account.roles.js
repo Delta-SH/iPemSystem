@@ -5,6 +5,7 @@
         { name: 'id', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'type', type: 'string' },
+        { name: 'typeName', type: 'string' },
         { name: 'comment', type: 'string' },
         { name: 'enabled', type: 'boolean' }
     ],
@@ -82,10 +83,13 @@ var permissionStore = Ext.create('Ext.data.TreeStore', {
 var authorizationStore = Ext.create('Ext.data.TreeStore', {
     autoLoad: false,
     root: {
-        id: -10078,
-        text: '系统主页',
+        id: 'root',
+        text: '全部',
         icon: $$iPems.icons.Home,
         root: true
+    },
+    viewConfig: {
+        loadMask: true
     },
     proxy: {
         type: 'ajax',
@@ -98,7 +102,9 @@ var authorizationStore = Ext.create('Ext.data.TreeStore', {
             root: 'data'
         },
         extraParams: {
-            type: $$iPems.SSH.Area
+            roleType: $$iPems.SSH.Area,
+            multiselect: true,
+            leafselect: false
         },
     }
 });
@@ -149,36 +155,33 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 labelAlign: 'top'
             },
             {
-                id: 'type',
-                name: 'type',
+                id: 'roleType',
+                name: 'roleType',
                 xtype: 'radiogroup',
                 fieldLabel: '角色类型',
                 allowBlank: false,
                 labelAlign: 'top',
                 columns: 4,
                 items: [
-                    { boxLabel: '区域', name: 'roleType', inputValue: $$iPems.SSH.Area, checked: true },
-                    { boxLabel: '站点', name: 'roleType', inputValue: $$iPems.SSH.Station },
-                    { boxLabel: '机房', name: 'roleType', inputValue: $$iPems.SSH.Room },
-                    { boxLabel: '设备', name: 'roleType', inputValue: $$iPems.SSH.Device }
+                    { boxLabel: '区域', name: 'type', inputValue: $$iPems.SSH.Area, checked: true },
+                    { boxLabel: '站点', name: 'type', inputValue: $$iPems.SSH.Station },
+                    { boxLabel: '机房', name: 'type', inputValue: $$iPems.SSH.Room },
+                    { boxLabel: '设备', name: 'type', inputValue: $$iPems.SSH.Device }
                 ],
                 listeners: {
                     change: function (me, newValue, oldValue) {
-                        if (newValue.roleType === $$iPems.SSH.Area) {
+                        if (newValue.type === $$iPems.SSH.Area) {
                             Ext.getCmp("authorizationMenus").setTitle("区域权限");
-                            Ext.getCmp('saveResult').setTextWithIcon('', '');
-                        } else if (newValue.roleType === $$iPems.SSH.Station) {
+                        } else if (newValue.type === $$iPems.SSH.Station) {
                             Ext.getCmp("authorizationMenus").setTitle("站点权限");
-                            Ext.getCmp('saveResult').setTextWithIcon('', '');
-                        } else if (newValue.roleType === $$iPems.SSH.Room) {
+                        } else if (newValue.type === $$iPems.SSH.Room) {
                             Ext.getCmp("authorizationMenus").setTitle("机房权限");
-                            Ext.getCmp('saveResult').setTextWithIcon('', '');
-                        } else if (newValue.roleType === $$iPems.SSH.Device) {
+                        } else if (newValue.type === $$iPems.SSH.Device) {
                             Ext.getCmp("authorizationMenus").setTitle("设备权限");
-                            Ext.getCmp('saveResult').setTextWithIcon('', '');
                         }
-                        authorizationStore.proxy.extraParams.type = newValue;
-                        authorizationStore.reload();
+                        Ext.getCmp('saveResult').setTextWithIcon('', '');
+                        authorizationStore.proxy.extraParams.roleType = newValue;
+                        authorizationStore.load();
                     }
                 }
             },
@@ -306,6 +309,9 @@ var saveWnd = Ext.create('Ext.window.Window', {
                             n.set('checked', checked);
                         });
                     });
+                    node.bubble(function (d) {
+                        d.parentNode.set('checked', false);
+                    });
                 }
             }
         }, {
@@ -330,7 +336,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 {
                     id: 'SMSLevels',
                     xtype: 'AlarmLevelMultiCombo',
-                    emptyText: '请选择告警级别',
+                    emptyText: '默认全部',
                     labelAlign: 'top'
                 },
                 {
@@ -374,7 +380,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                 {
                     id: 'voiceLevels',
                     xtype: 'AlarmLevelMultiCombo',
-                    emptyText: '请选择告警级别',
+                    emptyText: '默认全部',
                     labelAlign: 'top'
                 },
                 {
@@ -410,7 +416,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
               result.setTextWithIcon('', '');
               if (form.isValid()) {
-                  var type = Ext.getCmp('type').getValue();
+                  var roleType = Ext.getCmp('roleType').getValue();
 
                   var menus = Ext.getCmp('treeMenus').getChecked();
                   if (menus.length === 0) {
@@ -422,13 +428,13 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
                   var authorization = Ext.getCmp('authorizationMenus').getChecked();
                   if (authorization.length === 0) {
-                      if (type.roleType === $$iPems.SSH.Area)
+                      if (roleType.type === $$iPems.SSH.Area)
                           result.setTextWithIcon('请选择角色的区域权限...', 'x-icon-error');
-                      if (type.roleType === $$iPems.SSH.Station)
+                      if (roleType.type === $$iPems.SSH.Station)
                           result.setTextWithIcon('请选择角色的站点权限...', 'x-icon-error');
-                      if (type.roleType === $$iPems.SSH.Room)
+                      if (roleType.type === $$iPems.SSH.Room)
                           result.setTextWithIcon('请选择角色的机房权限...', 'x-icon-error');
-                      if (type.roleType === $$iPems.SSH.Device)
+                      if (roleType.type === $$iPems.SSH.Device)
                           result.setTextWithIcon('请选择角色的设备权限...', 'x-icon-error');
                       return false;
                   }
@@ -445,8 +451,8 @@ var saveWnd = Ext.create('Ext.window.Window', {
 
                   var authorizationIds = [];
                   authorization.forEach(function (m) {
-                      if (m.data.leaf)
-                          authorizationIds.push(m.data.id);
+                      //if (m.data.leaf)
+                      authorizationIds.push(m.data.id);
                   });
 
                   var SMSLevels = Ext.getCmp("SMSLevels").getValue();
@@ -463,7 +469,7 @@ var saveWnd = Ext.create('Ext.window.Window', {
                       preventWindow: true,
                       url: '/Account/SaveRole',
                       params: {
-                          type: type,
+                          roleType: roleType,
                           menus: menuIds,
                           permissions: permissionIds,
                           authorizations: authorizationIds,
@@ -508,15 +514,64 @@ var saveWnd = Ext.create('Ext.window.Window', {
 var editCellClick = function (grid, rowIndex, colIndex) {
     var record = grid.getStore().getAt(rowIndex);
     if (Ext.isEmpty(record)) return false;
-    Ext.getCmp('type').setValue({ roleType: record.raw.type });
 
-    var basic = Ext.getCmp('saveForm').getForm();
+    Ext.getCmp('roleType').setValue({ type: record.raw.type });
+
+    var basic = Ext.getCmp('saveForm').getForm(),
+        tree = Ext.getCmp('authorizationMenus'),
+        root = tree.getRootNode();
+
+    if (root.hasChildNodes()) {
+        root.eachChild(function (c) {
+            c.cascadeBy(function (n) {
+                n.set('checked', false);
+                n.collapse();
+            });
+        });
+    }
+
     basic.load({
         url: '/Account/GetRole',
         params: { id: record.raw.id, action: $$iPems.Action.Edit },
         waitMsg: '正在处理...',
         waitTitle: '系统提示',
         success: function (form, action) {
+            var separator = '/',
+                authorizations = action.result.data.authorizations,
+                strUrl = '';
+
+            if (record.raw.type == $$iPems.SSH.Area)
+                strUrl = '/Component/GetRoleAreaPath';
+            if (record.raw.type == $$iPems.SSH.Station)
+                strUrl = '/Component/GetStationPath';
+            if (record.raw.type == $$iPems.SSH.Room)
+                strUrl = '/Component/GetRoomPath';
+            if (record.raw.type == $$iPems.SSH.Device)
+                strUrl = '/Component/GetDevicePath';
+
+            if (authorizations && authorizations.length > 0) {
+                Ext.Ajax.request({
+                    url: strUrl,
+                    params: { nodes: authorizations },
+                    success: function (response, options) {
+                        var data = Ext.decode(response.responseText, true);
+                        if (data.success) {
+                            Ext.defer(function () {
+                                Ext.Array.each(data.data, function (item, index, all) {
+                                    item = Ext.Array.from(item);
+
+                                    var path = Ext.String.format("{0}{1}{0}{2}", separator, root.getId(), item.join(separator));
+                                    tree.selectPath(path, null, null, function (success, lastNode) {
+                                        if (success)
+                                            lastNode.set('checked', true);
+                                    });
+                                });
+                            }, 100);
+                        }
+                    }
+                });
+            }
+
             form.clearInvalid();
             Ext.getCmp('name').setReadOnly(true);
             Ext.getCmp('saveResult').setTextWithIcon('', '');
@@ -524,10 +579,6 @@ var editCellClick = function (grid, rowIndex, colIndex) {
             var menuIds = [];
             if (!Ext.isEmpty(action.result.data.menus))
                 menuIds = action.result.data.menus;
-
-            var authorizationIds = [];
-            if (!Ext.isEmpty(action.result.data.authorizations))
-                authorizationIds = action.result.data.authorizations;
 
             var permissionIds = [];
             if (!Ext.isEmpty(action.result.data.permissions))
@@ -543,19 +594,9 @@ var editCellClick = function (grid, rowIndex, colIndex) {
                 });
             }
 
-            var root2 = Ext.getCmp('authorizationMenus').getRootNode();
+            var root2 = Ext.getCmp('permissionMenus').getRootNode();
             if (root2.hasChildNodes()) {
                 root2.eachChild(function (c) {
-                    c.cascadeBy(function (n) {
-                        var checked = Ext.Array.contains(authorizationIds, n.data.id);
-                        n.set('checked', checked);
-                    });
-                });
-            }
-
-            var root3 = Ext.getCmp('permissionMenus').getRootNode();
-            if (root3.hasChildNodes()) {
-                root3.eachChild(function (c) {
                     c.cascadeBy(function (n) {
                         var checked = Ext.Array.contains(permissionIds, n.data.id);
                         n.set('checked', checked);
@@ -636,6 +677,12 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
         width: 150,
         sortable: true
     }, {
+        text: '角色类型',
+        dataIndex: 'typeName',
+        align: 'center',
+        width: 150,
+        sortable: true
+    }, {
         text: '角色备注',
         dataIndex: 'comment',
         flex: 1,
@@ -708,21 +755,21 @@ var currentGridPanel = Ext.create('Ext.grid.Panel', {
                             });
                         }
 
-                        var root2 = Ext.getCmp('authorizationMenus').getRootNode();
+                        var root2 = Ext.getCmp('permissionMenus').getRootNode();
                         if (root2.hasChildNodes()) {
                             root2.eachChild(function (c) {
                                 c.cascadeBy(function (n) {
-                                    var checked = Ext.Array.contains(authorizationIds, n.data.id);
+                                    var checked = Ext.Array.contains(permissionIds, n.data.id);
                                     n.set('checked', checked);
                                 });
                             });
                         }
 
-                        var root3 = Ext.getCmp('permissionMenus').getRootNode();
+                        var root3 = Ext.getCmp('authorizationMenus').getRootNode();
                         if (root3.hasChildNodes()) {
                             root3.eachChild(function (c) {
                                 c.cascadeBy(function (n) {
-                                    var checked = Ext.Array.contains(permissionIds, n.data.id);
+                                    var checked = Ext.Array.contains(authorizationIds, n.data.id);
                                     n.set('checked', checked);
                                 });
                             });
@@ -784,13 +831,6 @@ var print = function () {
         url: '/Account/DownloadRoles',
         params: currentStore.getProxy().extraParams
     });
-};
-
-var reload = function (current) {
-    var pager = (current || currentTab()).pager;
-    if (Ext.isEmpty(pager)) return;
-
-    pager.getStore().loadPage(1);
 };
 
 Ext.onReady(function () {

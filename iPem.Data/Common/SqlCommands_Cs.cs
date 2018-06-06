@@ -62,11 +62,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -97,11 +97,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -132,11 +132,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -167,11 +167,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -202,11 +202,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -237,11 +237,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -272,11 +272,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -307,11 +307,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -342,11 +342,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -377,11 +377,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -412,11 +412,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -447,11 +447,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Alarms AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM Alarms ORDER BY [StartTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [StartTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -527,11 +527,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result ORDER BY [ValueTime];'
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM TResult ORDER BY [ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -562,11 +562,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result ORDER BY [ValueTime];'
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM TResult ORDER BY [ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -597,11 +597,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result;'
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM TResult;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -632,11 +632,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM Result;'
+	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] FROM TResult;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -667,12 +667,12 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
 	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] 
-	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM Result) AS T WHERE T.[RID] = 1;'
+	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM TResult) AS T WHERE T.[RID] = 1;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -703,12 +703,12 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
 	        SELECT [DeviceId],[PointId],[Category],[Value],[ValueTime],ISNULL([AValue],0) AS [AValue],ISNULL([AValueTime],GETDATE()) AS [AValueTime],ISNULL([BValue],0) AS [BValue],ISNULL([BValueTime],GETDATE()) AS [BValueTime],ISNULL([CValue],0) AS [CValue],ISNULL([CValueTime],GETDATE()) AS [CValueTime] 
-	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM Result) AS T WHERE T.[RID] = 1;'
+	        FROM (SELECT ROW_NUMBER() OVER(PARTITION BY [DeviceId],[PointId] ORDER BY [ValueTime] DESC) AS [RID],* FROM TResult) AS T WHERE T.[RID] = 1;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -753,11 +753,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime],[ValueTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -788,11 +788,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisBat AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -823,11 +823,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisBat AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisBat ORDER BY [StartTime],[ValueTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -862,11 +862,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
+	        SELECT * FROM TResult ORDER BY [PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -897,11 +897,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
+	        SELECT * FROM TResult ORDER BY [PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -932,11 +932,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
+	        SELECT * FROM TResult ORDER BY [PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -967,11 +967,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [PointId],[ValueTime];'
+	        SELECT * FROM TResult ORDER BY [PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1002,11 +1002,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM V ORDER BY [DeviceId],[PointId],[ValueTime];'
+	        SELECT * FROM TResult ORDER BY [DeviceId],[PointId],[ValueTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1037,13 +1037,13 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
 	        SELECT B2.* FROM (
-            SELECT [DeviceId],[PackId],[StartTime],MIN([Value]) AS [Value] FROM V GROUP BY [DeviceId],[PackId],[StartTime]
-            ) AS B1,V B2 
+            SELECT [DeviceId],[PackId],[StartTime],MIN([Value]) AS [Value] FROM TResult GROUP BY [DeviceId],[PackId],[StartTime]
+            ) AS B1,TResult B2 
             WHERE B1.[DeviceId]=B2.[DeviceId] AND B1.[PackId]=B2.[PackId] AND B1.[StartTime]=B2.[StartTime] AND B1.[Value]=B2.[Value]
             ORDER BY B2.[DeviceId],B2.[PackId],B2.[StartTime];'
         END
@@ -1076,13 +1076,13 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
 	        SELECT B2.* FROM (
-            SELECT [DeviceId],[PackId],[StartTime],MAX([Value]) AS [Value] FROM V GROUP BY [DeviceId],[PackId],[StartTime]
-            ) AS B1,V B2 
+            SELECT [DeviceId],[PackId],[StartTime],MAX([Value]) AS [Value] FROM TResult GROUP BY [DeviceId],[PackId],[StartTime]
+            ) AS B1,TResult B2 
             WHERE B1.[DeviceId]=B2.[DeviceId] AND B1.[PackId]=B2.[PackId] AND B1.[StartTime]=B2.[StartTime] AND B1.[Value]=B2.[Value]
             ORDER BY B2.[DeviceId],B2.[PackId],B2.[StartTime];'
         END
@@ -1119,11 +1119,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM V ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1154,11 +1154,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH V AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM V ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1189,11 +1189,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM Result GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
+		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM TResult GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1224,11 +1224,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM Result GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
+		    SELECT [DeviceId],[PackId],[ProcTime],MIN([StartTime]) AS [StartTime],MAX([EndTime]) AS [EndTime] FROM TResult GROUP BY [DeviceId],[PackId],[ProcTime] ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1266,11 +1266,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime],[FormulaType],[Type],[Id];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[FormulaType],[Type],[Id];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1301,11 +1301,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime],[Type],[Id];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[Type],[Id];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1336,11 +1336,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime],[Id];'
+		    SELECT * FROM TResult ORDER BY [StartTime],[Id];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1379,11 +1379,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1414,11 +1414,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1449,11 +1449,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1484,11 +1484,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1519,11 +1519,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM Result ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1554,11 +1554,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT CAST([StartTime] AS DATETIME) AS [StartTime],[Value] FROM Result ORDER BY [StartTime];'
+	        SELECT CAST([StartTime] AS DATETIME) AS [StartTime],[Value] FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1589,11 +1589,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH Result AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT ISNULL(SUM([Total]),0) AS [Total] FROM Result;'
+	        SELECT ISNULL(SUM([Total]),0) AS [Total] FROM TResult;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1628,11 +1628,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisValue AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    SELECT * FROM TResult ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1663,11 +1663,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisValue AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    SELECT * FROM TResult ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1698,11 +1698,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisValue AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    SELECT * FROM TResult ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1733,11 +1733,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisValue AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    SELECT * FROM TResult ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1768,11 +1768,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH HisValue AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM HisValue ORDER BY [UpdateTime];'
+		    SELECT * FROM TResult ORDER BY [UpdateTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1807,11 +1807,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisStatic AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1842,11 +1842,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisStatic AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1877,11 +1877,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisStatic AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisStatic ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1916,11 +1916,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisLoad AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisLoad ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1951,11 +1951,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH hisLoad AS
+	        SET @SQL = N';WITH TResult AS
 		    (
 			    ' + @SQL + N'
 		    )
-		    SELECT * FROM hisLoad ORDER BY [StartTime];'
+		    SELECT * FROM TResult ORDER BY [StartTime];'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -1964,10 +1964,19 @@ namespace iPem.Data.Common {
         /// 参数自检表
         /// </summary>
         public const string Sql_V_ParamDiff_Repository_GetDiffs = @"
-        IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[V_ParamDiff{0}]') AND type in (N'U'))
+        DECLARE @tpDate DateTime,
+                @tbName NVARCHAR(255),
+                @SQL NVARCHAR(MAX) = N'';
+
+        SET @tpDate = @Date;
+        SET @tbName = N'[dbo].[V_ParamDiff'+CONVERT(VARCHAR(6),@tpDate,112)+ N']';
+        IF EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(@tbName) AND type in (N'U'))
         BEGIN
-            SELECT * FROM [dbo].[V_ParamDiff{0}];
-        END";
+            SET @SQL += N'SELECT * FROM '+ @tbName;
+        END
+
+        EXECUTE sp_executesql @SQL;";
+
 
         /// <summary>
         /// 刷卡记录表
@@ -1999,11 +2008,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -2034,11 +2043,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -2069,11 +2078,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -2104,11 +2113,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -2139,11 +2148,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";
@@ -2174,11 +2183,11 @@ namespace iPem.Data.Common {
 
         IF(@tableCnt>0)
         BEGIN
-	        SET @SQL = N';WITH CR AS
+	        SET @SQL = N';WITH TResult AS
 	        (
 		        ' + @SQL + N'
 	        )
-	        SELECT * FROM CR ORDER BY [PunchTime] DESC;'
+	        SELECT * FROM TResult ORDER BY [PunchTime] DESC;'
         END
 
         EXECUTE sp_executesql @SQL;";

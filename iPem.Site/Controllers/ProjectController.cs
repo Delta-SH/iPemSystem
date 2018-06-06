@@ -647,7 +647,7 @@ namespace iPem.Site.Controllers {
 
         [HttpPost]
         [AjaxAuthorize]
-        public JsonResult CheckReservation(string id, int status) {
+        public JsonResult CheckReservation(string id, int status, string comment) {
             try {
                 if (string.IsNullOrWhiteSpace(id))
                     throw new ArgumentException("id");
@@ -672,7 +672,7 @@ namespace iPem.Site.Controllers {
                     }
                 }
 
-                _reservationService.Check(reservation.Id, reservation.StartTime, reservation.Status);
+                _reservationService.Check(reservation.Id, reservation.StartTime, reservation.Status, comment);
 
                 #region 通知服务重载配置
                 if (reservation.Status == EnmResult.Success) {
@@ -684,7 +684,7 @@ namespace iPem.Site.Controllers {
                 var newNotice = new H_Notice {
                     Id = Guid.NewGuid(),
                     Title = "工程预约审核结果",
-                    Content = reservation.Status == EnmResult.Failure ? string.Format("您于 [ {0} ] 申请的工程预约 [ {1} ] 审核未通过。", reservation.ExpStartTime, reservation.Name) : string.Format("您于 [ {0} ] 申请的工程预约 [ {1} ] 已通过审核,该预约将于[ {2} ]生效。", reservation.ExpStartTime, reservation.Name, reservation.StartTime),
+                    Content = reservation.Status == EnmResult.Failure ? string.Format("您于 [ {0} ] 申请的工程预约 [ {1} ] 由于 [ {2} ] 原因，审核未通过。", reservation.ExpStartTime, reservation.Name, comment) : string.Format("您于 [ {0} ] 申请的工程预约 [ {1} ] 已通过审核,该预约将于[ {2} ]生效。", reservation.ExpStartTime, reservation.Name, reservation.StartTime),
                     CreatedTime = DateTime.Now,
                     Enabled = true
                 };

@@ -742,6 +742,48 @@ namespace iPem.Site.Controllers {
         }
 
         [AjaxAuthorize]
+        public JsonResult GetRoleAreaPath(string[] nodes) {
+            var data = new AjaxDataModel<List<string[]>> {
+                success = true,
+                message = "No data",
+                total = 0,
+                data = new List<string[]>()
+            };
+
+            try {
+                foreach (var node in nodes) {
+                    var keys = Common.SplitKeys(node);
+                    if (keys.Length == 2) {
+                        var type = int.Parse(keys[0]);
+                        var id = keys[1];
+                        var nodeType = Enum.IsDefined(typeof(EnmSSH), type) ? (EnmSSH)type : EnmSSH.Area;
+                        if (nodeType == EnmSSH.Area) {
+                            var current = _workContext.Areas().Find(a => a.Current.Id == id);
+                            if (current != null) {
+                                var paths = current.ToPath();
+                                for (var i = 0; i < paths.Length; i++) {
+                                    paths[i] = Common.JoinKeys((int)EnmSSH.Area, paths[i]);
+                                }
+
+                                data.data.Add(paths.ToArray());
+                            }
+                        }
+                    }
+                }
+
+                if (data.data.Count > 0) {
+                    data.total = data.data.Count;
+                    data.message = "200 Ok";
+                }
+            } catch (Exception exc) {
+                data.success = false;
+                data.message = exc.Message;
+            }
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [AjaxAuthorize]
         public JsonResult GetStations(string node, bool? multiselect, bool? leafselect) {
             var data = new AjaxDataModel<List<TreeModel>> {
                 success = true,
