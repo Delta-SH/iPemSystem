@@ -29,7 +29,7 @@ namespace iPem.Core
         /// </summary>
         public string Version
         {
-            get { return "V1.3.5 Build180605"; }
+            get { return "V1.3.5.0 Build180615"; }
         }
 
         /// <summary>
