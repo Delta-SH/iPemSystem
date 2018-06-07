@@ -1156,4 +1156,5 @@ INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUse
 INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES('P2S_V1_005','优化缓存，新增工程预约审核','Steven',GETDATE(),'系统批量',GETDATE(),'优化缓存，新增工程预约审核');
 INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES('P2S_V1_006','新增软件注册功能','Steven',GETDATE(),'系统批量',GETDATE(),'优化缓存，新增工程预约审核');
 INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES('P2S_V1_007','角色权限细化到设备,增加短信/语音告警功能','Scorpio',GETDATE(),'系统批量',GETDATE(),'角色权限细化到设备,增加短信/语音告警功能');
+INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES('P2S_V1_008','新增能耗管理、虚拟信号管理功能','Steven',GETDATE(),NULL,GETDATE(),'新增能耗管理、虚拟信号管理功能;优化停电、发电、电池曲线功能；修改已发现的BUG.');
 GO

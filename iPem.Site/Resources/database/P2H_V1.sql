@@ -1167,3 +1167,11 @@ CREATE CLUSTERED INDEX [ClusteredIndex] ON [dbo].[V_Static]
 	[PointId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
+
+--■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+--添加默认值[dbo].[H_DBScript]
+DELETE FROM [dbo].[H_DBScript];
+GO
+
+INSERT INTO [dbo].[H_DBScript]([Id],[Name],[CreateUser],[CreateTime],[ExecuteUser],[ExecuteTime],[Desc]) VALUES('P2H_V1_001','新增能耗管理、虚拟信号管理功能','Steven',GETDATE(),NULL,GETDATE(),'新增能耗管理、虚拟信号管理功能;优化停电、发电、电池曲线功能；修改已发现的BUG.');
+GO

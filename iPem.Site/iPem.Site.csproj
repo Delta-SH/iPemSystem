@@ -447,9 +447,6 @@
     <Content Include="Content\themes\icons\menu-count.png" />
     <Content Include="Content\themes\icons\menu-csgl.png" />
     <Content Include="Content\themes\icons\menu-dzdt.png" />
-    <Content Include="Content\themes\icons\menu-fsuftp.png" />
-    <Content Include="Content\themes\icons\menu-fsucx.png" />
-    <Content Include="Content\themes\icons\menu-fsupz.png" />
     <Content Include="Content\themes\icons\menu-gcgl.png" />
     <Content Include="Content\themes\icons\menu-gcyy.png" />
     <Content Include="Content\themes\icons\menu-gjgl.png" />
