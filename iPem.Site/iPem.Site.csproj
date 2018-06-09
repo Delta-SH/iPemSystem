@@ -438,6 +438,11 @@
     <Content Include="Content\themes\icons\files\zip16.png" />
     <Content Include="Content\themes\icons\files\zip32.png" />
     <Content Include="Content\themes\icons\filter.png" />
+    <Content Include="Content\themes\icons\menu-cscy.png" />
+    <Content Include="Content\themes\icons\menu-csxj.png" />
+    <Content Include="Content\themes\icons\menu-fsu-pz.png" />
+    <Content Include="Content\themes\icons\menu-fsu-rz.png" />
+    <Content Include="Content\themes\icons\menu-fsu-xx.png" />
     <Content Include="Content\themes\icons\menu-gjpb.png" />
     <Content Include="Content\themes\icons\juzhan-level-0.png" />
     <Content Include="Content\themes\icons\juzhan-level-1.png" />
@@ -466,6 +471,7 @@
     <Content Include="Content\themes\icons\menu-rzgl.png" />
     <Content Include="Content\themes\icons\menu-txzt.png" />
     <Content Include="Content\themes\icons\menu-xnjm.png" />
+    <Content Include="Content\themes\icons\menu-xnxh.png" />
     <Content Include="Content\themes\icons\menu-xtgl.png" />
     <Content Include="Content\themes\icons\menu-xxgl.png" />
     <Content Include="Content\themes\icons\menu-yhgl.png" />
